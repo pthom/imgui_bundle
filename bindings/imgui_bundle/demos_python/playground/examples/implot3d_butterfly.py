@@ -1,8 +1,9 @@
 """# Lorenz Attractor & Butterfly Effect
 
-[ImPlot3D](https://github.com/brenocq/implot3d) adds rotatable, zoomable 3D plots to Dear ImGui.
-
-This demo shows two trajectories that diverge from a tiny initial difference, illustrating **chaos theory**. The term *butterfly effect* comes from the Lorenz attractor: tiny changes in initial conditions lead to completely different outcomes.
+Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same
+point, and soon go completely different ways: this is the [butterfly
+effect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses
+[ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui.
 
 **Try it:** drag the plot to rotate, scroll to zoom. Tweak the knobs to change the attractor's shape.
 

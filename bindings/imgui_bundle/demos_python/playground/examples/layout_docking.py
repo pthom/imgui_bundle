@@ -1,6 +1,7 @@
 """# Docking Layouts with Hello ImGui
 
-Hello ImGui provides a **docking** system: define named dock spaces, then assign windows to them.
+[Hello ImGui](https://github.com/pthom/hello_imgui) provides a **docking** system: define named dock spaces,
+then assign windows to them.
 Windows can be dragged, tabbed, and rearranged by the user.
 
 **How it works:**

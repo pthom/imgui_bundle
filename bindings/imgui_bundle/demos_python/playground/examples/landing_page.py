@@ -3,7 +3,8 @@
 
 [![](https://imgui-bundle.pages.dev/resources/logo_imgui_bundle_60.png)](https://imgui-bundle.pages.dev)
 
-*Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*
+*Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear
+ImGui](https://github.com/ocornut/imgui).*
 
 Stop fighting GUI frameworks. Start building.
 

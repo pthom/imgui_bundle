@@ -1,5 +1,7 @@
 """# Resizable Layouts with begin_child
 
+Learn how to create resizable adjacent panels, using child windows.
+
 ImGui's `begin_child` creates scrollable, nestable sub-regions.
 With `ChildFlags_.resize_x` or `resize_y`, the user can **drag dividers** to resize panels.
 

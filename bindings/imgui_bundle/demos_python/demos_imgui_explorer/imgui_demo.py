@@ -7,8 +7,9 @@
 ###############################################################################
 """Dear ImGui: the full demo
 
-Every widget and feature of Dear ImGui, in Python. The reference to learn Dear ImGui by example (a port of
-imgui_demo.cpp).
+Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python. The reference to learn
+Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui
+Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
 """
 
 # fmt: off

@@ -5,16 +5,16 @@
             "about": "What Dear ImGui Bundle is, in two minutes"
         },
         {
-            "name": "Lessons and explorables",
-            "about": "Interactive explanations: read, play, then change the code"
-        },
-        {
             "name": "Library tours",
             "about": "The libraries in the bundle: full demos and showcases"
         },
         {
             "name": "Layouts",
             "about": "Arrange windows and panels"
+        },
+        {
+            "name": "Lessons and explorables",
+            "about": "Interactive scientific demos built with Dear ImGui Bundle, showcasing its capabilities"
         },
         {
             "name": "In the browser",
@@ -31,50 +31,6 @@
             "label": "What is an Immediate GUI",
             "filename": "welcome_imm_mode.py",
             "category": "Start here"
-        },
-        {
-            "label": "The Mandelbrot set is a map of Julia sets",
-            "filename": "explorables/julia_map.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "A tiny neural network learns two spirals",
-            "filename": "explorables/neural_spiral/neural_spiral.py",
-            "category": "Lessons and explorables",
-            "bundle_folders": [
-                "explorables/neural_spiral"
-            ]
-        },
-        {
-            "label": "Simple harmonic motion",
-            "filename": "explorables/lesson_harmonic_motion.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Simple harmonic motion 2",
-            "filename": "explorables/lesson_harmonic_motion2.py",
-            "category": "Lessons and explorables",
-            "hidden": true
-        },
-        {
-            "label": "Double pendulum",
-            "filename": "explorables/double_pendulum.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Fourier epicycles",
-            "filename": "explorables/fourier_epicycles.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Boids (flocks)",
-            "filename": "explorables/boids.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Logistic map",
-            "filename": "explorables/logistic_map.py",
-            "category": "Lessons and explorables"
         },
         {
             "label": "ImGui full demo",
@@ -139,6 +95,50 @@
             "label": "Dockable windows",
             "filename": "layout_docking.py",
             "category": "Layouts"
+        },
+        {
+            "label": "The Mandelbrot set is a map of Julia sets",
+            "filename": "explorables/julia_map.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "A tiny neural network learns two spirals",
+            "filename": "explorables/neural_spiral/neural_spiral.py",
+            "category": "Lessons and explorables",
+            "bundle_folders": [
+                "explorables/neural_spiral"
+            ]
+        },
+        {
+            "label": "Simple harmonic motion",
+            "filename": "explorables/lesson_harmonic_motion.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Simple harmonic motion 2",
+            "filename": "explorables/lesson_harmonic_motion2.py",
+            "category": "Lessons and explorables",
+            "hidden": true
+        },
+        {
+            "label": "Double pendulum",
+            "filename": "explorables/double_pendulum.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Fourier epicycles",
+            "filename": "explorables/fourier_epicycles.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Boids (flocks)",
+            "filename": "explorables/boids.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Logistic map",
+            "filename": "explorables/logistic_map.py",
+            "category": "Lessons and explorables"
         },
         {
             "label": "Minimal HTML page",

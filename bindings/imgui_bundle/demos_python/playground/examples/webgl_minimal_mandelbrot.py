@@ -1,8 +1,10 @@
 """
 Minimal WebGL fragment shader as the application background.
 
-**Pyodide only.** This demo calls the browser's WebGL2 API directly, through
-Python's `js` interop. On desktop, you would use PyOpenGL instead.
+The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.
+**Pyodide only:** this demo calls the browser's
+[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`
+interop. On desktop, you would use PyOpenGL instead.
 
 To run the same source file on both desktop and Pyodide, see the companion
 example `webgl_background_shader.py`: it wraps the WebGL2 context in a small

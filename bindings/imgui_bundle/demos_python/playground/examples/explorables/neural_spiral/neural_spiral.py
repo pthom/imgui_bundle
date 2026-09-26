@@ -1,7 +1,9 @@
 """A tiny neural network learns two spirals
 
-Can 16 neurons tell two spirals apart? Watch a tiny network learn, live. Then read how it works, formula by formula,
-next to its numpy code.
+Can 16 neurons tell two spirals apart? Watch a tiny [neural
+network](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) learn, live, as in the [TensorFlow
+Playground](https://playground.tensorflow.org). Then read how it works, formula by formula, next to its numpy
+code.
 
 This explorable is written in two files (narrative programming, see imgui_rich_md):
 - tiny_nn.py: the network, in numpy, with its explanation in ::md sections next to its code

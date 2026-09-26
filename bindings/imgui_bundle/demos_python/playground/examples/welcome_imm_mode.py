@@ -1,7 +1,8 @@
 """# What is an Immediate GUI
 
-With Dear ImGui, your GUI code is **simple and direct**: no widget trees, no callbacks, no state synchronization.
-You call functions to create widgets, and they return the current value. That's it.
+With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple and direct**: no widget trees,
+no callbacks, no state synchronization. You call functions to create widgets, and they return the current
+value. That's it.
 
 For example, the first "Volume" widget below is created with the code:
 ```python

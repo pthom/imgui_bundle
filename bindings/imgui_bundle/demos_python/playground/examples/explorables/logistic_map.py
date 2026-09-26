@@ -1,8 +1,10 @@
 r"""Logistic Map
 ============
 
-A very simple equation (the logistic map: `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the
-*growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic
+A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) *
+(1 - x(n))`), used for example to model the
+*growth of a population with limited resources*, can lead to wildly different situations: either stable,
+periodic
 (in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.
 
 **Try this**

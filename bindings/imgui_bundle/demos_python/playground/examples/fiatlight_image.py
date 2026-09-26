@@ -1,8 +1,7 @@
 """# Fiatlight: Image Pipeline
 
-Fiatlight turns Python functions into
-interactive apps with visual pipelines.
-https://pthom.github.io/fiatlight
+[Fiatlight](https://pthom.github.io/fiatlight/) turns Python functions into interactive apps with visual
+pipelines.
 
 This demo shows an image processing pipeline:
 - download an image

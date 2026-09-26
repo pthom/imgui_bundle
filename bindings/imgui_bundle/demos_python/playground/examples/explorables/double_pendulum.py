@@ -1,9 +1,9 @@
 """Double Pendulum
 =================
 
-A chaotic system where tiny changes in initial conditions
-lead to wildly different trajectories. Drag the angles to set
-initial positions, then release and watch chaos unfold.
+A [double pendulum](https://en.wikipedia.org/wiki/Double_pendulum) is a
+[chaotic](https://en.wikipedia.org/wiki/Chaos_theory) system: tiny changes in its initial conditions lead to
+wildly different trajectories. Drag the angles to set initial positions, then release and watch chaos unfold.
 """
 
 import numpy as np

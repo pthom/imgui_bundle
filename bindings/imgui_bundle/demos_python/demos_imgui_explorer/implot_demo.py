@@ -7,8 +7,9 @@
 ###############################################################################
 """ImPlot: the full demo
 
-Every kind of plot of ImPlot, in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port
-of implot_demo.cpp).
+Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,
+histograms, real-time plots and more (a port of implot_demo.cpp). Browse it next to its code in the [Dear
+ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 """
 import time
 from imgui_bundle import imgui, immapp, implot, imgui_ctx, ImVec4, ImVec2, IM_COL32

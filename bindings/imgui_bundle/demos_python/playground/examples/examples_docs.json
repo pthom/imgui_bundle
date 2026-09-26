@@ -1,55 +1,27 @@
 {
   "landing_page.py": {
     "title": "Dear ImGui Bundle",
-    "text": "*Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*"
+    "text": "*Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear\nImGui](https://github.com/ocornut/imgui).*"
   },
   "welcome_imm_mode.py": {
     "title": "What is an Immediate GUI",
-    "text": "With Dear ImGui, your GUI code is **simple and direct**: no widget trees, no callbacks, no state synchronization.\nYou call functions to create widgets, and they return the current value. That's it."
-  },
-  "explorables/julia_map.py": {
-    "title": "The Mandelbrot set as a map of Julia sets",
-    "text": "Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures:\nnear each point, the two sets look alike."
-  },
-  "explorables/neural_spiral/neural_spiral.py": {
-    "title": "A tiny neural network learns two spirals",
-    "text": "Can 16 neurons tell two spirals apart? Watch a tiny network learn, live. Then read how it works, formula by formula,\nnext to its numpy code."
-  },
-  "explorables/lesson_harmonic_motion.py": {
-    "title": "Simple harmonic motion",
-    "text": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same mathematics. Adjust the\nmass and the spring stiffness, and watch how the motion changes."
-  },
-  "explorables/double_pendulum.py": {
-    "title": "Double Pendulum",
-    "text": "A chaotic system where tiny changes in initial conditions\nlead to wildly different trajectories. Drag the angles to set\ninitial positions, then release and watch chaos unfold."
-  },
-  "explorables/fourier_epicycles.py": {
-    "title": "Fourier Epicycles",
-    "text": "Any closed curve can be approximated by a sum of rotating circles (Fourier series).\nAdjust the number of circles to see how the approximation improves."
-  },
-  "explorables/boids.py": {
-    "title": "Boids",
-    "text": "Three trivial local rules (**separation**, **alignment**, **cohesion**),\nand a flock emerges. No leader, no plan. Turn the knobs to re-weight the\nrules and watch order appear or dissolve. Send in **hunters** that chase\nthe swarm down, or flip on the **cursor predator** and scatter it yourself."
-  },
-  "explorables/logistic_map.py": {
-    "title": "Logistic Map",
-    "text": "A very simple equation (the logistic map: `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the\n*growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic\n(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this."
+    "text": "With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple and direct**: no widget trees,\nno callbacks, no state synchronization. You call functions to create widgets, and they return the current\nvalue. That's it."
   },
   "imgui_demo.py": {
     "title": "Dear ImGui: the full demo",
-    "text": "Every widget and feature of Dear ImGui, in Python. The reference to learn Dear ImGui by example (a port of\nimgui_demo.cpp)."
+    "text": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python. The reference to learn\nDear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=imgui)."
   },
   "implot_demo.py": {
     "title": "ImPlot: the full demo",
-    "text": "Every kind of plot of ImPlot, in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port\nof implot_demo.cpp)."
+    "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,\nhistograms, real-time plots and more (a port of implot_demo.cpp). Browse it next to its code in the [Dear\nImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot)."
   },
   "implot3d_demo.py": {
     "title": "ImPlot3D: the full demo",
-    "text": "Rotatable, zoomable 3D plots in Python: lines, scatter, surfaces, meshes and more (a port of implot3d_demo.cpp)."
+    "text": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,\nsurfaces, meshes and more (a port of implot3d_demo.cpp). Browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=implot3d)."
   },
   "implot3d_butterfly.py": {
     "title": "Lorenz Attractor & Butterfly Effect",
-    "text": "[ImPlot3D](https://github.com/brenocq/implot3d) adds rotatable, zoomable 3D plots to Dear ImGui."
+    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same\npoint, and soon go completely different ways: this is the [butterfly\neffect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses\n[ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui."
   },
   "immvision.py": {
     "title": "ImmVision: Download & Inspect Images",
@@ -57,19 +29,47 @@
   },
   "fiatlight_image.py": {
     "title": "Fiatlight: Image Pipeline",
-    "text": "Fiatlight turns Python functions into\ninteractive apps with visual pipelines.\nhttps://pthom.github.io/fiatlight"
+    "text": "[Fiatlight](https://pthom.github.io/fiatlight/) turns Python functions into interactive apps with visual\npipelines."
   },
   "themes.py": {
     "title": "Theming",
-    "text": "Dear ImGui Bundle supports theming at two levels: complete looks, and fine-tuning of colors, rounding and spacing."
+    "text": "Dear ImGui Bundle supports theming at two levels: complete looks (from [Hello\nImGui](https://github.com/pthom/hello_imgui)), and fine-tuning of colors, rounding and spacing."
   },
   "layout_child.py": {
     "title": "Resizable Layouts with begin_child",
-    "text": "ImGui's `begin_child` creates scrollable, nestable sub-regions.\nWith `ChildFlags_.resize_x` or `resize_y`, the user can **drag dividers** to resize panels."
+    "text": "Learn how to create resizable adjacent panels, using child windows."
   },
   "layout_docking.py": {
     "title": "Docking Layouts with Hello ImGui",
-    "text": "Hello ImGui provides a **docking** system: define named dock spaces, then assign windows to them.\nWindows can be dragged, tabbed, and rearranged by the user."
+    "text": "[Hello ImGui](https://github.com/pthom/hello_imgui) provides a **docking** system: define named dock spaces,\nthen assign windows to them.\nWindows can be dragged, tabbed, and rearranged by the user."
+  },
+  "explorables/julia_map.py": {
+    "title": "The Mandelbrot set as a map of Julia sets",
+    "text": "Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia\nset](https://en.wikipedia.org/wiki/Julia_set). Fly to famous values of c, and zoom into both pictures: near\neach point, the two sets look alike."
+  },
+  "explorables/neural_spiral/neural_spiral.py": {
+    "title": "A tiny neural network learns two spirals",
+    "text": "Can 16 neurons tell two spirals apart? Watch a tiny [neural\nnetwork](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) learn, live, as in the [TensorFlow\nPlayground](https://playground.tensorflow.org). Then read how it works, formula by formula, next to its numpy\ncode."
+  },
+  "explorables/lesson_harmonic_motion.py": {
+    "title": "Simple harmonic motion",
+    "text": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same equation, the one\nof [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion). Adjust the mass and the\nspring stiffness, and watch how the motion changes."
+  },
+  "explorables/double_pendulum.py": {
+    "title": "Double Pendulum",
+    "text": "A [double pendulum](https://en.wikipedia.org/wiki/Double_pendulum) is a\n[chaotic](https://en.wikipedia.org/wiki/Chaos_theory) system: tiny changes in its initial conditions lead to\nwildly different trajectories. Drag the angles to set initial positions, then release and watch chaos unfold."
+  },
+  "explorables/fourier_epicycles.py": {
+    "title": "Fourier Epicycles",
+    "text": "Any closed curve can be approximated by a sum of rotating circles (a [Fourier\nseries](https://en.wikipedia.org/wiki/Fourier_series)). Adjust the number of circles to see how the\napproximation improves."
+  },
+  "explorables/boids.py": {
+    "title": "Boids",
+    "text": "A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way\n(**alignment**), and stay together (**cohesion**). No leader, no plan, and yet a flock emerges. This is the\n[boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986)."
+  },
+  "explorables/logistic_map.py": {
+    "title": "Logistic Map",
+    "text": "A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) *\n(1 - x(n))`), used for example to model the\n*growth of a population with limited resources*, can lead to wildly different situations: either stable,\nperiodic\n(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this."
   },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
@@ -77,18 +77,18 @@
   },
   "webgl_minimal_mandelbrot.py": {
     "title": "Minimal WebGL fragment shader as the application background.",
-    "text": "**Pyodide only.** This demo calls the browser's WebGL2 API directly, through\nPython's `js` interop. On desktop, you would use PyOpenGL instead."
+    "text": "The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.\n**Pyodide only:** this demo calls the browser's\n[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`\ninterop. On desktop, you would use PyOpenGL instead."
   },
   "webgl_background_shader.py": {
     "title": "Custom background using a shader, à la Shadertoy",
-    "text": "Runs on desktop AND in Pyodide, from the same source file. The shader is the famous \"Seascape\" by Alexander Alekseev (TDM, 2014). It's\nrendered as the application's background through hello_imgui's\n`custom_background` callback, with the ImGui parameter panel composited on top."
+    "text": "The famous \"Seascape\" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev,\nas the application's background, with the GUI on top. The same source file runs on desktop and in the browser\n([Pyodide](https://pyodide.org))."
   },
   "webgl_texture_in_image.py": {
     "title": "Render a 3D cube with WebGL from Python, and display it in an ImGui window",
-    "text": "The cube is rendered into a texture, shown via `imgui.image()`: zero CPU/GPU round-trip on the steady-state path."
+    "text": "The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture,\nthen shown by `imgui.image()`: no copy between the GPU and the CPU at each frame."
   },
   "webaudio_minimal_beep.py": {
     "title": "WebAudio: minimal beep, a Pyodide sanity check.",
-    "text": "**Pyodide only.** Calls the browser's WebAudio API via Python's `js` interop.\nClick **Beep** to hear a short sine tone whose frequency and duration you\ncan slide."
+    "text": "**Pyodide only.** Calls the browser's [WebAudio\nAPI](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) from Python, through\n[Pyodide](https://pyodide.org)'s `js` interop. Click **Beep** to hear a short sine tone; sliders set its\nfrequency and duration."
   }
 }

@@ -1,9 +1,10 @@
 """
 WebAudio: minimal beep, a Pyodide sanity check.
 
-**Pyodide only.** Calls the browser's WebAudio API via Python's `js` interop.
-Click **Beep** to hear a short sine tone whose frequency and duration you
-can slide.
+**Pyodide only.** Calls the browser's [WebAudio
+API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) from Python, through
+[Pyodide](https://pyodide.org)'s `js` interop. Click **Beep** to hear a short sine tone; sliders set its
+frequency and duration.
 
 Why this exists: confirms that audio works in the Pyodide playground
 without needing an SDL2-audio-enabled build or a Python audio binding.

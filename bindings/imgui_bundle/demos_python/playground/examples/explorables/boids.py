@@ -1,10 +1,14 @@
 """Boids
 =====
 
-Three trivial local rules (**separation**, **alignment**, **cohesion**),
-and a flock emerges. No leader, no plan. Turn the knobs to re-weight the
-rules and watch order appear or dissolve. Send in **hunters** that chase
-the swarm down, or flip on the **cursor predator** and scatter it yourself.
+A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way
+(**alignment**), and stay together (**cohesion**). No leader, no plan, and yet a flock emerges. This is the
+[boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).
+
+**Try this**
+* Turn the knobs to change the weight of each rule, and watch order appear or dissolve
+* Send in **hunters** that chase the flock
+* Turn on the **cursor predator**, and scatter the flock with the mouse
 """
 
 import numpy as np

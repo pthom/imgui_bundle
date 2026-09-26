@@ -1,7 +1,8 @@
 """The Mandelbrot set as a map of Julia sets
 
-Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures:
-near each point, the two sets look alike.
+Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia
+set](https://en.wikipedia.org/wiki/Julia_set). Fly to famous values of c, and zoom into both pictures: near
+each point, the two sets look alike.
 
 This file is its own narrative (narrative programming, see imgui_rich_md): its ::md sections are markdown, next to
 the code they explain. It also shows a specific use of it: the markdown places the widgets.

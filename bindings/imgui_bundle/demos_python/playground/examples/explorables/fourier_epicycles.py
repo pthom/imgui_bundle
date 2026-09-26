@@ -1,8 +1,9 @@
 """Fourier Epicycles
 ==================
 
-Any closed curve can be approximated by a sum of rotating circles (Fourier series).
-Adjust the number of circles to see how the approximation improves.
+Any closed curve can be approximated by a sum of rotating circles (a [Fourier
+series](https://en.wikipedia.org/wiki/Fourier_series)). Adjust the number of circles to see how the
+approximation improves.
 """
 
 import numpy as np

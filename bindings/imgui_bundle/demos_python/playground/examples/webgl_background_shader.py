@@ -1,9 +1,11 @@
 """
 Custom background using a shader, à la Shadertoy
 
-Runs on desktop AND in Pyodide, from the same source file. The shader is the famous "Seascape" by Alexander Alekseev (TDM, 2014). It's
-rendered as the application's background through hello_imgui's
-`custom_background` callback, with the ImGui parameter panel composited on top.
+The famous "Seascape" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev,
+as the application's background, with the GUI on top. The same source file runs on desktop and in the browser
+([Pyodide](https://pyodide.org)).
+
+It is rendered through hello_imgui's `custom_background` callback.
 
 Why this demo exists
 ====================

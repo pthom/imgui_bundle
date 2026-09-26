@@ -1,7 +1,8 @@
 """Simple harmonic motion
 
-A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same mathematics. Adjust the
-mass and the spring stiffness, and watch how the motion changes.
+A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same equation, the one
+of [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion). Adjust the mass and the
+spring stiffness, and watch how the motion changes.
 """
 
 import numpy as np

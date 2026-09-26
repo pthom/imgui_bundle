@@ -7,7 +7,9 @@
 ###############################################################################
 """ImPlot3D: the full demo
 
-Rotatable, zoomable 3D plots in Python: lines, scatter, surfaces, meshes and more (a port of implot3d_demo.cpp).
+Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,
+surfaces, meshes and more (a port of implot3d_demo.cpp). Browse it next to its code in the [Dear ImGui
+Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 """
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 try:
