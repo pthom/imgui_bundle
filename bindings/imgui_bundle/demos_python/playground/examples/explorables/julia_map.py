@@ -78,18 +78,21 @@ from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui
 #     ![[#Escape#code]]
 r"""::md Escape
 ### Escape time
-Iterate $z \leftarrow z^2 + c$ and count the steps until $|z| > 2$, after which $z$ flies to infinity.
-A point that survives all `max_iter` iterations is considered in the set. The normalized count is the color.
+Iterate $z \leftarrow z^2 + c$ and count the steps until $|z| > 16$ (beyond 2, $z$ already flies to infinity).
+A point that survives all `max_iter` iterations is considered in the set, and drawn in black. Elsewhere, the count
+minus $\log_2 \log_2 |z|$ gives the color: this fraction of a step smooths the bands between two counts, and the
+bound of 16 makes it accurate.
 ::code
 """
 def escape_time(z: np.ndarray, c: np.ndarray, max_iter: int) -> np.ndarray:
     count = np.full(z.shape, max_iter, dtype=np.float32)
     for i in range(max_iter):
         z = z * z + c
-        escaped = np.abs(z) > 2.0
-        count[escaped & (count == max_iter)] = i
-        z[escaped] = 2.0  # keep the escaped values small
-    return count / max_iter
+        size = np.abs(z)
+        escaped = (size > 16.0) & (count == max_iter)
+        count[escaped] = i + 1 - np.log2(np.log2(size[escaped]))
+        z[size > 16.0] = 16.0  # keep the escaped values small
+    return np.clip(count, 0, max_iter) / max_iter
 # ::endcode
 
 Window = tuple[float, float]  # a range on an axis of the complex plane
@@ -124,10 +127,20 @@ JOURNEY_SECONDS = 2.5  # the way to a famous value of c
 GLIDE_SECONDS = 1.0  # the way to a clicked value of c
 
 
-# The colors of the pictures, from "escapes at once" (0) to "never escapes" (1): the magma colormap, for now
-PALETTE_STOPS = [(0, 0, 4), (80, 18, 123), (182, 54, 121), (251, 136, 97), (252, 253, 191)]
-PALETTE = np.stack([np.interp(np.linspace(0, 1, 256), np.linspace(0, 1, len(PALETTE_STOPS)), channel)
-                    for channel in np.array(PALETTE_STOPS).T], axis=1).astype(np.uint8)  # 256 RGB colors
+# The colors of the pictures: the "Ultra Fractal" palette (navy, blue, white, orange, black), repeated 4 times from
+# "escapes at once" (0) to "never escapes" (1), and black inside the set
+PALETTE_STOPS = [(0.0, 0, 7, 100), (0.16, 32, 107, 203), (0.42, 237, 255, 255), (0.6425, 255, 170, 0),
+                 (0.8575, 0, 2, 0), (1.0, 0, 7, 100)]  # position, red, green, blue
+PALETTE = np.stack([np.interp(np.linspace(0, 1, 256), np.array(PALETTE_STOPS)[:, 0], np.array(PALETTE_STOPS)[:, k])
+                    for k in (1, 2, 3)], axis=1).astype(np.uint8)  # 256 RGB colors
+PALETTE_CYCLES = 4
+
+
+def colorize(values: np.ndarray) -> np.ndarray:
+    """Normalized counts -> an RGB image: the palette outside the set, black inside"""
+    rgb = PALETTE[(values * PALETTE_CYCLES % 1.0 * 255).astype(np.uint8)]
+    rgb[values >= 1.0] = 0
+    return rgb
 
 
 class PlaneView:
@@ -154,7 +167,7 @@ class PlaneView:
             values = self.compute(self.window_re, self.window_im, SIZE // 2).repeat(2, axis=0).repeat(2, axis=1)
         else:
             values = self.compute(self.window_re, self.window_im, SIZE)
-        self.image = PALETTE[(values * 255).astype(np.uint8)]
+        self.image = colorize(values)
         self.changed = True  # the texture is updated by the next show()
 
     def to_plane(self, x: float, y: float) -> complex:
