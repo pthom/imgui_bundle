@@ -121,6 +121,7 @@ def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_
 # The widgets that the story places in its ```widget blocks
 SIZE = 300  # the pictures, in pixels
 JOURNEY_SECONDS = 2.5  # the way to a famous value of c
+GLIDE_SECONDS = 1.0  # the way to a clicked value of c
 
 
 class PlaneView:
@@ -212,6 +213,8 @@ class State:
         self.c = complex(-0.8, 0.156)
         self.julia_follows_map = False
         self.journey: Journey | None = None
+        self.glide: tuple[complex, complex, float] | None = None  # after a click: c from, c to, start time
+        self.animation_speed = 1.0  # divides JOURNEY_SECONDS and GLIDE_SECONDS
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -224,17 +227,23 @@ class State:
 
     def go_to(self, c: complex, width: float | None) -> None:
         """A journey to c, where the map arrives with a view of this width (None: the whole set)"""
+        self.glide = None
         (re0, re1), (im0, im1) = self.map.window_re, self.map.window_im
         target_center = c if width is not None else complex(sum(MANDEL_RE) / 2, sum(MANDEL_IM) / 2)
         target_width = width if width is not None else MANDEL_RE[1] - MANDEL_RE[0]
         self.journey = Journey(self.c, c, complex((re0 + re1) / 2, (im0 + im1) / 2), re1 - re0,
                                target_center, target_width, imgui.get_time())
 
+    def glide_to(self, c: complex) -> None:
+        """After a click: c glides there, and the map stays"""
+        self.journey = None
+        self.glide = (self.c, c, imgui.get_time())
+
     def travel(self) -> None:
-        """Each frame: the next step of the journey"""
+        """Each frame: the next step of the journey, or of the glide"""
         j = self.journey
         if j is not None:
-            t = min((imgui.get_time() - j.start_time) / JOURNEY_SECONDS, 1.0)
+            t = min((imgui.get_time() - j.start_time) * self.animation_speed / JOURNEY_SECONDS, 1.0)
             self.map.coarse = self.julia.coarse = t < 1.0  # fast on the way, sharp on arrival
             # The map zooms out until both places are in view, then in (the time is shared in proportion to the two
             # zoom factors). It pans, and c moves, around the widest moment: the view is never lost
@@ -251,7 +260,15 @@ class State:
             self.map.set_view(center, width_from * (width_to / width_from) ** ease(u))
             if t == 1.0:
                 self.journey = None
-        hello_imgui.get_runner_params().fps_idling.enable_idling = self.journey is None  # a smooth journey
+        if self.glide is not None:
+            start_c, target_c, start_time = self.glide
+            t = min((imgui.get_time() - start_time) * self.animation_speed / GLIDE_SECONDS, 1.0)
+            self.julia.coarse = t < 1.0
+            self.choose_c(target_c if t == 1.0 else start_c + (target_c - start_c) * ease(t))
+            if t == 1.0:
+                self.glide = None
+        moving = self.journey is not None or self.glide is not None
+        hello_imgui.get_runner_params().fps_idling.enable_idling = not moving  # a smooth journey
 
     def follow_map(self) -> None:
         """The Julia set around z = c, at the scale of the map: where the two sets look alike"""
@@ -333,8 +350,7 @@ def maps_widget() -> None:
     mouse = state.map.params.mouse_info
     drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
     if mouse.is_mouse_hovering and imgui.is_mouse_released(0) and drag.x == 0 and drag.y == 0:
-        state.journey = None  # a click jumps there
-        state.choose_c(state.map.to_plane(*mouse.mouse_position))
+        state.glide_to(state.map.to_plane(*mouse.mouse_position))
     pixel = (state.map.window_re[1] - state.map.window_re[0]) / SIZE
     digits = max(3, int(np.ceil(-np.log10(pixel))))  # enough to tell two pixels of the map apart
     imgui.text(f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i")
@@ -360,6 +376,9 @@ def maps_widget() -> None:
                 imgui.pop_text_wrap_pos()
                 imgui.end_tooltip()
         imgui.end_list_box()
+    imgui.set_next_item_width(em_size(6))
+    _, state.animation_speed = imgui.slider_float("animation speed", state.animation_speed, 0.2, 5.0, "x%.1f",
+                                                  imgui.SliderFlags_.logarithmic)
     imgui.end_group()
 
 
