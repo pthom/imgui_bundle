@@ -135,6 +135,7 @@ async function loadExample(filename, packages, label, bundleFolders) {
         const content = await response.text();
         editor.setValue(content);
         setLoadedCode(content);
+        loadedExampleFilename = filename;
         if (label) setEditorLabel(label);
         clearError(); // Clear previous errors when loading a new example
     } catch (error) {
@@ -145,6 +146,9 @@ async function loadExample(filename, packages, label, bundleFolders) {
 
 // Store example metadata so we can look up packages later
 let examplesMetadata = [];
+
+// The example loaded in the editor (null for the landing page): runEditorPythonCode() runs it at its own path
+let loadedExampleFilename = null;
 
 // Function to populate example selector
 async function populateExampleSelector() {
@@ -220,6 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const initialCode = await initial_example_code();
             editor.setValue(initialCode);
             setLoadedCode(initialCode);
+            loadedExampleFilename = null;
             setEditorLabel('Welcome to Dear ImGui Bundle');
             clearError();
             const selector = document.getElementById('example-selector');

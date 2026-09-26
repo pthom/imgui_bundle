@@ -144,6 +144,22 @@ async function loadPyodideAndPackages() {
     }
 }
 
+// Writes the editor code to a file and returns its path. An example is written at its own path, with its folder first
+// on sys.path (as `python file.py` does): it can import and transclude the files of its folder (delivered by
+// examples.json `bundle_folders`). Other code is written to /home/pyodide/_playground_main.py.
+function writeExampleFile(code) {
+    const playgroundFile = loadedExampleFilename
+        ? `/home/pyodide/${loadedExampleFilename}`
+        : `/home/pyodide/_playground_main.py`;
+    const playgroundDir = playgroundFile.substring(0, playgroundFile.lastIndexOf('/'));
+    pyodide.FS.mkdirTree(playgroundDir);
+    pyodide.FS.writeFile(playgroundFile, code);
+    pyodide.runPython(
+        `import sys\nif ${JSON.stringify(playgroundDir)} not in sys.path: sys.path.insert(0, ${JSON.stringify(playgroundDir)})`
+    );
+    return playgroundFile;
+}
+
 // Function to run Python code
 async function runEditorPythonCode() {
     if (!pyodide) {
@@ -189,13 +205,10 @@ async function runEditorPythonCode() {
             console.warn("stop_active_renderer skipped:", e);
         }
 
-        // Write the editor code to a real file in Pyodide's VFS, and run it
-        // with that filename, so that compiled-function co_filename points at
-        // a real path. Without this, inspect.getsource(some_func) fails.
-        // Use a unique filename per run: linecache caches by filename and
-        // would otherwise return stale source after a demo is reloaded.
-        const playgroundFile = `/home/pyodide/_playground_main.py`;
-        pyodide.FS.writeFile(playgroundFile, code);
+        // Run the editor code from a real file in Pyodide's VFS, so that
+        // compiled-function co_filename points at a real path. Without this,
+        // inspect.getsource(some_func) fails.
+        const playgroundFile = writeExampleFile(code);
         await pyodide.runPythonAsync(code, { filename: playgroundFile });
 
     } catch (err) {

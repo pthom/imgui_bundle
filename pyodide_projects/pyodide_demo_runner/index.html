@@ -124,6 +124,25 @@ async function showListing() {
 }
 
 // ==================== Run mode ====================
+// Writes the demo and the other .py files of its folder under /home/pyodide/demo/, and puts the folder first on
+// sys.path (as `python file.py` does): the demo can import and transclude them. Returns the demo's path.
+async function writeDemoFolder(pyodide, file, code) {
+    const fileDir = file.substring(0, file.lastIndexOf('/') + 1);
+    const allFiles = await (await fetch('list_demos')).json();
+    const siblings = allFiles.filter(f => f !== file && f.startsWith(fileDir) && !f.slice(fileDir.length).includes('/'));
+
+    const demoPath = '/home/pyodide/demo/' + file;
+    const demoDir = demoPath.substring(0, demoPath.lastIndexOf('/'));
+    pyodide.FS.mkdirTree(demoDir);
+    await Promise.all(siblings.map(async f => {
+        const resp = await fetch('demos/' + f);
+        if (resp.ok) pyodide.FS.writeFile('/home/pyodide/demo/' + f, await resp.text());
+    }));
+    pyodide.FS.writeFile(demoPath, code);
+    pyodide.runPython(`import sys\nsys.path.insert(0, ${JSON.stringify(demoDir)})`);
+    return demoPath;
+}
+
 async function runDemo(file) {
     document.getElementById('controls').style.display = 'block';
     setStatus(`Loading Pyodide and ${file}...`);
@@ -163,9 +182,7 @@ async function runDemo(file) {
 
         setStatus('Running...');
         // Run the code from a real file, so that inspect.getsource and rich_md.render_this_file can read it
-        const demoPath = '/home/pyodide/demo/' + file.split('/').pop();
-        pyodide.FS.mkdirTree('/home/pyodide/demo');
-        pyodide.FS.writeFile(demoPath, code);
+        const demoPath = await writeDemoFolder(pyodide, file, code);
         await pyodide.runPythonAsync(code, { filename: demoPath });
 
     } catch(e) {
