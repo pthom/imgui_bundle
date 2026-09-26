@@ -65,15 +65,6 @@ def _fixed_picture() -> None:
     immapp.download_url_bytes = fixed  # type: ignore[assignment]
 
 
-def _reorganize_graph(g: dict[str, Any], frame: int) -> None:
-    """Fiatlight: Ctrl+L (Graph > Reorganize graph), once its saved state is restored and the nodes have their size"""
-    from imgui_bundle import imgui
-    if frame in (60, 62):
-        down = frame == 60
-        imgui.get_io().add_key_event(imgui.Key.mod_ctrl, down)
-        imgui.get_io().add_key_event(imgui.Key.l, down)
-
-
 def _open(window: str, *labels: str) -> Callable[[Any], None]:
     """A test engine script: opens these headers or tree nodes of a full demo's window (in its child windows too)"""
     def test(ctx: Any) -> None:
@@ -91,9 +82,7 @@ SHOTS: dict[str, Shot] = {
     "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
     "implot3d_butterfly.py": Shot(frames=600, crop=(0.28, 0.5, 0.72, 1.0)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
-    # Known issue: with the saved state of fiat_settings, Ctrl+L does not always reorganize the graph (nodes may
-    # overlap): check the picture, and keep the previous one if needed
-    "fiatlight_image.py": Shot(frames=200, action=_reorganize_graph, setup=_fixed_picture, crop=(0.0, 0.03, 0.8, 0.57)),
+    "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.06, 0.94, 0.68)),  # layout: fiat_settings
     "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
