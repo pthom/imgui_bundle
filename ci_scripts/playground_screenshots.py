@@ -91,6 +91,8 @@ SHOTS: dict[str, Shot] = {
     "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
     "implot3d_butterfly.py": Shot(frames=600, crop=(0.28, 0.5, 0.72, 1.0)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
+    # Known issue: with the saved state of fiat_settings, Ctrl+L does not always reorganize the graph (nodes may
+    # overlap): check the picture, and keep the previous one if needed
     "fiatlight_image.py": Shot(frames=200, action=_reorganize_graph, setup=_fixed_picture, crop=(0.0, 0.03, 0.8, 0.57)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),

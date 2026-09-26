@@ -265,6 +265,12 @@ pyodide_demo_runner:
 playground_examples_docs:
     python ci_scripts/playground_examples_docs.py
 
+# The pictures go to the website resources; the browser-only examples: see ci_scripts/playground_screenshots.py
+# Playground: retake the examples' pictures (all, or some: `just playground_screenshots julia_map boids`)
+[group('pyodide')]
+playground_screenshots *names:
+    python ci_scripts/playground_screenshots.py {{names}}
+
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:
