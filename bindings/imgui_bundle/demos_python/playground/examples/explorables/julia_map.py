@@ -122,7 +122,7 @@ def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_
 # ::endcode
 
 # The widgets that the story places in its ```widget blocks
-SIZE = 300  # the pictures, in pixels
+PICTURE_EM = 20.0  # the size of the pictures at "picture size x1.0", in em (the height of a line of text)
 JOURNEY_SECONDS = 2.5  # the way to a famous value of c
 GLIDE_SECONDS = 1.0  # the way to a clicked value of c
 
@@ -151,6 +151,7 @@ class PlaneView:
                  compute: Callable[[Window, Window, int], np.ndarray]) -> None:
         self.label, self.compute, self.full_window = label, compute, (window_re, window_im)
         self.window_re, self.window_im = window_re, window_im
+        self.size = 300  # in pixels, until the first resize()
         self.drag_start = self.window_re, self.window_im  # the window when a drag started
         self.coarse = False  # computed at half the resolution, then enlarged: 3 times faster (while moving)
         self.sharp_at: float | None = None  # when to compute it at full resolution again, after a zoom or a pan
@@ -162,21 +163,26 @@ class PlaneView:
         self.window_im = (center.imag - width / 2, center.imag + width / 2)
         self.refresh()
 
+    def resize(self, size: int) -> None:
+        if size != self.size:
+            self.size = size
+            self.refresh()
+
     def refresh(self) -> None:
         if self.coarse:
-            values = self.compute(self.window_re, self.window_im, SIZE // 2).repeat(2, axis=0).repeat(2, axis=1)
+            values = self.compute(self.window_re, self.window_im, self.size // 2).repeat(2, axis=0).repeat(2, axis=1)
         else:
-            values = self.compute(self.window_re, self.window_im, SIZE)
+            values = self.compute(self.window_re, self.window_im, self.size)
         self.image = colorize(values)
         self.changed = True  # the texture is updated by the next show()
 
     def to_plane(self, x: float, y: float) -> complex:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
-        return complex(re0 + x / SIZE * (re1 - re0), im0 + y / SIZE * (im1 - im0))
+        return complex(re0 + x / self.size * (re1 - re0), im0 + y / self.size * (im1 - im0))
 
     def to_pixel(self, z: complex) -> tuple[int, int]:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
-        return int((z.real - re0) / (re1 - re0) * SIZE), int((z.imag - im0) / (im1 - im0) * SIZE)
+        return int((z.real - re0) / (re1 - re0) * self.size), int((z.imag - im0) / (im1 - im0) * self.size)
 
     def move(self, window_re: Window, window_im: Window) -> None:
         """After a zoom or a pan: computed fast while the mouse moves, then sharp"""
@@ -200,7 +206,7 @@ class PlaneView:
         drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
         if imgui.is_item_active() and (drag.x, drag.y) != (0, 0):
             (re0, re1), (im0, im1) = self.drag_start
-            d_re, d_im = -drag.x / SIZE * (re1 - re0), -drag.y / SIZE * (im1 - im0)
+            d_re, d_im = -drag.x / self.size * (re1 - re0), -drag.y / self.size * (im1 - im0)
             window = (re0 + d_re, re1 + d_re), (im0 + d_im, im1 + d_im)
             if window != (self.window_re, self.window_im):
                 self.move(*window)
@@ -211,7 +217,7 @@ class PlaneView:
     def draw_cross(self, top_left: imgui.ImVec2, z: complex) -> None:
         """A cross at z, when in view"""
         x, y = self.to_pixel(z)
-        if not (0 <= x < SIZE and 0 <= y < SIZE):
+        if not (0 <= x < self.size and 0 <= y < self.size):
             return
         cx, cy, r = top_left.x + x, top_left.y + y, em_size(0.4)
         draw_list = imgui.get_window_draw_list()
@@ -224,14 +230,14 @@ class PlaneView:
         imgui.align_text_to_frame_padding()  # the titles of the three columns, on one line
         imgui.text(self.label)
         top_left = imgui.get_cursor_screen_pos()
-        imgui.invisible_button(f"##{self.label} mouse", imgui.ImVec2(SIZE, SIZE))  # takes the mouse, under the picture
+        imgui.invisible_button(f"##{self.label} mouse", imgui.ImVec2(self.size, self.size))  # takes the mouse, under it
         mouse = imgui.get_mouse_pos()
         clicked = self.handle_mouse(mouse.x - top_left.x, mouse.y - top_left.y)
         if self.sharp_at is not None and imgui.get_time() > self.sharp_at:
             self.coarse, self.sharp_at = False, None
             self.refresh()
         imgui.set_cursor_screen_pos(top_left)
-        immvision.image_display(f"##{self.label}", self.image, (SIZE, SIZE), refresh_image=self.changed)
+        immvision.image_display(f"##{self.label}", self.image, (self.size, self.size), refresh_image=self.changed)
         self.changed = False
         if marker is not None:
             self.draw_cross(top_left, marker)
@@ -267,6 +273,8 @@ class State:
         self.journey: Journey | None = None
         self.glide: tuple[complex, complex, float] | None = None  # after a click: c from, c to, start time
         self.animation_speed = 1.0  # divides JOURNEY_SECONDS and GLIDE_SECONDS
+        self.picture_size = 1.0  # multiplies PICTURE_EM
+        self.picture_size_dragged = False  # its slider is being dragged
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -394,6 +402,14 @@ ARRIVAL_WIDTH: dict[str, float | None] = {
 
 def maps_widget() -> None:
     """The two pictures side by side, and the famous values: a click on the map chooses c (a drag pans it)"""
+    list_width = em_size(11)
+    if not state.picture_size_dragged:  # resized once the slider is released, or the layout moves under the mouse
+        fit = (imgui.get_content_region_avail().x - list_width) / 2 - em_size(1)  # the widest pictures in the window
+        state.picture_size = min(state.picture_size, fit / em_size(PICTURE_EM))  # the slider shows the size that fits
+        size = max(int(em_size(PICTURE_EM * state.picture_size)) // 2 * 2, 64)  # even: half resolution while moving
+        state.map.resize(size)
+        state.julia.resize(size)
+    size = state.map.size
     state.travel()
     if not imgui.begin_table("##maps", 3, imgui.TableFlags_.sizing_fixed_fit):  # three columns, aligned at the top
         return
@@ -402,10 +418,10 @@ def maps_widget() -> None:
     clicked = state.map.show(marker=state.c)
     if clicked is not None:
         state.glide_to(clicked)
-    pixel = (state.map.window_re[1] - state.map.window_re[0]) / SIZE
+    pixel = (state.map.window_re[1] - state.map.window_re[0]) / size
     digits = max(3, int(np.ceil(-np.log10(pixel))))  # enough to tell two pixels of the map apart
     imgui.same_line()
-    imgui.push_text_wrap_pos(column_x + SIZE)  # deep in the map, c needs many digits: two lines
+    imgui.push_text_wrap_pos(column_x + size)  # deep in the map, c needs many digits: two lines
     imgui.text(f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i")
     imgui.pop_text_wrap_pos()
 
@@ -420,7 +436,7 @@ def maps_widget() -> None:
     imgui.align_text_to_frame_padding()
     imgui.text("Famous values of c")
     height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
-    if imgui.begin_list_box("##famous c", imgui.ImVec2(em_size(11), height)):
+    if imgui.begin_list_box("##famous c", imgui.ImVec2(list_width, height)):
         for name, (c, story) in FAMOUS_C.items():
             if imgui.selectable(name, state.c == c)[0]:
                 state.go_to(c, ARRIVAL_WIDTH[name])
@@ -430,9 +446,12 @@ def maps_widget() -> None:
                 imgui.pop_text_wrap_pos()
                 imgui.end_tooltip()
         imgui.end_list_box()
-    imgui.set_next_item_width(em_size(11))
+    imgui.set_next_item_width(list_width)
     _, state.animation_speed = imgui.slider_float("##animation speed", state.animation_speed, 0.2, 5.0,
                                                   "animation speed x%.1f", imgui.SliderFlags_.logarithmic)
+    imgui.set_next_item_width(list_width)
+    _, state.picture_size = imgui.slider_float("##picture size", state.picture_size, 0.5, 2.0, "picture size x%.1f")
+    state.picture_size_dragged = imgui.is_item_active()
     imgui.end_table()
 
 
@@ -455,6 +474,7 @@ def widget_block(name: str) -> None:
 
 
 def gui() -> None:
+    imgui.text(f"FPS: {hello_imgui.frame_rate():.2f}")
     rich_md.register_fenced_block_renderer("widget", widget_block)  # the story's ```widget blocks
 
     # The line below renders the whole GUI of the app!
@@ -484,4 +504,4 @@ def gui() -> None:
         rich_md.render_this_file("")
 
 
-immapp.run(gui, window_title="Julia map", window_size=(900, 1000), with_markdown=True, with_latex=True)
+immapp.run(gui, window_title="Julia map", window_size=(1300, 1000), with_markdown=True, with_latex=True)
