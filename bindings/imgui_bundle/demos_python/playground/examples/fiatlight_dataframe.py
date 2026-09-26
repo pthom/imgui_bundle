@@ -1,10 +1,9 @@
 """# Fiatlight: Titanic DataFrame Explorer
 
-[Fiatlight](https://pthom.github.io/fiatlight) turns Python functions into interactive apps with visual pipelines.
-
-This demo shows a **filterable dataframe** with linked plots:
-- Filter the Titanic dataset by class, survival, sex, age
-- See a survival rate pie chart and age histogram update in real time
+Explore the passengers of the Titanic in a **filterable dataframe**, with linked plots: filter them by class,
+survival, sex and age, and watch the survival rate and the age histogram update. Built with
+[Fiatlight](https://pthom.github.io/fiatlight), which turns Python functions into interactive apps with visual
+pipelines.
 
 The dataframe is loaded from the web (Data Science Dojo repository).
 

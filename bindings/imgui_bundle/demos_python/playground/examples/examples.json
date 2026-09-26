@@ -82,6 +82,18 @@
             ]
         },
         {
+            "label": "Fiatlight dataframe explorer",
+            "filename": "fiatlight_dataframe.py",
+            "category": "Library tours",
+            "packages": [
+                "fiatlight",
+                "pandas"
+            ],
+            "bundle_folders": [
+                "fiat_settings"
+            ]
+        },
+        {
             "label": "Themes and theme tweaking",
             "filename": "themes.py",
             "category": "Library tours"

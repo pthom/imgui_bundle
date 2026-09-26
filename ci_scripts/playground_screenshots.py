@@ -94,6 +94,7 @@ SHOTS: dict[str, Shot] = {
     # Known issue: with the saved state of fiat_settings, Ctrl+L does not always reorganize the graph (nodes may
     # overlap): check the picture, and keep the previous one if needed
     "fiatlight_image.py": Shot(frames=200, action=_reorganize_graph, setup=_fixed_picture, crop=(0.0, 0.03, 0.8, 0.57)),
+    "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
