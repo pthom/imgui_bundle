@@ -191,7 +191,7 @@ async function populateExampleSelector() {
     }
 }
 
-// The detail pane of the menu: the example's title and first paragraph
+// The detail pane of the menu: the example's title and first paragraph (markdown, rendered by marked.js)
 function showExampleDoc(filename) {
     const detail = document.getElementById('examples-detail');
     detail.innerHTML = '';
@@ -200,8 +200,13 @@ function showExampleDoc(filename) {
     const title = document.createElement('div');
     title.className = 'examples-detail-title';
     title.textContent = doc.title;
-    const text = document.createElement('p');
-    text.textContent = doc.text;
+    const text = document.createElement('div');
+    if (typeof marked !== 'undefined') {
+        text.innerHTML = marked.parse(doc.text);  // our own docstrings: trusted markdown
+        for (const link of text.querySelectorAll('a')) link.target = '_blank';
+    } else {
+        text.textContent = doc.text;  // marked.js could not be loaded: the markdown as is
+    }
     detail.append(title, text);
 }
 

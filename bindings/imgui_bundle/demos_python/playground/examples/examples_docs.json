@@ -1,47 +1,47 @@
 {
   "landing_page.py": {
     "title": "Dear ImGui Bundle",
-    "text": "Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui."
+    "text": "*Interactive Python & C++ apps for desktop, mobile, and web - powered by Dear ImGui.*"
   },
   "welcome_imm_mode.py": {
     "title": "What is an Immediate GUI",
-    "text": "With Dear ImGui, your GUI code is simple and direct: no widget trees, no callbacks, no state synchronization. You call functions to create widgets, and they return the current value. That's it."
+    "text": "With Dear ImGui, your GUI code is **simple and direct**: no widget trees, no callbacks, no state synchronization.\nYou call functions to create widgets, and they return the current value. That's it."
   },
   "explorables/julia_map.py": {
     "title": "The Mandelbrot set as a map of Julia sets",
-    "text": "Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures: near each point, the two sets look alike."
+    "text": "Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures:\nnear each point, the two sets look alike."
   },
   "explorables/neural_spiral/neural_spiral.py": {
     "title": "A tiny neural network learns two spirals",
-    "text": "Can 16 neurons tell two spirals apart? Watch a tiny network learn, live. Then read how it works, formula by formula, next to its numpy code."
+    "text": "Can 16 neurons tell two spirals apart? Watch a tiny network learn, live. Then read how it works, formula by formula,\nnext to its numpy code."
   },
   "explorables/lesson_harmonic_motion.py": {
     "title": "Simple harmonic motion",
-    "text": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same mathematics. Adjust the mass and the spring stiffness, and watch how the motion changes."
+    "text": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same mathematics. Adjust the\nmass and the spring stiffness, and watch how the motion changes."
   },
   "explorables/double_pendulum.py": {
     "title": "Double Pendulum",
-    "text": "A chaotic system where tiny changes in initial conditions lead to wildly different trajectories. Drag the angles to set initial positions, then release and watch chaos unfold."
+    "text": "A chaotic system where tiny changes in initial conditions\nlead to wildly different trajectories. Drag the angles to set\ninitial positions, then release and watch chaos unfold."
   },
   "explorables/fourier_epicycles.py": {
     "title": "Fourier Epicycles",
-    "text": "Any closed curve can be approximated by a sum of rotating circles (Fourier series). Adjust the number of circles to see how the approximation improves."
+    "text": "Any closed curve can be approximated by a sum of rotating circles (Fourier series).\nAdjust the number of circles to see how the approximation improves."
   },
   "explorables/boids.py": {
     "title": "Boids",
-    "text": "Three trivial local rules (separation, alignment, cohesion), and a flock emerges. No leader, no plan. Turn the knobs to re-weight the rules and watch order appear or dissolve. Send in hunters that chase the swarm down, or flip on the cursor predator and scatter it yourself."
+    "text": "Three trivial local rules (**separation**, **alignment**, **cohesion**),\nand a flock emerges. No leader, no plan. Turn the knobs to re-weight the\nrules and watch order appear or dissolve. Send in **hunters** that chase\nthe swarm down, or flip on the **cursor predator** and scatter it yourself."
   },
   "explorables/logistic_map.py": {
     "title": "Logistic Map",
-    "text": "A very simple equation (the logistic map: x(n+1) = r * x(n) * (1 - x(n))), used for example to model the growth of a population with limited resources, can lead to wildly different situations: either stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this."
+    "text": "A very simple equation (the logistic map: `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the\n*growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic\n(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this."
   },
   "imgui_demo.py": {
     "title": "Dear ImGui: the full demo",
-    "text": "Every widget and feature of Dear ImGui, in Python. The reference to learn Dear ImGui by example (a port of imgui_demo.cpp)."
+    "text": "Every widget and feature of Dear ImGui, in Python. The reference to learn Dear ImGui by example (a port of\nimgui_demo.cpp)."
   },
   "implot_demo.py": {
     "title": "ImPlot: the full demo",
-    "text": "Every kind of plot of ImPlot, in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port of implot_demo.cpp)."
+    "text": "Every kind of plot of ImPlot, in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port\nof implot_demo.cpp)."
   },
   "implot3d_demo.py": {
     "title": "ImPlot3D: the full demo",
@@ -49,15 +49,15 @@
   },
   "implot3d_butterfly.py": {
     "title": "Lorenz Attractor & Butterfly Effect",
-    "text": "ImPlot3D adds rotatable, zoomable 3D plots to Dear ImGui."
+    "text": "[ImPlot3D](https://github.com/brenocq/implot3d) adds rotatable, zoomable 3D plots to Dear ImGui."
   },
   "immvision.py": {
     "title": "ImmVision: Download & Inspect Images",
-    "text": "ImmVision is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps."
+    "text": "[ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps."
   },
   "fiatlight_image.py": {
     "title": "Fiatlight: Image Pipeline",
-    "text": "Fiatlight turns Python functions into interactive apps with visual pipelines. https://pthom.github.io/fiatlight"
+    "text": "Fiatlight turns Python functions into\ninteractive apps with visual pipelines.\nhttps://pthom.github.io/fiatlight"
   },
   "themes.py": {
     "title": "Theming",
@@ -65,30 +65,30 @@
   },
   "layout_child.py": {
     "title": "Resizable Layouts with begin_child",
-    "text": "ImGui's begin_child creates scrollable, nestable sub-regions. With ChildFlags_.resize_x or resize_y, the user can drag dividers to resize panels."
+    "text": "ImGui's `begin_child` creates scrollable, nestable sub-regions.\nWith `ChildFlags_.resize_x` or `resize_y`, the user can **drag dividers** to resize panels."
   },
   "layout_docking.py": {
     "title": "Docking Layouts with Hello ImGui",
-    "text": "Hello ImGui provides a docking system: define named dock spaces, then assign windows to them. Windows can be dragged, tabbed, and rearranged by the user."
+    "text": "Hello ImGui provides a **docking** system: define named dock spaces, then assign windows to them.\nWindows can be dragged, tabbed, and rearranged by the user."
   },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
-    "text": "Dear ImGui Bundle apps can run entirely in the browser using Pyodide. The HTML file below is a complete, self-contained app in about 80 lines - no server, no build step."
+    "text": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org). The HTML file below is a **complete, self-contained app** in about 80 lines - no server, no build step."
   },
   "webgl_minimal_mandelbrot.py": {
     "title": "Minimal WebGL fragment shader as the application background.",
-    "text": "Pyodide only. This demo calls the browser's WebGL2 API directly, through Python's js interop. On desktop, you would use PyOpenGL instead."
+    "text": "**Pyodide only.** This demo calls the browser's WebGL2 API directly, through\nPython's `js` interop. On desktop, you would use PyOpenGL instead."
   },
   "webgl_background_shader.py": {
     "title": "Custom background using a shader, à la Shadertoy",
-    "text": "Runs on desktop AND in Pyodide, from the same source file. The shader is the famous \"Seascape\" by Alexander Alekseev (TDM, 2014). It's rendered as the application's background through hello_imgui's custom_background callback, with the ImGui parameter panel composited on top."
+    "text": "Runs on desktop AND in Pyodide, from the same source file. The shader is the famous \"Seascape\" by Alexander Alekseev (TDM, 2014). It's\nrendered as the application's background through hello_imgui's\n`custom_background` callback, with the ImGui parameter panel composited on top."
   },
   "webgl_texture_in_image.py": {
     "title": "Render a 3D cube with WebGL from Python, and display it in an ImGui window",
-    "text": "The cube is rendered into a texture, shown via imgui.image(): zero CPU/GPU round-trip on the steady-state path."
+    "text": "The cube is rendered into a texture, shown via `imgui.image()`: zero CPU/GPU round-trip on the steady-state path."
   },
   "webaudio_minimal_beep.py": {
     "title": "WebAudio: minimal beep, a Pyodide sanity check.",
-    "text": "Pyodide only. Calls the browser's WebAudio API via Python's js interop. Click Beep to hear a short sine tone whose frequency and duration you can slide."
+    "text": "**Pyodide only.** Calls the browser's WebAudio API via Python's `js` interop.\nClick **Beep** to hear a short sine tone whose frequency and duration you\ncan slide."
   }
 }

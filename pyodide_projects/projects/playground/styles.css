@@ -135,6 +135,21 @@ html, body {
     color: #fff;
 }
 
+#examples-detail p {
+    margin: 0 0 8px;
+}
+
+#examples-detail code {
+    padding: 1px 4px;
+    font-size: 0.9em;
+    background-color: #1e1e1e;
+    border-radius: 3px;
+}
+
+#examples-detail a {
+    color: #9cdcfe;
+}
+
 /* Run Button styles */
 #run-button {
     padding: 3px 10px;

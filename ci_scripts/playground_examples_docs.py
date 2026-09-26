@@ -1,11 +1,11 @@
 """Extracts the title and first paragraph of each playground example's docstring, for the playground's examples menu.
 
-Writes examples_docs.json next to examples.json: {filename: {"title": ..., "text": ...}}.
+Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown}}.
 Run by `just playground_examples_docs` and by `just cf_stage` (the deploy).
 
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
-= or -), then a blank line, then a paragraph that tells a visitor what the example shows. The menu shows it as plain
-text: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
+= or -), then a blank line, then a paragraph that tells a visitor what the example shows. The menu renders its markdown,
+but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
 """
 import ast
 import json
@@ -35,8 +35,8 @@ def title_and_paragraph(docstring: str) -> tuple[str, str]:
     rest = lines[1:]
     if rest and re.fullmatch(r"[=-]{3,}", rest[0].strip()):
         rest = rest[1:]
-    paragraphs = [plain(" ".join(line.strip() for line in block.splitlines())) for block in "\n".join(rest).split("\n\n")]
-    return plain(title), next((p for p in paragraphs if p), "")  # the first one with text (not only an image)
+    blocks = [block.strip() for block in "\n".join(rest).split("\n\n")]
+    return plain(title), next((b for b in blocks if plain(b)), "")  # the first one with text (not only an image)
 
 
 def main() -> None:
@@ -53,8 +53,8 @@ def main() -> None:
         title, text = title_and_paragraph(docstring)
         if not text:
             print(f"warning: {filename} has no first paragraph after its title")
-        elif len(text) > MAX_PARAGRAPH:
-            print(f"warning: {filename}: its first paragraph has {len(text)} characters (more than {MAX_PARAGRAPH})")
+        elif len(plain(text)) > MAX_PARAGRAPH:
+            print(f"warning: {filename}: its first paragraph has {len(plain(text))} characters (more than {MAX_PARAGRAPH})")
         docs[filename] = {"title": title, "text": text}
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
