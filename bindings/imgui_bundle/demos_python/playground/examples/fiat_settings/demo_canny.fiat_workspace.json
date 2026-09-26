@@ -27,8 +27,8 @@
                             "DrawValuesOnZoomedPixels": true,
                             "HighlightWatchedPixels": true,
                             "ImageDisplaySize": {
-                                "height": 279,
-                                "width": 372
+                                "height": 300,
+                                "width": 400
                             },
                             "InterpolationMode": 0,
                             "PanWithMouse": true,
@@ -46,12 +46,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.5812585501284119,
+                                "00": 0.6250000000000002,
                                 "01": 0.0,
-                                "02": -0.0027360410915033342,
+                                "02": 2.524354896707238e-29,
                                 "10": 0.0,
-                                "11": 0.5812585501284119,
-                                "12": -0.0020520308188174846,
+                                "11": 0.6250000000000002,
+                                "12": 1.8932661725304283e-29,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
@@ -78,7 +78,7 @@
                     "focused": true
                 },
                 "_doc_expanded": {
-                    "inside_node": false,
+                    "inside_node": true,
                     "focused": true
                 },
                 "fiat_tuning_expanded": {
@@ -229,15 +229,15 @@
                                     "UseStatsMax": false,
                                     "UseStatsMin": false
                                 },
-                                "ColormapScaleMax": 100.3374199796547,
-                                "ColormapScaleMin": -72.7389824796547,
+                                "ColormapScaleMax": 58.79771756841594,
+                                "ColormapScaleMin": -48.54957303716594,
                                 "internal_ColormapHovered": ""
                             },
                             "DrawValuesOnZoomedPixels": true,
                             "HighlightWatchedPixels": true,
                             "ImageDisplaySize": {
-                                "height": 232,
-                                "width": 310
+                                "height": 271,
+                                "width": 362
                             },
                             "InterpolationMode": 0,
                             "PanWithMouse": true,
@@ -255,12 +255,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.4843821251070099,
+                                "00": 0.5656250000000002,
                                 "01": 0.0,
-                                "02": -0.002280034242946979,
+                                "02": 1.456612608308207e-14,
                                 "10": 0.0,
-                                "11": 0.4843821251070099,
-                                "12": -0.25171002568236167,
+                                "11": 0.5656250000000002,
+                                "12": -0.24999999999998906,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
@@ -274,8 +274,8 @@
                 }
             },
             "position": [
-                584.0,
-                16.0
+                568.0,
+                22.0
             ],
             "expand_flags": {
                 "_inputs_expanded": {
@@ -287,7 +287,7 @@
                     "focused": true
                 },
                 "_doc_expanded": {
-                    "inside_node": false,
+                    "inside_node": true,
                     "focused": true
                 },
                 "fiat_tuning_expanded": {
@@ -416,15 +416,15 @@
                                     "UseStatsMax": false,
                                     "UseStatsMin": false
                                 },
-                                "ColormapScaleMax": 195.5184003722041,
-                                "ColormapScaleMin": -101.33109568470408,
+                                "ColormapScaleMax": 121.04007138628258,
+                                "ColormapScaleMin": -82.10442685503257,
                                 "internal_ColormapHovered": ""
                             },
                             "DrawValuesOnZoomedPixels": true,
                             "HighlightWatchedPixels": true,
                             "ImageDisplaySize": {
-                                "height": 266,
-                                "width": 355
+                                "height": 315,
+                                "width": 420
                             },
                             "InterpolationMode": 0,
                             "PanWithMouse": true,
@@ -442,12 +442,12 @@
                             "WatchedPixels": [],
                             "ZoomKey": "z",
                             "ZoomPanMatrix": {
-                                "00": 0.5546956593967372,
+                                "00": 0.6562500000000001,
                                 "01": 0.0,
-                                "02": -0.0026110069556044514,
+                                "02": 3.907985046680552e-14,
                                 "10": 0.0,
-                                "11": 0.5546956593967372,
-                                "12": -0.12695825521688464,
+                                "11": 0.6562500000000001,
+                                "12": 2.9309887850104145e-14,
                                 "20": 0.0,
                                 "21": 0.0,
                                 "22": 1.0
@@ -461,8 +461,8 @@
                 }
             },
             "position": [
-                1076.0,
-                18.0
+                1043.0,
+                21.0
             ],
             "expand_flags": {
                 "_inputs_expanded": {
@@ -474,7 +474,7 @@
                     "focused": true
                 },
                 "_doc_expanded": {
-                    "inside_node": false,
+                    "inside_node": true,
                     "focused": true
                 },
                 "fiat_tuning_expanded": {

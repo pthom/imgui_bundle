@@ -82,7 +82,7 @@ SHOTS: dict[str, Shot] = {
     "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
     "implot3d_butterfly.py": Shot(frames=600, crop=(0.28, 0.5, 0.72, 1.0)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
-    "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.06, 0.94, 0.68)),  # layout: fiat_settings
+    "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.08, 0.95, 0.82)),  # layout: fiat_settings
     "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),

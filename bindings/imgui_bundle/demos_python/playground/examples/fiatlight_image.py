@@ -48,8 +48,12 @@ import numpy as np
 
 
 def download_random_image() -> ImageU8:
-    """Synchronous download of a random image"""
-    # Each run downloads a different random image from picsum.photos
+    """Each run downloads a different random image from [picsum.photos](https://picsum.photos/)
+
+    > [!TIP]
+    > * Inside "Dear ImGui Bundle Playground", click the "Run" button to download a new image!
+    > * Zoom the image with the wheel, and pan it by dragging the mouse
+    """
     def _decode_image(image_bytes: bytes) -> ImageU8:
         """Decode JPEG/PNG bytes to numpy array, with fallback test pattern."""
         if len(image_bytes) > 0:
@@ -68,7 +72,7 @@ def download_random_image() -> ImageU8:
 
 
 class CannyApertureSize(Enum):
-    APERTURE_3 = (3,)
+    APERTURE_3 = 3
     APERTURE_5 = 5
     APERTURE_7 = 7
 
@@ -81,9 +85,11 @@ def canny(
         l2_gradient: bool = True,
         blur_sigma: float = 0.0,
 ) -> ImageU8_GRAY:
-    """Performs a canny edge detection on the image after bluring it
-    There are many parameters, and finding the right ones can be tricky.
-    Fiatlight user interface can help with this.
+    """Performs a [canny edge detection](https://en.wikipedia.org/wiki/Canny_edge_detector) on the image after blurring it.
+    There are many [parameters](https://docs.opencv.org/4.x/dd/d1a/group__imgproc__feature.html#ga04723e007ed888ddf11d9ba04e2232de),
+    and finding the right ones can be tricky. See also the [OpenCV tutorial](https://docs.opencv.org/4.x/da/d22/tutorial_py_canny.html).
+
+    Here, you can experiment with all parameters, with an instant feedback.
     """
     if blur_sigma is not None and blur_sigma > 0:
         image = cv2.GaussianBlur(image, (0, 0), sigmaX=blur_sigma, sigmaY=blur_sigma)  # type: ignore
@@ -104,10 +110,12 @@ def dilate(
         morph_shape: MorphShape = MorphShape.MORPH_ELLIPSE,
         iterations: int = 1,
 ) -> ImageU8_GRAY:
-    """Dilate the image using the specified kernel shape and size
+    """[Dilate](https://en.wikipedia.org/wiki/Dilation_(morphology)) the image using the specified kernel shape and size
 
     This is often used to increase the thickness of detected objects in an image.
-    Note: if kernel_size is 1, the dilation will do nothing.
+    See [OpenCV tutorial](https://docs.opencv.org/4.x/db/df6/tutorial_erosion_dilatation.html) and [parameters](https://docs.opencv.org/4.x/d4/d86/group__imgproc__filter.html#ga4ff0f3318642c4f469d0e11f242f3b6c)
+
+    *Note: if kernel_size is 1, the dilation will do nothing.*
     """
     kernel = cv2.getStructuringElement(morph_shape.value, (kernel_size, kernel_size))
     r = cv2.dilate(image, kernel, iterations=iterations)
@@ -125,15 +133,43 @@ import fiatlight as fl  # noqa
 fl.add_fiat_attributes(
     canny,
     blur_sigma__range=(0.0, 10.0),
+    blur_sigma__tooltip="blur_sigma controls the amount of Gaussian blur applied to the image before edge detection "
+                        "(0: no blur). More blur: fewer, smoother edges.",
     t_lower__range=(100.0, 10000.0),
     t_lower__slider_logarithmic=True,
+    t_lower__tooltip="The lower threshold: a pixel whose gradient is below it is never an edge. A pixel between the two "
+                     "thresholds is an edge only when it touches a pixel above the upper one.",
     t_upper__range=(100.0, 10000.0),
     t_upper__slider_logarithmic=True,
+    t_upper__tooltip="The upper threshold: a pixel whose gradient is above it is always an edge. Raise it for fewer edges.",
+    aperture_size__tooltip="The size of the Sobel kernel that computes the gradient. A larger kernel gives larger "
+                           "gradients: the thresholds must follow.",
+    l2_gradient__tooltip="Measure the gradient with the exact norm, sqrt(gx^2 + gy^2), instead of |gx| + |gy| "
+                         "(faster, less precise).",
+)
+fl.add_fiat_attributes(
+    CannyApertureSize,
+    APERTURE_3__tooltip="A 3x3 Sobel kernel",
+    APERTURE_5__tooltip="A 5x5 Sobel kernel",
+    APERTURE_7__tooltip="A 7x7 Sobel kernel",
 )
 
 # Add attributes to the dilate function, specifying the ranges
 # (note: the MorphShape enum is automatically handled as radio buttons)
-fl.add_fiat_attributes(dilate, kernel_size__range=(1, 10), iterations__range=(1, 10))
+fl.add_fiat_attributes(
+    dilate,
+    kernel_size__range=(1, 10),
+    kernel_size__tooltip="The size of the kernel, in pixels: the larger, the thicker the lines (1: no dilation).",
+    morph_shape__tooltip="The shape of the kernel: it gives its shape to the thickened lines.",
+    iterations__range=(1, 10),
+    iterations__tooltip="How many times the dilation is applied: each time, the lines get thicker.",
+)
+fl.add_fiat_attributes(
+    MorphShape,
+    MORPH_RECT__tooltip="A rectangle: square corners",
+    MORPH_CROSS__tooltip="A cross: lines grow along the horizontal and the vertical",
+    MORPH_ELLIPSE__tooltip="An ellipse: rounded, the most natural thickening",
+)
 
 
 fl.run([download_random_image, canny, dilate], app_name="demo_canny")
