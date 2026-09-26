@@ -1,4 +1,4 @@
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, icons_fontawesome
+from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, icons_fontawesome
 
 import numpy as np
 from typing import Dict, List
@@ -33,7 +33,7 @@ class AppState:
 
 def demo_assets(app_state: AppState):
     """A demo showcasing the assets usage in HelloImGui and ImmApp"""
-    imgui_md.render("# Demo Assets")
+    rich_md.render("# Demo Assets")
 
     imgui.text("Here are some icons from Font Awesome: ")
     imgui.same_line()
@@ -55,7 +55,7 @@ def demo_assets(app_state: AppState):
     image_size = hello_imgui.em_to_vec2(3.0, 3.0)
     hello_imgui.image_from_asset("images/world.png", image_size)
 
-    imgui_md.render(
+    rich_md.render(
         "**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**"
     )
     show_doc("AssetsDoc")
@@ -77,18 +77,18 @@ def demo_markdown(app_state: AppState):
                 return "It's just a " + thing + ". Nothing fancy!"
             ```
     """
-    imgui_md.render_unindented(markdown_demo)
+    rich_md.render(markdown_demo)
 
     # Interactive demo
     imgui.separator()
-    imgui_md.render("*Try it yourself*")
+    rich_md.render("*Try it yourself*")
     imgui.same_line(hello_imgui.em_size(30.0))
     if imgui.small_button("Edit the fortune markdown"):
         app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
     _, app_state.markdown_input = imgui.input_text_multiline(
         "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
     )
-    imgui_md.render_unindented(app_state.markdown_input)
+    rich_md.render(app_state.markdown_input)
     imgui.separator()
 
     show_doc("MarkdownDoc")
@@ -96,7 +96,7 @@ def demo_markdown(app_state: AppState):
 
 def demo_plot(app_state: AppState):
     """A demo showcasing the usage of ImPlot"""
-    imgui_md.render("# Demo ImPlot")
+    rich_md.render("# Demo ImPlot")
 
     data_labels = ["Frogs", "Hogs", "Dogs", "Logs"]
 
@@ -188,14 +188,14 @@ def get_doc(which_doc: str) -> str:
 
             C++
             ```cpp
-            ImGuiMd::Render(markdown_string);            // render a markdown string
-            ImGuiMd::RenderUnindented(markdown_string);  // remove top-most indentation before rendering
+            RichMd::Render(markdown_string);            // render a markdown string
+            RichMd::Render(markdown_string);  // remove top-most indentation before rendering
             ```
 
             Python
             ```python
-            imgui_md.render(markdown_string);            # render a markdown string
-            imgui_md.render_unindented(markdown_string); # remove top-most indentation before rendering
+            rich_md.render(markdown_string);            # render a markdown string
+            rich_md.render(markdown_string); # remove top-most indentation before rendering
             ```
 
             This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
@@ -239,8 +239,8 @@ def show_doc(which_doc):  # noqa: F811
 
     if is_doc_visible[which_doc]:
         # The following are assumed to be valid calls within the context of your specific ImGui wrapper.
-        # 'imgui_md' and 'get_doc' should correspond to your actual usage and imports.
-        imgui_md.render_unindented(get_doc(which_doc))
+        # 'rich_md' and 'get_doc' should correspond to your actual usage and imports.
+        rich_md.render(get_doc(which_doc))
         imgui.dummy(
             hello_imgui.em_to_vec2(1.0, 6.0)
         )  # Assumes 'hello_imgui' is available in your environment

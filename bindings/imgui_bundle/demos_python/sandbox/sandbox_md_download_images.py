@@ -7,19 +7,19 @@ Tests:
 - Local asset image (existing behavior)
 - Mixed: text, URL images, local images, code blocks
 """
-from imgui_bundle import immapp, imgui_md
+from imgui_bundle import immapp, rich_md
 import logging
-logging.getLogger("imgui_md_image_loader").setLevel(logging.DEBUG)
+logging.getLogger("rich_md_image_loader").setLevel(logging.DEBUG)
 logging.basicConfig(level=logging.DEBUG)
 
 
 
 def gui():
-    imgui_md.render_unindented("""
+    rich_md.render("""
     # Markdown Online Images Test
 
     ## 1. PNG from URL
-    ![litgen logo](https://pthom.github.io/litgen/litgen_book/_static/litgen_logo_big.png)
+    ![litgen logo](https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/assets/images/world.png)
 
     ## 2. JPEG from URL
     ![photo](https://picsum.photos/id/1018/300/200)
@@ -37,7 +37,7 @@ def gui():
     <img src="https://picsum.photos/id/1018/300/200" width="150">
 
     ## 6.2 HTML img tag with explicit height
-    <img src="https://pthom.github.io/litgen/litgen_book/_static/litgen_logo_big.png" height="100">
+    <img src="https://raw.githubusercontent.com/pthom/imgui_bundle/main/bindings/imgui_bundle/assets/images/world.png" height="100">
 
 
     ## 7. HTML img tag with both dimensions

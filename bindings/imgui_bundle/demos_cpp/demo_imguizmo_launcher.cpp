@@ -1,6 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
@@ -9,7 +9,7 @@ void demo_guizmo_curve_edit();
 
 void demo_imguizmo_launcher()
 {
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui.
     )");
 

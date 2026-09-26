@@ -58,7 +58,7 @@ import math
 import numpy as np
 
 import imgui_bundle
-from imgui_bundle import hello_imgui, imgui, immapp, imgui_md, ImVec2
+from imgui_bundle import hello_imgui, imgui, immapp, rich_md, ImVec2
 
 if not imgui_bundle.has_submodule("webgl"):
     raise RuntimeError(
@@ -271,7 +271,7 @@ def _docs_window():
     imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
-        imgui_md.render_unindented(__doc__ or "")
+        rich_md.render(__doc__ or "")
     imgui.end()
 
 
@@ -315,7 +315,7 @@ def main():
 
     # Markdown for the docs window. (LaTeX not used here, but enabled for
     # consistency with the other webgl playground entries.)
-    md_options = imgui_md.MarkdownOptions()
+    md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True
     add_ons_params = immapp.AddOnsParams()
     add_ons_params.with_markdown = True

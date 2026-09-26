@@ -3,7 +3,7 @@
 
 from __future__ import absolute_import
 
-from imgui_bundle import imgui
+from imgui_bundle import imgui, rich_md
 from imgui_bundle.python_backends.pygame_backend import PygameRenderer
 import OpenGL.GL as gl  # pip install PyOpenGL
 import pygame
@@ -34,6 +34,9 @@ def main():
 
     imgui.create_context()
     impl = PygameRenderer()
+    md_options = rich_md.MarkdownOptions()
+    md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     io = imgui.get_io()
     io.display_size = size
@@ -66,6 +69,17 @@ def main():
             imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
+                rich_md.render(r"""
+                # Hello, World
+                Here is some *markdown* text, and a formula: $e^{i\pi} + 1 = 0$
+
+                ![](images/world.png)
+
+                ```python
+                print("code blocks too")
+                ```
+                """)
+
                 imgui.text("Example Text")
                 if imgui.button("Hello"):
                     print("World")

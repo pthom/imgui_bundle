@@ -1,10 +1,10 @@
-from imgui_bundle import imgui, immapp, imgui_md
+from imgui_bundle import imgui, immapp, rich_md
 
 
 MARKDOWN = r"""
 # Phase 3: native LaTeX in markdown
 
-This markdown is rendered by **imgui_md**.
+This markdown is rendered by **rich_md**.
 Inline math like $E = mc^2$ should sit on the baseline of this text,
 as should $\sqrt{a^2 + b^2}$ and $\sum_{i=0}^{n} i$.
 
@@ -68,7 +68,7 @@ def gui() -> None:
     _, imgui.get_style().font_scale_main = imgui.slider_float("Font scale", imgui.get_style().font_scale_main, 0.25, 4.0)
     imgui.text("Phase 3 sandbox — close window to exit")
     imgui.separator()
-    imgui_md.render_unindented(MARKDOWN)
+    rich_md.render(MARKDOWN)
 
 
 def main() -> None:

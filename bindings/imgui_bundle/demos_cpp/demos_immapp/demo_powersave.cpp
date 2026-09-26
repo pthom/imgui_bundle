@@ -2,7 +2,7 @@
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "imspinner/imspinner.h"
-#include "imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 int main(int, char **)
 {

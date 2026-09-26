@@ -6,13 +6,13 @@
 //     ImGuiTheme::ApplyTheme(ImGuiTheme::ImGuiTheme_Cherry)
 
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 
 
 void demo_themes()
 {
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Theming
         HelloImGui adds support for advanced theming to ImGui. Select the menu View/Theme/Theme tweak window to explore all the themes and their customization.
     )");

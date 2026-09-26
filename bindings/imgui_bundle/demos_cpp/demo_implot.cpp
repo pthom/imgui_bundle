@@ -12,14 +12,14 @@
 
 void demo_implot()
 {
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
     )");
     if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
     {
         ImGui::Text(ICON_FA_INFO_CIRCLE);
         if (ImGui::IsItemHovered())
-            ImGuiMd::RenderUnindented(R"(
+            RichMd::Render(R"(
                 > [!TIP]
                 > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
                 )");

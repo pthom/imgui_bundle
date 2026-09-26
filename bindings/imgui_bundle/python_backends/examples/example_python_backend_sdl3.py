@@ -7,7 +7,7 @@
 # You will need to install sdl3:
 #    pip install pysdl3
 # ruff: noqa: F405, F403  # authorize * import
-from imgui_bundle import imgui
+from imgui_bundle import imgui, rich_md
 from imgui_bundle.python_backends.sdl3_backend import SDL3Renderer
 import OpenGL.GL as gl  # pip install PyOpenGL
 from sdl3 import *
@@ -27,6 +27,9 @@ def main():
     window, gl_context = impl_pysdl3_init()
     imgui.create_context()
     impl = SDL3Renderer(window)
+    md_options = rich_md.MarkdownOptions()
+    md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     show_custom_window = True
 
@@ -61,6 +64,17 @@ def main():
             imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
+                rich_md.render(r"""
+                # Hello, World
+                Here is some *markdown* text, and a formula: $e^{i\pi} + 1 = 0$
+
+                ![](images/world.png)
+
+                ```python
+                print("code blocks too")
+                ```
+                """)
+
                 imgui.text("Example Text")
                 if imgui.button("Hello"):
                     print("World")
@@ -85,6 +99,7 @@ def main():
         impl.render(imgui.get_draw_data())
         SDL_GL_SwapWindow(window)
 
+    rich_md.destroy_context()
     impl.shutdown()
     SDL_GL_DestroyContext(gl_context)
     SDL_DestroyWindow(window)

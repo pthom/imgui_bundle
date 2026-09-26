@@ -1,6 +1,6 @@
 import os
 from typing import Callable
-from imgui_bundle import immapp, imgui, imgui_md
+from imgui_bundle import immapp, imgui, rich_md
 from imgui_bundle.demos_python.demo_utils.functional_utils import memoize
 
 
@@ -86,7 +86,7 @@ def show_python_vs_cpp_file(demo_file_path: str, nb_lines: int = 0) -> None:
 
 def show_markdown_file(doc_filename: str) -> None:
     code = read_markdown_code(doc_filename)
-    imgui_md.render_unindented(code)
+    rich_md.render(code)
 
 
 @memoize  # type: ignore

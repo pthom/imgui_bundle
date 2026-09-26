@@ -5,15 +5,18 @@
 * An indication (*) whether the code was modified since it was last run.
 * The result of the last run is displayed below the code cell
   (you can provide a custom renderer for the result)
+* If the result is a function, it is called every frame: the cell becomes a live GUI
 
 This is very much a work in progress.
 """
 
+import ast
+import inspect
 import sys
 import io
 from typing import Any, Callable
 
-from imgui_bundle import immapp, imgui_md, imgui, imgui_ctx, hello_imgui, ImVec2
+from imgui_bundle import immapp, rich_md, imgui, imgui_ctx, hello_imgui, implot, ImVec2
 import textwrap
 from dataclasses import dataclass
 
@@ -30,9 +33,12 @@ ResultRenderer = Callable[[Any], None]
 
 
 def _default_result_renderer(result: Any) -> None:
+    if inspect.isfunction(result):
+        result()  # a live GUI function
+        return
     as_string = str(result)
     md_string = "```\n" + as_string + "\n```"
-    imgui_md.render(md_string)
+    rich_md.render(md_string)
 
 
 
@@ -47,24 +53,45 @@ class _CaptureStdout(list[str]):
         sys.stdout = self._stdout
 
 
-def _execute_and_capture_last_expr(code: str) -> Any | _NoResult:
-    with _CaptureStdout() as output:
-        code = textwrap.dedent(code).strip()  # De-indent and strip code
-        lines = code.splitlines()
-        if not lines:
-            return None
+# Shared by all cells, and kept between runs (like Jupyter)
+_cells_namespace: dict[str, Any] = {}
 
-        last_line = lines[-1]
+
+def _render_and_recover_on_error(result_renderer: ResultRenderer, result: Any) -> Exception | None:
+    """Calls result_renderer(result). If it raises, closes what it left open in ImGui and ImPlot and returns the exception"""
+    state = imgui.internal.ErrorRecoveryState()
+    imgui.internal.error_recovery_store_state(state)
+    try:
+        result_renderer(result)
+        return None
+    except Exception as e:
+        # A plot left open would assert at the next begin_plot
+        if implot.get_current_context() is not None and implot.internal.get_current_plot() is not None:
+            implot.end_plot()
+        # Close the ImGui stacks (groups, ids, styles, ...) without asserting
+        io = imgui.get_io()
+        enable_assert = io.config_error_recovery_enable_assert
+        io.config_error_recovery_enable_assert = False
+        imgui.internal.error_recovery_try_to_recover_state(state)
+        io.config_error_recovery_enable_assert = enable_assert
+        return e
+
+
+def _execute_and_capture_last_expr(code: str) -> Any | _NoResult:
+    with _CaptureStdout():
+        code = textwrap.dedent(code).strip()  # De-indent and strip code
         try:
-            exec(code, globals(), locals())  # Execute the entire code block
+            tree = ast.parse(code, "<cell>")
+            # If the last statement is an expression, evaluate it separately to return its value
+            last_expr = None
+            if tree.body and isinstance(tree.body[-1], ast.Expr):
+                last_expr = ast.Expression(tree.body.pop().value)
+            exec(compile(tree, "<cell>", "exec"), _cells_namespace)
+            if last_expr is None:
+                return _NoResult()
+            return eval(compile(last_expr, "<cell>", "eval"), _cells_namespace)
         except Exception as e:
             return f"Error:\n{e}"
-
-        try:
-            last_line_result = eval(last_line, globals(), locals())  # Evaluate the last line
-        except Exception:
-            last_line_result = _NoResult()
-        return last_line_result
 
 
 @dataclass
@@ -93,6 +120,7 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         snippet_data.code = code
         snippet_data.height_in_lines = code.count("\n")
         snippet_data.palette = immapp.snippets.SnippetTheme.dark
+        snippet_data.read_only = False  # the cell's code is edited, then run
         statics.s_code_cells[label_id] = CodeAndResult(snippet_data, _NoResult(), "")
 
     code_and_result = statics.s_code_cells[label_id]
@@ -127,7 +155,9 @@ def show_runnable_code_cell(label_id: str, code: str = "", result_renderer: Resu
         if not isinstance(code_and_result.result, _NoResult):
             if result_renderer is None:
                 result_renderer = _default_result_renderer
-            result_renderer(code_and_result.result)
+            error = _render_and_recover_on_error(result_renderer, code_and_result.result)
+            if error is not None:
+                code_and_result.result = f"Error:\n{error}"  # shown from the next frame, until the next run
 
         imgui.new_line()
 

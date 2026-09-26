@@ -19,6 +19,8 @@ def main() -> None:
 
     # Configure options
     options = litgen.LitgenOptions()
+    # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"
+    options.comments_exclude_lines_regex = r"^\s*(/\*)?::(md|code|endcode|endmd)(\s|$)|^\s*\*/\s*$"
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
@@ -39,7 +41,7 @@ def main() -> None:
     generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/clock.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/code_utils.h")
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/snippets.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/backends/code_editor/snippets.h")
 
     generator.write_generated_code(
         output_cpp_pydef_file=output_cpp_pydef_file,

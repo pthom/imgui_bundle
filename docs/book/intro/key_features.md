@@ -54,7 +54,7 @@ Each library is:
 
 ### Text Editing & Markdown
 * <a href="https://github.com/BalazsJako/ImGuiColorTextEdit">ImGuiColorTextEdit</a> : Colorizing text editor for ImGui
-* <a href="https://github.com/mekhontsev/imgui_md">imgui_md</a> : Markdown renderer for Dear ImGui using MD4C parser
+* <a href="https://github.com/pthom/imgui_rich_md">imgui_rich_md</a> : Markdown renderer for Dear ImGui using the MD4C parser, with LaTeX math and syntax-highlighted code blocks (based on <a href="https://github.com/mekhontsev/imgui_md">imgui_md</a>)
 
 ### Tools
 * <a href="https://github.com/CedricGuillemet/ImGuizmo">ImGuizmo</a> : Immediate mode 3D gizmo for scene editing

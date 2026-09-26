@@ -1,9 +1,9 @@
 #include "api_demos.h"
-#include "imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "immapp/immapp.h"
 #include "immapp/code_utils.h"
 #include "immapp/snippets.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "demo_utils/subprocess.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 
@@ -226,7 +226,7 @@ bool SpawnDemo(const std::string& demoName)
 void ShowMarkdownDocFile(const std::string& doc_file_name)
 {
     auto code = ReadMarkdownDoc(doc_file_name);
-    ImGuiMd::RenderUnindented(code);
+    RichMd::Render(code);
 }
 
 

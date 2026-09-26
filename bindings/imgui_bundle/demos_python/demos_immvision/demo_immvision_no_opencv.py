@@ -4,7 +4,6 @@ import math
 
 ImVec2 = imgui.ImVec2
 ImVec4 = imgui.ImVec4
-immvision.use_rgb_color_order()
 
 def main() -> None:
     from imgui_bundle import immapp

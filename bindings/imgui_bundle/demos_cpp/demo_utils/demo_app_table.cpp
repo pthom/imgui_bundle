@@ -1,6 +1,6 @@
 #include "demo_app_table.h"
 #include "demo_utils/api_demos.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/internal/whereami/whereami_cpp.h"
 #include "hello_imgui/hello_imgui.h"
 
@@ -119,7 +119,7 @@ void DemoAppTable::Gui()
                 ImGui::Text("%s", demoApp.DemoFile.c_str());
                 ImGui::TableNextColumn();
 
-                ImGuiMd::RenderUnindented(demoApp.Explanation.c_str());
+                RichMd::Render(demoApp.Explanation.c_str());
 
                 if (!demoApp.DemoFile.empty())
                 {
@@ -157,7 +157,7 @@ void DemoAppTable::Gui()
 
     DisplayDemoAppTableWithScrollButtons("DemoAppTable", HelloImGui::EmToVec2(0.f, 12.9f), fnTableGui);
 
-    ImGuiMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
+    RichMd::Render(std::string("**Code for ") + _currentApp.DemoFile + "**");
     if (!_currentApp.DemoFile.empty())
     {
         bool exeFound = false;

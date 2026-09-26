@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import List
 import os
 
-from imgui_bundle import imgui, imgui_md, immapp, hello_imgui, ImVec2
+from imgui_bundle import imgui, rich_md, immapp, hello_imgui, ImVec2
 from imgui_bundle.demos_python import demo_utils
 from typing import Callable
 
@@ -134,7 +134,7 @@ class DemoAppTable:
                     imgui.text(demo_app.demo_file + ".py")
                     imgui.table_next_column()
 
-                    imgui_md.render_unindented(demo_app.explanation)
+                    rich_md.render(demo_app.explanation)
 
                     if len(demo_app.demo_file) > 0:
                         imgui.table_next_column()
@@ -152,7 +152,7 @@ class DemoAppTable:
 
         self.display_demo_app_table_with_scroll_buttons(
             "DemoAppTable", hello_imgui.em_to_vec2(0.0, 12.9), fn_table_gui)
-        imgui_md.render("**Code for " + self.current_app.demo_file + "**")
+        rich_md.render("**Code for " + self.current_app.demo_file + "**")
         if self.current_app.demo_file and demo_utils.can_run_subprocess():
             imgui.same_line()
             imgui.text("   ")

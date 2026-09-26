@@ -18,7 +18,7 @@ from imgui_bundle.imgui_node_editor import (
 )
 
 ImPlotFlags = int  # see implot.Flags_
-ImGuiMd = imgui_md
+RichMd = imgui_md
 HelloImGui = hello_imgui
 
 VoidFunction = Callable[[], Any]
@@ -155,7 +155,7 @@ class AddOnsParams:
     #
 
     # You can tweak MarkdownOptions (but this is optional)
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None
     def __init__(
         self,
         with_implot: bool = False,
@@ -167,7 +167,7 @@ class AddOnsParams:
         with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         update_node_editor_colors_from_imgui_colors: bool = True,
-        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+        with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
     ) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -216,7 +216,7 @@ def run(
     with_im_anim: bool = False,
     with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
 ) -> None:
     """///////////////////////////////////////////////////////////////////////////////////////
 
@@ -262,7 +262,7 @@ def run_with_markdown(
     with_im_anim: bool = False,
     with_latex: bool = False,
     with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
 ) -> None:
     """Run an application with markdown
 
@@ -338,9 +338,6 @@ def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
 #
 
 # =========================== HelloImGui::ManualRender ==================================
-# @@md#HelloImGui::ManualRender
-
-# @@md
 
 # <submodule manual_render>
 class manual_render:  # Proxy class that introduces typings for the *submodule* manual_render
@@ -396,7 +393,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         with_tex_inspect: bool = False,
         with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
-        with_markdown_options: Optional[ImGuiMd.MarkdownOptions] = None,
+        with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
     ) -> None:
         """Initializes the renderer with a simple GUI function and additional parameters.
          This will initialize the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
@@ -457,9 +454,13 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
     pass  # (This corresponds to a C++ namespace. All methods are static!)
-    #
-    # TextEditorBundle: addition to ImGuiColorTextEdit, specific to ImGuiBundle
-    #
+    """Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. The markdown
+    code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
+    """
+    # =================================================================================================================
+    #                                      Snippet data
+    # =================================================================================================================
+    #    A snippet: its code, its language, its look.
 
     class SnippetLanguage(enum.IntEnum):
         cpp = enum.auto()  # (= 0)
@@ -478,7 +479,9 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
 
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
-        """DefaultSnippetLanguage will be Cpp or Python if using python bindings."""
+        """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON
+        (Python bindings)
+        """
         pass
 
     class SnippetData:
@@ -493,11 +496,10 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         displayed_filename: str = ""  # Displayed on top of the editor
 
         height_in_lines: int = 0  # Number of visible lines in the editor
-        max_height_in_lines: int = (
-            40  # If the number of lines in the code exceeds this, the editor will scroll. Set to 0 to disable.
-        )
+        # If the number of lines in the code exceeds MaxHeightInLines, the editor will scroll. Set to 0 to disable.
+        max_height_in_lines: int = 40
 
-        read_only: bool = False  # Snippets are read-only by default
+        read_only: bool = True  # Snippets are read-only by default
 
         border: bool = False  # Draw a border around the editor
 
@@ -519,13 +521,18 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
             displayed_filename: str = "",
             height_in_lines: int = 0,
             max_height_in_lines: int = 40,
-            read_only: bool = False,
+            read_only: bool = True,
             border: bool = False,
             de_indent_code: bool = True,
             add_final_empty_line: bool = False,
         ) -> None:
             """Auto-generated default constructor with named params"""
             pass
+
+    # =================================================================================================================
+    #                                      Showing snippets
+    # =================================================================================================================
+    #    One snippet, editable or not, or several side by side.
 
     @staticmethod
     def show_editable_code_snippet(

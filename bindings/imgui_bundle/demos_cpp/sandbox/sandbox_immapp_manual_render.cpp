@@ -1,12 +1,12 @@
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 
 
 void Gui()
 {
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         # Sandbox
 
         Lorem ipsum dolor sit amet, consectetur adipiscing elit

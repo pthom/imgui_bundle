@@ -3,7 +3,7 @@
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui-node-editor/imgui_node_editor.h"
 #endif
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 #include <optional>
 
@@ -67,7 +67,7 @@ namespace ImmApp
 #endif
 
         // You can tweak MarkdownOptions (but this is optional)
-        std::optional<ImGuiMd::MarkdownOptions> withMarkdownOptions = std::nullopt;
+        std::optional<RichMd::MarkdownOptions> withMarkdownOptions = std::nullopt;
     };
 
 
@@ -124,7 +124,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+        const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
 
     // Run an application with markdown
@@ -149,7 +149,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
-        const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+        const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
     );
 
 
@@ -200,7 +200,7 @@ namespace ImmApp
 
 
 // =========================== HelloImGui::ManualRender ==================================
-// @@md#HelloImGui::ManualRender
+// ::code ImmApp::ManualRender
 
     namespace ManualRender
     {
@@ -241,7 +241,7 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
             const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
 #endif
-            const std::optional<ImGuiMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+            const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
         );
 
         // Renders the current frame. Should be called regularly to maintain the application's responsiveness.
@@ -253,6 +253,6 @@ namespace ImmApp
         void TearDown();
     } // namespace ManualRender
 
-// @@md
+// ::endcode
 
 } // namespace ImmApp

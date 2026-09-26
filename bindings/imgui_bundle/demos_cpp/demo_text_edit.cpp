@@ -84,7 +84,7 @@ namespace
                 ed.SetCaretsVisible(false);
             }
 
-            auto codeFont = ImGuiMd::GetCodeFont();
+            auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
             std::string id = std::string("##src_") + editorKey;
             sourceEditors[editorKey].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15));
@@ -167,7 +167,7 @@ void DemoBasicEditor()
     ImGui::TextDisabled("(folding uses brackets for C/C++, indentation for Python)");
 
     // Render editor: we shall use a monospace font
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##basic");
     ImGui::PopFont();
@@ -205,7 +205,7 @@ void DemoChangeCallback()
         ImGui::Text("  (last change: %s)", lastChangeTime.c_str());
     }
 
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##changes");
     ImGui::PopFont();
@@ -259,7 +259,7 @@ void DemoFilters()
     if (ImGui::SmallButton("Strip trailing spaces"))
         editor.StripTrailingWhitespaces();
 
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##filters");
     ImGui::PopFont();
@@ -467,7 +467,7 @@ void DemoDecoratorsAndContextMenus()
 
     ImGui::NewLine();
     ImGui::NewLine();
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##decorators_ctx", ImVec2(-1, ImGui::GetTextLineHeight() * 30));
     ImGui::PopFont();
@@ -531,7 +531,7 @@ void DemoTextDiff()
     if (ImGui::Checkbox("Word Wrap", &wrap))
         diff.SetWordWrapEnabled(wrap);
 
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     diff.Render("##diff");
     ImGui::PopFont();
@@ -660,7 +660,7 @@ void DemoEditorWithMenus()
 		ImGui::EndMenuBar();
 	}
 
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
     editor.Render("##editor_menus");
     ImGui::PopFont();
@@ -723,7 +723,7 @@ void DemoMultiCursor()
 
     // Editor (constrained height so the cursor info panel below stays visible)
     {
-        auto codeFont = ImGuiMd::GetCodeFont();
+        auto codeFont = RichMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
         float editorHeight = ImGui::GetTextLineHeight() * 20.0f;
         editor.Render("##multi_cursor", ImVec2(0, editorHeight));
@@ -761,7 +761,7 @@ void DemoMultiCursor()
 // ============================================================================
 void demo_text_edit()
 {
-    ImGuiMd::Render(R"(
+    RichMd::Render(R"(
 # ImGuiColorTextEdit
 [ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit) is a syntax highlighting text editor for Dear ImGui (originally by BalazsJako, rewritten by Johan A. Goossens)
     )");

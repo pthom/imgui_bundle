@@ -16,7 +16,7 @@ You can copy this HTML, save it as a `.html` file, and open it in any browser. E
 """
 from imgui_bundle import (
     imgui, immapp,
-    imgui_color_text_edit as ed, imgui_md,
+    imgui_color_text_edit as ed, rich_md,
 )
 
 
@@ -45,7 +45,7 @@ def gui(state: AppState) -> None:
         "(save as .html and open in a browser)")
 
     # HTML source viewer with code font
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     avail = imgui.get_content_region_avail()
     state.editor.render("##html_viewer", avail)

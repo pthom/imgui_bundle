@@ -2,7 +2,7 @@
 
 import numpy as np
 import time
-from imgui_bundle import imgui, implot, immapp, hello_imgui, imgui_md, imgui_knobs
+from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, imgui_knobs
 from imgui_bundle import ImVec2, ImVec4
 
 
@@ -279,7 +279,7 @@ def gui(state: AppState):
     imgui.begin_child("lesson", ImVec2(0, 0), imgui.ChildFlags_.none)
 
     # ---- INTRODUCTION ----
-    imgui_md.render(INTRO)
+    rich_md.render(INTRO)
     imgui.spacing()
 
     # ---- INTERACTIVE: Free oscillation ----
@@ -348,7 +348,7 @@ def gui(state: AppState):
 
     # ---- DAMPING SECTION ----
     if imgui.collapsing_header("Damping", imgui.TreeNodeFlags_.default_open):
-        imgui_md.render(DAMPING_INTRO)
+        rich_md.render(DAMPING_INTRO)
         imgui.spacing()
 
         if imgui.button("Disable damping" if state.damping_enabled else "Enable damping"):
@@ -375,7 +375,7 @@ def gui(state: AppState):
 
     # ---- RESONANCE SECTION ----
     if imgui.collapsing_header("Driven Oscillation & Resonance"):
-        imgui_md.render(RESONANCE_INTRO)
+        rich_md.render(RESONANCE_INTRO)
         imgui.spacing()
 
         if imgui.button("Disable driving force" if state.driving_enabled else "Enable driving force"):

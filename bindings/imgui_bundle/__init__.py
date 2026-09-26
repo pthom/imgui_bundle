@@ -205,18 +205,26 @@ if has_submodule("imspinner"):
     from imgui_bundle._imgui_bundle import imspinner as imspinner
     _publish("imspinner", imspinner)
     __all__.extend(["imspinner"])
-if has_submodule("imgui_md"):
-    from imgui_bundle._imgui_bundle import imgui_md as imgui_md
-    _publish("imgui_md", imgui_md)
-    __all__.extend(["imgui_md"])
+if has_submodule("rich_md"):
+    from imgui_bundle._imgui_bundle import rich_md as rich_md
+    _publish("rich_md", rich_md)
+    imgui_md = rich_md  # the module's former name
+    _publish("imgui_md", rich_md)
+    __all__.extend(["rich_md", "imgui_md"])
 
-    # Register a hook so that initialize_markdown() automatically sets up URL image download support
-    def _on_initialize_markdown(options):
-        if options.callbacks.on_download_data is None:
-            from imgui_bundle._imgui_md_image_loader import _get_download_function
-            options.callbacks.on_download_data = _get_download_function()
+    # URL images are downloaded by Python: urllib in a thread on desktop, JS fetch in Pyodide
+    from imgui_bundle._rich_md_image_loader import _get_download_function
 
-    imgui_md._set_on_initialize_markdown_callback(_on_initialize_markdown)
+    rich_md.set_download_function(_get_download_function())
+
+    def _render_this_file(target: str = "") -> None:
+        """Renders ![[this_file#target]] (see rich_md.resolve_transclusions): a program can be its own
+        narrative. target: a section ("Intro"), its code ("Escape#code"), a code region, or empty."""
+        import sys
+
+        rich_md.render_file(sys._getframe(1).f_code.co_filename, target)
+
+    rich_md.render_this_file = _render_this_file
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
     _publish("immvision", immvision)

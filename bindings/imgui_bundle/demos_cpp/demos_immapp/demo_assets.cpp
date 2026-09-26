@@ -1,5 +1,5 @@
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
@@ -7,7 +7,7 @@
 void show_gui()
 {
     // Display Markdown text
-    ImGuiMd::Render("Hello, _World_");
+    RichMd::Render("Hello, _World_");
     // Display a static image, taken from assets/images/world.png
     // Notes:
     //     * we use EmToVec2 to make sure the Gui render identically on high and low dpi monitors

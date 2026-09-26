@@ -1,7 +1,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 #include "immapp/immapp.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 
 #ifdef IMGUI_RICHMD_WITH_LATEX
 #include "imgui_microtex/imgui_microtex.h"
@@ -79,9 +79,9 @@ static void Gui()
     // One-shot debug probe: render a simple formula directly and report
     // the texture id + size, bypassing the markdown path entirely.
     static bool sProbed = false;
-    if (!sProbed && ImGuiMicroTeX::IsInitialized())
+    if (!sProbed && RichMd::Latex::IsInitialized())
     {
-        auto tex = ImGuiMicroTeX::RenderToTexture(
+        auto tex = RichMd::Latex::RenderToTexture(
             "E = mc^2", ImGui::GetFontSize(), IM_COL32(255, 255, 255, 255));
         std::printf(
             "[sandbox_md_math] direct RenderToTexture probe: "
@@ -94,7 +94,7 @@ static void Gui()
 
     ImGui::Text("Phase 3 sandbox (C++) - close window to exit");
     ImGui::Separator();
-    ImGuiMd::RenderUnindented(kMarkdown);
+    RichMd::Render(kMarkdown);
 }
 
 int main()

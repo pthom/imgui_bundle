@@ -162,7 +162,11 @@ async function runDemo(file) {
         document.getElementById('ui').style.display = 'none';
 
         setStatus('Running...');
-        await pyodide.runPythonAsync(code);
+        // Run the code from a real file, so that inspect.getsource and rich_md.render_this_file can read it
+        const demoPath = '/home/pyodide/demo/' + file.split('/').pop();
+        pyodide.FS.mkdirTree('/home/pyodide/demo');
+        pyodide.FS.writeFile(demoPath, code);
+        await pyodide.runPythonAsync(code, { filename: demoPath });
 
     } catch(e) {
         console.error(e);

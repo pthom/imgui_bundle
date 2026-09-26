@@ -1,7 +1,7 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include "demo_utils/api_demos.h"
 
 #ifndef IMGUI_BUNDLE_WITH_IMMVISION
@@ -27,7 +27,7 @@ void demo_immvision_launcher()
         return;
     }
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         [ImmVision](https://github.com/pthom/immvision) is an immediate image debugger and inspector. It can display and analyse RGB & float images with 1 to 4 channels, with zoom, pan, pixel inspection, and colormaps.
     )");
 

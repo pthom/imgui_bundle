@@ -4,7 +4,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
-#include "imgui_md_wrapper/imgui_md_wrapper.h"
+#include "imgui_rich_md/rich_md.h"
 #include <string>
 #include <map>
 #include <vector>
@@ -736,7 +736,7 @@ void DemoCodeViewer_Show()
     }
 
     // Use code font if available
-    auto codeFont = ImGuiMd::GetCodeFont();
+    auto codeFont = RichMd::GetCodeFont();
     if (codeFont.font)
         ImGui::PushFont(codeFont.font, codeFont.size);
 

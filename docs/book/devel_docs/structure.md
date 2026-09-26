@@ -93,8 +93,8 @@ bindings/imgui_bundle/
 ├── imgui_command_palette.pyi               VSCode-style command palette
 ├── imgui_explorer.pyi                      Interactive widget explorer
 ├── imgui_knobs.pyi                         Knob/dial widgets
-├── imgui_md.pyi                            Markdown rendering
-├── imgui_microtex.pyi                      Native LaTeX math rendering (used by imgui_md)
+├── imgui_md.pyi                            Former name of rich_md (alias)
+├── imgui_microtex.pyi                      Native LaTeX math rendering (used by rich_md)
 ├── imgui_node_editor.pyi                   Node graph editor
 ├── imgui_tex_inspect.pyi                   Texture inspector
 ├── imgui_toggle.pyi                        Toggle switches
@@ -103,6 +103,7 @@ bindings/imgui_bundle/
 ├── imspinner.pyi                           Spinner/loading widgets
 ├── nanovg.pyi                              Vector graphics
 ├── portable_file_dialogs.pyi               OS-native file dialogs
+├── rich_md.pyi                             Markdown rendering
 │
 │   ── Subpackages with their own stubs ─────────────────────────────
 │
@@ -231,7 +232,11 @@ external/
 │   ── Text editing & markdown (with bindings) ──────────────────────
 │
 ├── ImGuiColorTextEdit/                     Code editor with syntax highlighting
-├── imgui_md/                               Markdown rendering (MD4C-based)
+├── imgui_rich_md/                          Markdown rendering (MD4C-based)
+│     ├── imgui_rich_md/                    Submodule: the library (pthom/imgui_rich_md, md4c nested)
+│     ├── bindings/                         Python bindings (generate_rich_md.py)
+│     ├── hosts/                            HelloImGui host (textures, assets, fonts)
+│     └── compat/                           Include shims for the former imgui_md_wrapper paths
 ├── imgui_microtex/                         Native LaTeX math rendering (MicroTeX + FreeType backend)
 │     ├── MicroTeX/                         Submodule (forked, branch imgui_bundle)
 │     └── imgui_microtex/                   Our wrapper: public API + FreeType graphics backend

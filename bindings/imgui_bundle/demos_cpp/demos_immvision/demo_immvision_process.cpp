@@ -121,7 +121,6 @@ struct AppStateProcess {
     ImmVision::ImageParams immvisionParamsSobel;
 
     AppStateProcess(const std::string& image_file) {
-        ImmVision::UseRgbColorOrder();
         image = ImmVision::ImRead(image_file);
         sobelParams = SobelParams();
         imageSobel = ComputeSobel(image.to_cv_mat(), sobelParams);
@@ -144,7 +143,7 @@ void demo_immvision_process()
 {
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
-    ImGuiMd::RenderUnindented(R"(
+    RichMd::Render(R"(
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel

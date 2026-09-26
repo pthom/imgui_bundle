@@ -6,7 +6,7 @@ import os
 if os.getenv("XDG_SESSION_TYPE") == "wayland" and not os.getenv("PYOPENGL_PLATFORM"):
     os.environ["PYOPENGL_PLATFORM"] = "x11"
 
-from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, imgui_md
+from imgui_bundle import hello_imgui, imgui, immapp, ImVec2, ImVec4, rich_md
 
 import OpenGL.GL as GL  # pip install PyOpenGL
 
@@ -542,7 +542,7 @@ def gui(app_state: AppState):
     imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 14.0), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
-    imgui_md.render_unindented("""
+    rich_md.render("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
     """)
     imgui.separator()

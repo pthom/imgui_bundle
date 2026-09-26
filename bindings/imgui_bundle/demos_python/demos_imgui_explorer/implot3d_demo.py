@@ -1918,9 +1918,9 @@ def show_demo_window_maybe_docked(create_window: bool):
 
 
 def main():
-    from imgui_bundle import immapp, imgui_md
+    from imgui_bundle import immapp, rich_md
     def gui():
-        imgui_md.render_unindented("""
+        rich_md.render("""
         Below is `implot3d.show_demo_window()`
 
         Open [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) (online) for a more complete version,

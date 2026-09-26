@@ -39,7 +39,7 @@ WebGL spec guarantees that repeated `getContext("webgl2")` calls return
 the same context, so we share hello_imgui's GL state and framebuffer.
 No copies, no readback.
 """
-from imgui_bundle import hello_imgui, imgui, immapp, imgui_md
+from imgui_bundle import hello_imgui, imgui, immapp, rich_md
 from js import document, Float32Array  # type: ignore
 
 
@@ -173,7 +173,7 @@ def _docs_window():
     imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
-        imgui_md.render_unindented(__doc__ or "")
+        rich_md.render(__doc__ or "")
     imgui.end()
 
 

@@ -23,7 +23,7 @@ italic slots too (CJK will appear upright there).*
 *Alternative (zero code): overwrite `assets/fonts/DroidSans.ttf` with your own font, keeping that
 exact filename. The default font loader will then pick it up automatically.*
 """
-from imgui_bundle import hello_imgui, imgui, imgui_md, immapp, register_demos_assets_folder, ImVec4
+from imgui_bundle import hello_imgui, imgui, rich_md, immapp, register_demos_assets_folder, ImVec4
 
 # Make the demos_assets/ folder searchable before we look for the font below.
 register_demos_assets_folder()
@@ -44,7 +44,7 @@ def load_fonts() -> None:  # called once by runner_params.callbacks.load_additio
 
 
 def gui() -> None:
-    imgui_md.render_unindented(__doc__ or "")
+    rich_md.render(__doc__ or "")
     imgui.separator()
     if FONT_FILE_PRESENT:
         imgui.text(f"Loaded '{CHINESE_FONT}'. Sample text:")

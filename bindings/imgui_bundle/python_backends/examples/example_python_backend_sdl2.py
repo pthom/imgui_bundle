@@ -8,7 +8,7 @@
 #    pip install pysdl2 pysdl2-dll
 
 # ruff: noqa: F403, F405
-from imgui_bundle import imgui
+from imgui_bundle import imgui, rich_md
 from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
 import OpenGL.GL as gl  # pip install PyOpenGL
 from sdl2 import *  # type: ignore
@@ -28,6 +28,9 @@ def main():
     window, gl_context = impl_pysdl2_init()
     imgui.create_context()
     impl = SDL2Renderer(window)
+    md_options = rich_md.MarkdownOptions()
+    md_options.with_latex = True  # LaTeX formulas ($...$ and $$...$$)
+    rich_md.create_context(md_options)  # the markdown fonts load at the first render
 
     show_custom_window = True
 
@@ -62,6 +65,17 @@ def main():
             imgui.set_next_window_size((400, 400))
             is_expand, show_custom_window = imgui.begin("Custom window", True)
             if is_expand:
+                rich_md.render(r"""
+                # Hello, World
+                Here is some *markdown* text, and a formula: $e^{i\pi} + 1 = 0$
+
+                ![](images/world.png)
+
+                ```python
+                print("code blocks too")
+                ```
+                """)
+
                 imgui.text("Example Text")
                 if imgui.button("Hello"):
                     print("World")
@@ -86,6 +100,7 @@ def main():
         impl.render(imgui.get_draw_data())
         SDL_GL_SwapWindow(window)
 
+    rich_md.destroy_context()
     impl.shutdown()
     SDL_GL_DeleteContext(gl_context)
     SDL_DestroyWindow(window)

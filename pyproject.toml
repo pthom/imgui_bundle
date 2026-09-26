@@ -319,4 +319,4 @@ repair-wheel-command = ""
 #   Pass -DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF, e.g.:
 #        CMAKE_ARGS="-DIMGUI_BUNDLE_WITH_HELLO_IMGUI=OFF" pip install -v .
 #   If you disable hello_imgui, several dependent modules will be auto-disabled:
-#     immapp, imgui_md, im_file_dialog, imgui_tex_inspect, immvision, imgui_test_engine, and the glfw backend.
+#     immapp, rich_md, im_file_dialog, imgui_tex_inspect, immvision, imgui_test_engine, and the glfw backend.

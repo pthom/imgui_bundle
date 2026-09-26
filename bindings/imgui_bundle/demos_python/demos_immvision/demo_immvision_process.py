@@ -5,10 +5,8 @@ from enum import Enum
 import cv2
 import math
 
-from imgui_bundle import imgui, immvision, immapp, imgui_md
+from imgui_bundle import imgui, immvision, immapp, rich_md
 from imgui_bundle.demos_python import demo_utils
-
-immvision.use_rgb_color_order()
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -130,7 +128,7 @@ def demo_gui():
     if static.app_state is None:
         static.app_state = AppState(demo_utils.demos_assets_folder() + "/images/house.jpg")
 
-    imgui_md.render_unindented(
+    rich_md.render(
         """
         This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
 

@@ -1,7 +1,5 @@
-from imgui_bundle import immvision, immapp, imgui_md, ImVec2, imgui, hello_imgui
+from imgui_bundle import immvision, immapp, rich_md, ImVec2, imgui, hello_imgui
 from imgui_bundle.demos_python import demo_utils
-
-immvision.use_rgb_color_order()
 
 @immapp.static(inited=False)
 def demo_gui() -> None:
@@ -21,8 +19,8 @@ def demo_gui() -> None:
         statics.inited = True
 
     imgui.begin_group()
-    imgui_md.render_unindented("# immvision.image_display()")
-    imgui_md.render_unindented("Displays an image (possibly resizable)")
+    rich_md.render("# immvision.image_display()")
+    rich_md.render("Displays an image (possibly resizable)")
     immvision.image_display_resizable(
         "Tennis", statics.tennis, size=statics.image_display_size
     )
@@ -31,10 +29,10 @@ def demo_gui() -> None:
     imgui.same_line()
 
     imgui.begin_group()
-    imgui_md.render_unindented("# immvision.image()")
-    imgui_md.render_unindented("Displays an image, while providing lots of visualization options.")
+    rich_md.render("# immvision.image()")
+    rich_md.render("Displays an image, while providing lots of visualization options.")
     immvision.image("Bear", statics.bear, statics.params)
-    imgui_md.render_unindented("""
+    rich_md.render("""
         * Zoom in/out using the mouse wheel.
         * Pixel values are displayed at high zoom levels.
         * Pan the image by dragging it with the left mouse button

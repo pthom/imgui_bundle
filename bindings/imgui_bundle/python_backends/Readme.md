@@ -29,25 +29,19 @@ python_backends/             # Backends implemented in pure python
 * This is largely a work in progress, and thus incomplete. At the moment, only glfw, sdl2, sdl3 and pyglet are implemented.
 * Key binding needs to be improved (support for modifiers like Ctrl-Shift, etc.)
 
-## Using `imgui_md` (Markdown) without HelloImGui
+## Markdown with a pure Python backend
 
-`imgui_md` can be hosted inside a pure-python backend with no `HelloImGui::Run()`
-loop. Standard markdown features (text, headings, code blocks, tables, links)
-work everywhere; image and LaTeX-math rendering additionally need GPU texture
-uploads, which are supported only on **OpenGL3** in the standalone path.
+`rich_md` works with these backends, with all its features: text, tables, code blocks,
+links, local and URL images, LaTeX math.
 
-`imgui_md.initialize_markdown()` automatically initializes HelloImGui's GLAD
-function loader if you are not inside `HelloImGui::Run()`, so user code does
-not need to call `hello_imgui.init_gl_loader()` itself.
-`imgui_md.de_initialize_markdown()` similarly clears the asset image cache.
-
-A complete working example lives at
-[`../demos_python/sandbox/sandbox_md_without_hello_imgui.py`](../demos_python/sandbox/sandbox_md_without_hello_imgui.py)
-(GLFW + PyOpenGL). The C++ counterpart is at
-`bindings/imgui_bundle/demos_cpp/sandbox/sandbox_md_without_hello_imgui.cpp`.
+`rich_md.create_context()` is the only setup needed (the fonts load at the first
+render), and `rich_md.destroy_context()` frees what markdown created: its textures,
+the pending downloads and the LaTeX engine.
+Each example of [examples/](examples/) shows an image, a formula and a code block, including
+the one that uses wgpu-py's backend (WebGPU).
 
 ### Limitations
-* Standalone use is **OpenGL3 only**. Metal, Vulkan, DirectX11/12 require
-  device handles that HelloImGui's runner would normally create — they are
-  not exposed for standalone injection.
+* Images and formulas are Dear ImGui textures that the backend creates itself: they need a
+  backend that supports Dear ImGui's texture protocol (`ImGuiBackendFlags_RendererHasTextures`,
+  Dear ImGui 1.92+). All the backends of this folder do.
 * Pyodide is not supported in the pure-backend mode (no PyOpenGL, no native glfw).

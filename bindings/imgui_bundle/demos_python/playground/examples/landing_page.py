@@ -51,7 +51,7 @@ almost *only python*. **No Client/Server, no JavaScript, no fuss.**
 import math
 
 from imgui_bundle import (
-    imgui, immapp, hello_imgui, imgui_md, imgui_color_text_edit as ed, ImVec2, ImVec4, __version__,
+    imgui, immapp, hello_imgui, rich_md, imgui_color_text_edit as ed, ImVec2, ImVec4, __version__,
     icons_fontawesome_4
 )
 
@@ -265,7 +265,6 @@ def slide_immvision(size):
     # Init images and params
     s = slide_immvision
     if not hasattr(s, "init"):
-        immvision.use_rgb_color_order()
         # Generate a Mandelbrot set image
         w, h = 400, 300
         img = np.zeros((h, w, 3), dtype=np.uint8)
@@ -475,7 +474,7 @@ def show_code_editor(size):
         _editor_current_slide = 0
         _fade_alpha = 1.0
 
-    code_font = imgui_md.get_code_font()
+    code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     imgui.push_style_var(imgui.StyleVar_.alpha, _fade_alpha)
     _editor.render("##code_viewer", size)
@@ -490,7 +489,7 @@ def show_code_editor(size):
 
 
 def show_info():
-    imgui_md.render(__doc__)
+    rich_md.render(__doc__)
     imgui.separator()
     imgui.text_disabled(f"Dear ImGui Bundle, version {__version__}")
 

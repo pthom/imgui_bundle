@@ -1,4 +1,4 @@
-"""Demonstrates how to use imgui_md (Markdown) without using Hello ImGui.
+"""Demonstrates how to use rich_md (Markdown) without using Hello ImGui.
 """
 
 import os
@@ -11,7 +11,7 @@ from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard glfw, not the one provided by imgui_bundle)
 import glfw
 from imgui_bundle import imgui
-from imgui_bundle import imgui_md
+from imgui_bundle import rich_md
 import sys
 
 
@@ -26,9 +26,9 @@ def example_markdown_string() -> str:
     markdown = r"""
 # Markdown example (H1)
 
-> **Running without HelloImGui** — pure GLFW + PyOpenGL backend.
-> imgui_md.initialize_markdown() takes care of the GL loader and other
-> setup automatically; no `hello_imgui.*` ceremony required.
+> **Running without HelloImGui**: pure GLFW + PyOpenGL backend.
+> rich_md.create_context() is the only setup needed;
+> no `hello_imgui.*` ceremony required.
 
 Hello World!
 
@@ -37,7 +37,7 @@ This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgu
 
 ## Supported features (H2)
 
-imgui_md currently supports the following markdown functionality.
+rich_md currently supports the following markdown functionality.
 
 ### Text formatting (H3)
 
@@ -159,7 +159,7 @@ $$
 
 > **Note**
 > Rendering is powered by [MicroTeX](https://github.com/NanoMichael/MicroTeX)
-> Enable it by passing `with_latex=True` to `immapp.run()`.
+> Enable it with `MarkdownOptions.with_latex = True` (with ImmApp: `immapp.run(..., with_latex=True)`).
     """
     return markdown
 
@@ -169,22 +169,20 @@ def init_fonts_and_markdown():
     # imgui.get_io().fonts.add_font_default()
 
     # Enable native LaTeX math via MicroTeX (otherwise $...$ stays literal).
-    md_options = imgui_md.MarkdownOptions()
+    md_options = rich_md.MarkdownOptions()
     md_options.with_latex = True
-    imgui_md.initialize_markdown(md_options)
-    font_loader = imgui_md.get_font_loader_function()
-    font_loader()
+    rich_md.create_context(md_options)  # the fonts load at the first render
 
 
 def gui():
-    imgui_md.render_unindented(example_markdown_string())
+    rich_md.render(example_markdown_string())
 
 
 def main():
     imgui.create_context()
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
-    init_fonts_and_markdown()  # also calls HelloImGui::InitGlLoader() internally
+    init_fonts_and_markdown()
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
@@ -200,14 +198,14 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    imgui_md.de_initialize_markdown()  # also frees the image cache internally
+    rich_md.destroy_context()  # frees the markdown textures
     impl.shutdown()
     glfw.terminate()
 
 
 def impl_glfw_init():
     width, height = 1280, 720
-    window_name = "imgui_md demo"
+    window_name = "rich_md demo"
 
     if not glfw.init():
         print("Could not initialize OpenGL context")

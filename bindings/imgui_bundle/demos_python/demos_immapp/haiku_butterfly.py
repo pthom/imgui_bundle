@@ -8,7 +8,7 @@ completely different trajectories.
 """
 
 import numpy as np
-from imgui_bundle import implot3d, immapp, imgui, imgui_md, hello_imgui
+from imgui_bundle import implot3d, immapp, imgui, rich_md, hello_imgui
 from dataclasses import dataclass
 
 
@@ -87,7 +87,7 @@ class CompareLorenzTrajectories:
         self.traj2.step()
 
     def gui(self):
-        imgui_md.render_unindented(__doc__)
+        rich_md.render(__doc__)
         imgui.separator_text("Parameters")
         self.gui_params()
         imgui.separator_text("Plot")

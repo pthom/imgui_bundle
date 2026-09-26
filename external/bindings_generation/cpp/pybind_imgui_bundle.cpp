@@ -21,7 +21,7 @@ void py_init_module_imgui_node_editor(nb::module_& m);
 void py_init_module_imgui_knobs(nb::module_& m);
 void py_init_module_im_file_dialog(nb::module_& m);
 void py_init_module_imspinner(nb::module_& m);
-void py_init_module_imgui_md(nb::module_& m);
+void py_init_module_rich_md(nb::module_& m);
 void py_init_module_immvision(nb::module_& m);
 void py_init_module_imgui_backends(nb::module_& m);
 void py_init_module_imguizmo(nb::module_& m);
@@ -156,12 +156,12 @@ void py_init_module_imgui_bundle(nb::module_& m)
     auto module_imspinner =  m.def_submodule("imspinner");
     py_init_module_imspinner(module_imspinner);
 
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_MD
-    _register_submodule("imgui_md");
-    auto module_imgui_md =  m.def_submodule("imgui_md");
-    py_init_module_imgui_md(module_imgui_md);
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_RICH_MD
+    _register_submodule("rich_md");
+    auto module_rich_md =  m.def_submodule("rich_md");
+    py_init_module_rich_md(module_rich_md);
 #else
-    _register_submodule("imgui_md", false);
+    _register_submodule("rich_md", false);
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION

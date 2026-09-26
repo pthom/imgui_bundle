@@ -20,7 +20,7 @@ The python bindings are heavily documented so that they are easy to browse. They
 
 * `imgui`: the core Dear ImGui library
 * `implot` and `implot3d`: for advanced, real-time plotting
-* `imgui_md`: markdown rendering for imgui
+* `rich_md`: markdown rendering for imgui
 * `hello_imgui`: an approachable starter kit for new apps
 * `immapp`: helper to activate "addons" (like implot, markdown, etc.)
 * Plus about 20 other powerful tools
@@ -29,13 +29,13 @@ The example below is heavily commented and shows how to create a simple app that
 
 ```python
 import numpy as np
-from imgui_bundle import imgui, implot, imgui_md, hello_imgui, immapp
+from imgui_bundle import imgui, implot, rich_md, hello_imgui, immapp
 
 def gui():
     # Render Markdown text
-    imgui_md.render_unindented("""
+    rich_md.render("""
     # Render an animated plot with ImPlot
-     This example uses `ImPlot` for real-time plotting, and `imgui_md` for markdown.
+     This example uses `ImPlot` for real-time plotting, and `rich_md` for markdown.
     """)
 
     # Render an animated plot (updates every frame)

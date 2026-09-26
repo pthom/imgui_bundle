@@ -1,4 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+from typing import Any
 from imgui_bundle import _imgui_bundle as _native_bundle
 from imgui_bundle._imgui_bundle import immapp_cpp as immapp_cpp  # type: ignore
 from imgui_bundle._imgui_bundle.immapp_cpp import (  # type: ignore
@@ -89,7 +90,7 @@ __all__ = [
 ]
 
 
-def run_nb(*args, **kwargs):
+def run_nb(*args: Any, **kwargs: Any) -> Any:
     """run_nb: alias for immapp.run, kept for backward compatibility.
     Was intended to be used in Jupyter notebooks. Now immapp.run is patched to work in notebooks.
     """
@@ -106,7 +107,7 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
         doc: markdown string to render (will be unindented automatically)
         height_em: height of the panel in em units
     """
-    from imgui_bundle import imgui, imgui_md, hello_imgui
+    from imgui_bundle import imgui, rich_md, hello_imgui
     tweaked_theme = hello_imgui.ImGuiTweakedTheme()
     tweaked_theme.theme = hello_imgui.ImGuiTheme_.gray_variations
     tweaked_theme.tweaks.rounding = 0.0
@@ -116,7 +117,7 @@ def render_markdown_doc_panel(doc: str, height_em: float = 20.0) -> None:
     # (it saves/restores the resized height in the ini file after that)
     imgui.begin_child("##doc", size,
                       imgui.ChildFlags_.borders | imgui.ChildFlags_.resize_y)
-    imgui_md.render_unindented(doc)
+    rich_md.render(doc)
     imgui.end_child()
     imgui.new_line()
     hello_imgui.pop_tweaked_theme()
@@ -168,7 +169,8 @@ def download_url_bytes(url: str) -> bytes:
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "imgui_bundle/1.0"})
             with urllib.request.urlopen(req, timeout=10) as resp:
-                return resp.read()
+                data: bytes = resp.read()
+                return data
         except Exception as e:
             import logging
             logging.getLogger("immapp").warning("Failed to download %s: %s", url, e)
@@ -198,7 +200,8 @@ async def download_url_bytes_async(url: str) -> bytes:
         try:
             from pyodide.http import pyfetch  # type: ignore
             resp = await pyfetch(url)
-            return await resp.bytes()
+            data: bytes = await resp.bytes()
+            return data
         except Exception as e:
             import logging
             logging.getLogger("immapp").warning("Failed to download %s: %s", url, e)

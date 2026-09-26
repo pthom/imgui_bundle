@@ -25,8 +25,6 @@ ImmVision: interactive image display with zoom, pan, and pixel inspection.
 from imgui_bundle import immvision, immapp
 import numpy as np
 
-immvision.use_rgb_color_order()
-
 image = np.zeros((100, 100, 3), dtype=np.uint8)
 params = immvision.ImageParams()
 
@@ -67,7 +65,7 @@ int main() {
 ```
 
 :::{note}
-This example uses `cv::Mat` from OpenCV, but **OpenCV is optional**. ImmVision works standalone with its own `ImmVision::ImageBuffer` type. If you don't need OpenCV, replace `cv::Mat` with `ImageBuffer` and use `UseRgbColorOrder()` instead.
+This example uses `cv::Mat` from OpenCV, but **OpenCV is optional**. ImmVision works standalone with its own `ImmVision::ImageBuffer` type. If you don't need OpenCV, replace `cv::Mat` with `ImageBuffer` and remove `UseBgrColorOrder()` (RGB is the default).
 
 To pass `cv::Mat` to ImmVision, your application must define `IMMVISION_HAS_OPENCV` and link OpenCV by itself (ImmVision never links it, the conversions are header-only):
 ```cmake
@@ -88,7 +86,7 @@ target_link_libraries(my_app PRIVATE opencv_core)
 - Settings panel for colormap, channels, etc.
 
 :::{tip}
-Call `immvision.use_rgb_color_order()` once at startup for RGB images. Call `use_bgr_color_order()` for OpenCV BGR images.
+Images are in RGB order by default. For OpenCV (BGR) images, call `immvision.use_bgr_color_order()` once at startup.
 :::
 
 ### Full Demo

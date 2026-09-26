@@ -103,8 +103,6 @@ def set_load_asset_file_data_function(fn: Callable[[str], bytes]) -> None:
 #                       hello_imgui.h                                                                          //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# @@md#DpiAwareParams
-
 class DpiAwareParams:
     """
     Hello ImGui will try its best to automatically handle DPI scaling for you.
@@ -159,11 +157,6 @@ class DpiAwareParams:
 
 # ----------------------------------------------------------------------------
 
-# @@md
-
-# *
-# @@md#DocEmToVec2
-#
 # Special care must be taken in order to correctly handle screen with high DPI
 # (for example, almost all recent laptops screens).
 #
@@ -173,11 +166,7 @@ class DpiAwareParams:
 #
 # Instead, you should use scale your widgets and windows relatively to the font size,
 # as is done with the [em CSS Unit](https://www.w3schools.com/cssref/css_units.php).
-#
-# @@md
-# *
 
-# @@md#EmToVec2
 #  __HelloImGui::EmToVec2()__ returns an ImVec2 that you can use to size
 #  or place your widgets in a DPI independent way.
 #  Values are in multiples of the font size (i.e. as in the em CSS unit).
@@ -213,8 +202,6 @@ def pixel_size_to_em(pixel_size: float) -> float:
     """__HelloImGui::PixelSizeToEm()__ converts a size in pixels coord to a size in em units"""
     pass
 
-# @@md
-
 # DpiAwareParams* GetDpiAwareParams();    /* original C++ signature */
 def get_dpi_aware_params() -> DpiAwareParams:
     """Returns the current DpiAwareParams, which are used
@@ -237,9 +224,6 @@ def dpi_window_size_factor() -> float:
 # ----------------------------------------------------------------------------
 #           Handling screens with high DPI
 # ----------------------------------------------------------------------------
-#
-# @@md#HandlingScreenHighDPI
-#
 # _Note: This part is relevant only for more advanced usages. If you use `HelloImGui::LoadFont()`,
 # and always use `HelloImGui::EmToVec2()` to place widgets, you do not need to worry about DPI handling_
 #
@@ -321,16 +305,11 @@ def dpi_window_size_factor() -> float:
 #
 # See [`HelloImGui::DpiAwareParams`](https://pthom.github.io/hello_imgui/book/doc-params/#dpi-aware-params)
 # for more information on how to fine tune DPI handling when using Hello ImGui.
-# @@md
-#
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_assets.h included by hello_imgui.h                             //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
-# @@md#AssetsStructure
-#
 # Assets located beside the application CMakeLists are embedded automatically.
 #
 # For example, you can have the following project structure:
@@ -344,11 +323,6 @@ def dpi_window_size_factor() -> float:
 # ```
 #
 # Then you can load the asset "fonts/my_font.ttf", on all platforms.
-#
-# @@md
-#
-
-# @@md#LoadAssetFileData
 
 class AssetFileData:
     # void * data = nullptr;    /* original C++ signature */
@@ -382,16 +356,12 @@ def free_asset_file_data(asset_file_data: AssetFileData) -> None:
     """
     pass
 
-# @@md
-
 # AssetFileData DefaultLoadAssetFileData(const char *assetPath);    /* original C++ signature */
 def default_load_asset_file_data(asset_path: str) -> AssetFileData:
     """This function actually performs the asset load, as described in
     LoadAssetFileData
     """
     pass
-
-# @@md#assetFileFullPath
 
 # std::string AssetFileFullPath(const std::string& assetRelativeFilename,    /* original C++ signature */
 #                               bool assertIfNotFound = true);
@@ -416,10 +386,6 @@ def asset_file_full_path(
 def asset_exists(asset_relative_filename: str) -> bool:
     """Returns True if this asset file exists"""
     pass
-
-# @@md
-
-# @@md#AssetsSearchPaths
 
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */
 def set_assets_folder(folder: str) -> None:
@@ -460,8 +426,6 @@ def clear_assets_search_paths() -> None:
 def get_assets_search_paths() -> List[str]:
     """Return the current list of search paths."""
     pass
-
-# @@md
 
 # void overrideAssetsFolder(const char* folder);     /* original C++ signature */
 def override_assets_folder(folder: str) -> None:
@@ -505,8 +469,6 @@ def log_gui(size: Optional[ImVec2Like] = None) -> None:
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# @@md#HelloImGui::ImageFromAsset
 
 #
 # Images are loaded when first displayed, and then cached
@@ -666,15 +628,9 @@ def free_image_cache() -> None:
     """
     pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/texture_gpu.h included by hello_imgui.h                                    //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# @@md#TextureGpu
-
-# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_theme.h included by hello_imgui.h                                    //
@@ -880,8 +836,6 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 #                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# @@md#Fonts
-
 # When loading fonts, use
 #          HelloImGui::LoadFont(..)
 #      or
@@ -964,8 +918,6 @@ def load_font_ttf_with_font_awesome_icons(
     If configFont is None, then its default value will be: ImFontConfig()
     """
     pass
-
-# @@md
 
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_params.h included by hello_imgui.h                                  //
@@ -1100,10 +1052,7 @@ class WindowSizeMeasureMode(enum.IntEnum):
     relative_to96_ppi = enum.auto()  # (= 1)
 
 class WindowGeometry:
-    """@@md#WindowGeometry
-
-    WindowGeometry is a struct that defines the window geometry.
-    """
+    """WindowGeometry is a struct that defines the window geometry."""
 
     # --------------- Window Size ------------------
 
@@ -1210,8 +1159,6 @@ class WindowGeometry:
         """
         pass
 
-# @@md
-
 class EdgeInsets:
     """If there is a notch on the iPhone, you should not display inside these insets"""
 
@@ -1235,9 +1182,7 @@ class EdgeInsets:
         pass
 
 class AppWindowParams:
-    """@@md#AppWindowParams
-
-     AppWindowParams is a struct that defines the application window display params.
+    """AppWindowParams is a struct that defines the application window display params.
     See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg
      for details.
     """
@@ -1378,13 +1323,9 @@ class AppWindowParams:
         """
         pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/imgui_window_params.h included by hello_imgui/runner_params.h              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-# @@md#DefaultImGuiWindowType
 
 class DefaultImGuiWindowType(enum.IntEnum):
     """`DefaultImGuiWindowType` is an enum class that defines whether a full screen background
@@ -1402,10 +1343,6 @@ class DefaultImGuiWindowType(enum.IntEnum):
     # `NoDefaultWindow`: No default window is provided
     # (except for ImGui's default "debug" window)
     no_default_window = enum.auto()  # (= 2)
-
-# @@md
-
-# @@md#ImGuiWindowParams
 
 class ImGuiWindowParams:
     """`ImGuiWindowParams` is a struct that defines the ImGui inner windows params
@@ -1573,8 +1510,6 @@ class ImGuiWindowParams:
         """
         pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/runner_callbacks.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1588,8 +1523,6 @@ class ImGuiWindowParams:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#VoidFunction_AnyEventCallback
 
 # inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
 def empty_void_function() -> VoidFunction:
@@ -1608,11 +1541,7 @@ def empty_event_callback() -> AnyEventCallback:
 def empty_confirm_exit_callback() -> ConfirmExitCallback:
     pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#MobileCallbacks
 
 class MobileCallbacks:
     """MobileCallbacks is a struct that contains callbacks that are called by the application
@@ -1663,11 +1592,7 @@ class MobileCallbacks:
         """
         pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#EdgeToolbar
 
 class EdgeToolbarType(enum.IntEnum):
     """EdgeToolbarType: location of an Edge Toolbar"""
@@ -1743,11 +1668,7 @@ def all_edge_toolbar_types() -> List[EdgeToolbarType]:
 def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
     pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#DefaultIconFont
 
 class DefaultIconFont(enum.IntEnum):
     """HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
@@ -1763,15 +1684,11 @@ class DefaultIconFont(enum.IntEnum):
     # }
     font_awesome6 = enum.auto()  # (= 2)
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
 
 class RunnerCallbacks:
-    """@@md#RunnerCallbacks
-    RunnerCallbacks is a struct that contains the callbacks
+    """RunnerCallbacks is a struct that contains the callbacks
     that are called by the application
-
     """
 
     # --------------- GUI Callbacks -------------------
@@ -2046,8 +1963,6 @@ class RunnerCallbacks:
         """
         pass
 
-# @@md
-
 # VoidFunction AppendCallback(const VoidFunction& previousCallback, const VoidFunction& newCallback);    /* original C++ signature */
 def append_callback(
     previous_callback: VoidFunction, new_callback: VoidFunction
@@ -2059,9 +1974,6 @@ def append_callback(
 #                       hello_imgui/docking_params.h included by hello_imgui/runner_params.h                   //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# *
-# @@md#DockingIntro
-#
 # HelloImGui makes it easy to use dockable windows
 # (based on ImGui [docking branch](https://github.com/ocornut/imgui/tree/docking)).
 #
@@ -2114,12 +2026,7 @@ def append_callback(
 #
 # Inside DockingParams, the member `dockingSplits` specifies the layout, and the member `dockableWindows`
 # specifies the list of dockable windows, along with their default location, and their code (given by lambdas).
-#
-# @@md
-#
-#
-# @@md#DockingExample
-#
+
 # Below is an example that shows how to instantiate a layout:
 #
 # 1. First, define the docking splits:
@@ -2198,13 +2105,8 @@ def append_callback(
 #
 # HelloImGui::Run(runnerParams);
 # ```
-#
-# @@md
-#
 
 # ***************************************************************************
-
-# @@md#DockingSplit
 
 class DockingSplit:
     """DockingSplit is a struct that defines the way the docking splits should
@@ -2263,10 +2165,6 @@ class DockingSplit:
                 * nodeFlags_: DockNodeFlags_.none
         """
         pass
-
-# @@md
-
-# @@md#DockableWindow
 
 class DockableWindow:
     """DockableWindow is a struct that represents a window that can be docked."""
@@ -2377,8 +2275,6 @@ class DockableWindow:
         """
         pass
 
-# @@md
-
 class DockingLayoutCondition(enum.IntEnum):
     # FirstUseEver,    /* original C++ signature */
     first_use_ever = enum.auto()  # (= 0)
@@ -2387,8 +2283,6 @@ class DockingLayoutCondition(enum.IntEnum):
     # Never    /* original C++ signature */
     # }
     never = enum.auto()  # (= 2)
-
-# @@md#DockingParams
 
 class DockingParams:
     """DockingParams contains all the settings concerning the docking:
@@ -2484,16 +2378,12 @@ class DockingParams:
         """
         pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 class BackendPointers:
-    """@@md#BackendPointers
-
-    BackendPointers is a struct that contains optional pointers to the
+    """BackendPointers is a struct that contains optional pointers to the
     backend implementations (for SDL and GLFW).
 
     These pointers will be filled when the application starts, and you can use them
@@ -2525,10 +2415,6 @@ class BackendPointers:
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
-
-# @@md
-
-# @@md#RemoteParams
 
 class RemoteParams:
     """RemoteParams is a struct that contains the settings for displaying the application on a remote device.
@@ -2587,15 +2473,11 @@ class RemoteParams:
         """Auto-generated default constructor with named params"""
         pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/renderer_backend_options.h included by hello_imgui/runner_params.h         //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#OpenGlOptions
 
 class OpenGlOptions:
     """OpenGlOptions contains advanced options used at the startup of OpenGL.
@@ -2668,10 +2550,6 @@ class OpenGlOptions:
         """Auto-generated default constructor with named params"""
         pass
 
-# @@md
-
-# @@md#RendererBackendOptions
-
 # bool hasEdrSupport();    /* original C++ signature */
 def has_edr_support() -> bool:
     """`bool hasEdrSupport()`:
@@ -2731,8 +2609,6 @@ class RendererBackendOptions:
 #     src/hello_imgui/internal/backend_impls/rendering_dx11.h
 #     src/hello_imgui/internal/backend_impls/rendering_dx12.h
 
-# @@md
-
 class OpenGlOptionsFilled_:
     """(Private structure, not part of the public API)
     OpenGlOptions after selecting the default platform-dependent values + after applying the user settings
@@ -2768,8 +2644,6 @@ class OpenGlOptionsFilled_:
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#PlatformBackendType
 
 # You can select the platform backend type (SDL, GLFW) and the rendering backend type
 # via RunnerParams.platformBackendType and RunnerParams.renderingBackendType.
@@ -2810,8 +2684,6 @@ class RendererBackendType(enum.IntEnum):
     # }
     null = enum.auto()  # (= 6)
 
-# @@md
-
 # std::string PlatformBackendTypeToString(PlatformBackendType platformBackendType);    /* original C++ signature */
 def platform_backend_type_to_string(platform_backend_type: PlatformBackendType) -> str:
     pass
@@ -2821,8 +2693,6 @@ def renderer_backend_type_to_string(renderer_backend_type: RendererBackendType) 
     pass
 
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#IniFolderType
 
 class IniFolderType(enum.IntEnum):
     """IniFolderType is an enum which describes where is the base path to store
@@ -2886,11 +2756,7 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
     """Returns the path corresponding to the given IniFolderType"""
     pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#FpsIdling
 
 class FpsIdlingMode(enum.IntEnum):
     """FpsIdlingMode is an enum that describes the different modes of idling
@@ -3031,11 +2897,7 @@ class FpsIdling:
         """Auto-generated default constructor with named params"""
         pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#RunnerParams
 
 class RunnerParams:
     """RunnerParams contains the settings and callbacks needed to run an application."""
@@ -3221,10 +3083,6 @@ class RunnerParams:
         """
         pass
 
-# @@md
-
-# @@md#IniIniSettingsLocation
-
 # std::optional<std::string> IniSettingsLocation(const RunnerParams& runnerParams);    /* original C++ signature */
 def ini_settings_location(runner_params: RunnerParams) -> Optional[str]:
     """IniSettingsLocation returns the path to the ini file for the application settings."""
@@ -3240,11 +3098,7 @@ def delete_ini_settings(runner_params: RunnerParams) -> None:
     """DeleteIniSettings deletes the ini file for the application settings."""
     pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------------------------------
-
-# @@md#SimpleRunnerParams
 
 class SimpleRunnerParams:
     """SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
@@ -3339,8 +3193,6 @@ class SimpleRunnerParams:
         """
         pass
 
-# @@md
-
 # void BeginGroupColumn();     /* original C++ signature */
 def begin_group_column() -> None:
     """calls ImGui::BeginGroup()"""
@@ -3350,8 +3202,6 @@ def begin_group_column() -> None:
 def end_group_column() -> None:
     """calls ImGui::EndGroup() + ImGui::SameLine()"""
     pass
-
-# @@md#WidgetWithResizeHandle
 
 # ImVec2 WidgetWithResizeHandle(    /* original C++ signature */
 #         const char* id,
@@ -3384,11 +3234,7 @@ def widget_with_resize_handle(
     """
     pass
 
-# @@md
-
 # --------------------------------------------------------------------------------------------
-
-# @@md#InputTextResizable
 
 class InputTextData:
     """`InputTextResizable`: displays a resizable text input widget
@@ -3467,16 +3313,11 @@ def input_text_data_to_string(data: InputTextData) -> str:
 def input_text_data_from_string(str: str) -> InputTextData:
     pass
 
-# @@md
-
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui.h continued                                                                //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # =========================== HelloImGui::Run ==================================
-# *
-# @@md#HelloImGui::Run
-#
 # __HelloImGui::Run()__ will run an application with a single call.
 #
 # Three signatures are provided:
@@ -3494,9 +3335,6 @@ def input_text_data_from_string(str: str) -> InputTextData:
 # the elements in the `RunnerParams` struct, or in the simpler  `SimpleRunnerParams`.
 #
 # __HelloImGui::GetRunnerParams()__  will return the runnerParams of the current application.
-#
-# @@md
-#
 
 # void Run(RunnerParams &runnerParams);    /* original C++ signature */
 @overload
@@ -3541,13 +3379,8 @@ def run(
     pass
 
 # =========================== HelloImGui::ManualRender ==================================
-# @@md#HelloImGui::ManualRender
-
-# @@md
 
 # ============================== Utility functions ===============================
-
-# @@md#UtilityFunctions
 
 # RunnerParams* GetRunnerParams();    /* original C++ signature */
 def get_runner_params() -> RunnerParams:
@@ -3628,11 +3461,7 @@ def use_window_full_monitor_work_area() -> None:
     """
     pass
 
-# @@md
-
 # ============================== Layout Utils =============================
-
-# @@md#HelloImGui::Layouts
 
 # In advanced cases when several layouts are available, you can switch between layouts.
 # See demo inside
@@ -3669,11 +3498,7 @@ def remove_dockable_window(dockable_window_name: str) -> None:
     """
     pass
 
-# @@md
-
 # ============================== User prefs Utils =============================
-
-# @@md#HelloImGui::UserPref
 
 # You may store additional user settings in the application settings.
 # This is provided as a convenience only, and it is not intended to store large
@@ -3693,13 +3518,8 @@ def load_user_pref(user_pref_name: str) -> str:
     """
     pass
 
-# @@md
-
 # ============================== Menus defaults =============================
 
-# *
-# @@md#MenuIntro
-#
 # Hello ImGui provides a default menu and status bar, which you can customize by using the params:
 #        `RunnerParams.imGuiWindowParams.` `showMenuBar` / `showMenu_App` / `showMenu_View`
 #
@@ -3707,10 +3527,6 @@ def load_user_pref(user_pref_name: str) -> str:
 # * set `showMenuBar` to True, then set `showMenu_App` and `showMenu_View` params to False
 # * implement the callback `RunnerParams.callbacks.ShowMenus`:
 #  it can optionally call `ShowViewMenu` and `ShowAppMenu` (see below).
-#
-# @@md
-#
-# @@md#MenuFunctions
 
 # void ShowViewMenu(RunnerParams & runnerParams);    /* original C++ signature */
 def show_view_menu(runner_params: RunnerParams) -> None:
@@ -3725,8 +3541,6 @@ def show_app_menu(runner_params: RunnerParams) -> None:
     shows the default App menu (including the Quit item)
     """
     pass
-
-# @@md
 
 # <submodule imgui_default_settings>
 class imgui_default_settings:  # Proxy class that introduces typings for the *submodule* imgui_default_settings

@@ -5,7 +5,7 @@ This folder contains all 23+ C++ libraries integrated into Dear ImGui Bundle, ea
 **Categories:**
 - **Core:** imgui, hello_imgui, immapp
 - **Plotting:** implot, implot3d, immvision, imgui_tex_inspect
-- **Text:** ImGuiColorTextEdit, imgui_md
+- **Text:** ImGuiColorTextEdit, imgui_rich_md
 - **Tools:** ImGuizmo, imgui-node-editor, nanovg, imgui_explorer
 - **Widgets:** ImFileDialog, imgui-knobs, imspinner, imgui_toggle, ImCoolBar, imgui-command-palette, ImAnim
 - **Support:** glfw, fplus (no Python bindings)
