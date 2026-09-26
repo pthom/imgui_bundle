@@ -66,7 +66,7 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 from dataclasses import dataclass
 from typing import Callable
 import numpy as np
-from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui
+from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui, IM_COL32
 
 
 # Below is an example of a documented function via narrative programming:
@@ -124,21 +124,23 @@ JOURNEY_SECONDS = 2.5  # the way to a famous value of c
 GLIDE_SECONDS = 1.0  # the way to a clicked value of c
 
 
+# The colors of the pictures, from "escapes at once" (0) to "never escapes" (1): the magma colormap, for now
+PALETTE_STOPS = [(0, 0, 4), (80, 18, 123), (182, 54, 121), (251, 136, 97), (252, 253, 191)]
+PALETTE = np.stack([np.interp(np.linspace(0, 1, 256), np.linspace(0, 1, len(PALETTE_STOPS)), channel)
+                    for channel in np.array(PALETTE_STOPS).T], axis=1).astype(np.uint8)  # 256 RGB colors
+
+
 class PlaneView:
-    """A picture of a window of the complex plane, computed by compute(window_re, window_im, size). Zoomed or panned
-    with immvision (mouse wheel, drag), it is computed again for the part it shows."""
+    """A picture of a window of the complex plane, computed by compute(window_re, window_im, size). The mouse wheel
+    zooms around the mouse, a drag pans: the picture is computed again for the part it shows."""
 
     def __init__(self, label: str, window_re: Window, window_im: Window,
                  compute: Callable[[Window, Window, int], np.ndarray]) -> None:
         self.label, self.compute, self.full_window = label, compute, (window_re, window_im)
         self.window_re, self.window_im = window_re, window_im
-        self.coarse = False  # computed at half the resolution, then enlarged: 3 times faster (during a journey)
-        self.params = immvision.ImageParams()
-        self.params.image_display_size = (SIZE, SIZE)
-        self.params.colormap_settings.colormap = "Magma"
-        self.params.add_watched_pixel_on_double_click = False
-        self.params.show_image_info = False
-        self.params.show_zoom_buttons = False  # zoom with the wheel, and "Full view" below
+        self.drag_start = self.window_re, self.window_im  # the window when a drag started
+        self.coarse = False  # computed at half the resolution, then enlarged: 3 times faster (while moving)
+        self.sharp_at: float | None = None  # when to compute it at full resolution again, after a zoom or a pan
         self.refresh()
 
     def set_view(self, center: complex, width: float) -> None:
@@ -149,10 +151,11 @@ class PlaneView:
 
     def refresh(self) -> None:
         if self.coarse:
-            self.image = self.compute(self.window_re, self.window_im, SIZE // 2).repeat(2, axis=0).repeat(2, axis=1)
+            values = self.compute(self.window_re, self.window_im, SIZE // 2).repeat(2, axis=0).repeat(2, axis=1)
         else:
-            self.image = self.compute(self.window_re, self.window_im, SIZE)
-        self.params.refresh_image = True
+            values = self.compute(self.window_re, self.window_im, SIZE)
+        self.image = PALETTE[(values * 255).astype(np.uint8)]
+        self.changed = True  # the texture is updated by the next show()
 
     def to_plane(self, x: float, y: float) -> complex:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
@@ -162,31 +165,67 @@ class PlaneView:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
         return int((z.real - re0) / (re1 - re0) * SIZE), int((z.imag - im0) / (im1 - im0) * SIZE)
 
-    def follow_zoom(self) -> None:
-        """Once zoomed or panned (mouse released): the window becomes the part of the plane shown"""
-        (scale, _, tx), (_, _, ty), _ = self.params.zoom_pan_matrix
-        width = self.params.image_display_size[0]
-        full_scale = width / SIZE  # the whole image fills the display
-        if (scale, tx, ty) == (full_scale, 0.0, 0.0) or imgui.is_mouse_down(0):
+    def move(self, window_re: Window, window_im: Window) -> None:
+        """After a zoom or a pan: computed fast while the mouse moves, then sharp"""
+        if window_re[1] - window_re[0] < 1e-12:  # deeper, float64 could not tell the pixels apart
             return
-
-        def visible(window: Window, t: float) -> Window:  # display [0, width] -> plane
-            lo, hi = window
-            return lo + (hi - lo) * -t / scale / SIZE, lo + (hi - lo) * (width - t) / scale / SIZE
-
-        window_re, window_im = visible(self.window_re, tx), visible(self.window_im, ty)
-        if window_re[1] - window_re[0] > 1e-12:  # deeper, float64 could not tell the pixels apart
-            self.window_re, self.window_im = window_re, window_im
-        self.params.zoom_pan_matrix = [[full_scale, 0.0, 0.0], [0.0, full_scale, 0.0], [0.0, 0.0, 1.0]]
+        self.window_re, self.window_im = window_re, window_im
+        self.coarse, self.sharp_at = True, imgui.get_time() + 0.2
         self.refresh()
 
-    def show(self) -> None:
-        immvision.image(self.label, self.image, self.params)
-        self.params.refresh_image = False  # immvision leaves it set (for live video)
-        self.follow_zoom()
-        if imgui.small_button(f"Full view##{self.label}"):
+    def handle_mouse(self, x: float, y: float) -> complex | None:
+        """On the last item: the wheel zooms around the mouse (at x, y), a drag pans. Returns the point of a click"""
+        imgui.set_item_key_owner(imgui.Key.mouse_wheel_y)  # the wheel zooms the picture, and does not scroll
+        (re0, re1), (im0, im1) = self.window_re, self.window_im
+        wheel = imgui.get_io().mouse_wheel
+        if imgui.is_item_hovered() and wheel != 0:
+            z, f = self.to_plane(x, y), 0.8 ** wheel
+            self.move((z.real + (re0 - z.real) * f, z.real + (re1 - z.real) * f),
+                      (z.imag + (im0 - z.imag) * f, z.imag + (im1 - z.imag) * f))
+        if imgui.is_item_activated():
+            self.drag_start = self.window_re, self.window_im
+        drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
+        if imgui.is_item_active() and (drag.x, drag.y) != (0, 0):
+            (re0, re1), (im0, im1) = self.drag_start
+            d_re, d_im = -drag.x / SIZE * (re1 - re0), -drag.y / SIZE * (im1 - im0)
+            window = (re0 + d_re, re1 + d_re), (im0 + d_im, im1 + d_im)
+            if window != (self.window_re, self.window_im):
+                self.move(*window)
+        if imgui.is_item_deactivated() and (drag.x, drag.y) == (0, 0):
+            return self.to_plane(x, y)
+        return None
+
+    def draw_cross(self, top_left: imgui.ImVec2, z: complex) -> None:
+        """A cross at z, when in view"""
+        x, y = self.to_pixel(z)
+        if not (0 <= x < SIZE and 0 <= y < SIZE):
+            return
+        cx, cy, r = top_left.x + x, top_left.y + y, em_size(0.4)
+        draw_list = imgui.get_window_draw_list()
+        for color, thickness in ((IM_COL32(0, 0, 0, 255), 3.0), (IM_COL32(255, 255, 255, 255), 1.5)):
+            draw_list.add_line(imgui.ImVec2(cx - r, cy - r), imgui.ImVec2(cx + r, cy + r), color, thickness)
+            draw_list.add_line(imgui.ImVec2(cx - r, cy + r), imgui.ImVec2(cx + r, cy - r), color, thickness)
+
+    def show(self, marker: complex | None = None) -> complex | None:
+        """The picture, with a cross at marker. Returns the point of a click on it"""
+        imgui.align_text_to_frame_padding()  # the titles of the three columns, on one line
+        imgui.text(self.label)
+        top_left = imgui.get_cursor_screen_pos()
+        imgui.invisible_button(f"##{self.label} mouse", imgui.ImVec2(SIZE, SIZE))  # takes the mouse, under the picture
+        mouse = imgui.get_mouse_pos()
+        clicked = self.handle_mouse(mouse.x - top_left.x, mouse.y - top_left.y)
+        if self.sharp_at is not None and imgui.get_time() > self.sharp_at:
+            self.coarse, self.sharp_at = False, None
+            self.refresh()
+        imgui.set_cursor_screen_pos(top_left)
+        immvision.image_display(f"##{self.label}", self.image, (SIZE, SIZE), refresh_image=self.changed)
+        self.changed = False
+        if marker is not None:
+            self.draw_cross(top_left, marker)
+        if imgui.button(f"Full view##{self.label}"):
             self.window_re, self.window_im = self.full_window
             self.refresh()
+        return clicked
 
 
 def ease(x: float) -> float:
@@ -341,29 +380,31 @@ ARRIVAL_WIDTH: dict[str, float | None] = {
 
 
 def maps_widget() -> None:
-    """The two pictures side by side: a click on the map chooses c (a drag pans it)"""
+    """The two pictures side by side, and the famous values: a click on the map chooses c (a drag pans it)"""
     state.travel()
-    imgui.begin_group()
-    x, y = state.map.to_pixel(state.c)
-    state.map.params.watched_pixels = [(x, y)] if 0 <= x < SIZE and 0 <= y < SIZE else []  # c, when in view
-    state.map.show()
-    mouse = state.map.params.mouse_info
-    drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
-    if mouse.is_mouse_hovering and imgui.is_mouse_released(0) and drag.x == 0 and drag.y == 0:
-        state.glide_to(state.map.to_plane(*mouse.mouse_position))
+    if not imgui.begin_table("##maps", 3, imgui.TableFlags_.sizing_fixed_fit):  # three columns, aligned at the top
+        return
+    imgui.table_next_column()
+    column_x = imgui.get_cursor_pos_x()
+    clicked = state.map.show(marker=state.c)
+    if clicked is not None:
+        state.glide_to(clicked)
     pixel = (state.map.window_re[1] - state.map.window_re[0]) / SIZE
     digits = max(3, int(np.ceil(-np.log10(pixel))))  # enough to tell two pixels of the map apart
-    imgui.text(f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i")
-    imgui.end_group()
     imgui.same_line()
-    imgui.begin_group()
+    imgui.push_text_wrap_pos(column_x + SIZE)  # deep in the map, c needs many digits: two lines
+    imgui.text(f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i")
+    imgui.pop_text_wrap_pos()
+
+    imgui.table_next_column()
     if state.julia_follows_map:
         state.follow_map()
     state.julia.show()
-    _, state.julia_follows_map = imgui.checkbox("zoom with the map", state.julia_follows_map)
-    imgui.end_group()
     imgui.same_line()
-    imgui.begin_group()
+    _, state.julia_follows_map = imgui.checkbox("zoom with the map", state.julia_follows_map)
+
+    imgui.table_next_column()
+    imgui.align_text_to_frame_padding()
     imgui.text("Famous values of c")
     height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
     if imgui.begin_list_box("##famous c", imgui.ImVec2(em_size(11), height)):
@@ -376,10 +417,10 @@ def maps_widget() -> None:
                 imgui.pop_text_wrap_pos()
                 imgui.end_tooltip()
         imgui.end_list_box()
-    imgui.set_next_item_width(em_size(6))
-    _, state.animation_speed = imgui.slider_float("animation speed", state.animation_speed, 0.2, 5.0, "x%.1f",
-                                                  imgui.SliderFlags_.logarithmic)
-    imgui.end_group()
+    imgui.set_next_item_width(em_size(11))
+    _, state.animation_speed = imgui.slider_float("##animation speed", state.animation_speed, 0.2, 5.0,
+                                                  "animation speed x%.1f", imgui.SliderFlags_.logarithmic)
+    imgui.end_table()
 
 
 def budget_widget() -> None:
