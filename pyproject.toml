@@ -213,6 +213,11 @@ ignore_missing_imports = true
 module = ["paramiko"]
 ignore_missing_imports = true
 
+# tiny_nn: a sibling module of the neural_spiral explorable (imported from its folder, not on mypy's path)
+[[tool.mypy.overrides]]
+module = ["tiny_nn"]
+ignore_missing_imports = true
+
 #####################################
 # Wheels options
 #####################################

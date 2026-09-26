@@ -9,6 +9,11 @@
         "filename": "explorables/julia_map.py"
       },
       {
+        "label": "Lesson: a tiny neural network learns a spiral",
+        "filename": "explorables/neural_spiral/neural_spiral.py",
+        "bundle_folders": ["explorables/neural_spiral"]
+      },
+      {
         "label": "Explorable: Double Pendulum",
         "filename": "explorables/double_pendulum.py"
       },
