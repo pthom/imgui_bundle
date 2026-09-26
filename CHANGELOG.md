@@ -2,22 +2,19 @@
 
 # Ongoing changes
 
-## ImmVision: RGB is the default color order
+## Markdown renderer:
 
-Calling `immvision.use_rgb_color_order()` (C++: `ImmVision::UseRgbColorOrder()`) at startup is not required anymore.
-Images in BGR order (OpenCV) still need `immvision.use_bgr_color_order()`.
+Fully rewritten imgui_md, which is now imgui_rich_md
 
-## Markdown: `imgui_md` becomes `rich_md` (library imgui_rich_md)
+`imgui_md` becomes `rich_md` (library imgui_rich_md)
 
 The markdown stack (renderer, wrapper, LaTeX backend) is now [imgui_rich_md](https://github.com/pthom/imgui_rich_md), a standalone
-library that works on stock Dear ImGui. Existing code keeps working:
+library that works on stock Dear ImGui.
 
-- Python: the module is `imgui_bundle.rich_md`; `imgui_bundle.imgui_md` is the same module and stays as an alias.
-- C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`; the former `imgui_md_wrapper/imgui_md_wrapper.h` include
-  and the `ImGuiMd` namespace stay as aliases (`ImGuiMicroTeX` likewise, for `RichMd::Latex`). CMake target `imgui_rich_md`
-  (`imgui_md` kept as an alias).
-- CMake: the option `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`; the former name still works,
-  with a deprecation warning.
+- Existing code keeps working:
+  - Python: the module is `imgui_bundle.rich_md`; `imgui_bundle.imgui_md` is the same module and stays as an alias.
+  - C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`; the former `imgui_md_wrapper/imgui_md_wrapper.h` include and the `ImGuiMd` namespace stay as aliases (`ImGuiMicroTeX` likewise, for `RichMd::Latex`).
+  - CMake: the option `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`; the former name still works, with a deprecation warning.
 
 What else rich_md brings:
 
@@ -34,6 +31,19 @@ What else rich_md brings:
 - **Layout**: a gap between paragraphs; `<br/>` and `<br />`; HTML comments are not shown; code blocks follow the
   indent of quotes and lists; long code blocks can be scrolled.
 - **Browser (Emscripten, Pyodide)**: on a Mac, Cmd acts as Ctrl (Cmd+C copies), in every widget (hello_imgui).
+
+## ImmVision:
+- RGB is the default color order. Calling `immvision.use_rgb_color_order()` (C++: `ImmVision::UseRgbColorOrder()`) at startup is not required anymore. Images in BGR order (OpenCV) still need `immvision.use_bgr_color_order()`.
+
+**Breaking change (C++): ImmVision never links OpenCV, `cv::Mat` interop is an application choice**
+
+* ImmVision does not look for OpenCV at configure time anymore, and never links it: the `cv::` conversions are now header-only. C++ applications that pass `cv::Mat` to ImmVision define `IMMVISION_HAS_OPENCV` and link OpenCV by themselves:
+```cmake
+find_package(OpenCV REQUIRED)
+target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+target_link_libraries(my_app PRIVATE opencv_core)
+```
+- `IMMVISION_FETCH_OPENCV` is now only a convenience that provides a minimal OpenCV to `find_package(OpenCV)`: it does not enable the interop by itself.
 
 ## Updated Dear ImGui to v1.93.0 WIP
 
@@ -59,32 +69,12 @@ imgui.get_style().curve_tessellation_max_error = 1.12   # was: curve_tessellatio
 - Disabled color buttons keep the same color as enabled ones.
 - Test Engine: new `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()` and `TestOpFlags_.no_wait_when_moving`.
 
-## Breaking change (C++): ImmVision never links OpenCV, `cv::Mat` interop is an application choice
-
-ImmVision does not look for OpenCV at configure time anymore, and never links it: the `cv::` conversions are now header-only.
-C++ applications that pass `cv::Mat` to ImmVision define `IMMVISION_HAS_OPENCV` and link OpenCV by themselves:
-
-```cmake
-find_package(OpenCV REQUIRED)
-target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
-target_link_libraries(my_app PRIVATE opencv_core)
-```
-
-- `IMMVISION_FETCH_OPENCV` is now only a convenience that provides a minimal OpenCV to `find_package(OpenCV)`: it does not enable the interop by itself.
-- New option `IMGUI_BUNDLE_DEMOS_WITH_OPENCV` (OFF): link the C++ ImmVision demos with OpenCV.
-- On Windows, `IMMVISION_FETCH_OPENCV` always builds a static OpenCV from source (the precompiled `opencv_world.dll` pack is not compatible with Visual Studio 2026). `imgui_bundle_add_app` does not copy `opencv_world.dll` next to the apps anymore.
-- Python is not concerned (the bindings never used OpenCV).
 
 ## Behavior change: StackLayout clips the content of fixed-size layouts
 
-`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a
-**fixed size**. ImGui Bundle had disabled thedmd's clipping since 2024, because it hid the content submitted after a nested
-layout.
+`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a **fixed size**. ImGui Bundle had disabled thedmd's clipping since 2024, because it hid the content submitted after a nested layout.
 
-Visible effect: a layout created with a fixed width or height cuts the content that overflows it, instead of letting it draw
-over its neighbors. Axes with an automatic size (the default) are not clipped, so layouts created without a size are not
-affected. (This differs from thedmd's implementation, which also clips auto-sized layouts to their measured size: that cuts
-selection highlights and user-drawn decorations, and costs one draw command per layout.)
+Visible effect: a layout created with a fixed width or height cuts the content that overflows it, instead of letting it draw over its neighbors. Axes with an automatic size (the default) are not clipped, so layouts created without a size are not affected. (This differs from thedmd's implementation, which also clips auto-sized layouts to their measured size: that cuts selection highlights and user-drawn decorations, and costs one draw command per layout.)
 
 ```python
 imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
@@ -94,27 +84,19 @@ imgui.end_horizontal()
 
 ## imgui-node-editor: widgets inside nodes, and a fork that works with a stock Dear ImGui
 
-The fork of imgui-node-editor was reorganised. It does not contain anything specific to ImGui Bundle anymore, it builds against
-a stock Dear ImGui, and it has automated tests (run in CI) and its own
+The fork of imgui-node-editor was reorganised. It does not contain anything specific to ImGui Bundle anymore, it builds against a stock Dear ImGui, and it has automated tests (run in CI) and its own
 [documentation](https://github.com/pthom/imgui-node-editor/blob/imgui_bundle/docs/fork_imgui_bundle.md).
 Dear ImGui itself does not know about the node editor anymore: it only provides two generic hooks that the editor uses.
 
-- Popups, combos, color pickers, tooltips and context menus opened from inside the editor work without `suspend()` / `resume()`,
-  now also **between** nodes (a background context menu, for example). Code that calls `suspend()` / `resume()` keeps working.
+- Popups, combos, color pickers, tooltips and context menus opened from inside the editor work without `suspend()` / `resume()`, now also **between** nodes (a background context menu, for example). Code that calls `suspend()` / `resume()` keeps working.
 - New `imgui_node_editor.Style.angled_links` (default: `True`): set it to `False` to always draw links as a single curve.
 - `get_selected_nodes()`, `get_selected_links()`, `get_action_context_nodes()`, `get_action_context_links()` and
   `get_ordered_node_ids()` were silently limited to 1000 elements: not anymore.
 - `imgui_node_editor.Config.settings_file` is an `Optional[str]`: `None` means "no settings file".
-- New `imgui_md.MarkdownCallbacks.can_use_child_windows`. Markdown code blocks use a child window, which cannot work inside a
-  node: they are rendered as inline code there. ImmApp sets this callback for you. If you initialize the markdown renderer
-  without ImmApp and render code blocks inside a node, set it yourself.
-- C++: new `ed::InputTextMultiline()` (a multiline text field that works inside a node; `ImGui::InputTextMultiline()` is
-  redirected to it inside a node, as before) and `ImGuiEx::IsInsideCanvas()`.
+- New `imgui_md.MarkdownCallbacks.can_use_child_windows`. Markdown code blocks use a child window, which cannot work inside a node: they are rendered as inline code there. ImmApp sets this callback for you. If you initialize the markdown renderer without ImmApp and render code blocks inside a node, set it yourself.
+- C++: new `ed::InputTextMultiline()` (a multiline text field that works inside a node; `ImGui::InputTextMultiline()` is redirected to it inside a node, as before) and `ImGuiEx::IsInsideCanvas()`.
 
-**Breaking change (C++)**: `ed::Config::SettingsFile` is a `const char*` again, as in upstream imgui-node-editor (it was a
-`std::string`). The editor keeps the pointer: keep your string alive, and assign its `c_str()`. String literals are not concerned,
-neither is Python. The hidden functions `Priv_ImGuiNodeEditor_EnterCanvas() / ExitCanvas() / IsInCanvas()` were removed from
-Dear ImGui: use `ImGuiEx::IsInsideCanvas()`.
+**Breaking change (C++)**: `ed::Config::SettingsFile` is a `const char*` again, as in upstream imgui-node-editor (it was a`std::string`). The editor keeps the pointer: keep your string alive, and assign its `c_str()`. String literals are not concerned, neither is Python. The hidden functions `Priv_ImGuiNodeEditor_EnterCanvas() / ExitCanvas() / IsInCanvas()` were removed from Dear ImGui: use `ImGuiEx::IsInsideCanvas()`.
 
 ```cpp
 static std::string settingsFile = MySettingsFolder() + "/nodes.json";   // must outlive the editor
@@ -123,8 +105,7 @@ config.SettingsFile = settingsFile.c_str();                             // was: 
 
 ## Behavior change: ImVec in, ImVec out for the multi-float widgets
 
-`slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given
-one, as the stubs always said. Until now they returned a `list` in that case. Lists and tuples still return a `list`.
+`slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given one, as the stubs always said. Until now they returned a `list` in that case. Lists and tuples still return a `list`.
 
 ```python
 color = imgui.ImVec4(1, 0, 0, 1)
@@ -136,8 +117,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - C++: `ed::Config::SettingsFile` is a `const char*` again (see the imgui-node-editor section above).
 - `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
   Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
-- Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a
-  `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
+- Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
 
 ## Updated bundled libraries
 
@@ -168,9 +148,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 - `imgui.color_picker4()` did not accept a list.
 - `ImColor.to_dict()` returned the red component for all keys; `ImColor.from_dict()` returned an `ImVec4`.
 - `imgui.internal.input_text_ex()` rejected every call ("incompatible function arguments").
-- Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their
-  keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected
-  (imgui's clock ran faster than the wall clock at high frame rates).
+- Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected (imgui's clock ran faster than the wall clock at high frame rates).
 - `imgui.get_clipboard_text()` crashed when the clipboard was empty and no backend was installed; it always returns a `str` (`""` when empty).
 - `imgui.color_picker4()` with a list: `ref_col` is a list of 4 floats (it was declared as a single float, and read out of bounds).
 - An exception raised inside a Python clipboard / open-in-shell callback is reported ("Exception ignored in...") instead of
