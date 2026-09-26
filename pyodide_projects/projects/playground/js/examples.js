@@ -191,19 +191,12 @@ async function populateExampleSelector() {
     }
 }
 
-// The detail pane of the menu: the example's picture, title and first paragraph (markdown, rendered by marked.js)
+// The detail pane of the menu: the example's title, first paragraph (markdown, rendered by marked.js) and picture
 function showExampleDoc(filename) {
     const detail = document.getElementById('examples-detail');
     detail.innerHTML = '';
     const doc = examplesDocs[filename];
     if (!doc) return;
-    // Its picture, from the website resources (made by ci_scripts/playground_screenshots.py): loaded when hovered
-    const picture = document.createElement('img');
-    picture.className = 'examples-detail-picture';
-    picture.alt = '';
-    picture.onerror = () => picture.remove();  // no picture yet, or served without the resources
-    picture.src = '../resources/playground/' + filename.split('/').pop().replace(/\.py$/, '.webp');
-    detail.appendChild(picture);
     const title = document.createElement('div');
     title.className = 'examples-detail-title';
     title.textContent = doc.title;
@@ -214,7 +207,13 @@ function showExampleDoc(filename) {
     } else {
         text.textContent = doc.text;  // marked.js could not be loaded: the markdown as is
     }
-    detail.append(title, text);
+    // Its picture, from the website resources (made by ci_scripts/playground_screenshots.py): loaded when hovered
+    const picture = document.createElement('img');
+    picture.className = 'examples-detail-picture';
+    picture.alt = '';
+    picture.onerror = () => picture.remove();  // no picture yet, or served without the resources
+    picture.src = '../resources/playground/' + filename.split('/').pop().replace(/\.py$/, '.webp');
+    detail.append(title, text, picture);
 }
 
 // Highlights the example loaded in the editor

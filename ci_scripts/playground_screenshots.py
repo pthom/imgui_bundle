@@ -41,6 +41,7 @@ class Shot:
     crop: Box = (0.0, 0.0, 1.0, 1.0)
     action: Optional[Callable[[dict[str, Any], int], None]] = None  # called each frame with the example's globals
     test: Optional[Callable[[Any], None]] = None  # a test engine script (e.g. open a section), then `frames` frames
+    setup: Optional[Callable[[], None]] = None  # called before the example starts
 
 
 def _julia_rabbit(g: dict[str, Any], frame: int) -> None:
@@ -51,6 +52,26 @@ def _julia_rabbit(g: dict[str, Any], frame: int) -> None:
 
 def _train(g: dict[str, Any], frame: int) -> None:
     g["state"].training = True
+
+
+def _fixed_picture() -> None:
+    """Fiatlight: the example downloads a random picture; this one gives clean edges (a vulture)"""
+    from imgui_bundle import immapp
+    download = immapp.download_url_bytes
+
+    def fixed(url: str, *args: Any, **kwargs: Any) -> bytes:
+        return download("https://picsum.photos/id/1024/640/480" if url == "https://picsum.photos/640/480" else url,
+                        *args, **kwargs)
+    immapp.download_url_bytes = fixed  # type: ignore[assignment]
+
+
+def _reorganize_graph(g: dict[str, Any], frame: int) -> None:
+    """Fiatlight: Ctrl+L (Graph > Reorganize graph), once its saved state is restored and the nodes have their size"""
+    from imgui_bundle import imgui
+    if frame in (60, 62):
+        down = frame == 60
+        imgui.get_io().add_key_event(imgui.Key.mod_ctrl, down)
+        imgui.get_io().add_key_event(imgui.Key.l, down)
 
 
 def _open(window: str, *labels: str) -> Callable[[Any], None]:
@@ -70,7 +91,7 @@ SHOTS: dict[str, Shot] = {
     "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
     "implot3d_butterfly.py": Shot(frames=600, crop=(0.28, 0.5, 0.72, 1.0)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
-    "fiatlight_image.py": Shot(frames=120, crop=(0.0, 0.0, 0.7, 0.57)),
+    "fiatlight_image.py": Shot(frames=200, action=_reorganize_graph, setup=_fixed_picture, crop=(0.0, 0.03, 0.8, 0.57)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
@@ -104,13 +125,12 @@ def _save(image: Any, crop: Box, output: Path) -> None:
     image.convert("RGB").save(output, "WEBP", quality=80, method=6)
 
 
-def _run_one(filename: str, output: str, raw: bool) -> None:
-    """In a child process: runs the example, then saves its picture"""
+def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
+    """In a child process: runs the example (a copy of it, at path), then saves its picture"""
     from PIL import Image
     from imgui_bundle import hello_imgui, immapp
 
     shot = SHOTS[filename]
-    path = EXAMPLES_DIR / filename
     namespace: dict[str, Any] = {"__name__": "__main__", "__file__": str(path)}
     frame = [0]
 
@@ -162,6 +182,8 @@ def _run_one(filename: str, output: str, raw: bool) -> None:
 
     immapp.run, immapp.run_async = run_driven, run_async_driven  # type: ignore[assignment]
     sys.path.insert(0, str(path.parent))
+    if shot.setup is not None:
+        shot.setup()
     exec(compile(path.read_text(), str(path), "exec"), namespace)
 
     image = Image.fromarray(hello_imgui.final_app_window_screenshot())
@@ -179,7 +201,7 @@ def _bundle_folders() -> dict[str, list[str]]:
 def main() -> None:
     args = sys.argv[1:]
     if args[:1] == ["--one"]:
-        _run_one(args[1], args[2], raw=args[3] == "raw")
+        _run_one(args[1], args[2], raw=args[3] == "raw", path=Path(args[4]))
         return
     if args[:1] == ["--browser"]:
         from PIL import Image
@@ -199,12 +221,16 @@ def main() -> None:
     for filename in names:
         stem = Path(filename).stem
         output = raw_dir / f"{stem}.png" if raw_dir else OUTPUT_DIR / f"{stem}.webp"
-        # Run in a scratch folder, as the playground does (its home folder, with the example's bundle folders)
+        # Run a copy of the example in a scratch folder, as the playground does (its home folder, with the example's
+        # bundle folders): what an example writes next to itself (e.g. Fiatlight's settings) stays out of the repository
         with tempfile.TemporaryDirectory() as cwd:
             for folder in bundle_folders.get(filename, []):
-                shutil.copytree(EXAMPLES_DIR / folder, Path(cwd) / folder)
+                shutil.copytree(EXAMPLES_DIR / folder, Path(cwd) / folder, dirs_exist_ok=True)
+            copy = Path(cwd) / filename
+            copy.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy(EXAMPLES_DIR / filename, copy)
             result = subprocess.run([sys.executable, __file__, "--one", filename, str(output),
-                                     "raw" if raw_dir else "webp"], cwd=cwd, timeout=180,
+                                     "raw" if raw_dir else "webp", str(copy)], cwd=cwd, timeout=180,
                                     capture_output=True, text=True, env={**os.environ, "PYTHONUNBUFFERED": "1"})
         status = "ok" if result.returncode == 0 and output.exists() else f"FAILED ({result.returncode})"
         print(f"{status:12s} {filename} -> {output}")
