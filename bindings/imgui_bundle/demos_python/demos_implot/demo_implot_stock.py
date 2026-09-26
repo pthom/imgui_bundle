@@ -413,7 +413,7 @@ class StockViewer:
         # New data: start fully visible, playback paused.
         self.visible_count_f = float(len(ts))
         self.playback_active = False
-        # Cache full-data axis bounds — used to pin axes during partial reveal.
+        # Cache full-data axis bounds: used to pin axes during partial reveal.
         bb_lo = np.nanmin(sd.bollinger_lower) if np.isfinite(sd.bollinger_lower).any() else sd.lows.min()
         bb_hi = np.nanmax(sd.bollinger_upper) if np.isfinite(sd.bollinger_upper).any() else sd.highs.max()
         self._bounds_x = (float(ts[0]), float(ts[-1]))
@@ -584,7 +584,7 @@ class StockViewer:
                     implot.plot_line(f"{self.loaded_ticker}-EMA 20", ts, sd.ema_20[:n])
                     implot.plot_line(f"{self.loaded_ticker}-EMA 50", ts, sd.ema_50[:n])
 
-                    # Draggable range selector — drives the stats panel above.
+                    # Draggable range selector: drives the stats panel above.
                     # Anchor the rect's vertical span to the current y-axis limits so the
                     # top/bottom edges always sit at the plot edges and only the x edges
                     # are reachable by the user.

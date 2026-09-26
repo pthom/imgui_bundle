@@ -1,12 +1,14 @@
 r"""Logistic Map
 ============
 
-One line — $x_{n+1} = r\,x_n\,(1-x_n)$ — and an entire universe of behaviour.
-As **r** climbs, a steady population doubles into a 2-cycle, a 4-cycle, an
-8-cycle… then shatters into **chaos**, threaded with sudden windows of order.
+A very simple equation (the logistic map: `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the
+*growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic
+(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.
 
-Drag **r** or click the diagram to jump there. **Scroll to zoom** the
-bifurcation diagram — the same branching returns at every scale.
+**Try this**
+* Drag **r** or click the diagram to set its value
+* Scroll to zoom into the bifurcation diagram (at the right): each fork splits again in the same way, however far you
+  zoom
 """
 
 import numpy as np
@@ -213,7 +215,7 @@ A deceptively simple recurrence:
 $x_{n+1} = r\,x_n\,(1 - x_n)$
 
 Each $x_n$ is a number between 0 and 1, and $r$ is a growth parameter
-between 0 and 4. Feed a value back into the formula over and over — the
+between 0 and 4. Feed a value back into the formula over and over: the
 long-term fate of the sequence depends entirely on $r$.
 
 ## What it models
@@ -221,8 +223,8 @@ long-term fate of the sequence depends entirely on $r$.
 Read $x_n$ as a **population**, measured as a fraction of the most the
 environment can sustain. The formula balances two opposing forces:
 
-- $r\,x_n$ — **growth**: more individuals now means more next season.
-- $(1 - x_n)$ — **crowding**: as the habitat fills, competition for food
+- $r\,x_n$, **growth**: more individuals now means more next season.
+- $(1 - x_n)$, **crowding**: as the habitat fills, competition for food
   and space throttles further growth.
 
 It is the discrete-time cousin of Verhulst's **logistic equation**,
@@ -235,26 +237,26 @@ notion of unbounded exponential growth.
 For over a century this was a quiet ecological model. Then in **1976** the
 physicist-ecologist **Robert May**, in a celebrated *Nature* paper, showed
 that the one-line equation hides staggering complexity: as $r$ rises it
-**period-doubles** — 1, then 2, 4, 8 cycles — and then tips into **chaos**.
+**period-doubles** (1, then 2, 4, 8 cycles), and then tips into **chaos**.
 
 Soon after, **Mitchell Feigenbaum** found that the doublings shrink by a
 fixed ratio, the universal constant $\delta \approx 4.6692$, which appears
-in *any* system taking this route to chaos — from dripping taps to driven
+in *any* system taking this route to chaos, from dripping taps to driven
 circuits. A toy population model turned out to obey a universal law.
 
 ## Reading the diagram
 
-- $r < 1$ — the population dies out.
-- $1 < r < 3$ — it settles to a single steady value.
-- $r = 3$ — the first split: a stable 2-cycle.
-- $r \approx 3.5699$ — the doublings accumulate: the **onset of chaos**.
-- beyond — chaos, shot through with sudden **windows of order**, most
+- $r < 1$: the population dies out.
+- $1 < r < 3$: it settles to a single steady value.
+- $r = 3$: the first split, a stable 2-cycle.
+- $r \approx 3.5699$: the doublings accumulate, the **onset of chaos**.
+- beyond: chaos, shot through with sudden **windows of order**, most
   vividly the period-3 window near $r \approx 3.8284$. *(A 1975 theorem of
   Li and Yorke proved that period three implies chaos.)*
 
 The **Lyapunov exponent** $\lambda$ beneath the diagram measures this:
 $\lambda < 0$ where orbits settle, $\lambda > 0$ where nearby trajectories
-separate exponentially — the fingerprint of chaos.
+separate exponentially: the fingerprint of chaos.
 
 ## Why it endures
 
@@ -266,16 +268,16 @@ the limits of prediction itself.
 
 ## Further reading
 
-- Robert May (1976), [*Simple mathematical models with very complicated dynamics*](https://doi.org/10.1038/261459a0) — the *Nature* review that revealed the chaos hiding in this one-line equation.
-- Li & Yorke (1975), [*Period Three Implies Chaos*](https://doi.org/10.2307/2318254) — the paper that gave the field its name.
-- [Feigenbaum constants](https://en.wikipedia.org/wiki/Feigenbaum_constants) — the universality that ties this cascade to dripping taps, circuits, and beyond.
-- [The logistic map](https://en.wikipedia.org/wiki/Logistic_map) — a fuller tour of the map and its bifurcations.
+- Robert May (1976), [*Simple mathematical models with very complicated dynamics*](https://doi.org/10.1038/261459a0): the *Nature* review that revealed the chaos hiding in this one-line equation.
+- Li & Yorke (1975), [*Period Three Implies Chaos*](https://doi.org/10.2307/2318254): the paper that gave the field its name.
+- [Feigenbaum constants](https://en.wikipedia.org/wiki/Feigenbaum_constants): the universality that ties this cascade to dripping taps, circuits, and beyond.
+- [The logistic map](https://en.wikipedia.org/wiki/Logistic_map): a fuller tour of the map and its bifurcations.
 - Veritasium (2020), [This equation will change how you see the world (the logistic map)](https://www.youtube.com/watch?v=ovJcsL7vyrk) (YouTube Video)
 """
 
 
 TIPS_MD = r"""Click a button to jump there, then watch the **cobweb** redraw
-and the **Lyapunov** strip respond. The zoom presets recompute fresh detail —
+and the **Lyapunov** strip respond. The zoom presets recompute fresh detail:
 use **Reset view** to pull back out."""
 
 
@@ -380,7 +382,7 @@ def gui(state: AppState):
     if imgui.is_item_hovered():
         imgui.set_tooltip("Background & history")
 
-    if imgui.button("Things to try", ImVec2(-1, 0)):
+    if imgui.button("Famous values of r", ImVec2(-1, 0)):
         state.show_tips = not state.show_tips
 
     imgui.separator_text("Parameter")
@@ -429,7 +431,7 @@ def gui(state: AppState):
     # ---- Hideable background panel ---------------------------------------
     if state.show_about:
         imgui.set_next_window_size(ImVec2(em * 34, em * 40), imgui.Cond_.appearing)
-        expanded, opened = imgui.begin("About — the Logistic Map", True)
+        expanded, opened = imgui.begin("About the logistic map", True)
         state.show_about = bool(opened)
         if expanded:
             rich_md.render(ABOUT_MD)
@@ -438,7 +440,7 @@ def gui(state: AppState):
     # ---- Hideable "things to try" panel ----------------------------------
     if state.show_tips:
         imgui.set_next_window_size(ImVec2(em * 25, em * 30), imgui.Cond_.appearing)
-        expanded, opened = imgui.begin("Things to try", True)
+        expanded, opened = imgui.begin("Famous values of r", True)
         state.show_tips = bool(opened)
         if expanded:
             rich_md.render(TIPS_MD)

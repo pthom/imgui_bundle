@@ -5,6 +5,11 @@
 # by Dear ImGui Bundle. It is not guaranteed to be up-to-date with the
 # latest version of the C++ code, but it should be close enough.
 ###############################################################################
+"""ImPlot: the full demo
+
+Every kind of plot of ImPlot, in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port
+of implot_demo.cpp).
+"""
 import time
 from imgui_bundle import imgui, immapp, implot, imgui_ctx, ImVec4, ImVec2, IM_COL32
 import numpy as np

@@ -41,6 +41,7 @@ async function fetchExampleMetadata() {
     try {
         const response = await fetch('examples/examples.json');
         const data = await response.json();
+        examplesCategories = data.categories || [];
         return data.examples;
     } catch (error) {
         console.error('Error fetching example metadata:', error);
@@ -146,24 +147,81 @@ async function loadExample(filename, packages, label, bundleFolders) {
 
 // Store example metadata so we can look up packages later
 let examplesMetadata = [];
+let examplesCategories = [];  // [{name, about}], in the order of the menu
+let examplesDocs = {};  // {filename: {title, text}}: examples_docs.json, see ci_scripts/playground_examples_docs.py
 
 // The example loaded in the editor (null for the landing page): runEditorPythonCode() runs it at its own path
 let loadedExampleFilename = null;
 
-// Function to populate example selector
+// The examples menu: the examples by category, and beside the list the title and first paragraph of the hovered one
+// (extracted from its docstring)
 async function populateExampleSelector() {
     examplesMetadata = await fetchExampleMetadata();
+    try {
+        examplesDocs = await (await fetch('examples/examples_docs.json')).json();
+    } catch (error) {
+        console.warn('No examples_docs.json: the menu shows no descriptions', error);
+    }
 
-    const exampleSelector = document.getElementById('example-selector');
-    exampleSelector.innerHTML = '';
-    // Only show non-hidden demos in the dropdown
-    examplesMetadata.forEach((example, index) => {
-        if (example.hidden) return;
-        const option = document.createElement('option');
-        option.value = example.filename;
-        option.textContent = example.label;
-        exampleSelector.appendChild(option);
-    });
+    const list = document.getElementById('examples-list');
+    list.innerHTML = '';
+    for (const category of examplesCategories) {
+        const name = document.createElement('div');
+        name.className = 'examples-category-name';
+        name.textContent = category.name;
+        const about = document.createElement('div');
+        about.className = 'examples-category-about';
+        about.textContent = category.about;
+        list.append(name, about);
+        // Only show non-hidden demos in the menu
+        for (const example of examplesMetadata) {
+            if (example.hidden || example.category !== category.name) continue;
+            const item = document.createElement('button');
+            item.className = 'examples-item';
+            item.textContent = example.label;
+            item.dataset.filename = example.filename;
+            item.addEventListener('mouseenter', () => showExampleDoc(example.filename));
+            item.addEventListener('focus', () => showExampleDoc(example.filename));
+            item.addEventListener('click', async () => {
+                closeExamplesMenu();
+                await loadDemoByFilename(example.filename);
+            });
+            list.appendChild(item);
+        }
+    }
+}
+
+// The detail pane of the menu: the example's title and first paragraph
+function showExampleDoc(filename) {
+    const detail = document.getElementById('examples-detail');
+    detail.innerHTML = '';
+    const doc = examplesDocs[filename];
+    if (!doc) return;
+    const title = document.createElement('div');
+    title.className = 'examples-detail-title';
+    title.textContent = doc.title;
+    const text = document.createElement('p');
+    text.textContent = doc.text;
+    detail.append(title, text);
+}
+
+// Highlights the example loaded in the editor
+function markCurrentExample(filename) {
+    for (const item of document.querySelectorAll('.examples-item'))
+        item.classList.toggle('current', item.dataset.filename === filename);
+}
+
+function openExamplesMenu() {
+    document.getElementById('examples-panel').hidden = false;
+    document.getElementById('examples-button').setAttribute('aria-expanded', 'true');
+    const current = document.querySelector('.examples-item.current');
+    showExampleDoc(current ? current.dataset.filename : 'landing_page.py');
+    if (current) current.scrollIntoView({block: 'nearest'});
+}
+
+function closeExamplesMenu() {
+    document.getElementById('examples-panel').hidden = true;
+    document.getElementById('examples-button').setAttribute('aria-expanded', 'false');
 }
 
 // Load a demo by filename (works for both visible and hidden demos)
@@ -174,12 +232,7 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;
     await loadExample(filename, packages, label, bundleFolders);
-    // Set the dropdown to match (if the demo is visible)
-    const selector = document.getElementById('example-selector');
-    if (selector) {
-        const option = Array.from(selector.options).find(o => o.value === filename);
-        if (option) selector.value = filename;
-    }
+    markCurrentExample(filename);
     // Update browser URL and history
     if (updateHistory) {
         const url = new URL(window.location);
@@ -201,19 +254,21 @@ async function loadDemoFromUrlIfNeeded() {
     }
 }
 
-// Initialize the example selector on page load
+// Initialize the examples menu on page load
 document.addEventListener('DOMContentLoaded', () => {
-    populateExampleSelector();
+    populateExampleSelector().then(() => markCurrentExample(getDemoFromUrl() || 'landing_page.py'));
 
-    // Add event listener for example selector changes
-    const exampleSelectorElement = document.getElementById('example-selector');
-
-    exampleSelectorElement.addEventListener('change', async (event) => {
-        const selectedFilename = event.target.value;
-        if (selectedFilename) {
-            await loadDemoByFilename(selectedFilename);
-        }
+    const panel = document.getElementById('examples-panel');
+    document.getElementById('examples-button').addEventListener('click', () => {
+        if (panel.hidden) openExamplesMenu(); else closeExamplesMenu();
     });
+    // Closed by a click outside, or Escape (listened in the capture phase: the canvas may stop the events)
+    document.addEventListener('pointerdown', (event) => {
+        if (!panel.hidden && !document.getElementById('examples-menu').contains(event.target)) closeExamplesMenu();
+    }, true);
+    document.addEventListener('keydown', (event) => {
+        if (!panel.hidden && event.key === 'Escape') closeExamplesMenu();
+    }, true);
 
     // Handle browser back/forward buttons
     window.addEventListener('popstate', async (event) => {
@@ -227,8 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
             loadedExampleFilename = null;
             setEditorLabel('Welcome to Dear ImGui Bundle');
             clearError();
-            const selector = document.getElementById('example-selector');
-            if (selector && selector.options.length > 0) selector.selectedIndex = 0;
+            markCurrentExample('landing_page.py');
             await runEditorPythonCode();
         }
     });

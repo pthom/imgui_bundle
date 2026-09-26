@@ -1,6 +1,6 @@
 """# Theming
 
-Dear ImGui Bundle supports theming at two levels:
+Dear ImGui Bundle supports theming at two levels: complete looks, and fine-tuning of colors, rounding and spacing.
 
 **Hello ImGui themes** provide complete, pre-designed looks. Apply one with a single line:
 ```python

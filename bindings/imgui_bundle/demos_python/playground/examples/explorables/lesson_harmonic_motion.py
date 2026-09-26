@@ -1,4 +1,8 @@
-"""A lesson on Simple Harmonic Motion, built with Dear ImGui Bundle."""
+"""Simple harmonic motion
+
+A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same mathematics. Adjust the
+mass and the spring stiffness, and watch how the motion changes.
+"""
 
 import numpy as np
 import time

@@ -5,6 +5,11 @@
 # by Dear ImGui Bundle. It is not guaranteed to be up-to-date with the
 # latest version of the C++ code, but it should be close enough.
 ###############################################################################
+"""Dear ImGui: the full demo
+
+Every widget and feature of Dear ImGui, in Python. The reference to learn Dear ImGui by example (a port of
+imgui_demo.cpp).
+"""
 
 # fmt: off
 # mypy: disable_error_code=attr-defined

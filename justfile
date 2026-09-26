@@ -260,6 +260,11 @@ pyodide_serve_projects:
 pyodide_demo_runner:
     python pyodide_projects/pyodide_demo_runner/serve.py --port 6789
 
+# Playground: extract the title and first paragraph of each example's docstring, for the examples menu
+[group('pyodide')]
+playground_examples_docs:
+    python ci_scripts/playground_examples_docs.py
+
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:
@@ -363,6 +368,7 @@ cf_stage:
     # 3. Copy python playground
     # ------------------------------------------------------------
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
+    python ci_scripts/playground_examples_docs.py
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
     rsync -a --copy-unsafe-links pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
     # projects/local_wheels/ ships both the wheel (gitignored) and a tracked

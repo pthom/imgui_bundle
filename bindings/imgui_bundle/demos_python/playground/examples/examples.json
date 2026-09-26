@@ -1,111 +1,169 @@
 {
+    "categories": [
+        {
+            "name": "Start here",
+            "about": "What Dear ImGui Bundle is, in two minutes"
+        },
+        {
+            "name": "Lessons and explorables",
+            "about": "Interactive explanations: read, play, then change the code"
+        },
+        {
+            "name": "Library tours",
+            "about": "The libraries in the bundle: full demos and showcases"
+        },
+        {
+            "name": "Layouts",
+            "about": "Arrange windows and panels"
+        },
+        {
+            "name": "In the browser",
+            "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python"
+        }
+    ],
     "examples": [
-      {
-        "label": "Welcome to Dear ImGui Bundle",
-        "filename": "landing_page.py"
-      },
-      {
-        "label": "Lesson: the Mandelbrot set is a map of Julia sets",
-        "filename": "explorables/julia_map.py"
-      },
-      {
-        "label": "Lesson: a tiny neural network learns a spiral",
-        "filename": "explorables/neural_spiral/neural_spiral.py",
-        "bundle_folders": ["explorables/neural_spiral"]
-      },
-      {
-        "label": "Explorable: Double Pendulum",
-        "filename": "explorables/double_pendulum.py"
-      },
-      {
-        "label": "Explorable: Fourier Epicycles",
-        "filename": "explorables/fourier_epicycles.py"
-      },
-      {
-        "label": "ImGui: Full Demo",
-        "filename": "imgui_demo.py"
-      },
-      {
-        "label": "ImPlot: Full Demo",
-        "filename": "implot_demo.py"
-      },
-      {
-        "label": "ImPlot: Stock Viewer",
-        "filename": "demo_implot_stock.py",
-        "hidden": true
-      },
-      {
-        "label": "ImPlot3D: Full Demo",
-        "filename": "implot3d_demo.py",
-        "bundle_folders": ["implot3d_libs"]
-      },
-      {
-        "label": "ImPlot3D: Butterfly Effect",
-        "filename": "implot3d_butterfly.py"
-      },
-      {
-        "label": "What is an Immediate GUI",
-        "filename": "welcome_imm_mode.py"
-      },
-      {
-        "label": "Pyodide: Minimal HTML Example",
-        "filename": "minimal_example.py"
-      },
-      {
-        "label": "Themes & Theme Tweaking",
-        "filename": "themes.py"
-      },
-      {
-        "label": "ImmVision: Download & Inspect Images",
-        "filename": "immvision.py",
-        "packages": ["opencv-python"]
-      },
-      {
-        "label": "Layout: resizable layout using child window",
-        "filename": "layout_child.py"
-      },
-      {
-        "label": "Layout: using dockable windows",
-        "filename": "layout_docking.py"
-      },
-      {
-        "label": "Fiatlight: Image Pipeline",
-        "filename": "fiatlight_image.py",
-        "packages": ["opencv-python", "fiatlight"],
-        "bundle_folders": ["fiat_settings"]
-      },
-      {
-        "label": "Lesson: Harmonic Motion",
-        "filename": "explorables/lesson_harmonic_motion.py"
-      },
-      {
-        "label": "Lesson: Harmonic Motion2",
-        "filename": "explorables/lesson_harmonic_motion2.py",
-        "hidden": true
-      },
-      {
-        "label": "WebGL: Minimal shader as background",
-        "filename": "webgl_minimal_mandelbrot.py"
-      },
-      {
-        "label": "WebGL: Custom background (OpenGL / WebGL)",
-        "filename": "webgl_background_shader.py"
-      },
-      {
-        "label": "WebGL: 3D cube rendered to a texture",
-        "filename": "webgl_texture_in_image.py"
-      },
-      {
-        "label": "WebAudio: Minimal Beep",
-        "filename": "webaudio_minimal_beep.py"
-      },
-      {
-        "label": "Explorable: Boids (Flocks)",
-        "filename": "explorables/boids.py"
-      },
-      {
-        "label": "Explorable: Logistic Map",
-        "filename": "explorables/logistic_map.py"
-      }
+        {
+            "label": "Welcome to Dear ImGui Bundle",
+            "filename": "landing_page.py",
+            "category": "Start here"
+        },
+        {
+            "label": "What is an Immediate GUI",
+            "filename": "welcome_imm_mode.py",
+            "category": "Start here"
+        },
+        {
+            "label": "The Mandelbrot set is a map of Julia sets",
+            "filename": "explorables/julia_map.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "A tiny neural network learns two spirals",
+            "filename": "explorables/neural_spiral/neural_spiral.py",
+            "category": "Lessons and explorables",
+            "bundle_folders": [
+                "explorables/neural_spiral"
+            ]
+        },
+        {
+            "label": "Simple harmonic motion",
+            "filename": "explorables/lesson_harmonic_motion.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Simple harmonic motion 2",
+            "filename": "explorables/lesson_harmonic_motion2.py",
+            "category": "Lessons and explorables",
+            "hidden": true
+        },
+        {
+            "label": "Double pendulum",
+            "filename": "explorables/double_pendulum.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Fourier epicycles",
+            "filename": "explorables/fourier_epicycles.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Boids (flocks)",
+            "filename": "explorables/boids.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "Logistic map",
+            "filename": "explorables/logistic_map.py",
+            "category": "Lessons and explorables"
+        },
+        {
+            "label": "ImGui full demo",
+            "filename": "imgui_demo.py",
+            "category": "Library tours"
+        },
+        {
+            "label": "ImPlot full demo",
+            "filename": "implot_demo.py",
+            "category": "Library tours"
+        },
+        {
+            "label": "ImPlot stock viewer",
+            "filename": "demo_implot_stock.py",
+            "category": "Library tours",
+            "hidden": true
+        },
+        {
+            "label": "ImPlot3D full demo",
+            "filename": "implot3d_demo.py",
+            "category": "Library tours",
+            "bundle_folders": [
+                "implot3d_libs"
+            ]
+        },
+        {
+            "label": "ImPlot3D butterfly effect",
+            "filename": "implot3d_butterfly.py",
+            "category": "Library tours"
+        },
+        {
+            "label": "ImmVision image inspection",
+            "filename": "immvision.py",
+            "category": "Library tours",
+            "packages": [
+                "opencv-python"
+            ]
+        },
+        {
+            "label": "Fiatlight image pipeline",
+            "filename": "fiatlight_image.py",
+            "category": "Library tours",
+            "packages": [
+                "opencv-python",
+                "fiatlight"
+            ],
+            "bundle_folders": [
+                "fiat_settings"
+            ]
+        },
+        {
+            "label": "Themes and theme tweaking",
+            "filename": "themes.py",
+            "category": "Library tours"
+        },
+        {
+            "label": "Resizable panels with child windows",
+            "filename": "layout_child.py",
+            "category": "Layouts"
+        },
+        {
+            "label": "Dockable windows",
+            "filename": "layout_docking.py",
+            "category": "Layouts"
+        },
+        {
+            "label": "Minimal HTML page",
+            "filename": "minimal_example.py",
+            "category": "In the browser"
+        },
+        {
+            "label": "WebGL shader as background",
+            "filename": "webgl_minimal_mandelbrot.py",
+            "category": "In the browser"
+        },
+        {
+            "label": "WebGL / OpenGL custom background",
+            "filename": "webgl_background_shader.py",
+            "category": "In the browser"
+        },
+        {
+            "label": "WebGL 3D cube rendered to a texture",
+            "filename": "webgl_texture_in_image.py",
+            "category": "In the browser"
+        },
+        {
+            "label": "WebAudio minimal beep",
+            "filename": "webaudio_minimal_beep.py",
+            "category": "In the browser"
+        }
     ]
 }

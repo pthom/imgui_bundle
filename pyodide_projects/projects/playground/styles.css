@@ -40,16 +40,99 @@ html, body {
 }
 
 
-/* Dropdown styles */
-#example-selector {
+/* Examples menu: a button, then a panel with the examples by category, and the detail of the hovered one */
+#examples-menu {
+    position: relative;
     margin-right: 10px;
-    padding: 5px;
-    font-size: 1em;
 }
 
-/* Label for the dropdown */
-#example-label {
-    margin-right: 5px;
+#examples-button {
+    padding: 6px 14px;
+    font-size: 1em;
+    background-color: #444;
+    color: #fff;
+    border: 1px solid #666;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+#examples-button:hover {
+    background-color: #555;
+}
+
+#examples-panel {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 6px);
+    z-index: 1000;
+    display: flex;
+    width: min(780px, 94vw);
+    max-height: 80vh;
+    background-color: #2d2d2d;
+    border: 1px solid #555;
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+#examples-panel[hidden] {
+    display: none;
+}
+
+#examples-list {
+    flex: 0 0 340px;
+    overflow-y: auto;
+    padding: 6px 0 10px;
+}
+
+.examples-category-name {
+    padding: 10px 14px 0;
+    font-weight: bold;
+    color: #9cdcfe;
+}
+
+.examples-category-about {
+    padding: 0 14px 4px;
+    font-size: 0.8em;
+    color: #999;
+}
+
+.examples-item {
+    display: block;
+    width: 100%;
+    padding: 4px 14px 4px 26px;
+    text-align: left;
+    font-size: 0.95em;
+    color: #ddd;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.examples-item:hover, .examples-item:focus {
+    background-color: #3d5a80;
+    color: #fff;
+    outline: none;
+}
+
+.examples-item.current {
+    font-weight: bold;
+    color: #fff;
+}
+
+#examples-detail {
+    flex: 1;
+    padding: 16px 18px;
+    border-left: 1px solid #444;
+    overflow-y: auto;
+    line-height: 1.45;
+    color: #ddd;
+}
+
+.examples-detail-title {
+    margin-bottom: 8px;
+    font-size: 1.1em;
+    font-weight: bold;
+    color: #fff;
 }
 
 /* Run Button styles */
@@ -308,5 +391,17 @@ html, body {
     }
     #run-button {
         width: 100%;
+    }
+    /* No hover on touch screens: the list only, centered, a tap loads the example */
+    #examples-panel {
+        right: auto;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #examples-list {
+        flex: 1;
+    }
+    #examples-detail {
+        display: none;
     }
 }

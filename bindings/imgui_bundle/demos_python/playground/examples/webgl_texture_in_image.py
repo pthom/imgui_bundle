@@ -1,6 +1,7 @@
 """
-Render a 3D cube with WebGL from Python, display it inside an ImGui window
-via `imgui.image()`. Zero CPU/GPU round-trip on the steady-state path.
+Render a 3D cube with WebGL from Python, and display it in an ImGui window
+
+The cube is rendered into a texture, shown via `imgui.image()`: zero CPU/GPU round-trip on the steady-state path.
 
 **Pyodide only.** This demo uses Python's `js` interop to call the browser's
 WebGL2 API directly, and the wheel-side bridge (`imgui_bundle.webgl`) is
@@ -12,7 +13,7 @@ for the PyOpenGL equivalent.
 
 ImGui's renderer is C++ compiled to wasm; it identifies textures by
 integer IDs (`ImTextureID`). Textures we create from Python via
-`gl.createTexture()` come back as JS `WebGLTexture` *objects* — so we
+`gl.createTexture()` come back as JS `WebGLTexture` *objects*, so we
 need a bridge that registers the JS texture and returns an integer the
 renderer can use.
 
@@ -36,8 +37,8 @@ gl.deleteTexture(tex)
 ```
 
 Register once at startup; the integer is stable for the lifetime of the
-registration. ImGui's renderer samples the same GPU memory we render into
-— no copy, no readback per frame.
+registration. ImGui's renderer samples the same GPU memory we render into:
+no copy, no readback per frame.
 
 ## What this demo shows
 
@@ -93,7 +94,7 @@ gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
 gl.bindTexture(gl.TEXTURE_2D, None)
 
-# Depth renderbuffer — required for correct occlusion when faces overlap.
+# Depth renderbuffer: required for correct occlusion when faces overlap.
 _depth_rb = gl.createRenderbuffer()
 gl.bindRenderbuffer(gl.RENDERBUFFER, _depth_rb)
 gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, TEX_W, TEX_H)

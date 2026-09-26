@@ -100,11 +100,14 @@
             </div>
         </div>
         <div id="header-right">
-            <!-- Dropdown for Example Files -->
-            <label for="example-selector" id="example-label">Select Example:</label>
-            <select id="example-selector">
-                <!-- Options will be populated dynamically -->
-            </select>
+            <!-- Examples menu: filled by populateExampleSelector() (js/examples.js) -->
+            <div id="examples-menu">
+                <button id="examples-button" aria-haspopup="true" aria-expanded="false">Examples &#9662;</button>
+                <div id="examples-panel" hidden>
+                    <div id="examples-list"></div>
+                    <div id="examples-detail"></div>
+                </div>
+            </div>
         </div>
     </div>
 

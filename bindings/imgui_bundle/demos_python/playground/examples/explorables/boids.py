@@ -1,7 +1,7 @@
 """Boids
 =====
 
-Three trivial local rules — **separation**, **alignment**, **cohesion** —
+Three trivial local rules (**separation**, **alignment**, **cohesion**),
 and a flock emerges. No leader, no plan. Turn the knobs to re-weight the
 rules and watch order appear or dissolve. Send in **hunters** that chase
 the swarm down, or flip on the **cursor predator** and scatter it yourself.
@@ -15,7 +15,7 @@ import colorsys
 import time
 
 # =============================================================================
-# Simulation (vectorized — every boid updated in one numpy pass)
+# Simulation (vectorized: every boid updated in one numpy pass)
 # =============================================================================
 
 MIN_SPEED = 45.0      # boids never freeze; keeps the flock alive

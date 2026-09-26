@@ -1,5 +1,5 @@
 """
-WebAudio: minimal beep — Pyodide sanity check.
+WebAudio: minimal beep, a Pyodide sanity check.
 
 **Pyodide only.** Calls the browser's WebAudio API via Python's `js` interop.
 Click **Beep** to hear a short sine tone whose frequency and duration you
@@ -14,7 +14,7 @@ Same pattern as the `webgl_minimal_mandelbrot.py` demo, just talking to
 
 Browsers require a *user gesture* before an `AudioContext` is allowed to
 produce sound. We create the context lazily inside the Beep button
-handler — the button click is the gesture, so playback starts on the
+handler: the button click is the gesture, so playback starts on the
 very first press.
 """
 from imgui_bundle import imgui, immapp

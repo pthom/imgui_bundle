@@ -1,13 +1,12 @@
 """
 Minimal WebGL fragment shader as the application background.
 
-**Pyodide only.** This demo uses Python's `js` interop to call the browser's
-WebGL2 API directly. There is no equivalent on desktop, where you would
-use PyOpenGL instead. To write a *single* source file that runs on both
-desktop (PyOpenGL) and Pyodide (WebGL2), see the companion example
-`webgl_background_shader.py` — it wraps a small adapter class around the
-WebGL2 context to expose a PyOpenGL-shaped API, so the rest of the demo
-body can be identical for both targets.
+**Pyodide only.** This demo calls the browser's WebGL2 API directly, through
+Python's `js` interop. On desktop, you would use PyOpenGL instead.
+
+To run the same source file on both desktop and Pyodide, see the companion
+example `webgl_background_shader.py`: it wraps the WebGL2 context in a small
+adapter with a PyOpenGL-like API.
 
 ## The shader
 
@@ -20,7 +19,7 @@ iteration
 $$z_{n+1} = z_n^{\\,2} + c, \\quad z_0 = 0$$
 
 stays bounded as $n \\to \\infty$. In practice the orbit either stays
-inside the disk $|z| \\le 2$ forever, or escapes to infinity — and the
+inside the disk $|z| \\le 2$ forever, or escapes to infinity, and the
 escape can be detected by the test $|z_n|^2 > 4$. We color each pixel by
 the iteration index $n$ at which it first escapes, with points that
 survive `MAX_ITER` steps drawn dark (likely inside the set).
