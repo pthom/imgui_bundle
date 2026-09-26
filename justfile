@@ -260,7 +260,7 @@ pyodide_serve_projects:
 pyodide_demo_runner:
     python pyodide_projects/pyodide_demo_runner/serve.py --port 6789
 
-# Playground: extract the title and first paragraph of each example's docstring, for the examples menu
+# Playground: the examples menu's descriptions (from the docstrings), and the bundle folders' manifests
 [group('pyodide')]
 playground_examples_docs:
     python ci_scripts/playground_examples_docs.py

@@ -1,6 +1,8 @@
-"""Extracts the title and first paragraph of each playground example's docstring, for the playground's examples menu.
+"""Prepares the playground's examples: their descriptions for the examples menu, and the manifests of their folders.
 
-Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown}}.
+Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown}}, extracted from
+the title and first paragraph of each example's docstring. Also writes the manifest.json of each bundle folder of
+examples.json: the files the playground downloads with the example (e.g. Fiatlight's saved state in fiat_settings).
 Run by `just playground_examples_docs` and by `just cf_stage` (the deploy).
 
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
@@ -10,6 +12,8 @@ but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
 import ast
 import json
 import re
+import subprocess
+from typing import Any
 from pathlib import Path
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "bindings/imgui_bundle/demos_python/playground/examples"
@@ -39,8 +43,34 @@ def title_and_paragraph(docstring: str) -> tuple[str, str]:
     return plain(title), next((b for b in blocks if plain(b)), "")  # the first one with text (not only an image)
 
 
+def _ignored_by_git(paths: list[Path]) -> set[str]:
+    """The files git ignores and does not track (e.g. the .ini of a local run): the repository does not ship them"""
+    try:
+        result = subprocess.run(["git", "check-ignore", "--stdin"], input="\n".join(str(p) for p in paths),
+                                capture_output=True, text=True, cwd=EXAMPLES_DIR)
+    except FileNotFoundError:  # no git
+        return set()
+    return set(result.stdout.splitlines())
+
+
+def write_manifests(examples: list[dict[str, Any]]) -> None:
+    """The manifest of each bundle folder: its files, except the manifest, the examples themselves, and what git
+    ignores"""
+    example_files = {e["filename"] for e in examples}
+    for folder in sorted({f for e in examples for f in e.get("bundle_folders", [])}):
+        folder_path = EXAMPLES_DIR / folder
+        candidates = [p for p in folder_path.iterdir()
+                      if p.is_file() and p.name != "manifest.json" and not p.name.startswith(".")
+                      and f"{folder}/{p.name}" not in example_files]
+        ignored = _ignored_by_git(candidates)
+        files = sorted(p.name for p in candidates if str(p) not in ignored)
+        (folder_path / "manifest.json").write_text(json.dumps(files, indent=2) + "\n")
+        print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
+
+
 def main() -> None:
     examples = json.loads((EXAMPLES_DIR / "examples.json").read_text())["examples"]
+    write_manifests(examples)
     docs = {}
     for example in examples:
         if example.get("hidden"):
