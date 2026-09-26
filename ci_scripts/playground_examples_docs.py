@@ -13,6 +13,7 @@ import re
 from pathlib import Path
 
 EXAMPLES_DIR = Path(__file__).resolve().parent.parent / "bindings/imgui_bundle/demos_python/playground/examples"
+MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the menu's pane
 
 
 def plain(markdown: str) -> str:
@@ -50,6 +51,10 @@ def main() -> None:
             print(f"warning: {filename} has no docstring")
             continue
         title, text = title_and_paragraph(docstring)
+        if not text:
+            print(f"warning: {filename} has no first paragraph after its title")
+        elif len(text) > MAX_PARAGRAPH:
+            print(f"warning: {filename}: its first paragraph has {len(text)} characters (more than {MAX_PARAGRAPH})")
         docs[filename] = {"title": title, "text": text}
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
