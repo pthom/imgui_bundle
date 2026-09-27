@@ -21,7 +21,7 @@ The examples that run only in the browser (BROWSER_SHOTS) are pictured in Chrome
 screenshot-web-demos skill (it opens a visible Chrome window: ask first). For each of them:
     uv run --no-project --with playwright python .claude/skills/screenshot-web-demos/drive_page.py \
         "http://localhost:6456/playground/?demo=<file name>" --out DIR/web wait:45 shot:<file stem>
-which writes DIR/web_<file stem>.png (1400 x 900), then `--browser DIR` crops them.
+which writes DIR/web_<file stem>.png (1400 x 900), then `--browser DIR` crops those it finds in DIR.
 
 Pitfalls:
 - The GLFW backend overwrites an injected mouse position at the next frame: drive an example with a test engine
@@ -335,12 +335,16 @@ def main() -> None:
         return
     if args[:1] == ["--browser"]:
         from PIL import Image
-        for filename, crop in BROWSER_SHOTS.items():
+        cropped = []
+        for filename, crop in BROWSER_SHOTS.items():  # those whose Chrome picture is in DIR
             stem = Path(filename).stem
-            output = OUTPUT_DIR / f"{stem}.jpg"
-            _save(Image.open(Path(args[1]) / f"web_{stem}.png"), crop, output)
-            print(f"ok           {filename} -> {output}")
-        _record(list(BROWSER_SHOTS))
+            capture = Path(args[1]) / f"web_{stem}.png"
+            if capture.exists():
+                output = OUTPUT_DIR / f"{stem}.jpg"
+                _save(Image.open(capture), crop, output)
+                cropped.append(filename)
+                print(f"ok           {filename} -> {output}")
+        _record(cropped)
         return
     raw_dir = None
     if args[:1] == ["--raw"]:
