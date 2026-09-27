@@ -12,6 +12,7 @@ parts:
       - file: intro/demos_pdf
       - file: intro/examples_gallery
       - file: intro/resources
+      - file: intro/ai_guide
   - caption: For Python users
     chapters:
       - file: python/python_imgui_intro

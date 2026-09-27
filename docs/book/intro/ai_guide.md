@@ -1,90 +1,8 @@
-# Code output guidelines for Claude
+# For AI assistants
 
-When helping users with coding tasks, please follow these guidelines to ensure high-quality, maintainable code.
+This page is written for AI assistants: give it to yours (it is also at https://imgui-bundle.pages.dev/llms.txt), and it will know how to help you write applications with Dear ImGui Bundle, in Python or C++. The [full PDF manuals](https://imgui-bundle.pages.dev/doc/intro/resources/) give it even more context.
 
-## 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-- If a solution becomes complex (multiple cascading changes, need for workarounds), STOP and explain the difficulty. Present options rather than plowing ahead.
-
-**If you encounter an API in the codebase which is awkward to use**
-- Do not circumvent it with a hack. Instead, surface the issue and ask for clarification or improvement.
-- The same goes for code smells or patterns that seem out of place. Don't just "make it work" - stop implementing, then communicate the underlying problem so it can be addressed properly in collaboration with the user.
-
-**Before implementing a solution, wait for the user to finish evaluating alternatives.**
-
-**No whack-a-mole loops.** When hitting a second unexpected failure in a row on a hard problem (especially cross-platform builds, CI, toolchain issues): STOP fixing. Present the full picture of what's going wrong and why, and ask to examine the difficulties together before writing more code. Investigation time up front saves much more than it costs. Similarly, before bumping a dependency version, check changelogs/release notes for new features that could interact with existing build flags.
-
-
-## 1b. Interaction Style
-
-**Wait before acting.** Do NOT start implementing or proposing solutions before the user has finished evaluating alternatives or describing the problem. Wait for explicit go-ahead. When asked to analyze or review, produce analysis ONLY — not code changes.
-
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 3b. C++/Python Porting
-
-When porting between C++ and Python: use raw strings for multiline content, use Python naming conventions (snake_case). Verify API names exist before using them (check the `.pyi` stubs).
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
-
-
-=================
-
-Now, some notes about the ImGui Bundle project itself.
-
-
-# ImGui Bundle: Conversation Starter for LLMs
+## ImGui Bundle: Conversation Starter for LLMs
 
 ImGui Bundle provides a complete set of libraries on top of Dear ImGui, enabling users to create interactive applications in C++ and Python.
 
@@ -96,7 +14,7 @@ The following sections will contain lots of links:
 * those which are marked with "please do read" are important to understand the project, and you should read them right away.
 * those which are marked with "if needed" are less important, and you can read them later if you need to help users with specific questions.
 
-# Docs for ImGui Bundle and Hello ImGui
+## Docs for ImGui Bundle and Hello ImGui
 
 ImGui Bundle is based on Dear ImGui, and can also use Hello ImGui as a base, in order to ease the creation of interactive applications.
 
@@ -115,11 +33,11 @@ Fiatlight is a library heavily based on Dear ImGui Bundle, by the same author.
 Reading this is not mandatory, it only helps if working on Fiatlight itself.
 https://pthom.github.io/fiatlight/flgt.pdf
 
-# Differences in the C++ versus Python APIs
+## Differences in the C++ versus Python APIs
 
 ImGui Bundle's Python bindings follow Python's conventions while maintaining compatibility with the underlying C++ API. Here are the key differences:
 
-## 1. Naming Conventions
+### 1. Naming Conventions
 
 * C++ uses `CamelCase` while Python uses `snake_case`:
   ```cpp
@@ -133,7 +51,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   imgui.slider_float("My Slider", value, 0.0, 1.0)
   ```
 
-## 2. Return Values vs Output Parameters
+### 2. Return Values vs Output Parameters
 
 * C++ modifies variables through pointers, while Python returns modified values:
   ```cpp
@@ -145,7 +63,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   changed, f = imgui.slider_float("value", f, 0.0, 1.0)
   ```
 
-## 3. Enum Values
+### 3. Enum Values
 
 * C++ enums are converted to Python enum classes:
   ```cpp
@@ -157,7 +75,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   changed, text = imgui.input_text("Input", text, imgui.InputTextFlags_.chars_uppercase.value)
   ```
 
-## 4. Module Structure and Imports
+### 4. Module Structure and Imports
 
 * Python requires explicit imports from the imgui_bundle package:
   ```python
@@ -175,9 +93,9 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   ```
 
 
-# Common ImGui Patterns and Gotchas
+## Common ImGui Patterns and Gotchas
 
-## Widget IDs
+### Widget IDs
 
 ImGui identifies widgets by their label string. You must not have two widgets with the same label in the same scope, or they will conflict.
 
@@ -197,7 +115,7 @@ for i, item in enumerate(items):
     imgui.pop_id()
 ```
 
-## Begin/End Pairs
+### Begin/End Pairs
 
 Many ImGui functions come in begin/end pairs. **Important rules:**
 
@@ -226,7 +144,7 @@ Many ImGui functions come in begin/end pairs. **Important rules:**
        imgui.end_popup()  # Only when begin_popup returned True
    ```
 
-## Context Managers (Python)
+### Context Managers (Python)
 
 Python users can use `imgui_ctx` for automatic end calls, which is cleaner and less error-prone:
 
@@ -252,7 +170,7 @@ with imgui_ctx.tree_node("Settings") as node_open:
 
 See: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py
 
-## DPI-Aware Sizing
+### DPI-Aware Sizing (em units)
 
 **Never use hardcoded pixel sizes** - they will look wrong on high-DPI screens and different platforms.
 
@@ -272,7 +190,7 @@ em = em_size()       # Get 1 em in pixels
 
 The `em_to_vec2()` and `em_size()` functions are available directly from `imgui_bundle` (recommended), and also in `hello_imgui` and `immapp` modules.
 
-## Horizontal/Vertical Layouts (StackLayout)
+### Horizontal/Vertical Layouts (StackLayout)
 
 ImGui Bundle includes a patched ImGui with **StackLayout** (by thedmd), which adds `BeginHorizontal`/`EndHorizontal`, `BeginVertical`/`EndVertical`, and `Spring()`. Use these instead of repeated `SameLine()` calls, or when you need right-alignment or flexible spacing.
 
@@ -301,13 +219,13 @@ Prefer StackLayout over `SameLine()` when:
 - You want flexible spacing between groups of widgets
 
 
-# References for Python APIs
+## References for Python APIs
 
-## Hello ImGui and ImApp API
+### Hello ImGui and ImApp API
 
 Hello ImGui and ImmApp are frameworks that simplify creating interactive applications with ImGui. They handle window creation, rendering, UI loops, and events, allowing developers to focus on GUI elements.
 
-### Hello ImGui Core Features
+#### Hello ImGui Core Features
 
 1. **Simple Application Structure**:
    - Define a single GUI function that will be called each frame
@@ -332,7 +250,7 @@ Hello ImGui and ImmApp are frameworks that simplify creating interactive applica
    - Window geometry restoration
    - Multi-viewport support
 
-### ImmApp Features
+#### ImmApp Features
 
 ImmApp extends Hello ImGui with additional capabilities:
 
@@ -344,7 +262,7 @@ ImmApp extends Hello ImGui with additional capabilities:
    - Simplified interface for common tasks
    - Additional utilities for GUI layouts
 
-### Basic Usage
+#### Basic Usage
 
 ```python
 from imgui_bundle import imgui, immapp
@@ -363,7 +281,7 @@ immapp.run(
 
 Note: When using Hello ImGui or ImmApp, you don't need to call `imgui.begin()` and `imgui.end()` for the main window, as they automatically create a full-window ImGui context.
 
-### Async and Pyodide Support
+#### Async and Pyodide Support
 
 ImGui Bundle supports asynchronous execution for Jupyter notebooks and web deployment via Pyodide.
 
@@ -419,7 +337,7 @@ asyncio.create_task(main())
 | Pyodide | Fire-and-forget | Awaitable |
 | Notebook | Use `nb.start()` | Use `nb.start()` |
 
-### Advanced Configuration with RunnerParams
+#### Advanced Configuration with RunnerParams
 
 For more sophisticated applications, Hello ImGui provides a comprehensive `RunnerParams` structure that controls all aspects of application behavior. Instead of using simple parameters, you can create and configure a `RunnerParams` object:
 
@@ -448,7 +366,7 @@ params.callbacks.show_status = my_status_function
 immapp.run(params)
 ```
 
-#### Key RunnerParams Components
+##### Key RunnerParams Components
 
 1. **App Window Parameters** (`app_window_params`):
    - Controls the application window appearance and behavior
@@ -490,7 +408,7 @@ immapp.run(params)
 
 This comprehensive parameter system allows for highly customized applications while maintaining the simplicity of the basic API for common use cases.
 
-### Asset Management
+#### Asset Management
 
 Hello ImGui provides a cross-platform asset system for fonts, images, and other resources.
 
@@ -543,7 +461,7 @@ def gui():
     imgui.button("Click", em_to_vec2(10, 2))
 ```
 
-### API References
+#### API References
 
 Hello ImGui:
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi
@@ -573,7 +491,7 @@ def run(
     ...
 ```
 
-## ImGui API
+### ImGui API
 
 If needed, the Python bindings for ImGui are available in the following files:
 
@@ -583,7 +501,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/inte
 
 (those are bindings for imgui.h and imgui_internal.h)
 
-## ImPlot and ImPlot3D API
+### ImPlot and ImPlot3D API
 
 Below are the Python bindings for ImPlot and ImPlot3D, read them if needed:
 
@@ -592,7 +510,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__i
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi
 
 
-## All Library APIs
+### All Library APIs
 
 All library stubs (Python type hints and API documentation) are in `bindings/imgui_bundle/*.pyi`:
 https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
@@ -600,10 +518,10 @@ https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
 Key files: `hello_imgui.pyi`, `imgui/__init__.pyi`, `implot/__init__.pyi`, `immvision.pyi`, `immapp/__init__.pyi`
 
 
-# Example programs and demos
+## Example programs and demos
 
 
-## Hello World
+### Hello World
 
 Please do read these minimal hello world programs:
 
@@ -613,7 +531,7 @@ and
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp
 
 
-## A small program using ImGui, ImPlot and ImmApp
+### A small program using ImGui, ImPlot and ImmApp
 The program below shows a beating heart whose pulse is controlled by a knob.
 It is a good example of how to use ImGui, ImPlot and ImmApp together.
 
@@ -625,7 +543,7 @@ and in C++
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp
 
 
-## Demos for ImPlot and ImPlot3D
+### Demos for ImPlot and ImPlot3D
 
 If needed, a full set of Python demos for ImPlot and ImPlot3D are available:
 
@@ -639,7 +557,7 @@ https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp
 
 
 
-## How to create complex applications layouts using Hello ImGui
+### How to create complex applications layouts using Hello ImGui
 
 The demo below demonstrates how to use Hello ImGui to create complex applications layouts, using the following features:
 - set up a complex docking layouts (with several possible layouts):
@@ -659,7 +577,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_pyth
 and its C++ equivalent:
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
 
-## Custom background:
+### Custom background:
 
 If a user wants to create a custom 3D background (using OpenGL and shaders), an example is available in the following files, which you can read if needed:
 
@@ -667,7 +585,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_pyth
 
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
 
-## Pure python backends
+### Pure python backends
 If a users wants to control the full app cycle (i.e. not using ImmApp or HelloImGui), they may want to use a pure python backend.
 
 If needed, read the following links to understand how to use the pure python backends:
@@ -678,7 +596,7 @@ https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_bac
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py
 
 
-# ImmVision
+## ImmVision
 
 ImmVision is an image debugger with zoom, pan, pixel inspection, and colormaps. Key points:
 
@@ -689,103 +607,6 @@ ImmVision is an image debugger with zoom, pan, pixel inspection, and colormaps. 
 
 Demos: `demos_python/demos_immvision/` (display, inspector, processing, linked views)
 
-# For Developers
-
-Developer documentation (building, bindings, repo structure) is available in:
-`docs/book/devel_docs/`
-
-Key files:
-- `structure.md` - Repository folder structure
-- `bindings_intro.md` - How bindings are generated (uses litgen)
-- `bindings_update.md` - Updating library bindings
-- `bindings_newlib.md` - Adding a new library
-- `pypi_deploy.md` - PyPI deployment process
-
-The bindings are generated automatically using [litgen](https://pthom.github.io/litgen/litgen_book/00_00_intro.html), a Python bindings generator for C++ libraries.
-
-External libraries and their bindings are in `external/`:
-- Each library has a submodule and a `bindings/` folder
-- `external/bindings_generation/autogenerate_all.py` regenerates all bindings
-
-## Code Conventions
-
-* Autogenerated files: the content of pybind files (e.g. external/imgui/bindings/pybind_imgui.cpp) and stub files (e.g. bindings/imgui_bundle/imgui/__init__.pyi) for included libraries is mostly autogenerated.
-  * Do not modify the autogenerated sections (between lines <litgen_pydef> </litgen_pydef>, <litgen_stub> </litgen_stub>).
-  * Code outside of these section may be edited manually: for example the intro code before <litgen_stub> is ok to edit.
-  * If something needs fixing in generated code, implement stubs or wrappers instead.
-
-* CMake options and their corresponding C++ compile definitions use the same name, to simplify maintenance. For example, `IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS` is both the CMake `option()` and the `#ifdef` guard in C++.
-
-## Build & Platform Notes
-This project spans C++/Python with cross-platform builds (Emscripten, iOS). Be cautious about removing includes like <cstdio> — always check all platform targets before removing headers.
-
-## Note for Claude and LLMs
-
-### Working on plans
-
-- When working on demo code that need to be written both in Python and C++, ask the user which language he wants to tackle first. Work on those modifications, then ask the user to look at it and validate. Only then can you work on porting to the other language (ask him).
-
-
-### Build folders
-Claude and LLMS should create folders whose name starts with `claude_` inside the `builds/` folder, to avoid conflicts with user-created folders. For example:
-
-Examples:
-
-**Build with emscripten:**
-```bash
-mkdir -p builds/claude_ems && cd builds/claude_ems
-source ~/emsdk/emsdk_env.sh
-emcmake cmake ../.. -DCMAKE_BUILD_TYPE=Release
-```
-
-**Build the desktop imgui explorer app:**
-```
-mkdir -p builds/claude_imgui_explorer_desktop &&
-cd builds/claude_imgui_explorer_desktop && \
-cmake .. -DCMAKE_BUILD_TYPE=Release \
-         -DIMGUI_BUNDLE_BUILD_IMGUI_EXPLORER_APP=ON -DIMGUI_BUNDLE_BUILD_DEMOS=OFF -DIMGUI_BUNDLE_WITH_IMMVISION=OFF && \
-```
-
-**Build with Python bindings + immvision (recommended for most development):**
-```bash
-mkdir -p builds/claude_python_bindings && cd builds/claude_python_bindings
-cmake ../.. --preset "python_bindings" \
-    -DPython_EXECUTABLE=/path/to/your/venv/bin/python
-```
-This uses the `python_bindings` preset which enables immvision, OpenCV fetching, and Python bindings. You just need to specify which Python to use. This is the most complete build for testing C++ demos, Python bindings, and immvision together.
-
-etc. LLM's can create build folders for specific tasks, and use names that reflect the task (e.g. `claude_fix_emscripten_build` or `claude_test_pyodide`), to avoid conflicts with user-created folders.
-
-
-### Pyodide wheel filename references
-
-The Pyodide wheel filename (e.g. `imgui_bundle-1.92.801-cp314-cp314-pyemscripten_2026_0_wasm32.whl`)
-is hardcoded in several demo HTML/JS pages and a doc page. When the version
-in `pyproject.toml` / `CMakeLists.txt` changes, or when the wheel platform
-tag changes (see `ci_scripts/pyodide_local_build/config_versions_pyodide.sh`
-runbook), every hardcoded filename must be updated. Find them with:
-
-```bash
-rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --glob '!*.whl' --glob '!.pyodide_build'
-```
-
-Source-of-truth files (`pyproject.toml:13`, `CMakeLists.txt:7`) carry mirror-
-note comments; downstream wheel filenames live under `pyodide_projects/` and
-in `docs/book/python/python_pyodide.md`. Glob-only references (`*pyemscripten*.whl`
-in `justfile`, workflow yml) do not need updating on a version bump.
-
-
-## Workflow: Specs and Plans
-
-Plans, specs, and todos for features live in `_plans/`:
-- `featurename__spec.md` — written by the user before work starts
-- `featurename__plan.md` — written by Claude after reading the spec, before coding
-- `featurename__todo.md` — tracks progress during implementation
-- Templates: `a_template__*.md` (prefixed "a_" to sort to top in Finder)
-
-At the start of a task, check for an existing `__spec.md` before planning, and an existing `__plan.md` before coding.
-
-# Follow up
+## Follow up
 
 **Consult the links that were marked with "if needed" if you need to help users with specific questions on the APIs**
-
