@@ -123,6 +123,8 @@ def my_app_settings_to_string(settings: MyAppSettings) -> str:
 
 def string_to_my_app_settings(s: str) -> MyAppSettings:
     r = MyAppSettings()
+    if not s:  # no settings saved yet: the first run
+        return r
     try:
         as_dict = json.loads(s)
         r.motto = hello_imgui.input_text_data_from_string(as_dict["motto"])
@@ -926,14 +928,14 @@ def main():
     # Part 4: Run the app
     #
 
-    # Version 1: using hello_imgui.run
-    # hello_imgui.run(runner_params)
+    hello_imgui.run(runner_params)
 
-    # Version 2: using manual_render
-    hello_imgui.manual_render.setup_from_runner_params(runner_params)
-    while not runner_params.app_shall_exit:
-        hello_imgui.manual_render.render()
-    hello_imgui.manual_render.tear_down()
+    # Alternatively, you can drive the loop yourself with manual_render
+    # (not in the browser, where this loop would never give control back to the page):
+    #     hello_imgui.manual_render.setup_from_runner_params(runner_params)
+    #     while not runner_params.app_shall_exit:
+    #         hello_imgui.manual_render.render()
+    #     hello_imgui.manual_render.tear_down()
 
 
 if __name__ == "__main__":
