@@ -28,8 +28,6 @@ LOCAL_PICTURES = (Path(main_python_package_folder()).parent.parent
 EXAMPLES_DIR = Path(demos_python_folder()) / "playground/examples"
 CPP_IMMAPP_DIR = Path(demos_cpp_folder()) / "demos_immapp"
 
-# Hidden for now: Fiatlight gets its own category (an explanation, links) once its studio is ready
-HIDDEN = {"fiatlight_image.py", "fiatlight_dataframe.py"}
 CARD_WIDTH = 15.0  # em: the minimum width of a card
 DETAIL_WIDTH = 28.0  # em
 PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
@@ -93,7 +91,7 @@ def load_catalog() -> list[Category]:
     docs = json.loads((EXAMPLES_DIR / "examples_docs.json").read_text())
     categories = {c["name"]: Category(c["name"], c["about"]) for c in manifest["categories"]}
     for e in manifest["examples"]:
-        if e.get("hidden") or e["filename"] in HIDDEN:
+        if e.get("hidden") or not e.get("launcher", True):  # "launcher": false, e.g. Fiatlight until its studio is ready
             continue
         source = e.get("source", "examples")
         cpp_path = CPP_IMMAPP_DIR / (Path(e["filename"]).stem + ".cpp")

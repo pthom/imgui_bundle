@@ -121,7 +121,8 @@
             ],
             "bundle_folders": [
                 "fiat_settings"
-            ]
+            ],
+            "launcher": false
         },
         {
             "label": "Fiatlight dataframe explorer",
@@ -133,7 +134,8 @@
             ],
             "bundle_folders": [
                 "fiat_settings"
-            ]
+            ],
+            "launcher": false
         },
         {
             "label": "Themes and theme tweaking",

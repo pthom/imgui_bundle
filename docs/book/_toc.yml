@@ -8,6 +8,7 @@ parts:
       - file: intro/imm_gui
       - file: intro/compare
       - file: intro/interactive_manuals
+      - file: intro/demos
       - file: intro/examples_gallery
       - file: intro/resources
   - caption: For Python users
