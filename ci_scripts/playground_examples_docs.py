@@ -27,6 +27,8 @@ import subprocess
 from typing import Any
 from pathlib import Path
 
+from PIL import Image
+
 REPO = Path(__file__).resolve().parent.parent
 EXAMPLES_DIR = REPO / "bindings/imgui_bundle/demos_python/playground/examples"
 CPP_IMMAPP_DIR = REPO / "bindings/imgui_bundle/demos_cpp/demos_immapp"
@@ -38,6 +40,7 @@ SITE = "https://imgui-bundle.pages.dev"
 GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
 MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the menu's pane
 MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
+PICTURE_ASPECT, MAX_CROP = 1.6, 1.5  # as in the launcher: cropped to 16:10, or fitted when the shape is too different
 RUN_ICON = "\u25b6\ufe0e"  # ▶, as text (not as an emoji): the links that run a demo in the browser, in the cards
 
 
@@ -107,8 +110,9 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
 
 
 def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict[str, Any], in_grid: bool) -> list[str]:
-    """A demo's heading, picture, description, tags and links. In a grid's card, the description is its summary, and
-    the rest is in a "More" dropdown; the links are short, a row per language"""
+    """A demo's heading, picture, description, tags and links. In a grid's card, the picture comes first (the pictures
+    of a row align), the description is its summary, with the rest in a "More" dropdown, and the links are short, a row
+    per language"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
     cpp = CPP_IMMAPP_DIR / f"{stem}.cpp"
@@ -118,11 +122,18 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     explorer = f"{SITE}/explorer/{stem}.html"
     code, cpp_code = f"{GITHUB}{path.relative_to(REPO).as_posix()}", f"{GITHUB}{cpp.relative_to(REPO).as_posix()}"
     picture = PICTURES / f"{stem}.jpg"
-    lines = [f"### {e['label']}", ""]
+    lines = []
     if picture.is_file():  # a local path: the book's builds copy it (the PDF too), with no network
         lines += [f":::{{image}} {os.path.relpath(picture, BOOK_PAGE.parent)}", f":alt: {e['label']}"]
-        lines += [] if in_grid else [":width: 400px"]
+        if in_grid:
+            width, height = Image.open(picture).size
+            if max(width / height / PICTURE_ASPECT, PICTURE_ASPECT * height / width) > MAX_CROP:
+                lines += [":class: demo-fit"]  # custom.css fits it, instead of cropping it
+        else:
+            lines += [":width: 400px"]
         lines += [":::", ""]
+    heading = [f"### {e['label']}", ""]
+    lines = lines + heading if in_grid else heading + lines
     text = docs.get(e["filename"], {}).get("text", "")
     if in_grid:
         summary, rest = summary_and_rest(text)

@@ -45,6 +45,16 @@
 .myst-card .myst-dropdown-body > p {
   margin: 0.5rem 0 0 0;
 }
+/* The cards' pictures: 16:10, as in the launcher, cropped, or fitted (demo-fit) when their shape is too different */
+.myst-card img {
+  width: 100%;
+  aspect-ratio: 16 / 10;
+  object-fit: cover;
+}
+.myst-card .demo-fit img {  /* mystmd puts the class on the <picture> */
+  object-fit: contain;
+  background: rgb(20, 22, 26);
+}
 /* The languages' labels, before their links: a fixed width, so that the links of the rows align */
 .myst-card .demo-lang {
   display: inline-block;

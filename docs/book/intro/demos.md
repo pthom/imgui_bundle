@@ -13,11 +13,11 @@ The bundle at a glance
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### Welcome to Dear ImGui Bundle
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/landing_page.jpg
 :alt: Welcome to Dear ImGui Bundle
 :::
+
+### Welcome to Dear ImGui Bundle
 
 *Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear ImGui](https://github.com/ocornut/imgui).*
 
@@ -34,11 +34,12 @@ What Dear ImGui Bundle is, in two minutes
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### What is an Immediate GUI
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/welcome_imm_mode.jpg
 :alt: What is an Immediate GUI
+:class: demo-fit
 :::
+
+### What is an Immediate GUI
 
 With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple and direct**: no widget trees, no callbacks, no state synchronization.
 
@@ -51,11 +52,11 @@ You call functions to create widgets, and they return the current value. That's 
 ::::
 
 ::::{card}
-### Hello world, in two lines
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_hello_world.jpg
 :alt: Hello world, in two lines
 :::
+
+### Hello world, in two lines
 
 [ImmApp](https://imgui-bundle.pages.dev/doc/core-libs/hello-imgui-immapp/) opens the window, runs the loop, and calls your GUI function at every frame: `immapp.run(gui)` is all it takes.
 
@@ -69,11 +70,11 @@ Add widgets to that function, and you have an app. The C++ version is three line
 ::::
 
 ::::{card}
-### A parametric curve
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_parametric_curve.jpg
 :alt: A parametric curve
 :::
+
+### A parametric curve
 
 Turn the knobs, or click **Random**: the curve follows at once.
 
@@ -87,11 +88,11 @@ At every frame, the GUI function draws the plot with [ImPlot](https://github.com
 ::::
 
 ::::{card}
-### A plot and markdown, in a few lines
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_implot_markdown.jpg
 :alt: A plot and markdown, in a few lines
 :::
+
+### A plot and markdown, in a few lines
 
 A cosine wave moves in an [ImPlot](https://github.com/epezent/implot) plot, under a text written in [markdown](https://imgui-bundle.pages.dev/doc/addons/text-markdown/).
 
@@ -105,11 +106,11 @@ Both are add-ons, activated in one call: `immapp.run(gui, with_implot=True, with
 ::::
 
 ::::{card}
-### Assets and add-ons
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_assets_addons.jpg
 :alt: Assets and add-ons
 :::
+
+### Assets and add-ons
 
 An image and icons loaded from the [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), a markdown editor with a live preview, and a pie chart whose values you can drag.
 
@@ -131,11 +132,11 @@ The libraries in the bundle: full demos and showcases
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### ImGui full demo
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/imgui_demo.jpg
 :alt: ImGui full demo
 :::
+
+### ImGui full demo
 
 Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python.
 
@@ -148,11 +149,11 @@ The reference to learn Dear ImGui by example (a port of imgui_demo.cpp). Browse 
 ::::
 
 ::::{card}
-### ImPlot full demo
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot_demo.jpg
 :alt: ImPlot full demo
 :::
+
+### ImPlot full demo
 
 Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port of implot_demo.cpp).
 
@@ -165,11 +166,11 @@ Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/
 ::::
 
 ::::{card}
-### ImPlot3D full demo
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_demo.jpg
 :alt: ImPlot3D full demo
 :::
+
+### ImPlot3D full demo
 
 Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more (a port of implot3d_demo.cpp).
 
@@ -182,11 +183,11 @@ Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/
 ::::
 
 ::::{card}
-### ImPlot3D butterfly effect
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_butterfly.jpg
 :alt: ImPlot3D butterfly effect
 :::
+
+### ImPlot3D butterfly effect
 
 Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, and soon go completely different ways: this is the [butterfly effect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**.
 
@@ -199,11 +200,12 @@ The plot uses [ImPlot3D](https://github.com/brenocq/implot3d), which adds rotata
 ::::
 
 ::::{card}
-### ImmVision image inspection
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/immvision.jpg
 :alt: ImmVision image inspection
+:class: demo-fit
 :::
+
+### ImmVision image inspection
 
 [ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
 
@@ -212,11 +214,11 @@ The plot uses [ImPlot3D](https://github.com/brenocq/implot3d), which adds rotata
 ::::
 
 ::::{card}
-### Themes and theme tweaking
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/themes.jpg
 :alt: Themes and theme tweaking
 :::
+
+### Themes and theme tweaking
 
 Dear ImGui Bundle supports theming at two levels: complete looks (from [Hello ImGui](https://github.com/pthom/hello_imgui)), and fine-tuning of colors, rounding and spacing.
 
@@ -233,11 +235,12 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### Resizable panels with child windows
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/layout_child.jpg
 :alt: Resizable panels with child windows
+:class: demo-fit
 :::
+
+### Resizable panels with child windows
 
 Learn how to create resizable adjacent panels, using child windows.
 
@@ -246,11 +249,11 @@ Learn how to create resizable adjacent panels, using child windows.
 ::::
 
 ::::{card}
-### Dockable windows
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/layout_docking.jpg
 :alt: Dockable windows
 :::
+
+### Dockable windows
 
 [Hello ImGui](https://github.com/pthom/hello_imgui) provides a **docking** system: define named dock spaces, then assign windows to them.
 
@@ -263,11 +266,11 @@ Windows can be dragged, tabbed, and rearranged by the user.
 ::::
 
 ::::{card}
-### A full app: docking, fonts, logs
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_docking.jpg
 :alt: A full app: docking, fonts, logs
 :::
+
+### A full app: docking, fonts, logs
 
 A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser.
 
@@ -281,11 +284,11 @@ Your settings are saved, and restored at the next start. The code is heavily com
 ::::
 
 ::::{card}
-### Custom 3D background (OpenGL)
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_custom_background.jpg
 :alt: Custom 3D background (OpenGL)
 :::
+
+### Custom 3D background (OpenGL)
 
 The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole window, and a small window tunes its waves and colors.
 
@@ -301,11 +304,11 @@ Hello ImGui calls `runner_params.callbacks.custom_background` at each frame, bef
 ::::
 
 ::::{card}
-### Power save when idle
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_powersave.jpg
 :alt: Power save when idle
 :::
+
+### Power save when idle
 
 When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: watch the FPS and the spinner slow down.
 
@@ -319,11 +322,11 @@ Move the mouse, and they speed up again. The slider sets `fps_idle` (0 means ful
 ::::
 
 ::::{card}
-### Chinese and other non-Latin fonts
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_chinese_font.jpg
 :alt: Chinese and other non-Latin fonts
 :::
+
+### Chinese and other non-Latin fonts
 
 The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`.
 
@@ -339,11 +342,11 @@ The fix: load a font that has the glyphs you need, first, so that it becomes the
 ::::
 
 ::::{card}
-### Drag and drop
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_drag_and_drop.jpg
 :alt: Drag and drop
 :::
+
+### Drag and drop
 
 Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode.
 
@@ -357,11 +360,12 @@ Each button is both a drag source and a drop target. Adapted from the drag and d
 ::::
 
 ::::{card}
-### Command palette
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_command_palette.jpg
 :alt: Command palette
+:class: demo-fit
 :::
+
+### Command palette
 
 Press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS): a searchable list of commands pops up, as in VS Code, powered by [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).
 
@@ -375,11 +379,11 @@ Type a few letters to filter it. One command changes the theme in two steps, ano
 ::::
 
 ::::{card}
-### Test engine
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_testengine.jpg
 :alt: Test engine
 :::
+
+### Test engine
 
 Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a few buttons that run tests.
 
@@ -395,11 +399,12 @@ Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks butto
 ::::
 
 ::::{card}
-### Drive an app, capture screenshots
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_testapp.jpg
 :alt: Drive an app, capture screenshots
+:class: demo-fit
 :::
+
+### Drive an app, capture screenshots
 
 `immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a checkbox and opens a header, saving a screenshot after each step, then exits.
 
@@ -423,11 +428,11 @@ Interactive scientific demos built with Dear ImGui Bundle, showcasing its capabi
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### Interactive exploration of the Mandelbrot set
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/julia_map.jpg
 :alt: Interactive exploration of the Mandelbrot set
 :::
+
+### Interactive exploration of the Mandelbrot set
 
 Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia set](https://en.wikipedia.org/wiki/Julia_set).
 
@@ -440,11 +445,11 @@ Fly to famous values of c, and zoom into both pictures: near each point, the two
 ::::
 
 ::::{card}
-### A tiny neural network learns two spirals
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/neural_spiral.jpg
 :alt: A tiny neural network learns two spirals
 :::
+
+### A tiny neural network learns two spirals
 
 Can 16 neurons tell two spirals apart? Watch a tiny [neural network](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) learn, live, as in the [TensorFlow Playground](https://playground.tensorflow.org).
 
@@ -457,11 +462,12 @@ Then read how it works, formula by formula, next to its numpy code.
 ::::
 
 ::::{card}
-### Simple harmonic motion
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/lesson_harmonic_motion.jpg
 :alt: Simple harmonic motion
+:class: demo-fit
 :::
+
+### Simple harmonic motion
 
 A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same equation, the one of [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion).
 
@@ -474,11 +480,11 @@ Adjust the mass and the spring stiffness, and watch how the motion changes.
 ::::
 
 ::::{card}
-### Double pendulum
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/double_pendulum.jpg
 :alt: Double pendulum
 :::
+
+### Double pendulum
 
 A [double pendulum](https://en.wikipedia.org/wiki/Double_pendulum) is a [chaotic](https://en.wikipedia.org/wiki/Chaos_theory) system: tiny changes in its initial conditions lead to wildly different trajectories.
 
@@ -491,11 +497,11 @@ Drag the angles to set initial positions, then release and watch chaos unfold.
 ::::
 
 ::::{card}
-### Fourier epicycles
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/fourier_epicycles.jpg
 :alt: Fourier epicycles
 :::
+
+### Fourier epicycles
 
 Any closed curve can be approximated by a sum of rotating circles (a [Fourier series](https://en.wikipedia.org/wiki/Fourier_series)).
 
@@ -508,11 +514,11 @@ Adjust the number of circles to see how the approximation improves.
 ::::
 
 ::::{card}
-### Boids (flocks)
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/boids.jpg
 :alt: Boids (flocks)
 :::
+
+### Boids (flocks)
 
 A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way (**alignment**), and stay together (**cohesion**).
 
@@ -525,11 +531,11 @@ No leader, no plan, and yet a flock emerges. This is the [boids](https://en.wiki
 ::::
 
 ::::{card}
-### Logistic map
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/logistic_map.jpg
 :alt: Logistic map
 :::
+
+### Logistic map
 
 A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the *growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic.
 
@@ -550,11 +556,11 @@ Async, matplotlib, pydantic, context managers, and pure Python backends
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### Context managers (imgui_ctx)
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_python_context_manager.jpg
 :alt: Context managers (imgui_ctx)
 :::
+
+### Context managers (imgui_ctx)
 
 In Python, `with imgui_ctx.begin("Window"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be forgotten.
 
@@ -567,11 +573,12 @@ The same exists for child windows, menus, popups, tables, tabs, fonts and styles
 ::::
 
 ::::{card}
-### Run code alongside the GUI (async)
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_run_async.jpg
 :alt: Run code alongside the GUI (async)
+:class: demo-fit
 :::
+
+### Run code alongside the GUI (async)
 
 The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps computing.
 
@@ -586,11 +593,12 @@ The window shows both rates: the GUI's frames per second, and the loop's computa
 ::::
 
 ::::{card}
-### Control the GLFW window
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_glfw_window_manip.jpg
 :alt: Control the GLFW window
+:class: demo-fit
 :::
+
+### Control the GLFW window
 
 `glfw_utils.glfw_window_hello_imgui()` returns the [GLFW](https://www.glfw.org) window that Hello ImGui created.
 
@@ -605,11 +613,11 @@ With it, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works 
 ::::
 
 ::::{card}
-### Matplotlib figures
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_matplotlib.jpg
 :alt: Matplotlib figures
 :::
+
+### Matplotlib figures
 
 `imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI.
 
@@ -622,11 +630,11 @@ On the left, an animated sine wave, redrawn at each frame, with a slider for its
 ::::
 
 ::::{card}
-### Pydantic models
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_pydantic.jpg
 :alt: Pydantic models
 :::
+
+### Pydantic models
 
 `ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as fields of a [Pydantic](https://docs.pydantic.dev) model.
 
@@ -737,11 +745,11 @@ Deploy to the web, and use the browser's WebGL and WebAudio from Python
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### Minimal HTML page
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/minimal_example.jpg
 :alt: Minimal HTML page
 :::
+
+### Minimal HTML page
 
 Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org).
 
@@ -754,11 +762,11 @@ The HTML file below is a **complete, self-contained app** in about 80 lines - no
 ::::
 
 ::::{card}
-### WebGL shader as background
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_minimal_mandelbrot.jpg
 :alt: WebGL shader as background
 :::
+
+### WebGL shader as background
 
 The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.
 
@@ -773,11 +781,11 @@ The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a f
 ::::
 
 ::::{card}
-### WebGL / OpenGL custom background
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_background_shader.jpg
 :alt: WebGL / OpenGL custom background
 :::
+
+### WebGL / OpenGL custom background
 
 The famous "Seascape" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev, as the application's background, with the GUI on top.
 
@@ -790,11 +798,11 @@ The same source file runs on desktop and in the browser ([Pyodide](https://pyodi
 ::::
 
 ::::{card}
-### WebGL 3D cube rendered to a texture
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_texture_in_image.jpg
 :alt: WebGL 3D cube rendered to a texture
 :::
+
+### WebGL 3D cube rendered to a texture
 
 The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, then shown by `imgui.image()`: no copy between the GPU and the CPU at each frame.
 
@@ -805,11 +813,11 @@ The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/
 ::::
 
 ::::{card}
-### WebAudio synthesizer
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webaudio_synth.jpg
 :alt: WebAudio synthesizer
 :::
+
+### WebAudio synthesizer
 
 **Pyodide only.** A small synthesizer written in Python, which plays through the browser's [WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s `js` interop.
 
@@ -832,11 +840,12 @@ Tiny programs, big effect
 :::::{grid} 1 2 3 3
 
 ::::{card}
-### A beating heart
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_implot_heart.jpg
 :alt: A beating heart
+:class: demo-fit
 :::
+
+### A beating heart
 
 A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from [imgui-knobs](https://github.com/altschuler/imgui-knobs).
 
@@ -850,11 +859,11 @@ A few lines of Python: a parametric curve, scaled by a pulse at each frame. Turn
 ::::
 
 ::::{card}
-### Butterfly effect, in a few lines
-
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_butterfly.jpg
 :alt: Butterfly effect, in a few lines
 :::
+
+### Butterfly effect, in a few lines
 
 Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action, drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d).
 
