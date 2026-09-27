@@ -327,6 +327,7 @@ The documentation is structured as a Jupyter Book and published as a website + P
 ```
 docs/book/
 ├── _toc.yml                                Table of contents
+├── _toc_pdf.yml                            The same, for the PDF (generated: lists demos_pdf.md)
 ├── myst.yml                                MyST Markdown configuration
 │
 ├── intro/                                  Introduction
@@ -336,6 +337,7 @@ docs/book/
 │     ├── imm_gui.md                        The immediate mode paradigm explained
 │     ├── interactive_manuals.md            Online demos & explorer
 │     ├── demos.md                          Demos & tutorials (generated: ci_scripts/playground_examples_docs.py)
+│     ├── demos_pdf.md                      The same without its grids, for the PDF (generated)
 │     ├── examples_gallery.md               Apps made with Dear ImGui Bundle
 │     └── resources.md                      Links & resources
 │

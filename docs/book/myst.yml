@@ -10,7 +10,7 @@ project:
   exports:
     - format: pdf
       output: _build/exports/imgui_bundle_book.pdf
-      toc: _toc.yml
+      toc: _toc_pdf.yml  # _toc.yml, with a copy of intro/demos without its grids (see ci_scripts/playground_examples_docs.py)
       template: lapreprint-typst
 
 site:
