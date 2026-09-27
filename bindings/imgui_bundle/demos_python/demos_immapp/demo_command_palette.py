@@ -1,10 +1,9 @@
 """
 A command palette, as in VS Code or Sublime Text.
 
-Press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS): a searchable list of commands pops up, as in VS Code, powered by
-[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette). Type a few letters to filter it. One
-command changes the theme in two steps, another writes to the log below. Learn how to register commands and their
-callbacks.
+A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS). Type a few letters
+to filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register
+commands and their callbacks with [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).
 """
 
 from imgui_bundle import immapp, hello_imgui, imgui

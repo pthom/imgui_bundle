@@ -1,8 +1,8 @@
 """
 Render a 3D cube with WebGL from Python, and display it in an ImGui window
 
-The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture,
-then shown by `imgui.image()`: no copy between the GPU and the CPU at each frame.
+A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and
+shown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.
 
 **Pyodide only.** This demo uses Python's `js` interop to call the browser's
 WebGL2 API directly, and the wheel-side bridge (`imgui_bundle.webgl`) is

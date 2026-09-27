@@ -2,8 +2,8 @@
 """
 Drive an app from a script, and capture screenshots.
 
-`immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a
-checkbox and opens a header, saving a screenshot after each step, then exits. Handy for automated checks and for
+A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.
+`immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for
 documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
 Customization: edit `EXIT_AFTER_TESTS` and `SCREENSHOTS_FOLDER`. The five screenshots go to the current folder.

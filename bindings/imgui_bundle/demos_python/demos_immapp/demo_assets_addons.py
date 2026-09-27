@@ -1,9 +1,9 @@
 """
 Assets and add-ons: images, icons, markdown and plots.
 
-An image and icons loaded from the [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), a
-markdown editor with a live preview, and a pie chart whose values you can drag. Tick **More info** under each part to
-see how it is done. The markdown and ImPlot add-ons are activated with `immapp.AddOnsParams`.
+Load images and icons from your [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), and use
+two add-ons: markdown and ImPlot. A markdown editor with a live preview, and a pie chart whose values you can drag.
+Tick **More info** under each part to see how it is done. The add-ons are activated with `immapp.AddOnsParams`.
 """
 
 from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, icons_fontawesome

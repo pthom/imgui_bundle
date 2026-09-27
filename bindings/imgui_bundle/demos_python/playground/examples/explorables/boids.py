@@ -1,9 +1,9 @@
 """Boids
 =====
 
-A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way
-(**alignment**), and stay together (**cohesion**). No leader, no plan, and yet a flock emerges. This is the
-[boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).
+A flock of birds emerges from three simple local rules, with no leader and no plan. Each bird stays apart
+from its neighbors (**separation**), flies their way (**alignment**), and stays with them (**cohesion**).
+This is the [boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).
 
 **Try this**
 * Turn the knobs to change the weight of each rule, and watch order appear or dissolve

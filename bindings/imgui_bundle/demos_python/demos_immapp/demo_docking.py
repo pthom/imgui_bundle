@@ -1,9 +1,9 @@
 """
 A full application: docking layouts, fonts, themes, logs and a status bar.
 
-A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows
-with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your
-settings are saved, and restored at the next start. The code is heavily commented: copy it and start from there.
+A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): copy it and start
+from there. Dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars,
+menus and a theme chooser. Your settings are saved, and restored at the next start. The code is heavily commented.
 
 ## What it shows
 

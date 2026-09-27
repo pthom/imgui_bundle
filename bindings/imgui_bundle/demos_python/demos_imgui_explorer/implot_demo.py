@@ -8,7 +8,7 @@
 """ImPlot: the full demo
 
 Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,
-histograms, real-time plots and more (a port of implot_demo.cpp). Browse it next to its code in the [Dear
+histograms, real-time plots and more. A port of implot_demo.cpp: browse it next to its code in the [Dear
 ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 """
 import time

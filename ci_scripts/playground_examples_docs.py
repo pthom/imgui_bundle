@@ -16,8 +16,9 @@ or e.g. demos_immapp), and its bundle folders are paths from there, as served (e
 unique across sources: examples_docs.json is keyed by them.
 
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
-= or -), then a blank line, then a paragraph that tells a visitor what the example shows. The menu renders its markdown,
-but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
+= or -), then a blank line, then a paragraph that tells a visitor what the example shows. Its first sentence, the
+summary that the cards show, stands alone: it says what the example is about, in at most 120 characters. The menu
+renders the markdown, but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
 """
 import ast
 import json
@@ -40,6 +41,7 @@ SITE = "https://imgui-bundle.pages.dev"
 GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
 MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the menu's pane
 MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
+MAX_SUMMARY = 120  # characters: a longer summary pushes the card's "More" far down, and the launcher's card cuts it
 PICTURE_ASPECT, MAX_CROP = 1.6, 1.5  # as in the launcher: cropped to 16:10, or fitted when the shape is too different
 RUN_ICON = "\u25b6\ufe0e"  # ▶, as text (not as an emoji): the links that run a demo in the browser, in the cards
 
@@ -214,7 +216,11 @@ def main() -> None:
             print(f"warning: {filename} has no first paragraph after its title")
         elif len(plain(text)) > MAX_PARAGRAPH:
             print(f"warning: {filename}: its first paragraph has {len(plain(text))} characters (more than {MAX_PARAGRAPH})")
-        docs[filename] = {"title": title, "text": text, "summary": summary_and_rest(text)[0]}
+        summary = summary_and_rest(text)[0]
+        if len(plain(summary)) > MAX_SUMMARY and example.get("launcher", True):  # "launcher": false has no card
+            print(f"warning: {filename}: its summary (first sentence) has {len(plain(summary))} characters "
+                  f"(more than {MAX_SUMMARY})")
+        docs[filename] = {"title": title, "text": text, "summary": summary}
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)

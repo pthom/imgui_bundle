@@ -1,7 +1,7 @@
 """# Lorenz Attractor & Butterfly Effect
 
 Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same
-point, and soon go completely different ways: this is the [butterfly
+point, and soon go completely different ways. This is the [butterfly
 effect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses
 [ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui.
 

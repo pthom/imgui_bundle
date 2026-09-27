@@ -1,7 +1,7 @@
 """# Theming
 
-Dear ImGui Bundle supports theming at two levels: complete looks (from [Hello
-ImGui](https://github.com/pthom/hello_imgui)), and fine-tuning of colors, rounding and spacing.
+Pick a complete look for your app, then fine-tune its colors, rounding and spacing. The complete
+looks come from [Hello ImGui](https://github.com/pthom/hello_imgui).
 
 **Hello ImGui themes** provide complete, pre-designed looks. Apply one with a single line:
 ```python

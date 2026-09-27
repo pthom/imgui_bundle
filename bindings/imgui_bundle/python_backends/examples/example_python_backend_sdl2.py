@@ -1,9 +1,9 @@
 """
 Dear ImGui in an SDL2 window, with a pure Python backend.
 
-A window made with [SDL2](https://www.libsdl.org) (through PySDL2), and an event loop you write yourself: a Python
-backend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL2 app. Shows the
-ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.
+Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the
+rest. It uses PySDL2; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a
+window with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.
 
 `pysdl2-dll` brings the SDL2 library itself. See [Pure Python
 backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`, there is no Hello

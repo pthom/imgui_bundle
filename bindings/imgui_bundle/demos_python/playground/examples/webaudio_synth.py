@@ -1,10 +1,10 @@
 """
 WebAudio synthesizer: a piano, four tunes, and a scope.
 
-**Pyodide only.** A small synthesizer written in Python, which plays through the browser's
+A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a
+tune. Pick a waveform, add some echo, and watch the scope. **Pyodide only**: it plays through the browser's
 [WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s
-`js` interop. Play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add
-some echo, and watch the scope.
+`js` interop.
 
 ## How it works
 

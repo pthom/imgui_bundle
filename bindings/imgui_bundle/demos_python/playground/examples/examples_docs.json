@@ -26,8 +26,8 @@
   },
   "demo_assets_addons.py": {
     "title": "Assets and add-ons: images, icons, markdown and plots.",
-    "text": "An image and icons loaded from the [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), a\nmarkdown editor with a live preview, and a pie chart whose values you can drag. Tick **More info** under each part to\nsee how it is done. The markdown and ImPlot add-ons are activated with `immapp.AddOnsParams`.",
-    "summary": "An image and icons loaded from the [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), a markdown editor with a live preview, and a pie chart whose values you can drag."
+    "text": "Load images and icons from your [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), and use\ntwo add-ons: markdown and ImPlot. A markdown editor with a live preview, and a pie chart whose values you can drag.\nTick **More info** under each part to see how it is done. The add-ons are activated with `immapp.AddOnsParams`.",
+    "summary": "Load images and icons from your [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), and use two add-ons: markdown and ImPlot."
   },
   "imgui_demo.py": {
     "title": "Dear ImGui: the full demo",
@@ -36,18 +36,18 @@
   },
   "implot_demo.py": {
     "title": "ImPlot: the full demo",
-    "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,\nhistograms, real-time plots and more (a port of implot_demo.cpp). Browse it next to its code in the [Dear\nImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).",
-    "summary": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more (a port of implot_demo.cpp)."
+    "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,\nhistograms, real-time plots and more. A port of implot_demo.cpp: browse it next to its code in the [Dear\nImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).",
+    "summary": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more."
   },
   "implot3d_demo.py": {
     "title": "ImPlot3D: the full demo",
-    "text": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,\nsurfaces, meshes and more (a port of implot3d_demo.cpp). Browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).",
-    "summary": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more (a port of implot3d_demo.cpp)."
+    "text": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,\nsurfaces, meshes and more. A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).",
+    "summary": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more."
   },
   "implot3d_butterfly.py": {
     "title": "Lorenz Attractor & Butterfly Effect",
-    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same\npoint, and soon go completely different ways: this is the [butterfly\neffect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses\n[ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui.",
-    "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, and soon go completely different ways: this is the [butterfly effect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**."
+    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same\npoint, and soon go completely different ways. This is the [butterfly\neffect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses\n[ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui.",
+    "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, and soon go completely different ways."
   },
   "immvision.py": {
     "title": "ImmVision: Download & Inspect Images",
@@ -66,8 +66,8 @@
   },
   "themes.py": {
     "title": "Theming",
-    "text": "Dear ImGui Bundle supports theming at two levels: complete looks (from [Hello\nImGui](https://github.com/pthom/hello_imgui)), and fine-tuning of colors, rounding and spacing.",
-    "summary": "Dear ImGui Bundle supports theming at two levels: complete looks (from [Hello ImGui](https://github.com/pthom/hello_imgui)), and fine-tuning of colors, rounding and spacing."
+    "text": "Pick a complete look for your app, then fine-tune its colors, rounding and spacing. The complete\nlooks come from [Hello ImGui](https://github.com/pthom/hello_imgui).",
+    "summary": "Pick a complete look for your app, then fine-tune its colors, rounding and spacing."
   },
   "layout_child.py": {
     "title": "Resizable Layouts with begin_child",
@@ -81,13 +81,13 @@
   },
   "demo_docking.py": {
     "title": "A full application: docking layouts, fonts, themes, logs and a status bar.",
-    "text": "A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows\nwith several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your\nsettings are saved, and restored at the next start. The code is heavily commented: copy it and start from there.",
-    "summary": "A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser."
+    "text": "A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): copy it and start\nfrom there. Dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars,\nmenus and a theme chooser. Your settings are saved, and restored at the next start. The code is heavily commented.",
+    "summary": "A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): copy it and start from there."
   },
   "demo_custom_background.py": {
     "title": "A 3D sea behind the GUI: a custom OpenGL background.",
-    "text": "The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole\nwindow, and a small window tunes its waves and colors. Hello ImGui calls `runner_params.callbacks.custom_background`\nat each frame, before the GUI: draw anything there with OpenGL ([PyOpenGL](https://pypi.org/project/PyOpenGL/) in\nPython).",
-    "summary": "The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole window, and a small window tunes its waves and colors."
+    "text": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape\nshader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls\n`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL\n([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).",
+    "summary": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune."
   },
   "demo_powersave.py": {
     "title": "Power save: the app slows down when you don't use it.",
@@ -106,8 +106,8 @@
   },
   "demo_command_palette.py": {
     "title": "A command palette, as in VS Code or Sublime Text.",
-    "text": "Press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS): a searchable list of commands pops up, as in VS Code, powered by\n[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette). Type a few letters to filter it. One\ncommand changes the theme in two steps, another writes to the log below. Learn how to register commands and their\ncallbacks.",
-    "summary": "Press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS): a searchable list of commands pops up, as in VS Code, powered by [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette)."
+    "text": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS). Type a few letters\nto filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register\ncommands and their callbacks with [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).",
+    "summary": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS)."
   },
   "demo_testengine.py": {
     "title": "Automate and test your app with ImGui Test Engine.",
@@ -116,8 +116,8 @@
   },
   "demo_testapp.py": {
     "title": "Drive an app from a script, and capture screenshots.",
-    "text": "`immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a\ncheckbox and opens a header, saving a screenshot after each step, then exits. Handy for automated checks and for\ndocumentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
-    "summary": "`immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a checkbox and opens a header, saving a screenshot after each step, then exits."
+    "text": "A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.\n`immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for\ndocumentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
+    "summary": "A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step."
   },
   "explorables/julia_map.py": {
     "title": "The Mandelbrot set as a map of Julia sets",
@@ -131,8 +131,8 @@
   },
   "explorables/lesson_harmonic_motion.py": {
     "title": "Simple harmonic motion",
-    "text": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same equation, the one\nof [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion). Adjust the mass and the\nspring stiffness, and watch how the motion changes.",
-    "summary": "A mass on a spring, a pendulum at small angles, a vibrating string: they all follow the same equation, the one of [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion)."
+    "text": "A mass on a spring, a pendulum, a vibrating string: they all follow the same equation. It is the equation of\n[simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion) (for the pendulum, at small\nangles). Adjust the mass and the spring stiffness, and watch how the motion changes.",
+    "summary": "A mass on a spring, a pendulum, a vibrating string: they all follow the same equation."
   },
   "explorables/double_pendulum.py": {
     "title": "Double Pendulum",
@@ -146,13 +146,13 @@
   },
   "explorables/boids.py": {
     "title": "Boids",
-    "text": "A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way\n(**alignment**), and stay together (**cohesion**). No leader, no plan, and yet a flock emerges. This is the\n[boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).",
-    "summary": "A flock of birds follows three simple local rules: stay apart (**separation**), fly the same way (**alignment**), and stay together (**cohesion**)."
+    "text": "A flock of birds emerges from three simple local rules, with no leader and no plan. Each bird stays apart\nfrom its neighbors (**separation**), flies their way (**alignment**), and stays with them (**cohesion**).\nThis is the [boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).",
+    "summary": "A flock of birds emerges from three simple local rules, with no leader and no plan."
   },
   "explorables/logistic_map.py": {
     "title": "Logistic Map",
-    "text": "A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) *\n(1 - x(n))`), used for example to model the\n*growth of a population with limited resources*, can lead to wildly different situations: either stable,\nperiodic\n(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.",
-    "summary": "A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) * (1 - x(n))`), used for example to model the *growth of a population with limited resources*, can lead to wildly different situations: either stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic."
+    "text": "A very simple equation, and yet it can lead to wildly different behaviors, up to chaos. The [logistic\nmap](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n))`, models for example the\n*growth of a population with limited resources*. Depending on r, it is stable, periodic (in 2-cycles,\n4-cycles, etc), or chaotic. Let's explore this.",
+    "summary": "A very simple equation, and yet it can lead to wildly different behaviors, up to chaos."
   },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
@@ -176,33 +176,33 @@
   },
   "demo_pydantic.py": {
     "title": "ImVec2 and ImVec4 in Pydantic models.",
-    "text": "`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as\nfields of a [Pydantic](https://docs.pydantic.dev) model. The demo shows such a model, turns it into JSON, validates it\nback, and checks that nothing was lost: handy to save and load your app's settings.",
-    "summary": "`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as fields of a [Pydantic](https://docs.pydantic.dev) model."
+    "text": "Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included.\n`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as\nfields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that\nnothing was lost.",
+    "summary": "Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included."
   },
   "example_python_backend_glfw3.py": {
     "title": "Dear ImGui in a GLFW window, with a pure Python backend.",
-    "text": "A window made with [GLFW](https://www.glfw.org), and an app loop you write yourself: a Python backend passes the\ninputs to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing GLFW app. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[glfw,opengl]`.",
-    "summary": "A window made with [GLFW](https://www.glfw.org), and an app loop you write yourself: a Python backend passes the inputs to ImGui and draws it with PyOpenGL."
+    "text": "Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest.\nThe backend passes the inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown\nand a formula. Needs `pip install imgui-bundle[glfw,opengl]`.",
+    "summary": "Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest."
   },
   "example_python_backend_sdl2.py": {
     "title": "Dear ImGui in an SDL2 window, with a pure Python backend.",
-    "text": "A window made with [SDL2](https://www.libsdl.org) (through PySDL2), and an event loop you write yourself: a Python\nbackend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL2 app. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.",
-    "summary": "A window made with [SDL2](https://www.libsdl.org) (through PySDL2), and an event loop you write yourself: a Python backend passes the events to ImGui and draws it with PyOpenGL."
+    "text": "Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the\nrest. It uses PySDL2; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.",
+    "summary": "Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the rest."
   },
   "example_python_backend_sdl3.py": {
     "title": "Dear ImGui in an SDL3 window, with a pure Python backend.",
-    "text": "A window made with [SDL3](https://www.libsdl.org) (through PySDL3), and an event loop you write yourself: a Python\nbackend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL3 app. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`.",
-    "summary": "A window made with [SDL3](https://www.libsdl.org) (through PySDL3), and an event loop you write yourself: a Python backend passes the events to ImGui and draws it with PyOpenGL."
+    "text": "Add ImGui to your own [SDL3](https://www.libsdl.org) app: you write the event loop, and a Python backend does the\nrest. It uses PySDL3; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`.",
+    "summary": "Add ImGui to your own [SDL3](https://www.libsdl.org) app: you write the event loop, and a Python backend does the rest."
   },
   "example_python_backend_pyglet.py": {
     "title": "Dear ImGui in a pyglet window, with a pure Python backend.",
-    "text": "A [pyglet](https://pyglet.org) window: pyglet runs the app loop and calls your draw function, and a Python backend\npasses pyglet's events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pyglet app or game.\nShows the ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.",
-    "summary": "A [pyglet](https://pyglet.org) window: pyglet runs the app loop and calls your draw function, and a Python backend passes pyglet's events to ImGui and draws it with PyOpenGL."
+    "text": "Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the\nrest. The backend passes pyglet's events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window\nwith markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.",
+    "summary": "Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the rest."
   },
   "example_python_backend_pygame.py": {
     "title": "Dear ImGui in a pygame window, with a pure Python backend.",
-    "text": "A [pygame](https://www.pygame.org) window, and a game loop you write yourself: a Python backend passes pygame's events\nto ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pygame game. Shows a window with markdown, a\nformula and a few widgets. Needs `pip install imgui-bundle[opengl] pygame`.",
-    "summary": "A [pygame](https://www.pygame.org) window, and a game loop you write yourself: a Python backend passes pygame's events to ImGui and draws it with PyOpenGL."
+    "text": "Add ImGui to your own [pygame](https://www.pygame.org) game: you write the game loop, and a Python backend does the\nrest. The backend passes pygame's events to ImGui and draws it with PyOpenGL. Shows a window with markdown, a formula\nand a few widgets. Needs `pip install imgui-bundle[opengl] pygame`.",
+    "summary": "Add ImGui to your own [pygame](https://www.pygame.org) game: you write the game loop, and a Python backend does the rest."
   },
   "example_python_backend_wgpu.py": {
     "title": "Dear ImGui drawn with WebGPU, through wgpu-py.",
@@ -221,18 +221,18 @@
   },
   "webgl_background_shader.py": {
     "title": "Custom background using a shader, à la Shadertoy",
-    "text": "The famous \"Seascape\" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev,\nas the application's background, with the GUI on top. The same source file runs on desktop and in the browser\n([Pyodide](https://pyodide.org)).",
-    "summary": "The famous \"Seascape\" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev, as the application's background, with the GUI on top."
+    "text": "One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The\nshader is the famous \"Seascape\" from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander\nAlekseev. In the browser, the app runs with [Pyodide](https://pyodide.org).",
+    "summary": "One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser."
   },
   "webgl_texture_in_image.py": {
     "title": "Render a 3D cube with WebGL from Python, and display it in an ImGui window",
-    "text": "The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture,\nthen shown by `imgui.image()`: no copy between the GPU and the CPU at each frame.",
-    "summary": "The cube is rendered with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, then shown by `imgui.image()`: no copy between the GPU and the CPU at each frame."
+    "text": "A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and\nshown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.",
+    "summary": "A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and shown in the GUI by `imgui.image()`."
   },
   "webaudio_synth.py": {
     "title": "WebAudio synthesizer: a piano, four tunes, and a scope.",
-    "text": "**Pyodide only.** A small synthesizer written in Python, which plays through the browser's\n[WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s\n`js` interop. Play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add\nsome echo, and watch the scope.",
-    "summary": "**Pyodide only.** A small synthesizer written in Python, which plays through the browser's [WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s `js` interop."
+    "text": "A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a\ntune. Pick a waveform, add some echo, and watch the scope. **Pyodide only**: it plays through the browser's\n[WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s\n`js` interop.",
+    "summary": "A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a tune."
   },
   "haiku_implot_heart.py": {
     "title": "A beating heart, in a few lines of ImPlot.",
@@ -241,7 +241,7 @@
   },
   "haiku_butterfly.py": {
     "title": "Lorenz attractor and the butterfly effect",
-    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,\nthen drift apart: chaos in action, drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change\nthe system's parameters and the gap between the two starting points; Reset starts them over.",
-    "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action, drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d)."
+    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,\nthen drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change\nthe system's parameters and the gap between the two starting points; Reset starts them over.",
+    "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action."
   }
 }

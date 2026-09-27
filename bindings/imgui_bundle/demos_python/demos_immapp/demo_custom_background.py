@@ -1,10 +1,10 @@
 """
 A 3D sea behind the GUI: a custom OpenGL background.
 
-The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole
-window, and a small window tunes its waves and colors. Hello ImGui calls `runner_params.callbacks.custom_background`
-at each frame, before the GUI: draw anything there with OpenGL ([PyOpenGL](https://pypi.org/project/PyOpenGL/) in
-Python).
+Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape
+shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls
+`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL
+([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).
 
 ## In the browser
 

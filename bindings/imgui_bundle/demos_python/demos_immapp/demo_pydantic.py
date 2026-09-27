@@ -1,9 +1,10 @@
 """
 ImVec2 and ImVec4 in Pydantic models.
 
+Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included.
 `ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as
-fields of a [Pydantic](https://docs.pydantic.dev) model. The demo shows such a model, turns it into JSON, validates it
-back, and checks that nothing was lost: handy to save and load your app's settings.
+fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that
+nothing was lost.
 
 Needs Pydantic: `pip install "imgui-bundle[pydantic]"`.
 """

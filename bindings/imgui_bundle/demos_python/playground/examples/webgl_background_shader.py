@@ -1,9 +1,9 @@
 """
 Custom background using a shader, à la Shadertoy
 
-The famous "Seascape" shader from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander Alekseev,
-as the application's background, with the GUI on top. The same source file runs on desktop and in the browser
-([Pyodide](https://pyodide.org)).
+One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The
+shader is the famous "Seascape" from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander
+Alekseev. In the browser, the app runs with [Pyodide](https://pyodide.org).
 
 It is rendered through hello_imgui's `custom_background` callback.
 

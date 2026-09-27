@@ -2,9 +2,9 @@
 """
 Dear ImGui in a pyglet window, with a pure Python backend.
 
-A [pyglet](https://pyglet.org) window: pyglet runs the app loop and calls your draw function, and a Python backend
-passes pyglet's events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pyglet app or game.
-Shows the ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.
+Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the
+rest. The backend passes pyglet's events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window
+with markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.
 
 See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`,
 there is no Hello ImGui here: no DPI handling, themes or assets. This backend is adapted from

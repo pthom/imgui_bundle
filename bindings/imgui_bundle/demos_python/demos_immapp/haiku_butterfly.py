@@ -2,7 +2,7 @@
 # Lorenz attractor and the butterfly effect
 
 Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,
-then drift apart: chaos in action, drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change
+then drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change
 the system's parameters and the gap between the two starting points; Reset starts them over.
 
 The term **butterfly effect** in popular media may stem from the real-world implications of the Lorenz attractor,
