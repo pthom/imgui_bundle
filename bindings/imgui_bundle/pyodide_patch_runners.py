@@ -176,7 +176,13 @@ class _ManualRenderJs:
         self.is_running = True
 
         self.render_lifecycle_functions = _arg_to_render_lifecycle_functions(himgui_or_immapp, *args, **kwargs)
-        self.render_lifecycle_functions.setup()
+        try:
+            self.render_lifecycle_functions.setup()
+        except Exception:
+            # A failed setup tears itself down (AbstractRunner::Setup): there is nothing left to stop
+            self.is_running = False
+            self.render_lifecycle_functions = None
+            raise
         # Pass _stop as callback so animation renderer can trigger teardown when app_shall_exit
         self.js_animation_renderer = _JsAnimationRenderer(
             self.render_lifecycle_functions.render,
