@@ -10,7 +10,7 @@ Current FPS:  {hello_imgui.frame_rate():.1f}
 
 In order to reduce the CPU usage, the FPS is reduced automatically when no user interaction is detected.
 
-As a consequence, the animation may below not be fluid. However, if you move the mouse over this window,
+As a consequence, the animation below may not be fluid. However, if you move the mouse over this window,
 the FPS will rise and the animation will be smooth again.
 """
     )
@@ -29,18 +29,18 @@ the FPS will rise and the animation will be smooth again.
     )
 
     imgui.text_wrapped(
-        """You can adjust hello_imgui.get_runner_params().fps_idle if you need smoother animations
-    when the app is idle. A value of 0 means that the refresh will be as fast as possible"""
+        "You can adjust hello_imgui.get_runner_params().fps_idling.fps_idle if you need smoother animations "
+        "when the app is idle. A value of 0 means that the refresh will be as fast as possible"
     )
 
     imgui.new_line()
     runner_params = hello_imgui.get_runner_params()
     _, runner_params.fps_idling.fps_idle = imgui.slider_float(
-        "runner_params.fpsIdle", runner_params.fps_idling.fps_idle, 0, 60
+        "fps_idling.fps_idle", runner_params.fps_idling.fps_idle, 0, 60
     )
 
     imgui.text(
-        "You can also set HelloImGui::GetRunnerParams()->fpdIdling.enableIdling."
+        "You can also set hello_imgui.get_runner_params().fps_idling.enable_idling."
     )
     _, runner_params.fps_idling.enable_idling = imgui.checkbox(
         "Enable Idling", runner_params.fps_idling.enable_idling

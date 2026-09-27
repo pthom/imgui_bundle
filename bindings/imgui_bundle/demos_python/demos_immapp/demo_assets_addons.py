@@ -56,7 +56,7 @@ def demo_assets(app_state: AppState):
     hello_imgui.image_from_asset("images/world.png", image_size)
 
     rich_md.render(
-        "**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**"
+        "**Read the [documentation about assets](https://imgui-bundle.pages.dev/doc/python/python-assets/)**"
     )
     show_doc("AssetsDoc")
 
@@ -184,22 +184,20 @@ def get_doc(which_doc: str) -> str:
             *Note: In this code, imageSize is equivalent to the size of 3 lines of text, using the [em unit](https://en.wikipedia.org/wiki/Em_(typography))*
         """,
         "MarkdownDoc": """
-            This markdown string was rendered by calling either:
+            This markdown string was rendered by calling:
 
             C++
             ```cpp
-            RichMd::Render(markdown_string);            // render a markdown string
-            RichMd::Render(markdown_string);  // remove top-most indentation before rendering
+            RichMd::Render(markdown_string);
             ```
 
             Python
             ```python
-            rich_md.render(markdown_string);            # render a markdown string
-            rich_md.render(markdown_string); # remove top-most indentation before rendering
+            rich_md.render(markdown_string)
             ```
 
-            This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
-            It supports the most common markdown features: emphasis, link, code blocks, etc.
+            The renderer is [RichMd](https://github.com/pthom/imgui_rich_md): it started as [imgui_md](https://github.com/mekhontsev/imgui_md) by Dmitry Mekhontsev, and was extensively rewritten.
+            It supports the common markdown features, code with syntax highlighting, images and math formulas.
         """,
         "PlotDoc": """
             By using ImPlot, you can display lots of different plots. See [online demo](https://pthom.github.io/imgui_explorer/?lib=implot) which demonstrates lots of plot types (LinePlot, ScatterPlot, Histogram, Error Bars, Heatmaps, etc.)

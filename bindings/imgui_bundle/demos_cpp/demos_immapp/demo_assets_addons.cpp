@@ -55,7 +55,7 @@ void DemoAssets(AppState& appState)
     ImVec2 imageSize = HelloImGui::EmToVec2(3.f, 3.f);
     HelloImGui::ImageFromAsset("images/world.png", imageSize);
 
-    RichMd::Render("**Read the [documentation about assets](https://imgui-bundle.pages.dev/quickstart.html#quickstart_about_assets)**");
+    RichMd::Render("**Read the [documentation about assets](https://imgui-bundle.pages.dev/doc/cpp/cpp-assets/)**");
 
     ShowDoc("AssetsDoc");
 }
@@ -206,22 +206,20 @@ std::string GetDoc(const std::string& whichDoc)
             {
                 "MarkdownDoc",
                 R"(
-                This markdown string was rendered by calling either:
+                This markdown string was rendered by calling:
 
                 C++
                 ```cpp
-                RichMd::Render(markdown_string);            // render a markdown string
-                RichMd::Render(markdown_string);  // remove top-most indentation before rendering
+                RichMd::Render(markdown_string);
                 ```
 
                 Python
                 ```python
-                imgui_md.render(markdown_string);            # render a markdown string
-                imgui_md.render(markdown_string); # remove top-most indentation before rendering
+                rich_md.render(markdown_string)
                 ```
 
-                This markdown renderer is based on [imgui_md](https://github.com/mekhontsev/imgui_md), by Dmitry Mekhontsev.
-                It supports the most common markdown features: emphasis, link, code blocks, etc.
+                The renderer is [RichMd](https://github.com/pthom/imgui_rich_md): it started as [imgui_md](https://github.com/mekhontsev/imgui_md) by Dmitry Mekhontsev, and was extensively rewritten.
+                It supports the common markdown features, code with syntax highlighting, images and math formulas.
                 )"
             },
             {

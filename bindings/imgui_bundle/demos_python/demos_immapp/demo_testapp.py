@@ -23,7 +23,7 @@ state = State()
 
 
 def gui() -> None:
-    imgui.text("demo_testapp — exercise these widgets under the test engine")
+    imgui.text("demo_testapp: exercise these widgets under the test engine")
     imgui.separator()
 
     if imgui.button("Click me"):
