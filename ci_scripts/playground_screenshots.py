@@ -17,6 +17,13 @@ screenshot-web-demos skill (it opens a visible Chrome window: ask first). For ea
     uv run --no-project --with playwright python .claude/skills/screenshot-web-demos/drive_page.py \
         "http://localhost:6456/playground/?demo=<file name>" --out DIR/web wait:45 shot:<file stem>
 which writes DIR/web_<file stem>.png (1400 x 900), then `--browser DIR` crops them.
+
+Pitfalls:
+- The GLFW backend overwrites an injected mouse position at the next frame: drive an example with a test engine
+  script (`test`) or with key events.
+- The Fiatlight examples take their values and layout from their `fiat_settings` (a saved state, see the examples'
+  README): `setup` only fixes what is random.
+- On macOS, the examples crash at setup when the display is asleep: run `caffeinate -u -d -t 240 &` first.
 """
 import json
 import os

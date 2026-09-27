@@ -145,7 +145,7 @@ git commit -m "Update imgui_test_engine and regenerate bindings"
 This [video](https://youtu.be/QeBCxU7tn68) demonstrates from start to finish the process of updating imgui and its bindings (17 minutes).
 :::
 
-imgui and imgui_test_engine use forks. The full update process:
+imgui and imgui_test_engine use forks. Update them together: the test engine uses imgui internals behind `IMGUI_VERSION_NUM` guards. The full update process:
 
 **1. Tag current fork state**
 ```bash
@@ -179,6 +179,8 @@ just libs_bindings_all
 Regenerate all the libraries, not only imgui: the litgen options of imgui are shared with implot, implot3d and imgui_toggle.
 For imgui itself, this runs [external/imgui/bindings/generate_imgui.py](https://github.com/pthom/imgui_bundle/tree/main/external/imgui/bindings/generate_imgui.py), which generates bindings for imgui, imgui_internal, and imgui_test_engine.
 
+A clean rebase says nothing about litgen: a new decoration macro upstream (e.g. `IM_NODEBUGSTEP`) can be read as part of a return type. Symptoms: "Failed to run black formatter" in the log, and a stub that does not parse. So regenerate imgui alone first (`just libs_bindings imgui`), and check that its stubs parse before regenerating all the libraries. The fix is to strip the macro in `_preprocess_imgui_code()` (`external/imgui/bindings/litgen_options_imgui.py`).
+
 **4. Examine, build, and test** (see steps 3-4 above)
 
 **4b. Check imgui-node-editor** (it relies on two commits of the imgui fork: see [the imgui-node-editor fork](bindings_forks.md))
@@ -199,6 +201,18 @@ Then, in the node editor fork (`external/imgui-node-editor/imgui-node-editor`):
   (imgui_bundle is not pinned there: that workflow uses its `main` branch.)
 - in its `examples/cmake/Findimgui.cmake`, set `GIT_TAG` to the new commit of the imgui fork (tagged `bundle_YYYYMMDD`, so that
   it survives the next rebase), and build the examples once: `cmake -S examples -B <build dir> && cmake --build <build dir>`.
+
+**4c. Check hello_imgui's Vulkan backend** (on macOS, with the Vulkan SDK)
+
+MoltenVK checks things that Windows drivers often let pass (e.g. the contents of the descriptor pool), so run the Vulkan demo on the Mac:
+```bash
+cmake -S external/hello_imgui/hello_imgui -B builds/himgui_vulkan -G Ninja -DHELLOIMGUI_HAS_VULKAN=ON -DHELLOIMGUI_USE_GLFW3=ON \
+    -DHELLOIMGUI_DOWNLOAD_FREETYPE_IF_NEEDED=ON -DHELLOIMGUI_VULKAN_VALIDATION=ON
+cmake --build builds/himgui_vulkan --target hello_imgui_demodocking
+VK_LAYER_PATH=$VULKAN_SDK/share/vulkan/explicit_layer.d DYLD_LIBRARY_PATH=$VULKAN_SDK/lib \
+    builds/himgui_vulkan/bin/hello_imgui_demodocking.app/Contents/MacOS/hello_imgui_demodocking
+```
+A clean run prints no "[vulkan] Debug report" message. hello_imgui's Vulkan backend (`src/hello_imgui/internal/backend_impls/rendering_vulkan*.cpp`) follows imgui's `examples/example_glfw_vulkan/main.cpp`: diff it against the new example.
 
 **5. Push updated forks**
 ```bash
