@@ -10,3 +10,47 @@
   border: none !important;
   box-shadow: none !important;
 }
+/* The demos' cards (intro/demos.md): "More" is a discreet disclosure line, not a box */
+.myst-card details.myst-dropdown {
+  margin: -0.5rem 0 1rem 0;
+  box-shadow: none;
+  background: none;
+  border-radius: 0;
+}
+.myst-card details.myst-dropdown > summary {
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  min-height: 0;
+  font-size: 0.9rem;
+  font-weight: normal;
+}
+.myst-card .myst-dropdown-header-title {
+  color: inherit;
+  opacity: 0.7;
+}
+.myst-card .myst-dropdown-header-title > span {
+  display: inline;
+  float: none;  /* the chevron, before "More" */
+}
+.myst-card .myst-dropdown-header-icon {
+  width: 1rem;
+  height: 1rem;
+  padding-left: 0;
+  margin-right: 0.25rem;
+}
+.myst-card .myst-dropdown-body {
+  padding: 0;
+}
+.myst-card .myst-dropdown-body > p {
+  margin: 0.5rem 0 0 0;
+}
+/* The languages' labels, before their links: a fixed width, so that the links of the rows align */
+.myst-card .demo-lang {
+  display: inline-block;
+  min-width: 4em;
+}
+/* No "external link" icon after each link of a card (the theme's rule is very specific) */
+.myst-card .link-icon {
+  display: none !important;
+}

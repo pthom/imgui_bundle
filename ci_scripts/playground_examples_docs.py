@@ -1,13 +1,14 @@
 """Prepares the playground's examples: their descriptions for the examples menu, and the manifests of their folders.
 
-Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown, "summary": markdown}},
-extracted from the title and first paragraph of each example's docstring; the summary is the paragraph's first sentences,
-which the cards of the launcher and of the book show. Also writes the manifest.json of each bundle folder of
-examples.json: the files the playground downloads with the example (e.g. Fiatlight's saved state in fiat_settings).
+Writes examples_docs.json next to examples.json:
+{filename: {"title": plain text, "text": markdown, "summary": markdown}}, extracted from the title and first paragraph
+of each example's docstring; the summary is the paragraph's first sentences, which the cards of the launcher and of the
+book show. Also writes the manifest.json of each bundle folder of examples.json: the files the playground downloads
+with the example (e.g. Fiatlight's saved state in fiat_settings).
 Also writes the book's page of the demos (docs/book/intro/demos.md): what the demo launcher shows, as a page that people
-and AIs can read. The PDF export drops its grids of cards: the PDF gets a copy without them (intro/demos_pdf.md), listed by
-a copy of the table of contents (_toc_pdf.yml). Run by `just playground_examples_docs`, by the doc recipes, and by
-`just cf_stage` (the deploy).
+and AIs can read. The PDF export drops its grids of cards: the PDF gets a copy without them (intro/demos_pdf.md),
+listed by a copy of the table of contents (_toc_pdf.yml). Run by `just playground_examples_docs`, by the doc recipes,
+and by `just cf_stage` (the deploy).
 
 The "sources" of examples.json are the folders the playground serves (playground/<name>), with their place in the
 repository (relative to the examples folder). An example's file is in the folder of its "source" (examples by default,
@@ -37,6 +38,7 @@ SITE = "https://imgui-bundle.pages.dev"
 GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
 MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the menu's pane
 MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
+RUN_ICON = "\u25b6\ufe0e"  # ▶, as text (not as an emoji): the links that run a demo in the browser, in the cards
 
 
 def plain(markdown: str) -> str:
@@ -106,21 +108,15 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
 
 def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict[str, Any], in_grid: bool) -> list[str]:
     """A demo's heading, picture, description, tags and links. In a grid's card, the description is its summary, and
-    the rest is in a "More" dropdown"""
+    the rest is in a "More" dropdown; the links are short, a row per language"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
     cpp = CPP_IMMAPP_DIR / f"{stem}.cpp"
     has_cpp = source == "demos_immapp" and cpp.exists()
-    tags = (["Python"] + (["C++"] if has_cpp else [])
-            + {"browser": ["Browser only"], "desktop": ["Desktop only"]}.get(where, []))
-    links = []
-    if where != "desktop":
-        links.append(f"[Run it in the playground]({SITE}/playground/?demo={e['filename']})")
-    if has_cpp:
-        links.append(f"[C++ version, in the explorer]({SITE}/explorer/{stem}.html)")
-    links.append(f"[Python code]({GITHUB}{path.relative_to(REPO).as_posix()})")
-    if has_cpp:
-        links.append(f"[C++ code]({GITHUB}{cpp.relative_to(REPO).as_posix()})")
+    where_tags = {"browser": ["Browser only"], "desktop": ["Desktop only"]}.get(where, [])
+    playground = f"{SITE}/playground/?demo={e['filename']}"
+    explorer = f"{SITE}/explorer/{stem}.html"
+    code, cpp_code = f"{GITHUB}{path.relative_to(REPO).as_posix()}", f"{GITHUB}{cpp.relative_to(REPO).as_posix()}"
     picture = PICTURES / f"{stem}.jpg"
     lines = [f"### {e['label']}", ""]
     if picture.is_file():  # a local path: the book's builds copy it (the PDF too), with no network
@@ -131,9 +127,16 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     if in_grid:
         summary, rest = summary_and_rest(text)
         lines += [summary, ""] + ([":::{dropdown} More", rest, ":::", ""] if rest else [])
-    else:
-        lines += [text, ""]
-    return lines + [f"*{', '.join(tags)}*", "", " · ".join(links), ""]
+        python_links = ([f"[{RUN_ICON} Run]({playground})"] if where != "desktop" else []) + [f"[Code]({code})"]
+        rows = ["{span .demo-lang}`Python:` " + " · ".join(python_links)]
+        if has_cpp:
+            rows.append(f"{{span .demo-lang}}`C++:` [{RUN_ICON} Run]({explorer}) · [Code]({cpp_code})")
+        return lines + ([f"*{where_tags[0]}*", ""] if where_tags else []) + ["\\\n".join(rows), ""]  # a line break
+    links = [f"[Run it in the playground]({playground})"] if where != "desktop" else []
+    links += [f"[C++ version, in the explorer]({explorer})"] if has_cpp else []
+    links += [f"[Python code]({code})"] + ([f"[C++ code]({cpp_code})"] if has_cpp else [])
+    tags = ["Python"] + (["C++"] if has_cpp else []) + where_tags
+    return lines + [text, "", f"*{', '.join(tags)}*", "", " · ".join(links), ""]
 
 
 def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) -> None:
@@ -150,7 +153,8 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) 
     ]
     generated = "% Generated by ci_scripts/playground_examples_docs.py from examples.json: do not edit it by hand"
     # The H1 comes first: mystmd takes it as the page's title
-    site = ["# Demos & Tutorials", "", generated, *intro]
+    legend = f"In each card, {RUN_ICON} Run opens the demo in your browser, and Code shows its source, on GitHub."
+    site = ["# Demos & Tutorials", "", generated, *intro, legend, ""]
     pdf = ["# Demos & Tutorials", "", generated + " (the PDF's copy of demos.md, without its grids)", *intro]
     for category in manifest["categories"]:
         examples = [e for e in manifest["examples"] if e["category"] == category["name"]
@@ -169,7 +173,8 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) 
         print(f"wrote {page}")
 
     toc = (BOOK / "_toc.yml").read_text()
-    entry, entry_pdf = (f"- file: {p.relative_to(BOOK).with_suffix('').as_posix()}\n" for p in (BOOK_PAGE, BOOK_PAGE_PDF))
+    entry, entry_pdf = (f"- file: {p.relative_to(BOOK).with_suffix('').as_posix()}\n"
+                        for p in (BOOK_PAGE, BOOK_PAGE_PDF))
     if toc.count(entry) != 1:
         raise ValueError(f"_toc.yml must list {entry.strip()} once")
     toc_pdf = "# Generated by ci_scripts/playground_examples_docs.py from _toc.yml: do not edit it by hand\n"
