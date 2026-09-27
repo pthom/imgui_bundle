@@ -124,12 +124,13 @@ with open('${targetDir}/${file}', 'w') as _f:
     }
 }
 
-// Function to load example content (and install packages + bundle folders if needed)
-async function loadExample(filename, packages, label, bundleFolders) {
+// Function to load example content (and install packages + bundle folders if needed).
+// source: the served folder of the example's file (examples.json "source"; e.g. demos_immapp), examples by default
+async function loadExample(filename, packages, label, bundleFolders, source) {
     try {
         await installExamplePackages(packages);
         await installBundleFolders(bundleFolders);
-        const response = await fetch(`examples/${filename}`);
+        const response = await fetch(`${source || 'examples'}/${filename}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -173,9 +174,9 @@ async function populateExampleSelector() {
         about.className = 'examples-category-about';
         about.textContent = category.about;
         list.append(name, about);
-        // Only show non-hidden demos in the menu
+        // The menu shows the demos that run in the browser, except the hidden ones
         for (const example of examplesMetadata) {
-            if (example.hidden || example.category !== category.name) continue;
+            if (example.hidden || example.where === 'desktop' || example.category !== category.name) continue;
             const item = document.createElement('button');
             item.className = 'examples-item';
             item.textContent = example.label;
@@ -212,7 +213,7 @@ function showExampleDoc(filename) {
     picture.className = 'examples-detail-picture';
     picture.alt = '';
     picture.onerror = () => picture.remove();  // no picture yet, or served without the resources
-    picture.src = '../resources/playground/' + filename.split('/').pop().replace(/\.py$/, '.webp');
+    picture.src = '../resources/playground/' + filename.split('/').pop().replace(/\.py$/, '.jpg');
     detail.append(title, text, picture);
 }
 
@@ -242,7 +243,8 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     const packages = example ? example.packages : undefined;
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;
-    await loadExample(filename, packages, label, bundleFolders);
+    const source = example ? example.source : undefined;
+    await loadExample(filename, packages, label, bundleFolders, source);
     markCurrentExample(filename);
     // Update browser URL and history
     if (updateHistory) {

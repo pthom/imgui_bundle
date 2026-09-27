@@ -5,6 +5,9 @@ the title and first paragraph of each example's docstring. Also writes the manif
 examples.json: the files the playground downloads with the example (e.g. Fiatlight's saved state in fiat_settings).
 Run by `just playground_examples_docs` and by `just cf_stage` (the deploy).
 
+An example's file is in the folder of its "source" (the "sources" of examples.json: the examples folder by default,
+or e.g. the immapp demos). File names are unique across sources: examples_docs.json is keyed by them.
+
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
 = or -), then a blank line, then a paragraph that tells a visitor what the example shows. The menu renders its markdown,
 but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
@@ -69,14 +72,18 @@ def write_manifests(examples: list[dict[str, Any]]) -> None:
 
 
 def main() -> None:
-    examples = json.loads((EXAMPLES_DIR / "examples.json").read_text())["examples"]
+    manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
+    examples = manifest["examples"]
     write_manifests(examples)
-    docs = {}
+    docs: dict[str, dict[str, str]] = {}
     for example in examples:
         if example.get("hidden"):
             continue
         filename = example["filename"]
-        docstring = ast.get_docstring(ast.parse((EXAMPLES_DIR / filename).read_text()))
+        if filename in docs:
+            raise ValueError(f"{filename} is listed twice: examples_docs.json is keyed by file names")
+        folder = EXAMPLES_DIR / manifest["sources"][example.get("source", "examples")]
+        docstring = ast.get_docstring(ast.parse((folder / filename).read_text()))
         if docstring is None:
             print(f"warning: {filename} has no docstring")
             continue

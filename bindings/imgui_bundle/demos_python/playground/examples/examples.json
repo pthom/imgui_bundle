@@ -1,4 +1,9 @@
 {
+    "sources": {
+        "examples": ".",
+        "demos_immapp": "../../demos_immapp",
+        "python_backends": "../../../python_backends/examples"
+    },
     "categories": [
         {
             "name": "Start here",
@@ -9,16 +14,24 @@
             "about": "The libraries in the bundle: full demos and showcases"
         },
         {
-            "name": "Layouts",
-            "about": "Arrange windows and panels"
+            "name": "Build an app",
+            "about": "Layouts, docking, backgrounds, fonts, testing: what a real application needs"
         },
         {
             "name": "Lessons and explorables",
             "about": "Interactive scientific demos built with Dear ImGui Bundle, showcasing its capabilities"
         },
         {
+            "name": "Python specifics",
+            "about": "Async, matplotlib, pydantic, context managers, and pure Python backends"
+        },
+        {
             "name": "In the browser",
             "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python"
+        },
+        {
+            "name": "Haikus",
+            "about": "Tiny programs, big effect"
         }
     ],
     "examples": [
@@ -31,6 +44,30 @@
             "label": "What is an Immediate GUI",
             "filename": "welcome_imm_mode.py",
             "category": "Start here"
+        },
+        {
+            "label": "Hello world, in two lines",
+            "filename": "demo_hello_world.py",
+            "category": "Start here",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "A parametric curve",
+            "filename": "demo_parametric_curve.py",
+            "category": "Start here",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "A plot and markdown, in a few lines",
+            "filename": "demo_implot_markdown.py",
+            "category": "Start here",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Assets and add-ons",
+            "filename": "demo_assets_addons.py",
+            "category": "Start here",
+            "source": "demos_immapp"
         },
         {
             "label": "ImGui full demo",
@@ -101,12 +138,63 @@
         {
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
-            "category": "Layouts"
+            "category": "Build an app"
         },
         {
             "label": "Dockable windows",
             "filename": "layout_docking.py",
-            "category": "Layouts"
+            "category": "Build an app"
+        },
+        {
+            "label": "A full app: docking, fonts, logs",
+            "filename": "demo_docking.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Custom 3D background (OpenGL)",
+            "filename": "demo_custom_background.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Power save when idle",
+            "filename": "demo_powersave.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Chinese and other non-Latin fonts",
+            "filename": "demo_chinese_font.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Drag and drop",
+            "filename": "demo_drag_and_drop.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Command palette",
+            "filename": "demo_command_palette.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Test engine",
+            "filename": "demo_testengine.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Drive an app, capture screenshots",
+            "filename": "demo_testapp.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
         },
         {
             "label": "The Mandelbrot set is a map of Julia sets",
@@ -153,6 +241,86 @@
             "category": "Lessons and explorables"
         },
         {
+            "label": "Context managers (imgui_ctx)",
+            "filename": "demo_python_context_manager.py",
+            "category": "Python specifics",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Run code alongside the GUI (async)",
+            "filename": "demo_run_async.py",
+            "category": "Python specifics",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Control the GLFW window",
+            "filename": "demo_glfw_window_manip.py",
+            "category": "Python specifics",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Matplotlib figures",
+            "filename": "demo_matplotlib.py",
+            "category": "Python specifics",
+            "source": "demos_immapp",
+            "packages": [
+                "matplotlib"
+            ]
+        },
+        {
+            "label": "Pydantic models",
+            "filename": "demo_pydantic.py",
+            "category": "Python specifics",
+            "source": "demos_immapp",
+            "packages": [
+                "pydantic"
+            ]
+        },
+        {
+            "label": "Python backend: GLFW",
+            "filename": "example_python_backend_glfw3.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
+            "label": "Python backend: SDL2",
+            "filename": "example_python_backend_sdl2.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
+            "label": "Python backend: SDL3",
+            "filename": "example_python_backend_sdl3.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
+            "label": "Python backend: pyglet",
+            "filename": "example_python_backend_pyglet.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
+            "label": "Python backend: pygame",
+            "filename": "example_python_backend_pygame.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
+            "label": "Python backend: wgpu",
+            "filename": "example_python_backend_wgpu.py",
+            "category": "Python specifics",
+            "source": "python_backends",
+            "where": "desktop"
+        },
+        {
             "label": "Minimal HTML page",
             "filename": "minimal_example.py",
             "category": "In the browser"
@@ -160,7 +328,8 @@
         {
             "label": "WebGL shader as background",
             "filename": "webgl_minimal_mandelbrot.py",
-            "category": "In the browser"
+            "category": "In the browser",
+            "where": "browser"
         },
         {
             "label": "WebGL / OpenGL custom background",
@@ -170,12 +339,26 @@
         {
             "label": "WebGL 3D cube rendered to a texture",
             "filename": "webgl_texture_in_image.py",
-            "category": "In the browser"
+            "category": "In the browser",
+            "where": "browser"
         },
         {
             "label": "WebAudio synthesizer",
             "filename": "webaudio_synth.py",
-            "category": "In the browser"
+            "category": "In the browser",
+            "where": "browser"
+        },
+        {
+            "label": "A beating heart",
+            "filename": "haiku_implot_heart.py",
+            "category": "Haikus",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Butterfly effect, in a few lines",
+            "filename": "haiku_butterfly.py",
+            "category": "Haikus",
+            "source": "demos_immapp"
         }
     ]
 }

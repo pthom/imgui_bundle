@@ -7,6 +7,22 @@
     "title": "What is an Immediate GUI",
     "text": "With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple and direct**: no widget trees,\nno callbacks, no state synchronization. You call functions to create widgets, and they return the current\nvalue. That's it."
   },
+  "demo_hello_world.py": {
+    "title": "Hello world: a complete app in two lines of code.",
+    "text": "[ImmApp](https://imgui-bundle.pages.dev/doc/core-libs/hello-imgui-immapp/) opens the window, runs the loop, and calls\nyour GUI function at every frame: `immapp.run(gui)` is all it takes. Add widgets to that function, and you have an\napp. The C++ version is three lines."
+  },
+  "demo_parametric_curve.py": {
+    "title": "A parametric curve, and the immediate mode in a nutshell.",
+    "text": "Turn the knobs, or click **Random**: the curve follows at once. At every frame, the GUI function draws the plot with\n[ImPlot](https://github.com/epezent/implot) and the knobs with\n[imgui-knobs](https://github.com/altschuler/imgui-knobs), and reads their values right there. No callbacks, no widget\nobjects: that is the [immediate mode](https://imgui-bundle.pages.dev/doc/intro/imm-gui/)."
+  },
+  "demo_implot_markdown.py": {
+    "title": "An animated plot and some markdown, in a few lines.",
+    "text": "A cosine wave moves in an [ImPlot](https://github.com/epezent/implot) plot, under a text written in\n[markdown](https://imgui-bundle.pages.dev/doc/addons/text-markdown/). Both are add-ons, activated in one call:\n`immapp.run(gui, with_implot=True, with_markdown=True)`. A good start for a small app."
+  },
+  "demo_assets_addons.py": {
+    "title": "Assets and add-ons: images, icons, markdown and plots.",
+    "text": "An image and icons loaded from the [assets folder](https://imgui-bundle.pages.dev/doc/python/python-assets/), a\nmarkdown editor with a live preview, and a pie chart whose values you can drag. Tick **More info** under each part to\nsee how it is done. The markdown and ImPlot add-ons are activated with `immapp.AddOnsParams`."
+  },
   "imgui_demo.py": {
     "title": "Dear ImGui: the full demo",
     "text": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python. The reference to learn\nDear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=imgui)."
@@ -47,6 +63,38 @@
     "title": "Docking Layouts with Hello ImGui",
     "text": "[Hello ImGui](https://github.com/pthom/hello_imgui) provides a **docking** system: define named dock spaces,\nthen assign windows to them.\nWindows can be dragged, tabbed, and rearranged by the user."
   },
+  "demo_docking.py": {
+    "title": "A full application: docking layouts, fonts, themes, logs and a status bar.",
+    "text": "A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows\nwith several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your\nsettings are saved, and restored at the next start. The code is heavily commented: copy it and start from there."
+  },
+  "demo_custom_background.py": {
+    "title": "A 3D sea behind the GUI: a custom OpenGL background.",
+    "text": "The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole\nwindow, and a small window tunes its waves and colors. Hello ImGui calls `runner_params.callbacks.custom_background`\nat each frame, before the GUI: draw anything there with OpenGL ([PyOpenGL](https://pypi.org/project/PyOpenGL/) in\nPython)."
+  },
+  "demo_powersave.py": {
+    "title": "Power save: the app slows down when you don't use it.",
+    "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nwatch the FPS and the spinner slow down. Move the mouse, and they speed up again. The slider sets `fps_idle` (0 means\nfull speed), and the checkbox turns idling off, for example during an animation."
+  },
+  "demo_chinese_font.py": {
+    "title": "Non-Latin text: Chinese, Japanese, Korean, Hebrew, Arabic",
+    "text": "The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`. The fix: load a font that has\nthe glyphs you need, first, so that it becomes the default font. This demo shows how, with [Noto Sans\nSC](https://fonts.google.com/noto/specimen/Noto+Sans+SC): download it, and the demo's sample lines come alive."
+  },
+  "demo_drag_and_drop.py": {
+    "title": "Drag and drop: copy, move or swap names between buttons.",
+    "text": "Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode. Each button is\nboth a drag source and a drop target. Adapted from the drag and drop section of the [Dear ImGui\ndemo](https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp)."
+  },
+  "demo_command_palette.py": {
+    "title": "A command palette, as in VS Code or Sublime Text.",
+    "text": "Press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS): a searchable list of commands pops up, as in VS Code, powered by\n[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette). Type a few letters to filter it. One\ncommand changes the theme in two steps, another writes to the log below. Learn how to register commands and their\ncallbacks."
+  },
+  "demo_testengine.py": {
+    "title": "Automate and test your app with ImGui Test Engine.",
+    "text": "Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a\nfew buttons that run tests. Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types\ntext, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/)."
+  },
+  "demo_testapp.py": {
+    "title": "Drive an app from a script, and capture screenshots.",
+    "text": "`immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a\ncheckbox and opens a header, saving a screenshot after each step, then exits. Handy for automated checks and for\ndocumentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/)."
+  },
   "explorables/julia_map.py": {
     "title": "The Mandelbrot set as a map of Julia sets",
     "text": "Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia\nset](https://en.wikipedia.org/wiki/Julia_set). Fly to famous values of c, and zoom into both pictures: near\neach point, the two sets look alike."
@@ -75,6 +123,50 @@
     "title": "Logistic Map",
     "text": "A very simple equation (the [logistic map](https://en.wikipedia.org/wiki/Logistic_map): `x(n+1) = r * x(n) *\n(1 - x(n))`), used for example to model the\n*growth of a population with limited resources*, can lead to wildly different situations: either stable,\nperiodic\n(in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this."
   },
+  "demo_python_context_manager.py": {
+    "title": "Context managers for Dear ImGui and ImPlot in Python.",
+    "text": "In Python, `with imgui_ctx.begin(\"Window\"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be\nforgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with\n`implot_ctx`. Open a section to try it and read its code. See the [Python\ntips](https://imgui-bundle.pages.dev/doc/python/python-tips/)."
+  },
+  "demo_run_async.py": {
+    "title": "Run Python code alongside the GUI with immapp.run_async.",
+    "text": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps\ncomputing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop\nyields with `await asyncio.sleep(0)` to share the event loop. See [async\nsupport](https://imgui-bundle.pages.dev/doc/python/python-async/)."
+  },
+  "demo_glfw_window_manip.py": {
+    "title": "Control the native window with GLFW: maximize, move, opacity.",
+    "text": "`glfw_utils.glfw_window_hello_imgui()` returns the [GLFW](https://www.glfw.org) window that Hello ImGui created. With\nit, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works on your app's window. Here, buttons\nmaximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in\nthe taskbar."
+  },
+  "demo_matplotlib.py": {
+    "title": "Matplotlib figures inside an ImGui window.",
+    "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI. On the left, an animated\nsine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to\nreuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot)."
+  },
+  "demo_pydantic.py": {
+    "title": "ImVec2 and ImVec4 in Pydantic models.",
+    "text": "`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as\nfields of a [Pydantic](https://docs.pydantic.dev) model. The demo shows such a model, turns it into JSON, validates it\nback, and checks that nothing was lost: handy to save and load your app's settings."
+  },
+  "example_python_backend_glfw3.py": {
+    "title": "Dear ImGui in a GLFW window, with a pure Python backend.",
+    "text": "A window made with [GLFW](https://www.glfw.org), and an app loop you write yourself: a Python backend passes the\ninputs to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing GLFW app. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[glfw,opengl]`."
+  },
+  "example_python_backend_sdl2.py": {
+    "title": "Dear ImGui in an SDL2 window, with a pure Python backend.",
+    "text": "A window made with [SDL2](https://www.libsdl.org) (through PySDL2), and an event loop you write yourself: a Python\nbackend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL2 app. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`."
+  },
+  "example_python_backend_sdl3.py": {
+    "title": "Dear ImGui in an SDL3 window, with a pure Python backend.",
+    "text": "A window made with [SDL3](https://www.libsdl.org) (through PySDL3), and an event loop you write yourself: a Python\nbackend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL3 app. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`."
+  },
+  "example_python_backend_pyglet.py": {
+    "title": "Dear ImGui in a pyglet window, with a pure Python backend.",
+    "text": "A [pyglet](https://pyglet.org) window: pyglet runs the app loop and calls your draw function, and a Python backend\npasses pyglet's events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pyglet app or game.\nShows the ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`."
+  },
+  "example_python_backend_pygame.py": {
+    "title": "Dear ImGui in a pygame window, with a pure Python backend.",
+    "text": "A [pygame](https://www.pygame.org) window, and a game loop you write yourself: a Python backend passes pygame's events\nto ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pygame game. Shows a window with markdown, a\nformula and a few widgets. Needs `pip install imgui-bundle[opengl] pygame`."
+  },
+  "example_python_backend_wgpu.py": {
+    "title": "Dear ImGui drawn with WebGPU, through wgpu-py.",
+    "text": "ImGui drawn with WebGPU, by the ImGui renderer of [wgpu-py](https://github.com/pygfx/wgpu-py), in a\n[rendercanvas](https://github.com/pygfx/rendercanvas) window. wgpu-py uses Dear ImGui Bundle for its GUIs. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[wgpu]`."
+  },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
     "text": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org). The HTML file below is a **complete, self-contained app** in about 80 lines - no server, no build step."
@@ -94,5 +186,13 @@
   "webaudio_synth.py": {
     "title": "WebAudio synthesizer: a piano, four tunes, and a scope.",
     "text": "**Pyodide only.** A small synthesizer written in Python, which plays through the browser's\n[WebAudio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API), via [Pyodide](https://pyodide.org)'s\n`js` interop. Play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add\nsome echo, and watch the scope."
+  },
+  "haiku_implot_heart.py": {
+    "title": "A beating heart, in a few lines of ImPlot.",
+    "text": "A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from\n[imgui-knobs](https://github.com/altschuler/imgui-knobs). A few lines of Python: a parametric curve, scaled by a pulse\nat each frame. Turn the knob to change the heart rate, or its thickness."
+  },
+  "haiku_butterfly.py": {
+    "title": "Lorenz attractor and the butterfly effect",
+    "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,\nthen drift apart: chaos in action, drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change\nthe system's parameters and the gap between the two starting points; Reset starts them over."
   }
 }
