@@ -11,6 +11,11 @@ Usage:
     python ci_scripts/playground_screenshots.py julia_map boids  # some of them
     python ci_scripts/playground_screenshots.py --raw DIR        # full windows as PNG, in DIR (to choose the crops)
     python ci_scripts/playground_screenshots.py --browser DIR    # the examples of BROWSER_SHOTS, from Chrome pictures
+    python ci_scripts/playground_screenshots.py --stale          # the examples whose file changed since their picture
+    python ci_scripts/playground_screenshots.py --mark-fresh julia_map  # its picture is still right (all if no name)
+
+When a picture is saved, the hash of its example's file goes to picture_hashes.json, next to the pictures: `--stale`
+compares it with the file as it is now. A change that does not show (e.g. a docstring) calls for `--mark-fresh`.
 
 The examples that run only in the browser (BROWSER_SHOTS) are pictured in Chrome, in the local playground, with the
 screenshot-web-demos skill (it opens a visible Chrome window: ask first). For each of them:
@@ -25,6 +30,7 @@ Pitfalls:
   README): `setup` only fixes what is random.
 - On macOS, the examples crash at setup when the display is asleep: run `caffeinate -u -d -t 240 &` first.
 """
+import hashlib
 import json
 import os
 import re
@@ -40,6 +46,7 @@ from typing import Any, Callable, Optional
 REPO = Path(__file__).resolve().parent.parent
 EXAMPLES_DIR = REPO / "bindings/imgui_bundle/demos_python/playground/examples"
 OUTPUT_DIR = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
+HASHES = OUTPUT_DIR / "picture_hashes.json"  # for each picture: the hash of the example's file it was taken from
 WIDTH = 640  # the width of the pictures, in pixels
 TIMEOUT = 45  # seconds: an example still running by then is killed (its window closes), and reported
 
@@ -287,10 +294,44 @@ def _examples() -> dict[str, tuple[Path, list[tuple[Path, str]]]]:
     return examples
 
 
+def _hashes() -> dict[str, str]:
+    return json.loads(HASHES.read_text()) if HASHES.exists() else {}
+
+
+def _file_hash(filename: str, examples: dict[str, tuple[Path, list[tuple[Path, str]]]]) -> str:
+    return hashlib.sha256(examples[filename][0].read_bytes()).hexdigest()[:12]
+
+
+def _record(filenames: list[str]) -> None:
+    """Remembers, for each example, the hash of its file as it is now (its picture was taken from it)"""
+    examples, hashes = _examples(), _hashes()
+    hashes.update({Path(f).stem: _file_hash(f, examples) for f in filenames})
+    HASHES.write_text(json.dumps(dict(sorted(hashes.items())), indent=2) + "\n")
+
+
+def _list_stale() -> None:
+    """Lists the examples whose file changed since their picture was taken"""
+    examples, hashes = _examples(), _hashes()
+    stale = 0
+    for filename in [*SHOTS, *BROWSER_SHOTS]:
+        recorded = hashes.get(Path(filename).stem)
+        if recorded != _file_hash(filename, examples):
+            stale += 1
+            where = "browser: see --browser" if filename in BROWSER_SHOTS else "desktop"
+            print(f"{'changed' if recorded else 'no hash':12s} {filename} ({where})")
+    print(f"{stale} of {len(SHOTS) + len(BROWSER_SHOTS)} pictures may be stale")
+
+
 def main() -> None:
     args = sys.argv[1:]
     if args[:1] == ["--one"]:
         _run_one(args[1], args[2], raw=args[3] == "raw", path=Path(args[4]))
+        return
+    if args[:1] == ["--stale"]:
+        _list_stale()
+        return
+    if args[:1] == ["--mark-fresh"]:
+        _record([f for f in [*SHOTS, *BROWSER_SHOTS] if len(args) == 1 or Path(f).stem in args[1:]])
         return
     if args[:1] == ["--browser"]:
         from PIL import Image
@@ -299,6 +340,7 @@ def main() -> None:
             output = OUTPUT_DIR / f"{stem}.jpg"
             _save(Image.open(Path(args[1]) / f"web_{stem}.png"), crop, output)
             print(f"ok           {filename} -> {output}")
+        _record(list(BROWSER_SHOTS))
         return
     raw_dir = None
     if args[:1] == ["--raw"]:
@@ -331,6 +373,8 @@ def main() -> None:
         print(f"{status:12s} {filename} -> {output}")
         if status != "ok":
             print(result.stderr[-1500:])
+        elif not raw_dir:
+            _record([filename])
 
 
 if __name__ == "__main__":
