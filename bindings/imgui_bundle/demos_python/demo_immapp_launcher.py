@@ -352,12 +352,13 @@ class Launcher:
         imgui.push_text_wrap_pos(width - padding)
         shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.text_disabled(shown)
+        summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value)
         imgui.pop_text_wrap_pos()
         imgui.end_child()
         imgui.pop_style_var(3)
         imgui.pop_style_color(2)
-        # The whole description, when the card cuts it or shows its first sentences only
-        if shown != plain_text(demo.text) and imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value):
+        # The whole description, on the summary, when the card cuts it or shows its first sentences only
+        if summary_hovered and shown != plain_text(demo.text):  # after the pops: the card's styles stay out of it
             imgui.set_next_window_size(ImVec2(em_size(25), 0))  # the markdown wraps at this width
             if imgui.begin_tooltip():
                 rich_md.render(demo.text)
