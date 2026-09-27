@@ -3,7 +3,7 @@ A beating heart, in a few lines of ImPlot.
 
 A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from
 [imgui-knobs](https://github.com/altschuler/imgui-knobs). A few lines of Python: a parametric curve, scaled by a pulse
-at each frame. Turn the knob to change the heart rate, or its thickness.
+at each frame. Turn the knobs to change the heart rate, or its thickness.
 """
 
 import time
@@ -41,7 +41,6 @@ def gui():
     imgui.same_line()
     _, heart_thickness = imgui_knobs.knob("Line Thickness", heart_thickness, 0.01, 0.3,
                                          variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=hello_imgui.em_size(4.0))
-    imgui.same_line()
 
 
 if __name__ == "__main__":
