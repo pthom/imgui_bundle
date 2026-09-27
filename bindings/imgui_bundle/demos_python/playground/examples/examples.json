@@ -7,6 +7,10 @@
     },
     "categories": [
         {
+            "name": "Dear ImGui Bundle",
+            "about": "The bundle at a glance"
+        },
+        {
             "name": "Start here",
             "about": "What Dear ImGui Bundle is, in two minutes"
         },
@@ -39,7 +43,7 @@
         {
             "label": "Welcome to Dear ImGui Bundle",
             "filename": "landing_page.py",
-            "category": "Start here"
+            "category": "Dear ImGui Bundle"
         },
         {
             "label": "What is an Immediate GUI",
@@ -202,7 +206,7 @@
             "where": "desktop"
         },
         {
-            "label": "The Mandelbrot set is a map of Julia sets",
+            "label": "Interactive exploration of the Mandelbrot set",
             "filename": "explorables/julia_map.py",
             "category": "Lessons and explorables"
         },

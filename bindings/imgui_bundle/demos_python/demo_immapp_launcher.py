@@ -28,22 +28,23 @@ LOCAL_PICTURES = (Path(main_python_package_folder()).parent.parent
 EXAMPLES_DIR = Path(demos_python_folder()) / "playground/examples"
 CPP_IMMAPP_DIR = Path(demos_cpp_folder()) / "demos_immapp"
 
-HIGHLIGHTS = ["explorables/julia_map.py", "explorables/neural_spiral/neural_spiral.py", "implot3d_demo.py"]
+# Hidden for now: Fiatlight gets its own category (an explanation, links) once its studio is ready
+HIDDEN = {"fiatlight_image.py", "fiatlight_dataframe.py"}
 CARD_WIDTH = 15.0  # em: the minimum width of a card
 DETAIL_WIDTH = 28.0  # em
-PICTURE_ASPECT = 1.6  # of the pictures on the cards (they are cropped to it)
+PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
+MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
 EASE = im_anim.ease_preset(im_anim.ease_type.ease_out_cubic)
 
 # Colors
 ACCENT = ImVec4(0.45, 0.65, 1.0, 1.0)  # the selected card, the chip of the category in view
-CARD_BG = ImVec4(0.13, 0.14, 0.16, 1.0)
-CARD_BG_HOVERED = ImVec4(0.17, 0.18, 0.22, 1.0)
+CARD_BG = ImVec4(0.16, 0.18, 0.24, 1.0)  # under the card's text (the picture covers the rest)
+CARD_BG_HOVERED = ImVec4(0.2, 0.23, 0.31, 1.0)
 CARD_BORDER = ImVec4(0.25, 0.25, 0.3, 1.0)
 CARD_BORDER_HOVERED = ImVec4(0.6, 0.62, 0.72, 1.0)
 CATEGORY_TITLE = ImVec4(0.61, 0.86, 1.0, 1.0)
-HIGHLIGHTS_TITLE = ImVec4(1.0, 0.8, 0.4, 1.0)
 TAG_COLORS = {"Python": IM_COL32(48, 105, 152, 235), "C++": IM_COL32(96, 72, 160, 235),
-              "Browser only": IM_COL32(190, 105, 30, 235)}
+              "Browser only": IM_COL32(190, 105, 30, 235), "Desktop only": IM_COL32(40, 125, 85, 235)}
 
 
 def tween(key: str, target: float, duration: float, start: Optional[float] = None) -> float:
@@ -75,6 +76,8 @@ class Demo:
             tags.append("C++")
         if self.where == "browser":
             tags.append("Browser only")
+        if self.where == "desktop":
+            tags.append("Desktop only")
         return tags
 
 
@@ -90,7 +93,7 @@ def load_catalog() -> list[Category]:
     docs = json.loads((EXAMPLES_DIR / "examples_docs.json").read_text())
     categories = {c["name"]: Category(c["name"], c["about"]) for c in manifest["categories"]}
     for e in manifest["examples"]:
-        if e.get("hidden"):
+        if e.get("hidden") or e["filename"] in HIDDEN:
             continue
         source = e.get("source", "examples")
         cpp_path = CPP_IMMAPP_DIR / (Path(e["filename"]).stem + ".cpp")
@@ -194,7 +197,17 @@ class Pictures:
             return
         alpha = tween(f"picture {stem}", 1.0, 0.5, start=0.0)
         uv0, uv1 = ImVec2(0, 0), ImVec2(1, 1)
-        if image_aspect > aspect:  # crop the sides
+        if max(image_aspect / aspect, aspect / image_aspect) > MAX_CROP:  # fit it, centered, on a dark background
+            draw_list.add_rect_filled(top_left, bottom_right, IM_COL32(20, 22, 26, 255))
+            if image_aspect > aspect:
+                height = width / image_aspect
+                top_left = ImVec2(top_left.x, (top_left.y + bottom_right.y - height) / 2)
+                bottom_right = ImVec2(bottom_right.x, top_left.y + height)
+            else:
+                picture_width = (bottom_right.y - top_left.y) * image_aspect
+                top_left = ImVec2((top_left.x + bottom_right.x - picture_width) / 2, top_left.y)
+                bottom_right = ImVec2(top_left.x + picture_width, bottom_right.y)
+        elif image_aspect > aspect:  # crop the sides
             margin = (1 - aspect / image_aspect) / 2
             uv0, uv1 = ImVec2(margin, 0), ImVec2(1 - margin, 1)
         elif image_aspect < aspect:  # crop the top and the bottom
@@ -239,12 +252,10 @@ def lerp(a: ImVec4, b: ImVec4, t: float) -> ImVec4:
     return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t)
 
 
-def big_text(text: str, scale: float, color: Optional[ImVec4] = None, wrapped: bool = False) -> None:
+def big_text(text: str, scale: float, color: Optional[ImVec4] = None) -> None:
     imgui.push_font(None, imgui.get_style().font_size_base * scale)
     if color is not None:
         imgui.text_colored(color, text)
-    elif wrapped:
-        imgui.text_wrapped(text)
     else:
         imgui.text(text)
     imgui.pop_font()
@@ -281,11 +292,8 @@ def draw_tags(tags: list[str], bottom_right: ImVec2) -> None:
 class Launcher:
     def __init__(self) -> None:
         self.categories = load_catalog()
-        demos = {d.filename: d for c in self.categories for d in c.demos}
-        self.highlights = [demos[f] for f in HIGHLIGHTS if f in demos]
-        self.selected = self.highlights[0] if self.highlights else self.categories[0].demos[0]
-        stems = [d.stem for d in self.highlights] + [d.stem for c in self.categories for d in c.demos]
-        self.pictures = Pictures(list(dict.fromkeys(stems)))
+        self.selected = self.categories[0].demos[0]
+        self.pictures = Pictures(list(dict.fromkeys(d.stem for c in self.categories for d in c.demos)))
         self.category_y: dict[str, float] = {}  # the position of each category in the gallery (scroll coordinates)
         self.category_in_view = ""
         self.scroll_target: Optional[float] = None  # a click on a category chip scrolls smoothly to it
@@ -313,16 +321,16 @@ class Launcher:
         imgui.new_line()
         imgui.separator()
 
-    def card(self, demo: Demo, width: float, big: bool = False) -> None:
-        """The demo's picture, its label and the first sentence of its description; a click selects it"""
+    def card(self, demo: Demo, width: float) -> None:
+        """The demo's picture, its label and the first sentences of its description; a click selects it"""
         padding = em_size(0.6)
-        title_scale = 1.3 if big else 1.1
+        title_scale = 1.1
         height = width / PICTURE_ASPECT + imgui.get_text_line_height() * (title_scale + 2) + em_size(1.6)
         top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         hovered = imgui.is_mouse_hovering_rect(top_left, bottom_right) and imgui.is_window_hovered(
             imgui.HoveredFlags_.child_windows.value)
-        hover = tween(f"hover {demo.filename} {big}", 1.0 if hovered else 0.0, 0.15)
+        hover = tween(f"hover {demo.filename}", 1.0 if hovered else 0.0, 0.15)
         is_selected = demo is self.selected
 
         # A shadow, as if the card lifted under the mouse
@@ -336,7 +344,7 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.5))
         imgui.push_style_var(imgui.StyleVar_.child_border_size, 2.0 if is_selected else 1.0)
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
-        imgui.begin_child(f"##card {demo.filename} {big}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
+        imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
                           imgui.WindowFlags_.no_scrollbar.value | imgui.WindowFlags_.no_scroll_with_mouse.value)
         self.pictures.draw(demo.stem, width, PICTURE_ASPECT)
         picture_bottom_right = imgui.get_item_rect_max()
@@ -369,20 +377,13 @@ class Launcher:
     def gallery(self) -> None:
         self.smooth_scroll()
         spacing = em_size(1.0)
-        big_text(fa.ICON_FA_STAR + " Highlights", 1.45, HIGHLIGHTS_TITLE)
-        imgui.dummy(ImVec2(0, em_size(0.3)))
-        big_width = (imgui.get_content_region_avail().x - 2 * spacing) / 3
-        for i, demo in enumerate(self.highlights):
-            if i:
-                imgui.same_line(0, spacing)
-            self.card(demo, big_width, big=True)
-
         avail = imgui.get_content_region_avail().x
         columns = max(1, int((avail + spacing) // (em_size(CARD_WIDTH) + spacing)))
         card_width = (avail - (columns - 1) * spacing) / columns  # the cards fill the width
         self.category_in_view = self.categories[0].name
-        for category in self.categories:
-            imgui.dummy(ImVec2(0, em_size(0.6)))
+        for i, category in enumerate(self.categories):
+            if i:
+                imgui.dummy(ImVec2(0, em_size(0.6)))
             self.category_y[category.name] = imgui.get_cursor_pos_y()
             at_the_end = imgui.get_scroll_y() >= imgui.get_scroll_max_y() - 1  # the last categories can't reach the top
             if self.category_y[category.name] <= imgui.get_scroll_y() + em_size(3) or at_the_end:
@@ -393,6 +394,8 @@ class Launcher:
             for i, demo in enumerate(category.demos):
                 if i % columns:
                     imgui.same_line(0, spacing)
+                elif i:
+                    imgui.dummy(ImVec2(0, em_size(0.3)))  # a little space between the rows
                 self.card(demo, card_width)
             imgui.dummy(ImVec2(0, em_size(0.8)))
 
@@ -412,8 +415,7 @@ class Launcher:
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
         imgui.dummy(ImVec2(0, em_size(0.4)))
-        big_text(demo.label, 1.4, wrapped=True)
-        rich_md.render(demo.text)
+        rich_md.render(f"## {demo.label}\n\n{demo.text}")
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
         if demo.where != "browser" and can_run_subprocess():

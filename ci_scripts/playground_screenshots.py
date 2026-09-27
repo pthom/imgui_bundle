@@ -131,7 +131,7 @@ SHOTS: dict[str, Shot] = {
     "demo_matplotlib.py": Shot(frames=60, crop=(0.0, 0.0, 0.92, 0.9)),
     "demo_pydantic.py": Shot(crop=(0.0, 0.0, 1.0, 0.62)),
     "haiku_implot_heart.py": Shot(frames=90, crop=(0.0, 0.0, 0.93, 0.96)),
-    "haiku_butterfly.py": Shot(frames=300, crop=(0.0, 0.42, 1.0, 0.82)),
+    "haiku_butterfly.py": Shot(frames=300, crop=(0.08, 0.43, 0.92, 0.706)),  # 16:10, as the launcher's cards
 }
 
 
