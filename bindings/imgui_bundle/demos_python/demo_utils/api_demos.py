@@ -123,10 +123,17 @@ def can_run_subprocess() -> bool:
 
 def spawn_demo_file(demo_file_path: str) -> None:
     if can_run_subprocess():
+        import shutil
         import subprocess
         import sys
-        subprocess.Popen(
-            [sys.executable, demo_file_path]
-        )
+        import tempfile
+        # The demo runs in a folder of its own, emptied first: what it writes (its settings, its screenshots) does not
+        # land where the launcher was started, and each run looks like a user's first run. Its own files are still
+        # found: Python puts the demo's folder first on sys.path, and the assets folders are absolute.
+        stem = os.path.splitext(os.path.basename(demo_file_path))[0]
+        cwd = os.path.join(tempfile.gettempdir(), "imgui_bundle_demos", stem)
+        shutil.rmtree(cwd, ignore_errors=True)
+        os.makedirs(cwd, exist_ok=True)
+        subprocess.Popen([sys.executable, demo_file_path], cwd=cwd)
     else:
         print("Cannot run subprocess in this environment.")
