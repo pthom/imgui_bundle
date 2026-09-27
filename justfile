@@ -209,12 +209,12 @@ cibuild_docker_manylinux:
 
 # Build the doc in interactive mode (for dev — serves at port-root, BASE_URL not needed)
 [group('docs')]
-doc_serve:
+doc_serve: playground_examples_docs
     cd docs/book && jupyter-book start
 
 # Build HTML + PDF for Cloudflare deploy
 [group('docs')]
-doc_build_cf:
+doc_build_cf: playground_examples_docs
     #!/usr/bin/env bash
     set -euo pipefail
     PDF=docs/book/_build/exports/imgui_bundle_book.pdf
@@ -260,7 +260,7 @@ pyodide_serve_projects:
 pyodide_demo_runner:
     python pyodide_projects/pyodide_demo_runner/serve.py --port 6789
 
-# Playground: the examples menu's descriptions (from the docstrings), and the bundle folders' manifests
+# Playground: the examples menu's descriptions (from the docstrings), the bundle folders' manifests, and the book's Demos & Tutorials page
 [group('pyodide')]
 playground_examples_docs:
     python ci_scripts/playground_examples_docs.py

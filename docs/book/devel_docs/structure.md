@@ -335,7 +335,8 @@ docs/book/
 │     ├── key_features.md                   Feature list, library catalog, FAQ
 │     ├── imm_gui.md                        The immediate mode paradigm explained
 │     ├── interactive_manuals.md            Online demos & explorer
-│     ├── examples_gallery.md               Curated examples
+│     ├── demos.md                          Demos & tutorials (generated: ci_scripts/playground_examples_docs.py)
+│     ├── examples_gallery.md               Apps made with Dear ImGui Bundle
 │     └── resources.md                      Links & resources
 │
 ├── python/                                 For Python users
