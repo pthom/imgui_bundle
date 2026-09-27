@@ -20,7 +20,6 @@ import time
 from imgui_bundle import immapp, imgui, hello_imgui
 
 
-GUI_FINISHED = False
 COMPUTATION_COUNT = 0
 START_TIME = time.time()
 
@@ -33,15 +32,13 @@ def gui():
 
     imgui.text(f"GUI FPS: {hello_imgui.frame_rate():.1f}")
     imgui.text(f"Computations per second: {COMPUTATION_COUNT / (time.time() - START_TIME):.1f}")
-    global GUI_FINISHED
-    GUI_FINISHED = hello_imgui.get_runner_params().app_shall_exit
 
 
-async def python_computation_loop():
+async def python_computation_loop(gui_task: asyncio.Task[None]):
     """Run computations while GUI is active."""
     """Python code which runs in parallel with the GUI!"""
     global COMPUTATION_COUNT
-    while not GUI_FINISHED:
+    while not gui_task.done():  # the GUI task ends when the app exits
         _ = sum(range(1000)) # Do some work
         COMPUTATION_COUNT += 1
         await asyncio.sleep(0) # Yield to event loop (required for async cooperation)
@@ -49,9 +46,9 @@ async def python_computation_loop():
 
 async def main():
     # Start GUI as an asyncio task (non-blocking)
-    _gui_task = asyncio.create_task(immapp.run_async(gui, window_size_auto=True))
+    gui_task = asyncio.create_task(immapp.run_async(gui, window_size_auto=True))
     # Run computations in parallel
-    await python_computation_loop()
+    await python_computation_loop(gui_task)
 
 
 if __name__ == "__main__":

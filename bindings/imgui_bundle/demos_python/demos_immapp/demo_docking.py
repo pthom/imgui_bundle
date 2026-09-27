@@ -106,7 +106,7 @@ def push_font_with_default_size(font: imgui.ImFont):
 # Warning, the save/load function below are quite simplistic!
 def my_app_settings_to_string(settings: MyAppSettings) -> str:
     as_dict: dict[str, Any] = {}
-    as_dict["motto"] = hello_imgui.input_text_data_to_dict(settings.motto)
+    as_dict["motto"] = hello_imgui.input_text_data_to_string(settings.motto)  # the same format as the C++ demo
     as_dict["value"] = settings.value
     return json.dumps(as_dict)
 
@@ -115,7 +115,7 @@ def string_to_my_app_settings(s: str) -> MyAppSettings:
     r = MyAppSettings()
     try:
         as_dict = json.loads(s)
-        r.motto = hello_imgui.input_text_data_from_dict(as_dict["motto"])
+        r.motto = hello_imgui.input_text_data_from_string(as_dict["motto"])
         r.value = as_dict["value"]
     except Exception as e:
         hello_imgui.log(hello_imgui.LogLevel.error, f"Error while loading user settings: {e}")
