@@ -20,6 +20,7 @@ which writes DIR/web_<file stem>.png (1400 x 900), then `--browser DIR` crops th
 """
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -264,12 +265,19 @@ def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
         _save(image, shot.crop, Path(output))
 
 
-def _examples() -> dict[str, tuple[Path, list[str]]]:
-    """For each example: the path of its file, and its bundle folders"""
+def _examples() -> dict[str, tuple[Path, list[tuple[Path, str]]]]:
+    """For each example: the path of its file, and its bundle folders (their path, and where they go next to it, as in
+    the playground: a folder outside the example's folder, e.g. ../demos_assets, goes under its own name)"""
+    from playground_examples_docs import disk_path
     manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
-    return {e["filename"]: (EXAMPLES_DIR / manifest["sources"][e.get("source", "examples")] / e["filename"],
-                            e.get("bundle_folders", []))
-            for e in manifest["examples"]}
+    sources = manifest["sources"]
+    examples = {}
+    for e in manifest["examples"]:
+        source = e.get("source", "examples")
+        folders = [(disk_path(sources, f"{source}/{f}"), re.sub(r"^(\.\./)+", "", f))
+                   for f in e.get("bundle_folders", [])]
+        examples[e["filename"]] = (disk_path(sources, f"{source}/{e['filename']}"), folders)
+    return examples
 
 
 def main() -> None:
@@ -300,8 +308,8 @@ def main() -> None:
         output.unlink(missing_ok=True)  # a picture from a previous run must not pass for this one's
         with tempfile.TemporaryDirectory() as cwd:
             source, bundle_folders = examples[filename]
-            for folder in bundle_folders:
-                shutil.copytree(EXAMPLES_DIR / folder, Path(cwd) / folder, dirs_exist_ok=True)
+            for folder, target in bundle_folders:
+                shutil.copytree(folder, Path(cwd) / target, dirs_exist_ok=True)
             copy = Path(cwd) / filename
             copy.parent.mkdir(parents=True, exist_ok=True)
             shutil.copy(source, copy)

@@ -342,11 +342,12 @@ def register_demos_assets_folder() -> None:
     _log = _logging.getLogger("imgui_bundle")
 
     if __bundle_pyodide__:
-        _log.warning("register_demos_assets_folder will not work in Pyodide")
-        return
-
-    _demos_assets = _os.path.join(_os.path.dirname(__file__), "demos_assets")
-    _demos_assets = _os.path.normpath(_demos_assets)
+        # The Pyodide wheel leaves demos_assets out: the playground downloads it for the examples that need it
+        # (their "bundle_folders" in examples.json)
+        _demos_assets = "/home/pyodide/demos_assets"
+    else:
+        _demos_assets = _os.path.join(_os.path.dirname(__file__), "demos_assets")
+        _demos_assets = _os.path.normpath(_demos_assets)
     if _os.path.isdir(_demos_assets):
         from imgui_bundle import hello_imgui as _hello_imgui
         _hello_imgui.add_assets_search_path(_demos_assets)

@@ -2,7 +2,8 @@
     "sources": {
         "examples": ".",
         "demos_immapp": "../../demos_immapp",
-        "python_backends": "../../../python_backends/examples"
+        "python_backends": "../../../python_backends/examples",
+        "demos_assets": "../../../demos_assets"
     },
     "categories": [
         {
@@ -149,7 +150,10 @@
             "label": "A full app: docking, fonts, logs",
             "filename": "demo_docking.py",
             "category": "Build an app",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "bundle_folders": [
+                "../demos_assets"
+            ]
         },
         {
             "label": "Custom 3D background (OpenGL)",
@@ -187,7 +191,8 @@
             "label": "Test engine",
             "filename": "demo_testengine.py",
             "category": "Build an app",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "where": "desktop"
         },
         {
             "label": "Drive an app, capture screenshots",

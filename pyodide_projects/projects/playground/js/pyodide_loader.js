@@ -146,7 +146,8 @@ async function loadPyodideAndPackages() {
 
 // Writes the editor code to a file and returns its path. An example is written at its own path, with its folder first
 // on sys.path (as `python file.py` does): it can import and transclude the files of its folder (delivered by
-// examples.json `bundle_folders`). Other code is written to /home/pyodide/_playground_main.py.
+// examples.json `bundle_folders`), and __main__.__file__ is its path (inspect.getsource() of a class needs it, e.g.
+// demo_pydantic.py). Other code is written to /home/pyodide/_playground_main.py.
 function writeExampleFile(code) {
     const playgroundFile = loadedExampleFilename
         ? `/home/pyodide/${loadedExampleFilename}`
@@ -155,7 +156,8 @@ function writeExampleFile(code) {
     pyodide.FS.mkdirTree(playgroundDir);
     pyodide.FS.writeFile(playgroundFile, code);
     pyodide.runPython(
-        `import sys\nif ${JSON.stringify(playgroundDir)} not in sys.path: sys.path.insert(0, ${JSON.stringify(playgroundDir)})`
+        `import sys\nif ${JSON.stringify(playgroundDir)} not in sys.path: sys.path.insert(0, ${JSON.stringify(playgroundDir)})\n` +
+        `sys.modules['__main__'].__file__ = ${JSON.stringify(playgroundFile)}`
     );
     return playgroundFile;
 }

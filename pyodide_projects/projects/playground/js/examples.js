@@ -93,32 +93,27 @@ async function installExamplePackages(packages) {
     hideLoadingModal();
 }
 
-// Download bundled folders (e.g. fiat_settings) into the Pyodide virtual filesystem
-async function installBundleFolders(bundleFolders) {
+// Download bundled folders (e.g. fiat_settings) into the Pyodide virtual filesystem. A folder is relative to the
+// example's source folder, and lands under /home/pyodide at the same relative path; a folder outside it (e.g.
+// ../demos_assets, for the immapp demos) lands under its own name (/home/pyodide/demos_assets). Its manifest.json lists
+// its files, in subfolders too (ci_scripts/playground_examples_docs.py); they are written as bytes (fonts, images...).
+async function installBundleFolders(bundleFolders, source) {
     if (!bundleFolders || bundleFolders.length === 0 || !pyodide) return;
     for (const folder of bundleFolders) {
-        // Fetch the manifest to know which files to download
-        const manifestResp = await fetch(`examples/${folder}/manifest.json`);
+        const url = `${source || 'examples'}/${folder}`;
+        const manifestResp = await fetch(`${url}/manifest.json`);
         if (!manifestResp.ok) {
             console.warn(`No manifest.json found for bundle folder ${folder}`);
             continue;
         }
         const files = await manifestResp.json();
-
-        // Create the folder in Pyodide's virtual FS (relative to cwd: /home/pyodide)
-        const targetDir = `/home/pyodide/${folder}`;
-        pyodide.runPython(`import os; os.makedirs('${targetDir}', exist_ok=True)`);
-
-        // Download and write each file
+        const targetDir = `/home/pyodide/${folder.replace(/^(\.\.\/)+/, '')}`;
         for (const file of files) {
-            const resp = await fetch(`examples/${folder}/${file}`);
+            const resp = await fetch(`${url}/${file}`);
             if (!resp.ok) continue;
-            const content = await resp.text();
-            // Write via Python to handle encoding properly
-            pyodide.runPython(`
-with open('${targetDir}/${file}', 'w') as _f:
-    _f.write(${JSON.stringify(content)})
-`);
+            const path = `${targetDir}/${file}`;
+            pyodide.FS.mkdirTree(path.substring(0, path.lastIndexOf('/')));
+            pyodide.FS.writeFile(path, new Uint8Array(await resp.arrayBuffer()));
         }
         console.log(`Installed bundle folder: ${folder} (${files.length} files)`);
     }
@@ -129,7 +124,7 @@ with open('${targetDir}/${file}', 'w') as _f:
 async function loadExample(filename, packages, label, bundleFolders, source) {
     try {
         await installExamplePackages(packages);
-        await installBundleFolders(bundleFolders);
+        await installBundleFolders(bundleFolders, source);
         const response = await fetch(`${source || 'examples'}/${filename}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

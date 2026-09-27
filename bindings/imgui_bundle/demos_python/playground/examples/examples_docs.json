@@ -189,7 +189,7 @@
   },
   "haiku_implot_heart.py": {
     "title": "A beating heart, in a few lines of ImPlot.",
-    "text": "A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from\n[imgui-knobs](https://github.com/altschuler/imgui-knobs). A few lines of Python: a parametric curve, scaled by a pulse\nat each frame. Turn the knob to change the heart rate, or its thickness."
+    "text": "A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from\n[imgui-knobs](https://github.com/altschuler/imgui-knobs). A few lines of Python: a parametric curve, scaled by a pulse\nat each frame. Turn the knobs to change the heart rate, or its thickness."
   },
   "haiku_butterfly.py": {
     "title": "Lorenz attractor and the butterfly effect",

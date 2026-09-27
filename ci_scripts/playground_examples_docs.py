@@ -5,8 +5,10 @@ the title and first paragraph of each example's docstring. Also writes the manif
 examples.json: the files the playground downloads with the example (e.g. Fiatlight's saved state in fiat_settings).
 Run by `just playground_examples_docs` and by `just cf_stage` (the deploy).
 
-An example's file is in the folder of its "source" (the "sources" of examples.json: the examples folder by default,
-or e.g. the immapp demos). File names are unique across sources: examples_docs.json is keyed by them.
+The "sources" of examples.json are the folders the playground serves (playground/<name>), with their place in the
+repository (relative to the examples folder). An example's file is in the folder of its "source" (examples by default,
+or e.g. demos_immapp), and its bundle folders are paths from there, as served (e.g. ../demos_assets). File names are
+unique across sources: examples_docs.json is keyed by them.
 
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
 = or -), then a blank line, then a paragraph that tells a visitor what the example shows. The menu renders its markdown,
@@ -14,6 +16,7 @@ but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
 """
 import ast
 import json
+import os
 import re
 import subprocess
 from typing import Any
@@ -56,17 +59,25 @@ def _ignored_by_git(paths: list[Path]) -> set[str]:
     return set(result.stdout.splitlines())
 
 
-def write_manifests(examples: list[dict[str, Any]]) -> None:
-    """The manifest of each bundle folder: its files, except the manifest, the examples themselves, and what git
-    ignores"""
-    example_files = {e["filename"] for e in examples}
-    for folder in sorted({f for e in examples for f in e.get("bundle_folders", [])}):
-        folder_path = EXAMPLES_DIR / folder
-        candidates = [p for p in folder_path.iterdir()
-                      if p.is_file() and p.name != "manifest.json" and not p.name.startswith(".")
-                      and f"{folder}/{p.name}" not in example_files]
+def disk_path(sources: dict[str, str], served: str) -> Path:
+    """The file or folder of the repository that the playground serves at `served` (e.g. demos_immapp/../demos_assets,
+    i.e. demos_assets): its first component is one of the served folders, which "sources" maps to the repository"""
+    first, *rest = os.path.normpath(served).split(os.sep)
+    return (EXAMPLES_DIR / sources[first]).joinpath(*rest).resolve()
+
+
+def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> None:
+    """The manifest of each bundle folder: its files, in its subfolders too, except the manifest, the examples
+    themselves, dot files, and what git ignores"""
+    example_paths = {disk_path(sources, f"{e.get('source', 'examples')}/{e['filename']}") for e in examples}
+    folders = {disk_path(sources, f"{e.get('source', 'examples')}/{f}")
+               for e in examples for f in e.get("bundle_folders", [])}
+    for folder_path in sorted(folders):
+        candidates = [p for p in folder_path.rglob("*")
+                      if p.is_file() and p.name != "manifest.json" and p.resolve() not in example_paths
+                      and not any(part.startswith(".") for part in p.relative_to(folder_path).parts)]
         ignored = _ignored_by_git(candidates)
-        files = sorted(p.name for p in candidates if str(p) not in ignored)
+        files = sorted(p.relative_to(folder_path).as_posix() for p in candidates if str(p) not in ignored)
         (folder_path / "manifest.json").write_text(json.dumps(files, indent=2) + "\n")
         print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
 
@@ -74,7 +85,7 @@ def write_manifests(examples: list[dict[str, Any]]) -> None:
 def main() -> None:
     manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
     examples = manifest["examples"]
-    write_manifests(examples)
+    write_manifests(examples, manifest["sources"])
     docs: dict[str, dict[str, str]] = {}
     for example in examples:
         if example.get("hidden"):
