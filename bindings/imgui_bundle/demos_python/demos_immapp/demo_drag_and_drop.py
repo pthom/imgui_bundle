@@ -1,12 +1,17 @@
-# Note: the drag and drop API differs a bit between C++ and Python.
-# * In C++, ImGui::SetDragDropPayload and AcceptDragDropPayload are able to accept any kind of object
-#   (by storing a buffer whose size is the object size).
-#
-# Unfortunately, this behaviour cannot be reproduced in python.
-#
-# * In Python, you can use imgui.set_drag_drop_payload_py_id and imgui.accept_drag_drop_payload_py_id.
-#   These versions can only store an integer id for the payload
-#   (so that you may have to store the corresponding payload somewhere else)
+"""
+Drag and drop: copy, move or swap names between buttons.
+
+Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode. Each button is
+both a drag source and a drop target. Adapted from the drag and drop section of the [Dear ImGui
+demo](https://github.com/ocornut/imgui/blob/master/imgui_demo.cpp).
+
+## Python and C++
+
+In C++, `ImGui::SetDragDropPayload` can carry any object (a copy of its bytes). Python can't do that:
+`imgui.set_drag_drop_payload_py_id` and `imgui.accept_drag_drop_payload_py_id` carry an integer id, and you keep the
+data it refers to elsewhere (here, the index of a name in a list).
+"""
+
 import enum
 from typing import List
 from imgui_bundle import imgui, immapp

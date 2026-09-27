@@ -1,10 +1,13 @@
-"""Demonstrates how to manipulate the native GLFW window created by HelloImGui.
+"""
+Control the native window with GLFW: maximize, move, opacity.
 
-`glfw_utils.glfw_window_hello_imgui()` returns the main GLFW window used by HelloImGui.
-With this handle you can call any `glfw.*` function to control the native window.
+`glfw_utils.glfw_window_hello_imgui()` returns the [GLFW](https://www.glfw.org) window that Hello ImGui created. With
+it, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works on your app's window. Here, buttons
+maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in
+the taskbar.
 
-Remember to import imgui_bundle before importing glfw (imgui_bundle comes with its own glfw dll,
-which is compatible with python glfw, but it needs to be selected first).
+Import `imgui_bundle` before `glfw` (`pip install glfw`): imgui_bundle comes with its own GLFW library, compatible
+with pyGLFW, which must be loaded first.
 """
 
 from imgui_bundle import hello_imgui, imgui, glfw_utils

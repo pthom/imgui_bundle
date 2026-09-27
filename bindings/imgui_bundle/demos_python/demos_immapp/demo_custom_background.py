@@ -1,3 +1,16 @@
+"""
+A 3D sea behind the GUI: a custom OpenGL background.
+
+The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) by Alexander Alekseev (TDM, 2014) animates the whole
+window, and a small window tunes its waves and colors. Hello ImGui calls `runner_params.callbacks.custom_background`
+at each frame, before the GUI: draw anything there with OpenGL ([PyOpenGL](https://pypi.org/project/PyOpenGL/) in
+Python).
+
+## In the browser
+
+PyOpenGL does not run in Pyodide. The playground example `webgl_background_shader.py` does the same with WebGL.
+"""
+
 # Workaround for PyOpenGL 3.1.6+ on Wayland: GLFW (used by immapp / hello_imgui)
 # creates X11/XWayland windows, but PyOpenGL defaults to Wayland EGL, causing a
 # context mismatch. Force the X11 backend before importing OpenGL.

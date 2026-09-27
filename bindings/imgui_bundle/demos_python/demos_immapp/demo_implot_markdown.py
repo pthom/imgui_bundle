@@ -1,3 +1,11 @@
+"""
+An animated plot and some markdown, in a few lines.
+
+A cosine wave moves in an [ImPlot](https://github.com/epezent/implot) plot, under a text written in
+[markdown](https://imgui-bundle.pages.dev/doc/addons/text-markdown/). Both are add-ons, activated in one call:
+`immapp.run(gui, with_implot=True, with_markdown=True)`. A good start for a small app.
+"""
+
 import numpy as np
 # imgui_bundle is a package that provides several imgui-related submodules
 from imgui_bundle import (imgui,       # first we import ImGui

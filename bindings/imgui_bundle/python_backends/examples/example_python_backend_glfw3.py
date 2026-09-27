@@ -1,11 +1,15 @@
-# An example of using Dear ImGui with Glfw using a *full python* backend.
-# This mode is inspired from [pyimgui](https://github.com/pyimgui/pyimgui) backends, and is still experimental.
-#
-# These examples also demonstrate how to use the markdown rendering feature of ImGui Bundle.
-#
-# See full python backends implementations here:
-# https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
+"""
+Dear ImGui in a GLFW window, with a pure Python backend.
 
+A window made with [GLFW](https://www.glfw.org), and an app loop you write yourself: a Python backend passes the
+inputs to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing GLFW app. Shows the ImGui demo, and a
+window with markdown and a formula. Needs `pip install imgui-bundle[glfw,opengl]`.
+
+See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`,
+there is no Hello ImGui here: no DPI handling, themes or assets. This backend is adapted from
+[pyimgui](https://github.com/pyimgui/pyimgui)'s, and is still experimental. All the backends:
+[python_backends](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends).
+"""
 
 # Workaround issue when using wayland ("Attempt to retrieve context when no valid context", in PyOpenGL)
 # (see https://github.com/pthom/imgui_bundle/issues/321)

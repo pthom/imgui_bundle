@@ -1,3 +1,13 @@
+"""
+Matplotlib figures inside an ImGui window.
+
+`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI. On the left, an animated
+sine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to
+reuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).
+
+Needs Matplotlib: `pip install "imgui-bundle[matplotlib]"`.
+"""
+
 import matplotlib
 import matplotlib.pyplot as plt
 from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx

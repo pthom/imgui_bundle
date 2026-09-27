@@ -1,28 +1,28 @@
 """
-# Displaying non-Latin text (Chinese, Japanese, Korean, Hebrew, Arabic, ...)
+# Non-Latin text: Chinese, Japanese, Korean, Hebrew, Arabic
 
-The default bundled fonts (DroidSans, Roboto) only contain Latin / Greek / Cyrillic glyphs.
-Any CJK / Hebrew / Arabic text therefore shows up as `???`.
+The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`. The fix: load a font that has
+the glyphs you need, first, so that it becomes the default font. This demo shows how, with [Noto Sans
+SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC): download it, and the demo's sample lines come alive.
 
-> **Solution:** load a font that contains the glyphs you need, and make it the default font.
->
-> This demo loads a CJK font *first* (so it becomes the default font), then merges FontAwesome icons.
+It then merges the FontAwesome icons into that font.
 
 ## Where to get a font
 
-This demo does not ship a CJK font (a full one is ~10 MB). Download one (TTF or OTF):
+This demo does not ship a CJK font (a full one is about 10 MB). Download one (TTF or OTF):
 
 * [Noto Sans SC (Simplified Chinese)](https://fonts.google.com/noto/specimen/Noto+Sans+SC)
 * [Source Han Sans](https://github.com/adobe-fonts/source-han-sans)
 
-The same approach works for Japanese / Korean / Hebrew / Arabic / Cyrillic: just pick a font that contains those glyphs.
+The same approach works for Japanese, Korean, Hebrew or Arabic: pick a font that contains those glyphs.
 
-*Tip: CJK fonts have no italic styles. For markdown, merge the regular CJK glyphs into the
-italic slots too (CJK will appear upright there).*
+*Tip: CJK fonts have no italic styles. For markdown, merge the regular CJK glyphs into the italic slots too (CJK will
+appear upright there).*
 
-*Alternative (zero code): overwrite `assets/fonts/DroidSans.ttf` with your own font, keeping that
-exact filename. The default font loader will then pick it up automatically.*
+*Alternative (zero code): overwrite `assets/fonts/DroidSans.ttf` with your own font, keeping that exact filename. The
+default font loader will then pick it up automatically.*
 """
+
 from imgui_bundle import hello_imgui, imgui, rich_md, immapp, register_demos_assets_folder, ImVec4
 
 # Make the demos_assets/ folder searchable before we look for the font below.

@@ -1,6 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Dear ImGui in a pygame window, with a pure Python backend.
+
+A [pygame](https://www.pygame.org) window, and a game loop you write yourself: a Python backend passes pygame's events
+to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing pygame game. Shows a window with markdown, a
+formula and a few widgets. Needs `pip install imgui-bundle[opengl] pygame`.
+
+See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`,
+there is no Hello ImGui here: no DPI handling, themes or assets. All the backends:
+[python_backends](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends).
+"""
+
 from __future__ import absolute_import
 
 from imgui_bundle import imgui, rich_md

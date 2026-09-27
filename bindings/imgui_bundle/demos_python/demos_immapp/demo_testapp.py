@@ -1,8 +1,14 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-"""demo_testapp: use `immapp.testing` to drive an app and capture screenshots, then exit
-
-Customization: edit EXIT_AFTER_TESTS & SCREENSHOTS_FOLDER
 """
+Drive an app from a script, and capture screenshots.
+
+`immapp.testing.run()` starts the app, then a test function drives it: it clicks a button, moves a slider, ticks a
+checkbox and opens a header, saving a screenshot after each step, then exits. Handy for automated checks and for
+documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+
+Customization: edit `EXIT_AFTER_TESTS` and `SCREENSHOTS_FOLDER`. The five screenshots go to the current folder.
+"""
+
 from __future__ import annotations
 
 from imgui_bundle import imgui

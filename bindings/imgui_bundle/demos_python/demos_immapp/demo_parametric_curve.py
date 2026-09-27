@@ -1,3 +1,12 @@
+"""
+A parametric curve, and the immediate mode in a nutshell.
+
+Turn the knobs, or click **Random**: the curve follows at once. At every frame, the GUI function draws the plot with
+[ImPlot](https://github.com/epezent/implot) and the knobs with
+[imgui-knobs](https://github.com/altschuler/imgui-knobs), and reads their values right there. No callbacks, no widget
+objects: that is the [immediate mode](https://imgui-bundle.pages.dev/doc/intro/imm-gui/).
+"""
+
 import random
 
 import numpy as np

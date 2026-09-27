@@ -1,3 +1,11 @@
+"""
+Power save: the app slows down when you don't use it.
+
+When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:
+watch the FPS and the spinner slow down. Move the mouse, and they speed up again. The slider sets `fps_idle` (0 means
+full speed), and the checkbox turns idling off, for example during an animation.
+"""
+
 from imgui_bundle import imgui, hello_imgui, immapp
 
 

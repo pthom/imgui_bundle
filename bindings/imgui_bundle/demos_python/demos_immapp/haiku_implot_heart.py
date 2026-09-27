@@ -1,3 +1,11 @@
+"""
+A beating heart, in a few lines of ImPlot.
+
+A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from
+[imgui-knobs](https://github.com/altschuler/imgui-knobs). A few lines of Python: a parametric curve, scaled by a pulse
+at each frame. Turn the knob to change the heart rate, or its thickness.
+"""
+
 import time
 import numpy as np
 
@@ -11,10 +19,10 @@ y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 *
 phase = 0.0
 t0 = time.time() + 0.2
 heart_pulse_rate = 80.0
-
+heart_thickness = 0.15
 
 def gui():
-    global heart_pulse_rate, phase, t0, x, y
+    global heart_pulse_rate, phase, t0, x, y, heart_thickness
     # Make sure that the animation is smooth
     hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
@@ -23,13 +31,18 @@ def gui():
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
 
-    imgui.text("Bloat free code")
     implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    implot.plot_line("", x * k, y * k)
+    for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):  # Give some thickness to the heart
+        implot.plot_line("", x * k * k2, y * k * k2)
     implot.end_plot()
 
-    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180)
+    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180,
+                                           variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=hello_imgui.em_size(4.0))
+    imgui.same_line()
+    _, heart_thickness = imgui_knobs.knob("Line Thickness", heart_thickness, 0.01, 0.3,
+                                         variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=hello_imgui.em_size(4.0))
+    imgui.same_line()
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(300, 450), window_title="Hello!", with_implot=True, fps_idle=0)
+    immapp.run(gui, window_size=(350, 450), with_implot=True, fps_idle=0)

@@ -1,14 +1,24 @@
-# A more complex app demo
-#
-# It demonstrates how to:
-# - set up a complex docking layouts (with several possible layouts):
-# - load additional fonts, possibly colored, and with emojis
-# - display a log window
-# - use the status bar
-# - use default menus (App and view menu), and how to customize them
-# - use a specific application state (instead of using static variables)
-# - save some additional user settings within imgui ini file
-# - use borderless windows, that are movable and resizable
+"""
+A full application: docking layouts, fonts, themes, logs and a status bar.
+
+A template for a real application, built with [Hello ImGui](https://pthom.github.io/hello_imgui/): dockable windows
+with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your
+settings are saved, and restored at the next start. The code is heavily commented: copy it and start from there.
+
+## What it shows
+
+How to:
+- set up a complex docking layout, with several possible layouts
+- load additional fonts, possibly colored, and with emojis
+- display a log window
+- use the status bar
+- use the default menus (App and View), and customize them
+- use a specific application state (instead of static variables)
+- save additional user settings within the imgui ini file
+- use borderless windows, that are movable and resizable
+- use multiple viewports: drag a window out of the main window
+"""
+
 import json
 from enum import Enum
 import time

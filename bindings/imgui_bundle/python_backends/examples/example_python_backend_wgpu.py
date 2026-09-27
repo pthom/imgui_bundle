@@ -1,13 +1,15 @@
-# wgpu (see https://github.com/pygfx/wgpu-py and https://wgpu-py.readthedocs.io/en/stable/)
-# provides a Python implementation of WebGPU together with
-# an easy-to-use interface to Dear ImGui Bundle!
-#
-# See more examples in the wgpu-py repository here:
-#    https://github.com/pygfx/wgpu-py/tree/main/examples
-#    (look for examples whose name starts with "imgui_")
-#
-# Requirements: install wgpu and rendercanvas with
-#     pip install wgpu rendercanvas
+"""
+Dear ImGui drawn with WebGPU, through wgpu-py.
+
+ImGui drawn with WebGPU, by the ImGui renderer of [wgpu-py](https://github.com/pygfx/wgpu-py), in a
+[rendercanvas](https://github.com/pygfx/rendercanvas) window. wgpu-py uses Dear ImGui Bundle for its GUIs. Shows the
+ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[wgpu]`.
+
+The renderer comes with wgpu-py (`wgpu.utils.imgui.ImguiRenderer`), not from this repository. More examples in
+[wgpu-py's repository](https://github.com/pygfx/wgpu-py/tree/main/examples): their names start with `imgui_`. See also
+[Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/).
+"""
+
 import wgpu  # type: ignore
 import sys
 from imgui_bundle import imgui, imgui_ctx, rich_md

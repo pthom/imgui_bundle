@@ -1,13 +1,15 @@
-"""Demonstrate how immapp.run_async enables parallel Python execution with GUI rendering.
+"""
+Run Python code alongside the GUI with immapp.run_async.
 
-This demo runs a computation loop in Python while the GUI remains responsive.
-By calling `immapp.run_async`, the GUI runs in an asyncio Task, allowing Python code to execute concurrently.
+The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps
+computing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop
+yields with `await asyncio.sleep(0)` to share the event loop. See [async
+support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 
-`immapp.run_async` automatically adjusts FPS idling parameters to optimize performance, so that the Python loop
-can run at maximum speed.
+## Idling
 
-The settings below are applied automatically by `immapp.run_async` to ensure that the GUI rendering
-returns early to Python instead of sleeping, allowing maximum parallelism between GUI rendering and Python code execution:
+`immapp.run_async` adjusts the FPS idling parameters, so that the GUI returns early to Python instead of sleeping,
+and the Python loop runs at full speed:
 ```python
     runner_params.fps_idling.fps_idling_mode = hello_imgui.FpsIdlingMode.early_return
     runner_params.fps_idling.vsync_to_monitor = False

@@ -1,11 +1,16 @@
-# An example of using Dear ImGui with SDL3 using a *full python* backend.
-# This mode is inspired from [pyimgui](https://github.com/pyimgui/pyimgui) backends, and is still experimental.
-#
-# See full python backends implementations here:
-# https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
+"""
+Dear ImGui in an SDL3 window, with a pure Python backend.
 
-# You will need to install sdl3:
-#    pip install pysdl3
+A window made with [SDL3](https://www.libsdl.org) (through PySDL3), and an event loop you write yourself: a Python
+backend passes the events to ImGui and draws it with PyOpenGL. The way to add ImGui to an existing SDL3 app. Shows the
+ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`.
+
+See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`,
+there is no Hello ImGui here: no DPI handling, themes or assets. This backend is adapted from
+[pyimgui](https://github.com/pyimgui/pyimgui)'s, and is still experimental. All the backends:
+[python_backends](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends).
+"""
+
 # ruff: noqa: F405, F403  # authorize * import
 from imgui_bundle import imgui, rich_md
 from imgui_bundle.python_backends.sdl3_backend import SDL3Renderer

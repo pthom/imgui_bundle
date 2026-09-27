@@ -1,3 +1,12 @@
+"""
+Context managers for Dear ImGui and ImPlot in Python.
+
+In Python, `with imgui_ctx.begin("Window"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be
+forgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with
+`implot_ctx`. Open a section to try it and read its code. See the [Python
+tips](https://imgui-bundle.pages.dev/doc/python/python-tips/).
+"""
+
 from imgui_bundle import imgui, imgui_ctx, ImVec2, hello_imgui, ImVec4, immapp, rich_md
 from imgui_bundle import implot, implot_ctx
 import inspect

@@ -1,19 +1,23 @@
-# A demo app that demonstrates how to use ImGui Test Engine (https://github.com/ocornut/imgui_test_engine)
-#
-# It demonstrates how to:
-# - enable ImGui Test Engine via RunnerParams.use_imgui_test_engine
-# - define a callback where the tests are registered (runner_params.callbacks.register_tests)
-# - create tests, and:
-#   - automate actions using "named references" (see https://github.com/ocornut/imgui_test_engine/wiki/Named-References)
-#   - display an optional custom GUI for a test
-#   - manipulate custom variables
-#   - check that simulated actions do modify those variables
-#
-# Important note: ImGui Test Engine falls under the Dear ImGui Test Engine License
-#     See: https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt
-#     TL;DR: free for individuals, educational, open-source and small businesses uses.
-#            Paid for larger businesses. Read license for details.
-#            License sales to larger businesses are used to fund and sustain the development of Dear ImGui.
+"""
+Automate and test your app with ImGui Test Engine.
+
+Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a
+few buttons that run tests. Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types
+text, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+
+## What it shows
+
+- how to enable the test engine: `runner_params.use_imgui_test_engine`
+- where to register the tests: `runner_params.callbacks.register_tests`
+- how to automate actions with [named references](https://github.com/ocornut/imgui_test_engine/wiki/Named-References)
+- a test with its own GUI and variables, and `CHECK` to verify that the simulated actions changed them
+
+## License
+
+ImGui Test Engine is under the [Dear ImGui Test Engine
+License](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt): free for individuals,
+education, open source and small businesses, paid for larger businesses. Its sales fund the development of Dear ImGui.
+"""
 
 
 from imgui_bundle import imgui, hello_imgui
