@@ -1,7 +1,8 @@
 """Prepares the playground's examples: their descriptions for the examples menu, and the manifests of their folders.
 
-Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown}}, extracted from
-the title and first paragraph of each example's docstring. Also writes the manifest.json of each bundle folder of
+Writes examples_docs.json next to examples.json: {filename: {"title": plain text, "text": markdown, "summary": markdown}},
+extracted from the title and first paragraph of each example's docstring; the summary is the paragraph's first sentences,
+which the cards of the launcher and of the book show. Also writes the manifest.json of each bundle folder of
 examples.json: the files the playground downloads with the example (e.g. Fiatlight's saved state in fiat_settings).
 Also writes the book's page of the demos (docs/book/intro/demos.md): what the demo launcher shows, as a page that people
 and AIs can read. The PDF export drops its grids of cards: the PDF gets a copy without them (intro/demos_pdf.md), listed by
@@ -35,6 +36,7 @@ PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources
 SITE = "https://imgui-bundle.pages.dev"
 GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
 MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the menu's pane
+MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
 
 
 def plain(markdown: str) -> str:
@@ -58,6 +60,15 @@ def title_and_paragraph(docstring: str) -> tuple[str, str]:
         rest = rest[1:]
     blocks = [block.strip() for block in "\n".join(rest).split("\n\n")]
     return plain(title), next((b for b in blocks if plain(b)), "")  # the first one with text (not only an image)
+
+
+def summary_and_rest(markdown: str) -> tuple[str, str]:
+    """A paragraph's first sentences, at least MIN_SUMMARY characters of text, and the rest"""
+    text = " ".join(markdown.split())
+    end = text.find(". ")
+    while end >= 0 and len(plain(text[:end + 1])) < MIN_SUMMARY:
+        end = text.find(". ", end + 1)
+    return (text, "") if end < 0 else (text[:end + 1], text[end + 2:])
 
 
 def _ignored_by_git(paths: list[Path]) -> set[str]:
@@ -93,9 +104,9 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
         print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
 
 
-def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict[str, Any],
-              picture_width: str | None) -> list[str]:
-    """A demo's heading, picture, description, tags and links"""
+def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict[str, Any], in_grid: bool) -> list[str]:
+    """A demo's heading, picture, description, tags and links. In a grid's card, the description is its summary, and
+    the rest is in a "More" dropdown"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
     cpp = CPP_IMMAPP_DIR / f"{stem}.cpp"
@@ -114,9 +125,15 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     lines = [f"### {e['label']}", ""]
     if picture.is_file():  # a local path: the book's builds copy it (the PDF too), with no network
         lines += [f":::{{image}} {os.path.relpath(picture, BOOK_PAGE.parent)}", f":alt: {e['label']}"]
-        lines += [f":width: {picture_width}"] if picture_width else []
+        lines += [] if in_grid else [":width: 400px"]
         lines += [":::", ""]
-    return lines + [docs.get(e["filename"], {}).get("text", ""), "", f"*{', '.join(tags)}*", "", " · ".join(links), ""]
+    text = docs.get(e["filename"], {}).get("text", "")
+    if in_grid:
+        summary, rest = summary_and_rest(text)
+        lines += [summary, ""] + ([":::{dropdown} More", rest, ":::", ""] if rest else [])
+    else:
+        lines += [text, ""]
+    return lines + [f"*{', '.join(tags)}*", "", " · ".join(links), ""]
 
 
 def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) -> None:
@@ -144,8 +161,8 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) 
         site += header + [":::::{grid} 1 2 3 3", ""]  # the outer fences are longer than the inner ones
         pdf += header
         for e in examples:
-            site += ["::::{card}", *demo_card(manifest, docs, e, None), "::::", ""]
-            pdf += demo_card(manifest, docs, e, "400px")
+            site += ["::::{card}", *demo_card(manifest, docs, e, in_grid=True), "::::", ""]
+            pdf += demo_card(manifest, docs, e, in_grid=False)
         site += [":::::", ""]
     for page, lines in ((BOOK_PAGE, site), (BOOK_PAGE_PDF, pdf)):
         page.write_text("\n".join(lines))
@@ -181,7 +198,7 @@ def main() -> None:
             print(f"warning: {filename} has no first paragraph after its title")
         elif len(plain(text)) > MAX_PARAGRAPH:
             print(f"warning: {filename}: its first paragraph has {len(plain(text))} characters (more than {MAX_PARAGRAPH})")
-        docs[filename] = {"title": title, "text": text}
+        docs[filename] = {"title": title, "text": text, "summary": summary_and_rest(text)[0]}
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)

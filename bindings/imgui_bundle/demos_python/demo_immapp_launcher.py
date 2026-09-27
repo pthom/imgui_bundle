@@ -61,6 +61,7 @@ class Demo:
     filename: str  # as in examples.json (e.g. explorables/julia_map.py): the playground knows it by this name
     where: str  # both, desktop or browser
     text: str  # a paragraph for visitors (markdown)
+    summary: str  # its first sentences, for the card (markdown)
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
 
@@ -100,22 +101,18 @@ def load_catalog() -> list[Category]:
             filename=e["filename"],
             where=e.get("where", "both"),
             text=docs.get(e["filename"], {}).get("text", ""),
+            summary=docs.get(e["filename"], {}).get("summary", ""),
             path=(EXAMPLES_DIR / manifest["sources"][source] / e["filename"]).resolve(),
             cpp_path=cpp_path if source == "demos_immapp" and cpp_path.exists() else None,
         ))
     return [c for c in categories.values() if c.demos]
 
 
-def first_sentences(markdown: str, min_length: int = 40) -> str:
-    """The first sentences, at least min_length characters (a first "Pyodide only." says too little), as plain text:
-    links keep their text, emphasis and code marks go"""
+def plain_text(markdown: str) -> str:
+    """Markdown as plain text: links keep their text, emphasis and code marks go"""
     import re
     plain = re.sub(r"\[([^\]]*)\]\((?:[^()]|\([^()]*\))*\)", r"\1", markdown)  # a URL may hold (...)
-    plain = " ".join(plain.replace("**", "").replace("`", "").replace("*", "").split())
-    end = plain.find(". ")
-    while end >= 0 and end < min_length:
-        end = plain.find(". ", end + 1)
-    return plain if end < 0 else plain[:end + 1]
+    return " ".join(plain.replace("**", "").replace("`", "").replace("*", "").split())
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -353,11 +350,18 @@ class Launcher:
         imgui.pop_font()
         imgui.set_cursor_pos_x(padding)
         imgui.push_text_wrap_pos(width - padding)
-        imgui.text_disabled(fit(first_sentences(demo.text), width - 2 * padding, 2))
+        shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
+        imgui.text_disabled(shown)
         imgui.pop_text_wrap_pos()
         imgui.end_child()
         imgui.pop_style_var(3)
         imgui.pop_style_color(2)
+        text = plain_text(demo.text)
+        if shown != text and imgui.begin_item_tooltip():  # the card cuts the text, or shows its first sentences only
+            imgui.push_text_wrap_pos(em_size(25))
+            imgui.text(text)
+            imgui.pop_text_wrap_pos()
+            imgui.end_tooltip()
         if hovered and imgui.is_mouse_released(imgui.MouseButton_.left.value):
             self.selected = demo
 
