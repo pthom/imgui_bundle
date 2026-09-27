@@ -356,12 +356,12 @@ class Launcher:
         imgui.end_child()
         imgui.pop_style_var(3)
         imgui.pop_style_color(2)
-        text = plain_text(demo.text)
-        if shown != text and imgui.begin_item_tooltip():  # the card cuts the text, or shows its first sentences only
-            imgui.push_text_wrap_pos(em_size(25))
-            imgui.text(text)
-            imgui.pop_text_wrap_pos()
-            imgui.end_tooltip()
+        # The whole description, when the card cuts it or shows its first sentences only
+        if shown != plain_text(demo.text) and imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value):
+            imgui.set_next_window_size(ImVec2(em_size(25), 0))  # the markdown wraps at this width
+            if imgui.begin_tooltip():
+                rich_md.render(demo.text)
+                imgui.end_tooltip()
         if hovered and imgui.is_mouse_released(imgui.MouseButton_.left.value):
             self.selected = demo
 
