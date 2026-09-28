@@ -427,6 +427,11 @@ class Launcher:
         if imgui.is_item_active() and imgui.is_key_pressed(imgui.Key.escape):
             self.search = ""
         imgui.set_item_tooltip("Words to find in the title, the description, the category or the libraries of a demo")
+        if self.search or self.library:  # a discreet way to clear the filters
+            imgui.same_line()
+            if imgui.small_button(fa.ICON_FA_TIMES + "##clear"):
+                self.search, self.library = "", ""
+            imgui.set_item_tooltip("Clears the search and the library filter")
         imgui.same_line()
 
     def library_filter(self) -> None:

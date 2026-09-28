@@ -420,6 +420,13 @@ void DemoLauncher::SearchBox()
     if (ImGui::IsItemActive() && ImGui::IsKeyPressed(ImGuiKey_Escape))
         _search.clear();
     ImGui::SetItemTooltip("Words to find in the title, the description, the category or the libraries of a demo");
+    if (!_search.empty() || !_library.empty())  // a discreet way to clear the filters
+    {
+        ImGui::SameLine();
+        if (ImGui::SmallButton(ICON_FA_TIMES "##clear"))
+            _search = _library = "";
+        ImGui::SetItemTooltip("Clears the search and the library filter");
+    }
     ImGui::SameLine();
 }
 
