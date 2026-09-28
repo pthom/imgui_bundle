@@ -690,7 +690,7 @@ The shell runs behind a pseudo-terminal (macOS and Linux), [pyte](https://github
 
 ### ImmVision: display and inspect
 
-Two ways to show an image held in a NumPy array.
+Two ways to show an image (a NumPy array in Python, a cv::Mat in C++).
 
 :::{dropdown} More
 `immvision.image_display_resizable()` draws it, and you drag its corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values show, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).
@@ -1089,10 +1089,10 @@ Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), Im
 ::::{card}
 ### Python backends: GLFW, SDL, pyglet, pygame, wgpu
 
-Add ImGui to your own app: you write the app loop, and a Python backend does the rest.
+With a pure Python backend, you drive the full app loop.
 
 :::{dropdown} More
-This one is for [GLFW](https://www.glfw.org); the others (SDL2, SDL3, pyglet, pygame, wgpu) work the same way. The backend passes the inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[glfw,opengl]`.
+See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`, there is no Hello ImGui here: no DPI handling, themes or assets.
 :::
 
 *Desktop only*

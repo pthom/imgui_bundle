@@ -291,8 +291,8 @@
   },
   "demo_immvision_display.py": {
     "title": "ImmVision: display an image, and inspect it",
-    "text": "Two ways to show an image held in a NumPy array. `immvision.image_display_resizable()` draws it, and you drag its\ncorner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values\nshow, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).",
-    "summary": "Two ways to show an image held in a NumPy array.",
+    "text": "Two ways to show an image (a NumPy array in Python, a cv::Mat in C++). `immvision.image_display_resizable()` draws\nit, and you drag its corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values\nshow, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).",
+    "summary": "Two ways to show an image (a NumPy array in Python, a cv::Mat in C++).",
     "uses": [
       "ImmVision",
       "OpenCV"
@@ -452,9 +452,9 @@
     ]
   },
   "example_python_backend_glfw3.py": {
-    "title": "Dear ImGui in a window you own, with a pure Python backend: GLFW, SDL2, SDL3, pyglet, pygame or wgpu.",
-    "text": "Add ImGui to your own app: you write the app loop, and a Python backend does the rest. This one is for\n[GLFW](https://www.glfw.org); the others (SDL2, SDL3, pyglet, pygame, wgpu) work the same way. The backend passes the\ninputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown and a formula. Needs\n`pip install imgui-bundle[glfw,opengl]`.",
-    "summary": "Add ImGui to your own app: you write the app loop, and a Python backend does the rest.",
+    "title": "Dear ImGui in a window you own: GLFW, SDL2, SDL3, pyglet, pygame or wgpu.",
+    "text": "With a pure Python backend, you drive the full app loop. See\n[Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`, there\nis no Hello ImGui here: no DPI handling, themes or assets.",
+    "summary": "With a pure Python backend, you drive the full app loop.",
     "uses": [
       "OpenGL",
       "GLFW",

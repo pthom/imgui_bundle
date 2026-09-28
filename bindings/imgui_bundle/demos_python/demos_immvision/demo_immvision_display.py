@@ -1,7 +1,7 @@
 """ImmVision: display an image, and inspect it
 
-Two ways to show an image held in a NumPy array. `immvision.image_display_resizable()` draws it, and you drag its
-corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values
+Two ways to show an image (a NumPy array in Python, a cv::Mat in C++). `immvision.image_display_resizable()` draws
+it, and you drag its corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values
 show, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).
 """
 import cv2

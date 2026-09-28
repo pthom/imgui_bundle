@@ -92,6 +92,20 @@ def _open(window: str, *labels: str) -> Callable[[Any], None]:
     return test
 
 
+def _cjk_font() -> None:
+    """The Chinese font demo: a CJK font, downloaded once to a folder the demo finds as an asset (the font is not
+    shipped: 16 MB). The picture shows the sample text instead of the "font not found" fallback."""
+    import urllib.request
+    from imgui_bundle import hello_imgui
+    folder = Path(tempfile.gettempdir()) / "imgui_bundle_screenshots_assets"
+    font = folder / "fonts/NotoSansSC-Regular.otf"
+    if not font.exists():
+        font.parent.mkdir(parents=True, exist_ok=True)
+        urllib.request.urlretrieve(
+            "https://github.com/notofonts/noto-cjk/raw/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf", font)
+    hello_imgui.add_assets_search_path(str(folder))
+
+
 def _neutral_shell() -> None:
     """The terminal: /bin/sh with a plain prompt (the user's shell prompt may show their name and their machine's)"""
     os.environ["SHELL"] = "/bin/sh"
@@ -177,7 +191,7 @@ SHOTS: dict[str, Shot] = {
     "demo_docking.py": Shot(frames=90, crop=(0.0, 0.0, 1.0, 0.64)),
     "demo_custom_background.py": Shot(frames=120),
     "demo_powersave.py": Shot(crop=(0.0, 0.0, 1.0, 0.72)),
-    "demo_chinese_font.py": Shot(crop=(0.0, 0.0, 1.0, 0.56)),
+    "demo_chinese_font.py": Shot(setup=_cjk_font, crop=(0.0, 0.3, 0.8, 0.9)),  # the sample lines
     "demo_drag_and_drop.py": Shot(crop=(0.0, 0.0, 0.36, 0.44)),
     "demo_command_palette.py": Shot(test=_command_palette, frames=30, crop=(0.0, 0.0, 0.8, 0.3)),
     "demo_testengine.py": Shot(frames=90, crop=(0.0, 0.0, 1.0, 0.8)),
