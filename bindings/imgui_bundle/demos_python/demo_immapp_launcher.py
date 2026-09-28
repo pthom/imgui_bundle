@@ -9,6 +9,7 @@ The catalog is the playground's (`playground/examples/examples.json`, and the de
 docstrings in `examples_docs.json`). The pictures come from the website (see `ci_scripts/playground_screenshots.py`).
 """
 import json
+import math
 import threading
 import time
 from dataclasses import dataclass, field
@@ -35,8 +36,9 @@ DETAIL_WIDTH = 28.0  # em
 PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
 MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
 EASE = im_anim.ease_preset(im_anim.ease_type.ease_out_cubic)
-DEAL_DELAY = 0.06  # s: between two cards lighting up, when the gallery arrives on screen
-DEAL_DURATION = 2.0  # s: one card lighting up
+DEAL_DELAY = 0.05  # s: between two cards dealt, when the gallery arrives on screen
+DEAL_DURATION = 0.35  # s: the flight of one card, from the deck to its place
+DEAL_SPIN = 0.0  # degrees: a card is dealt with a spin of at most this, settling as it lands (0: no spin)
 
 # Colors
 ACCENT = ImVec4(0.45, 0.65, 1.0, 1.0)  # the selected card, the chip of the category in view
@@ -190,15 +192,21 @@ class Pictures:
 
     def draw(self, stem: str, width: float, aspect: Optional[float] = None, rounding: float = 0.0,
              corners: int = 0) -> None:
-        """The picture (cropped to the aspect ratio, if given), fading in over a placeholder once it is loaded; its
-        corners (an ImDrawFlags_ choice) rounded, e.g. the top ones in a rounded card"""
+        """The picture as an item (cropped to the aspect ratio, if given), fading in over a placeholder once it is
+        loaded; its corners (an ImDrawFlags_ choice) rounded, e.g. the top ones in a rounded card"""
+        image = self.image(stem)
+        aspect = aspect or (image.size.x / image.size.y if image is not None else PICTURE_ASPECT)
+        top_left = imgui.get_cursor_screen_pos()
+        imgui.dummy(ImVec2(width, width / aspect))
+        self.draw_at(imgui.get_window_draw_list(), stem, top_left, width, aspect, rounding, corners)
+
+    def draw_at(self, draw_list: imgui.ImDrawList, stem: str, top_left: ImVec2, width: float, aspect: float,
+                rounding: float = 0.0, corners: int = 0) -> None:
+        """The picture on this draw list, from this corner, cropped to the aspect ratio (or fitted, when its shape is
+        too different)"""
         image = self.image(stem)
         image_aspect = image.size.x / image.size.y if image is not None else PICTURE_ASPECT
-        aspect = aspect or image_aspect
-        top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + width / aspect)
-        imgui.dummy(ImVec2(width, width / aspect))
-        draw_list = imgui.get_window_draw_list()
         draw_list.add_rect_filled(top_left, bottom_right, IM_COL32(44, 46, 68, 255), rounding, corners)
         if image is None:
             icon_size = imgui.calc_text_size(fa.ICON_FA_CODE)
@@ -306,9 +314,10 @@ def fit(text: str, width: float, lines: int) -> str:
     return " ".join(words) + "…"
 
 
-def draw_tags(tags: list[str], bottom_right: ImVec2) -> None:
+def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.ImDrawList] = None) -> None:
     """Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)"""
-    draw_list = imgui.get_window_draw_list()
+    if draw_list is None:
+        draw_list = imgui.get_window_draw_list()
     imgui.push_font(None, imgui.get_style().font_size_base * 0.85)
     pad = ImVec2(em_size(0.4), em_size(0.1))
     x = bottom_right.x
@@ -338,8 +347,9 @@ class Launcher:
         self.library = ""  # the library in use: the gallery shows the demos that use it (all when empty)
         self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
-        self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards light up one by one
+        self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards are dealt one by one
         self.card_index = 0  # of the card being drawn, in this frame's gallery
+        self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -465,14 +475,15 @@ class Launcher:
         imgui.text_disabled(shown)
         summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value)
         imgui.pop_text_wrap_pos()
-        if self.dealt_at is not None and self.dealing():  # a veil over the card, lifted at this card's turn
-            u = (imgui.get_time() - self.dealt_at - min(self.card_index, 24) * DEAL_DELAY) / DEAL_DURATION
-            if u < 1.0:
-                veil = 1.0 - max(u, 0.0) * (2.0 - max(u, 0.0))  # eased out
-                draw_list = imgui.get_window_draw_list()
-                draw_list.push_clip_rect_full_screen()  # over the border too
-                draw_list.add_rect_filled(top_left, bottom_right, curtain(veil))
-                draw_list.pop_clip_rect()
+        flight = self.flight(self.card_index)
+        if flight is not None and flight < 1.0:  # hidden under a veil while its double flies from the deck to here
+            draw_list = imgui.get_window_draw_list()
+            draw_list.push_clip_rect_full_screen()  # over the border too
+            draw_list.add_rect_filled(ImVec2(top_left.x - 1, top_left.y - 1), ImVec2(bottom_right.x + 1, bottom_right.y + 1),
+                                      curtain(1.0))  # a pixel more: the border's stroke
+            draw_list.pop_clip_rect()
+            if flight > 0.0:
+                self.flying_card(demo, top_left, width, height, flight, self.card_index)
         self.card_index += 1
         imgui.end_child()
         imgui.pop_style_var(3)
@@ -498,15 +509,66 @@ class Launcher:
             self.scroll_target = None
 
     def deal(self) -> None:
-        """Called when the gallery arrives on screen: its cards light up one after another, from the top left"""
+        """Called when the gallery arrives on screen: its cards are dealt one after another, from the top left"""
         self.dealt_at = imgui.get_time()
 
     def dealing(self) -> bool:
         return self.dealt_at is not None and imgui.get_time() < self.dealt_at + 24 * DEAL_DELAY + DEAL_DURATION
 
+    def flight(self, index: int) -> Optional[float]:
+        """Where this card is in its flight, from 0 (leaving the deck) to 1 (in place), while the gallery is being
+        dealt: None when it is not, below 0 when the card waits in the deck"""
+        if self.dealt_at is None or not self.dealing():
+            return None
+        return (imgui.get_time() - self.dealt_at - min(index, 24) * DEAL_DELAY) / DEAL_DURATION
+
+    def flying_card(self, demo: Demo, top_left: ImVec2, width: float, height: float, flight: float,
+                    index: int) -> None:
+        """The card's double on the foreground, sliding from the deck (below the gallery, at its center) to the
+        card's place; with DEAL_SPIN, it spins on the way (the vertices are rotated after the fact)"""
+        eased = 1.0 - (1.0 - flight) ** 3
+        gallery_min, gallery_max = self.gallery_rect
+        deck = ImVec2((gallery_min.x + gallery_max.x - width) / 2, gallery_max.y + height * 0.3)
+        pos = ImVec2(deck.x + (top_left.x - deck.x) * eased, deck.y + (top_left.y - deck.y) * eased)
+        draw_list = imgui.get_foreground_draw_list()
+        draw_list.push_clip_rect(gallery_min, gallery_max, True)
+        first_vertex = draw_list.vtx_buffer.size()
+        self.card_face(draw_list, demo, pos, width, height)
+        if DEAL_SPIN:
+            angle = math.radians(DEAL_SPIN * (((index * 7) % 5) - 2) / 2) * (1.0 - eased)  # this card's own
+            center = ImVec2(pos.x + width / 2, pos.y + height / 2)
+            imgui.internal.shade_verts_transform_pos(draw_list, first_vertex, draw_list.vtx_buffer.size(), center,
+                                                     math.cos(angle), math.sin(angle), center)
+        draw_list.pop_clip_rect()
+
+    def card_face(self, draw_list: imgui.ImDrawList, demo: Demo, top_left: ImVec2, width: float,
+                  height: float) -> None:
+        """The card as primitives on a draw list (the flying double of `card`, which lays it out as widgets)"""
+        bottom_right = ImVec2(top_left.x + width, top_left.y + height)
+        padding, title_scale, rounding = em_size(0.6), 1.1, em_size(0.5)
+        draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BG), rounding)
+        self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
+                              imgui.ImDrawFlags_.round_corners_top.value)
+        picture_bottom = top_left.y + width / PICTURE_ASPECT
+        draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)), draw_list)
+        font, font_size = imgui.get_font(), imgui.get_font_size()
+        imgui.push_font(None, imgui.get_style().font_size_base * title_scale)
+        title = fit(demo.label, width - 2 * padding, 1)
+        imgui.pop_font()
+        y = picture_bottom + em_size(0.4)
+        draw_list.add_text(font, font_size * title_scale, ImVec2(top_left.x + padding, y),
+                           imgui.get_color_u32(imgui.Col_.text), title)
+        y += font_size * title_scale + imgui.get_style().item_spacing.y
+        draw_list.add_text(font, font_size, ImVec2(top_left.x + padding, y),
+                           imgui.get_color_u32(imgui.Col_.text_disabled),
+                           fit(plain_text(demo.summary), width - 2 * padding, 2), wrap_width=width - 2 * padding)
+        draw_list.add_rect(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BORDER), rounding)
+
     def gallery(self) -> None:
         self.smooth_scroll()
         self.card_index = 0
+        pos, size = imgui.get_window_pos(), imgui.get_window_size()
+        self.gallery_rect = (pos, ImVec2(pos.x + size.x, pos.y + size.y))
         spacing = em_size(1.0)
         avail = imgui.get_content_region_avail().x
         columns = max(1, int((avail + spacing) // (em_size(CARD_WIDTH) + spacing)))
