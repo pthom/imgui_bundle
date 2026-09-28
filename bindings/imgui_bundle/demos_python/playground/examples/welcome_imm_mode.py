@@ -61,9 +61,16 @@ def gui(state: AppState) -> None:
     imgui.separator()
 
 
-    # Slider
+    # Widgets that manipulate a value will return a tuple of two values,
+    # such as the slider below (`slider_float`):
+    #     - was the widget just used
+    #     - what is the new value
+    # Thus, we store the output as
+    #     _volume_changed, s.volume
+    # Later examples will use a shorter form if we do not care about the first (was it used):
+    #     _, s.volume
     _volume_changed, s.volume = imgui.slider_float(
-        "Volume", v=s.volume, v_min=0.0, v_max=12.0, format="%.1f")
+        label="Volume", v=s.volume, v_min=0.0, v_max=12.0, format="%.1f")
     imgui.separator()  # a horizontal separator line
 
     # Text input
