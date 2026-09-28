@@ -51,6 +51,7 @@ class Explorer:
         """The title, the sentence of the state, and at the right the switch between the states"""
         top = imgui.get_cursor_pos_y()
         demo_immapp_launcher.big_text("Dear ImGui Bundle", 2.0)
+        below_title = imgui.get_cursor_pos_y()
         imgui.same_line()
         imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
         if self.state == WELCOME:
@@ -59,7 +60,7 @@ class Explorer:
             sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
         if imgui.calc_text_size(sentence).x + self.right_width + em_size(2) <= imgui.get_content_region_avail().x:
             imgui.text_colored(imgui.get_style_color_vec4(color), sentence)  # only when it does not reach the switch
-        imgui.same_line()
+        # The cursor is set, not put on the same line: a pending same_line would make the title's row the chips' line
         right = imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(0.5)
         imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5)))  # centered on the title
         imgui.begin_group()
@@ -79,6 +80,7 @@ class Explorer:
         imgui.pop_style_var()
         imgui.end_group()
         self.right_width = imgui.get_item_rect_size().x
+        imgui.set_cursor_pos_y(max(imgui.get_cursor_pos_y(), below_title))  # the chips are shorter than the title
 
     def welcome(self) -> None:
         demo_imgui_bundle_intro.links_row()
