@@ -501,11 +501,11 @@ def show_info():
 # ============================================================================
 
 def show_post_it():
-    """In the playground: a note that opens its examples menu"""
+    """In the playground: a note that opens its gallery of demos"""
     if sys.platform != "emscripten":
-        return  # the examples menu is the playground's (on desktop, see demo_immapp_launcher.py)
+        return  # the gallery is the playground's (on desktop, see demo_immapp_launcher.py)
     em = hello_imgui.em_size()
-    text = "Browse the examples  " + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT
+    text = "Browse the demos  " + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT
     padding = em * 0.4
     text_size = imgui.calc_text_size(text)
     note_w = text_size.x + padding * 2
@@ -517,8 +517,8 @@ def show_post_it():
     if hovered:
         imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
         if imgui.is_mouse_clicked(imgui.MouseButton_.left):
-            from js import openExamplesMenu  # type: ignore[import-not-found]  # the playground's page (js/examples.js)
-            openExamplesMenu()
+            from js import openGallery  # type: ignore[import-not-found]  # the playground's page (js/examples.js)
+            openGallery()
     dl = imgui.get_foreground_draw_list()
     shadow = em * 0.15
     dl.add_rect_filled((note_x + shadow, note_y + shadow),

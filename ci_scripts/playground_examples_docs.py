@@ -155,6 +155,18 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
         print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
 
 
+def cpp_file(e: dict[str, Any], python_path: Path) -> Optional[Path]:
+    """The C++ version of an example, when it exists: the mirror of the Python file in demos_cpp, or the file that
+    "cpp" names (e.g. in a submodule)"""
+    if "cpp" in e:
+        path = REPO / e["cpp"]
+    elif python_path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
+        path = DEMOS_CPP_DIR / python_path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
+    else:
+        return None
+    return path if path.exists() else None
+
+
 def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> None:
     """The catalog of the C++ launcher: the categories, and per demo what the Python launcher derives at load time
     (see `load_catalog` in demo_immapp_launcher.py). The files are relative to the repository: the C++ maps them to
@@ -166,11 +178,7 @@ def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]])
             continue
         folder = disk_path(manifest["sources"], e.get("source", "examples"))
         path = folder / e["filename"]
-        cpp_path: Optional[Path] = None
-        if "cpp" in e:  # a C++ version that is not the mirror of the Python file (e.g. in a submodule)
-            cpp_path = REPO / e["cpp"]
-        elif path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
-            cpp_path = DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
+        cpp_path = cpp_file(e, path)
         doc = docs.get(e["filename"], {})
         categories[e["category"]]["demos"].append({
             "label": e["label"],
@@ -181,7 +189,7 @@ def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]])
             "summary": doc.get("summary", ""),
             "uses": doc.get("uses", []),
             "python_file": path.relative_to(REPO).as_posix(),
-            "cpp_file": cpp_path.relative_to(REPO).as_posix() if cpp_path is not None and cpp_path.exists() else None,
+            "cpp_file": cpp_path.relative_to(REPO).as_posix() if cpp_path is not None else None,
             "cpp_url": e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),  # "": none online
             "in_place": bool(e.get("in_place")),  # its function may be linked in the explorer
             "variants": [{"label": v["label"], "python_file": (folder / v["filename"]).resolve().relative_to(REPO).as_posix()}
@@ -318,7 +326,8 @@ def main() -> None:
                   f"(more than {MAX_SUMMARY})")
         files = [folder / v["filename"] for v in example.get("variants", [])] or [folder / filename]
         docs[filename] = {"title": title, "text": text, "summary": summary,
-                          "uses": example.get("uses", uses(files))}  # "uses" in examples.json: the imports mislead
+                          "uses": example.get("uses", uses(files)),  # "uses" in examples.json: the imports mislead
+                          "cpp": cpp_file(example, (folder / filename).resolve()) is not None}  # the gallery's C++ tag
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)

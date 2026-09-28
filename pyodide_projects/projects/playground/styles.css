@@ -40,77 +40,78 @@ html, body {
 }
 
 
-/* Examples menu: a button, then a panel with the examples by category, and the detail of the hovered one */
+/* The gallery of demos: a button in the header, and an overlay under it (see js/examples.js) */
 #examples-menu {
-    position: relative;
     margin-right: 10px;
 }
-
 #examples-button {
     padding: 6px 14px;
     font-size: 1em;
-    background-color: #4CAF50;  /* the accent of the Run button: the examples are the playground's door */
+    background-color: #4CAF50;  /* the accent of the Run button: the demos are the playground's door */
     color: #fff;
     border: 1px solid #45a049;
     border-radius: 4px;
     cursor: pointer;
 }
-
 #examples-button:hover {
     background-color: #45a049;
 }
-
-#examples-panel {
-    position: absolute;
+#gallery {
+    position: fixed;
+    left: 0;
     right: 0;
-    top: calc(100% + 6px);
+    bottom: 0;
     z-index: 1000;
     display: flex;
-    width: min(780px, 94vw);
-    max-height: 80vh;
-    background-color: #2d2d2d;
-    border: 1px solid #555;
-    border-radius: 6px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
-}
-
-#examples-panel[hidden] {
-    display: none;
-}
-
-#examples-column {
-    flex: 0 0 340px;
-    display: flex;
     flex-direction: column;
-    min-height: 0;
-}
-
-#examples-search {
-    margin: 10px 14px 4px;
-    padding: 4px 8px;
-    font: inherit;
-    font-size: 0.9em;
     color: #ddd;
     background-color: #1e1e1e;
-    border: 1px solid #555;
-    border-radius: 4px;
+    opacity: 0;
+    transform: translateY(1.5em);
+    transition: opacity 0.25s ease-out, transform 0.25s ease-out;  /* it fades in with a small slide */
 }
-
-#examples-search:focus {
-    outline: none;
-    border-color: #9cdcfe;
+#gallery.open {
+    opacity: 1;
+    transform: none;
 }
-
-#examples-filters {
+#gallery[hidden] {
+    display: none;
+}
+#gallery-bar {
+    position: relative;
     display: flex;
+    flex-wrap: wrap;
+    align-items: center;
     gap: 6px;
-    margin: 0 14px 4px;
+    padding: 8px 56px 8px 16px;  /* room at the right for the close button */
+    background-color: #252526;
+    border-bottom: 1px solid #444;
 }
-
-#examples-filters select {
-    flex: 1;
-    min-width: 0;
-    padding: 3px 4px;
+#gallery-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+.gallery-chip {
+    padding: 2px 10px;
+    font: inherit;
+    font-size: 0.85em;
+    color: #ddd;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 12px;
+    cursor: pointer;
+}
+.gallery-chip:hover {
+    background-color: #4a4a4a;
+}
+.gallery-chip.in-view {
+    color: #fff;
+    background-color: rgba(115, 166, 255, 0.55);  /* the launcher's accent */
+    border-color: #73a6ff;
+}
+#gallery-library, #gallery-search {
+    padding: 3px 8px;
     font: inherit;
     font-size: 0.85em;
     color: #ddd;
@@ -118,94 +119,162 @@ html, body {
     border: 1px solid #555;
     border-radius: 4px;
 }
-
-#examples-list {
-    flex: 1;
-    overflow-y: auto;
-    padding: 0 0 10px;
+#gallery-library {
+    margin-left: 10px;
 }
-
-#examples-list [hidden] {
-    display: none;  /* the search hides items: their display rule must not win over the attribute */
+#gallery-search {
+    width: 14em;
 }
-
-#examples-no-match {
-    padding: 10px 14px;
-    color: #999;
-    font-size: 0.9em;
+#gallery-search:focus {
+    outline: none;
+    border-color: #9cdcfe;
 }
-
-.examples-category-name {
-    padding: 10px 14px 0;
-    font-weight: bold;
-    color: #9cdcfe;
-}
-
-.examples-category-about {
-    padding: 0 14px 4px;
-    font-size: 0.8em;
-    color: #999;
-}
-
-.examples-item {
-    display: block;
-    width: 100%;
-    padding: 4px 14px 4px 26px;
-    text-align: left;
-    font-size: 0.95em;
+#gallery-close {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    padding: 0 10px;
+    font-size: 1.4em;
+    line-height: 1.2;
     color: #ddd;
     background: none;
-    border: none;
+    border: 1px solid #555;
+    border-radius: 4px;
     cursor: pointer;
 }
-
-.examples-item:hover, .examples-item:focus {
-    background-color: #3d5a80;
-    color: #fff;
+#gallery-close:hover {
+    background-color: #3a3a3a;
+}
+#gallery-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 4px 16px 24px;
+}
+#gallery [hidden] {
+    display: none;  /* the search hides cards: their display rule must not win over the attribute */
+}
+#gallery-no-match {
+    padding: 10px 0;
+    color: #999;
+}
+.gallery-category-title {
+    margin: 14px 0 2px;
+    font-size: 1.45em;
+    font-weight: normal;
+    color: #9cdcfe;
+}
+.gallery-category-about {
+    font-size: 0.9em;
+    color: #999;
+}
+.gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));  /* the cards fill the width, one column on a phone */
+    gap: 16px;
+    margin: 10px 0 16px;
+}
+.gallery-card {
+    overflow: hidden;
+    background-color: #292e3d;
+    border: 1px solid #40404d;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
+}
+.gallery-card:hover, .gallery-card:focus {
+    background-color: #333b4f;
+    border-color: #999eb8;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
+    transform: translateY(-2px);
     outline: none;
 }
-
-.examples-item.current {
-    font-weight: bold;
-    color: #fff;
+.gallery-card.current {
+    border-color: #73a6ff;
+    box-shadow: inset 0 0 0 1px #73a6ff;
 }
-
-#examples-detail {
-    flex: 1;
-    padding: 16px 18px;
-    border-left: 1px solid #444;
-    overflow-y: auto;
-    line-height: 1.45;
-    color: #ddd;
+/* The cards in view are dealt when the gallery opens: each one slides from below with a spin that settles, 50 ms
+   after the previous one (js/examples.js sets --rank and --spin) */
+@keyframes gallery-deal {
+    from {
+        opacity: 0;
+        transform: translateY(60vh) rotate(var(--spin, 0deg));
+    }
+    to {
+        opacity: 1;
+        transform: none;
+    }
 }
-
-.examples-detail-picture {
+.gallery-card.dealt {
+    animation: gallery-deal 0.35s ease-out both;
+    animation-delay: calc(var(--rank, 0) * 50ms);
+}
+@media (prefers-reduced-motion: reduce) {
+    #gallery {
+        transition: none;
+    }
+    .gallery-card.dealt {
+        animation: none;
+    }
+}
+.gallery-picture {
+    position: relative;
+    aspect-ratio: 16 / 10;
+    background-color: #2c2e44;
+}
+.gallery-picture img {
     display: block;
-    max-width: 100%;
-    margin-top: 12px;
-    border-radius: 4px;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
-
-.examples-detail-title {
-    margin-bottom: 8px;
-    font-size: 1.1em;
-    font-weight: bold;
+.gallery-no-picture::before {
+    content: '</>';
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: monospace;
+    color: rgba(200, 200, 220, 0.6);
+}
+.gallery-tags {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+    display: flex;
+    gap: 4px;
+}
+.gallery-tag {
+    padding: 1px 7px;
+    font-size: 0.75em;
+    color: #f0f5ff;
+    border-radius: 10px;
+}
+.gallery-tag.python {
+    background-color: rgba(48, 105, 152, 0.92);
+}
+.gallery-tag.cpp {
+    background-color: rgba(96, 72, 160, 0.92);
+}
+.gallery-tag.browser {
+    background-color: rgba(190, 105, 30, 0.92);
+}
+.gallery-title {
+    padding: 8px 10px 0;
+    font-size: 1.05em;
     color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
-#examples-detail p {
-    margin: 0 0 8px;
-}
-
-#examples-detail code {
-    padding: 1px 4px;
+.gallery-summary {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 2px 10px 10px;  /* a margin, not a padding: a clamped box paints its third line in its padding */
     font-size: 0.9em;
-    background-color: #1e1e1e;
-    border-radius: 3px;
-}
-
-#examples-detail a {
-    color: #9cdcfe;
+    color: #aaa;
 }
 
 /* Run Button styles */
@@ -465,16 +534,8 @@ html, body {
     #run-button {
         width: 100%;
     }
-    /* No hover on touch screens: the list only, centered, a tap loads the example */
-    #examples-panel {
-        right: auto;
-        left: 50%;
-        transform: translateX(-50%);
-    }
-    #examples-column {
+    #gallery-search {
         flex: 1;
-    }
-    #examples-detail {
-        display: none;
+        width: auto;
     }
 }

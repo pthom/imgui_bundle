@@ -149,143 +149,186 @@ let examplesDocs = {};  // {filename: {title, text}}: examples_docs.json, see ci
 // The example loaded in the editor (null for the landing page): runEditorPythonCode() runs it at its own path
 let loadedExampleFilename = null;
 
-// The examples menu: the examples by category, and beside the list the title and first paragraph of the hovered one
-// (extracted from its docstring)
-async function populateExampleSelector() {
+// The gallery: the launcher's twin in HTML (demo_immapp_launcher.py). An overlay under the header: the category chips
+// (a click scrolls to the category), the library filter and the search box, then the categories with their cards
+// (picture, tags, title, summary; the whole text as a tooltip). A card loads and runs its demo.
+
+// Markdown as plain text: links keep their text, emphasis and code marks go
+function plainText(markdown) {
+    return markdown.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1').replace(/[*`]/g, '').replace(/\s+/g, ' ').trim();
+}
+
+function element(tag, className, text) {
+    const e = document.createElement(tag);
+    e.className = className;
+    if (text) e.textContent = text;
+    return e;
+}
+
+function makeCard(example, category) {
+    const doc = examplesDocs[example.filename] || {};
+    const card = element('div', 'gallery-card');
+    card.dataset.filename = example.filename;
+    card.dataset.category = category.name;
+    // What the search looks into: the label, the description, the category, the libraries
+    card.dataset.search = [example.label, doc.title, doc.text, category.name, ...(doc.uses || [])]
+        .join(' ').toLowerCase();
+    card.dataset.uses = JSON.stringify(doc.uses || []);
+    card.title = plainText(doc.text || '');
+    card.tabIndex = 0;
+    card.setAttribute('role', 'button');
+    // Its picture, from the website resources (made by ci_scripts/playground_screenshots.py)
+    const picture = element('div', 'gallery-picture');
+    const img = document.createElement('img');
+    img.alt = '';
+    img.loading = 'lazy';
+    img.onerror = () => { img.remove(); picture.classList.add('gallery-no-picture'); };  // no picture yet
+    img.src = '../resources/playground/' + example.filename.split('/').pop().replace(/\.py$/, '.jpg');
+    const tags = element('span', 'gallery-tags');
+    tags.appendChild(element('span', 'gallery-tag python', 'Python'));
+    if (doc.cpp) tags.appendChild(element('span', 'gallery-tag cpp', 'C++'));
+    if (example.where === 'browser') tags.appendChild(element('span', 'gallery-tag browser', 'Browser only'));
+    picture.append(img, tags);
+    card.append(picture, element('div', 'gallery-title', example.label),
+                element('div', 'gallery-summary', plainText(doc.summary || '')));
+    card.addEventListener('click', async () => {
+        closeGallery();
+        await loadDemoByFilename(example.filename);
+    });
+    card.addEventListener('keydown', (event) => { if (event.key === 'Enter') card.click(); });
+    return card;
+}
+
+async function buildGallery() {
     examplesMetadata = await fetchExampleMetadata();
     try {
         examplesDocs = await (await fetch('examples/examples_docs.json')).json();
     } catch (error) {
-        console.warn('No examples_docs.json: the menu shows no descriptions', error);
+        console.warn('No examples_docs.json: the gallery shows no descriptions', error);
     }
-
-    const list = document.getElementById('examples-list');
-    list.innerHTML = '';
+    const body = document.getElementById('gallery-body');
+    const chips = document.getElementById('gallery-chips');
+    body.innerHTML = '';
+    chips.innerHTML = '';
     let count = 0;
     for (const category of examplesCategories) {
-        const name = document.createElement('div');
-        name.className = 'examples-category-name';
-        name.textContent = category.name;
-        name.dataset.category = category.name;
-        const about = document.createElement('div');
-        about.className = 'examples-category-about';
-        about.textContent = category.about;
-        about.dataset.category = category.name;
-        list.append(name, about);
-        // The menu shows the demos that run in the browser, except the hidden ones
-        for (const example of examplesMetadata) {
-            if (example.hidden || example.where === 'desktop' || example.category !== category.name) continue;
-            const item = document.createElement('button');
-            item.className = 'examples-item';
-            item.textContent = example.label;
-            item.dataset.filename = example.filename;
-            item.dataset.category = category.name;
-            // What the search looks into: the label, the description, the category, the libraries
-            const doc = examplesDocs[example.filename] || {};
-            item.dataset.search = [example.label, doc.title, doc.text, category.name, ...(doc.uses || [])]
-                .join(' ').toLowerCase();
-            item.dataset.uses = JSON.stringify(doc.uses || []);
-            item.addEventListener('mouseenter', () => showExampleDoc(example.filename));
-            item.addEventListener('focus', () => showExampleDoc(example.filename));
-            item.addEventListener('click', async () => {
-                closeExamplesMenu();
-                await loadDemoByFilename(example.filename);
-            });
-            list.appendChild(item);
-            count++;
-        }
+        // The gallery shows the demos that run in the browser, except the hidden ones
+        const shown = examplesMetadata.filter(
+            (e) => !e.hidden && e.where !== 'desktop' && e.category === category.name);
+        if (!shown.length) continue;
+        const section = element('section', 'gallery-category');
+        section.dataset.category = category.name;
+        section.append(element('h2', 'gallery-category-title', category.name),
+                       element('div', 'gallery-category-about', category.about));
+        if (category.tip) section.appendChild(element('div', 'gallery-category-about', category.tip));
+        const grid = element('div', 'gallery-grid');
+        for (const example of shown) grid.appendChild(makeCard(example, category));
+        section.appendChild(grid);
+        body.appendChild(section);
+        const chip = element('button', 'gallery-chip');
+        chip.dataset.category = category.name;
+        chip.addEventListener('click', () => section.scrollIntoView({behavior: 'smooth', block: 'start'}));
+        chips.appendChild(chip);
+        count += shown.length;
     }
-    document.getElementById('examples-button').textContent = `Examples (${count}) ▾`;
-    const noMatch = document.createElement('div');
-    noMatch.id = 'examples-no-match';
-    noMatch.textContent = 'No example matches.';
+    document.getElementById('examples-button').textContent = `Demos (${count})`;
+    const noMatch = element('div', '', 'No demo matches.');
+    noMatch.id = 'gallery-no-match';
     noMatch.hidden = true;
-    list.appendChild(noMatch);
-    fillFilters();
+    body.appendChild(noMatch);
+    fillLibraries();
+    filterGallery();
 }
 
-// The two selects under the search box: the categories, and the libraries the listed examples use, with counts
-function fillFilters() {
-    const items = [...document.querySelectorAll('.examples-item')];
-    const counts = (key) => {
-        const result = new Map();
-        for (const item of items) for (const value of key(item)) result.set(value, (result.get(value) || 0) + 1);
-        return result;
-    };
-    const fill = (id, all, entries) => {
-        const select = document.getElementById(id);
-        select.innerHTML = '';
-        select.append(new Option(all, ''));
-        for (const [name, count] of entries) select.append(new Option(`${name} (${count})`, name));
-        select.addEventListener('change', filterExamples);
-    };
-    const byCategory = counts((item) => [item.dataset.category]);
-    fill('examples-category', 'All categories', examplesCategories.filter((c) => byCategory.has(c.name))
-        .map((c) => [c.name, byCategory.get(c.name)]));
-    const byLibrary = counts((item) => JSON.parse(item.dataset.uses));
-    fill('examples-library', 'All libraries', [...byLibrary].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+// The library select: the libraries the demos use, with counts, the most used first
+function fillLibraries() {
+    const counts = new Map();
+    for (const card of document.querySelectorAll('.gallery-card'))
+        for (const library of JSON.parse(card.dataset.uses)) counts.set(library, (counts.get(library) || 0) + 1);
+    const select = document.getElementById('gallery-library');
+    select.innerHTML = '';
+    select.append(new Option('Library', ''));
+    for (const [name, count] of [...counts].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])))
+        select.append(new Option(`${name} (${count})`, name));
 }
 
-// The list keeps the examples of the category and the library picked, that have every word of the search (and the
-// categories that keep one)
-function filterExamples() {
-    const words = document.getElementById('examples-search').value.toLowerCase().split(/\s+/).filter(Boolean);
-    const category = document.getElementById('examples-category').value;
-    const library = document.getElementById('examples-library').value;
-    const shown = new Set();
-    for (const item of document.querySelectorAll('.examples-item')) {
-        item.hidden = (category && item.dataset.category !== category)
-            || (library && !JSON.parse(item.dataset.uses).includes(library))
-            || !words.every((word) => item.dataset.search.includes(word));
-        if (!item.hidden) shown.add(item.dataset.category);
+// The gallery keeps the demos that use the library picked and have every word of the search; the chips count them
+function filterGallery() {
+    const words = document.getElementById('gallery-search').value.toLowerCase().split(/\s+/).filter(Boolean);
+    const library = document.getElementById('gallery-library').value;
+    const shown = new Map();
+    for (const card of document.querySelectorAll('.gallery-card')) {
+        card.hidden = (library && !JSON.parse(card.dataset.uses).includes(library))
+            || !words.every((word) => card.dataset.search.includes(word));
+        if (!card.hidden) shown.set(card.dataset.category, (shown.get(card.dataset.category) || 0) + 1);
     }
-    for (const header of document.querySelectorAll('.examples-category-name, .examples-category-about'))
-        header.hidden = !shown.has(header.dataset.category);
-    document.getElementById('examples-no-match').hidden = shown.size > 0;
-}
-
-// The detail pane of the menu: the example's title, first paragraph (markdown, rendered by marked.js) and picture
-function showExampleDoc(filename) {
-    const detail = document.getElementById('examples-detail');
-    detail.innerHTML = '';
-    const doc = examplesDocs[filename];
-    if (!doc) return;
-    const title = document.createElement('div');
-    title.className = 'examples-detail-title';
-    title.textContent = doc.title;
-    const text = document.createElement('div');
-    if (typeof marked !== 'undefined') {
-        text.innerHTML = marked.parse(doc.text);  // our own docstrings: trusted markdown
-        for (const link of text.querySelectorAll('a')) link.target = '_blank';
-    } else {
-        text.textContent = doc.text;  // marked.js could not be loaded: the markdown as is
+    for (const section of document.querySelectorAll('.gallery-category'))
+        section.hidden = !shown.has(section.dataset.category);
+    for (const chip of document.querySelectorAll('.gallery-chip')) {
+        const n = shown.get(chip.dataset.category) || 0;
+        chip.textContent = `${chip.dataset.category} (${n})`;
+        chip.hidden = n === 0;
     }
-    // Its picture, from the website resources (made by ci_scripts/playground_screenshots.py): loaded when hovered
-    const picture = document.createElement('img');
-    picture.className = 'examples-detail-picture';
-    picture.alt = '';
-    picture.onerror = () => picture.remove();  // no picture yet, or served without the resources
-    picture.src = '../resources/playground/' + filename.split('/').pop().replace(/\.py$/, '.jpg');
-    detail.append(title, text, picture);
+    document.getElementById('gallery-no-match').hidden = shown.size > 0;
+    markCategoryInView();
 }
 
-// Highlights the example loaded in the editor
+// The chip of the category in view, as the launcher's: the last one whose title has passed the top (or the last
+// one, at the end: the last categories cannot reach the top)
+function markCategoryInView() {
+    const body = document.getElementById('gallery-body');
+    const sections = [...document.querySelectorAll('.gallery-category:not([hidden])')];
+    if (!sections.length) return;
+    const top = body.getBoundingClientRect().top;
+    const atTheEnd = body.scrollTop + body.clientHeight >= body.scrollHeight - 1;
+    let current = sections[0];
+    for (const section of sections)
+        if (section.getBoundingClientRect().top <= top + 3 * parseFloat(getComputedStyle(body).fontSize))
+            current = section;
+    if (atTheEnd) current = sections[sections.length - 1];
+    for (const chip of document.querySelectorAll('.gallery-chip'))
+        chip.classList.toggle('in-view', chip.dataset.category === current.dataset.category);
+}
+
+// Highlights the demo loaded in the editor
 function markCurrentExample(filename) {
-    for (const item of document.querySelectorAll('.examples-item'))
-        item.classList.toggle('current', item.dataset.filename === filename);
+    for (const card of document.querySelectorAll('.gallery-card'))
+        card.classList.toggle('current', card.dataset.filename === filename);
 }
 
-function openExamplesMenu() {
-    document.getElementById('examples-panel').hidden = false;
+// The cards in view are dealt one after another, from the top left (a CSS animation per card, delayed by its rank)
+function dealCards() {
+    const bodyRect = document.getElementById('gallery-body').getBoundingClientRect();
+    let rank = 0;
+    for (const card of document.querySelectorAll('.gallery-card:not([hidden])')) {
+        const rect = card.getBoundingClientRect();
+        if (rect.bottom < bodyRect.top || rect.top > bodyRect.bottom || rank >= 24) continue;
+        card.style.setProperty('--rank', rank);
+        card.style.setProperty('--spin', `${((rank * 7) % 5 - 2) * 9}deg`);  // its own, settled on landing
+        card.classList.add('dealt');
+        card.addEventListener('animationend', () => card.classList.remove('dealt'), {once: true});
+        rank++;
+    }
+}
+
+function openGallery() {
+    const gallery = document.getElementById('gallery');
+    gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';  // under the header
+    const wasHidden = gallery.hidden;
+    gallery.hidden = false;
+    requestAnimationFrame(() => gallery.classList.add('open'));  // a frame later: the transition needs a start state
     document.getElementById('examples-button').setAttribute('aria-expanded', 'true');
-    const current = document.querySelector('.examples-item.current');
-    showExampleDoc(current ? current.dataset.filename : 'landing_page.py');
-    if (current) current.scrollIntoView({block: 'nearest'});
-    document.getElementById('examples-search').focus();
+    const current = document.querySelector('.gallery-card.current');
+    if (current) current.scrollIntoView({block: 'center'});
+    markCategoryInView();
+    if (wasHidden) dealCards();
+    if (window.innerWidth > 768) document.getElementById('gallery-search').focus();  // not on a phone: its keyboard
 }
 
-function closeExamplesMenu() {
-    document.getElementById('examples-panel').hidden = true;
+function closeGallery() {
+    const gallery = document.getElementById('gallery');
+    gallery.classList.remove('open');
+    setTimeout(() => { if (!gallery.classList.contains('open')) gallery.hidden = true; }, 200);  // after its fade
     document.getElementById('examples-button').setAttribute('aria-expanded', 'false');
 }
 
@@ -322,27 +365,30 @@ async function loadDemoFromUrlIfNeeded() {
 
 // Initialize the examples menu on page load
 document.addEventListener('DOMContentLoaded', () => {
-    populateExampleSelector().then(() => markCurrentExample(getDemoFromUrl() || 'landing_page.py'));
+    buildGallery().then(() => markCurrentExample(getDemoFromUrl() || 'landing_page.py'));
 
-    const panel = document.getElementById('examples-panel');
+    const gallery = document.getElementById('gallery');
     document.getElementById('examples-button').addEventListener('click', () => {
-        if (panel.hidden) openExamplesMenu(); else closeExamplesMenu();
+        if (gallery.hidden || !gallery.classList.contains('open')) openGallery(); else closeGallery();
     });
-    // Closed by a click outside, or Escape (listened in the capture phase: the canvas may stop the events)
-    document.addEventListener('pointerdown', (event) => {
-        if (!panel.hidden && !document.getElementById('examples-menu').contains(event.target)) closeExamplesMenu();
-    }, true);
-    const search = document.getElementById('examples-search');
-    search.addEventListener('input', filterExamples);
+    document.getElementById('gallery-close').addEventListener('click', closeGallery);
+    const search = document.getElementById('gallery-search');
+    const library = document.getElementById('gallery-library');
+    search.addEventListener('input', filterGallery);
+    library.addEventListener('change', filterGallery);
+    document.getElementById('gallery-body').addEventListener('scroll', markCategoryInView);
+    window.addEventListener('resize', () => {  // the header's height changes
+        if (!gallery.hidden)
+            gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';
+    });
+    // Escape (listened in the capture phase: the canvas may stop the events)
     document.addEventListener('keydown', (event) => {
-        if (panel.hidden || event.key !== 'Escape') return;
-        const category = document.getElementById('examples-category');
-        const library = document.getElementById('examples-library');
-        if (search.value || category.value || library.value) {  // a first Escape clears the filters, a second closes
-            search.value = category.value = library.value = '';
-            filterExamples();
+        if (gallery.hidden || event.key !== 'Escape') return;
+        if (search.value || library.value) {  // a first Escape clears the filters, a second closes
+            search.value = library.value = '';
+            filterGallery();
         } else {
-            closeExamplesMenu();
+            closeGallery();
         }
     }, true);
 
