@@ -20,7 +20,7 @@ IMAGE = (".png", ".gif", ".svg", ".jpg")
 
 # The hand-written lists: (file, the text that starts the list, the text that ends it)
 HAND_WRITTEN = [
-    ("bindings/imgui_bundle/demos_python/demo_imgui_bundle_intro.py", "def _render_links_row", "for i, (label"),
+    ("bindings/imgui_bundle/demos_python/demo_imgui_bundle_intro.py", "def links_row", "for i, (label"),
     ("bindings/imgui_bundle/demos_cpp/demo_imgui_bundle_intro.cpp", "void RenderLinksRow()", "for (int i = 0"),
     ("bindings/imgui_bundle/demos_python/playground/examples/landing_page.py", "## See also", '"""'),
     ("Readme.md", "", "### Build status"),  # tracked as Readme.md: the exact case matters on Linux
