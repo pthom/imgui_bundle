@@ -339,7 +339,7 @@ docs/book/
 │     ├── demos.md                          Demos & tutorials (generated: ci_scripts/playground_examples_docs.py)
 │     ├── demos_pdf.md                      The same without its grids, for the PDF (generated)
 │     ├── examples_gallery.md               Apps made with Dear ImGui Bundle
-│     ├── resources.md                      Links & resources
+│     ├── resources.md                      Links & resources (includes bindings/imgui_bundle/demos_assets/resources.md)
 │     └── ai_guide.md                       For AI assistants (the deploy also publishes it as /llms.txt)
 │
 ├── python/                                 For Python users

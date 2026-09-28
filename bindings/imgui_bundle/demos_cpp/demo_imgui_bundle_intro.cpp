@@ -1709,20 +1709,11 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
 
     ImGui::Indent();
 
+    // The list of resources is demos_assets/resources.md, shared with the book's Resources page
     RichMd::Render(R"(
-    **Links:**
-    - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
-    - [Documentation](https://imgui-bundle.pages.dev/doc/): Full documentation
-    - [Python Playground](https://imgui-bundle.pages.dev/playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
-    - [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
-    - [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
-    - [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
+    ![[resources.md#Start here]]
 
-
-    **Other resources:**
-    - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer): Interactive manual for Dear ImGui, ImPlot, ImPlot3D
-    - [Hello ImGui](https://pthom.github.io/hello_imgui): Cross-platform app framework
-    - [Fiatlight](https://pthom.github.io/fiatlight): Turn Python functions into interactive apps. A library built on top of the bundle, by the same author ([repo](https://github.com/pthom/fiatlight))
+    All the resources, from the manuals to the videos: [the Resources page](https://imgui-bundle.pages.dev/doc/intro/resources/).
     )");
 
     ImGui::Unindent();

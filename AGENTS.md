@@ -95,7 +95,7 @@ Developer documentation is in `docs/book/devel_docs/`. Read the relevant page be
 - `Readme_pyodide_bundle.md` - The Pyodide build
 - `cloudflare_deploy.md` - The web site's deploy
 
-The bindings are generated automatically using [litgen](https://pthom.github.io/litgen/litgen_book/00_00_intro.html), a Python bindings generator for C++ libraries.
+The bindings are generated automatically using [litgen](https://pthom.github.io/litgen/), a Python bindings generator for C++ libraries.
 
 External libraries and their bindings are in `external/`:
 - Each library has a submodule and a `bindings/` folder

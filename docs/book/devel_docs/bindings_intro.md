@@ -6,7 +6,7 @@ If you haven't built the project yet, start with [Getting Started (Developer)](g
 
 The bindings are generated automatically thanks to a sophisticated generator, which is based on [srcML](https://www.srcml.org).
 
-The generator is provided by [litgen](https://pthom.github.io/litgen/litgen_book/00_00_intro.html) (Literate Generator), an automatic Python bindings generator developed by the same author as Dear ImGui Bundle. See also the [litgen PDF manual](https://pthom.github.io/litgen/litgen_book/litgen_book.pdf) for in-depth documentation.
+The generator is provided by [litgen](https://pthom.github.io/litgen/) (Literate Generator), an automatic Python bindings generator developed by the same author as Dear ImGui Bundle. See also the [litgen PDF manual](https://pthom.github.io/litgen/litgen_book/litgen_book.pdf) for in-depth documentation.
 
 ## Installing the generator
 
