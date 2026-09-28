@@ -15,6 +15,7 @@ Actions, executed in order:
                      e.g. js:navigator.clipboard.readText() after clicking a copy button)
 
 The window is VISIBLE unless --headless is given. It uses the installed Chrome with a throwaway profile.
+The viewport is 1400 x 900 unless --viewport WIDTHxHEIGHT is given (a phone: 480x800).
 """
 import argparse
 import os
@@ -23,9 +24,6 @@ import threading
 from urllib.parse import urlparse
 
 from playwright.sync_api import Page, sync_playwright
-
-VIEWPORT = {"width": 1400, "height": 900}
-
 
 def click(page: Page, x: float, y: float, visible: bool) -> None:
     # ImGui must see the mouse move on one frame, and the button on the following ones
@@ -47,6 +45,7 @@ def main() -> None:
     parser.add_argument("--console", action="store_true", help="print the page's console messages (Pyodide prints Python's stdout/stderr there)")
     parser.add_argument("--allow-remote", action="store_true", help="allow a page which is not served from this machine")
     parser.add_argument("--timeout", type=float, default=150.0, help="hard limit for the whole run, in seconds")
+    parser.add_argument("--viewport", default="1400x900", help="the page's size, WIDTHxHEIGHT (a phone: 480x800)")
     args = parser.parse_args()
 
     host = urlparse(args.url).hostname
@@ -62,7 +61,9 @@ def main() -> None:
     with sync_playwright() as p:
         browser = p.chromium.launch(channel="chrome", headless=args.headless)
         # clipboard permissions: `js:navigator.clipboard.readText()` checks what an ImGui copy button wrote
-        context = browser.new_context(viewport=VIEWPORT, permissions=["clipboard-read", "clipboard-write"])  # type: ignore[arg-type]
+        width, height = (int(v) for v in args.viewport.split("x"))
+        viewport = {"width": width, "height": height}
+        context = browser.new_context(viewport=viewport, permissions=["clipboard-read", "clipboard-write"])  # type: ignore[arg-type]
         page = context.new_page()
         page.on("pageerror", lambda e: print("PAGE ERROR:", str(e)[:200], "\n" + "\n".join((e.stack or "").splitlines()[:25])))
         if args.console:

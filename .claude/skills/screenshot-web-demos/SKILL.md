@@ -61,7 +61,7 @@ uv run --no-project --with playwright python $SK/drive_page.py http://localhost:
 Then `Read` the PNG files. Actions: `wait:SECONDS`, `move:X,Y`, `click:X,Y`, `wheel:DX,DY`, `key:KEYS`, `shot:NAME`,
 `py:EXPRESSION`, `js:EXPRESSION` (see the docstring of the script). `--console` prints the page's console (Pyodide's
 stdout/stderr, wasm aborts). The context has clipboard permissions: `"js:navigator.clipboard.readText()"` after
-clicking a copy button checks what the app wrote (a JS promise is awaited). Viewport: 1400 x 900, device scale 1, so coordinates read on a screenshot can be used as is.
+clicking a copy button checks what the app wrote (a JS promise is awaited). Viewport: 1400 x 900, device scale 1, so coordinates read on a screenshot can be used as is; `--viewport 480x800` for a phone.
 
 ## What to check
 
