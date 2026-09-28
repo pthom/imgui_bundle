@@ -54,7 +54,7 @@ def download_random_image(url: str|None = None) -> ImageU8:
     > * Inside "Dear ImGui Bundle Playground", click the "Run" button to download a new image!
     > * Zoom the image with the wheel, and pan it by dragging the mouse
     """
-    def _fallback_image():
+    def _fallback_image() -> ImageU8:
         # Fallback: colorful test pattern
         img = np.zeros((480, 640, 3), dtype=np.uint8)
         for i in range(480):
@@ -68,8 +68,10 @@ def download_random_image(url: str|None = None) -> ImageU8:
             img_bgr = cv2.imdecode(  # type: ignore
                 np.frombuffer(image_bytes, dtype=np.uint8),
                 cv2.IMREAD_COLOR)
+            if img_bgr is None:  # the bytes are not an image
+                return _fallback_image()
             img_rgb = cv2.cvtColor(img_bgr, cv2.COLOR_BGR2RGB)  # OpenCV produces BGR images, we want RGB
-            return img_rgb
+            return img_rgb  # type: ignore[return-value]
         except Exception:
             return _fallback_image()
 
