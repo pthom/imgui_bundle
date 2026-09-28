@@ -101,6 +101,24 @@ html, body {
     border-color: #9cdcfe;
 }
 
+#examples-filters {
+    display: flex;
+    gap: 6px;
+    margin: 0 14px 4px;
+}
+
+#examples-filters select {
+    flex: 1;
+    min-width: 0;
+    padding: 3px 4px;
+    font: inherit;
+    font-size: 0.85em;
+    color: #ddd;
+    background-color: #1e1e1e;
+    border: 1px solid #555;
+    border-radius: 4px;
+}
+
 #examples-list {
     flex: 1;
     overflow-y: auto;

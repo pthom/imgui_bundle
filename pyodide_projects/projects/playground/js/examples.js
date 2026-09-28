@@ -184,6 +184,7 @@ async function populateExampleSelector() {
             const doc = examplesDocs[example.filename] || {};
             item.dataset.search = [example.label, doc.title, doc.text, category.name, ...(doc.uses || [])]
                 .join(' ').toLowerCase();
+            item.dataset.uses = JSON.stringify(doc.uses || []);
             item.addEventListener('mouseenter', () => showExampleDoc(example.filename));
             item.addEventListener('focus', () => showExampleDoc(example.filename));
             item.addEventListener('click', async () => {
@@ -200,14 +201,42 @@ async function populateExampleSelector() {
     noMatch.textContent = 'No example matches.';
     noMatch.hidden = true;
     list.appendChild(noMatch);
+    fillFilters();
 }
 
-// The search box: the list keeps the examples that have every word of the search (and the categories that keep one)
+// The two selects under the search box: the categories, and the libraries the listed examples use, with counts
+function fillFilters() {
+    const items = [...document.querySelectorAll('.examples-item')];
+    const counts = (key) => {
+        const result = new Map();
+        for (const item of items) for (const value of key(item)) result.set(value, (result.get(value) || 0) + 1);
+        return result;
+    };
+    const fill = (id, all, entries) => {
+        const select = document.getElementById(id);
+        select.innerHTML = '';
+        select.append(new Option(all, ''));
+        for (const [name, count] of entries) select.append(new Option(`${name} (${count})`, name));
+        select.addEventListener('change', filterExamples);
+    };
+    const byCategory = counts((item) => [item.dataset.category]);
+    fill('examples-category', 'All categories', examplesCategories.filter((c) => byCategory.has(c.name))
+        .map((c) => [c.name, byCategory.get(c.name)]));
+    const byLibrary = counts((item) => JSON.parse(item.dataset.uses));
+    fill('examples-library', 'All libraries', [...byLibrary].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])));
+}
+
+// The list keeps the examples of the category and the library picked, that have every word of the search (and the
+// categories that keep one)
 function filterExamples() {
     const words = document.getElementById('examples-search').value.toLowerCase().split(/\s+/).filter(Boolean);
+    const category = document.getElementById('examples-category').value;
+    const library = document.getElementById('examples-library').value;
     const shown = new Set();
     for (const item of document.querySelectorAll('.examples-item')) {
-        item.hidden = !words.every((word) => item.dataset.search.includes(word));
+        item.hidden = (category && item.dataset.category !== category)
+            || (library && !JSON.parse(item.dataset.uses).includes(library))
+            || !words.every((word) => item.dataset.search.includes(word));
         if (!item.hidden) shown.add(item.dataset.category);
     }
     for (const header of document.querySelectorAll('.examples-category-name, .examples-category-about'))
@@ -307,8 +336,10 @@ document.addEventListener('DOMContentLoaded', () => {
     search.addEventListener('input', filterExamples);
     document.addEventListener('keydown', (event) => {
         if (panel.hidden || event.key !== 'Escape') return;
-        if (search.value) {  // a first Escape clears the search, a second one closes the menu
-            search.value = '';
+        const category = document.getElementById('examples-category');
+        const library = document.getElementById('examples-library');
+        if (search.value || category.value || library.value) {  // a first Escape clears the filters, a second closes
+            search.value = category.value = library.value = '';
             filterExamples();
         } else {
             closeExamplesMenu();
