@@ -161,8 +161,8 @@ Use `<img>` when you need to control the size:
 
 <img src="https://picsum.photos/id/237/300/200" width="100">
 
-> *Remote image work by default when using python and C++/emscripten.
->  On desktop/C++ an async download callback needs to be provided.*
+> *Remote images work by default in Python and on the web.
+>  In C++ on the desktop, they need libcurl (option `IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES`, ON by default).*
 
 <details>
 <summary>Show source</summary>
