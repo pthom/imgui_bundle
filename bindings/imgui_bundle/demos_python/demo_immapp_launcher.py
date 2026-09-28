@@ -68,6 +68,7 @@ class Demo:
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
     in_place: bool  # its demo_gui() can run inside the launcher
+    variants: list[tuple[str, Path]] = field(default_factory=list)  # the same demo in other files (label, file)
 
     @property
     def stem(self) -> str:
@@ -102,7 +103,8 @@ def load_catalog() -> list[Category]:
     for e in manifest["examples"]:
         if e.get("hidden") or not e.get("launcher", True):  # "launcher": false, e.g. Fiatlight until its studio is ready
             continue
-        path = (EXAMPLES_DIR / manifest["sources"][e.get("source", "examples")] / e["filename"]).resolve()
+        folder = EXAMPLES_DIR / manifest["sources"][e.get("source", "examples")]
+        path = (folder / e["filename"]).resolve()
         cpp_path = None
         if path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
             cpp_path = DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
@@ -115,6 +117,7 @@ def load_catalog() -> list[Category]:
             path=path,
             cpp_path=cpp_path if cpp_path is not None and cpp_path.exists() else None,
             in_place=e.get("in_place", False),
+            variants=[(v["label"], (folder / v["filename"]).resolve()) for v in e.get("variants", [])],
         ))
     return [c for c in categories.values() if c.demos]
 
@@ -306,6 +309,7 @@ class Launcher:
         self.nb_scrolls = 0
         self.code_view: Optional[tuple[Demo, list[immapp.snippets.SnippetData]]] = None
         self.in_place: Optional[tuple[Demo, Callable[[], None]]] = None  # a demo shown here, and its demo_gui()
+        self.variant: dict[str, int] = {}  # per demo with variants: the one picked in the detail pane
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
 
     # The header: the name, what the bundle is, and a chip per category that scrolls to it
@@ -433,15 +437,22 @@ class Launcher:
         rich_md.render(f"## {demo.label}\n\n{demo.text}")
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
+        path = demo.path
+        if demo.variants:  # e.g. the Python backends: one card, a combo picks the file to run and to show
+            index = self.variant.get(demo.filename, 0)
+            imgui.set_next_item_width(-1)
+            _, index = imgui.combo("##variant", index, [label for label, _ in demo.variants])
+            self.variant[demo.filename] = index
+            path = demo.variants[index][1]
         if demo.in_place:
             if self.action(fa.ICON_FA_EYE + "  Show it here", "Runs the demo here, inside the launcher"):
                 self.in_place = (demo, importlib.import_module(demo.module_name()).demo_gui)
         if demo.where != "browser" and can_run_subprocess():
             if self.action(fa.ICON_FA_PLAY + "  Run", "Runs the demo on your machine, in a new window"):
-                spawn_demo_file(str(demo.path))
+                spawn_demo_file(str(path))
         if self.action(fa.ICON_FA_CODE + "  View code",
                        "Shows its code: Python, and C++ side by side when there is a C++ version"):
-            snippets = [code_snippet(demo.path, immapp.snippets.SnippetLanguage.python, "Python")]
+            snippets = [code_snippet(path, immapp.snippets.SnippetLanguage.python, "Python")]
             if demo.cpp_path is not None:
                 snippets.append(code_snippet(demo.cpp_path, immapp.snippets.SnippetLanguage.cpp, "C++"))
             self.code_view = (demo, snippets)

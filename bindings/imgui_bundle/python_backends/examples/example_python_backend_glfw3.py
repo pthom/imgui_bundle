@@ -1,9 +1,10 @@
 """
-Dear ImGui in a GLFW window, with a pure Python backend.
+Dear ImGui in a window you own, with a pure Python backend: GLFW, SDL2, SDL3, pyglet, pygame or wgpu.
 
-Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest.
-The backend passes the inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown
-and a formula. Needs `pip install imgui-bundle[glfw,opengl]`.
+Add ImGui to your own app: you write the app loop, and a Python backend does the rest. This one is for
+[GLFW](https://www.glfw.org); the others (SDL2, SDL3, pyglet, pygame, wgpu) work the same way. The backend passes the
+inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown and a formula. Needs
+`pip install imgui-bundle[glfw,opengl]`.
 
 See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`,
 there is no Hello ImGui here: no DPI handling, themes or assets. This backend is adapted from

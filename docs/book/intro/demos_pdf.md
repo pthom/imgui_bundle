@@ -615,65 +615,16 @@ nothing was lost.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py)
 
-### Python backend: GLFW
+### Python backends: GLFW, SDL, pyglet, pygame, wgpu
 
-Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest.
-The backend passes the inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown
-and a formula. Needs `pip install imgui-bundle[glfw,opengl]`.
-
-*Python, Desktop only*
-
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py)
-
-### Python backend: SDL2
-
-Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the
-rest. It uses PySDL2; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a
-window with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.
+Add ImGui to your own app: you write the app loop, and a Python backend does the rest. This one is for
+[GLFW](https://www.glfw.org); the others (SDL2, SDL3, pyglet, pygame, wgpu) work the same way. The backend passes the
+inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown and a formula. Needs
+`pip install imgui-bundle[glfw,opengl]`.
 
 *Python, Desktop only*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py)
-
-### Python backend: SDL3
-
-Add ImGui to your own [SDL3](https://www.libsdl.org) app: you write the event loop, and a Python backend does the
-rest. It uses PySDL3; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a
-window with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`.
-
-*Python, Desktop only*
-
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py)
-
-### Python backend: pyglet
-
-Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the
-rest. The backend passes pyglet's events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window
-with markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.
-
-*Python, Desktop only*
-
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py)
-
-### Python backend: pygame
-
-Add ImGui to your own [pygame](https://www.pygame.org) game: you write the game loop, and a Python backend does the
-rest. The backend passes pygame's events to ImGui and draws it with PyOpenGL. Shows a window with markdown, a formula
-and a few widgets. Needs `pip install imgui-bundle[opengl] pygame`.
-
-*Python, Desktop only*
-
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py)
-
-### Python backend: wgpu
-
-ImGui drawn with WebGPU, by the ImGui renderer of [wgpu-py](https://github.com/pygfx/wgpu-py), in a
-[rendercanvas](https://github.com/pygfx/rendercanvas) window. wgpu-py uses Dear ImGui Bundle for its GUIs. Shows the
-ImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[wgpu]`.
-
-*Python, Desktop only*
-
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py)
+[Python code GLFW](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py) · [Python code SDL2](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py) · [Python code SDL3](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py) · [Python code pyglet](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py) · [Python code pygame](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py) · [Python code wgpu](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py)
 
 ## In the browser
 

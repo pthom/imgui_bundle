@@ -132,6 +132,9 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     playground = f"{SITE}/playground/?demo={e['filename']}"
     explorer = f"{SITE}/explorer/{stem}.html"
     code = f"{GITHUB}{path.relative_to(REPO).as_posix()}"
+    # A demo in several files (e.g. the Python backends): a code link per variant, instead of the one code link
+    code_links = [f"[Code {v['label']}]({GITHUB}{(path.parent / v['filename']).relative_to(REPO).as_posix()})"
+                  for v in e.get("variants", [])] or [f"[Code]({code})"]
     picture = PICTURES / f"{stem}.jpg"
     lines = []
     if picture.is_file():  # a local path: the book's builds copy it (the PDF too), with no network
@@ -149,14 +152,15 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     if in_grid:
         summary, rest = summary_and_rest(text)
         lines += [summary, ""] + ([":::{dropdown} More", rest, ":::", ""] if rest else [])
-        python_links = ([f"[{RUN_ICON} Run]({playground})"] if where != "desktop" else []) + [f"[Code]({code})"]
+        python_links = ([f"[{RUN_ICON} Run]({playground})"] if where != "desktop" else []) + code_links
         rows = ["{span .demo-lang}`Python:` " + " · ".join(python_links)]
         if has_cpp:
             rows.append(f"{{span .demo-lang}}`C++:` [{RUN_ICON} Run]({explorer}) · [Code]({cpp_code})")
         return lines + ([f"*{where_tags[0]}*", ""] if where_tags else []) + ["\\\n".join(rows), ""]  # a line break
     links = [f"[Run it in the playground]({playground})"] if where != "desktop" else []
     links += [f"[C++ version, in the explorer]({explorer})"] if has_cpp else []
-    links += [f"[Python code]({code})"] + ([f"[C++ code]({cpp_code})"] if has_cpp else [])
+    links += [link.replace("[Code", "[Python code") for link in code_links]
+    links += [f"[C++ code]({cpp_code})"] if has_cpp else []
     tags = ["Python"] + (["C++"] if has_cpp else []) + where_tags
     return lines + [text, "", f"*{', '.join(tags)}*", "", " · ".join(links), ""]
 

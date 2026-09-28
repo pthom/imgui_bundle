@@ -327,46 +327,37 @@
             ]
         },
         {
-            "label": "Python backend: GLFW",
+            "label": "Python backends: GLFW, SDL, pyglet, pygame, wgpu",
             "filename": "example_python_backend_glfw3.py",
             "category": "Python specifics",
             "source": "python_backends",
-            "where": "desktop"
-        },
-        {
-            "label": "Python backend: SDL2",
-            "filename": "example_python_backend_sdl2.py",
-            "category": "Python specifics",
-            "source": "python_backends",
-            "where": "desktop"
-        },
-        {
-            "label": "Python backend: SDL3",
-            "filename": "example_python_backend_sdl3.py",
-            "category": "Python specifics",
-            "source": "python_backends",
-            "where": "desktop"
-        },
-        {
-            "label": "Python backend: pyglet",
-            "filename": "example_python_backend_pyglet.py",
-            "category": "Python specifics",
-            "source": "python_backends",
-            "where": "desktop"
-        },
-        {
-            "label": "Python backend: pygame",
-            "filename": "example_python_backend_pygame.py",
-            "category": "Python specifics",
-            "source": "python_backends",
-            "where": "desktop"
-        },
-        {
-            "label": "Python backend: wgpu",
-            "filename": "example_python_backend_wgpu.py",
-            "category": "Python specifics",
-            "source": "python_backends",
-            "where": "desktop"
+            "where": "desktop",
+            "variants": [
+                {
+                    "label": "GLFW",
+                    "filename": "example_python_backend_glfw3.py"
+                },
+                {
+                    "label": "SDL2",
+                    "filename": "example_python_backend_sdl2.py"
+                },
+                {
+                    "label": "SDL3",
+                    "filename": "example_python_backend_sdl3.py"
+                },
+                {
+                    "label": "pyglet",
+                    "filename": "example_python_backend_pyglet.py"
+                },
+                {
+                    "label": "pygame",
+                    "filename": "example_python_backend_pygame.py"
+                },
+                {
+                    "label": "wgpu",
+                    "filename": "example_python_backend_wgpu.py"
+                }
+            ]
         },
         {
             "label": "Minimal HTML page",

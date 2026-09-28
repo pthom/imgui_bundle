@@ -210,34 +210,9 @@
     "summary": "Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included."
   },
   "example_python_backend_glfw3.py": {
-    "title": "Dear ImGui in a GLFW window, with a pure Python backend.",
-    "text": "Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest.\nThe backend passes the inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown\nand a formula. Needs `pip install imgui-bundle[glfw,opengl]`.",
-    "summary": "Add ImGui to your own [GLFW](https://www.glfw.org) app: you write the app loop, and a Python backend does the rest."
-  },
-  "example_python_backend_sdl2.py": {
-    "title": "Dear ImGui in an SDL2 window, with a pure Python backend.",
-    "text": "Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the\nrest. It uses PySDL2; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`.",
-    "summary": "Add ImGui to your own [SDL2](https://www.libsdl.org) app: you write the event loop, and a Python backend does the rest."
-  },
-  "example_python_backend_sdl3.py": {
-    "title": "Dear ImGui in an SDL3 window, with a pure Python backend.",
-    "text": "Add ImGui to your own [SDL3](https://www.libsdl.org) app: you write the event loop, and a Python backend does the\nrest. It uses PySDL3; the backend passes the events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a\nwindow with markdown and a formula. Needs `pip install imgui-bundle[sdl3,opengl]`.",
-    "summary": "Add ImGui to your own [SDL3](https://www.libsdl.org) app: you write the event loop, and a Python backend does the rest."
-  },
-  "example_python_backend_pyglet.py": {
-    "title": "Dear ImGui in a pyglet window, with a pure Python backend.",
-    "text": "Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the\nrest. The backend passes pyglet's events to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window\nwith markdown and a formula. Needs `pip install imgui-bundle[pyglet,opengl]`.",
-    "summary": "Add ImGui to your own [pyglet](https://pyglet.org) app or game: pyglet runs the loop, and a Python backend does the rest."
-  },
-  "example_python_backend_pygame.py": {
-    "title": "Dear ImGui in a pygame window, with a pure Python backend.",
-    "text": "Add ImGui to your own [pygame](https://www.pygame.org) game: you write the game loop, and a Python backend does the\nrest. The backend passes pygame's events to ImGui and draws it with PyOpenGL. Shows a window with markdown, a formula\nand a few widgets. Needs `pip install imgui-bundle[opengl] pygame`.",
-    "summary": "Add ImGui to your own [pygame](https://www.pygame.org) game: you write the game loop, and a Python backend does the rest."
-  },
-  "example_python_backend_wgpu.py": {
-    "title": "Dear ImGui drawn with WebGPU, through wgpu-py.",
-    "text": "ImGui drawn with WebGPU, by the ImGui renderer of [wgpu-py](https://github.com/pygfx/wgpu-py), in a\n[rendercanvas](https://github.com/pygfx/rendercanvas) window. wgpu-py uses Dear ImGui Bundle for its GUIs. Shows the\nImGui demo, and a window with markdown and a formula. Needs `pip install imgui-bundle[wgpu]`.",
-    "summary": "ImGui drawn with WebGPU, by the ImGui renderer of [wgpu-py](https://github.com/pygfx/wgpu-py), in a [rendercanvas](https://github.com/pygfx/rendercanvas) window."
+    "title": "Dear ImGui in a window you own, with a pure Python backend: GLFW, SDL2, SDL3, pyglet, pygame or wgpu.",
+    "text": "Add ImGui to your own app: you write the app loop, and a Python backend does the rest. This one is for\n[GLFW](https://www.glfw.org); the others (SDL2, SDL3, pyglet, pygame, wgpu) work the same way. The backend passes the\ninputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window with markdown and a formula. Needs\n`pip install imgui-bundle[glfw,opengl]`.",
+    "summary": "Add ImGui to your own app: you write the app loop, and a Python backend does the rest."
   },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
