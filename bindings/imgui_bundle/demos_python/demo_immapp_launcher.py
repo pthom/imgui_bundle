@@ -287,6 +287,11 @@ def lerp(a: ImVec4, b: ImVec4, t: float) -> ImVec4:
     return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t)
 
 
+def small_screen() -> bool:
+    """A phone or a small tablet (under about 800 px): the detail becomes a page of its own, the header wraps"""
+    return imgui.get_io().display_size.x < em_size(50)
+
+
 def curtain(alpha: float) -> int:
     """The color of a veil that hides what is under it: the window's background, at this opacity (the theme's
     background is translucent over black: composited here, so that the veil at alpha 1 hides everything)"""
@@ -350,6 +355,7 @@ class Launcher:
         self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards are dealt one by one
         self.card_index = 0  # of the card being drawn, in this frame's gallery
         self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
+        self.detail_open = False  # on a small screen, the detail is a page of its own (a card opens it) not a pane
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -496,6 +502,8 @@ class Launcher:
                 imgui.end_tooltip()
         if hovered and imgui.is_mouse_released(imgui.MouseButton_.left.value):
             self.selected = demo
+            if small_screen():
+                self.detail_open = True
 
     def smooth_scroll(self) -> None:
         """Eases the gallery's scroll toward the chip's category (a new ImAnim channel per click, starting here)"""
@@ -649,7 +657,7 @@ class Launcher:
         """The demo's code: its files (where they are, a way to open each), then the code, one language or both"""
         assert self.code_view is not None
         demo, files = self.code_view
-        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos") or imgui.is_key_pressed(imgui.Key.escape):
+        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos"):
             self.code_view = None
             return
         imgui.same_line()
@@ -685,17 +693,52 @@ class Launcher:
         else:
             immapp.snippets.show_code_snippet(shown[0].snippet)
 
+    @property
+    def depth(self) -> int:
+        """How many levels Escape can go back: the code view, then the detail page of a small screen"""
+        return (self.code_view is not None) + self.detail_open
+
+    def back(self) -> None:
+        """One level back: closes the code view, else the detail page of a small screen"""
+        if self.code_view is not None:
+            self.code_view = None
+        elif self.detail_open:
+            self.detail_open = False
+
+    def detail_page(self) -> None:
+        """On a small screen: the detail alone, full width, with the way back to the gallery"""
+        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos"):
+            self.detail_open = False
+            return
+        avail = imgui.get_content_region_avail()
+        imgui.begin_child("detail", avail)
+        imgui.begin_child("detail content", ImVec2(avail.x - imgui.get_style().scrollbar_size, 0),
+                          imgui.ChildFlags_.auto_resize_y.value)
+        self.detail()
+        imgui.end_child()
+        imgui.end_child()
+
     def gui(self, with_title: bool = True) -> None:
         """The launcher; without its title when the explorer draws its own header above"""
         self.pictures.new_frame()
         self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None or self.dealing())
+        if imgui.is_key_pressed(imgui.Key.escape) and not imgui.is_any_item_active():  # active: the search box
+            self.back()
         if self.code_view is not None:  # no header: the demo's title and the way back are the only row
             self.show_code()
+            return
+        if small_screen() and self.detail_open:
+            self.detail_page()
             return
         if with_title:
             self.title()
         self.filters()
         avail = imgui.get_content_region_avail()
+        if small_screen():  # the gallery alone: a card opens the detail as a page
+            imgui.begin_child("gallery", avail)
+            self.gallery()
+            imgui.end_child()
+            return
         detail_width = em_size(DETAIL_WIDTH)
         imgui.begin_child("gallery", ImVec2(avail.x - detail_width - em_size(1.0), avail.y))
         self.gallery()

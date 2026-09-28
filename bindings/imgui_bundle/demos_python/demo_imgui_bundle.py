@@ -45,8 +45,8 @@ class Explorer:
     def gui(self) -> None:
         if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
             return
-        if (self.state == DEMOS and self.launcher.code_view is None and not imgui.is_any_item_active()
-                and imgui.is_key_pressed(imgui.Key.escape)):
+        if (self.state == DEMOS and self.launcher.depth == 0 and not imgui.is_any_item_active()
+                and imgui.is_key_pressed(imgui.Key.escape)):  # else the launcher goes back one level itself
             self.go(WELCOME)
         self.header()
         self.page()
@@ -99,21 +99,26 @@ class Explorer:
             imgui.get_foreground_draw_list().add_rect_filled(top_left, bottom_right, demo_immapp_launcher.curtain(veil))
 
     def header(self) -> None:
-        """The title, the sentence of the state, and at the right the switch between the states"""
+        """The title, the sentence of the state, and at the right the switch between the states (on its own row when
+        the title leaves it no room: a phone)"""
         top = imgui.get_cursor_pos_y()
         demo_immapp_launcher.big_text("Dear ImGui Bundle", 2.0)
+        title_width = imgui.get_item_rect_size().x
         below_title = imgui.get_cursor_pos_y()
-        imgui.same_line()
-        imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
-        if self.state == WELCOME:
-            sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
-        else:
-            sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
-        if imgui.calc_text_size(sentence).x + self.right_width + em_size(2) <= imgui.get_content_region_avail().x:
-            imgui.text_colored(imgui.get_style_color_vec4(color), sentence)  # only when it does not reach the switch
+        width = imgui.get_content_region_avail().x
+        right = imgui.get_cursor_pos_x() + width - em_size(0.5)
+        one_row = title_width + self.right_width + em_size(1.5) <= width
+        if one_row:
+            imgui.same_line()
+            imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
+            if self.state == WELCOME:
+                sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
+            else:
+                sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
+            if imgui.calc_text_size(sentence).x + self.right_width + em_size(2) <= imgui.get_content_region_avail().x:
+                imgui.text_colored(imgui.get_style_color_vec4(color), sentence)  # only when it does not reach the switch
         # The cursor is set, not put on the same line: a pending same_line would make the title's row the chips' line
-        right = imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(0.5)
-        imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5)))  # centered on the title
+        imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5) if one_row else below_title))
         imgui.begin_group()
         # The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width comes
         # from the previous frame, and a wrapped group would measure too narrow forever), the state's in the accent

@@ -1495,8 +1495,12 @@ def links_row():
     for i, (label, url, tooltip) in enumerate(links):
         if i > 0:
             imgui.same_line()
-            imgui.text_disabled("|")
-            imgui.same_line()
+            needed = imgui.calc_text_size("| " + label).x + 2 * imgui.get_style().item_spacing.x
+            if needed > imgui.get_content_region_avail().x:  # the row wraps on a narrow screen
+                imgui.new_line()
+            else:
+                imgui.text_disabled("|")
+                imgui.same_line()
         rich_md.render_text_as_link(label, url)
         if imgui.is_item_hovered():
             imgui.set_tooltip(tooltip)
