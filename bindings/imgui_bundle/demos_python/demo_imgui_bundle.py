@@ -18,14 +18,14 @@ if importlib.util.find_spec("numpy") is None:
     )
     sys.exit(1)
 
-from imgui_bundle import imgui, hello_imgui, immapp, ImVec2, em_size, icons_fontawesome_4 as fa
+from imgui_bundle import imgui, hello_imgui, immapp, rich_md, ImVec2, ImVec4, em_size, icons_fontawesome_4 as fa
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_utils
 
 WELCOME, DEMOS = "Welcome", "Demos"
-BROWSE_LABEL = fa.ICON_FA_TH_LARGE + "  Browse the demos"  # the switches of the header (the automations click them)
-WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"
+WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the automations click it)
+DEMOS_LABEL = fa.ICON_FA_TH_LARGE + "  Demos"
 
 
 class Explorer:
@@ -33,7 +33,7 @@ class Explorer:
         self.state = WELCOME
         self.launcher = demo_immapp_launcher.Launcher()
         self.nb_demos = sum(len(category.demos) for category in self.launcher.categories)
-        self.right_width = 0.0  # of the header's right part (the links and the switch), measured on the previous frame
+        self.right_width = 0.0  # of the header's switch, measured on the previous frame
 
     def gui(self) -> None:
         if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
@@ -48,31 +48,40 @@ class Explorer:
             self.launcher.gui(with_title=False)
 
     def header(self) -> None:
-        """The title, the sentence of the state, and at the right the links and the switch to the other state"""
+        """The title, the sentence of the state, and at the right the switch between the states"""
         top = imgui.get_cursor_pos_y()
         demo_immapp_launcher.big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
         imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
         if self.state == WELCOME:
-            imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile.")
+            sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
         else:
-            imgui.text("   Pick a demo: see it, run it, and read its code.")
+            sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
+        if imgui.calc_text_size(sentence).x + self.right_width + em_size(2) <= imgui.get_content_region_avail().x:
+            imgui.text_colored(imgui.get_style_color_vec4(color), sentence)  # only when it does not reach the switch
         imgui.same_line()
         right = imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(0.5)
-        imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.3)))
+        imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5)))  # centered on the title
         imgui.begin_group()
-        imgui.align_text_to_frame_padding()
-        demo_imgui_bundle_intro.links_row()
-        imgui.same_line(0, em_size(1.5))
-        if self.state == WELCOME:
-            if imgui.button(BROWSE_LABEL):
-                self.state = DEMOS
-        elif imgui.button(WELCOME_LABEL):
-            self.state = WELCOME
+        # The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width comes
+        # from the previous frame, and a wrapped group would measure too narrow forever), the state's in the accent
+        imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em_size(0.8), 0))
+        for state, label in ((WELCOME, WELCOME_LABEL), (DEMOS, DEMOS_LABEL)):
+            highlight = demo_immapp_launcher.tween(f"switch {state}", 1.0 if state == self.state else 0.0, 0.25)
+            button = imgui.get_style_color_vec4(imgui.Col_.button)
+            accent = demo_immapp_launcher.ACCENT
+            imgui.push_style_color(imgui.Col_.button,
+                                   demo_immapp_launcher.lerp(button, ImVec4(accent.x, accent.y, accent.z, 0.55), highlight))
+            if imgui.small_button(label):
+                self.state = state
+            imgui.pop_style_color()
+            imgui.same_line()
+        imgui.pop_style_var()
         imgui.end_group()
         self.right_width = imgui.get_item_rect_size().x
 
     def welcome(self) -> None:
+        demo_imgui_bundle_intro.links_row()
         avail = imgui.get_content_region_avail()
         imgui.begin_child("welcome", ImVec2(0, avail.y - em_size(3.5)))
         demo_imgui_bundle_intro.welcome_gui()
@@ -87,6 +96,15 @@ class Explorer:
             self.state = DEMOS
         imgui.pop_style_var()
         imgui.pop_font()
+        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
+            categories = ", ".join(category.name for category in self.launcher.categories)
+            imgui.begin_tooltip()
+            imgui.begin_child("tip", ImVec2(em_size(30), 0), imgui.ChildFlags_.auto_resize_y.value)  # wraps the text
+            rich_md.render(f"**{self.nb_demos} demos, in {len(self.launcher.categories)} categories:** {categories}.\n\n"
+                           "Each one is a documented quickstart: see it, run it, and read its code. Together they are "
+                           "the tutorials and the interactive manuals of the bundle.")
+            imgui.end_child()
+            imgui.end_tooltip()
 
 
 def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
@@ -106,8 +124,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     )
     runner_params.app_window_params.window_geometry.size = (1400, 950)
 
-    # Menu bar
-    runner_params.imgui_window_params.show_menu_bar = True
     runner_params.imgui_window_params.show_status_bar = True
 
     runner_params.ini_clear_previous_settings = True
