@@ -18,12 +18,9 @@ from dataclasses import dataclass, field
 
 from imgui_bundle import imgui, hello_imgui, immapp
 from imgui_bundle.immapp import static
-from imgui_bundle.demos_python import demo_text_edit
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
 from imgui_bundle.demos_python import demo_imgui_show_demo_window
-from imgui_bundle.demos_python import demo_widgets
 from imgui_bundle.demos_python import demo_implot
-from imgui_bundle.demos_python import demo_imgui_md
 from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
 from imgui_bundle.demos_python import demo_tex_inspect_launcher
@@ -31,8 +28,6 @@ from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_nanovg_launcher
 from imgui_bundle.demos_python import demo_themes
-from imgui_bundle.demos_python import demo_terminal
-from imgui_bundle.demos_python import demo_logger
 from imgui_bundle.demos_python import demo_im_anim
 from imgui_bundle.demos_python import demo_utils
 
@@ -147,12 +142,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
             DemoDetails("Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
         ]),
         DemoGroup("Widgets", [
-            DemoDetails("Misc Widgets - Knobs, Toggles, ...", demo_widgets,     show_code=True),
-            DemoDetails("Logger - Log Window Widget",         demo_logger,      show_code=True),
             DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
-            DemoDetails("Markdown - Rich Text Rendering",     demo_imgui_md,    show_code=True),
-            DemoDetails("Text Editor - Code Editing Widget",  demo_text_edit),
-            DemoDetails("Terminal - Embedded Terminal Emulator (Python only)", demo_terminal),
         ]),
         DemoGroup("Tools", [
             DemoDetails("Node Editor - Visual Node Graphs", demo_node_editor_launcher),
