@@ -129,7 +129,6 @@ SHOTS: dict[str, Shot] = {
     "imgui_demo.py": Shot(test=_open("ImGui Demo##aaa", "Widgets", "Basic"), crop=(0.0, 0.08, 0.98, 0.7)),
     "implot_demo.py": Shot(test=_open("ImGui Demo##aaa", "Line Plots"), crop=(0.0, 0.12, 1.0, 0.54)),
     "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
-    "implot3d_butterfly.py": Shot(frames=600, crop=(0.28, 0.5, 0.72, 1.0)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
     "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.08, 0.95, 0.82)),  # layout: fiat_settings
     "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),

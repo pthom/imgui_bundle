@@ -8,43 +8,36 @@
     },
     "categories": [
         {
-            "name": "Dear ImGui Bundle",
-            "about": "The bundle at a glance"
-        },
-        {
             "name": "Start here",
-            "about": "What Dear ImGui Bundle is, in two minutes"
+            "about": "The bundle in ten minutes: what it is, first apps, and a few lines that do a lot"
         },
         {
-            "name": "Library tours",
-            "about": "The libraries in the bundle: full demos and showcases"
+            "name": "Interactive science",
+            "about": "Explorable lessons in physics, chaos and machine learning, built with the bundle"
         },
         {
             "name": "Build an app",
             "about": "Layouts, docking, backgrounds, fonts, testing: what a real application needs"
         },
         {
-            "name": "Lessons and explorables",
-            "about": "Interactive scientific demos built with Dear ImGui Bundle, showcasing its capabilities"
+            "name": "Library tours",
+            "about": "The libraries in the bundle: full demos, widget tours, showcases"
         },
         {
             "name": "Python specifics",
-            "about": "Async, matplotlib, pydantic, context managers, and pure Python backends"
+            "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends"
         },
         {
             "name": "In the browser",
             "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python"
-        },
-        {
-            "name": "Haikus",
-            "about": "Tiny programs, big effect"
         }
     ],
     "examples": [
         {
             "label": "Welcome to Dear ImGui Bundle",
             "filename": "landing_page.py",
-            "category": "Dear ImGui Bundle"
+            "category": "Start here",
+            "launcher": false
         },
         {
             "label": "What is an Immediate GUI",
@@ -76,6 +69,127 @@
             "source": "demos_immapp"
         },
         {
+            "label": "A beating heart",
+            "filename": "haiku_implot_heart.py",
+            "category": "Start here",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Butterfly effect, in a few lines",
+            "filename": "haiku_butterfly.py",
+            "category": "Start here",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Interactive exploration of the Mandelbrot set",
+            "filename": "explorables/julia_map.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "A tiny neural network learns two spirals",
+            "filename": "explorables/neural_spiral/neural_spiral.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/neural_spiral"
+            ]
+        },
+        {
+            "label": "Simple harmonic motion",
+            "filename": "explorables/lesson_harmonic_motion.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Simple harmonic motion 2",
+            "filename": "explorables/lesson_harmonic_motion2.py",
+            "category": "Interactive science",
+            "hidden": true
+        },
+        {
+            "label": "Double pendulum",
+            "filename": "explorables/double_pendulum.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Fourier epicycles",
+            "filename": "explorables/fourier_epicycles.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Boids (flocks)",
+            "filename": "explorables/boids.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Logistic map",
+            "filename": "explorables/logistic_map.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Resizable panels with child windows",
+            "filename": "layout_child.py",
+            "category": "Build an app"
+        },
+        {
+            "label": "Dockable windows",
+            "filename": "layout_docking.py",
+            "category": "Build an app"
+        },
+        {
+            "label": "A full app: docking, fonts, logs",
+            "filename": "demo_docking.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "bundle_folders": [
+                "../demos_assets"
+            ]
+        },
+        {
+            "label": "Custom 3D background (OpenGL)",
+            "filename": "demo_custom_background.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Power save when idle",
+            "filename": "demo_powersave.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Chinese and other non-Latin fonts",
+            "filename": "demo_chinese_font.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Drag and drop",
+            "filename": "demo_drag_and_drop.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Command palette",
+            "filename": "demo_command_palette.py",
+            "category": "Build an app",
+            "source": "demos_immapp"
+        },
+        {
+            "label": "Test engine",
+            "filename": "demo_testengine.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "Drive an app, capture screenshots",
+            "filename": "demo_testapp.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
             "label": "ImGui full demo",
             "filename": "imgui_demo.py",
             "category": "Library tours"
@@ -98,11 +212,6 @@
             "bundle_folders": [
                 "implot3d_libs"
             ]
-        },
-        {
-            "label": "ImPlot3D butterfly effect",
-            "filename": "implot3d_butterfly.py",
-            "category": "Library tours"
         },
         {
             "label": "ImmVision image inspection",
@@ -178,115 +287,6 @@
             "source": "demos_python",
             "where": "desktop",
             "in_place": true
-        },
-        {
-            "label": "Resizable panels with child windows",
-            "filename": "layout_child.py",
-            "category": "Build an app"
-        },
-        {
-            "label": "Dockable windows",
-            "filename": "layout_docking.py",
-            "category": "Build an app"
-        },
-        {
-            "label": "A full app: docking, fonts, logs",
-            "filename": "demo_docking.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "bundle_folders": [
-                "../demos_assets"
-            ]
-        },
-        {
-            "label": "Custom 3D background (OpenGL)",
-            "filename": "demo_custom_background.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
-        },
-        {
-            "label": "Power save when idle",
-            "filename": "demo_powersave.py",
-            "category": "Build an app",
-            "source": "demos_immapp"
-        },
-        {
-            "label": "Chinese and other non-Latin fonts",
-            "filename": "demo_chinese_font.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
-        },
-        {
-            "label": "Drag and drop",
-            "filename": "demo_drag_and_drop.py",
-            "category": "Build an app",
-            "source": "demos_immapp"
-        },
-        {
-            "label": "Command palette",
-            "filename": "demo_command_palette.py",
-            "category": "Build an app",
-            "source": "demos_immapp"
-        },
-        {
-            "label": "Test engine",
-            "filename": "demo_testengine.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
-        },
-        {
-            "label": "Drive an app, capture screenshots",
-            "filename": "demo_testapp.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
-        },
-        {
-            "label": "Interactive exploration of the Mandelbrot set",
-            "filename": "explorables/julia_map.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "A tiny neural network learns two spirals",
-            "filename": "explorables/neural_spiral/neural_spiral.py",
-            "category": "Lessons and explorables",
-            "bundle_folders": [
-                "explorables/neural_spiral"
-            ]
-        },
-        {
-            "label": "Simple harmonic motion",
-            "filename": "explorables/lesson_harmonic_motion.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Simple harmonic motion 2",
-            "filename": "explorables/lesson_harmonic_motion2.py",
-            "category": "Lessons and explorables",
-            "hidden": true
-        },
-        {
-            "label": "Double pendulum",
-            "filename": "explorables/double_pendulum.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Fourier epicycles",
-            "filename": "explorables/fourier_epicycles.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Boids (flocks)",
-            "filename": "explorables/boids.py",
-            "category": "Lessons and explorables"
-        },
-        {
-            "label": "Logistic map",
-            "filename": "explorables/logistic_map.py",
-            "category": "Lessons and explorables"
         },
         {
             "label": "Context managers (imgui_ctx)",
@@ -395,18 +395,6 @@
             "filename": "webaudio_synth.py",
             "category": "In the browser",
             "where": "browser"
-        },
-        {
-            "label": "A beating heart",
-            "filename": "haiku_implot_heart.py",
-            "category": "Haikus",
-            "source": "demos_immapp"
-        },
-        {
-            "label": "Butterfly effect, in a few lines",
-            "filename": "haiku_butterfly.py",
-            "category": "Haikus",
-            "source": "demos_immapp"
         }
     ]
 }

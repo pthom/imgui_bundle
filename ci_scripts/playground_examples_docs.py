@@ -15,6 +15,12 @@ repository (relative to the examples folder). An example's file is in the folder
 or e.g. demos_immapp), and its bundle folders are paths from there, as served (e.g. ../demos_assets). File names are
 unique across sources: examples_docs.json is keyed by them.
 
+The categories answer a reader's question, and an example goes where its kind says: a tutorial or an explanation to
+"Start here" (the haikus too: a few lines that do a lot); a how-to to "Build an app", or to the category of its
+platform when it is bound to one ("Python specifics", "In the browser"); a reference (a library, all of it) to
+"Library tours"; a showcase to "Interactive science" when it teaches science, else to the category of what it shows
+off. Within a category, the entries are in the reader's order: simple first.
+
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
 = or -), then a blank line, then a paragraph that tells a visitor what the example shows. Its first sentence, the
 summary that the cards show, stands alone: it says what the example is about, in at most 120 characters. The menu

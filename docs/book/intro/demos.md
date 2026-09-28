@@ -6,30 +6,9 @@ The demos of Dear ImGui Bundle, by category, as in its demo launcher (the "Demo 
 
 In each card, ▶︎ Run opens the demo in your browser, and Code shows its source, on GitHub.
 
-## Dear ImGui Bundle
-
-The bundle at a glance
-
-:::::{grid} 1 2 3 3
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/landing_page.jpg
-:alt: Welcome to Dear ImGui Bundle
-:::
-
-### Welcome to Dear ImGui Bundle
-
-*Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear ImGui](https://github.com/ocornut/imgui).*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=landing_page.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/landing_page.py)
-
-::::
-
-:::::
-
 ## Start here
 
-What Dear ImGui Bundle is, in two minutes
+The bundle in ten minutes: what it is, first apps, and a few lines that do a lot
 
 :::::{grid} 1 2 3 3
 
@@ -123,201 +102,168 @@ A markdown editor with a live preview, and a pie chart whose values you can drag
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_implot_heart.jpg
+:alt: A beating heart
+:class: demo-fit
+:::
+
+### A beating heart
+
+A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from [imgui-knobs](https://github.com/altschuler/imgui-knobs).
+
+:::{dropdown} More
+A few lines of Python: a parametric curve, scaled by a pulse at each frame. Turn the knobs to change the heart rate, or its thickness.
+:::
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=haiku_implot_heart.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/haiku_implot_heart.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_butterfly.jpg
+:alt: Butterfly effect, in a few lines
+:::
+
+### Butterfly effect, in a few lines
+
+Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action.
+
+:::{dropdown} More
+Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change the system's parameters and the gap between the two starting points; Reset starts them over.
+:::
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp)
+
+::::
+
 :::::
 
-## Library tours
+## Interactive science
 
-The libraries in the bundle: full demos and showcases
+Explorable lessons in physics, chaos and machine learning, built with the bundle
 
 :::::{grid} 1 2 3 3
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/imgui_demo.jpg
-:alt: ImGui full demo
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/julia_map.jpg
+:alt: Interactive exploration of the Mandelbrot set
 :::
 
-### ImGui full demo
+### Interactive exploration of the Mandelbrot set
 
-Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python.
+Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia set](https://en.wikipedia.org/wiki/Julia_set).
 
 :::{dropdown} More
-The reference to learn Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
+Fly to famous values of c, and zoom into both pictures: near each point, the two sets look alike.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot_demo.jpg
-:alt: ImPlot full demo
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/neural_spiral.jpg
+:alt: A tiny neural network learns two spirals
 :::
 
-### ImPlot full demo
+### A tiny neural network learns two spirals
 
-Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more.
+Can 16 neurons tell two spirals apart? Watch a tiny [neural network](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) learn, live, as in the [TensorFlow Playground](https://playground.tensorflow.org).
 
 :::{dropdown} More
-A port of implot_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
+Then read how it works, formula by formula, next to its numpy code.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/neural_spiral/neural_spiral.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_demo.jpg
-:alt: ImPlot3D full demo
-:::
-
-### ImPlot3D full demo
-
-Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more.
-
-:::{dropdown} More
-A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_butterfly.jpg
-:alt: ImPlot3D butterfly effect
-:::
-
-### ImPlot3D butterfly effect
-
-Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, and soon go completely different ways.
-
-:::{dropdown} More
-This is the [butterfly effect](https://en.wikipedia.org/wiki/Butterfly_effect), the signature of **chaos theory**. The plot uses [ImPlot3D](https://github.com/brenocq/implot3d), which adds rotatable, zoomable 3D plots to Dear ImGui.
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_butterfly.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/implot3d_butterfly.py)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/immvision.jpg
-:alt: ImmVision image inspection
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/lesson_harmonic_motion.jpg
+:alt: Simple harmonic motion
 :class: demo-fit
 :::
 
-### ImmVision image inspection
+### Simple harmonic motion
 
-[ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
+A mass on a spring, a pendulum, a vibrating string: they all follow the same equation.
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=immvision.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/immvision.py)
+:::{dropdown} More
+It is the equation of [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion) (for the pendulum, at small angles). Adjust the mass and the spring stiffness, and watch how the motion changes.
+:::
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/lesson_harmonic_motion.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/lesson_harmonic_motion.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/themes.jpg
-:alt: Themes and theme tweaking
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/double_pendulum.jpg
+:alt: Double pendulum
 :::
 
-### Themes and theme tweaking
+### Double pendulum
 
-Pick a complete look for your app, then fine-tune its colors, rounding and spacing.
+A [double pendulum](https://en.wikipedia.org/wiki/Double_pendulum) is a [chaotic](https://en.wikipedia.org/wiki/Chaos_theory) system: tiny changes in its initial conditions lead to wildly different trajectories.
 
 :::{dropdown} More
-The complete looks come from [Hello ImGui](https://github.com/pthom/hello_imgui).
+Drag the angles to set initial positions, then release and watch chaos unfold.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=themes.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/themes.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/double_pendulum.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/double_pendulum.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_widgets.jpg
-:alt: Knobs, toggles, spinners and more
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/fourier_epicycles.jpg
+:alt: Fourier epicycles
 :::
 
-### Knobs, toggles, spinners and more
+### Fourier epicycles
 
-Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own.
+Any closed curve can be approximated by a sum of rotating circles (a [Fourier series](https://en.wikipedia.org/wiki/Fourier_series)).
 
 :::{dropdown} More
-They come from the libraries in the bundle: [imgui-knobs](https://github.com/altschuler/imgui-knobs), [imgui_toggle](https://github.com/cmdwtf/imgui_toggle), [imspinner](https://github.com/dalerank/imspinner), [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette) and ImCoolBar. Also file dialogs: the native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)), and [ImFileDialog](https://github.com/pthom/ImFileDialog), drawn with ImGui.
+Adjust the number of circles to see how the approximation improves.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_widgets.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_widgets.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/fourier_epicycles.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/fourier_epicycles.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_imgui_md.jpg
-:alt: Markdown tour
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/boids.jpg
+:alt: Boids (flocks)
 :::
 
-### Markdown tour
+### Boids (flocks)
 
-Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more.
+A flock of birds emerges from three simple local rules, with no leader and no plan.
 
 :::{dropdown} More
-Each section shows its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
+Each bird stays apart from its neighbors (**separation**), flies their way (**alignment**), and stays with them (**cohesion**). This is the [boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/boids.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/boids.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_text_edit.jpg
-:alt: Code editor
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/logistic_map.jpg
+:alt: Logistic map
 :::
 
-### Code editor
+### Logistic map
 
-A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus.
+A very simple equation, and yet it can lead to wildly different behaviors, up to chaos.
 
 :::{dropdown} More
-Each tab shows one feature, and a checkbox shows its source. The editor is [ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.
+The [logistic map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n))`, models for example the *growth of a population with limited resources*. Depending on r, it is stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_text_edit.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_text_edit.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_logger.jpg
-:alt: Log window
-:::
-
-### Log window
-
-A log window for your app, with four levels: debug, info, warning and error.
-
-:::{dropdown} More
-Call `hello_imgui.log()` anywhere, and show the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl).
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_logger.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_logger.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_logger.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_logger.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal.jpg
-:alt: Terminal
-:::
-
-### Terminal
-
-A real shell in an ImGui widget: type commands, scroll back through the history, select and copy.
-
-:::{dropdown} More
-The shell runs behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/pyte) parses its VT100 output, and `imgui_bundle.imgui_terminal.TerminalView` draws it. A standalone version, with more comments: `demos_terminal/demo_terminal_pyte.py`.
-:::
-
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py)
 
 ::::
 
@@ -516,129 +462,182 @@ A test function drives the app: it clicks, moves a slider, opens a header, and t
 
 :::::
 
-## Lessons and explorables
+## Library tours
 
-Interactive scientific demos built with Dear ImGui Bundle, showcasing its capabilities
+The libraries in the bundle: full demos, widget tours, showcases
 
 :::::{grid} 1 2 3 3
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/julia_map.jpg
-:alt: Interactive exploration of the Mandelbrot set
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/imgui_demo.jpg
+:alt: ImGui full demo
 :::
 
-### Interactive exploration of the Mandelbrot set
+### ImGui full demo
 
-Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia set](https://en.wikipedia.org/wiki/Julia_set).
+Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python.
 
 :::{dropdown} More
-Fly to famous values of c, and zoom into both pictures: near each point, the two sets look alike.
+The reference to learn Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/neural_spiral.jpg
-:alt: A tiny neural network learns two spirals
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot_demo.jpg
+:alt: ImPlot full demo
 :::
 
-### A tiny neural network learns two spirals
+### ImPlot full demo
 
-Can 16 neurons tell two spirals apart? Watch a tiny [neural network](https://en.wikipedia.org/wiki/Neural_network_(machine_learning)) learn, live, as in the [TensorFlow Playground](https://playground.tensorflow.org).
+Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more.
 
 :::{dropdown} More
-Then read how it works, formula by formula, next to its numpy code.
+A port of implot_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/neural_spiral/neural_spiral.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/lesson_harmonic_motion.jpg
-:alt: Simple harmonic motion
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_demo.jpg
+:alt: ImPlot3D full demo
+:::
+
+### ImPlot3D full demo
+
+Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more.
+
+:::{dropdown} More
+A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
+:::
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/immvision.jpg
+:alt: ImmVision image inspection
 :class: demo-fit
 :::
 
-### Simple harmonic motion
+### ImmVision image inspection
 
-A mass on a spring, a pendulum, a vibrating string: they all follow the same equation.
+[ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
 
-:::{dropdown} More
-It is the equation of [simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion) (for the pendulum, at small angles). Adjust the mass and the spring stiffness, and watch how the motion changes.
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/lesson_harmonic_motion.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/lesson_harmonic_motion.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=immvision.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/immvision.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/double_pendulum.jpg
-:alt: Double pendulum
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/themes.jpg
+:alt: Themes and theme tweaking
 :::
 
-### Double pendulum
+### Themes and theme tweaking
 
-A [double pendulum](https://en.wikipedia.org/wiki/Double_pendulum) is a [chaotic](https://en.wikipedia.org/wiki/Chaos_theory) system: tiny changes in its initial conditions lead to wildly different trajectories.
+Pick a complete look for your app, then fine-tune its colors, rounding and spacing.
 
 :::{dropdown} More
-Drag the angles to set initial positions, then release and watch chaos unfold.
+The complete looks come from [Hello ImGui](https://github.com/pthom/hello_imgui).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/double_pendulum.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/double_pendulum.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=themes.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/themes.py)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/fourier_epicycles.jpg
-:alt: Fourier epicycles
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_widgets.jpg
+:alt: Knobs, toggles, spinners and more
 :::
 
-### Fourier epicycles
+### Knobs, toggles, spinners and more
 
-Any closed curve can be approximated by a sum of rotating circles (a [Fourier series](https://en.wikipedia.org/wiki/Fourier_series)).
+Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own.
 
 :::{dropdown} More
-Adjust the number of circles to see how the approximation improves.
+They come from the libraries in the bundle: [imgui-knobs](https://github.com/altschuler/imgui-knobs), [imgui_toggle](https://github.com/cmdwtf/imgui_toggle), [imspinner](https://github.com/dalerank/imspinner), [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette) and ImCoolBar. Also file dialogs: the native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)), and [ImFileDialog](https://github.com/pthom/ImFileDialog), drawn with ImGui.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/fourier_epicycles.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/fourier_epicycles.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_widgets.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_widgets.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/boids.jpg
-:alt: Boids (flocks)
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_imgui_md.jpg
+:alt: Markdown tour
 :::
 
-### Boids (flocks)
+### Markdown tour
 
-A flock of birds emerges from three simple local rules, with no leader and no plan.
+Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more.
 
 :::{dropdown} More
-Each bird stays apart from its neighbors (**separation**), flies their way (**alignment**), and stays with them (**cohesion**). This is the [boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds (1986).
+Each section shows its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/boids.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/boids.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/logistic_map.jpg
-:alt: Logistic map
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_text_edit.jpg
+:alt: Code editor
 :::
 
-### Logistic map
+### Code editor
 
-A very simple equation, and yet it can lead to wildly different behaviors, up to chaos.
+A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus.
 
 :::{dropdown} More
-The [logistic map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n))`, models for example the *growth of a population with limited resources*. Depending on r, it is stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.
+Each tab shows one feature, and a checkbox shows its source. The editor is [ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_text_edit.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_text_edit.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_logger.jpg
+:alt: Log window
+:::
+
+### Log window
+
+A log window for your app, with four levels: debug, info, warning and error.
+
+:::{dropdown} More
+Call `hello_imgui.log()` anywhere, and show the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from [ImGuiAl](https://github.com/leiradel/ImGuiAl).
+:::
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_logger.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_logger.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_logger.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_logger.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal.jpg
+:alt: Terminal
+:::
+
+### Terminal
+
+A real shell in an ImGui widget: type commands, scroll back through the history, select and copy.
+
+:::{dropdown} More
+The shell runs behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/pyte) parses its VT100 output, and `imgui_bundle.imgui_terminal.TerminalView` draws it. A standalone version, with more comments: `demos_terminal/demo_terminal_pyte.py`.
+:::
+
+*Desktop only*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py)
 
 ::::
 
@@ -646,7 +645,7 @@ The [logistic map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(
 
 ## Python specifics
 
-Async, matplotlib, pydantic, context managers, and pure Python backends
+Async, Matplotlib, Pydantic, context managers, and pure Python backends
 
 :::::{grid} 1 2 3 3
 
@@ -927,51 +926,6 @@ Pick a waveform, add some echo, and watch the scope. **Pyodide only**: it plays 
 *Browser only*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=webaudio_synth.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webaudio_synth.py)
-
-::::
-
-:::::
-
-## Haikus
-
-Tiny programs, big effect
-
-:::::{grid} 1 2 3 3
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_implot_heart.jpg
-:alt: A beating heart
-:class: demo-fit
-:::
-
-### A beating heart
-
-A heart curve drawn with [ImPlot](https://github.com/epezent/implot) beats at the rate set by a knob from [imgui-knobs](https://github.com/altschuler/imgui-knobs).
-
-:::{dropdown} More
-A few lines of Python: a parametric curve, scaled by a pulse at each frame. Turn the knobs to change the heart rate, or its thickness.
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=haiku_implot_heart.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/haiku_implot_heart.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/haiku_butterfly.jpg
-:alt: Butterfly effect, in a few lines
-:::
-
-### Butterfly effect, in a few lines
-
-Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action.
-
-:::{dropdown} More
-Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change the system's parameters and the gap between the two starting points; Reset starts them over.
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp)
 
 ::::
 
