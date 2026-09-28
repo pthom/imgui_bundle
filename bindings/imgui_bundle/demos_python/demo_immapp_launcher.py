@@ -37,7 +37,7 @@ PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted w
 MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
 EASE = im_anim.ease_preset(im_anim.ease_type.ease_out_cubic)
 DEAL_DELAY = 0.05  # s: between two cards dealt, when the gallery arrives on screen
-DEAL_DURATION = 0.5  # s: the flight of one card, from the deck to its place
+DEAL_DURATION = 0.35  # s: the flight of one card, from the deck to its place
 DEAL_SPIN = 18.0  # degrees: a card is dealt with a spin of at most this, settling as it lands (0: no spin)
 
 # Colors
