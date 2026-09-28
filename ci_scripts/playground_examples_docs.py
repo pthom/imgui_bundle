@@ -7,8 +7,10 @@ book show. Also writes the manifest.json of each bundle folder of examples.json:
 with the example (e.g. Fiatlight's saved state in fiat_settings).
 Also writes the book's page of the demos (docs/book/intro/demos.md): what the demo launcher shows, as a page that people
 and AIs can read. The PDF export drops its grids of cards: the PDF gets a copy without them (intro/demos_pdf.md),
-listed by a copy of the table of contents (_toc_pdf.yml). Run by `just playground_examples_docs`, by the doc recipes,
-and by `just cf_stage` (the deploy).
+listed by a copy of the table of contents (_toc_pdf.yml). Also writes the catalog of the C++ launcher, an asset of
+the explorer (demos_assets/demos_catalog.json): the categories and their demos, with what the Python launcher derives
+at load time (the files, relative to the repository; whether a C++ version exists). Run by
+`just playground_examples_docs`, by the doc recipes, and by `just cf_stage` (the deploy).
 
 The "sources" of examples.json are the folders the playground serves (playground/<name>), with their place in the
 repository (relative to the examples folder). An example's file is in the folder of its "source" (examples by default,
@@ -44,6 +46,7 @@ DEMOS_CPP_DIR = REPO / "bindings/imgui_bundle/demos_cpp"  # its folders mirror t
 BOOK = REPO / "docs/book"
 BOOK_PAGE = BOOK / "intro/demos.md"
 BOOK_PAGE_PDF = BOOK / "intro/demos_pdf.md"
+CPP_CATALOG = REPO / "bindings/imgui_bundle/demos_assets/demos_catalog.json"
 PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
 SITE = "https://imgui-bundle.pages.dev"
 GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
@@ -143,12 +146,50 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
                for e in examples for f in e.get("bundle_folders", [])}
     for folder_path in sorted(folders):
         candidates = [p for p in folder_path.rglob("*")
-                      if p.is_file() and p.name != "manifest.json" and p.resolve() not in example_paths
+                      if p.is_file() and p.name not in ("manifest.json", CPP_CATALOG.name)
+                      and p.resolve() not in example_paths
                       and not any(part.startswith(".") for part in p.relative_to(folder_path).parts)]
         ignored = _ignored_by_git(candidates)
         files = sorted(p.relative_to(folder_path).as_posix() for p in candidates if str(p) not in ignored)
         (folder_path / "manifest.json").write_text(json.dumps(files, indent=2) + "\n")
         print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
+
+
+def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> None:
+    """The catalog of the C++ launcher: the categories, and per demo what the Python launcher derives at load time
+    (see `load_catalog` in demo_immapp_launcher.py). The files are relative to the repository: the C++ maps them to
+    its folders (preloaded under /demos_cpp and /demos_python in the browser)"""
+    categories = {c["name"]: {"name": c["name"], "about": c["about"], "tip": c.get("tip", ""), "demos": []}
+                  for c in manifest["categories"]}
+    for e in manifest["examples"]:
+        if e.get("hidden") or not e.get("launcher", True):
+            continue
+        folder = disk_path(manifest["sources"], e.get("source", "examples"))
+        path = folder / e["filename"]
+        cpp_path: Optional[Path] = None
+        if "cpp" in e:  # a C++ version that is not the mirror of the Python file (e.g. in a submodule)
+            cpp_path = REPO / e["cpp"]
+        elif path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
+            cpp_path = DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
+        doc = docs.get(e["filename"], {})
+        categories[e["category"]]["demos"].append({
+            "label": e["label"],
+            "filename": e["filename"],
+            "stem": Path(e["filename"]).stem,  # the picture's name on the site, the demo's page in the explorer
+            "where": e.get("where", "both"),
+            "text": doc.get("text", ""),
+            "summary": doc.get("summary", ""),
+            "uses": doc.get("uses", []),
+            "python_file": path.relative_to(REPO).as_posix(),
+            "cpp_file": cpp_path.relative_to(REPO).as_posix() if cpp_path is not None and cpp_path.exists() else None,
+            "cpp_url": e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),
+            "in_place": bool(e.get("in_place")),  # its function may be linked in the explorer
+            "variants": [{"label": v["label"], "python_file": (folder / v["filename"]).resolve().relative_to(REPO).as_posix()}
+                         for v in e.get("variants", [])],
+        })
+    catalog = {"categories": [c for c in categories.values() if c["demos"]]}
+    CPP_CATALOG.write_text(json.dumps(catalog, indent=2, ensure_ascii=False) + "\n")
+    print(f"wrote {CPP_CATALOG} ({sum(len(c['demos']) for c in catalog['categories'])} demos)")
 
 
 def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict[str, Any], in_grid: bool) -> list[str]:
@@ -279,6 +320,7 @@ def main() -> None:
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)
+    write_cpp_catalog(manifest, docs)
 
 
 if __name__ == "__main__":
