@@ -1483,8 +1483,8 @@ def _shader_slide_wrapper(cs: ImVec2):
 _more_info_expanded = False
 
 
-def _render_links_row():
-    """Render the main links row: GitHub | Documentation | Playground | Discord"""
+def links_row():
+    """The main links row: the site | Repository | Documentation | Playground | Discord"""
     links = [
         ("imgui-bundle.pages.dev", "https://imgui-bundle.pages.dev", "Main project site"),
         ("Repository", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"),
@@ -1548,16 +1548,8 @@ def _render_more_info():
     imgui.unindent()
 
 
-def _intro_top_section():
-    small = is_small_screen()
-
-    # Title
-    rich_md.render("# Dear ImGui Bundle Explorer")
-
-    # Links row (always visible)
-    _render_links_row()
-
-    if not small:
+def _intro_description():
+    if not is_small_screen():
         # Description
         imgui.spacing()
         imgui.text_wrapped('Explore Dear ImGui Bundle and its libraries. Each tab shows demos with browsable C++/Python source.')
@@ -1834,14 +1826,22 @@ def _intro_mini_demos():
 # Main entry point
 # ============================================================================
 
-def demo_gui():
+def welcome_gui():
+    """The intro without its title and links row: the description, "More info", the carousel of mini demos
+    (the explorer draws its own header above it)"""
     # Disable idling so animations run smoothly
     hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
-    _intro_top_section()
+    _intro_description()
     imgui.separator()
     rich_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
     _intro_mini_demos()
+
+
+def demo_gui():
+    rich_md.render("# Dear ImGui Bundle Explorer")
+    links_row()
+    welcome_gui()
 
 
 if __name__ == "__main__":

@@ -360,6 +360,10 @@ class Launcher:
 
     # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
     def header(self) -> None:
+        self.title()
+        self.filters()
+
+    def title(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
         y = imgui.get_cursor_pos_y() + em_size(0.75)  # the tagline sits on the title's baseline
@@ -368,6 +372,9 @@ class Launcher:
         imgui.same_line()
         imgui.set_cursor_pos_y(y)
         imgui.text("Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.")
+
+    def filters(self) -> None:
+        """The category chips, the library filter and the search box, then a separator"""
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
             if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
