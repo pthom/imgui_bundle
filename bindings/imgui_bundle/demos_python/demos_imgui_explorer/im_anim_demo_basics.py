@@ -1,3 +1,10 @@
+"""ImAnim: the basics
+
+Animations for Dear ImGui, one section per notion. Tweens of floats and colors (in OKLAB), oscillators, shake and
+wiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code.
+[ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its
+basics demo.
+"""
 ###############################################################################
 # This file is a part of Dear ImGui Bundle, NOT a part of ImAnim
 # -----------------------------------------------------------------------------

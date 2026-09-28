@@ -960,6 +960,27 @@ The demo starts the bridge (`pty_bridge_server.py`); replace it by a shell on a 
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/im_anim_demo_basics.jpg
+:alt: ImAnim: the basics
+:::
+
+### ImAnim: the basics
+
+Animations for Dear ImGui, one section per notion.
+
+:::{dropdown} More
+Tweens of floats and colors (in OKLAB), oscillators, shake and wiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code. [ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its basics demo.
+:::
+
+*Desktop only*
+
+*Uses: ImAnim*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
+
+::::
+
 :::::
 
 ## Python specifics

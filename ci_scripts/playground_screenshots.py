@@ -112,6 +112,11 @@ def _shell_commands(ctx: Any) -> None:
         ctx.yield_(10)
 
 
+def _open_all(ctx: Any) -> None:
+    """Opens every section of the ImAnim demo (its "Open All" button)"""
+    ctx.item_click("//**/Open All")
+
+
 def _command_palette(ctx: Any) -> None:
     """Opens the command palette (Ctrl+Shift+P), and filters its commands"""
     from imgui_bundle import imgui
@@ -152,6 +157,7 @@ SHOTS: dict[str, Shot] = {
     "demo_nanovg_full.py": Shot(crop=(0.0, 0.05, 1.0, 0.883)),
     "demo_nanovg_heart.py": Shot(crop=(0.0, 0.02, 1.0, 0.853)),
     "demo_terminal_pyte.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.603)),
+    "im_anim_demo_basics.py": Shot(test=_open_all, frames=90, crop=(0.0, 0.0, 1.0, 0.446)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),

@@ -188,8 +188,10 @@ class Pictures:
         self._images[stem] = image if image is not None and image.size.x > 0 else None
         return self._images[stem]
 
-    def draw(self, stem: str, width: float, aspect: Optional[float] = None) -> None:
-        """The picture (cropped to the aspect ratio, if given), fading in over a placeholder once it is loaded"""
+    def draw(self, stem: str, width: float, aspect: Optional[float] = None, rounding: float = 0.0,
+             corners: int = 0) -> None:
+        """The picture (cropped to the aspect ratio, if given), fading in over a placeholder once it is loaded; its
+        corners (an ImDrawFlags_ choice) rounded, e.g. the top ones in a rounded card"""
         image = self.image(stem)
         image_aspect = image.size.x / image.size.y if image is not None else PICTURE_ASPECT
         aspect = aspect or image_aspect
@@ -197,9 +199,7 @@ class Pictures:
         bottom_right = ImVec2(top_left.x + width, top_left.y + width / aspect)
         imgui.dummy(ImVec2(width, width / aspect))
         draw_list = imgui.get_window_draw_list()
-        draw_list.add_rect_filled_multi_color(top_left, bottom_right, IM_COL32(40, 52, 80, 255),
-                                              IM_COL32(60, 40, 90, 255), IM_COL32(30, 30, 40, 255),
-                                              IM_COL32(30, 36, 50, 255))
+        draw_list.add_rect_filled(top_left, bottom_right, IM_COL32(44, 46, 68, 255), rounding, corners)
         if image is None:
             icon_size = imgui.calc_text_size(fa.ICON_FA_CODE)
             draw_list.add_text(ImVec2((top_left.x + bottom_right.x - icon_size.x) / 2,
@@ -209,7 +209,8 @@ class Pictures:
         alpha = tween(f"picture {stem}", 1.0, 0.5, start=0.0)
         uv0, uv1 = ImVec2(0, 0), ImVec2(1, 1)
         if max(image_aspect / aspect, aspect / image_aspect) > MAX_CROP:  # fit it, centered, on a dark background
-            draw_list.add_rect_filled(top_left, bottom_right, IM_COL32(20, 22, 26, 255))
+            draw_list.add_rect_filled(top_left, bottom_right, IM_COL32(20, 22, 26, 255), rounding, corners)
+            rounding = 0.0  # the picture floats inside the background: square
             if image_aspect > aspect:
                 height = width / image_aspect
                 top_left = ImVec2(top_left.x, (top_left.y + bottom_right.y - height) / 2)
@@ -224,8 +225,8 @@ class Pictures:
         elif image_aspect < aspect:  # crop the top and the bottom
             margin = (1 - image_aspect / aspect) / 2
             uv0, uv1 = ImVec2(0, margin), ImVec2(1, 1 - margin)
-        draw_list.add_image(imgui.ImTextureRef(image.texture_id), top_left, bottom_right, uv0, uv1,
-                            IM_COL32(255, 255, 255, int(255 * alpha)))
+        draw_list.add_image_rounded(imgui.ImTextureRef(image.texture_id), top_left, bottom_right, uv0, uv1,
+                                    IM_COL32(255, 255, 255, int(255 * alpha)), rounding, corners)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -418,7 +419,7 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
         imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
                           imgui.WindowFlags_.no_scrollbar.value | imgui.WindowFlags_.no_scroll_with_mouse.value)
-        self.pictures.draw(demo.stem, width, PICTURE_ASPECT)
+        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.5), imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
         imgui.set_cursor_pos(ImVec2(padding, imgui.get_cursor_pos_y() + em_size(0.4)))
@@ -495,7 +496,7 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.alpha, appear)
         imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + (1.0 - appear) * em_size(1.0))  # it slides in a little
         width = imgui.get_content_region_avail().x
-        self.pictures.draw(demo.stem, width)
+        self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_corners_all.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
         imgui.dummy(ImVec2(0, em_size(0.4)))

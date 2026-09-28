@@ -10,7 +10,8 @@
         "demos_tex_inspect": "../../demos_tex_inspect",
         "demos_imguizmo": "../../demos_imguizmo",
         "demos_nanovg": "../../demos_nanovg",
-        "demos_terminal": "../../demos_terminal"
+        "demos_terminal": "../../demos_terminal",
+        "demos_imgui_explorer": "../../demos_imgui_explorer"
     },
     "categories": [
         {
@@ -428,6 +429,13 @@
             "source": "demos_terminal",
             "where": "desktop",
             "category": "Library tours"
+        },
+        {
+            "label": "ImAnim: the basics",
+            "filename": "im_anim_demo_basics.py",
+            "category": "Library tours",
+            "source": "demos_imgui_explorer",
+            "where": "desktop"
         },
         {
             "label": "Context managers (imgui_ctx)",

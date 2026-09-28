@@ -405,6 +405,14 @@
       "terminal"
     ]
   },
+  "im_anim_demo_basics.py": {
+    "title": "ImAnim: the basics",
+    "text": "Animations for Dear ImGui, one section per notion. Tweens of floats and colors (in OKLAB), oscillators, shake and\nwiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code.\n[ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its\nbasics demo.",
+    "summary": "Animations for Dear ImGui, one section per notion.",
+    "uses": [
+      "ImAnim"
+    ]
+  },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
     "text": "In Python, `with imgui_ctx.begin(\"Window\"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be\nforgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with\n`implot_ctx`. Open a section to try it and read its code. See the [Python\ntips](https://imgui-bundle.pages.dev/doc/python/python-tips/).",

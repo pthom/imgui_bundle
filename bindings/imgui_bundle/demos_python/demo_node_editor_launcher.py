@@ -1,5 +1,5 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-from imgui_bundle import imgui, hello_imgui, immapp, rich_md
+from imgui_bundle import imgui, immapp, rich_md
 from imgui_bundle.demos_python import demo_utils  # this will set the assets folder
 from imgui_bundle.demos_python import demos_node_editor
 
@@ -14,20 +14,6 @@ def demo_gui():
     """
     )
 
-    if imgui.collapsing_header("Screenshot - BluePrint"):
-        rich_md.render(
-            "This is a screenshot showing the possibilities of the node editor"
-        )
-        hello_imgui.image_from_asset(
-            "images/node_editor_screenshot.jpg", immapp.em_to_vec2(40, 0)
-        )
-    if imgui.collapsing_header("Screenshot - Image editing"):
-        rich_md.render(
-            "This is another screenshot showing the possibilities of the node editor, when combined with immvision"
-        )
-        hello_imgui.image_from_asset(
-            "images/node_editor_fiat.jpg", immapp.em_to_vec2(60, 0)
-        )
     if imgui.collapsing_header("demo basic interaction"):
         demos_node_editor.demo_node_editor_basic.demo_gui()
         demo_utils.show_python_vs_cpp_file(

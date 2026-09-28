@@ -803,6 +803,24 @@ Needs `pip install "imgui-bundle[terminal]" websockets`.
 
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_websocket.py)
 
+### ImAnim: the basics
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/im_anim_demo_basics.jpg
+:alt: ImAnim: the basics
+:width: 400px
+:::
+
+Animations for Dear ImGui, one section per notion. Tweens of floats and colors (in OKLAB), oscillators, shake and
+wiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code.
+[ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its
+basics demo.
+
+*Python, Desktop only*
+
+*Uses: ImAnim*
+
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
+
 ## Python specifics
 
 Async, Matplotlib, Pydantic, context managers, and pure Python backends
