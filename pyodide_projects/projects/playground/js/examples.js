@@ -166,9 +166,11 @@ async function populateExampleSelector() {
         const name = document.createElement('div');
         name.className = 'examples-category-name';
         name.textContent = category.name;
+        name.dataset.category = category.name;
         const about = document.createElement('div');
         about.className = 'examples-category-about';
         about.textContent = category.about;
+        about.dataset.category = category.name;
         list.append(name, about);
         // The menu shows the demos that run in the browser, except the hidden ones
         for (const example of examplesMetadata) {
@@ -177,6 +179,11 @@ async function populateExampleSelector() {
             item.className = 'examples-item';
             item.textContent = example.label;
             item.dataset.filename = example.filename;
+            item.dataset.category = category.name;
+            // What the search looks into: the label, the description, the category, the libraries
+            const doc = examplesDocs[example.filename] || {};
+            item.dataset.search = [example.label, doc.title, doc.text, category.name, ...(doc.uses || [])]
+                .join(' ').toLowerCase();
             item.addEventListener('mouseenter', () => showExampleDoc(example.filename));
             item.addEventListener('focus', () => showExampleDoc(example.filename));
             item.addEventListener('click', async () => {
@@ -188,6 +195,24 @@ async function populateExampleSelector() {
         }
     }
     document.getElementById('examples-button').textContent = `Examples (${count}) ▾`;
+    const noMatch = document.createElement('div');
+    noMatch.id = 'examples-no-match';
+    noMatch.textContent = 'No example matches.';
+    noMatch.hidden = true;
+    list.appendChild(noMatch);
+}
+
+// The search box: the list keeps the examples that have every word of the search (and the categories that keep one)
+function filterExamples() {
+    const words = document.getElementById('examples-search').value.toLowerCase().split(/\s+/).filter(Boolean);
+    const shown = new Set();
+    for (const item of document.querySelectorAll('.examples-item')) {
+        item.hidden = !words.every((word) => item.dataset.search.includes(word));
+        if (!item.hidden) shown.add(item.dataset.category);
+    }
+    for (const header of document.querySelectorAll('.examples-category-name, .examples-category-about'))
+        header.hidden = !shown.has(header.dataset.category);
+    document.getElementById('examples-no-match').hidden = shown.size > 0;
 }
 
 // The detail pane of the menu: the example's title, first paragraph (markdown, rendered by marked.js) and picture
@@ -227,6 +252,7 @@ function openExamplesMenu() {
     const current = document.querySelector('.examples-item.current');
     showExampleDoc(current ? current.dataset.filename : 'landing_page.py');
     if (current) current.scrollIntoView({block: 'nearest'});
+    document.getElementById('examples-search').focus();
 }
 
 function closeExamplesMenu() {
@@ -277,8 +303,16 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('pointerdown', (event) => {
         if (!panel.hidden && !document.getElementById('examples-menu').contains(event.target)) closeExamplesMenu();
     }, true);
+    const search = document.getElementById('examples-search');
+    search.addEventListener('input', filterExamples);
     document.addEventListener('keydown', (event) => {
-        if (!panel.hidden && event.key === 'Escape') closeExamplesMenu();
+        if (panel.hidden || event.key !== 'Escape') return;
+        if (search.value) {  // a first Escape clears the search, a second one closes the menu
+            search.value = '';
+            filterExamples();
+        } else {
+            closeExamplesMenu();
+        }
     }, true);
 
     // Handle browser back/forward buttons
