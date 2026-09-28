@@ -273,7 +273,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
     """An entry as markdown: a heading with a label, the signatures, the doc"""
     qualified = f"{owner}.{entry.name}" if owner else entry.name
     hashes = "#" * level
-    out = [f"({_label(module, qualified)})=", f"{hashes} {qualified}", ""]
+    out = [f"({_label(module, qualified)})=", f"{hashes} `{qualified}`", ""]  # a code span: __init__ is not emphasis
     if entry.kind in ("function", "method"):
         for python, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
             out += _code("python", python)
@@ -283,7 +283,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         if entry.note:
             out += [entry.note, ""]
     elif entry.kind == "enum":
-        out[1] = f"{hashes} {qualified} (enum)"
+        out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
         out += _doc_lines(entry.doc)
@@ -292,7 +292,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
             out.append(f"| `{m.name}` | {m.value} | `{m.cpp}` | {m.note} |")
         out.append("")
     elif entry.kind == "class":
-        out[1] = f"{hashes} {qualified} (class)"
+        out[1] = f"{hashes} `{qualified}` (class)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
         out += _doc_lines(entry.doc)
