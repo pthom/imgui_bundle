@@ -1,9 +1,8 @@
-"""Remote-shell demo: TerminalView driven over a websocket.
+"""Terminal over a websocket
 
-Shows the *transport* half of imgui_bundle.imgui_terminal: the widget is exactly
-the same one the local-shell demo uses, but the bytes now travel over a
-websocket to `pty_bridge_server.py`. Replace the pty bridge with a shell on a
-robot / server / container and the GUI is unchanged.
+The same terminal widget, its bytes carried by a websocket to a pty bridge server. The demo starts the bridge
+(`pty_bridge_server.py`); replace it by a shell on a robot, a server or a container, and the GUI stays the same.
+Needs `pip install "imgui-bundle[terminal]" websockets`.
 
 For convenience this demo starts a local `pty_bridge_server.py` subprocess and
 connects to it. Point BRIDGE_URL at an already-running bridge to skip that.
@@ -95,8 +94,8 @@ class WebSocketTransport:
 
     def stop(self) -> None:
         self.alive = False
-        if self._loop is not None and self._stop_evt is not None:
-            self._loop.call_soon_threadsafe(self._stop_evt.set)
+        if self._loop is not None and self._stop_evt is not None and not self._loop.is_closed():
+            self._loop.call_soon_threadsafe(self._stop_evt.set)  # the loop is closed when the connection failed
 
 
 mono_font: imgui.ImFont | None = None

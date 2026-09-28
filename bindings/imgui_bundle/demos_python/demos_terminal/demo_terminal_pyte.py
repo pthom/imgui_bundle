@@ -1,8 +1,8 @@
-"""Interactive terminal emulator demo for imgui_bundle.imgui_terminal.
+"""Terminal: several shells in tabs
 
-This file is just the *application*: it loads a monospace font and shows one or
-more `TerminalView` widgets in a tab bar, each backed by a `LocalShellTransport`
-(a real shell on a pseudo-terminal). Use the '+' tab to open more terminals.
+Real shells in a tab bar, each behind a pseudo-terminal. Type, scroll the history, select and copy, and open more
+terminals with the "+" tab. This file is the application only: the widget is `imgui_bundle.imgui_terminal`'s
+`TerminalView`, fed by a `LocalShellTransport`. Needs `pip install "imgui-bundle[terminal]"` (pyte), on macOS or Linux.
 
 The widget itself lives in the `imgui_bundle.imgui_terminal` module:
   - terminal_view.py : the transport-agnostic widget (pyte model + draw + input)

@@ -349,6 +349,62 @@
       "Tex Inspect"
     ]
   },
+  "demo_tex_inspect_demo_window.py": {
+    "title": "Tex Inspect: the full demo",
+    "text": "The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a\ntexture, with its options (grid, alpha, channels, zoom). The demo lives in the library: this file only opens it.",
+    "summary": "The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a texture, with its options (grid, alpha, channels, zoom).",
+    "uses": [
+      "Tex Inspect"
+    ]
+  },
+  "demo_gizmo.py": {
+    "title": "ImGuizmo: a 3D gizmo on a cube",
+    "text": "Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the\neditor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is\n[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s\n(`pip install PyGLM`).",
+    "summary": "Move, rotate and scale cubes with a gizmo, as in a 3D editor.",
+    "uses": [
+      "ImGuizmo"
+    ]
+  },
+  "demo_nanovg_full.py": {
+    "title": "NanoVG: the full demo",
+    "text": "The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.\nDrawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a\ncheckbox blows it up.",
+    "summary": "The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.",
+    "uses": [
+      "NanoVG"
+    ]
+  },
+  "demo_nanovg_heart.py": {
+    "title": "NanoVG: a beating heart",
+    "text": "A heart drawn with [NanoVG](https://github.com/memononen/nanovg) beats in an ImGui image. NanoVG is a vector drawing\nlibrary; the drawing goes into a framebuffer that the image shows, and a color picker changes the heart's color. The\npattern for any NanoVG drawing inside a GUI: `nvg_imgui.render_nvg_to_frame_buffer()`.",
+    "summary": "A heart drawn with [NanoVG](https://github.com/memononen/nanovg) beats in an ImGui image.",
+    "uses": [
+      "NanoVG"
+    ]
+  },
+  "demo_terminal_pyte.py": {
+    "title": "Terminal: several shells in tabs",
+    "text": "Real shells in a tab bar, each behind a pseudo-terminal. Type, scroll the history, select and copy, and open more\nterminals with the \"+\" tab. This file is the application only: the widget is `imgui_bundle.imgui_terminal`'s\n`TerminalView`, fed by a `LocalShellTransport`. Needs `pip install \"imgui-bundle[terminal]\"` (pyte), on macOS or Linux.",
+    "summary": "Real shells in a tab bar, each behind a pseudo-terminal.",
+    "uses": [
+      "terminal"
+    ]
+  },
+  "demo_terminal_ssh.py": {
+    "title": "Terminal over SSH",
+    "text": "The same terminal widget, fed by an SSH channel instead of a local shell. With [paramiko](https://www.paramiko.org):\nthe shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through\nthe SSH agent; edit the host and the user in the file. Needs `pip install \"imgui-bundle[terminal]\" paramiko`.",
+    "summary": "The same terminal widget, fed by an SSH channel instead of a local shell.",
+    "uses": [
+      "terminal"
+    ]
+  },
+  "demo_terminal_websocket.py": {
+    "title": "Terminal over a websocket",
+    "text": "The same terminal widget, its bytes carried by a websocket to a pty bridge server. The demo starts the bridge\n(`pty_bridge_server.py`); replace it by a shell on a robot, a server or a container, and the GUI stays the same.\nNeeds `pip install \"imgui-bundle[terminal]\" websockets`.",
+    "summary": "The same terminal widget, its bytes carried by a websocket to a pty bridge server.",
+    "uses": [
+      "terminal"
+    ]
+  },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
     "text": "In Python, `with imgui_ctx.begin(\"Window\"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be\nforgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with\n`implot_ctx`. Open a section to try it and read its code. See the [Python\ntips](https://imgui-bundle.pages.dev/doc/python/python-tips/).",

@@ -694,6 +694,115 @@ draws; here, a picture loaded from the assets.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_simple.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_simple.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
 
+### Tex Inspect: the full demo
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_demo_window.jpg
+:alt: Tex Inspect: the full demo
+:width: 400px
+:::
+
+The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a
+texture, with its options (grid, alpha, channels, zoom). The demo lives in the library: this file only opens it.
+
+*Python, C++*
+
+*Uses: Tex Inspect*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_demo_window.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_demo_window.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
+
+### ImGuizmo: a 3D gizmo
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_gizmo.jpg
+:alt: ImGuizmo: a 3D gizmo
+:width: 400px
+:::
+
+Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the
+editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s
+(`pip install PyGLM`).
+
+*Python, C++, Desktop only*
+
+*Uses: ImGuizmo*
+
+[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
+
+### NanoVG: the full demo
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_nanovg_full.jpg
+:alt: NanoVG: the full demo
+:width: 400px
+:::
+
+The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.
+Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a
+checkbox blows it up.
+
+*Python, C++*
+
+*Uses: NanoVG*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_nanovg_full.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_nanovg_full.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp)
+
+### NanoVG: a beating heart
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_nanovg_heart.jpg
+:alt: NanoVG: a beating heart
+:width: 400px
+:::
+
+A heart drawn with [NanoVG](https://github.com/memononen/nanovg) beats in an ImGui image. NanoVG is a vector drawing
+library; the drawing goes into a framebuffer that the image shows, and a color picker changes the heart's color. The
+pattern for any NanoVG drawing inside a GUI: `nvg_imgui.render_nvg_to_frame_buffer()`.
+
+*Python, C++*
+
+*Uses: NanoVG*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_nanovg_heart.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_nanovg_heart.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_heart.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_heart.cpp)
+
+### Terminal: several shells in tabs
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_pyte.jpg
+:alt: Terminal: several shells in tabs
+:width: 400px
+:::
+
+Real shells in a tab bar, each behind a pseudo-terminal. Type, scroll the history, select and copy, and open more
+terminals with the "+" tab. This file is the application only: the widget is `imgui_bundle.imgui_terminal`'s
+`TerminalView`, fed by a `LocalShellTransport`. Needs `pip install "imgui-bundle[terminal]"` (pyte), on macOS or Linux.
+
+*Python, Desktop only*
+
+*Uses: terminal*
+
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_pyte.py)
+
+### Terminal over SSH
+
+The same terminal widget, fed by an SSH channel instead of a local shell. With [paramiko](https://www.paramiko.org):
+the shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through
+the SSH agent; edit the host and the user in the file. Needs `pip install "imgui-bundle[terminal]" paramiko`.
+
+*Python, Desktop only*
+
+*Uses: terminal*
+
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_ssh.py)
+
+### Terminal over a websocket
+
+The same terminal widget, its bytes carried by a websocket to a pty bridge server. The demo starts the bridge
+(`pty_bridge_server.py`); replace it by a shell on a robot, a server or a container, and the GUI stays the same.
+Needs `pip install "imgui-bundle[terminal]" websockets`.
+
+*Python, Desktop only*
+
+*Uses: terminal*
+
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_websocket.py)
+
 ## Python specifics
 
 Async, Matplotlib, Pydantic, context managers, and pure Python backends

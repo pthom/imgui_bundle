@@ -7,7 +7,10 @@
         "demos_assets": "../../../demos_assets",
         "demos_immvision": "../../demos_immvision",
         "demos_node_editor": "../../demos_node_editor",
-        "demos_tex_inspect": "../../demos_tex_inspect"
+        "demos_tex_inspect": "../../demos_tex_inspect",
+        "demos_imguizmo": "../../demos_imguizmo",
+        "demos_nanovg": "../../demos_nanovg",
+        "demos_terminal": "../../demos_terminal"
     },
     "categories": [
         {
@@ -372,6 +375,59 @@
             ],
             "category": "Library tours",
             "in_place": true
+        },
+        {
+            "label": "Tex Inspect: the full demo",
+            "filename": "demo_tex_inspect_demo_window.py",
+            "source": "demos_tex_inspect",
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours"
+        },
+        {
+            "label": "ImGuizmo: a 3D gizmo",
+            "filename": "demo_gizmo.py",
+            "source": "demos_imguizmo",
+            "where": "desktop",
+            "category": "Library tours"
+        },
+        {
+            "label": "NanoVG: the full demo",
+            "filename": "demo_nanovg_full.py",
+            "source": "demos_nanovg",
+            "bundle_folders": [
+                "demo_nanovg_full",
+                "../demos_assets"
+            ],
+            "category": "Library tours"
+        },
+        {
+            "label": "NanoVG: a beating heart",
+            "filename": "demo_nanovg_heart.py",
+            "source": "demos_nanovg",
+            "category": "Library tours"
+        },
+        {
+            "label": "Terminal: several shells in tabs",
+            "filename": "demo_terminal_pyte.py",
+            "source": "demos_terminal",
+            "where": "desktop",
+            "category": "Library tours"
+        },
+        {
+            "label": "Terminal over SSH",
+            "filename": "demo_terminal_ssh.py",
+            "source": "demos_terminal",
+            "where": "desktop",
+            "category": "Library tours"
+        },
+        {
+            "label": "Terminal over a websocket",
+            "filename": "demo_terminal_websocket.py",
+            "source": "demos_terminal",
+            "where": "desktop",
+            "category": "Library tours"
         },
         {
             "label": "Context managers (imgui_ctx)",

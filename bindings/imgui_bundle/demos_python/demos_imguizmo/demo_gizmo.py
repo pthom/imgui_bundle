@@ -1,7 +1,10 @@
-# Demo ImGuizmo (only the 3D gizmo)
-# See equivalent python program: demos_cpp/demos_imguizmo/demo_guizmo_pure.cpp
+"""ImGuizmo: a 3D gizmo on a cube
 
-"""
+Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the
+editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s
+(`pip install PyGLM`).
+
 Note: there was a breaking change on ImGuizmo Python API in Nov 2024:
 Added classes Matrix3/6/16, modifiable by manipulate and view_manipulate
 See [changes in demo_gizmo.py](https://github.com/pthom/imgui_bundle/commit/a455607381eeaa65e05cfa7eac39f68e516b1ec4)
@@ -12,12 +15,14 @@ Basically:
 - `gizmo.manipulate` and `view_manipulate` will modify the matrices they receive
 - if using glm, you will to need to convert to Matrix16, see `glm_mat4x4_to_float_list` in demo_gizmo.py
 """
+# See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_pure.cpp
 
-from typing import List, Tuple
+from typing import Callable, List, Tuple
 import math
 
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
-from imgui_bundle.demos_python.demo_utils.api_demos import GuiFunction
+
+GuiFunction = Callable[[], None]
 
 try:
     import glm  # pip install PyGLM

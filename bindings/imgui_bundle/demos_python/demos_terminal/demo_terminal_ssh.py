@@ -1,8 +1,8 @@
-"""Remote-shell demo: TerminalView driven over SSH (paramiko).
+"""Terminal over SSH
 
-Same widget as the local-shell demo; the transport is an SSH channel instead of
-a local pty. This is the shape you'd use to open a shell on a server or a
-robot's companion computer from a desktop GUI.
+The same terminal widget, fed by an SSH channel instead of a local shell. With [paramiko](https://www.paramiko.org):
+the shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through
+the SSH agent; edit the host and the user in the file. Needs `pip install "imgui-bundle[terminal]" paramiko`.
 
     pip install "imgui-bundle[terminal]" paramiko
     # edit the connection constants below, then:

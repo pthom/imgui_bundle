@@ -1,6 +1,13 @@
+"""NanoVG: the full demo
+
+The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.
+Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a
+checkbox blows it up.
+"""
 # port of bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp
 from imgui_bundle import imgui, nanovg as nvg, hello_imgui, ImVec2, ImVec4, register_demos_assets_folder
-from imgui_bundle.demos_python.demos_nanovg.demo_nanovg_full import demo_nanovg_full_impl
+# The scene, in the folder next to this file (on the path: this file runs as a script)
+from demo_nanovg_full import demo_nanovg_full_impl  # type: ignore[import-not-found]
 from typing import List
 
 nvg_imgui = nvg.nvg_imgui

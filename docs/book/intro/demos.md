@@ -823,6 +823,143 @@ A texture inspector: zoom with the mouse wheel until the pixels show as squares 
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_demo_window.jpg
+:alt: Tex Inspect: the full demo
+:::
+
+### Tex Inspect: the full demo
+
+The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a texture, with its options (grid, alpha, channels, zoom).
+
+:::{dropdown} More
+The demo lives in the library: this file only opens it.
+:::
+
+*Uses: Tex Inspect*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_demo_window.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_demo_window.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_gizmo.jpg
+:alt: ImGuizmo: a 3D gizmo
+:::
+
+### ImGuizmo: a 3D gizmo
+
+Move, rotate and scale cubes with a gizmo, as in a 3D editor.
+
+:::{dropdown} More
+Pick the operation and the mode (local or world) in the editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s (`pip install PyGLM`).
+:::
+
+*Desktop only*
+
+*Uses: ImGuizmo*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_nanovg_full.jpg
+:alt: NanoVG: the full demo
+:::
+
+### NanoVG: the full demo
+
+The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.
+
+:::{dropdown} More
+Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a checkbox blows it up.
+:::
+
+*Uses: NanoVG*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_nanovg_full.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_nanovg_full.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_nanovg_heart.jpg
+:alt: NanoVG: a beating heart
+:::
+
+### NanoVG: a beating heart
+
+A heart drawn with [NanoVG](https://github.com/memononen/nanovg) beats in an ImGui image.
+
+:::{dropdown} More
+NanoVG is a vector drawing library; the drawing goes into a framebuffer that the image shows, and a color picker changes the heart's color. The pattern for any NanoVG drawing inside a GUI: `nvg_imgui.render_nvg_to_frame_buffer()`.
+:::
+
+*Uses: NanoVG*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_nanovg_heart.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_heart.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_nanovg_heart.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_heart.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_pyte.jpg
+:alt: Terminal: several shells in tabs
+:::
+
+### Terminal: several shells in tabs
+
+Real shells in a tab bar, each behind a pseudo-terminal.
+
+:::{dropdown} More
+Type, scroll the history, select and copy, and open more terminals with the "+" tab. This file is the application only: the widget is `imgui_bundle.imgui_terminal`'s `TerminalView`, fed by a `LocalShellTransport`. Needs `pip install "imgui-bundle[terminal]"` (pyte), on macOS or Linux.
+:::
+
+*Desktop only*
+
+*Uses: terminal*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_pyte.py)
+
+::::
+
+::::{card}
+### Terminal over SSH
+
+The same terminal widget, fed by an SSH channel instead of a local shell.
+
+:::{dropdown} More
+With [paramiko](https://www.paramiko.org): the shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through the SSH agent; edit the host and the user in the file. Needs `pip install "imgui-bundle[terminal]" paramiko`.
+:::
+
+*Desktop only*
+
+*Uses: terminal*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_ssh.py)
+
+::::
+
+::::{card}
+### Terminal over a websocket
+
+The same terminal widget, its bytes carried by a websocket to a pty bridge server.
+
+:::{dropdown} More
+The demo starts the bridge (`pty_bridge_server.py`); replace it by a shell on a robot, a server or a container, and the GUI stays the same. Needs `pip install "imgui-bundle[terminal]" websockets`.
+:::
+
+*Desktop only*
+
+*Uses: terminal*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_websocket.py)
+
+::::
+
 :::::
 
 ## Python specifics

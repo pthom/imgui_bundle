@@ -1,3 +1,9 @@
+"""NanoVG: a beating heart
+
+A heart drawn with [NanoVG](https://github.com/memononen/nanovg) beats in an ImGui image. NanoVG is a vector drawing
+library; the drawing goes into a framebuffer that the image shows, and a color picker changes the heart's color. The
+pattern for any NanoVG drawing inside a GUI: `nvg_imgui.render_nvg_to_frame_buffer()`.
+"""
 from imgui_bundle import hello_imgui, imgui, nanovg as nvg, ImVec2, ImVec4
 import math
 
