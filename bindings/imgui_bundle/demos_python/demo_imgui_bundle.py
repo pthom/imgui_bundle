@@ -109,15 +109,17 @@ class Explorer:
         right = imgui.get_cursor_pos_x() + width - em_size(0.5)
         one_row = title_width + self.right_width + em_size(1.5) <= width
         if one_row:
-            imgui.same_line()
-            imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
             if self.state == WELCOME:
                 sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
             else:
                 sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
-            if imgui.calc_text_size(sentence).x + self.right_width + em_size(2) <= imgui.get_content_region_avail().x:
-                imgui.text_colored(imgui.get_style_color_vec4(color), sentence)  # only when it does not reach the switch
-        # The cursor is set, not put on the same line: a pending same_line would make the title's row the chips' line
+            # Only when it does not reach the switch; same_line only then: pending, it would make the title's row
+            # the chips' line
+            if title_width + imgui.calc_text_size(sentence).x + self.right_width + em_size(3) <= width:
+                imgui.same_line()
+                imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
+                imgui.text_colored(imgui.get_style_color_vec4(color), sentence)
+        # The cursor is set, not put on the same line (see above)
         imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5) if one_row else below_title))
         imgui.begin_group()
         # The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width comes
