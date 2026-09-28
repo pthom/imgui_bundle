@@ -270,7 +270,14 @@ function filterGallery() {
         chip.hidden = n === 0;
     }
     document.getElementById('gallery-no-match').hidden = shown.size > 0;
+    document.getElementById('gallery-clear').hidden = !words.length && !library;
     markCategoryInView();
+}
+
+function clearGalleryFilters() {
+    document.getElementById('gallery-search').value = '';
+    document.getElementById('gallery-library').value = '';
+    filterGallery();
 }
 
 // The chip of the category in view, as the launcher's: the last one whose title has passed the top (or the last
@@ -372,6 +379,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (gallery.hidden || !gallery.classList.contains('open')) openGallery(); else closeGallery();
     });
     document.getElementById('gallery-close').addEventListener('click', closeGallery);
+    document.getElementById('gallery-clear').addEventListener('click', clearGalleryFilters);
     const search = document.getElementById('gallery-search');
     const library = document.getElementById('gallery-library');
     search.addEventListener('input', filterGallery);
@@ -385,8 +393,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('keydown', (event) => {
         if (gallery.hidden || event.key !== 'Escape') return;
         if (search.value || library.value) {  // a first Escape clears the filters, a second closes
-            search.value = library.value = '';
-            filterGallery();
+            clearGalleryFilters();
         } else {
             closeGallery();
         }

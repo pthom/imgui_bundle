@@ -129,6 +129,19 @@ html, body {
     outline: none;
     border-color: #9cdcfe;
 }
+#gallery-clear {
+    padding: 2px 8px;
+    font: inherit;
+    font-size: 0.85em;
+    color: #ddd;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 12px;
+    cursor: pointer;
+}
+#gallery-clear:hover {
+    background-color: #4a4a4a;
+}
 #gallery-close {
     position: absolute;
     top: 8px;
