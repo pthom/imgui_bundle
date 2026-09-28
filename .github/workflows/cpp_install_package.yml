@@ -2,7 +2,7 @@ name: "CppInstallPackage"
 
 # Builds and installs imgui_bundle as a C++ package (cmake --install), then builds
 # _example_integration against the *installed* package (find_package(imgui_bundle)),
-# on the three desktop platforms.
+# on the three desktop platforms. Then tests/cpp_compat: the former markdown API still compiles.
 #
 # System dependencies (freetype, glfw, ...) are provided by the platform's package manager;
 # on Windows, by the vcpkg preinstalled on the runner, used as a plain CMAKE_PREFIX_PATH
@@ -61,6 +61,14 @@ jobs:
               -DCMAKE_PREFIX_PATH="$workspace/builds/cpp_package/install;$DEPS_PREFIX" | tee configure_example.log
         grep -q "Using installed imgui_bundle" configure_example.log
         cmake --build build_example --config Release -j 3
+
+    - name: Build tests/cpp_compat (the markdown API of v1.92.900) against the installed package
+      shell: bash
+      run: |
+        workspace="${GITHUB_WORKSPACE//\\//}"
+        cmake -S tests/cpp_compat -B build_cpp_compat -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_PREFIX_PATH="$workspace/builds/cpp_package/install;$DEPS_PREFIX"
+        cmake --build build_cpp_compat --config Release -j 3
 
     - name: List the installed package
       shell: bash

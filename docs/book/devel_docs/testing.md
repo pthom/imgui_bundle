@@ -16,7 +16,9 @@ cd bindings && ./mypy_bindings.sh # mypy
 ## What the test suite covers
 
 - **`tests/lg_imgui_bundle_test.py`** — Main test file: exercises the litgen binding generation for imgui_bundle.
-- **`bindings/mypy_bindings.sh`** — Runs mypy on all `.pyi` stubs to verify type consistency.
+- **`just mypy`** — Runs mypy on all `.pyi` stubs to verify type consistency.
+- **`tests/test_imgui_md_compat.py`**: `imgui_md`, the former name of the markdown module, still offers the API of v1.92.900 (the last release before `rich_md`).
+- **`tests/cpp_compat/`**: the C++ side of the same promise (`imgui_md_wrapper.h`, namespace `ImGuiMd`) compiles and links against the installed package. Built by `just test_cpp_compat` (after `just cpp_package_install`), and by the CI workflow `cpp_install_package.yml` on the three desktop platforms.
 
 ## GUI tests
 

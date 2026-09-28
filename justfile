@@ -187,6 +187,13 @@ example_integration_fetch:
 example_integration_all: cpp_package_install example_integration_installed example_integration_subdir example_integration_fetch
     @echo "example_integration: the three integration modes build"
 
+# Check that the markdown API of v1.92.900 (imgui_md_wrapper.h, ImGuiMd) compiles and links against the installed package
+[group('cpp_package')]
+test_cpp_compat:
+    @test -d "{{ _cpp_pkg_install }}" || { echo "{{ _cpp_pkg_install }} not found: run 'just cpp_package_install' first"; exit 1; }
+    cmake -S tests/cpp_compat -B builds/cpp_package/cpp_compat -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}"
+    cmake --build builds/cpp_package/cpp_compat --config Release -j
+
 
 # ==============================================================
 # CI / Docker
