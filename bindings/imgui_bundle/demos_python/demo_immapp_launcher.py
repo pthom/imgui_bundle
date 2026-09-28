@@ -585,7 +585,13 @@ class Launcher:
         imgui.end_child()
         imgui.same_line(0, em_size(1.0))
         imgui.begin_child("detail", ImVec2(detail_width, avail.y))
+        # The content in a child of fixed width (a scrollbar's width less than the pane), sized to its height: its
+        # picture and markdown take the child's width, so the pane's scrollbar, which comes and goes with that height,
+        # never changes their width (it did: narrower, then shorter, then wider again, every frame)
+        imgui.begin_child("detail content", ImVec2(detail_width - imgui.get_style().scrollbar_size, 0),
+                          imgui.ChildFlags_.auto_resize_y.value)
         self.detail()
+        imgui.end_child()
         imgui.end_child()
 
     def keep_smooth(self, animating: bool) -> None:
