@@ -113,7 +113,8 @@ class Explorer:
             if self.state == WELCOME:
                 sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
             else:
-                sentence, color = "   Pick a demo: see it, run it, and read its code.", imgui.Col_.text
+                sentence = "   Pick a demo: see it, run it, and read its code: each demo is a documented quickstart."
+                color = imgui.Col_.text
             # Only when it does not reach the switch; same_line only then: pending, it would make the title's row
             # the chips' line
             if title_width + imgui.calc_text_size(sentence).x + self.right_width + em_size(3) <= width:
