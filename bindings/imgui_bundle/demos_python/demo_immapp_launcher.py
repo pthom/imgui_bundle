@@ -359,10 +359,6 @@ class Launcher:
         return clicked
 
     # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
-    def header(self) -> None:
-        self.title()
-        self.filters()
-
     def title(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
@@ -599,13 +595,16 @@ class Launcher:
         else:
             immapp.snippets.show_code_snippet(shown[0].snippet)
 
-    def gui(self) -> None:
+    def gui(self, with_title: bool = True) -> None:
+        """The launcher; without its title when the explorer draws its own header above"""
         self.pictures.new_frame()
         self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None)
         if self.code_view is not None:  # no header: the demo's title and the way back are the only row
             self.show_code()
             return
-        self.header()
+        if with_title:
+            self.title()
+        self.filters()
         avail = imgui.get_content_region_avail()
         detail_width = em_size(DETAIL_WIDTH)
         imgui.begin_child("gallery", ImVec2(avail.x - detail_width - em_size(1.0), avail.y))

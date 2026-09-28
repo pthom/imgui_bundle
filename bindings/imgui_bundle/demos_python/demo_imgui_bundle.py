@@ -1,4 +1,10 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+"""
+Dear ImGui Bundle Explorer: one page with a header, and two states below it.
+
+Welcome: the intro (the carousel of live mini demos) and a button to the demos. Demos: the launcher (the catalog of
+demos, with their pictures, descriptions and code). Escape goes back one state (the code view, then Welcome).
+"""
 import importlib.util
 import sys
 if importlib.util.find_spec("numpy") is None:
@@ -12,36 +18,75 @@ if importlib.util.find_spec("numpy") is None:
     )
     sys.exit(1)
 
-from typing import List, Callable
-from types import ModuleType
-from dataclasses import dataclass
-
-from imgui_bundle import imgui, hello_imgui, immapp
-from imgui_bundle.immapp import static
+from imgui_bundle import imgui, hello_imgui, immapp, ImVec2, em_size, icons_fontawesome_4 as fa
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_utils
 
-
-_show_code_states: dict[str, bool] = {}
-
-def show_module_demo(demo_filename: str, demo_function: Callable[[], None], show_code: bool = False) -> None:
-    if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
-        return
-    if show_code:
-        current = _show_code_states.get(demo_filename, False)
-        _, current = imgui.checkbox("Show code##" + demo_filename, current)
-        _show_code_states[demo_filename] = current
-        if current:
-            demo_utils.show_python_vs_cpp_file(demo_filename, 40)
-    demo_function()
+WELCOME, DEMOS = "Welcome", "Demos"
+BROWSE_LABEL = fa.ICON_FA_TH_LARGE + "  Browse the demos"  # the switches of the header (the automations click them)
+WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"
 
 
-@dataclass
-class DemoDetails:
-    label: str
-    demo_module: ModuleType
-    show_code: bool = False
+class Explorer:
+    def __init__(self) -> None:
+        self.state = WELCOME
+        self.launcher = demo_immapp_launcher.Launcher()
+        self.nb_demos = sum(len(category.demos) for category in self.launcher.categories)
+        self.right_width = 0.0  # of the header's right part (the links and the switch), measured on the previous frame
+
+    def gui(self) -> None:
+        if imgui.get_frame_count() < 2:  # cf https://github.com/pthom/imgui_bundle/issues/293
+            return
+        if (self.state == DEMOS and self.launcher.code_view is None and not imgui.is_any_item_active()
+                and imgui.is_key_pressed(imgui.Key.escape)):
+            self.state = WELCOME
+        self.header()
+        if self.state == WELCOME:
+            self.welcome()
+        else:
+            self.launcher.gui(with_title=False)
+
+    def header(self) -> None:
+        """The title, the sentence of the state, and at the right the links and the switch to the other state"""
+        top = imgui.get_cursor_pos_y()
+        demo_immapp_launcher.big_text("Dear ImGui Bundle", 2.0)
+        imgui.same_line()
+        imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
+        if self.state == WELCOME:
+            imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile.")
+        else:
+            imgui.text("   Pick a demo: see it, run it, and read its code.")
+        imgui.same_line()
+        right = imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(0.5)
+        imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.3)))
+        imgui.begin_group()
+        imgui.align_text_to_frame_padding()
+        demo_imgui_bundle_intro.links_row()
+        imgui.same_line(0, em_size(1.5))
+        if self.state == WELCOME:
+            if imgui.button(BROWSE_LABEL):
+                self.state = DEMOS
+        elif imgui.button(WELCOME_LABEL):
+            self.state = WELCOME
+        imgui.end_group()
+        self.right_width = imgui.get_item_rect_size().x
+
+    def welcome(self) -> None:
+        avail = imgui.get_content_region_avail()
+        imgui.begin_child("welcome", ImVec2(0, avail.y - em_size(3.5)))
+        demo_imgui_bundle_intro.welcome_gui()
+        imgui.end_child()
+        # The call to action, centered
+        label = f"{fa.ICON_FA_TH_LARGE}  Browse the {self.nb_demos} demos"
+        imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
+        imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em_size(1.2), em_size(0.4)))
+        width = imgui.calc_text_size(label).x + em_size(2.4)
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail.x - width) / 2)
+        if imgui.button(label):
+            self.state = DEMOS
+        imgui.pop_style_var()
+        imgui.pop_font()
 
 
 def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
@@ -68,52 +113,13 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     runner_params.ini_clear_previous_settings = True
 
     ################################################################################################
-    # Part 2: Define the application layout and windows
+    # Part 2: The explorer's page, in a full screen window
     ################################################################################################
-
-    # First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
     runner_params.imgui_window_params.default_imgui_window_type = (
-        hello_imgui.DefaultImGuiWindowType.provide_full_screen_dock_space
+        hello_imgui.DefaultImGuiWindowType.provide_full_screen_window
     )
-    # In this demo, we also demonstrate multiple viewports.
-    # you can drag windows outside out the main window in order to put their content into new native windows
-    runner_params.imgui_window_params.enable_viewports = True
-
-    #
-    # Define our dockable windows : each window provide a Gui callback, and will be displayed
-    # in a docking split.
-    #
-    dockable_windows: List[hello_imgui.DockableWindow] = []
-
-    standalone_demos = [  # the manuals and the libraries' demos are in the launcher ("Demo Apps")
-        DemoDetails("Intro",       demo_imgui_bundle_intro),
-        DemoDetails("Demo Apps",   demo_immapp_launcher),
-    ]
-
-    for demo in standalone_demos:
-        window = hello_imgui.DockableWindow()
-        window.label = demo.label
-        window.dock_space_name = "MainDockSpace"
-        demo_module_name = demo.demo_module.__name__.split(".")[-1]
-
-        def make_win_fn(mod_name: str, mod: ModuleType, sc: bool) -> Callable[[], None]:
-            def win_fn() -> None:
-                show_module_demo(mod_name, mod.demo_gui, sc)
-            return win_fn
-
-        window.gui_function = make_win_fn(demo_module_name, demo.demo_module, demo.show_code)
-        dockable_windows.append(window)
-
-    runner_params.docking_params.dockable_windows = dockable_windows
-
-    # the main gui is only responsible to give focus to ImGui Bundle dockable window
-    @static(nb_frames=0)
-    def show_gui():
-        if show_gui.nb_frames == 1:
-            # Focus cannot be given at frame 0, since some additional windows will
-            # be created after (and will steal the focus)
-            runner_params.docking_params.focus_dockable_window("Dear ImGui Bundle")
-        show_gui.nb_frames += 1
+    explorer = Explorer()
+    runner_params.callbacks.show_gui = explorer.gui
 
     def show_status_bar():
         from imgui_bundle import __version__, __build_number__
@@ -123,8 +129,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
 
     runner_params.callbacks.show_status = show_status_bar
-
-    runner_params.callbacks.show_gui = show_gui
 
     if "test_engine" in dir(imgui):  # only enable test engine if available (i.e. if imgui bundle was compiled with it)
         runner_params.use_imgui_test_engine = True
