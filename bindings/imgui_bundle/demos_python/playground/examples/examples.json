@@ -16,31 +16,33 @@
     "categories": [
         {
             "name": "Start here",
-            "about": "The bundle in ten minutes: what it is, first apps, and a few lines that do a lot"
-        },
-        {
-            "name": "Interactive science",
-            "about": "Explorable lessons in physics, chaos and machine learning, built with the bundle"
-        },
-        {
-            "name": "Build an app",
-            "about": "Layouts, docking, backgrounds, fonts, testing: what a real application needs"
-        },
-        {
-            "name": "Library tours",
-            "about": "The libraries in the bundle: full demos, widget tours, showcases"
+            "about": "The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.",
+            "tip": "Read the code of a few of them: it gives the feel of the framework."
         },
         {
             "name": "Interactive manuals",
-            "about": "Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section, with the code of each beside it: from Dear ImGui Explorer"
+            "about": "Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside."
+        },
+        {
+            "name": "Build an app",
+            "about": "Layouts, docking, backgrounds, fonts, testing: what a real application needs."
+        },
+        {
+            "name": "Library tours",
+            "about": "The libraries in the bundle: full demos, widget tours, showcases."
         },
         {
             "name": "Python specifics",
-            "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends"
+            "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends."
         },
         {
             "name": "In the browser",
-            "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python"
+            "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python."
+        },
+        {
+            "name": "Interactive science",
+            "about": "Explorable lessons in physics, chaos and machine learning, built with the bundle.",
+            "tip": "Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per second or more, even under load. These demos show it."
         }
     ],
     "examples": [

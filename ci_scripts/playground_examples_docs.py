@@ -226,6 +226,8 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) 
         if not examples:
             continue
         header = [f"## {category['name']}", "", category["about"], ""]
+        if category.get("tip"):
+            header += [f"*{category['tip']}*", ""]
         site += header + [":::::{grid} 1 2 3 3", ""]  # the outer fences are longer than the inner ones
         pdf += header
         for e in examples:

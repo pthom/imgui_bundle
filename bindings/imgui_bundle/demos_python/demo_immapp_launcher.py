@@ -88,13 +88,14 @@ class Demo:
 class Category:
     name: str
     about: str
+    tip: str  # a second line, when the category has one to give (empty otherwise)
     demos: list[Demo] = field(default_factory=list)
 
 
 def load_catalog() -> list[Category]:
     manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
     docs = json.loads((EXAMPLES_DIR / "examples_docs.json").read_text())
-    categories = {c["name"]: Category(c["name"], c["about"]) for c in manifest["categories"]}
+    categories = {c["name"]: Category(c["name"], c["about"], c.get("tip", "")) for c in manifest["categories"]}
     for e in manifest["examples"]:
         if e.get("hidden") or not e.get("launcher", True):  # "launcher": false, e.g. Fiatlight until its studio is ready
             continue
@@ -340,9 +341,12 @@ class Launcher:
     def header(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
-        imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + em_size(0.75))
-        imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile. "
-                            "Pick a demo: see it, run it, read its code.")
+        y = imgui.get_cursor_pos_y() + em_size(0.75)  # the tagline sits on the title's baseline
+        imgui.set_cursor_pos_y(y)
+        imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile.")
+        imgui.same_line()
+        imgui.set_cursor_pos_y(y)
+        imgui.text("Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.")
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
             if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
@@ -469,6 +473,8 @@ class Launcher:
                 self.category_in_view = category.name
             big_text(category.name, 1.45, CATEGORY_TITLE)
             imgui.text_disabled(category.about)
+            if category.tip:
+                imgui.text_disabled(category.tip)
             imgui.dummy(ImVec2(0, em_size(0.3)))
             for i, demo in enumerate(self.shown(category)):
                 if i % columns:
