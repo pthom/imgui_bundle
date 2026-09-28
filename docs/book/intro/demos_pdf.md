@@ -52,6 +52,8 @@ objects: that is the [immediate mode](https://imgui-bundle.pages.dev/doc/intro/i
 
 *Python, C++*
 
+*Uses: ImPlot, knobs*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_parametric_curve.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_parametric_curve.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_parametric_curve.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_parametric_curve.cpp)
 
 ### A plot and markdown, in a few lines
@@ -66,6 +68,8 @@ A cosine wave moves in an [ImPlot](https://github.com/epezent/implot) plot, unde
 `immapp.run(gui, with_implot=True, with_markdown=True)`. A good start for a small app.
 
 *Python, C++*
+
+*Uses: ImPlot*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_implot_markdown.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_implot_markdown.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_implot_markdown.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_implot_markdown.cpp)
 
@@ -82,6 +86,8 @@ Tick **More info** under each part to see how it is done. The add-ons are activa
 
 *Python, C++*
 
+*Uses: ImPlot*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_assets_addons.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_assets_addons.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_assets_addons.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_assets_addons.cpp)
 
 ### A beating heart
@@ -97,6 +103,8 @@ at each frame. Turn the knobs to change the heart rate, or its thickness.
 
 *Python, C++*
 
+*Uses: ImPlot, knobs*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=haiku_implot_heart.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/haiku_implot_heart.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp)
 
 ### Butterfly effect, in a few lines
@@ -111,6 +119,8 @@ then drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.co
 the system's parameters and the gap between the two starting points; Reset starts them over.
 
 *Python, C++*
+
+*Uses: ImPlot3D*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp)
 
@@ -131,6 +141,8 @@ each point, the two sets look alike.
 
 *Python*
 
+*Uses: ImmVision*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py)
 
 ### A tiny neural network learns two spirals
@@ -147,6 +159,8 @@ code.
 
 *Python*
 
+*Uses: ImPlot*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/neural_spiral/neural_spiral.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py)
 
 ### Simple harmonic motion
@@ -161,6 +175,8 @@ A mass on a spring, a pendulum, a vibrating string: they all follow the same equ
 angles). Adjust the mass and the spring stiffness, and watch how the motion changes.
 
 *Python*
+
+*Uses: ImPlot, knobs*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/lesson_harmonic_motion.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/lesson_harmonic_motion.py)
 
@@ -177,6 +193,8 @@ wildly different trajectories. Drag the angles to set initial positions, then re
 
 *Python*
 
+*Uses: ImPlot, knobs, toggles*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/double_pendulum.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/double_pendulum.py)
 
 ### Fourier epicycles
@@ -191,6 +209,8 @@ series](https://en.wikipedia.org/wiki/Fourier_series)). Adjust the number of cir
 approximation improves.
 
 *Python*
+
+*Uses: ImPlot, knobs, toggles*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/fourier_epicycles.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/fourier_epicycles.py)
 
@@ -207,6 +227,8 @@ This is the [boids](https://en.wikipedia.org/wiki/Boids) model of Craig Reynolds
 
 *Python*
 
+*Uses: ImPlot, knobs, toggles*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/boids.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/boids.py)
 
 ### Logistic map
@@ -222,6 +244,8 @@ map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n)
 4-cycles, etc), or chaotic. Let's explore this.
 
 *Python*
+
+*Uses: ImPlot, toggles*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py)
 
@@ -286,6 +310,8 @@ shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 20
 
 *Python, C++, Desktop only*
 
+*Uses: OpenGL*
+
 [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_custom_background.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp)
 
 ### Power save when idle
@@ -300,6 +326,8 @@ watch the FPS and the spinner slow down. Move the mouse, and they speed up again
 full speed), and the checkbox turns idling off, for example during an animation.
 
 *Python, C++*
+
+*Uses: spinners*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_powersave.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_powersave.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
 
@@ -345,6 +373,8 @@ to filter it. One command changes the theme in two steps, another writes to the 
 commands and their callbacks with [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).
 
 *Python, C++*
+
+*Uses: command palette*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_command_palette.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_command_palette.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp)
 
@@ -410,6 +440,8 @@ ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 
 *Python*
 
+*Uses: ImPlot, ImmVision*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
 
 ### ImPlot3D full demo
@@ -425,6 +457,8 @@ Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 
 *Python*
 
+*Uses: ImPlot3D, ImmVision*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
 
 ### ImmVision image inspection
@@ -437,6 +471,8 @@ Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 [ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
 
 *Python*
+
+*Uses: ImmVision, OpenCV*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=immvision.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/immvision.py)
 
@@ -470,6 +506,8 @@ native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file
 
 *Python, C++*
 
+*Uses: knobs, toggles, spinners, cool bar, command palette, file dialogs*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_widgets.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_widgets.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
 
 ### Markdown tour
@@ -498,6 +536,8 @@ Each tab shows one feature, and a checkbox shows its source. The editor is
 [ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.
 
 *Python, C++*
+
+*Uses: code editor*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_text_edit.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_text_edit.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp)
 
@@ -530,6 +570,8 @@ behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/p
 
 *Python, Desktop only*
 
+*Uses: terminal*
+
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py)
 
 ## Python specifics
@@ -549,6 +591,8 @@ forgotten. The same exists for child windows, menus, popups, tables, tabs, fonts
 tips](https://imgui-bundle.pages.dev/doc/python/python-tips/).
 
 *Python*
+
+*Uses: ImPlot*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py)
 
@@ -582,6 +626,8 @@ the taskbar.
 
 *Python, Desktop only*
 
+*Uses: GLFW*
+
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py)
 
 ### Matplotlib figures
@@ -596,6 +642,8 @@ sine wave, redrawn at each frame, with a slider for its amplitude. On the right,
 reuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).
 
 *Python*
+
+*Uses: Matplotlib*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py)
 
@@ -613,6 +661,8 @@ nothing was lost.
 
 *Python*
 
+*Uses: Pydantic*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py)
 
 ### Python backends: GLFW, SDL, pyglet, pygame, wgpu
@@ -623,6 +673,8 @@ inputs to ImGui and draws it with PyOpenGL. Shows the ImGui demo, and a window w
 `pip install imgui-bundle[glfw,opengl]`.
 
 *Python, Desktop only*
+
+*Uses: OpenGL, GLFW, SDL, pyglet, pygame, wgpu*
 
 [Python code GLFW](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py) · [Python code SDL2](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py) · [Python code SDL3](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py) · [Python code pyglet](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py) · [Python code pygame](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py) · [Python code wgpu](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py)
 
@@ -641,6 +693,8 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 
 *Python*
 
+*Uses: code editor*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=minimal_example.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py)
 
 ### WebGL shader as background
@@ -657,6 +711,8 @@ interop. On desktop, you would use PyOpenGL instead.
 
 *Python, Browser only*
 
+*Uses: browser APIs*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_minimal_mandelbrot.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py)
 
 ### WebGL / OpenGL custom background
@@ -672,6 +728,8 @@ Alekseev. In the browser, the app runs with [Pyodide](https://pyodide.org).
 
 *Python*
 
+*Uses: OpenGL, browser APIs*
+
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_background_shader.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py)
 
 ### WebGL 3D cube rendered to a texture
@@ -685,6 +743,8 @@ A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/W
 shown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.
 
 *Python, Browser only*
+
+*Uses: browser APIs*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_texture_in_image.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py)
 
@@ -701,5 +761,7 @@ tune. Pick a waveform, add some echo, and watch the scope. **Pyodide only**: it 
 `js` interop.
 
 *Python, Browser only*
+
+*Uses: knobs, browser APIs*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webaudio_synth.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webaudio_synth.py)

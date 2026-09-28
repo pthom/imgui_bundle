@@ -50,6 +50,20 @@ MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the men
 MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
 MAX_SUMMARY = 120  # characters: a longer summary pushes the card's "More" far down, and the launcher's card cuts it
 PICTURE_ASPECT, MAX_CROP = 1.6, 1.5  # as in the launcher: cropped to 16:10, or fitted when the shape is too different
+# What an example uses, from its imports: the module, and the name shown (the launcher's library chips, the cards'
+# "Uses" line). A module not listed here is not shown: the core (imgui, hello_imgui, immapp), the markdown and the
+# icons (in nearly every example), and the utilities (numpy, ctypes...)
+USES = {
+    "implot": "ImPlot", "implot_ctx": "ImPlot", "implot3d": "ImPlot3D", "immvision": "ImmVision",
+    "imgui_knobs": "knobs", "imgui_toggle": "toggles", "imspinner": "spinners", "im_cool_bar": "cool bar",
+    "imgui_command_palette": "command palette", "portable_file_dialogs": "file dialogs",
+    "im_file_dialog": "file dialogs",
+    "imgui_color_text_edit": "code editor", "imgui_node_editor": "node editor", "imguizmo": "ImGuizmo",
+    "nanovg": "NanoVG", "im_anim": "ImAnim", "imgui_tex_inspect": "Tex Inspect", "imgui_terminal": "terminal",
+    "imgui_fig": "Matplotlib", "matplotlib": "Matplotlib", "pydantic": "Pydantic", "fiatlight": "Fiatlight",
+    "cv2": "OpenCV", "pandas": "pandas", "OpenGL": "OpenGL", "glfw": "GLFW", "glfw_utils": "GLFW",
+    "sdl2": "SDL", "sdl3": "SDL", "pyglet": "pyglet", "pygame": "pygame", "wgpu": "wgpu", "js": "browser APIs",
+}
 RUN_ICON = "\u25b6\ufe0e"  # ▶, as text (not as an emoji): the links that run a demo in the browser, in the cards
 
 
@@ -74,6 +88,23 @@ def title_and_paragraph(docstring: str) -> tuple[str, str]:
         rest = rest[1:]
     blocks = [block.strip() for block in "\n".join(rest).split("\n\n")]
     return plain(title), next((b for b in blocks if plain(b)), "")  # the first one with text (not only an image)
+
+
+def uses(paths: list[Path]) -> list[str]:
+    """The names of USES for the modules these files import (`from imgui_bundle import implot`, `import cv2`...),
+    in the order of USES"""
+    modules: set[str] = set()
+    for path in paths:
+        for node in ast.walk(ast.parse(path.read_text())):
+            if isinstance(node, ast.Import):
+                modules |= {alias.name.split(".")[0] for alias in node.names}
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                parts = node.module.split(".")
+                if parts[0] == "imgui_bundle":  # from imgui_bundle import implot, or from imgui_bundle.implot import x
+                    modules |= {alias.name for alias in node.names} if len(parts) == 1 else {parts[1]}
+                else:
+                    modules.add(parts[0])
+    return list(dict.fromkeys(name for module, name in USES.items() if module in modules))
 
 
 def summary_and_rest(markdown: str) -> tuple[str, str]:
@@ -118,7 +149,7 @@ def write_manifests(examples: list[dict[str, Any]], sources: dict[str, str]) -> 
         print(f"wrote {folder_path / 'manifest.json'} ({len(files)} files)")
 
 
-def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict[str, Any], in_grid: bool) -> list[str]:
+def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict[str, Any], in_grid: bool) -> list[str]:
     """A demo's heading, picture, description, tags and links. In a grid's card, the picture comes first (the pictures
     of a row align), the description is its summary, with the rest in a "More" dropdown, and the links are short, a row
     per language"""
@@ -149,6 +180,8 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     heading = [f"### {e['label']}", ""]
     lines = lines + heading if in_grid else heading + lines
     text = docs.get(e["filename"], {}).get("text", "")
+    used = docs.get(e["filename"], {}).get("uses", [])
+    uses_line = [f"*Uses: {', '.join(used)}*", ""] if used else []
     if in_grid:
         summary, rest = summary_and_rest(text)
         lines += [summary, ""] + ([":::{dropdown} More", rest, ":::", ""] if rest else [])
@@ -156,16 +189,16 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
         rows = ["{span .demo-lang}`Python:` " + " · ".join(python_links)]
         if has_cpp:
             rows.append(f"{{span .demo-lang}}`C++:` [{RUN_ICON} Run]({explorer}) · [Code]({cpp_code})")
-        return lines + ([f"*{where_tags[0]}*", ""] if where_tags else []) + ["\\\n".join(rows), ""]  # a line break
+        return lines + ([f"*{where_tags[0]}*", ""] if where_tags else []) + uses_line + ["\\\n".join(rows), ""]
     links = [f"[Run it in the playground]({playground})"] if where != "desktop" else []
     links += [f"[C++ version, in the explorer]({explorer})"] if has_cpp else []
     links += [link.replace("[Code", "[Python code") for link in code_links]
     links += [f"[C++ code]({cpp_code})"] if has_cpp else []
     tags = ["Python"] + (["C++"] if has_cpp else []) + where_tags
-    return lines + [text, "", f"*{', '.join(tags)}*", "", " · ".join(links), ""]
+    return lines + [text, "", f"*{', '.join(tags)}*", ""] + uses_line + [" · ".join(links), ""]
 
 
-def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, str]]) -> None:
+def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> None:
     """The book's page of the demos: the demo launcher's content (the same demos, categories and descriptions), in
     grids of cards. The PDF export drops the grids (mystmd's typst exporter does not handle them): the PDF gets a copy
     of the page without them, listed by a copy of the table of contents."""
@@ -212,7 +245,7 @@ def main() -> None:
     manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
     examples = manifest["examples"]
     write_manifests(examples, manifest["sources"])
-    docs: dict[str, dict[str, str]] = {}
+    docs: dict[str, dict[str, Any]] = {}
     for example in examples:
         if example.get("hidden"):
             continue
@@ -233,7 +266,8 @@ def main() -> None:
         if len(plain(summary)) > MAX_SUMMARY and example.get("launcher", True):  # "launcher": false has no card
             print(f"warning: {filename}: its summary (first sentence) has {len(plain(summary))} characters "
                   f"(more than {MAX_SUMMARY})")
-        docs[filename] = {"title": title, "text": text, "summary": summary}
+        files = [folder / v["filename"] for v in example.get("variants", [])] or [folder / filename]
+        docs[filename] = {"title": title, "text": text, "summary": summary, "uses": uses(files)}
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)

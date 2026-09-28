@@ -65,6 +65,7 @@ class Demo:
     where: str  # both, desktop or browser
     text: str  # a paragraph for visitors (markdown)
     summary: str  # its first sentences, for the card (markdown)
+    uses: list[str]  # the libraries it uses (from its imports, named by the generator)
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
     in_place: bool  # its demo_gui() can run inside the launcher
@@ -114,6 +115,7 @@ def load_catalog() -> list[Category]:
             where=e.get("where", "both"),
             text=docs.get(e["filename"], {}).get("text", ""),
             summary=docs.get(e["filename"], {}).get("summary", ""),
+            uses=docs.get(e["filename"], {}).get("uses", []),
             path=path,
             cpp_path=cpp_path if cpp_path is not None and cpp_path.exists() else None,
             in_place=e.get("in_place", False),
@@ -310,9 +312,36 @@ class Launcher:
         self.code_view: Optional[tuple[Demo, list[immapp.snippets.SnippetData]]] = None
         self.in_place: Optional[tuple[Demo, Callable[[], None]]] = None  # a demo shown here, and its demo_gui()
         self.variant: dict[str, int] = {}  # per demo with variants: the one picked in the detail pane
+        self.library = ""  # the library chip in use: the gallery shows the demos that use it (all when empty)
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
 
-    # The header: the name, what the bundle is, and a chip per category that scrolls to it
+    def libraries(self) -> list[tuple[str, int]]:
+        """The libraries the demos use, with how many use each, the most used first"""
+        counts: dict[str, int] = {}
+        for category in self.categories:
+            for demo in category.demos:
+                for library in demo.uses:
+                    counts[library] = counts.get(library, 0) + 1
+        return sorted(counts.items(), key=lambda item: (-item[1], item[0].lower()))
+
+    def shown(self, category: Category) -> list[Demo]:
+        """The demos of the category that the gallery shows: those that use the library chip in use"""
+        return [d for d in category.demos if not self.library or self.library in d.uses]
+
+    def chip(self, label: str, highlight: float) -> bool:
+        """A small button, colored with the accent when highlighted (in view, or in use); a row of chips wraps"""
+        width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x
+        if width > imgui.get_content_region_avail().x:
+            imgui.new_line()
+        button = imgui.get_style_color_vec4(imgui.Col_.button)
+        imgui.push_style_color(imgui.Col_.button, lerp(button, ImVec4(ACCENT.x, ACCENT.y, ACCENT.z, 0.55), highlight))
+        clicked = imgui.small_button(label)
+        imgui.pop_style_color()
+        imgui.same_line()
+        return clicked
+
+    # The header: the name, what the bundle is, a chip per category that scrolls to it, a chip per library that
+    # filters the gallery
     def header(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
@@ -321,14 +350,16 @@ class Launcher:
                             "Pick a demo: see it, run it, read its code.")
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
-            button = imgui.get_style_color_vec4(imgui.Col_.button)
-            chip_color = lerp(button, ImVec4(ACCENT.x, ACCENT.y, ACCENT.z, 0.55), highlight)
-            imgui.push_style_color(imgui.Col_.button, chip_color)
-            if imgui.small_button(f"{category.name} ({len(category.demos)})") and self.code_view is None:
+            if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
                 self.scroll_target = self.category_y.get(category.name)
                 self.nb_scrolls += 1
-            imgui.pop_style_color()
-            imgui.same_line()
+        imgui.new_line()
+        imgui.text_disabled("Uses:")
+        imgui.same_line()
+        for library, count in self.libraries():
+            highlight = tween(f"library {library}", 1.0 if library == self.library else 0.0, 0.25)
+            if self.chip(f"{library} ({count})", highlight):
+                self.library = "" if library == self.library else library
         imgui.new_line()
         imgui.separator()
 
@@ -399,8 +430,12 @@ class Launcher:
         avail = imgui.get_content_region_avail().x
         columns = max(1, int((avail + spacing) // (em_size(CARD_WIDTH) + spacing)))
         card_width = (avail - (columns - 1) * spacing) / columns  # the cards fill the width
-        self.category_in_view = self.categories[0].name
-        for i, category in enumerate(self.categories):
+        categories = [c for c in self.categories if self.shown(c)]
+        if not categories:
+            imgui.text_disabled("No demo uses this library.")
+            return
+        self.category_in_view = categories[0].name
+        for i, category in enumerate(categories):
             if i:
                 imgui.dummy(ImVec2(0, em_size(0.6)))
             self.category_y[category.name] = imgui.get_cursor_pos_y()
@@ -410,7 +445,7 @@ class Launcher:
             big_text(category.name, 1.45, CATEGORY_TITLE)
             imgui.text_disabled(category.about)
             imgui.dummy(ImVec2(0, em_size(0.3)))
-            for i, demo in enumerate(category.demos):
+            for i, demo in enumerate(self.shown(category)):
                 if i % columns:
                     imgui.same_line(0, spacing)
                 elif i:
@@ -435,6 +470,8 @@ class Launcher:
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
         imgui.dummy(ImVec2(0, em_size(0.4)))
         rich_md.render(f"## {demo.label}\n\n{demo.text}")
+        if demo.uses:
+            imgui.text_disabled("Uses: " + ", ".join(demo.uses))
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
         path = demo.path
