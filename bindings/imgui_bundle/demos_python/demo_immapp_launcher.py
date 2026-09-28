@@ -25,8 +25,8 @@ from imgui_bundle.demos_python.demo_utils.api_demos import (
 SITE = "https://imgui-bundle.pages.dev"
 PICTURES_URL = SITE + "/resources/playground/"
 # In a clone of the repository, the pictures are also here, before they reach the website
-LOCAL_PICTURES = (Path(main_python_package_folder()).parent.parent
-                  / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground")
+REPO = Path(main_python_package_folder()).parent.parent
+LOCAL_PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
 DEMOS_PYTHON_DIR = Path(demos_python_folder()).resolve()
 DEMOS_CPP_DIR = Path(demos_cpp_folder()).resolve()  # its folders mirror those of demos_python
 EXAMPLES_DIR = DEMOS_PYTHON_DIR / "playground/examples"
@@ -68,6 +68,7 @@ class Demo:
     uses: list[str]  # the libraries it uses (from its imports, named by the generator)
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
+    cpp_url: str  # where its C++ version runs online (the explorer's page by default)
     in_place: bool  # its demo_gui() can run inside the launcher
     variants: list[tuple[str, Path]] = field(default_factory=list)  # the same demo in other files (label, file)
 
@@ -107,7 +108,9 @@ def load_catalog() -> list[Category]:
         folder = EXAMPLES_DIR / manifest["sources"][e.get("source", "examples")]
         path = (folder / e["filename"]).resolve()
         cpp_path = None
-        if path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
+        if "cpp" in e:  # a C++ version that is not the mirror of the Python file (e.g. in a submodule)
+            cpp_path = REPO / e["cpp"]
+        elif path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
             cpp_path = DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
         categories[e["category"]].demos.append(Demo(
             label=e["label"],
@@ -118,6 +121,7 @@ def load_catalog() -> list[Category]:
             uses=docs.get(e["filename"], {}).get("uses", []),
             path=path,
             cpp_path=cpp_path if cpp_path is not None and cpp_path.exists() else None,
+            cpp_url=e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),
             in_place=e.get("in_place", False),
             variants=[(v["label"], (folder / v["filename"]).resolve()) for v in e.get("variants", [])],
         ))
@@ -245,10 +249,6 @@ def playground_url(demo: Demo) -> str:
     return f"{SITE}/playground/?demo={demo.filename}"
 
 
-def explorer_url(demo: Demo) -> str:
-    return f"{SITE}/explorer/{demo.stem}.html"
-
-
 def code_snippet(path: Path, language: immapp.snippets.SnippetLanguage, name: str) -> immapp.snippets.SnippetData:
     snippet = immapp.snippets.SnippetData()
     snippet.code = read_code(str(path))
@@ -346,12 +346,15 @@ class Launcher:
         return clicked
 
     # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
-    def header(self) -> None:
+    def header(self, chips: bool = True) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
         imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + em_size(0.75))
         imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile. "
                             "Pick a demo: see it, run it, read its code.")
+        if not chips:  # a demo shown in place, or its code: the chips and the filters would do nothing
+            imgui.separator()
+            return
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
             if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
@@ -531,7 +534,7 @@ class Launcher:
         if demo.cpp_path is not None:
             if self.action(fa.ICON_FA_EXTERNAL_LINK_ALT + "  Open in the C++ explorer",
                            "Opens its C++ version in your browser (compiled to WebAssembly)"):
-                open_url(explorer_url(demo))
+                open_url(demo.cpp_url)
         imgui.pop_style_var()
 
     def show_code(self) -> None:
@@ -568,10 +571,10 @@ class Launcher:
     def gui(self) -> None:
         self.pictures.new_frame()
         self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None)
+        self.header(chips=self.in_place is None and self.code_view is None)
         if self.in_place is not None:
             self.show_in_place()
             return
-        self.header()
         if self.code_view is not None:
             self.show_code()
             return
@@ -609,8 +612,7 @@ def demo_gui() -> None:
 def main() -> None:
     # The add-ons of the explorer (demo_imgui_bundle.py): the demos shown in place need them
     immapp.run(demo_gui, window_title="Dear ImGui Bundle: the demos", window_size=(1500, 950), with_markdown=True,
-               with_latex=True, with_node_editor=True, with_implot=True, with_implot3d=True, with_im_anim=True,
-               with_tex_inspect=True)
+               with_latex=True, with_node_editor=True, with_implot=True, with_implot3d=True, with_im_anim=True)
 
 
 if __name__ == "__main__":

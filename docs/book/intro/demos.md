@@ -511,7 +511,8 @@ Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in P
 The reference to learn Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imgui) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp)
 
 ::::
 
@@ -530,7 +531,8 @@ A port of implot_demo.cpp: browse it next to its code in the [Dear ImGui Explore
 
 *Uses: ImPlot*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp)
 
 ::::
 
@@ -549,23 +551,8 @@ A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui Explo
 
 *Uses: ImPlot3D*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/immvision.jpg
-:alt: ImmVision image inspection
-:class: demo-fit
-:::
-
-### ImmVision image inspection
-
-[ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
-
-*Uses: ImmVision, OpenCV*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=immvision.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/immvision.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot3d) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp)
 
 ::::
 
@@ -753,7 +740,7 @@ Here, a photo and its three color channels. Pan by dragging, zoom with the mouse
 A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at once.
 
 :::{dropdown} More
-The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the filtered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display ImmVision's.
+The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the filtered image applies colormaps. A button downloads a random photo. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display ImmVision's.
 :::
 
 *Uses: ImmVision, OpenCV*
@@ -800,46 +787,6 @@ Drag the nodes around, and follow the links. A small graph with [imgui-node-edit
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_romeo_and_juliet.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_romeo_and_juliet.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_simple.jpg
-:alt: Texture inspector
-:::
-
-### Texture inspector
-
-A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by dragging.
-
-:::{dropdown} More
-[imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) inspects any texture that Dear ImGui draws; here, a picture loaded from the assets.
-:::
-
-*Uses: Tex Inspect*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_simple.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_simple.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_demo_window.jpg
-:alt: Tex Inspect: the full demo
-:::
-
-### Tex Inspect: the full demo
-
-The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a texture, with its options (grid, alpha, channels, zoom).
-
-:::{dropdown} More
-The demo lives in the library: this file only opens it.
-:::
-
-*Uses: Tex Inspect*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_demo_window.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_demo_window.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
 
 ::::
 

@@ -7,7 +7,6 @@
         "demos_assets": "../../../demos_assets",
         "demos_immvision": "../../demos_immvision",
         "demos_node_editor": "../../demos_node_editor",
-        "demos_tex_inspect": "../../demos_tex_inspect",
         "demos_imguizmo": "../../demos_imguizmo",
         "demos_nanovg": "../../demos_nanovg",
         "demos_terminal": "../../demos_terminal",
@@ -199,7 +198,10 @@
         {
             "label": "ImGui full demo",
             "filename": "imgui_demo.py",
-            "category": "Library tours"
+            "category": "Library tours",
+            "source": "demos_imgui_explorer",
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imgui"
         },
         {
             "label": "ImPlot full demo",
@@ -207,7 +209,10 @@
             "category": "Library tours",
             "uses": [
                 "ImPlot"
-            ]
+            ],
+            "source": "demos_imgui_explorer",
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot"
         },
         {
             "label": "ImPlot stock viewer",
@@ -224,15 +229,10 @@
             ],
             "uses": [
                 "ImPlot3D"
-            ]
-        },
-        {
-            "label": "ImmVision image inspection",
-            "filename": "immvision.py",
-            "category": "Library tours",
-            "packages": [
-                "opencv-python"
-            ]
+            ],
+            "source": "demos_imgui_explorer",
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot3d"
         },
         {
             "label": "Fiatlight image pipeline",
@@ -366,25 +366,6 @@
             "source": "demos_node_editor",
             "category": "Library tours",
             "in_place": true
-        },
-        {
-            "label": "Texture inspector",
-            "filename": "demo_tex_inspect_simple.py",
-            "source": "demos_tex_inspect",
-            "bundle_folders": [
-                "../demos_assets"
-            ],
-            "category": "Library tours",
-            "in_place": true
-        },
-        {
-            "label": "Tex Inspect: the full demo",
-            "filename": "demo_tex_inspect_demo_window.py",
-            "source": "demos_tex_inspect",
-            "bundle_folders": [
-                "../demos_assets"
-            ],
-            "category": "Library tours"
         },
         {
             "label": "ImGuizmo: a 3D gizmo",

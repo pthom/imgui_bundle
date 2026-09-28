@@ -2,11 +2,11 @@
 
 A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at
 once. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the
-filtered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display
-ImmVision's.
+filtered image applies colormaps. A button downloads a random photo. The processing is OpenCV's
+(`pip install imgui-bundle[imgproc]`), the display ImmVision's.
 """
 import numpy as np
-from typing import Any
+from typing import Any, Optional
 from numpy.typing import NDArray
 from enum import Enum
 import cv2
@@ -15,6 +15,8 @@ import math
 from imgui_bundle import imgui, immvision, immapp, rich_md, hello_imgui, register_demos_assets_folder
 
 register_demos_assets_folder()
+
+RANDOM_PHOTO_URL = "https://picsum.photos/640/480"  # a different photo at each download
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -117,6 +119,7 @@ class AppState:
         self.image = cv2.cvtColor(cv2.imread(image_file), cv2.COLOR_BGR2RGB)  # type: ignore[arg-type, assignment]
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
+        self.downloaded: Optional[bytes] = None  # a random photo, once its download (in the background) is done
 
         self.immvision_params = immvision.ImageParams()
         self.immvision_params.image_display_size = (int(immapp.em_size(22)), 0)
@@ -126,6 +129,32 @@ class AppState:
         self.immvision_params_sobel.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params_sobel.zoom_key = "z"
         self.immvision_params_sobel.show_options_panel = True
+
+
+def download_random_photo(state: AppState) -> None:
+    """Starts a download: synchronous on the desktop (a short wait), asynchronous in Pyodide (a GUI callback cannot
+    await: the photo lands in state.downloaded, and the next frame takes it)"""
+    from imgui_bundle import __bundle_pyodide__
+    if __bundle_pyodide__:
+        import asyncio
+
+        async def download() -> None:
+            state.downloaded = await immapp.download_url_bytes_async(RANDOM_PHOTO_URL)
+        asyncio.ensure_future(download())
+    else:
+        state.downloaded = immapp.download_url_bytes(RANDOM_PHOTO_URL)
+
+
+def take_downloaded_photo(state: AppState) -> bool:
+    """Makes the downloaded photo the image, once it is there (an empty download is a failure: kept as is)"""
+    if not state.downloaded:
+        return False
+    data, state.downloaded = state.downloaded, None
+    decoded = cv2.imdecode(np.frombuffer(data, dtype=np.uint8), cv2.IMREAD_COLOR)
+    if decoded is None:
+        return False
+    state.image = cv2.cvtColor(decoded, cv2.COLOR_BGR2RGB)  # type: ignore[assignment]
+    return True
 
 
 # Our GUI function
@@ -148,11 +177,16 @@ def demo_gui():
     imgui.separator()
 
     changed = gui_sobel_params(static.app_state.sobel_params)
-    if changed:
+    imgui.same_line(spacing=immapp.em_size(3))
+    if imgui.button("Random photo"):
+        download_random_photo(static.app_state)
+    new_image = take_downloaded_photo(static.app_state)
+    if changed or new_image:
         static.app_state.image_sobel = compute_sobel(
             static.app_state.image, static.app_state.sobel_params
         )
-    static.app_state.immvision_params_sobel.refresh_image = changed
+    static.app_state.immvision_params.refresh_image = new_image
+    static.app_state.immvision_params_sobel.refresh_image = changed or new_image
 
     immvision.image(
         "Original", static.app_state.image, static.app_state.immvision_params

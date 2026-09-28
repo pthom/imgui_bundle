@@ -23,7 +23,6 @@ from imgui_bundle.demos_python import demo_imgui_show_demo_window
 from imgui_bundle.demos_python import demo_implot
 from imgui_bundle.demos_python import demo_immvision_launcher
 from imgui_bundle.demos_python import demo_imguizmo_launcher
-from imgui_bundle.demos_python import demo_tex_inspect_launcher
 from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_nanovg_launcher
@@ -139,7 +138,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         DemoGroup("Visualization", [
             DemoDetails("Plots with ImPlot and ImPlot3D", demo_implot),
             DemoDetails("ImmVision - Image analyzer", demo_immvision_launcher),
-            DemoDetails("Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
         ]),
         DemoGroup("Widgets", [
             DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
@@ -206,7 +204,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons.with_implot = True
     addons.with_implot3d = True
     addons.with_im_anim = True
-    addons.with_tex_inspect = True  # the launcher shows the Tex Inspect demo in place
 
     return runner_params, addons
 

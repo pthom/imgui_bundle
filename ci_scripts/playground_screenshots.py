@@ -158,15 +158,13 @@ SHOTS: dict[str, Shot] = {
     "demo_text_edit.py": Shot(crop=(0.0, 0.0, 0.85, 0.664)),
     "demo_logger.py": Shot(crop=(0.0, 0.0, 0.8, 0.667)),
     "demo_terminal.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.5625)),
-    # The explorer's sub-demos (sources: demos_immvision, demos_node_editor, demos_tex_inspect)
+    # The explorer's sub-demos (sources: demos_immvision, demos_node_editor)
     "demo_immvision_display.py": Shot(crop=(0.0, 0.0, 0.75, 0.586)),
     "demo_immvision_inspector.py": Shot(crop=(0.0, 0.06, 1.0, 0.84)),
     "demo_immvision_link.py": Shot(crop=(0.0, 0.03, 1.0, 0.81)),
     "demo_immvision_process.py": Shot(crop=(0.0, 0.08, 0.75, 0.549)),
     "demo_node_editor_basic.py": Shot(crop=(0.0, 0.0, 0.65, 0.542)),
     "demo_romeo_and_juliet.py": Shot(crop=(0.0, 0.0, 0.6, 0.469)),
-    "demo_tex_inspect_simple.py": Shot(crop=(0.0, 0.0, 0.62, 0.484)),
-    "demo_tex_inspect_demo_window.py": Shot(crop=(0.0, 0.05, 1.0, 0.8)),
     "demo_gizmo.py": Shot(crop=(0.0, 0.0, 1.0, 0.938)),
     "demo_nanovg_full.py": Shot(crop=(0.0, 0.05, 1.0, 0.883)),
     "demo_nanovg_heart.py": Shot(crop=(0.0, 0.02, 1.0, 0.853)),

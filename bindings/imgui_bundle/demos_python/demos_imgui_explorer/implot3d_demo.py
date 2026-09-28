@@ -13,11 +13,12 @@ Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 """
 from imgui_bundle import imgui, immapp, implot3d, imgui_ctx, ImVec4, ImVec2, IM_COL32
 try:
-    from imgui_bundle.demos_python.demos_imgui_explorer.implot3d_meshes import make_cube_mesh, make_sphere_mesh, make_duck_mesh
+    from imgui_bundle.demos_python.demos_imgui_explorer.implot3d_libs.implot3d_meshes import (
+        make_cube_mesh, make_sphere_mesh, make_duck_mesh)
 except ImportError:
     # Pyodide playground: demos_python/ is stripped from the slim wheel,
     # so the meshes file is delivered separately via examples.json `bundle_folders`
-    # (see playground/examples/implot3d_libs/manifest.json).
+    # (see implot3d_libs/manifest.json).
     import sys
     _meshes_dir = "/home/pyodide/implot3d_libs"
     if _meshes_dir not in sys.path:

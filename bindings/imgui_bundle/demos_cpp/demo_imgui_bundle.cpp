@@ -19,7 +19,6 @@ void demo_implot();
 void demo_imgui_md();
 void demo_immvision_launcher();
 void demo_imguizmo_launcher();
-void demo_tex_inspect_launcher();
 void demo_node_editor_launcher();
 void demo_themes();
 void demo_logger();
@@ -140,7 +139,6 @@ int main(int, char **)
         { "Visualization", {
             DEMO_DETAILS(          "Plots with ImPlot and ImPlot3D",  demo_implot),
             DEMO_DETAILS(          "ImmVision - Image analyzer",      demo_immvision_launcher),
-            DEMO_DETAILS(          "Tex Inspect - Texture Inspector",    demo_tex_inspect_launcher),
         }},
         { "Widgets", {
             DEMO_DETAILS_WITH_CODE("Misc Widgets - Knobs, Toggles, ...", demo_widgets),

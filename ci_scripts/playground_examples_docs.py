@@ -31,7 +31,7 @@ import json
 import os
 import re
 import subprocess
-from typing import Any
+from typing import Any, Optional
 from pathlib import Path
 
 from PIL import Image
@@ -156,13 +156,16 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
     per language"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
-    cpp = (DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
-           if path.is_relative_to(DEMOS_PYTHON_DIR) else None)  # None: the Python backends
+    if "cpp" in e:  # a C++ version that is not the mirror of the Python file (e.g. in a submodule)
+        cpp: Optional[Path] = REPO / e["cpp"]
+    else:
+        cpp = (DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
+               if path.is_relative_to(DEMOS_PYTHON_DIR) else None)  # None: the Python backends
     cpp_code = f"{GITHUB}{cpp.relative_to(REPO).as_posix()}" if cpp is not None and cpp.exists() else None
     has_cpp = cpp_code is not None
     where_tags = {"browser": ["Browser only"], "desktop": ["Desktop only"]}.get(where, [])
     playground = f"{SITE}/playground/?demo={e['filename']}"
-    explorer = f"{SITE}/explorer/{stem}.html"
+    explorer = e.get("cpp_url", f"{SITE}/explorer/{stem}.html")  # where the C++ version runs online
     code = f"{GITHUB}{path.relative_to(REPO).as_posix()}"
     # A demo in several files (e.g. the Python backends): a code link per variant, instead of the one code link
     code_links = [f"[Code {v['label']}]({GITHUB}{(path.parent / v['filename']).relative_to(REPO).as_posix()})"

@@ -423,9 +423,9 @@ Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in P
 Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui
 Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
 
-*Python*
+*Python, C++*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=imgui) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp)
 
 ### ImPlot full demo
 
@@ -438,11 +438,11 @@ Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: li
 histograms, real-time plots and more. A port of implot_demo.cpp: browse it next to its code in the [Dear
 ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 
-*Python*
+*Python, C++*
 
 *Uses: ImPlot*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=implot) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp)
 
 ### ImPlot3D full demo
 
@@ -455,26 +455,11 @@ Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenoc
 surfaces, meshes and more. A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui
 Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 
-*Python*
+*Python, C++*
 
 *Uses: ImPlot3D*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
-
-### ImmVision image inspection
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/immvision.jpg
-:alt: ImmVision image inspection
-:width: 400px
-:::
-
-[ImmVision](https://github.com/pthom/immvision) is an image debugger for Dear ImGui with zoom, pan, pixel inspection, and colormaps.
-
-*Python*
-
-*Uses: ImmVision, OpenCV*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=immvision.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/immvision.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp)
 
 ### Themes and theme tweaking
 
@@ -635,8 +620,8 @@ photo and its three color channels. Pan by dragging, zoom with the mouse wheel. 
 
 A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at
 once. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the
-filtered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display
-ImmVision's.
+filtered image applies colormaps. A button downloads a random photo. The processing is OpenCV's
+(`pip install imgui-bundle[imgproc]`), the display ImmVision's.
 
 *Python, C++*
 
@@ -676,39 +661,6 @@ the links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgu
 *Uses: node editor*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_romeo_and_juliet.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_romeo_and_juliet.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp)
-
-### Texture inspector
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_simple.jpg
-:alt: Texture inspector
-:width: 400px
-:::
-
-A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by
-dragging. [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) inspects any texture that Dear ImGui
-draws; here, a picture loaded from the assets.
-
-*Python, C++*
-
-*Uses: Tex Inspect*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_simple.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_simple.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
-
-### Tex Inspect: the full demo
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_demo_window.jpg
-:alt: Tex Inspect: the full demo
-:width: 400px
-:::
-
-The demo window of [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect): every way to inspect a
-texture, with its options (grid, alpha, channels, zoom). The demo lives in the library: this file only opens it.
-
-*Python, C++*
-
-*Uses: Tex Inspect*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_demo_window.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_demo_window.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_demo_window.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_demo_window.cpp)
 
 ### ImGuizmo: a 3D gizmo
 
