@@ -1488,7 +1488,7 @@ def _render_links_row():
     links = [
         ("imgui-bundle.pages.dev", "https://imgui-bundle.pages.dev", "Main project site"),
         ("Repository", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"),
-        ("Documentation", "https://imgui-bundle.pages.dev/", "Full documentation for Dear ImGui Bundle"),
+        ("Documentation", "https://imgui-bundle.pages.dev/doc/", "Full documentation for Dear ImGui Bundle"),
         ("Python Playground", "https://imgui-bundle.pages.dev/playground/", "Live Python sandbox with demos - edit and run in your browser"),
         ("Discord", "https://discord.gg/xkzpKMeYN3", "Join the community for questions, showcase, and discussion (new!)"),
     ]
@@ -1541,7 +1541,7 @@ def _render_more_info():
     rich_md.render("""
     **Links:**
     - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive reference manual - browse demos, see the code, try the widgets. *(You are here!)*
-    - [Documentation](https://imgui-bundle.pages.dev/): Full documentation
+    - [Documentation](https://imgui-bundle.pages.dev/doc/): Full documentation
     - [Python Playground](https://imgui-bundle.pages.dev/playground/): Live Python sandbox with ready-to-run demos - edit code, see results instantly
     - [GitHub](https://github.com/pthom/imgui_bundle): Source code, issues, discussions
     - [Discord](https://discord.gg/xkzpKMeYN3): Community (new!)
