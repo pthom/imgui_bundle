@@ -82,6 +82,7 @@ def run(
     with_implot3d: bool = False,
     with_node_editor: bool = False,
     with_tex_inspect: bool = False,
+    with_im_anim: bool = False,
     # Escape hatch: pass a fully configured RunnerParams instead of the shortcuts above.
     runner_params: Optional[hello_imgui.RunnerParams] = None,
     add_ons_params: Optional[immapp.AddOnsParams] = None,
@@ -131,6 +132,7 @@ def run(
             with_latex=with_latex,
             with_node_editor=with_node_editor,
             with_tex_inspect=with_tex_inspect,
+            with_im_anim=with_im_anim,
         )
 
     test_done = False

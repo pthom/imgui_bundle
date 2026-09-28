@@ -237,6 +237,7 @@ namespace ImmApp
             bool withMarkdown = false,
             bool withNodeEditor = false,
             bool withTexInspect = false,
+            bool withImAnim = false,
             bool withLatex = false,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
             const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,

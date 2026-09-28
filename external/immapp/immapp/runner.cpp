@@ -582,6 +582,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         bool withMarkdown,
         bool withNodeEditor,
         bool withTexInspect,
+        bool withImAnim,
         bool withLatex,
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         const std::optional<NodeEditorConfig>& withNodeEditorConfig,
@@ -606,6 +607,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         addOnsParams.withMarkdown = withMarkdown;
         addOnsParams.withNodeEditor = withNodeEditor;
         addOnsParams.withTexInspect = withTexInspect;
+        addOnsParams.withImAnim = withImAnim;
         addOnsParams.withLatex = withLatex;
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         addOnsParams.withNodeEditorConfig = withNodeEditorConfig;

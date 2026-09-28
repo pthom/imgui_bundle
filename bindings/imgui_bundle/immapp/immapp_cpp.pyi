@@ -391,6 +391,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
         with_markdown: bool = False,
         with_node_editor: bool = False,
         with_tex_inspect: bool = False,
+        with_im_anim: bool = False,
         with_latex: bool = False,
         with_node_editor_config: Optional[NodeEditorConfig] = None,
         with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
