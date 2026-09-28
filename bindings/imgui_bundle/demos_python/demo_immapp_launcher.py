@@ -409,10 +409,11 @@ class Launcher:
         hover = tween(f"hover {demo.filename}", 1.0 if hovered else 0.0, 0.15)
         is_selected = demo is self.selected
 
-        # A shadow, as if the card lifted under the mouse
-        shadow = em_size(0.25) * hover
-        imgui.get_window_draw_list().add_rect_filled(ImVec2(top_left.x + shadow, top_left.y + 2 * shadow),
-                                                     ImVec2(bottom_right.x + shadow, bottom_right.y + 2 * shadow),
+        # A shadow, as if the card lifted under the mouse: offset downward only (offset sideways, its rounded corner
+        # showed as a notch outside the frame's rounded corner)
+        shadow = em_size(0.5) * hover
+        imgui.get_window_draw_list().add_rect_filled(ImVec2(top_left.x, top_left.y + shadow),
+                                                     ImVec2(bottom_right.x, bottom_right.y + shadow),
                                                      IM_COL32(0, 0, 0, int(110 * hover)), em_size(0.5))
         border = ACCENT if is_selected else lerp(CARD_BORDER, CARD_BORDER_HOVERED, hover)
         imgui.push_style_color(imgui.Col_.border, border)
