@@ -1799,9 +1799,9 @@ def _intro_mini_demos():
         _current_slide = (_current_slide + 1) % slide_count
         _auto_stopped = True
 
-    # Advance cursor past nav bar
-    imgui.set_cursor_screen_pos(ImVec2(slide_area_pos.x, nav_y + em * 1.8))
-    imgui.dummy(ImVec2(1, 1))
+    # Advance cursor to the end of the nav bar: exactly the height claimed above, so that no scrollbar appears
+    imgui.set_cursor_screen_pos(ImVec2(slide_area_pos.x, nav_y + em * 1.7))
+    imgui.dummy(ImVec2(1, 0))
 
     # Navigation via mouse wheel
     if imgui.shortcut(imgui.Key.mod_shift | imgui.Key.mouse_wheel_x, imgui.InputFlags_.route_global.value):
