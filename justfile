@@ -217,12 +217,12 @@ cibuild_docker_manylinux:
 
 # Build the doc in interactive mode (for dev — serves at port-root, BASE_URL not needed)
 [group('docs')]
-doc_serve: playground_examples_docs
+doc_serve: playground_examples_docs api_pages
     cd docs/book && jupyter-book start
 
 # Build HTML + PDF for Cloudflare deploy
 [group('docs')]
-doc_build_cf: playground_examples_docs
+doc_build_cf: playground_examples_docs api_pages
     #!/usr/bin/env bash
     set -euo pipefail
     PDF=docs/book/_build/exports/imgui_bundle_book.pdf
@@ -272,6 +272,11 @@ pyodide_demo_runner:
 [group('pyodide')]
 playground_examples_docs:
     python ci_scripts/playground_examples_docs.py
+
+# The book's API pages (docs/book/api), from the Python stubs: see the docstring of ci_scripts/api_pages.py
+[group('docs')]
+api_pages:
+    python ci_scripts/api_pages.py
 
 # The pictures go to the website resources; the browser-only examples: see ci_scripts/playground_screenshots.py
 # Playground: retake the examples' pictures (all, or some: `just playground_screenshots julia_map boids`)
