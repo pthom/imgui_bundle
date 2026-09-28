@@ -18,6 +18,7 @@ def autogenerate_im_file_dialog() -> None:
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.namespaces_root = ["ifd"]
     options.fn_return_force_policy_reference_for_references__regex = "^Instance$"

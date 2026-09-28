@@ -33,6 +33,7 @@ def main() -> None:
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.original_signature_flag_show = True
     options.use_nanobind()
     options.namespaces_root = ["RichMd", "Latex"]
     # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"

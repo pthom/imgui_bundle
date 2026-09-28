@@ -38,17 +38,22 @@ class TexStyle(enum.IntEnum):
      around \frac (numerator shift-up and denominator shift-down): Display gives
      generous spacing; Text is compact.
     """
+    # Display,    /* original C++ signature */
     # Largest size. Big operators (\sum, \int, ...) use their large variants
     # with limits placed above and below. \frac uses generous vertical
     # spacing. This is what LaTeX uses inside $$...$$ and \[...\].
     display = enum.auto()       # (= 0)
+    # Text,    /* original C++ signature */
     # Default inline size. Big operators use their small variants with
     # limits attached as sub/superscripts. \frac uses compact spacing.
     # This is what LaTeX uses inside $...$ and \(...\).
     text = enum.auto()          # (= 1)
+    # Script,    /* original C++ signature */
     # Smaller size used by LaTeX inside sub/superscripts. Rarely useful at
     # the top level; MicroTeX switches to it automatically where needed.
     script = enum.auto()        # (= 2)
+    # ScriptScript,    /* original C++ signature */
+    # }
     # Smallest size, used inside scripts-of-scripts. Same caveat as Script.
     script_script = enum.auto() # (= 3)
 
@@ -58,6 +63,7 @@ class TexStyle(enum.IntEnum):
 #`Init()` loads the font files, once. `Release()` lets the host free the textures it made from formulas,
 #while its rendering backend is still alive.
 
+# void Init(const std::string& clmFile, const std::string& fontFile);    /* original C++ signature */
 def init(clm_file: str, font_file: str) -> None:
     """ Initialize MicroTeX + FreeType backend.
      clmFile: path to the .clm1 font metrics file
@@ -69,10 +75,12 @@ def init(clm_file: str, font_file: str) -> None:
     """
     pass
 
+# bool IsInitialized();    /* original C++ signature */
 def is_initialized() -> bool:
     """ Check if initialized."""
     pass
 
+# void Release();    /* original C++ signature */
 def release() -> None:
     """ Drop the cached GPU texture set so the GL context can be torn down
      cleanly. Call from BeforeExit (or any point where the GL context is
@@ -83,6 +91,7 @@ def release() -> None:
     """
     pass
 
+# void AddReleaseCallback(std::function<void()> callback);    /* original C++ signature */
 def add_release_callback(callback: Callable[[], None]) -> None:
     """ Registers a callback run by Release(): a host that caches GPU textures made from formulas clears
      them here, while the rendering backend is still alive.
@@ -95,9 +104,13 @@ def add_release_callback(callback: Callable[[], None]) -> None:
 #`Render()` draws a formula into an RGBA buffer, with its baseline, to align it with the text.
 
 class RenderedFormula:
+    # int Width = 0;    /* original C++ signature */
     width: int = 0
+    # int Height = 0;    /* original C++ signature */
     height: int = 0
+    # int Depth = 0;    /* original C++ signature */
     depth: int = 0  # distance below baseline (in pixels, unpadded)
+    # int BaselineY = 0;    /* original C++ signature */
     # BaselineY: pixel y-offset from the TOP of the (padded) image to
     # the formula's typographic baseline. Use this to align the formula
     # with surrounding text:
@@ -109,6 +122,7 @@ class RenderedFormula:
     #     ImGui::Image(texId, ImVec2(formula.Width, formula.Height));
     #
     baseline_y: int = 0
+    # RenderedFormula(int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0);    /* original C++ signature */
     def __init__(
         self,
         width: int = 0,
@@ -130,6 +144,8 @@ class RenderedFormula:
 # fontSize: font size in pixels
 # color: foreground color (alpha channel is used)
 # style: TeX layout style (Display for $$...$$, Text for $...$)
+# RenderedFormula Render(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK,    /* original C++ signature */
+#                        TexStyle style = TexStyle::Text);
 @overload
 def render(
     latex: str,
@@ -141,6 +157,7 @@ def render(
         If color is None, then its default value will be: IM_COL32_BLACK
     """
     pass
+# RenderedFormula Render(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style = TexStyle::Text);    /* original C++ signature */
 @overload
 def render(
     latex: str,
@@ -165,21 +182,31 @@ class FormulaTexture:
      ClearTextureCache() or Release()), but a caller may also keep its own
      reference to extend the lifetime.
     """
+    # std::shared_ptr<HelloImGui::TextureGpu> Texture;    /* original C++ signature */
     texture: HelloImGui.TextureGpu
+    # int Width = 0;    /* original C++ signature */
     width: int = 0
+    # int Height = 0;    /* original C++ signature */
     height: int = 0
+    # int Depth = 0;    /* original C++ signature */
     depth: int = 0
+    # int BaselineY = 0;    /* original C++ signature */
     # BaselineY: pixel y-offset from the TOP of the image to the formula's
     # typographic baseline. See RenderedFormula::BaselineY for details.
     baseline_y: int = 0
+    # int LastUsedFrame = 0;    /* original C++ signature */
     # LastUsedFrame: ImGui::GetFrameCount() at the most recent cache hit
     # or insertion. Used by the optional frame-generation eviction (see
     # SetEvictionFrames). Not interesting to direct API consumers.
     last_used_frame: int = 0
 
+    # ImTextureID TextureId() const {    /* original C++ signature */
+    #         return Texture ? Texture->TextureID() : (ImTextureID)0;
+    #     }
     def texture_id(self) -> ImTextureID:
         """ Convenience: returns the GPU texture id, or 0 if no texture is held."""
         pass
+    # FormulaTexture(std::shared_ptr<HelloImGui::TextureGpu> Texture = std::shared_ptr<HelloImGui::TextureGpu>(), int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0, int LastUsedFrame = 0);    /* original C++ signature */
     def __init__(
         self,
         texture: Optional[HelloImGui.TextureGpu] = None,
@@ -198,6 +225,7 @@ class FormulaTexture:
 
 # Render a LaTeX string to an ImGui texture (cached for the lifetime of imgui_microtex).
 # style: TeX layout style (Display for $$...$$, Text for $...$).
+# FormulaTexture RenderToTexture(const std::string& latex, float fontSize, ImU32 color = IM_COL32_BLACK, TexStyle style = TexStyle::Text);    /* original C++ signature */
 @overload
 def render_to_texture(
     latex: str,
@@ -209,6 +237,7 @@ def render_to_texture(
         If color is None, then its default value will be: IM_COL32_BLACK
     """
     pass
+# FormulaTexture RenderToTexture(const std::string& latex, float fontSize, const ImVec4& color, TexStyle style = TexStyle::Text);    /* original C++ signature */
 @overload
 def render_to_texture(
     latex: str,
@@ -218,14 +247,17 @@ def render_to_texture(
     ) -> FormulaTexture:
     pass
 
+# FormulaTexture ToTexture(const RenderedFormula& formula);    /* original C++ signature */
 def to_texture(formula: RenderedFormula) -> FormulaTexture:
     """ Convert a previously rendered formula to an ImGui texture (not cached)."""
     pass
 
+# void ClearTextureCache();    /* original C++ signature */
 def clear_texture_cache() -> None:
     """ Clear the texture cache."""
     pass
 
+# void SetEvictionFrames(int n);    /* original C++ signature */
 def set_eviction_frames(n: int) -> None:
     """ ============================================================================
      Frame-generation eviction for the texture cache
@@ -256,6 +288,7 @@ def set_eviction_frames(n: int) -> None:
     """
     pass
 
+# int GetCacheSize();    /* original C++ signature */
 def get_cache_size() -> int:
     """ Returns the current cache size (number of formula entries). Useful for
      diagnostics, monitoring, and tests.

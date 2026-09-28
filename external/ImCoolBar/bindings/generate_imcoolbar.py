@@ -19,6 +19,7 @@ def main() -> None:
 
     # Configure options
     options = litgen.LitgenOptions()
+    options.original_signature_flag_show = True
     options.use_nanobind()
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
     options.namespaces_root = ["ImGui"]

@@ -22,36 +22,61 @@ default_wait_timeout = 20
 ####################    <generated_from:portable_file_dialogs_simplified.h>    ####################
 
 class button(enum.IntEnum):
+    # cancel = -1,    /* original C++ signature */
     cancel = enum.auto()  # (= -1)
+    # ok,    /* original C++ signature */
     ok = enum.auto()  # (= 0)
+    # yes,    /* original C++ signature */
     yes = enum.auto()  # (= 1)
+    # no,    /* original C++ signature */
     no = enum.auto()  # (= 2)
+    # abort,    /* original C++ signature */
     abort = enum.auto()  # (= 3)
+    # retry,    /* original C++ signature */
     retry = enum.auto()  # (= 4)
+    # ignore,    /* original C++ signature */
+    #     }
     ignore = enum.auto()  # (= 5)
 
 class choice(enum.IntEnum):
+    # ok = 0,    /* original C++ signature */
     ok = enum.auto()  # (= 0)
+    # ok_cancel,    /* original C++ signature */
     ok_cancel = enum.auto()  # (= 1)
+    # yes_no,    /* original C++ signature */
     yes_no = enum.auto()  # (= 2)
+    # yes_no_cancel,    /* original C++ signature */
     yes_no_cancel = enum.auto()  # (= 3)
+    # retry_cancel,    /* original C++ signature */
     retry_cancel = enum.auto()  # (= 4)
+    # abort_retry_ignore,    /* original C++ signature */
+    #     }
     abort_retry_ignore = enum.auto()  # (= 5)
 
 class icon(enum.IntEnum):
+    # info = 0,    /* original C++ signature */
     info = enum.auto()  # (= 0)
+    # warning,    /* original C++ signature */
     warning = enum.auto()  # (= 1)
+    # error,    /* original C++ signature */
     error = enum.auto()  # (= 2)
+    # question,    /* original C++ signature */
+    #     }
     question = enum.auto()  # (= 3)
 
 class opt(enum.IntEnum):
     """Additional option flags for various dialog constructors"""
 
+    # none = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
+    # multiselect     = 0x1,    /* original C++ signature */
     # For file open, allow multiselect.
     multiselect = enum.auto()  # (= 0x1)
+    # force_overwrite = 0x2,    /* original C++ signature */
     # For file save, force overwrite and disable the confirmation dialog.
     force_overwrite = enum.auto()  # (= 0x2)
+    # force_path      = 0x4,    /* original C++ signature */
+    #     }
     # For folder select, force path to be the provided argument instead
     # of the last opened directory, which is the Microsoft-recommended,
     # user-friendly behaviour.
@@ -63,12 +88,15 @@ class notify:
 
     """
 
+    # notify(std::string const &title,    /* original C++ signature */
+    #                std::string const &message,
+    #                icon _icon = icon::info);
     def __init__(self, title: str, message: str, _icon: icon = icon.info) -> None:
         pass
-
+    # bool ready(int timeout = default_wait_timeout) const;    /* original C++ signature */
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
-
+    # bool kill() const;    /* original C++ signature */
     def kill(self) -> bool:
         pass
 
@@ -78,6 +106,10 @@ class message:
 
     """
 
+    # message(std::string const &title,    /* original C++ signature */
+    #                 std::string const &text,
+    #                 choice _choice = choice::ok_cancel,
+    #                 icon _icon = icon::info);
     def __init__(
         self,
         title: str,
@@ -86,16 +118,19 @@ class message:
         _icon: icon = icon.info,
     ) -> None:
         pass
-
+    # button result();    /* original C++ signature */
     def result(self) -> button:
         pass
-
+    # bool ready(int timeout = default_wait_timeout) const;    /* original C++ signature */
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
-
+    # bool kill() const;    /* original C++ signature */
     def kill(self) -> bool:
         pass
 
+# std::vector<std::string> all_files_filter() {    /* original C++ signature */
+#         return {"All files", "*"};
+#     }
 def all_files_filter() -> List[str]:
     pass
 
@@ -105,6 +140,10 @@ class open_file:
 
     """
 
+    # open_file(std::string const &title,    /* original C++ signature */
+    #                   std::string const &default_path = "",
+    #                   std::vector<std::string> const &filters = all_files_filter(),
+    #                   opt options = opt::none);
     def __init__(
         self,
         title: str,
@@ -116,17 +155,21 @@ class open_file:
         If filters is None, then its default value will be: all_files_filter()
         """
         pass
-
+    # bool ready(int timeout = default_wait_timeout) const;    /* original C++ signature */
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
-
+    # bool kill() const;    /* original C++ signature */
     def kill(self) -> bool:
         pass
-
+    # std::vector<std::string> result();    /* original C++ signature */
     def result(self) -> List[str]:
         pass
 
 class save_file:
+    # save_file(std::string const &title,    /* original C++ signature */
+    #                   std::string const &default_path = "",
+    #                   std::vector<std::string> const &filters = all_files_filter(),
+    #                   opt options = opt::none);
     def __init__(
         self,
         title: str,
@@ -138,28 +181,31 @@ class save_file:
         If filters is None, then its default value will be: all_files_filter()
         """
         pass
-
+    # bool ready(int timeout = default_wait_timeout) const;    /* original C++ signature */
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
-
+    # bool kill() const;    /* original C++ signature */
     def kill(self) -> bool:
         pass
-
+    # std::string result();    /* original C++ signature */
     def result(self) -> str:
         pass
 
 class select_folder:
+    # select_folder(std::string const &title,    /* original C++ signature */
+    #                       std::string const &default_path = "",
+    #                       opt options = opt::none);
     def __init__(
         self, title: str, default_path: str = "", options: opt = opt.none
     ) -> None:
         pass
-
+    # bool ready(int timeout = default_wait_timeout) const;    /* original C++ signature */
     def ready(self, timeout: int = default_wait_timeout) -> bool:
         pass
-
+    # bool kill() const;    /* original C++ signature */
     def kill(self) -> bool:
         pass
-
+    # std::string result();    /* original C++ signature */
     def result(self) -> str:
         pass
 

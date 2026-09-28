@@ -97,6 +97,7 @@ ImGuiID = ID
 # <submodule im_guizmo>
 class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_guizmo
     pass  # (This corresponds to a C++ namespace. All methods are static!)
+    # IMGUI_API void SetDrawlist(ImDrawList* drawlist = nullptr);    /* original C++ signature */
     @staticmethod
     def set_drawlist(drawlist: Optional[ImDrawList] = None) -> None:
         """ call inside your own window and before Manipulate() in order to draw gizmo to that window.
@@ -104,11 +105,13 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """
         pass
 
+    # IMGUI_API void BeginFrame();    /* original C++ signature */
     @staticmethod
     def begin_frame() -> None:
         """ call BeginFrame right after ImGui_XXXX_NewFrame();"""
         pass
 
+    # IMGUI_API void SetImGuiContext(ImGuiContext* ctx);    /* original C++ signature */
     @staticmethod
     def set_im_gui_context(ctx: ImGuiContext) -> None:
         """ this is necessary because when imguizmo is compiled into a dll, and imgui into another
@@ -118,35 +121,42 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """
         pass
 
+    # IMGUI_API bool IsOver();    /* original C++ signature */
     @staticmethod
     @overload
     def is_over() -> bool:
         """ return True if mouse cursor is over any gizmo control (axis, plan or screen component)"""
         pass
+    # IMGUI_API bool IsOver(OPERATION op);    /* original C++ signature */
     @staticmethod
     @overload
     def is_over(op: OPERATION) -> bool:
         pass
 
+    # IMGUI_API bool IsUsing();    /* original C++ signature */
     @staticmethod
     def is_using() -> bool:
         """ return True if mouse IsOver or if the gizmo is in moving state"""
         pass
 
+    # IMGUI_API bool IsUsingViewManipulate();    /* original C++ signature */
     @staticmethod
     def is_using_view_manipulate() -> bool:
         """ return True if the view gizmo is in moving state"""
         pass
+    # IMGUI_API bool IsViewManipulateHovered();    /* original C++ signature */
     @staticmethod
     def is_view_manipulate_hovered() -> bool:
         """ only check if your mouse is over the view manipulator - no matter whether it's active or not"""
         pass
 
+    # IMGUI_API bool IsUsingAny();    /* original C++ signature */
     @staticmethod
     def is_using_any() -> bool:
         """ return True if any gizmo is in moving state"""
         pass
 
+    # IMGUI_API void Enable(bool enable);    /* original C++ signature */
     @staticmethod
     def enable(enable: bool) -> None:
         """ enable/disable the gizmo. Stay in the state until next call to Enable.
@@ -167,9 +177,11 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     #
     # These functions have some numerical stability issues for now. Use with caution.
 
+    # IMGUI_API void SetRect(float x, float y, float width, float height);    /* original C++ signature */
     @staticmethod
     def set_rect(x: float, y: float, width: float, height: float) -> None:
         pass
+    # IMGUI_API void SetOrthographic(bool isOrthographic);    /* original C++ signature */
     @staticmethod
     def set_orthographic(is_orthographic: bool) -> None:
         """ default is False"""
@@ -183,34 +195,58 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
          matrix parameter is the source matrix (where will be gizmo be drawn) and might be transformed by the function. Return deltaMatrix is optional
          translation is applied in world space
         """
+        # TRANSLATE_X      = (1u << 0),    /* original C++ signature */
         translate_x = enum.auto()   # (= (1u << 0))
+        # TRANSLATE_Y      = (1u << 1),    /* original C++ signature */
         translate_y = enum.auto()   # (= (1u << 1))
+        # TRANSLATE_Z      = (1u << 2),    /* original C++ signature */
         translate_z = enum.auto()   # (= (1u << 2))
+        # ROTATE_X         = (1u << 3),    /* original C++ signature */
         rotate_x = enum.auto()      # (= (1u << 3))
+        # ROTATE_Y         = (1u << 4),    /* original C++ signature */
         rotate_y = enum.auto()      # (= (1u << 4))
+        # ROTATE_Z         = (1u << 5),    /* original C++ signature */
         rotate_z = enum.auto()      # (= (1u << 5))
+        # ROTATE_SCREEN    = (1u << 6),    /* original C++ signature */
         rotate_screen = enum.auto() # (= (1u << 6))
+        # SCALE_X          = (1u << 7),    /* original C++ signature */
         scale_x = enum.auto()       # (= (1u << 7))
+        # SCALE_Y          = (1u << 8),    /* original C++ signature */
         scale_y = enum.auto()       # (= (1u << 8))
+        # SCALE_Z          = (1u << 9),    /* original C++ signature */
         scale_z = enum.auto()       # (= (1u << 9))
+        # BOUNDS           = (1u << 10),    /* original C++ signature */
         bounds = enum.auto()        # (= (1u << 10))
+        # SCALE_XU         = (1u << 11),    /* original C++ signature */
         scale_xu = enum.auto()      # (= (1u << 11))
+        # SCALE_YU         = (1u << 12),    /* original C++ signature */
         scale_yu = enum.auto()      # (= (1u << 12))
+        # SCALE_ZU         = (1u << 13),    /* original C++ signature */
         scale_zu = enum.auto()      # (= (1u << 13))
 
+        # TRANSLATE = TRANSLATE_X | TRANSLATE_Y | TRANSLATE_Z,    /* original C++ signature */
         translate = enum.auto()     # (= OPERATION.translate_x | OPERATION.translate_y | OPERATION.translate_z)
+        # ROTATE = ROTATE_X | ROTATE_Y | ROTATE_Z | ROTATE_SCREEN,    /* original C++ signature */
         rotate = enum.auto()        # (= OPERATION.rotate_x | OPERATION.rotate_y | OPERATION.rotate_z | OPERATION.rotate_screen)
+        # SCALE = SCALE_X | SCALE_Y | SCALE_Z,    /* original C++ signature */
         scale = enum.auto()         # (= OPERATION.scale_x | OPERATION.scale_y | OPERATION.scale_z)
+        # SCALEU = SCALE_XU | SCALE_YU | SCALE_ZU,     /* original C++ signature */
         scaleu = enum.auto()        # (= OPERATION.scale_xu | OPERATION.scale_yu | OPERATION.scale_zu)  # universal
+        # UNIVERSAL = TRANSLATE | ROTATE | SCALEU    /* original C++ signature */
+        #    }
         universal = enum.auto()     # (= OPERATION.translate | OPERATION.rotate | OPERATION.scaleu)
 
 
     class MODE(enum.IntEnum):
+        # LOCAL,    /* original C++ signature */
         local = enum.auto() # (= 0)
+        # WORLD    /* original C++ signature */
+        #    }
         world = enum.auto() # (= 1)
 
 
 
+    # IMGUI_API void SetAlternativeWindow(ImGuiWindow* window);    /* original C++ signature */
     @staticmethod
     def set_alternative_window(window: ImGuiWindow) -> None:
         pass
@@ -227,84 +263,115 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     # - You can also use the "Label##foobar" syntax within widget label to distinguish them from each others.
     # - In this header file we use the "label"/"name" terminology to denote a string that will be displayed + used as an ID,
     #   whereas "str_id" denote a string that is only used as an ID and not normally displayed.
+    # IMGUI_API void          PushID(const char* str_id);                                         /* original C++ signature */
     @staticmethod
     @overload
     def push_id(str_id: str) -> None:
         """ push string into the ID stack (will hash string)."""
         pass
+    # IMGUI_API void          PushID(const char* str_id_begin, const char* str_id_end);           /* original C++ signature */
     @staticmethod
     @overload
     def push_id(str_id_begin: str, str_id_end: str) -> None:
         """ push string into the ID stack (will hash string)."""
         pass
+    # IMGUI_API void          PushID(const void* ptr_id);                                         /* original C++ signature */
     @staticmethod
     @overload
     def push_id(ptr_id: Any) -> None:
         """ push pointer into the ID stack (will hash pointer)."""
         pass
+    # IMGUI_API void          PushID(int int_id);                                                 /* original C++ signature */
     @staticmethod
     @overload
     def push_id(int_id: int) -> None:
         """ push integer into the ID stack (will hash integer)."""
         pass
+    # IMGUI_API void          PopID();                                                            /* original C++ signature */
     @staticmethod
     def pop_id() -> None:
         """ pop from the ID stack."""
         pass
+    # IMGUI_API ImGuiID       GetID(const char* str_id);                                          /* original C++ signature */
     @staticmethod
     @overload
     def get_id(str_id: str) -> ImGuiID:
         """ calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
         pass
+    # IMGUI_API ImGuiID       GetID(const char* str_id_begin, const char* str_id_end);    /* original C++ signature */
     @staticmethod
     @overload
     def get_id(str_id_begin: str, str_id_end: str) -> ImGuiID:
         pass
+    # IMGUI_API ImGuiID       GetID(const void* ptr_id);    /* original C++ signature */
     @staticmethod
     @overload
     def get_id(ptr_id: Any) -> ImGuiID:
         pass
 
     # return True if the cursor is over the operation's gizmo
+    # IMGUI_API void SetGizmoSizeClipSpace(float value);    /* original C++ signature */
     @staticmethod
     def set_gizmo_size_clip_space(value: float) -> None:
         pass
 
     class MOVETYPE(enum.IntEnum):
         """ Handle type used by the translate/rotate/scale gizmos."""
+        # MT_NONE,    /* original C++ signature */
         mt_none = enum.auto()          # (= 0)
+        # MT_MOVE_X,    /* original C++ signature */
         mt_move_x = enum.auto()        # (= 1)
+        # MT_MOVE_Y,    /* original C++ signature */
         mt_move_y = enum.auto()        # (= 2)
+        # MT_MOVE_Z,    /* original C++ signature */
         mt_move_z = enum.auto()        # (= 3)
+        # MT_MOVE_YZ,    /* original C++ signature */
         mt_move_yz = enum.auto()       # (= 4)
+        # MT_MOVE_ZX,    /* original C++ signature */
         mt_move_zx = enum.auto()       # (= 5)
+        # MT_MOVE_XY,    /* original C++ signature */
         mt_move_xy = enum.auto()       # (= 6)
+        # MT_MOVE_SCREEN,    /* original C++ signature */
         mt_move_screen = enum.auto()   # (= 7)
+        # MT_ROTATE_X,    /* original C++ signature */
         mt_rotate_x = enum.auto()      # (= 8)
+        # MT_ROTATE_Y,    /* original C++ signature */
         mt_rotate_y = enum.auto()      # (= 9)
+        # MT_ROTATE_Z,    /* original C++ signature */
         mt_rotate_z = enum.auto()      # (= 10)
+        # MT_ROTATE_SCREEN,    /* original C++ signature */
         mt_rotate_screen = enum.auto() # (= 11)
+        # MT_SCALE_X,    /* original C++ signature */
         mt_scale_x = enum.auto()       # (= 12)
+        # MT_SCALE_Y,    /* original C++ signature */
         mt_scale_y = enum.auto()       # (= 13)
+        # MT_SCALE_Z,    /* original C++ signature */
         mt_scale_z = enum.auto()       # (= 14)
+        # MT_SCALE_XYZ    /* original C++ signature */
+        #    }
         mt_scale_xyz = enum.auto()     # (= 15)
 
+    # IMGUI_API MOVETYPE GetActiveHandleType();    /* original C++ signature */
     @staticmethod
     def get_active_handle_type() -> MOVETYPE:
         """ Returns which handle is actively being dragged, or MT_NONE."""
         pass
+    # IMGUI_API MOVETYPE GetHoveredHandleType();    /* original C++ signature */
     @staticmethod
     def get_hovered_handle_type() -> MOVETYPE:
         """ Returns which handle is currently hovered, or MT_NONE."""
         pass
     # Aliases matching the MOVETYPE enum name.
+    # IMGUI_API MOVETYPE GetActiveMoveType();    /* original C++ signature */
     @staticmethod
     def get_active_move_type() -> MOVETYPE:
         pass
+    # IMGUI_API MOVETYPE GetHoveredMoveType();    /* original C++ signature */
     @staticmethod
     def get_hovered_move_type() -> MOVETYPE:
         pass
 
+    # IMGUI_API void AllowAxisFlip(bool value);    /* original C++ signature */
     @staticmethod
     def allow_axis_flip(value: bool) -> None:
         """ Allow axis to flip
@@ -313,14 +380,17 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """
         pass
 
+    # IMGUI_API void SetAxisLimit(float value);    /* original C++ signature */
     @staticmethod
     def set_axis_limit(value: float) -> None:
         """ Configure the limit where axis are hidden"""
         pass
+    # IMGUI_API void SetAxisMask(bool x, bool y, bool z);    /* original C++ signature */
     @staticmethod
     def set_axis_mask(x: bool, y: bool, z: bool) -> None:
         """ Set an axis mask to permanently hide a given axis (True -> hidden, False -> shown)"""
         pass
+    # IMGUI_API void SetPlaneLimit(float value);    /* original C++ signature */
     @staticmethod
     def set_plane_limit(value: float) -> None:
         """ Configure the limit where planes are hiden"""
@@ -328,68 +398,108 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
 
 
     class COLOR(enum.IntEnum):
+        # DIRECTION_X,          /* original C++ signature */
         direction_x = enum.auto()           # (= 0)  # directionColor[0]
+        # DIRECTION_Y,          /* original C++ signature */
         direction_y = enum.auto()           # (= 1)  # directionColor[1]
+        # DIRECTION_Z,          /* original C++ signature */
         direction_z = enum.auto()           # (= 2)  # directionColor[2]
+        # PLANE_X,              /* original C++ signature */
         plane_x = enum.auto()               # (= 3)  # planeColor[0]
+        # PLANE_Y,              /* original C++ signature */
         plane_y = enum.auto()               # (= 4)  # planeColor[1]
+        # PLANE_Z,              /* original C++ signature */
         plane_z = enum.auto()               # (= 5)  # planeColor[2]
+        # SELECTION,            /* original C++ signature */
         selection = enum.auto()             # (= 6)  # selectionColor
+        # INACTIVE,             /* original C++ signature */
         inactive = enum.auto()              # (= 7)  # inactiveColor
+        # TRANSLATION_LINE,     /* original C++ signature */
         translation_line = enum.auto()      # (= 8)  # translationLineColor
+        # SCALE_LINE,    /* original C++ signature */
         scale_line = enum.auto()            # (= 9)
+        # ROTATION_USING_BORDER,    /* original C++ signature */
         rotation_using_border = enum.auto() # (= 10)
+        # ROTATION_USING_FILL,    /* original C++ signature */
         rotation_using_fill = enum.auto()   # (= 11)
+        # HATCHED_AXIS_LINES,    /* original C++ signature */
         hatched_axis_lines = enum.auto()    # (= 12)
+        # TEXT,    /* original C++ signature */
         text = enum.auto()                  # (= 13)
+        # TEXT_SHADOW,    /* original C++ signature */
         text_shadow = enum.auto()           # (= 14)
+        # COUNT    /* original C++ signature */
+        #    }
         count = enum.auto()                 # (= 15)
 
     class Style:
+        # IMGUI_API Style();    /* original C++ signature */
         def __init__(self) -> None:
             pass
 
+        # float TranslationLineThickness;    /* original C++ signature */
         translation_line_thickness: float     # Thickness of lines for translation gizmo
+        # float TranslationLineArrowSize;    /* original C++ signature */
         translation_line_arrow_size: float    # Size of arrow at the end of lines for translation gizmo
+        # float RotationLineThickness;    /* original C++ signature */
         rotation_line_thickness: float        # Thickness of lines for rotation gizmo
+        # float RotationOuterLineThickness;    /* original C++ signature */
         rotation_outer_line_thickness: float  # Thickness of line surrounding the rotation gizmo
+        # float ScaleLineThickness;    /* original C++ signature */
         scale_line_thickness: float           # Thickness of lines for scale gizmo
+        # float ScaleLineCircleSize;    /* original C++ signature */
         scale_line_circle_size: float         # Size of circle at the end of lines for scale gizmo
+        # float HatchedAxisLineThickness;    /* original C++ signature */
         hatched_axis_line_thickness: float    # Thickness of hatched axis lines
+        # float CenterCircleSize;    /* original C++ signature */
         center_circle_size: float             # Size of circle at the center of the translate/scale gizmo
 
 
+    # IMGUI_API Style& GetStyle();    /* original C++ signature */
+    # }
     @staticmethod
     def get_style() -> Style:
         pass
     class Matrix16:
+        # float values[16]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=16] default:float()
+        # Matrix16() { for (float & value : values) value = 0.f; }    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
+        # explicit Matrix16(const std::array<float, 16>& v) { for (int i = 0; i < 16; ++i) values[i] = v[i]; }    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
     class Matrix6:
+        # float values[6]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=6] default:float()
+        # Matrix6() { for (float & value : values) value = 0.f; }    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
+        # explicit Matrix6(const std::array<float, 6>& v) { for (int i = 0; i < 6; ++i) values[i] = v[i]; }    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
     class Matrix3:
+        # float values[3]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=3] default:float()
+        # Matrix3() { for (float & value : values) value = 0.f; }    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
+        # explicit Matrix3(const std::array<float, 3>& v) { for (int i = 0; i < 3; ++i) values[i] = v[i]; }    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
 
     class MatrixComponents:
+        # Matrix3 Translation;    /* original C++ signature */
         translation: im_guizmo.Matrix3
+        # Matrix3 Rotation;    /* original C++ signature */
         rotation: im_guizmo.Matrix3
+        # Matrix3 Scale;    /* original C++ signature */
         scale: im_guizmo.Matrix3
         def __init__(self) -> None:
             """Autogenerated default constructor"""
@@ -407,17 +517,21 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     # ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, gizmoMatrix.m16);
     #
     # These functions have some numerical stability issues for now. Use with caution.
+    # IMGUI_API MatrixComponents DecomposeMatrixToComponents(const Matrix16 &matrix);    /* original C++ signature */
     @staticmethod
     def decompose_matrix_to_components(matrix: Matrix16) -> MatrixComponents:
         pass
+    # IMGUI_API Matrix16 RecomposeMatrixFromComponents(const MatrixComponents& matrixComponents);    /* original C++ signature */
     @staticmethod
     def recompose_matrix_from_components(matrix_components: MatrixComponents) -> Matrix16:
         pass
 
     # Render a cube with face color corresponding to face normal. Usefull for debug/tests
+    # IMGUI_API void DrawCubes(const Matrix16& view, const Matrix16& projection, const std::vector<Matrix16> & matrices);    /* original C++ signature */
     @staticmethod
     def draw_cubes(view: Matrix16, projection: Matrix16, matrices: List[Matrix16]) -> None:
         pass
+    # IMGUI_API void DrawGrid(const Matrix16& view, const Matrix16& projection, const Matrix16& matrix, const float gridSize);    /* original C++ signature */
     @staticmethod
     def draw_grid(
         view: Matrix16,
@@ -427,6 +541,17 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         ) -> None:
         pass
 
+    # IMGUI_API  bool Manipulate(    /* original C++ signature */
+    #         const Matrix16& view,
+    #         const Matrix16& projection,
+    #         OPERATION operation,
+    #         MODE mode,
+    #         Matrix16& object_matrix, // This matrix may be modified!
+    #         Matrix16* delta_matrix = nullptr,
+    #         std::optional<Matrix3> snap = std::nullopt,
+    #         std::optional<Matrix6> local_bounds = std::nullopt,
+    #         std::optional<Matrix3> bounds_snap = std::nullopt
+    #     );
     @staticmethod
     def manipulate(
         view: Matrix16,
@@ -464,6 +589,12 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         """
         pass
 
+    # IMGUI_API void ViewManipulate(    /* original C++ signature */
+    #         Matrix16& view, // This matrix may be modified!
+    #         float length,
+    #         ImVec2 position,
+    #         ImVec2 size,
+    #         ImU32 backgroundColor);
     @staticmethod
     @overload
     def view_manipulate(
@@ -481,6 +612,17 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
          ViewManipulate may change the view parameter
         """
         pass
+    # IMGUI_API void ViewManipulate(    /* original C++ signature */
+    #         Matrix16& view,
+    #         const Matrix16& projection,
+    #         OPERATION operation,
+    #         MODE mode,
+    #         Matrix16& matrix, // !!!
+    #         float length,
+    #         ImVec2 position,
+    #         ImVec2 size,
+    #         ImU32 backgroundColor);
+    # }
     @staticmethod
     @overload
     def view_manipulate(

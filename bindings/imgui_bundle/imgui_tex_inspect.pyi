@@ -41,8 +41,10 @@ def set_current_context(ctx_address: int) -> None:
 #-------------------------------------------------------------------------
 # [SECTION] INIT & SHUTDOWN
 #-------------------------------------------------------------------------
+# void Init();    /* original C++ signature */
 def init() -> None:
     pass
+# void Shutdown();    /* original C++ signature */
 def shutdown() -> None:
     pass
 
@@ -52,20 +54,33 @@ def shutdown() -> None:
 #-------------------------------------------------------------------------
 
 class InspectorAlphaMode(enum.IntEnum):
+    # InspectorAlphaMode_ImGui,          /* original C++ signature */
     im_gui = enum.auto()       # (= 0)  # Alpha is transparency so you see the ImGui panel background behind image
+    # InspectorAlphaMode_Black,          /* original C++ signature */
     black = enum.auto()        # (= 1)  # Alpha is used to blend over a black background
+    # InspectorAlphaMode_White,          /* original C++ signature */
     white = enum.auto()        # (= 2)  # Alpha is used to blend over a white background
+    # InspectorAlphaMode_CustomColor     /* original C++ signature */
     custom_color = enum.auto() # (= 3)  # Alpha is used to blend over a custom colour.
 
 class InspectorFlags_(enum.IntEnum):
+    # InspectorFlags_ShowWrap             = 1 << 0,      /* original C++ signature */
     show_wrap = enum.auto()               # (= 1 << 0)  # Draw beyong the [0,1] uv range. What you see will depend on API
+    # InspectorFlags_NoForceFilterNearest = 1 << 1,      /* original C++ signature */
     no_force_filter_nearest = enum.auto() # (= 1 << 1)  # Normally we force nearest neighbour sampling when zoomed in. Set to disable this.
+    # InspectorFlags_NoGrid               = 1 << 2,      /* original C++ signature */
     no_grid = enum.auto()                 # (= 1 << 2)  # By default a grid is shown at high zoom levels
+    # InspectorFlags_NoTooltip            = 1 << 3,      /* original C++ signature */
     no_tooltip = enum.auto()              # (= 1 << 3)  # Disable tooltip on hover
+    # InspectorFlags_FillHorizontal       = 1 << 4,      /* original C++ signature */
     fill_horizontal = enum.auto()         # (= 1 << 4)  # Scale to fill available space horizontally
+    # InspectorFlags_FillVertical         = 1 << 5,      /* original C++ signature */
     fill_vertical = enum.auto()           # (= 1 << 5)  # Scale to fill available space vertically
+    # InspectorFlags_NoAutoReadTexture    = 1 << 6,      /* original C++ signature */
     no_auto_read_texture = enum.auto()    # (= 1 << 6)  # By default texture data is read to CPU every frame for tooltip and annotations
+    # InspectorFlags_FlipX                = 1 << 7,      /* original C++ signature */
     flip_x = enum.auto()                  # (= 1 << 7)  # Horizontally flip the way the texture is displayed
+    # InspectorFlags_FlipY                = 1 << 8,      /* original C++ signature */
     flip_y = enum.auto()                  # (= 1 << 8)  # Vertically flip the way the texture is displayed
 
 # Use one of these Size structs if you want to specify an exact size for the inspector panel.
@@ -77,15 +92,20 @@ class InspectorFlags_(enum.IntEnum):
 # * BeginInspectorPanel("MyPanel", texture_1K, ImVec2(1024,1024));
 #
 class SizeIncludingBorder:
+    # ImVec2 Size;    /* original C++ signature */
     size: ImVec2
+    # SizeIncludingBorder(ImVec2 size):Size(size){}    /* original C++ signature */
     def __init__(self, size: ImVec2Like) -> None:
         pass
 class SizeExcludingBorder:
+    # ImVec2 size;    /* original C++ signature */
     size: ImVec2
+    # SizeExcludingBorder(ImVec2 size):size(size){}    /* original C++ signature */
     def __init__(self, size: ImVec2Like) -> None:
         pass
 # BeginInspectorPanel
 # * Returns True if panel is drawn.  Note that flags will only be considered on the first call
+# bool BeginInspectorPanel(const char *name, ImTextureID, ImVec2 textureSize, InspectorFlags flags = 0);    /* original C++ signature */
 @overload
 def begin_inspector_panel(
     name: str,
@@ -94,6 +114,7 @@ def begin_inspector_panel(
     flags: InspectorFlags = 0
     ) -> bool:
     pass
+# bool BeginInspectorPanel(const char *name, ImTextureID, ImVec2 textureSize, InspectorFlags flags, SizeIncludingBorder size);    /* original C++ signature */
 @overload
 def begin_inspector_panel(
     name: str,
@@ -103,6 +124,7 @@ def begin_inspector_panel(
     size: SizeIncludingBorder
     ) -> bool:
     pass
+# bool BeginInspectorPanel(const char *name, ImTextureID, ImVec2 textureSize, InspectorFlags flags, SizeExcludingBorder size);    /* original C++ signature */
 @overload
 def begin_inspector_panel(
     name: str,
@@ -113,12 +135,14 @@ def begin_inspector_panel(
     ) -> bool:
     pass
 
+# void EndInspectorPanel();    /* original C++ signature */
 def end_inspector_panel() -> None:
     """ EndInspectorPanel
      * Always call after BeginInspectorPanel and after you have drawn any required annotations
     """
     pass
 
+# void ReleaseInspectorData(ImGuiID id);    /* original C++ signature */
 def release_inspector_data(id: ImGuiID) -> None:
     """ ReleaseInspectorData
      * ImGuiTexInspect keeps texture data cached in memory.  If you know you won't
@@ -142,20 +166,26 @@ def release_inspector_data(id: ImGuiID) -> None:
 
 
 # CurrentInspector_SetAlphaMode - see enum comments for details
+# void CurrentInspector_SetAlphaMode(InspectorAlphaMode);      /* original C++ signature */
 def current_inspector_set_alpha_mode(param_0: InspectorAlphaMode) -> None:
     pass
+# void CurrentInspector_SetFlags(InspectorFlags toSet, InspectorFlags toClear = 0);    /* original C++ signature */
 def current_inspector_set_flags(
     to_set: InspectorFlags,
     to_clear: InspectorFlags = 0
     ) -> None:
     pass
+# inline void CurrentInspector_ClearFlags(InspectorFlags toClear) {CurrentInspector_SetFlags(0, toClear);}    /* original C++ signature */
 def current_inspector_clear_flags(to_clear: InspectorFlags) -> None:
     pass
+# void CurrentInspector_SetGridColor(ImU32 color);    /* original C++ signature */
 def current_inspector_set_grid_color(color: ImU32) -> None:
     pass
+# void CurrentInspector_SetMaxAnnotations(int maxAnnotations);    /* original C++ signature */
 def current_inspector_set_max_annotations(max_annotations: int) -> None:
     pass
 
+# void CurrentInspector_InvalidateTextureCache();                     /* original C++ signature */
 def current_inspector_invalidate_texture_cache() -> None:
     """ CurrentInspector_InvalidateTextureCache
      * If using the InspectorFlags_NoAutoReadTexture flag then call this to
@@ -168,13 +198,16 @@ def current_inspector_invalidate_texture_cache() -> None:
 # * If using InspectorAlphaMode_CustomColor then this is the color that will be
 # * blended as the background where alpha is less than one.
 #
+# void CurrentInspector_SetCustomBackgroundColor(ImVec4 color);    /* original C++ signature */
 @overload
 def current_inspector_set_custom_background_color(color: ImVec4Like) -> None:
     pass
+# void CurrentInspector_SetCustomBackgroundColor(ImU32 color);    /* original C++ signature */
 @overload
 def current_inspector_set_custom_background_color(color: ImU32) -> None:
     pass
 
+# ImGuiID CurrentInspector_GetID();    /* original C++ signature */
 def current_inspector_get_id() -> ImGuiID:
     """ CurrentInspector_GetID
      * Get the ID of the current inspector.  Currently only used for calling
@@ -184,19 +217,24 @@ def current_inspector_get_id() -> ImGuiID:
     pass
 
 # Some convenience functions for drawing ImGui controls for the current Inspector
+# void DrawColorMatrixEditor();        /* original C++ signature */
 def draw_color_matrix_editor() -> None:
     """ ColorMatrix editor.  See comments on ColorMatrix below."""
     pass
+# void DrawGridEditor();               /* original C++ signature */
 def draw_grid_editor() -> None:
     """ Grid editor.  Enable/Disable grid. Set Grid Color."""
     pass
+# void DrawColorChannelSelector();     /* original C++ signature */
 def draw_color_channel_selector() -> None:
     """ For toggling R,G,B channels"""
     pass
+# void DrawAlphaModeSelector();        /* original C++ signature */
 def draw_alpha_mode_selector() -> None:
     """ A combo box for selecting the alpha mode"""
     pass
 
+# void SetZoomRate(float factor);     /* original C++ signature */
 def set_zoom_rate(factor: float) -> None:
     """-------------------------------------------------------------------------
      [SECTION] CONTEXT-WIDE SETTINGS
@@ -212,6 +250,7 @@ def set_zoom_rate(factor: float) -> None:
 # [SECTION] ANNOTATION TOOLS
 #-------------------------------------------------------------------------
 
+# void DrawAnnotationLine(ImDrawList *drawList, ImVec2 fromTexel, ImVec2 toTexel, Transform2D texelsToPixels, ImU32 color);    /* original C++ signature */
 def draw_annotation_line(
     draw_list: ImDrawList,
     from_texel: ImVec2Like,
@@ -237,12 +276,18 @@ class ValueText:
 
     """
     class Format(enum.IntEnum):
+        # HexString,     /* original C++ signature */
         hex_string = enum.auto() # (= 0)  # E.g.  #EF97B9FF
+        # BytesHex,      /* original C++ signature */
         bytes_hex = enum.auto()  # (= 1)  # E.g.  R:#EF G:#97 B:#B9 A:#FF  (split over 4 lines)
+        # BytesDec,      /* original C++ signature */
         bytes_dec = enum.auto()  # (= 2)  # E.g.  R:239 G: 151 B:185 A:255  (split over 4 lines)
+        # Floats         /* original C++ signature */
         floats = enum.auto()     # (= 3)  # E.g.  0.937 0.592 0.725 1.000 (split over 4 lines)
+    # ValueText(Format format = HexString);    /* original C++ signature */
     def __init__(self, format: ValueText.Format = ValueText.HexString) -> None:
         pass
+    # void DrawAnnotation(ImDrawList *drawList, ImVec2 texel, Transform2D texelsToPixels, ImVec4 value);    /* original C++ signature */
     def draw_annotation(
         self,
         draw_list: ImDrawList,
@@ -272,15 +317,22 @@ class Arrow:
 
 
     """
+    # int VectorIndex_x;    /* original C++ signature */
     vector_index_x: int
+    # int VectorIndex_y;    /* original C++ signature */
     vector_index_y: int
+    # ImVec2 LineScale;    /* original C++ signature */
     line_scale: ImVec2
+    # ImVec2 ZeroPoint = {0, 0};    /* original C++ signature */
     zero_point: ImVec2 = ImVec2(0, 0)
 
     class Preset(enum.IntEnum):
+        # NormalMap,          /* original C++ signature */
         normal_map = enum.auto()       # (= 0)  # For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point
+        # NormalizedFloat     /* original C++ signature */
         normalized_float = enum.auto() # (= 1)  # Arrow in (R,G) channels. 0,0 is zero point, (1,0) will draw an arrow exactly to
         # right edge of texture. (0,-1) will draw exactly to the bottom etc.
+    # Arrow(int xVectorIndex = 0, int yVectorIndex = 1, ImVec2 lineScale = ImVec2(1, 1));    /* original C++ signature */
     def __init__(
         self,
         x_vector_index: int = 0,
@@ -291,8 +343,10 @@ class Arrow:
             If lineScale is None, then its default value will be: ImVec2(1, 1)
         """
         pass
+    # Arrow &UsePreset(Preset);    /* original C++ signature */
     def use_preset(self, param_0: Arrow.Preset) -> Arrow:
         pass
+    # void DrawAnnotation(ImDrawList *drawList, ImVec2 texel, Transform2D texelsToPixels, ImVec4 value);    /* original C++ signature */
     def draw_annotation(
         self,
         draw_list: ImDrawList,
@@ -307,16 +361,28 @@ class Arrow:
 #-------------------------------------------------------------------------
 
 class Transform2D:
+    # ImVec2 Scale;    /* original C++ signature */
     scale: ImVec2
+    # ImVec2 Translate;    /* original C++ signature */
     translate: ImVec2
 
+    # ImVec2 operator*(const ImVec2 &rhs) const    /* original C++ signature */
+    #     {
+    #         return ImVec2(Scale.x * rhs.x + Translate.x, Scale.y * rhs.y + Translate.y);
+    #     }
     def __mul__(self, rhs: ImVec2Like) -> ImVec2:
         """ Transform a vector by this transform.  Scale is applied first"""
         pass
 
+    # Transform2D Inverse() const    /* original C++ signature */
+    #     {
+    #         ImVec2 inverseScale(1 / Scale.x, 1 / Scale.y);
+    #         return {inverseScale, ImVec2(-inverseScale.x * Translate.x, -inverseScale.y * Translate.y)};
+    #     }
     def inverse(self) -> Transform2D:
         """ Return an inverse transform such that transform.Inverse() * transform * vector == vector"""
         pass
+    # Transform2D(ImVec2 Scale = ImVec2(), ImVec2 Translate = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         scale: Optional[ImVec2Like] = None,
@@ -347,8 +413,11 @@ class Transform2D:
 
 
 class Texture:
+    # ImTextureID texture;    /* original C++ signature */
     texture: ImTextureID
+    # ImVec2 size;    /* original C++ signature */
     size: ImVec2
+    # Texture(ImTextureID texture = ImTextureID(), ImVec2 size = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         texture: Optional[ImTextureID] = None,
@@ -364,6 +433,8 @@ class Texture:
         pass
 
 
+# void ShowDemoWindow();    /* original C++ signature */
+# }
 def show_demo_window() -> None:
     pass
 

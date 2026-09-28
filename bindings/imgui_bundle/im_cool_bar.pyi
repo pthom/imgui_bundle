@@ -55,9 +55,11 @@ ImGuiWindowFlags_None = WindowFlags_.none
 
 
 class ImCoolBarFlags_(enum.IntEnum):
-    #
+    # ImCoolBarFlags_None = 0,                   /* original C++ signature */
     none = enum.auto()       # (= 0)
+    # ImCoolBarFlags_Horizontal = (1 << 0),      /* original C++ signature */
     horizontal = enum.auto() # (= (1 << 0))
+    # ImCoolBarFlags_Vertical = (1 << 1),        /* original C++ signature */
     vertical = enum.auto()   # (= (1 << 1))
 
 # #ifdef __cplusplus
@@ -69,12 +71,26 @@ class ImCoolBarFlags_(enum.IntEnum):
 
 
 class ImCoolBarSettings:
+    # ImVec2 anchor{0.5f, 0.5f};    /* original C++ signature */
     anchor: ImVec2 = ImVec2(0.5, 0.5)
+    # float normalSize{40.0f};    /* original C++ signature */
     normal_size: float = float(40.0)
+    # float hoveredSize{150.0f};    /* original C++ signature */
     hovered_size: float = float(150.0)
+    # float animStep{0.05f};    /* original C++ signature */
     anim_step: float = float(0.05)
+    # float effectStrength{0.5f};    /* original C++ signature */
     effect_strength: float = float(0.5)
+    # ImCoolBarFlags mode{ImCoolBarFlags_Horizontal};    /* original C++ signature */
     mode: ImCoolBarFlags = ImCoolBarFlags(ImCoolBarFlags_.horizontal)
+    # ImCoolBarSettings(const ImVec2& aAnchor = ImVec2(0.5f, 0.5f),    /* original C++ signature */
+    #                       const float aNormalSize = 40.0f,
+    #                       const float aHoveredSize = 150.0f,
+    #                       const float aAnimStep = 0.05f,
+    #                       const float aEffectStrength = 0.5f,
+    #                       const ImCoolBarFlags aMode = ImCoolBarFlags_Horizontal)
+    #         : anchor(aAnchor), normalSize(aNormalSize), hoveredSize(aHoveredSize), animStep(aAnimStep), effectStrength(aEffectStrength), mode(aMode) {
+    #     }
     def __init__(
         self,
         a_anchor: Optional[ImVec2Like] = None,
@@ -92,8 +108,12 @@ class ImCoolBarSettings:
         pass
 
 
+# IMCOOLBAR_API bool CoolBarDebugCheckVersion(const char* aVersion, size_t aSettingsSize);    /* original C++ signature */
 def cool_bar_debug_check_version(a_version: str, a_settings_size: int) -> bool:
     pass
+# IMCOOLBAR_API bool BeginCoolBar(const char* aLabel,    /* original C++ signature */
+#                                 const ImCoolBarSettings& arSettings = __srcmlcpp_brace_init__(),
+#                                 ImGuiWindowFlags aWinFlags = ImGuiWindowFlags_None);
 def begin_cool_bar(
     a_label: str,
     ar_settings: Optional[ImCoolBarSettings] = None,
@@ -105,16 +125,22 @@ def begin_cool_bar(
             * aWinFlags: WindowFlags_.none
     """
     pass
+# IMCOOLBAR_API void EndCoolBar();    /* original C++ signature */
 def end_cool_bar() -> None:
     pass
+# IMCOOLBAR_API bool CoolBarItem();    /* original C++ signature */
 def cool_bar_item() -> bool:
     pass
+# IMCOOLBAR_API float GetCoolBarItemWidth();    /* original C++ signature */
 def get_cool_bar_item_width() -> float:
     pass
+# IMCOOLBAR_API float GetCoolBarItemScale();    /* original C++ signature */
 def get_cool_bar_item_scale() -> float:
     pass
+# IMCOOLBAR_API void ShowCoolBarMetrics(bool* apoOpen);    /* original C++ signature */
 def show_cool_bar_metrics(apo_open: bool) -> None:
     pass
+# IMCOOLBAR_API void ShowCoolBarDemoWindow(bool* apoOpen = nullptr, ImCoolBarSettings* apoSettings = nullptr, ImCoolBarSettings* apoDefaultSettings = nullptr);    /* original C++ signature */
 def show_cool_bar_demo_window(
     apo_open: Optional[bool] = None,
     apo_settings: Optional[ImCoolBarSettings] = None,

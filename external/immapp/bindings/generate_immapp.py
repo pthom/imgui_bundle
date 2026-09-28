@@ -25,6 +25,7 @@ def main() -> None:
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.namespaces_root = ["ImmApp"]
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.srcmlcpp_options.ignored_warning_parts.append(
         "Block elements of type decl_stmt are not supported in python conversion"

@@ -25,6 +25,7 @@ def main() -> None:
     options.namespaces_root = ["RichMd"]
     # the narrative programming directives (::md, ::code, ::endcode, ::endmd, also after a "/*") and the lone "*/"
     options.comments_exclude_lines_regex = r"^\s*(/\*)?::(md|code|endcode|endmd)(\s|$)|^\s*\*/\s*$"
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.value_replacements.add_last_replacement(
         "OnOpenLink_Default", "on_open_link_default"

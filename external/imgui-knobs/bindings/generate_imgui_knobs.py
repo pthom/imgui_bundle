@@ -24,6 +24,7 @@ def main() -> None:
 
     options.namespaces_root = ["ImGuiKnobs"]
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
 
     litgen.write_generated_code_for_file(

@@ -36,6 +36,7 @@ DefaultScreenSize = (800, 600)
 #
 # These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
 # but they enable to make the plot content draggable inside a node
+# bool BeginPlotInNodeEditor(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
 def begin_plot_in_node_editor(
     title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
 ) -> bool:
@@ -44,9 +45,17 @@ def begin_plot_in_node_editor(
     """
     pass
 
+# void EndPlotInNodeEditor();    /* original C++ signature */
 def end_plot_in_node_editor() -> None:
     pass
 
+# ImVec2 ShowResizablePlotInNodeEditor(    /* original C++ signature */
+#         const char* title_id,        // plot title
+#         const ImVec2& size_pixels,   // plot size (will be updated if resized by the user)
+#         VoidFunction plotFunction,   // your function to draw the plot
+#         ImPlotFlags flags=0,
+#         float resizeHandleSizeEm=1.0f
+#     );
 def show_resizable_plot_in_node_editor(
     title_id: str,
     size_pixels: ImVec2Like,
@@ -59,6 +68,13 @@ def show_resizable_plot_in_node_editor(
     """
     pass
 
+# ImVec2 ShowResizablePlotInNodeEditor_Em(    /* original C++ signature */
+#         const char* title_id,        // plot title
+#         const ImVec2& size_em,       // plot size (will be updated if resized by the user)
+#         VoidFunction plotFunction,   // your function to draw the plot
+#         ImPlotFlags flags=0,
+#         float resizeHandleSizeEm=1.0f
+#     );
 def show_resizable_plot_in_node_editor_em(
     title_id: str,
     size_em: ImVec2Like,
@@ -75,6 +91,11 @@ def show_resizable_plot_in_node_editor_em(
 
 # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #
+# ImVec2 WidgetWithResizeHandle_InNodeEditor(    /* original C++ signature */
+#         const char* id,
+#         VoidFunction guiFunction,    // your function to draw the widget
+#         float resizeHandleSizeEm=1.0f
+#     );
 def widget_with_resize_handle_in_node_editor(
     id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
 ) -> ImVec2:
@@ -83,6 +104,11 @@ def widget_with_resize_handle_in_node_editor(
     """
     pass
 
+# ImVec2 WidgetWithResizeHandle_InNodeEditor_Em(    /* original C++ signature */
+#         const char* id,
+#         VoidFunction guiFunction,    // your function to draw the widget
+#         float resizeHandleSizeEm=1.0f
+#     );
 def widget_with_resize_handle_in_node_editor_em(
     id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
 ) -> ImVec2:
@@ -114,26 +140,33 @@ class AddOnsParams:
     /////////////////////////////////////////////////////////////////////////////////////
     """
 
+    # bool withImplot = false;    /* original C++ signature */
     # Set withImplot=True if you need to plot graphs with implot
     with_implot: bool = False
+    # bool withImplot3d = false;    /* original C++ signature */
     # Set withImplot3d=True if you need to plot 3 graphs with implot3d
     with_implot3d: bool = False
 
+    # bool withMarkdown = false;    /* original C++ signature */
     # Set withMarkdown=True if you need to render Markdown
     # (alternatively, you can set withMarkdownOptions)
     with_markdown: bool = False
 
+    # bool withNodeEditor = false;    /* original C++ signature */
     # Set withNodeEditor=True if you need to render a node editor
     # (alternatively, you can set withNodeEditorConfig)
     with_node_editor: bool = False
 
+    # bool withTexInspect = false;    /* original C++ signature */
     # Set withTexInspect=True if you need to use imgui_tex_inspect
     with_tex_inspect: bool = False
 
+    # bool withImAnim = false;    /* original C++ signature */
     # Set withImAnim=True if you need to use ImAnim.
     # If True, then iam_update_begin_frame() and iam_clip_update() will be called automatically at each frame
     with_im_anim: bool = False
 
+    # bool withLatex = false;    /* original C++ signature */
     # Set withLatex=True to enable native LaTeX math rendering in markdown
     # (via MicroTeX). Implies withMarkdown=True. The $...$ and $$...$$
     # syntaxes will be parsed as inline / display math formulas.
@@ -142,9 +175,11 @@ class AddOnsParams:
 
     # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     #
+    # std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;    /* original C++ signature */
     # You can tweak NodeEditorConfig (but this is optional)
     with_node_editor_config: Optional[NodeEditorConfig] = None
 
+    # bool updateNodeEditorColorsFromImguiColors = true;    /* original C++ signature */
     # If True, the node editor colors will be updated from the ImGui colors
     # (i.e. if using a light theme, the node editor will use a light theme, etc.)
     # This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.
@@ -154,8 +189,10 @@ class AddOnsParams:
     # #endif
     #
 
+    # std::optional<RichMd::MarkdownOptions> withMarkdownOptions = std::nullopt;    /* original C++ signature */
     # You can tweak MarkdownOptions (but this is optional)
     with_markdown_options: Optional[RichMd.MarkdownOptions] = None
+    # AddOnsParams(bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, bool withLatex = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<RichMd::MarkdownOptions> withMarkdownOptions = std::nullopt);    /* original C++ signature */
     def __init__(
         self,
         with_implot: bool = False,
@@ -178,6 +215,7 @@ class AddOnsParams:
 #
 # /////////////////////////////////////////////////////////////////////////////////////
 # Run an application using HelloImGui params + some addons
+# void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());    /* original C++ signature */
 @overload
 def run(
     runner_params: HelloImGui.RunnerParams,
@@ -188,6 +226,7 @@ def run(
     """
     pass
 
+# void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams = AddOnsParams());    /* original C++ signature */
 @overload
 def run(
     simple_params: HelloImGui.SimpleRunnerParams,
@@ -198,6 +237,30 @@ def run(
     """
     pass
 
+# void Run(    /* original C++ signature */
+#         // HelloImGui::SimpleRunnerParams below:
+#         const VoidFunction& guiFunction,
+#         const std::string& windowTitle = "",
+#         bool windowSizeAuto = false,
+#         bool windowRestorePreviousGeometry = false,
+#         const ScreenSize& windowSize = DefaultWindowSize,
+#         float fpsIdle = 10.f,
+#         bool topMost = false,
+#         bool iniDisable = false,
+#
+#         // AddOnsParams below:
+#         bool withImplot = false,
+#         bool withImplot3d = false,
+#         bool withMarkdown = false,
+#         bool withNodeEditor = false,
+#         bool withTexInspect = false,
+#         bool withImAnim = false,
+#         bool withLatex = false,
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+# #endif
+#         const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+#     );
 @overload
 def run(
     gui_function: VoidFunction,
@@ -246,6 +309,29 @@ def run(
     """
     pass
 
+# void RunWithMarkdown(    /* original C++ signature */
+#         // HelloImGui::SimpleRunnerParams below:
+#         const VoidFunction& guiFunction,
+#         const std::string& windowTitle = "",
+#         bool windowSizeAuto = false,
+#         bool windowRestorePreviousGeometry = false,
+#         const ScreenSize& windowSize = DefaultWindowSize,
+#         float fpsIdle = 10.f,
+#         bool topMost = false,
+#         bool iniDisable = false,
+#
+#         // AddOnsParams below:
+#         bool withImplot = false,
+#         bool withImplot3d = false,
+#         bool withNodeEditor = false,
+#         bool withTexInspect = false,
+#         bool withImAnim = false,
+#         bool withLatex = false,
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#         const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+# #endif
+#         const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+#     );
 def run_with_markdown(
     gui_function: VoidFunction,
     window_title: str = "",
@@ -277,6 +363,7 @@ def run_with_markdown(
 #
 # /////////////////////////////////////////////////////////////////////////////////////
 
+# float EmSize();    /* original C++ signature */
 @overload
 def em_size() -> float:
     """EmSize() returns the visible font size on the screen. For good results on HighDPI screens, always scale your
@@ -286,6 +373,7 @@ def em_size() -> float:
     """
     pass
 
+# float EmSize(float nbLines);    /* original C++ signature */
 @overload
 def em_size(nb_lines: float) -> float:
     """EmSize(nbLines) returns a size corresponding to nbLines text lines"""
@@ -293,18 +381,22 @@ def em_size(nb_lines: float) -> float:
 
 # EmToVec2() returns an ImVec2 that you can use to size or place your widgets in a DPI independent way
 # (pass sizes that are proportional to the font height)
+# ImVec2 EmToVec2(float x, float y);    /* original C++ signature */
 @overload
 def em_to_vec2(x: float, y: float) -> ImVec2:
     pass
 
+# ImVec2 EmToVec2(ImVec2 v);    /* original C++ signature */
 @overload
 def em_to_vec2(v: ImVec2Like) -> ImVec2:
     pass
 
+# ImVec2 PixelsToEm(ImVec2 pixels);    /* original C++ signature */
 def pixels_to_em(pixels: ImVec2Like) -> ImVec2:
     """PixelsToEm() converts a Vec2 in pixels to a Vec2 in em"""
     pass
 
+# float  PixelSizeToEm(float pixelSize);    /* original C++ signature */
 def pixel_size_to_em(pixel_size: float) -> float:
     """PixelSizeToEm() converts a size in pixels to a size in em"""
     pass
@@ -316,20 +408,25 @@ def pixel_size_to_em(pixel_size: float) -> float:
 # /////////////////////////////////////////////////////////////////////////////////////
 # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #
+# NodeEditorContext* DefaultNodeEditorContext();    /* original C++ signature */
 def default_node_editor_context() -> NodeEditorContext:
     pass
 
+# NodeEditorConfig* DefaultNodeEditorConfig();    /* original C++ signature */
 def default_node_editor_config() -> NodeEditorConfig:
     pass
 
+# std::string NodeEditorSettingsLocation(const HelloImGui::RunnerParams& runnerParams);    /* original C++ signature */
 def node_editor_settings_location(runner_params: HelloImGui.RunnerParams) -> str:
     """NodeEditorSettingsLocation returns the path to the json file for the node editor settings."""
     pass
 
+# bool HasNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams);    /* original C++ signature */
 def has_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> bool:
     """HasNodeEditorSettings returns True if the json file for the node editor settings exists."""
     pass
 
+# void DeleteNodeEditorSettings(const HelloImGui::RunnerParams& runnerParams);    /* original C++ signature */
 def delete_node_editor_settings(runner_params: HelloImGui.RunnerParams) -> None:
     """DeleteNodeEditorSettings deletes the json file for the node editor settings."""
     pass
@@ -349,6 +446,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     # - Ensure that `ManualRender::Render()` is triggered regularly (e.g., through a loop or other mechanism)
     #   to maintain responsiveness. This method must be called on the main thread.
 
+    # void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());    /* original C++ signature */
     @staticmethod
     def setup_from_runner_params(
         runner_params: HelloImGui.RunnerParams,
@@ -362,7 +460,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
             If addOnsParams is None, then its default value will be: AddOnsParams()
         """
         pass
-
+    # void SetupFromSimpleRunnerParams(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams = AddOnsParams());    /* original C++ signature */
     @staticmethod
     def setup_from_simple_runner_params(
         simple_params: HelloImGui.SimpleRunnerParams,
@@ -375,7 +473,29 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
             If addOnsParams is None, then its default value will be: AddOnsParams()
         """
         pass
-
+    # void SetupFromGuiFunction(    /* original C++ signature */
+    #             const VoidFunction& guiFunction,
+    #             const std::string& windowTitle = "",
+    #             bool windowSizeAuto = false,
+    #             bool windowRestorePreviousGeometry = false,
+    #             const ScreenSize& windowSize = DefaultWindowSize,
+    #             float fpsIdle = 10.f,
+    #             bool topMost = false,
+    #             bool iniDisable = false,
+    #
+    #             // AddOnsParams below:
+    #             bool withImplot = false,
+    #             bool withImplot3d = false,
+    #             bool withMarkdown = false,
+    #             bool withNodeEditor = false,
+    #             bool withTexInspect = false,
+    #             bool withImAnim = false,
+    #             bool withLatex = false,
+    # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    #             const std::optional<NodeEditorConfig>& withNodeEditorConfig = std::nullopt,
+    # #endif
+    #             const std::optional<RichMd::MarkdownOptions> & withMarkdownOptions = std::nullopt
+    #         );
     @staticmethod
     def setup_from_gui_function(
         gui_function: VoidFunction,
@@ -403,12 +523,13 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
             If windowSize is None, then its default value will be: DefaultWindowSize
         """
         pass
-
+    # void Render();    /* original C++ signature */
     @staticmethod
     def render() -> None:
         """Renders the current frame. Should be called regularly to maintain the application's responsiveness."""
         pass
-
+    # void TearDown();    /* original C++ signature */
+    #     }
     @staticmethod
     def tear_down() -> None:
         """Tears down the renderer and releases all associated resources.
@@ -422,6 +543,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
 
 ####################    <generated_from:clock.h>    ####################
 
+# double ClockSeconds();    /* original C++ signature */
+# }
 def clock_seconds() -> float:
     """Chronometer in seconds"""
     pass
@@ -435,14 +558,16 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
     pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace CodeUtils"""
 
+    # std::string Unindent(const std::string& code, bool is_markdown);    /* original C++ signature */
     @staticmethod
     def unindent(code: str, is_markdown: bool) -> str:
         pass
-
+    # std::string UnindentCode(const std::string& code);    /* original C++ signature */
     @staticmethod
     def unindent_code(code: str) -> str:
         pass
-
+    # std::string UnindentMarkdown(const std::string& code);    /* original C++ signature */
+    # }
     @staticmethod
     def unindent_markdown(code: str) -> str:
         pass
@@ -464,20 +589,41 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     #    A snippet: its code, its language, its look.
 
     class SnippetLanguage(enum.IntEnum):
+        # Cpp,    /* original C++ signature */
         cpp = enum.auto()  # (= 0)
+        # Hlsl,    /* original C++ signature */
         hlsl = enum.auto()  # (= 1)
+        # Glsl,    /* original C++ signature */
         glsl = enum.auto()  # (= 2)
+        # C,    /* original C++ signature */
         c = enum.auto()  # (= 3)
+        # Sql,    /* original C++ signature */
         sql = enum.auto()  # (= 4)
+        # AngelScript,    /* original C++ signature */
         angel_script = enum.auto()  # (= 5)
+        # Lua,    /* original C++ signature */
         lua = enum.auto()  # (= 6)
+        # Python    /* original C++ signature */
+        #     }
         python = enum.auto()  # (= 7)
 
     class SnippetTheme(enum.IntEnum):
+        # Auto,       /* original C++ signature */
         auto = enum.auto()  # (= 0)  # Automatic based on bg color
+        # Dark,    /* original C++ signature */
         dark = enum.auto()  # (= 1)
+        # Light,    /* original C++ signature */
+        #     }
         light = enum.auto()  # (= 2)
 
+    # inline SnippetLanguage DefaultSnippetLanguage()    /* original C++ signature */
+    #     {
+    # #ifdef IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON
+    #         return SnippetLanguage::Python;
+    # #else
+    #         return SnippetLanguage::Cpp;
+    # #endif
+    #     }
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
         """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON
@@ -486,32 +632,45 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         pass
 
     class SnippetData:
+        # std::string Code = "";    /* original C++ signature */
         code: str = ""
+        # SnippetLanguage Language = DefaultSnippetLanguage();    /* original C++ signature */
         language: snippets.SnippetLanguage = snippets.default_snippet_language()
+        # SnippetTheme Palette = SnippetTheme::Auto;    /* original C++ signature */
         palette: snippets.SnippetTheme = snippets.SnippetTheme.auto
 
+        # bool ShowCopyButton = true;    /* original C++ signature */
         show_copy_button: bool = (
             True  # Displayed on top of the editor (Top Right corner)
         )
+        # bool ShowCursorPosition = true;    /* original C++ signature */
         show_cursor_position: bool = True  # Show line and column number
+        # std::string DisplayedFilename = {};    /* original C++ signature */
         displayed_filename: str = ""  # Displayed on top of the editor
 
+        # int HeightInLines = 0;    /* original C++ signature */
         height_in_lines: int = 0  # Number of visible lines in the editor
+        # int MaxHeightInLines = 40;    /* original C++ signature */
         # If the number of lines in the code exceeds MaxHeightInLines, the editor will scroll. Set to 0 to disable.
         max_height_in_lines: int = 40
 
+        # bool ReadOnly = true;    /* original C++ signature */
         read_only: bool = True  # Snippets are read-only by default
 
+        # bool Border = false;    /* original C++ signature */
         border: bool = False  # Draw a border around the editor
 
+        # bool DeIndentCode = true;    /* original C++ signature */
         de_indent_code: bool = (
             True  # Keep the code indentation, but remove main indentation,
         )
         # so that the displayed code start at column 1
 
+        # bool AddFinalEmptyLine = false;    /* original C++ signature */
         add_final_empty_line: bool = (
             False  # Add an empty line at the end of the code if missing
         )
+        # void blah(std::string Code = "", SnippetLanguage Language = DefaultSnippetLanguage(), SnippetTheme Palette = SnippetTheme::Auto, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = __srcmlcpp_brace_init__(), int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = true, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false);    /* original C++ signature */
         def __init__(
             self,
             code: str = "",
@@ -535,6 +694,8 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     # =================================================================================================================
     #    One snippet, editable or not, or several side by side.
 
+    # bool ShowEditableCodeSnippet(const std::string& label_id, SnippetData* snippetData, float width = 0.f,    /* original C++ signature */
+    #                                  int overrideHeightInLines = 0);
     @staticmethod
     def show_editable_code_snippet(
         label_id: str,
@@ -543,13 +704,14 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         override_height_in_lines: int = 0,
     ) -> bool:
         pass
-
+    # void ShowCodeSnippet(const SnippetData& snippetData, float width = 0.f, int overrideHeightInLines = 0);    /* original C++ signature */
     @staticmethod
     def show_code_snippet(
         snippet_data: SnippetData, width: float = 0.0, override_height_in_lines: int = 0
     ) -> None:
         pass
-
+    # void ShowSideBySideSnippets(const SnippetData& snippet1, const SnippetData& snippet2,    /* original C++ signature */
+    #                                 bool hideIfEmpty = true, bool equalVisibleLines = true);
     @staticmethod
     @overload
     def show_side_by_side_snippets(
@@ -559,7 +721,8 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         equal_visible_lines: bool = True,
     ) -> None:
         pass
-
+    # void ShowSideBySideSnippets(const std::vector<SnippetData>& snippets ,    /* original C++ signature */
+    #                                 bool hideIfEmpty = true, bool equalVisibleLines = true);
     @staticmethod
     @overload
     def show_side_by_side_snippets(

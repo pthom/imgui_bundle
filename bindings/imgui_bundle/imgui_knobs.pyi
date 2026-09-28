@@ -21,44 +21,73 @@ ImGuiKnobVariant = int
 ####################    <generated_from:imgui-knobs.h>    ####################
 
 class ImGuiKnobFlags_(enum.IntEnum):
+    # ImGuiKnobFlags_NoTitle = 1 << 0,    /* original C++ signature */
     no_title = enum.auto()  # (= 1 << 0)
+    # ImGuiKnobFlags_NoInput = 1 << 1,    /* original C++ signature */
     no_input = enum.auto()  # (= 1 << 1)
+    # ImGuiKnobFlags_ValueTooltip = 1 << 2,    /* original C++ signature */
     value_tooltip = enum.auto()  # (= 1 << 2)
+    # ImGuiKnobFlags_DragHorizontal = 1 << 3,    /* original C++ signature */
     drag_horizontal = enum.auto()  # (= 1 << 3)
+    # ImGuiKnobFlags_DragVertical = 1 << 4,    /* original C++ signature */
     drag_vertical = enum.auto()  # (= 1 << 4)
+    # ImGuiKnobFlags_Logarithmic = 1 << 5,    /* original C++ signature */
     logarithmic = enum.auto()  # (= 1 << 5)
+    # ImGuiKnobFlags_AlwaysClamp = 1 << 6    /* original C++ signature */
+    # }
     always_clamp = enum.auto()  # (= 1 << 6)
 
 class ImGuiKnobVariant_(enum.IntEnum):
+    # ImGuiKnobVariant_Tick = 1 << 0,    /* original C++ signature */
     tick = enum.auto()  # (= 1 << 0)
+    # ImGuiKnobVariant_Dot = 1 << 1,    /* original C++ signature */
     dot = enum.auto()  # (= 1 << 1)
+    # ImGuiKnobVariant_Wiper = 1 << 2,    /* original C++ signature */
     wiper = enum.auto()  # (= 1 << 2)
+    # ImGuiKnobVariant_WiperOnly = 1 << 3,    /* original C++ signature */
     wiper_only = enum.auto()  # (= 1 << 3)
+    # ImGuiKnobVariant_WiperDot = 1 << 4,    /* original C++ signature */
     wiper_dot = enum.auto()  # (= 1 << 4)
+    # ImGuiKnobVariant_Stepped = 1 << 5,    /* original C++ signature */
     stepped = enum.auto()  # (= 1 << 5)
+    # ImGuiKnobVariant_Space = 1 << 6,    /* original C++ signature */
+    # }
     space = enum.auto()  # (= 1 << 6)
 
 class color_set:
+    # ImColor base;    /* original C++ signature */
     base: ImColor
+    # ImColor hovered;    /* original C++ signature */
     hovered: ImColor
+    # ImColor active;    /* original C++ signature */
     active: ImColor
 
+    # color_set(ImColor base, ImColor hovered, ImColor active)    /* original C++ signature */
+    #             : base(base), hovered(hovered), active(active) {}
     @overload
     def __init__(self, base: ImColor, hovered: ImColor, active: ImColor) -> None:
         pass
-
+    # color_set() : base(ImColor(0, 0, 0)), hovered(ImColor(0, 0, 0)), active(ImColor(0, 0, 0)) {}    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-
+    # color_set(ImColor color) {    /* original C++ signature */
+    #             base = color;
+    #             hovered = color;
+    #             active = color;
+    #         }
     @overload
     def __init__(self, color: ImColor) -> None:
         pass
 
 class KnobColors:
+    # color_set primary;    /* original C++ signature */
     primary: color_set
+    # color_set secondary;    /* original C++ signature */
     secondary: color_set
+    # color_set track;    /* original C++ signature */
     track: color_set
+    # KnobColors(color_set primary = color_set(), color_set secondary = color_set(), color_set track = color_set());    /* original C++ signature */
     def __init__(
         self,
         primary: Optional[color_set] = None,
@@ -75,16 +104,31 @@ class KnobColors:
         """
         pass
 
+# void SetKnobColors(const KnobColors& colors);    /* original C++ signature */
 def set_knob_colors(colors: KnobColors) -> None:
     """Set custom knob colors. Pass individual color_sets for primary (indicator),
     secondary (circle body), and track (background arc).
     """
     pass
 
+# void UnsetKnobColors();    /* original C++ signature */
 def unset_knob_colors() -> None:
     """Reset to theme-aware defaults (auto-detects dark/light theme)."""
     pass
 
+# bool Knob(    /* original C++ signature */
+#             const char *label,
+#             float *p_value,
+#             float v_min,
+#             float v_max,
+#             float speed = 0,
+#             const char *format = "%.3f",
+#             ImGuiKnobVariant variant = ImGuiKnobVariant_Tick,
+#             float size = 0,
+#             ImGuiKnobFlags flags = 0,
+#             int steps = 10,
+#             float angle_min = -1,
+#             float angle_max = -1);
 def knob(
     label: str,
     p_value: float,
@@ -104,6 +148,19 @@ def knob(
     """
     pass
 
+# bool KnobInt(    /* original C++ signature */
+#             const char *label,
+#             int *p_value,
+#             int v_min,
+#             int v_max,
+#             float speed = 0,
+#             const char *format = "%i",
+#             ImGuiKnobVariant variant = ImGuiKnobVariant_Tick,
+#             float size = 0,
+#             ImGuiKnobFlags flags = 0,
+#             int steps = 10,
+#             float angle_min = -1,
+#             float angle_max = -1);
 def knob_int(
     label: str,
     p_value: int,

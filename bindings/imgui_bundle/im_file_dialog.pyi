@@ -38,6 +38,9 @@ class Path:
 # u8path is deprecated in C++20; use char8_t path constructor instead
 # #if __cplusplus >= 202002L
 #
+# inline std::filesystem::path ifd_u8path(const std::string& s) {    /* original C++ signature */
+#         return std::filesystem::path(reinterpret_cast<const char8_t*>(s.c_str()));
+#     }
 def ifd_u8path(s: str) -> Path:
     pass
 
@@ -47,16 +50,21 @@ def ifd_u8path(s: str) -> Path:
 #
 
 class FileDialog:
+    # static inline FileDialog& Instance()    /* original C++ signature */
+    # 		{
+    # 			static FileDialog ret;
+    # 			return ret;
+    # 		}
     @staticmethod
     def instance() -> FileDialog:
         pass
-
+    # FileDialog();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-
+    # bool Save(const std::string& key, const std::string& title, const std::string& filter, const std::string& startingDir = "");    /* original C++ signature */
     def save(self, key: str, title: str, filter: str, starting_dir: str = "") -> bool:
         pass
-
+    # bool Open(const std::string& key, const std::string& title, const std::string& filter, bool isMultiselect = false, const std::string& startingDir = "");    /* original C++ signature */
     def open(
         self,
         key: str,
@@ -66,56 +74,77 @@ class FileDialog:
         starting_dir: str = "",
     ) -> bool:
         pass
-
+    # bool IsDone(const std::string& key);    /* original C++ signature */
     def is_done(self, key: str) -> bool:
         pass
-
+    # inline bool HasResult() { return m_result.size(); }    /* original C++ signature */
     def has_result(self) -> bool:
         pass
-
+    # inline const std::filesystem::path& GetResult() { return m_result[0]; }    /* original C++ signature */
     def get_result(self) -> Path:
         pass
-
+    # inline const std::vector<std::filesystem::path>& GetResults() { return m_result; }    /* original C++ signature */
     def get_results(self) -> List[Path]:
         pass
-
+    # void Close();    /* original C++ signature */
     def close(self) -> None:
         pass
-
+    # void RemoveFavorite(const std::string& path);    /* original C++ signature */
     def remove_favorite(self, path: str) -> None:
         pass
-
+    # void AddFavorite(const std::string& path);    /* original C++ signature */
     def add_favorite(self, path: str) -> None:
         pass
-
+    # inline const std::vector<std::string>& GetFavorites() { return m_favorites; }    /* original C++ signature */
     def get_favorites(self) -> List[str]:
         pass
-
+    # inline void SetZoom(float z) {     /* original C++ signature */
+    # 			m_zoom = std::min<float>(25.0f, std::max<float>(1.0f, z));
+    # 			m_refreshIconPreview();
+    # 		}
     def set_zoom(self, z: float) -> None:
         pass
-
+    # inline float GetZoom() { return m_zoom; }    /* original C++ signature */
     def get_zoom(self) -> float:
         pass
 
     class FileTreeNode:
+
+        # FileTreeNode(const std::string& path) {    /* original C++ signature */
+        # 				Path = ifd_u8path(path);
+        # 				Read = false;
+        # 			}
         def __init__(self, path: str) -> None:
             pass
+        # std::filesystem::path Path;    /* original C++ signature */
         path: Path
+        # bool Read;    /* original C++ signature */
         read: bool
+        # std::vector<FileTreeNode*> Children;    /* original C++ signature */
         children: List[FileDialog.FileTreeNode]
 
     class FileData:
+        # FileData(const std::filesystem::path& path);    /* original C++ signature */
         def __init__(self, path: Path) -> None:
             pass
+        # std::filesystem::path Path;    /* original C++ signature */
         path: Path
+        # bool IsDirectory;    /* original C++ signature */
         is_directory: bool
+        # size_t Size;    /* original C++ signature */
         size: int
+        # time_t DateModified;    /* original C++ signature */
         date_modified: int
 
+        # bool HasIconPreview;    /* original C++ signature */
         has_icon_preview: bool
+        # ImTextureID IconPreview;    /* original C++ signature */
         icon_preview: ImTextureID
+        # uint8_t* IconPreviewData;    /* original C++ signature */
         icon_preview_data: int
+        # int IconPreviewWidth,     /* original C++ signature */
         icon_preview_width: int
+        # IconPreviewHeight;    /* original C++ signature */
         icon_preview_height: int
 
 ####################    </generated_from:ImFileDialog.h>    ####################

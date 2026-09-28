@@ -150,6 +150,7 @@ def main() -> None:
 
     options.namespaces_root = ["pfd"]
     options.namespace_exclude__regex = ""
+    options.original_signature_flag_show = True
     options.python_run_black_formatter = True
 
     generator = litgen.LitgenGenerator(options)
