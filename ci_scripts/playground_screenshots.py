@@ -92,6 +92,26 @@ def _open(window: str, *labels: str) -> Callable[[Any], None]:
     return test
 
 
+def _neutral_shell() -> None:
+    """The terminal: /bin/sh with a plain prompt (the user's shell prompt may show their name and their machine's)"""
+    os.environ["SHELL"] = "/bin/sh"
+    os.environ["PS1"] = "$ "
+    os.environ.pop("ENV", None)  # sh's startup file
+
+
+def _shell_commands(ctx: Any) -> None:
+    """Focuses the terminal (a click in it), and types a few commands"""
+    from imgui_bundle import imgui, ImVec2
+    ctx.mouse_move_to_pos(ImVec2(400, 200))
+    ctx.mouse_click(0)
+    ctx.yield_(30)  # the shell starts
+    for command in ['echo "A real shell, inside an ImGui window"',
+                    r"printf '\033[1;32mgreen \033[1;33myellow \033[1;34mblue\033[0m\n'", "seq 1 3"]:
+        ctx.key_chars(command)
+        ctx.key_press(imgui.Key.enter)
+        ctx.yield_(10)
+
+
 def _command_palette(ctx: Any) -> None:
     """Opens the command palette (Ctrl+Shift+P), and filters its commands"""
     from imgui_bundle import imgui
@@ -114,6 +134,12 @@ SHOTS: dict[str, Shot] = {
     "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.08, 0.95, 0.82)),  # layout: fiat_settings
     "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),
     "themes.py": Shot(crop=(0.0, 0.33, 1.0, 1.0)),
+    # The explorer's demos (source: demos_python)
+    "demo_widgets.py": Shot(crop=(0.0, 0.0, 0.82, 0.512)),  # 16:10, as the launcher's cards
+    "demo_imgui_md.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    "demo_text_edit.py": Shot(crop=(0.0, 0.0, 0.85, 0.664)),
+    "demo_logger.py": Shot(crop=(0.0, 0.0, 0.8, 0.667)),
+    "demo_terminal.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.5625)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),

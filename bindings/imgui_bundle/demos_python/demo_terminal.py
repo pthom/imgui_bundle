@@ -1,9 +1,10 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-"""Launcher demo for imgui_bundle.imgui_terminal: an embedded terminal emulator.
+"""Terminal: a shell inside an ImGui window
 
-A real shell runs behind a pseudo-terminal; pyte parses its VT100 output and
-`TerminalView` draws it. Standalone demo with more comments:
-bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_pyte.py
+A real shell in an ImGui widget: type commands, scroll back through the history, select and copy. The shell runs
+behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/pyte) parses its VT100 output, and
+`imgui_bundle.imgui_terminal.TerminalView` draws it. A standalone version, with more comments:
+`demos_terminal/demo_terminal_pyte.py`.
 """
 from __future__ import annotations
 

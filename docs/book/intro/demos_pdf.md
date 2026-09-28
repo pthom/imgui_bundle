@@ -194,6 +194,84 @@ looks come from [Hello ImGui](https://github.com/pthom/hello_imgui).
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=themes.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/themes.py)
 
+### Knobs, toggles, spinners and more
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_widgets.jpg
+:alt: Knobs, toggles, spinners and more
+:width: 400px
+:::
+
+Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own. They come
+from the libraries in the bundle: [imgui-knobs](https://github.com/altschuler/imgui-knobs),
+[imgui_toggle](https://github.com/cmdwtf/imgui_toggle), [imspinner](https://github.com/dalerank/imspinner),
+[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette) and ImCoolBar. Also file dialogs: the
+native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)), and
+[ImFileDialog](https://github.com/pthom/ImFileDialog), drawn with ImGui.
+
+*Python, C++*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_widgets.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_widgets.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp)
+
+### Markdown tour
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_imgui_md.jpg
+:alt: Markdown tour
+:width: 400px
+:::
+
+Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows
+its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
+
+*Python, C++*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
+
+### Code editor
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_text_edit.jpg
+:alt: Code editor
+:width: 400px
+:::
+
+A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus.
+Each tab shows one feature, and a checkbox shows its source. The editor is
+[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.
+
+*Python, C++*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_text_edit.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_text_edit.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp)
+
+### Log window
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_logger.jpg
+:alt: Log window
+:width: 400px
+:::
+
+A log window for your app, with four levels: debug, info, warning and error. Call `hello_imgui.log()` anywhere, and
+show the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from
+[ImGuiAl](https://github.com/leiradel/ImGuiAl).
+
+*Python, C++*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_logger.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_logger.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_logger.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_logger.cpp)
+
+### Terminal
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal.jpg
+:alt: Terminal
+:width: 400px
+:::
+
+A real shell in an ImGui widget: type commands, scroll back through the history, select and copy. The shell runs
+behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/pyte) parses its VT100 output, and
+`imgui_bundle.imgui_terminal.TerminalView` draws it. A standalone version, with more comments:
+`demos_terminal/demo_terminal_pyte.py`.
+
+*Python, Desktop only*
+
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py)
+
 ## Build an app
 
 Layouts, docking, backgrounds, fonts, testing: what a real application needs

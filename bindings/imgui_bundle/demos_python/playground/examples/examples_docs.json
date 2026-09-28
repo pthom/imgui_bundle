@@ -69,6 +69,31 @@
     "text": "Pick a complete look for your app, then fine-tune its colors, rounding and spacing. The complete\nlooks come from [Hello ImGui](https://github.com/pthom/hello_imgui).",
     "summary": "Pick a complete look for your app, then fine-tune its colors, rounding and spacing."
   },
+  "demo_widgets.py": {
+    "title": "Widgets: knobs, toggles, spinners and more",
+    "text": "Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own. They come\nfrom the libraries in the bundle: [imgui-knobs](https://github.com/altschuler/imgui-knobs),\n[imgui_toggle](https://github.com/cmdwtf/imgui_toggle), [imspinner](https://github.com/dalerank/imspinner),\n[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette) and ImCoolBar. Also file dialogs: the\nnative ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)), and\n[ImFileDialog](https://github.com/pthom/ImFileDialog), drawn with ImGui.",
+    "summary": "Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own."
+  },
+  "demo_imgui_md.py": {
+    "title": "Markdown: a tour of rich_md",
+    "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows\nits source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.",
+    "summary": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more."
+  },
+  "demo_text_edit.py": {
+    "title": "Text editor: syntax highlighting, diffs, multiple cursors",
+    "text": "A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus.\nEach tab shows one feature, and a checkbox shows its source. The editor is\n[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.",
+    "summary": "A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus."
+  },
+  "demo_logger.py": {
+    "title": "Logger: a log window for your app",
+    "text": "A log window for your app, with four levels: debug, info, warning and error. Call `hello_imgui.log()` anywhere, and\nshow the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from\n[ImGuiAl](https://github.com/leiradel/ImGuiAl).",
+    "summary": "A log window for your app, with four levels: debug, info, warning and error."
+  },
+  "demo_terminal.py": {
+    "title": "Terminal: a shell inside an ImGui window",
+    "text": "A real shell in an ImGui widget: type commands, scroll back through the history, select and copy. The shell runs\nbehind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/pyte) parses its VT100 output, and\n`imgui_bundle.imgui_terminal.TerminalView` draws it. A standalone version, with more comments:\n`demos_terminal/demo_terminal_pyte.py`.",
+    "summary": "A real shell in an ImGui widget: type commands, scroll back through the history, select and copy."
+  },
   "layout_child.py": {
     "title": "Resizable Layouts with begin_child",
     "text": "Learn how to create resizable adjacent panels, using child windows.",

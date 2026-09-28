@@ -2,18 +2,20 @@
 """
 The demos of Dear ImGui Bundle, with their pictures, descriptions and code.
 
-The playground's examples and the immapp demos, by category. Pick one to see its picture and description, then run
-it, read its code, or open it online: in the Python playground, or in the C++ explorer.
+The playground's examples, the immapp demos and the explorer's demos, by category. Pick one to see its picture and
+description, then run it (the explorer's demos run here, in place), read its code, or open it online: in the Python
+playground, or in the C++ explorer.
 
 The catalog is the playground's (`playground/examples/examples.json`, and the descriptions extracted from the
 docstrings in `examples_docs.json`). The pictures come from the website (see `ci_scripts/playground_screenshots.py`).
 """
+import importlib
 import json
 import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Callable, Optional
 
 from imgui_bundle import imgui, immapp, hello_imgui, rich_md, im_anim, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4, IM_COL32, em_size
@@ -25,8 +27,9 @@ PICTURES_URL = SITE + "/resources/playground/"
 # In a clone of the repository, the pictures are also here, before they reach the website
 LOCAL_PICTURES = (Path(main_python_package_folder()).parent.parent
                   / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground")
-EXAMPLES_DIR = Path(demos_python_folder()) / "playground/examples"
-CPP_IMMAPP_DIR = Path(demos_cpp_folder()) / "demos_immapp"
+DEMOS_PYTHON_DIR = Path(demos_python_folder()).resolve()
+DEMOS_CPP_DIR = Path(demos_cpp_folder()).resolve()  # its folders mirror those of demos_python
+EXAMPLES_DIR = DEMOS_PYTHON_DIR / "playground/examples"
 
 CARD_WIDTH = 15.0  # em: the minimum width of a card
 DETAIL_WIDTH = 28.0  # em
@@ -64,10 +67,15 @@ class Demo:
     summary: str  # its first sentences, for the card (markdown)
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
+    in_place: bool  # its demo_gui() can run inside the launcher
 
     @property
     def stem(self) -> str:
         return Path(self.filename).stem
+
+    def module_name(self) -> str:
+        """Its module, e.g. imgui_bundle.demos_python.demo_widgets"""
+        return "imgui_bundle.demos_python." + ".".join(self.path.relative_to(DEMOS_PYTHON_DIR).with_suffix("").parts)
 
     def tags(self) -> list[str]:
         tags = ["Python"]
@@ -94,16 +102,19 @@ def load_catalog() -> list[Category]:
     for e in manifest["examples"]:
         if e.get("hidden") or not e.get("launcher", True):  # "launcher": false, e.g. Fiatlight until its studio is ready
             continue
-        source = e.get("source", "examples")
-        cpp_path = CPP_IMMAPP_DIR / (Path(e["filename"]).stem + ".cpp")
+        path = (EXAMPLES_DIR / manifest["sources"][e.get("source", "examples")] / e["filename"]).resolve()
+        cpp_path = None
+        if path.is_relative_to(DEMOS_PYTHON_DIR):  # not the Python backends
+            cpp_path = DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
         categories[e["category"]].demos.append(Demo(
             label=e["label"],
             filename=e["filename"],
             where=e.get("where", "both"),
             text=docs.get(e["filename"], {}).get("text", ""),
             summary=docs.get(e["filename"], {}).get("summary", ""),
-            path=(EXAMPLES_DIR / manifest["sources"][source] / e["filename"]).resolve(),
-            cpp_path=cpp_path if source == "demos_immapp" and cpp_path.exists() else None,
+            path=path,
+            cpp_path=cpp_path if cpp_path is not None and cpp_path.exists() else None,
+            in_place=e.get("in_place", False),
         ))
     return [c for c in categories.values() if c.demos]
 
@@ -294,6 +305,7 @@ class Launcher:
         self.scroll_target: Optional[float] = None  # a click on a category chip scrolls smoothly to it
         self.nb_scrolls = 0
         self.code_view: Optional[tuple[Demo, list[immapp.snippets.SnippetData]]] = None
+        self.in_place: Optional[tuple[Demo, Callable[[], None]]] = None  # a demo shown here, and its demo_gui()
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
 
     # The header: the name, what the bundle is, and a chip per category that scrolls to it
@@ -421,6 +433,9 @@ class Launcher:
         rich_md.render(f"## {demo.label}\n\n{demo.text}")
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
+        if demo.in_place:
+            if self.action(fa.ICON_FA_EYE + "  Show it here", "Runs the demo here, inside the launcher"):
+                self.in_place = (demo, importlib.import_module(demo.module_name()).demo_gui)
         if demo.where != "browser" and can_run_subprocess():
             if self.action(fa.ICON_FA_PLAY + "  Run", "Runs the demo on your machine, in a new window"):
                 spawn_demo_file(str(demo.path))
@@ -457,9 +472,26 @@ class Launcher:
         else:
             immapp.snippets.show_code_snippet(snippets[0])
 
+    def show_in_place(self) -> None:
+        """The demo takes the launcher's whole area (it needs room), under a button back to the demos"""
+        assert self.in_place is not None
+        demo, demo_gui = self.in_place
+        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos"):
+            self.in_place = None
+            return
+        imgui.same_line()
+        big_text(demo.label, 1.3)
+        imgui.separator()
+        imgui.begin_child("in place")
+        demo_gui()
+        imgui.end_child()
+
     def gui(self) -> None:
         self.pictures.new_frame()
         self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None)
+        if self.in_place is not None:
+            self.show_in_place()
+            return
         self.header()
         if self.code_view is not None:
             self.show_code()
@@ -496,8 +528,9 @@ def demo_gui() -> None:
 
 
 def main() -> None:
+    # The add-ons of the explorer (demo_imgui_bundle.py): the demos shown in place need them
     immapp.run(demo_gui, window_title="Dear ImGui Bundle: the demos", window_size=(1500, 950), with_markdown=True,
-               with_im_anim=True)
+               with_latex=True, with_node_editor=True, with_implot=True, with_implot3d=True, with_im_anim=True)
 
 
 if __name__ == "__main__":

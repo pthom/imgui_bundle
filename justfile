@@ -382,9 +382,12 @@ cf_stage:
     # 3. Copy python playground
     # ------------------------------------------------------------
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
+    # demos_python/: only its top-level files are examples (its folders are other sources, or not examples; its .ini
+    # files are the settings of local runs)
     python ci_scripts/playground_examples_docs.py
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
-    rsync -a --copy-unsafe-links pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
+    rsync -a --copy-unsafe-links --exclude='/demos_python/*/' --exclude='/demos_python/*.ini' \
+        pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
     # projects/local_wheels/ ships both the wheel (gitignored) and a tracked
     # index.html landing page served at imgui-bundle.pages.dev/local_wheels/.
     rsync -a pyodide_projects/projects/local_wheels/ {{_CF_STAGING}}/local_wheels/

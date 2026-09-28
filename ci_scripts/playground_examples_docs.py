@@ -32,7 +32,8 @@ from PIL import Image
 
 REPO = Path(__file__).resolve().parent.parent
 EXAMPLES_DIR = REPO / "bindings/imgui_bundle/demos_python/playground/examples"
-CPP_IMMAPP_DIR = REPO / "bindings/imgui_bundle/demos_cpp/demos_immapp"
+DEMOS_PYTHON_DIR = REPO / "bindings/imgui_bundle/demos_python"
+DEMOS_CPP_DIR = REPO / "bindings/imgui_bundle/demos_cpp"  # its folders mirror those of demos_python
 BOOK = REPO / "docs/book"
 BOOK_PAGE = BOOK / "intro/demos.md"
 BOOK_PAGE_PDF = BOOK / "intro/demos_pdf.md"
@@ -117,12 +118,14 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, str]], e: dict
     per language"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
-    cpp = CPP_IMMAPP_DIR / f"{stem}.cpp"
-    has_cpp = source == "demos_immapp" and cpp.exists()
+    cpp = (DEMOS_CPP_DIR / path.relative_to(DEMOS_PYTHON_DIR).with_suffix(".cpp")
+           if path.is_relative_to(DEMOS_PYTHON_DIR) else None)  # None: the Python backends
+    cpp_code = f"{GITHUB}{cpp.relative_to(REPO).as_posix()}" if cpp is not None and cpp.exists() else None
+    has_cpp = cpp_code is not None
     where_tags = {"browser": ["Browser only"], "desktop": ["Desktop only"]}.get(where, [])
     playground = f"{SITE}/playground/?demo={e['filename']}"
     explorer = f"{SITE}/explorer/{stem}.html"
-    code, cpp_code = f"{GITHUB}{path.relative_to(REPO).as_posix()}", f"{GITHUB}{cpp.relative_to(REPO).as_posix()}"
+    code = f"{GITHUB}{path.relative_to(REPO).as_posix()}"
     picture = PICTURES / f"{stem}.jpg"
     lines = []
     if picture.is_file():  # a local path: the book's builds copy it (the PDF too), with no network

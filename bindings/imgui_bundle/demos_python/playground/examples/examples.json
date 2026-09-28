@@ -2,6 +2,7 @@
     "sources": {
         "examples": ".",
         "demos_immapp": "../../demos_immapp",
+        "demos_python": "../..",
         "python_backends": "../../../python_backends/examples",
         "demos_assets": "../../../demos_assets"
     },
@@ -141,6 +142,42 @@
             "label": "Themes and theme tweaking",
             "filename": "themes.py",
             "category": "Library tours"
+        },
+        {
+            "label": "Knobs, toggles, spinners and more",
+            "filename": "demo_widgets.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
+            "label": "Markdown tour",
+            "filename": "demo_imgui_md.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
+            "label": "Code editor",
+            "filename": "demo_text_edit.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
+            "label": "Log window",
+            "filename": "demo_logger.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
+            "label": "Terminal",
+            "filename": "demo_terminal.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "where": "desktop",
+            "in_place": true
         },
         {
             "label": "Resizable panels with child windows",

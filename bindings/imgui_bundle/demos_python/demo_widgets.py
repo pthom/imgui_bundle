@@ -1,4 +1,13 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+"""Widgets: knobs, toggles, spinners and more
+
+Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own. They come
+from the libraries in the bundle: [imgui-knobs](https://github.com/altschuler/imgui-knobs),
+[imgui_toggle](https://github.com/cmdwtf/imgui_toggle), [imspinner](https://github.com/dalerank/imspinner),
+[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette) and ImCoolBar. Also file dialogs: the
+native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs)), and
+[ImFileDialog](https://github.com/pthom/ImFileDialog), drawn with ImGui.
+"""
 from typing import List
 from imgui_bundle import (
     imgui,

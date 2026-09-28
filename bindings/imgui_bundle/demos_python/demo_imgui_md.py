@@ -1,4 +1,9 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+"""Markdown: a tour of rich_md
+
+Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows
+its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
+"""
 from imgui_bundle import imgui, rich_md, immapp
 from imgui_bundle.immapp import icons_fontawesome_6 as fa
 

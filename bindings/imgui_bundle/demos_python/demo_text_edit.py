@@ -1,4 +1,10 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+"""Text editor: syntax highlighting, diffs, multiple cursors
+
+A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus.
+Each tab shows one feature, and a checkbox shows its source. The editor is
+[ImGuiColorTextEdit](https://github.com/goossens/ImGuiColorTextEdit), by Johan A. Goossens.
+"""
 import inspect
 import textwrap
 from typing import Callable, Any

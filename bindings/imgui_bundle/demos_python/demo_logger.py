@@ -1,4 +1,10 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+"""Logger: a log window for your app
+
+A log window for your app, with four levels: debug, info, warning and error. Call `hello_imgui.log()` anywhere, and
+show the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from
+[ImGuiAl](https://github.com/leiradel/ImGuiAl).
+"""
 import random
 from imgui_bundle import imgui, hello_imgui, rich_md, immapp
 
