@@ -369,7 +369,10 @@ class Launcher:
         if width > imgui.get_content_region_avail().x:
             imgui.new_line()
         imgui.set_next_item_width(width)
+        padding = imgui.get_style().frame_padding
+        imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(padding.x, 0))  # as high as the chips
         _, self.search = imgui.input_text_with_hint("##search", fa.ICON_FA_SEARCH + "  Search the demos", self.search)
+        imgui.pop_style_var()
         if imgui.is_item_active() and imgui.is_key_pressed(imgui.Key.escape):
             self.search = ""
         imgui.set_item_tooltip("Words to find in the title, the description, the category or the libraries of a demo")
