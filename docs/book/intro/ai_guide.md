@@ -219,6 +219,47 @@ Prefer StackLayout over `SameLine()` when:
 - You want flexible spacing between groups of widgets
 
 
+## Let the AI see and drive the app
+
+You can check your own work. After a change that affects what the user sees, run the app for a few frames and look at a screenshot, or drive the GUI (click, type, open a header) with the ImGui Test Engine, taking screenshots along the way. Do it before saying that the change works.
+
+**A screenshot of the final frame** (no test engine needed):
+
+```python
+from imgui_bundle import imgui
+from imgui_bundle.immapp import testing
+
+def gui():
+    imgui.text("Hello")
+
+testing.capture_final_frame(gui, "/tmp/out.png", window_size=(600, 400))
+# then look at /tmp/out.png
+```
+
+**Driving the GUI, with screenshots at chosen moments:**
+
+```python
+def gui():
+    imgui.button("Click me")
+
+def my_test(ctx: imgui.test_engine.TestContext):
+    testing.capture(ctx, "/tmp/00_initial.png")
+    ctx.item_click("//**/Click me")  # a widget, found by its label
+    testing.capture(ctx, "/tmp/01_after_click.png")
+
+testing.run(gui, my_test, window_size=(600, 400))
+```
+
+In C++: `ImmApp::Testing::CaptureFinalFrame(guiFn, path, opts)` and `ImmApp::Testing::Capture(ctx, path)`, in `immapp/testing.h`.
+
+Good to know:
+- Both open a real window for a few frames: they need a display (on a headless Linux machine, use Xvfb).
+- They accept the add-on flags of `immapp.run` (`with_markdown`, `with_implot`...).
+- `window_size` is in logical pixels: on a Retina screen, the PNG is twice as large.
+- In the default run speed, `ctx.sleep()` lets no real time pass: for a tooltip's delay or an animation, use `run_speed=testing.TestRunSpeed.normal`.
+- The test engine is in the desktop packages, not in the Pyodide build (in the browser).
+- The test engine's page gives more: https://imgui-bundle.pages.dev/doc/core-libs/test-engine/. Coding agents working in the bundle's repository also find skills about this in `.claude/skills/` (`screenshot-imgui-bundle`, `interact-and-screenshot`).
+
 ## References for Python APIs
 
 ### Hello ImGui and ImApp API
