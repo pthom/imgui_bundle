@@ -312,7 +312,8 @@ class Launcher:
         self.code_view: Optional[tuple[Demo, list[immapp.snippets.SnippetData]]] = None
         self.in_place: Optional[tuple[Demo, Callable[[], None]]] = None  # a demo shown here, and its demo_gui()
         self.variant: dict[str, int] = {}  # per demo with variants: the one picked in the detail pane
-        self.library = ""  # the library chip in use: the gallery shows the demos that use it (all when empty)
+        self.library = ""  # the library in use: the gallery shows the demos that use it (all when empty)
+        self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
 
     def libraries(self) -> list[tuple[str, int]]:
@@ -325,8 +326,11 @@ class Launcher:
         return sorted(counts.items(), key=lambda item: (-item[1], item[0].lower()))
 
     def shown(self, category: Category) -> list[Demo]:
-        """The demos of the category that the gallery shows: those that use the library chip in use"""
-        return [d for d in category.demos if not self.library or self.library in d.uses]
+        """The demos of the category that the gallery shows: those that use the library in use, and that have every
+        word of the search in their title, their description, their category or their libraries"""
+        words = self.search.lower().split()
+        return [d for d in category.demos if (not self.library or self.library in d.uses) and (not words or all(
+            w in f"{d.label} {plain_text(d.text)} {category.name} {' '.join(d.uses)}".lower() for w in words))]
 
     def chip(self, label: str, highlight: float) -> bool:
         """A small button, colored with the accent when highlighted (in view, or in use); a row of chips wraps"""
@@ -355,8 +359,21 @@ class Launcher:
         imgui.dummy(ImVec2(em_size(1.0), 0))
         imgui.same_line()
         self.library_filter()
+        self.search_box()
         imgui.new_line()
         imgui.separator()
+
+    def search_box(self) -> None:
+        """The words to find in the demos (Escape clears them)"""
+        width = em_size(14)
+        if width > imgui.get_content_region_avail().x:
+            imgui.new_line()
+        imgui.set_next_item_width(width)
+        _, self.search = imgui.input_text_with_hint("##search", fa.ICON_FA_SEARCH + "  Search the demos", self.search)
+        if imgui.is_item_active() and imgui.is_key_pressed(imgui.Key.escape):
+            self.search = ""
+        imgui.set_item_tooltip("Words to find in the title, the description, the category or the libraries of a demo")
+        imgui.same_line()
 
     def library_filter(self) -> None:
         """A button that says which library the gallery is filtered on, and a popup to pick one"""
@@ -442,7 +459,7 @@ class Launcher:
         card_width = (avail - (columns - 1) * spacing) / columns  # the cards fill the width
         categories = [c for c in self.categories if self.shown(c)]
         if not categories:
-            imgui.text_disabled("No demo uses this library.")
+            imgui.text_disabled("No demo matches.")
             return
         self.category_in_view = categories[0].name
         for i, category in enumerate(categories):
