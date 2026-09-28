@@ -99,7 +99,7 @@ OpenCV must then be findable (installed, or via `-DOpenCV_DIR=...`). As a conven
 ```bash
 # From the repo root
 just test_pytest    # Run pytest
-just test_mypy      # Run mypy type checking on bindings
+just mypy           # Run mypy type checking on bindings
 ```
 
 Or without `just`:
@@ -118,8 +118,15 @@ just doc_serve                # Live-reload dev server (recommended for editing)
 # or, for the full Cloudflare-deploy build (HTML anchored under /doc/, plus PDF):
 just doc_build_cf
 # Then preview under the right /doc/ prefix:
-just cf_stage && just cf_serve_local   # http://localhost:8765/doc/
+just cf_stage && just cf_serve_local   # http://localhost:8764/doc/
 ```
+
+Pitfalls of the book (MyST, exported to PDF with Typst):
+- The PDF is one Typst document made of every page: a heading used on two pages makes a duplicate label, and the PDF build fails (`label <...> occurs multiple times`). Rename one of the headings.
+- The PDF drops grids (`{grid}` directives). A page with grids needs a plain copy for the PDF: see `intro/demos.md` and `intro/demos_pdf.md`, written by `just playground_examples_docs`, and `_toc_pdf.yml`.
+- Nested directives need longer outer fences: a card (`::::`) inside a grid (`:::::`), with an image (`:::`) inside the card.
+- mystmd takes the page's title from its first H1 only when it comes first: put a comment after it, not before.
+- `jupyter-book build --pdf` exits 0 even when Typst fails: `just doc_build_cf` checks that the PDF was really written.
 
 ## Useful justfile commands
 
@@ -132,8 +139,8 @@ Run `just` (no arguments) to see all available commands. Key groups:
 | `just libs_bindings_all` | Regenerate all Python bindings |
 | `just libs_check_upstream` | Check which fork libraries have new upstream changes |
 | `just test_pytest` | Run pytest |
-| `just test_mypy` | Run mypy on bindings |
-| `just doc_serve_interactive` | Build & serve docs with live reload |
+| `just mypy` | Run mypy on bindings |
+| `just doc_serve` | Build & serve docs with live reload |
 
 See [build_guide.md](build_guide.md) for the full command reference.
 

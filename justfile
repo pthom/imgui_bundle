@@ -354,10 +354,10 @@ cf_resources_sync:
 [group('cloudflare')]
 cf_stage_prepare: cf_resources_sync doc_build_cf ibex_build pyodide_setup_local_build pyodide_build
 
-# populates pyodide_projects/_cf_staging which is what will be uploaded to imgui-bundle.pages.dev/
+# populates _cf_staging which is what will be uploaded to imgui-bundle.pages.dev/
 [group('cloudflare')]
 cf_stage:
-    # 0. Make dir pyodide_projects/_cf_staging (gitignored)
+    # 0. Make dir _cf_staging (gitignored)
     rm -rf {{_CF_STAGING}}
     mkdir -p {{_CF_STAGING}}
     #

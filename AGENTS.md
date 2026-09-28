@@ -101,7 +101,22 @@ External libraries and their bindings are in `external/`:
 - Each library has a submodule and a `bindings/` folder
 - `external/bindings_generation/autogenerate_all.py` regenerates all bindings
 
-Common tasks (bindings, builds, tests, mypy, deploys) are recipes of the `justfile`: check it before guessing a script path.
+## Maintenance tasks
+
+The commands are recipes of the `justfile`: `just --list` shows them by group, each with a comment. Before doing a task by hand, look for its recipe, and read its doc:
+
+| Task | Recipes | Doc |
+|---|---|---|
+| Forks and submodules | `libs_info`, `libs_check_upstream`, `libs_log <lib>`, `libs_rebase <lib>`, `libs_tag <lib>`, `libs_reattach`, `libs_fetch`, `libs_pull` | `bindings_forks.md`, `bindings_update.md` |
+| Python bindings | `libs_bindings <lib>`, `libs_bindings_all` | `bindings_update.md`, `bindings_newlib.md` |
+| Type checks and tests | `mypy`, `mypy_bindings_scripts`, `test_pytest` | `testing.md` |
+| C++ package, integration in other projects | `cpp_package_install`, `example_integration_all` | the recipes' comments |
+| Web explorers (Emscripten) | `ibex_build`, `ibex_serve`, `imex_ems_build`, `imex_ems_serve`, `imex_ems_deploy` | `build_guide.md` |
+| Pyodide wheel | `pyodide_setup_local_build`, `pyodide_build`, `pyodide_demo_runner` | `Readme_pyodide_bundle.md` |
+| Playground | `playground_examples_docs` (the menu's descriptions, the manifests, the book's demos page), `playground_screenshots [names]` | the docstrings of `ci_scripts/playground_examples_docs.py` and `ci_scripts/playground_screenshots.py` |
+| Book | `doc_serve`, `doc_build_cf` | `getting_started_dev.md` ("Build the docs") |
+| Web site | `cf_deploy_all_in_one` (or `cf_stage_prepare`, `cf_stage`, `cf_deploy`), `cf_serve_local` | `cloudflare_deploy.md` |
+| PyPI release | (CI) | `pypi_deploy.md` |
 
 ## Code Conventions
 

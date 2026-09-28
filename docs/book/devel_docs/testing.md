@@ -4,7 +4,7 @@
 
 ```bash
 just test_pytest    # Run the test suite
-just test_mypy      # Type-check the Python bindings
+just mypy           # Type-check the Python bindings
 ```
 
 Or without `just`:

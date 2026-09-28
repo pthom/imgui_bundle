@@ -117,7 +117,7 @@ python bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
 **Run the test suite:**
 ```bash
 just test_pytest   # or: pytest
-just test_mypy     # or: cd bindings && ./mypy_bindings.sh
+just mypy          # or: mypy (from the repo root)
 ```
 
 See [Testing](testing.md) for more details.

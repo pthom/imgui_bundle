@@ -142,7 +142,7 @@ just imex_ems_serve   # serve on port 7006, add ?lib=imgui etc. to URL
 ```bash
 just pyodide_setup_local_build    # one-time setup
 just pyodide_build                # build wheel
-just pyodide_test_serve           # serve test page
+just pyodide_serve_projects       # serve the test pages (port 6456)
 ```
 
 See also `ci_scripts/pyodide_local_build/Readme.md`.
@@ -190,17 +190,15 @@ The `justfile` at the repo root provides shortcuts for common tasks. Run `just` 
 
 | Command | Description |
 |---------|-------------|
-| `just doc_serve_interactive` | Build docs with live reload |
-| `just doc_build_static` | Build static HTML |
-| `just doc_serve_static` | Serve static HTML on port 7005 |
-| `just doc_build_pdf` | Build PDF |
+| `just doc_serve` | Build docs with live reload |
+| `just doc_build_cf` | Build the HTML (under /doc/) and the PDF, as deployed |
 
 ### Testing
 
 | Command | Description |
 |---------|-------------|
 | `just test_pytest` | Run pytest |
-| `just test_mypy` | Run mypy on bindings |
+| `just mypy` | Run mypy on bindings |
 
 ### Pyodide
 
@@ -208,7 +206,7 @@ The `justfile` at the repo root provides shortcuts for common tasks. Run `just` 
 |---------|-------------|
 | `just pyodide_setup_local_build` | Install tools for local Pyodide builds |
 | `just pyodide_build` | Build Pyodide wheel |
-| `just pyodide_test_serve` | Serve browser test page |
+| `just pyodide_serve_projects` | Serve the browser test pages (port 6456) |
 | `just pyodide_clean` | Clean Pyodide build artifacts |
 
 ### CI / Docker

@@ -24,7 +24,7 @@ by the CF edge; they are pre-gzipped by `cf_stage`.
 ## How the deploy works
 
 Cloudflare Pages replaces the whole site on every upload, so we maintain a
-local composed staging directory (`pyodide_projects/_cf_staging/`, gitignored)
+local composed staging directory (`_cf_staging/`, gitignored)
 that holds the union of all subparts. `just cf_stage` refreshes the staging
 tree; `just cf_deploy` uploads it via `wrangler`.
 
@@ -68,15 +68,15 @@ just cf_stage
 just cf_deploy
 
 # Test the composed site locally before deploying
-just cf_serve_local        # http://localhost:8765/
+just cf_serve_local        # http://localhost:8764/
 # → COOP/COEP headers are applied only to /explorer/* (mirrors prod)
 # → Content-Encoding: gzip is applied to /explorer/*.data
 
 # Inspect the staging tree (gitignored)
-ls pyodide_projects/_cf_staging/
+ls _cf_staging/
 
 # Nuke staging (next deploy re-uses on-disk build outputs)
-just cf_clean
+rm -rf _cf_staging
 ```
 
 
@@ -127,9 +127,11 @@ rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --gl
 Glob-only references (`*pyemscripten*.whl` in `justfile` and the GitHub
 workflows) do not need updating on a version bump — only on a tag rename.
 
-## Related
+## Pitfalls
 
-- Local traineq deploy (kept as fallback): `just pyodide_deploy_imgui_bundle_online`, `just ibex_deploy`
+- Cloudflare Pages refuses a file over 25 MiB. A stray folder can push a packed file over it: a `.mypy_cache/` left in a demo folder gets packed into the explorer's `.data` (run mypy from the repo root, and remove such caches before `just cf_stage`).
+- A missing file answers 200, with an HTML page. To check that a file is deployed, look at its content type (`curl -sI <url> | grep -i content-type`), not at the status.
+- After a deploy, check the live site: the book (`/doc/`) and its PDF (`/doc/assets/imgui_bundle_book.pdf`), the playground and its `examples/examples_docs.json`, the explorer, `/llms.txt`.
 
 ## Links on imgui-bundle pages at claoudflare
 
