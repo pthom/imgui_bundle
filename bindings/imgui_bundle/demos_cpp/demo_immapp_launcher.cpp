@@ -17,6 +17,7 @@
 #include <cmath>
 #include <filesystem>
 #include <fstream>
+#include <iterator>
 #include <regex>
 #include <sstream>
 
@@ -25,6 +26,8 @@ namespace
     const std::string SITE = "https://imgui-bundle.pages.dev";
     const std::string PICTURES_URL = SITE + "/resources/playground/";
     const std::string GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/";
+    // In a clone of the repository, the pictures are also here, before they reach the website
+    const std::string LOCAL_PICTURES = "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground/";
 
     const float CARD_WIDTH = 15.f;  // em: the minimum width of a card
     const float DETAIL_WIDTH = 28.f;  // em
@@ -441,8 +444,51 @@ void DemoLauncher::LibraryFilter()
 
 
 // ---------------------------------------------------------------------------------------------------------------------
-// The pictures: downloaded by rich_md's image service (in the background), made into textures a few per frame
+// The pictures: from the repository's clone of the website when it is there, else downloaded by rich_md's image
+// service (in the background, when the build has one); made into textures a few per frame
 // ---------------------------------------------------------------------------------------------------------------------
+namespace
+{
+    // A picture, once it is there: nullopt while it downloads; a texture of size 0 when it cannot come
+    std::optional<RichMd::MarkdownImage> LoadPicture(const std::string& stem)
+    {
+        RichMd::MarkdownImage none;
+        none.texture_id = ImTextureID(0);
+        none.size = ImVec2(0, 0);
+#ifndef __EMSCRIPTEN__
+        std::string local = RepoFile(LOCAL_PICTURES + stem + ".jpg");
+        if (!local.empty() && std::filesystem::exists(local))
+        {
+            std::ifstream file(local, std::ios::binary);
+            std::string data((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+            auto image = HelloImGui::ImageAndSizeFromEncodedData(data.data(), data.size(), "launcher " + stem);
+            RichMd::MarkdownImage picture = none;
+            picture.texture_id = image.textureId;
+            picture.size = image.size;
+            return picture;
+        }
+#endif
+        if (!RichMd::GetHostServices().Download)  // no download service in this build (e.g. the Python build's)
+            return none;
+        auto image = RichMd::OnImage_Default(PICTURES_URL + stem + ".jpg");  // nullopt while it downloads
+        if (image.has_value() && image->texture_id == ImTextureID(0))
+            return std::nullopt;  // its texture comes on a later frame (its size is known first): asked again then
+        if (image.has_value())
+        {
+            // rich_md answers a failed download with its broken-image icon: the placeholder is better here
+            static std::optional<ImTextureID> broken;
+            if (!broken.has_value())
+            {
+                auto brokenImage = RichMd::OnImage_Default("images/markdown_broken_image.png");
+                broken = brokenImage.has_value() ? brokenImage->texture_id : ImTextureID(0);
+            }
+            if (image->texture_id == *broken)
+                return none;
+        }
+        return image;
+    }
+}
+
 void DemoLauncher::NewFrame()
 {
     _picturesBudget = TEXTURES_PER_FRAME;
@@ -465,12 +511,12 @@ bool DemoLauncher::DrawPicture(ImDrawList* drawList, const std::string& stem, Im
         image = it->second;
     else if (_picturesBudget > 0)
     {
-        image = RichMd::OnImage_Default(PICTURES_URL + stem + ".jpg");  // nullopt while it downloads
-        if (image.has_value() && image->texture_id == ImTextureID(0))
-            image.reset();  // its texture comes on a later frame (its size is known first): asked again then
+        image = LoadPicture(stem);
         if (image.has_value())
         {
-            _pictures[stem] = image->size.x > 0 ? image : std::nullopt;
+            if (image->size.x <= 0)
+                image.reset();  // it cannot come: the placeholder stays
+            _pictures[stem] = image;
             _picturesBudget -= 1;
             _lastPictureTime = ImGui::GetTime();
         }
