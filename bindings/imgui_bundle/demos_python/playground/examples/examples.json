@@ -48,7 +48,8 @@
         {
             "label": "What is an Immediate GUI",
             "filename": "welcome_imm_mode.py",
-            "category": "Start here"
+            "category": "Start here",
+            "source": "demos_immapp"
         },
         {
             "label": "Hello world, in two lines",
@@ -133,12 +134,14 @@
         {
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
-            "category": "Build an app"
+            "category": "Build an app",
+            "source": "demos_immapp"
         },
         {
             "label": "Dockable windows",
             "filename": "layout_docking.py",
-            "category": "Build an app"
+            "category": "Build an app",
+            "source": "demos_immapp"
         },
         {
             "label": "A full app: docking, fonts, logs",

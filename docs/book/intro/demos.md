@@ -26,7 +26,8 @@ With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple a
 You call functions to create widgets, and they return the current value. That's it.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=welcome_imm_mode.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/welcome_imm_mode.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=welcome_imm_mode.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/welcome_imm_mode.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/welcome_imm_mode.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/welcome_imm_mode.cpp)
 
 ::::
 
@@ -309,7 +310,8 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs
 
 Learn how to create resizable adjacent panels, using child windows.
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=layout_child.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/layout_child.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=layout_child.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_child.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/layout_child.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_child.cpp)
 
 ::::
 
@@ -326,7 +328,8 @@ Learn how to create resizable adjacent panels, using child windows.
 Windows can be dragged, tabbed, and rearranged by the user.
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=layout_docking.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/layout_docking.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=layout_docking.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_docking.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/layout_docking.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_docking.cpp)
 
 ::::
 

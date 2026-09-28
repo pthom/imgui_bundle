@@ -19,9 +19,9 @@ With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple a
 no callbacks, no state synchronization. You call functions to create widgets, and they return the current
 value. That's it.
 
-*Python*
+*Python, C++*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=welcome_imm_mode.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/welcome_imm_mode.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=welcome_imm_mode.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/welcome_imm_mode.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/welcome_imm_mode.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/welcome_imm_mode.cpp)
 
 ### Hello world, in two lines
 
@@ -262,9 +262,9 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs
 
 Learn how to create resizable adjacent panels, using child windows.
 
-*Python*
+*Python, C++*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=layout_child.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/layout_child.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=layout_child.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/layout_child.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_child.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_child.cpp)
 
 ### Dockable windows
 
@@ -277,9 +277,9 @@ Learn how to create resizable adjacent panels, using child windows.
 then assign windows to them.
 Windows can be dragged, tabbed, and rearranged by the user.
 
-*Python*
+*Python, C++*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=layout_docking.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/layout_docking.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=layout_docking.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/layout_docking.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_docking.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_docking.cpp)
 
 ### A full app: docking, fonts, logs
 
