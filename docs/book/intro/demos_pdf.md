@@ -440,7 +440,7 @@ ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 
 *Python*
 
-*Uses: ImPlot, ImmVision*
+*Uses: ImPlot*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
 
@@ -457,7 +457,7 @@ Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 
 *Python*
 
-*Uses: ImPlot3D, ImmVision*
+*Uses: ImPlot3D*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
 

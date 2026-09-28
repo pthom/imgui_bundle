@@ -203,8 +203,7 @@
     "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,\nhistograms, real-time plots and more. A port of implot_demo.cpp: browse it next to its code in the [Dear\nImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).",
     "summary": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more.",
     "uses": [
-      "ImPlot",
-      "ImmVision"
+      "ImPlot"
     ]
   },
   "implot3d_demo.py": {
@@ -212,8 +211,7 @@
     "text": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,\nsurfaces, meshes and more. A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).",
     "summary": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more.",
     "uses": [
-      "ImPlot3D",
-      "ImmVision"
+      "ImPlot3D"
     ]
   },
   "immvision.py": {

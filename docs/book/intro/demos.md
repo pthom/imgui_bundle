@@ -528,7 +528,7 @@ Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: li
 A port of implot_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
 :::
 
-*Uses: ImPlot, ImmVision*
+*Uses: ImPlot*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)
 
@@ -547,7 +547,7 @@ Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenoc
 A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
 :::
 
-*Uses: ImPlot3D, ImmVision*
+*Uses: ImPlot3D*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)
 

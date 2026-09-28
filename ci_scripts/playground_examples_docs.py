@@ -50,9 +50,10 @@ MAX_PARAGRAPH = 400  # characters: a longer first paragraph does not fit the men
 MIN_SUMMARY = 40  # characters: a first "Pyodide only." says too little
 MAX_SUMMARY = 120  # characters: a longer summary pushes the card's "More" far down, and the launcher's card cuts it
 PICTURE_ASPECT, MAX_CROP = 1.6, 1.5  # as in the launcher: cropped to 16:10, or fitted when the shape is too different
-# What an example uses, from its imports: the module, and the name shown (the launcher's library chips, the cards'
+# What an example uses, from its imports: the module, and the name shown (the launcher's library filter, the cards'
 # "Uses" line). A module not listed here is not shown: the core (imgui, hello_imgui, immapp), the markdown and the
-# icons (in nearly every example), and the utilities (numpy, ctypes...)
+# icons (in nearly every example), and the utilities (numpy, ctypes...). When the imports mislead (a library imported
+# for a utility, e.g. ImmVision for a texture in the ImPlot demo), the entry sets its own "uses" in examples.json.
 USES = {
     "implot": "ImPlot", "implot_ctx": "ImPlot", "implot3d": "ImPlot3D", "immvision": "ImmVision",
     "imgui_knobs": "knobs", "imgui_toggle": "toggles", "imspinner": "spinners", "im_cool_bar": "cool bar",
@@ -267,7 +268,8 @@ def main() -> None:
             print(f"warning: {filename}: its summary (first sentence) has {len(plain(summary))} characters "
                   f"(more than {MAX_SUMMARY})")
         files = [folder / v["filename"] for v in example.get("variants", [])] or [folder / filename]
-        docs[filename] = {"title": title, "text": text, "summary": summary, "uses": uses(files)}
+        docs[filename] = {"title": title, "text": text, "summary": summary,
+                          "uses": example.get("uses", uses(files))}  # "uses" in examples.json: the imports mislead
     (EXAMPLES_DIR / "examples_docs.json").write_text(json.dumps(docs, indent=2, ensure_ascii=False) + "\n")
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)

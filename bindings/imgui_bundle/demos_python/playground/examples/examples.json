@@ -197,7 +197,10 @@
         {
             "label": "ImPlot full demo",
             "filename": "implot_demo.py",
-            "category": "Library tours"
+            "category": "Library tours",
+            "uses": [
+                "ImPlot"
+            ]
         },
         {
             "label": "ImPlot stock viewer",
@@ -211,6 +214,9 @@
             "category": "Library tours",
             "bundle_folders": [
                 "implot3d_libs"
+            ],
+            "uses": [
+                "ImPlot3D"
             ]
         },
         {

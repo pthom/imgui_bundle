@@ -340,8 +340,7 @@ class Launcher:
         imgui.same_line()
         return clicked
 
-    # The header: the name, what the bundle is, a chip per category that scrolls to it, a chip per library that
-    # filters the gallery
+    # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
     def header(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
@@ -353,15 +352,26 @@ class Launcher:
             if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
                 self.scroll_target = self.category_y.get(category.name)
                 self.nb_scrolls += 1
-        imgui.new_line()
-        imgui.text_disabled("Uses:")
+        imgui.dummy(ImVec2(em_size(1.0), 0))
         imgui.same_line()
-        for library, count in self.libraries():
-            highlight = tween(f"library {library}", 1.0 if library == self.library else 0.0, 0.25)
-            if self.chip(f"{library} ({count})", highlight):
-                self.library = "" if library == self.library else library
+        self.library_filter()
         imgui.new_line()
         imgui.separator()
+
+    def library_filter(self) -> None:
+        """A button that says which library the gallery is filtered on, and a popup to pick one"""
+        label = f"Library: {self.library} " + fa.ICON_FA_TIMES if self.library else "Library " + fa.ICON_FA_CARET_DOWN
+        if self.chip(label, 1.0 if self.library else 0.0):
+            imgui.open_popup("library")
+        imgui.set_item_tooltip("Keep only the demos that use a library")
+        if imgui.begin_popup("library"):
+            if imgui.menu_item_simple("All the demos", "", not self.library):
+                self.library = ""
+            imgui.separator()
+            for library, count in self.libraries():
+                if imgui.menu_item_simple(f"{library} ({count})", "", library == self.library):
+                    self.library = library
+            imgui.end_popup()
 
     def card(self, demo: Demo, width: float) -> None:
         """The demo's picture, its label and the first sentences of its description; a click selects it"""
