@@ -202,7 +202,10 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
         _, imgui.get_style().font_scale_main = imgui.slider_float("Font scale", imgui.get_style().font_scale_main, 0.5, 5)
         imgui.same_line(spacing=hello_imgui.em_size(4))
-        imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
+        if demo_immapp_launcher.small_screen():  # the bar's right part (idling, FPS) leaves no room for more
+            imgui.text_disabled(f"v{__version__}")
+        else:
+            imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
 
     runner_params.callbacks.show_status = show_status_bar
 
