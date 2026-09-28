@@ -671,14 +671,13 @@ the links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgu
 
 Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the
 editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is
-[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s
-(`pip install PyGLM`).
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the camera matrices are a few lines of plain Python.
 
-*Python, C++, Desktop only*
+*Python, C++*
 
 *Uses: ImGuizmo*
 
-[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_gizmo.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
 
 ### NanoVG: the full demo
 

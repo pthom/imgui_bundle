@@ -346,15 +346,12 @@ class Launcher:
         return clicked
 
     # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
-    def header(self, chips: bool = True) -> None:
+    def header(self) -> None:
         big_text("Dear ImGui Bundle", 2.0)
         imgui.same_line()
         imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + em_size(0.75))
         imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile. "
                             "Pick a demo: see it, run it, read its code.")
-        if not chips:  # a demo shown in place, or its code: the chips and the filters would do nothing
-            imgui.separator()
-            return
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
             if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
@@ -574,13 +571,13 @@ class Launcher:
     def gui(self) -> None:
         self.pictures.new_frame()
         self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None)
-        self.header(chips=self.in_place is None and self.code_view is None)
-        if self.in_place is not None:
+        if self.in_place is not None:  # no header: the demo's title and the way back are the only row
             self.show_in_place()
             return
         if self.code_view is not None:
             self.show_code()
             return
+        self.header()
         avail = imgui.get_content_region_avail()
         detail_width = em_size(DETAIL_WIDTH)
         imgui.begin_child("gallery", ImVec2(avail.x - detail_width - em_size(1.0), avail.y))

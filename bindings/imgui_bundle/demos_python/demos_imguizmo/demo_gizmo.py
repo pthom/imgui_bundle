@@ -2,8 +2,7 @@
 
 Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the
 editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is
-[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s
-(`pip install PyGLM`).
+[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the camera matrices are a few lines of plain Python.
 
 Note: there was a breaking change on ImGuizmo Python API in Nov 2024:
 Added classes Matrix3/6/16, modifiable by manipulate and view_manipulate
@@ -13,7 +12,7 @@ to see how to adapt to the new API
 Basically:
 - use `gizmo.Matrix3` / `Matrix6` / `Matrix16` instead of `np.array`
 - `gizmo.manipulate` and `view_manipulate` will modify the matrices they receive
-- if using glm, you will to need to convert to Matrix16, see `glm_mat4x4_to_float_list` in demo_gizmo.py
+- if using glm, convert its matrices to Matrix16 (16 floats, column by column: `mat[0].to_list() + ...`)
 """
 # See equivalent C++ program: demos_cpp/demos_imguizmo/demo_guizmo_pure.cpp
 
@@ -23,14 +22,6 @@ import math
 from imgui_bundle import imgui, imguizmo, hello_imgui, ImVec2, immapp
 
 GuiFunction = Callable[[], None]
-
-try:
-    import glm  # pip install PyGLM
-except ModuleNotFoundError:
-    print(
-        "\nThis demo require PyGLM, please install it with this command:\n\n\tpip install PyGLM\n"
-    )
-    exit(1)
 
 
 gizmo = imguizmo.im_guizmo
@@ -80,7 +71,7 @@ identityMatrix = Matrix16(
      0.0, 0.0, 0.0, 1.0])
 
 """
-The following functions from the C++ example need not to be ported, we use glm instead
+Of the helpers of the C++ example, only these three are ported (below): Perspective, LookAt, OrthoGraphic
     void Frustum(float left, float right, float bottom, float top, float znear, float zfar, Matrix16& m16)
     void Perspective(float fovyInDegrees, float aspectRatio, float znear, float zfar, Matrix16& m16)
     void Cross(const Matrix3& a, const Matrix3& b, Matrix3& r)
@@ -272,10 +263,42 @@ def EditTransform(
         imgui.pop_style_color()
 
 
-def glm_mat4x4_to_float_list(mat: glm.mat4x4) -> List[float]:
-    # glm's to_list() is untyped (returns Any), so annotate the concatenation.
-    result: List[float] = mat[0].to_list() + mat[1].to_list() + mat[2].to_list() + mat[3].to_list()
-    return result
+# The camera matrices, as OpenGL and ImGuizmo want them: 16 floats, column by column (what glm would give)
+def perspective(fovy_degrees: float, aspect: float, znear: float, zfar: float) -> Matrix16:
+    f = 1.0 / math.tan(math.radians(fovy_degrees) / 2.0)
+    return Matrix16([f / aspect, 0.0, 0.0, 0.0,
+                     0.0, f, 0.0, 0.0,
+                     0.0, 0.0, (zfar + znear) / (znear - zfar), -1.0,
+                     0.0, 0.0, 2.0 * zfar * znear / (znear - zfar), 0.0])
+
+
+def orthographic(left: float, right: float, bottom: float, top: float, znear: float, zfar: float) -> Matrix16:
+    return Matrix16([2.0 / (right - left), 0.0, 0.0, 0.0,
+                     0.0, 2.0 / (top - bottom), 0.0, 0.0,
+                     0.0, 0.0, -2.0 / (zfar - znear), 0.0,
+                     -(right + left) / (right - left), -(top + bottom) / (top - bottom),
+                     -(zfar + znear) / (zfar - znear), 1.0])
+
+
+def look_at(eye: Tuple[float, float, float], at: Tuple[float, float, float],
+            up: Tuple[float, float, float]) -> Matrix16:
+    def normalized(v: Tuple[float, float, float]) -> Tuple[float, float, float]:
+        n = math.sqrt(v[0] * v[0] + v[1] * v[1] + v[2] * v[2])
+        return (v[0] / n, v[1] / n, v[2] / n)
+
+    def cross(a: Tuple[float, float, float], b: Tuple[float, float, float]) -> Tuple[float, float, float]:
+        return (a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0])
+
+    def dot(a: Tuple[float, float, float], b: Tuple[float, float, float]) -> float:
+        return a[0] * b[0] + a[1] * b[1] + a[2] * b[2]
+
+    f = normalized((at[0] - eye[0], at[1] - eye[1], at[2] - eye[2]))
+    s = normalized(cross(f, up))
+    u = cross(s, f)
+    return Matrix16([s[0], u[0], -f[0], 0.0,
+                     s[1], u[1], -f[1], 0.0,
+                     s[2], u[2], -f[2], 0.0,
+                     -dot(s, eye), -dot(u, eye), dot(f, eye), 1.0])
 
 
 # This returns a closure function that will later be invoked to run the app
@@ -305,13 +328,10 @@ def make_closure_demo_guizmo() -> GuiFunction:
 
         io = imgui.get_io()
         if isPerspective:
-            radians = glm.radians(fov)  # The gui is in degree, we need radians for glm
-            cameraProjection_glm = glm.perspective(radians, io.display_size.x / io.display_size.y, 0.1, 100.0)
-            cameraProjection = Matrix16(glm_mat4x4_to_float_list(cameraProjection_glm))
+            cameraProjection = perspective(fov, io.display_size.x / io.display_size.y, 0.1, 100.0)
         else:
             viewHeight = viewWidth * io.display_size.y / io.display_size.x
-            cameraProjection_glm = glm.ortho(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)
-            cameraProjection = Matrix16(glm_mat4x4_to_float_list(cameraProjection_glm))
+            cameraProjection = orthographic(-viewWidth, viewWidth, -viewHeight, viewHeight, 1000.0, -1000.0)
 
         gizmo.set_orthographic(not isPerspective)
         gizmo.begin_frame()
@@ -347,15 +367,12 @@ def make_closure_demo_guizmo() -> GuiFunction:
         _, gizmoCount = imgui.slider_int("Gizmo count", gizmoCount, 1, 4)
 
         if viewDirty or firstFrame:
-            eye = glm.vec3(
+            eye = (
                 math.cos(camYAngle) * math.cos(camXAngle) * camDistance,
                 math.sin(camXAngle) * camDistance,
                 math.sin(camYAngle) * math.cos(camXAngle) * camDistance,
             )
-            at = glm.vec3(0.0, 0.0, 0.0)
-            up = glm.vec3(0.0, 1.0, 0.0)
-            cameraView_glm: glm.mat4x4 = glm.lookAt(eye, at, up)
-            cameraView = Matrix16(glm_mat4x4_to_float_list(cameraView_glm))
+            cameraView = look_at(eye, (0.0, 0.0, 0.0), (0.0, 1.0, 0.0))
             firstFrame = False
 
         imgui.text(

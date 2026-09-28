@@ -371,7 +371,6 @@
             "label": "ImGuizmo: a 3D gizmo",
             "filename": "demo_gizmo.py",
             "source": "demos_imguizmo",
-            "where": "desktop",
             "category": "Library tours"
         },
         {

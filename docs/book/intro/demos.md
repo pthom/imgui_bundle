@@ -800,14 +800,12 @@ Drag the nodes around, and follow the links. A small graph with [imgui-node-edit
 Move, rotate and scale cubes with a gizmo, as in a 3D editor.
 
 :::{dropdown} More
-Pick the operation and the mode (local or world) in the editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s (`pip install PyGLM`).
+Pick the operation and the mode (local or world) in the editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the camera matrices are a few lines of plain Python.
 :::
-
-*Desktop only*
 
 *Uses: ImGuizmo*
 
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py)\
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_gizmo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)
 
 ::::

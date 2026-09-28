@@ -81,7 +81,6 @@ full = [
     "rendercanvas",
     "pyglet>=2.0.10",
     "pygame",
-    "PyGLM",
 ]
 # For development and testing
 # pyte/websockets: let CI run the imgui_terminal tests and type-check the widget

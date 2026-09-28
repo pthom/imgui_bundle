@@ -22,10 +22,6 @@ ImGuizmo: 3D gizmos for translation, rotation, and scale.
 - View cube for camera orientation
 - Snap to grid support
 
-:::{note}
-**Python:** ImGuizmo requires PyGLM for matrix operations: `pip install PyGLM`
-:::
-
 ### Full Demo
 
 [Try online](https://imgui-bundle.pages.dev/explorer/demo_gizmo.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp)

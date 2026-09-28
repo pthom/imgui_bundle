@@ -334,7 +334,7 @@
   },
   "demo_gizmo.py": {
     "title": "ImGuizmo: a 3D gizmo on a cube",
-    "text": "Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the\neditor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is\n[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the matrices are [PyGLM](https://github.com/Zuzu-Typ/PyGLM)'s\n(`pip install PyGLM`).",
+    "text": "Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the\neditor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is\n[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the camera matrices are a few lines of plain Python.",
     "summary": "Move, rotate and scale cubes with a gizmo, as in a 3D editor.",
     "uses": [
       "ImGuizmo"
