@@ -423,7 +423,9 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
         imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
                           imgui.WindowFlags_.no_scrollbar.value | imgui.WindowFlags_.no_scroll_with_mouse.value)
-        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.5), imgui.ImDrawFlags_.round_corners_top.value)
+        # Rounded more than the card: the border is stroked inside the card's rect with the card's radius, so a
+        # picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
+        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
         imgui.set_cursor_pos(ImVec2(padding, imgui.get_cursor_pos_y() + em_size(0.4)))
