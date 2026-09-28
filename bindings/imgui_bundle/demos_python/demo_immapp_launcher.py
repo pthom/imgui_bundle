@@ -353,7 +353,7 @@ class Launcher:
         self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
         self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards are dealt one by one
-        self.card_index = 0  # of the card being drawn, in this frame's gallery
+        self.deal_order: Optional[dict[str, int]] = None  # the cards dealt, in their order: the ones in view when it began
         self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
         self.detail_open = False  # on a small screen, the detail is a page of its own (a card opens it) not a pane
         self.card_rects: dict[str, tuple[ImVec2, ImVec2]] = {}  # on screen, this frame (the intro's automations click)
@@ -486,16 +486,20 @@ class Launcher:
         imgui.text_disabled(shown)
         summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value)
         imgui.pop_text_wrap_pos()
-        flight = self.flight(self.card_index)
-        if flight is not None and flight < 1.0:  # hidden under a veil while its double flies from the deck to here
+        if self.deal_order is not None and demo.filename not in self.deal_order and self.dealing():
+            gallery_top, gallery_bottom = self.gallery_rect[0].y, self.gallery_rect[1].y
+            if bottom_right.y > gallery_top and top_left.y < gallery_bottom:  # in view when the deal begins
+                self.deal_order[demo.filename] = len(self.deal_order)
+        flight = self.flight(demo.filename)
+        if flight is not None and flight < 1.0 and self.deal_order is not None:  # hidden under a veil while its
+            # double flies from the deck to here
             draw_list = imgui.get_window_draw_list()
             draw_list.push_clip_rect_full_screen()  # over the border too
             draw_list.add_rect_filled(ImVec2(top_left.x - 1, top_left.y - 1), ImVec2(bottom_right.x + 1, bottom_right.y + 1),
                                       curtain(1.0))  # a pixel more: the border's stroke
             draw_list.pop_clip_rect()
             if flight > 0.0:
-                self.flying_card(demo, top_left, width, height, flight, self.card_index)
-        self.card_index += 1
+                self.flying_card(demo, top_left, width, height, flight, self.deal_order[demo.filename])
         imgui.end_child()
         imgui.pop_style_var(3)
         imgui.pop_style_color(2)
@@ -522,18 +526,21 @@ class Launcher:
             self.scroll_target = None
 
     def deal(self) -> None:
-        """Called when the gallery arrives on screen: its cards are dealt one after another, from the top left"""
+        """Called when the gallery arrives on screen: the cards in view are dealt one after another, from the top
+        left (the others, scrolled away, are simply there)"""
         self.dealt_at = imgui.get_time()
+        self.deal_order = {}  # filled by the first frame's cards
 
     def dealing(self) -> bool:
         return self.dealt_at is not None and imgui.get_time() < self.dealt_at + 24 * DEAL_DELAY + DEAL_DURATION
 
-    def flight(self, index: int) -> Optional[float]:
+    def flight(self, filename: str) -> Optional[float]:
         """Where this card is in its flight, from 0 (leaving the deck) to 1 (in place), while the gallery is being
-        dealt: None when it is not, below 0 when the card waits in the deck"""
-        if self.dealt_at is None or not self.dealing():
+        dealt: None when it is not, or when the card is not dealt; below 0 when it waits in the deck"""
+        if self.deal_order is None or not self.dealing() or filename not in self.deal_order:
             return None
-        return (imgui.get_time() - self.dealt_at - min(index, 24) * DEAL_DELAY) / DEAL_DURATION
+        assert self.dealt_at is not None
+        return (imgui.get_time() - self.dealt_at - min(self.deal_order[filename], 24) * DEAL_DELAY) / DEAL_DURATION
 
     def flying_card(self, demo: Demo, top_left: ImVec2, width: float, height: float, flight: float,
                     index: int) -> None:
@@ -579,7 +586,6 @@ class Launcher:
 
     def gallery(self) -> None:
         self.smooth_scroll()
-        self.card_index = 0
         pos, size = imgui.get_window_pos(), imgui.get_window_size()
         self.gallery_rect = (pos, ImVec2(pos.x + size.x, pos.y + size.y))
         spacing = em_size(1.0)
