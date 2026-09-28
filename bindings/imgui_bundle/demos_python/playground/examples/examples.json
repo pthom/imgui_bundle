@@ -4,7 +4,10 @@
         "demos_immapp": "../../demos_immapp",
         "demos_python": "../..",
         "python_backends": "../../../python_backends/examples",
-        "demos_assets": "../../../demos_assets"
+        "demos_assets": "../../../demos_assets",
+        "demos_immvision": "../../demos_immvision",
+        "demos_node_editor": "../../demos_node_editor",
+        "demos_tex_inspect": "../../demos_tex_inspect"
     },
     "categories": [
         {
@@ -292,6 +295,82 @@
             "category": "Library tours",
             "source": "demos_python",
             "where": "desktop",
+            "in_place": true
+        },
+        {
+            "label": "ImmVision: display and inspect",
+            "filename": "demo_immvision_display.py",
+            "source": "demos_immvision",
+            "packages": [
+                "opencv-python"
+            ],
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "ImmVision: the inspector",
+            "filename": "demo_immvision_inspector.py",
+            "source": "demos_immvision",
+            "packages": [
+                "opencv-python"
+            ],
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "ImmVision: images that zoom together",
+            "filename": "demo_immvision_link.py",
+            "source": "demos_immvision",
+            "packages": [
+                "opencv-python"
+            ],
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "ImmVision: image processing, tuned live",
+            "filename": "demo_immvision_process.py",
+            "source": "demos_immvision",
+            "packages": [
+                "opencv-python"
+            ],
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "Node editor: nodes, pins and links",
+            "filename": "demo_node_editor_basic.py",
+            "source": "demos_node_editor",
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "Node editor: Romeo and Juliet",
+            "filename": "demo_romeo_and_juliet.py",
+            "source": "demos_node_editor",
+            "category": "Library tours",
+            "in_place": true
+        },
+        {
+            "label": "Texture inspector",
+            "filename": "demo_tex_inspect_simple.py",
+            "source": "demos_tex_inspect",
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "category": "Library tours",
             "in_place": true
         },
         {

@@ -1,4 +1,9 @@
-# demo_tex_inspect_simple
+"""Tex Inspect: zoom into a texture, pixel by pixel
+
+A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by
+dragging. [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) inspects any texture that Dear ImGui
+draws; here, a picture loaded from the assets.
+"""
 # See equivalent C++ program: demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp
 from imgui_bundle import imgui_tex_inspect, ImVec2, immapp, hello_imgui, register_demos_assets_folder
 register_demos_assets_folder()

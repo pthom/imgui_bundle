@@ -289,6 +289,66 @@
       "terminal"
     ]
   },
+  "demo_immvision_display.py": {
+    "title": "ImmVision: display an image, and inspect it",
+    "text": "Two ways to show an image held in a NumPy array. `immvision.image_display_resizable()` draws it, and you drag its\ncorner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values\nshow, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).",
+    "summary": "Two ways to show an image held in a NumPy array.",
+    "uses": [
+      "ImmVision",
+      "OpenCV"
+    ]
+  },
+  "demo_immvision_inspector.py": {
+    "title": "ImmVision: the inspector collects images along a pipeline",
+    "text": "Call `immvision.inspector_add_image()` anywhere, for example at each step of an image processing algorithm. Then\n`immvision.inspector_show()` shows all the collected images, with the zoom, the pan and the pixel inspection of\n`immvision.image()`. Here, two photos at startup; on the desktop, a button adds images of every depth and channel\ncount.",
+    "summary": "Call `immvision.inspector_add_image()` anywhere, for example at each step of an image processing algorithm.",
+    "uses": [
+      "ImmVision",
+      "OpenCV"
+    ]
+  },
+  "demo_immvision_link.py": {
+    "title": "ImmVision: images that pan and zoom together",
+    "text": "Image params that share a `zoom_key` follow each other: pan or zoom one image, and the others move with it. Here, a\nphoto and its three color channels. Pan by dragging, zoom with the mouse wheel. The image is read with OpenCV\n(`pip install imgui-bundle[imgproc]`).",
+    "summary": "Image params that share a `zoom_key` follow each other: pan or zoom one image, and the others move with it.",
+    "uses": [
+      "ImmVision",
+      "OpenCV"
+    ]
+  },
+  "demo_immvision_process.py": {
+    "title": "ImmVision: an image processing pipeline, tuned live",
+    "text": "A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at\nonce. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the\nfiltered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display\nImmVision's.",
+    "summary": "A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at once.",
+    "uses": [
+      "ImmVision",
+      "OpenCV"
+    ]
+  },
+  "demo_node_editor_basic.py": {
+    "title": "Node editor: nodes, pins and links",
+    "text": "Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The\ninteractions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic\ninteraction example.",
+    "summary": "Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it.",
+    "uses": [
+      "node editor"
+    ]
+  },
+  "demo_romeo_and_juliet.py": {
+    "title": "Node editor: Romeo, Juliet and Count Paris",
+    "text": "Three characters as nodes, their feelings as links: green for love, red for hate. Drag the nodes around, and follow\nthe links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor).",
+    "summary": "Three characters as nodes, their feelings as links: green for love, red for hate.",
+    "uses": [
+      "node editor"
+    ]
+  },
+  "demo_tex_inspect_simple.py": {
+    "title": "Tex Inspect: zoom into a texture, pixel by pixel",
+    "text": "A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by\ndragging. [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) inspects any texture that Dear ImGui\ndraws; here, a picture loaded from the assets.",
+    "summary": "A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by dragging.",
+    "uses": [
+      "Tex Inspect"
+    ]
+  },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
     "text": "In Python, `with imgui_ctx.begin(\"Window\"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be\nforgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with\n`implot_ctx`. Open a section to try it and read its code. See the [Python\ntips](https://imgui-bundle.pages.dev/doc/python/python-tips/).",

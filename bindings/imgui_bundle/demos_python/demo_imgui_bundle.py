@@ -206,6 +206,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons.with_implot = True
     addons.with_implot3d = True
     addons.with_im_anim = True
+    addons.with_tex_inspect = True  # the launcher shows the Tex Inspect demo in place
 
     return runner_params, addons
 

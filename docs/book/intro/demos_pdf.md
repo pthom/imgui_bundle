@@ -574,6 +574,126 @@ behind a pseudo-terminal (macOS and Linux), [pyte](https://github.com/selectel/p
 
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py)
 
+### ImmVision: display and inspect
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_immvision_display.jpg
+:alt: ImmVision: display and inspect
+:width: 400px
+:::
+
+Two ways to show an image held in a NumPy array. `immvision.image_display_resizable()` draws it, and you drag its
+corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values
+show, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).
+
+*Python, C++*
+
+*Uses: ImmVision, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immvision_display.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_immvision_display.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_display.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_display.cpp)
+
+### ImmVision: the inspector
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_immvision_inspector.jpg
+:alt: ImmVision: the inspector
+:width: 400px
+:::
+
+Call `immvision.inspector_add_image()` anywhere, for example at each step of an image processing algorithm. Then
+`immvision.inspector_show()` shows all the collected images, with the zoom, the pan and the pixel inspection of
+`immvision.image()`. Here, two photos at startup; on the desktop, a button adds images of every depth and channel
+count.
+
+*Python, C++*
+
+*Uses: ImmVision, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immvision_inspector.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_immvision_inspector.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_inspector.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_inspector.cpp)
+
+### ImmVision: images that zoom together
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_immvision_link.jpg
+:alt: ImmVision: images that zoom together
+:width: 400px
+:::
+
+Image params that share a `zoom_key` follow each other: pan or zoom one image, and the others move with it. Here, a
+photo and its three color channels. Pan by dragging, zoom with the mouse wheel. The image is read with OpenCV
+(`pip install imgui-bundle[imgproc]`).
+
+*Python, C++*
+
+*Uses: ImmVision, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immvision_link.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_immvision_link.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_link.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_link.cpp)
+
+### ImmVision: image processing, tuned live
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_immvision_process.jpg
+:alt: ImmVision: image processing, tuned live
+:width: 400px
+:::
+
+A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at
+once. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the
+filtered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display
+ImmVision's.
+
+*Python, C++*
+
+*Uses: ImmVision, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immvision_process.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_immvision_process.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_process.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_process.cpp)
+
+### Node editor: nodes, pins and links
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_node_editor_basic.jpg
+:alt: Node editor: nodes, pins and links
+:width: 400px
+:::
+
+Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The
+interactions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic
+interaction example.
+
+*Python, C++*
+
+*Uses: node editor*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_basic.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_node_editor_basic.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_basic.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_basic.cpp)
+
+### Node editor: Romeo and Juliet
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_romeo_and_juliet.jpg
+:alt: Node editor: Romeo and Juliet
+:width: 400px
+:::
+
+Three characters as nodes, their feelings as links: green for love, red for hate. Drag the nodes around, and follow
+the links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor).
+
+*Python, C++*
+
+*Uses: node editor*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_romeo_and_juliet.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_romeo_and_juliet.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp)
+
+### Texture inspector
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_tex_inspect_simple.jpg
+:alt: Texture inspector
+:width: 400px
+:::
+
+A texture inspector: zoom with the mouse wheel until the pixels show as squares with their values, and pan by
+dragging. [imgui_tex_inspect](https://github.com/andyborrell/imgui_tex_inspect) inspects any texture that Dear ImGui
+draws; here, a picture loaded from the assets.
+
+*Python, C++*
+
+*Uses: Tex Inspect*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_tex_inspect_simple.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_tex_inspect_simple.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_tex_inspect/demo_tex_inspect_simple.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_tex_inspect/demo_tex_inspect_simple.cpp)
+
 ## Python specifics
 
 Async, Matplotlib, Pydantic, context managers, and pure Python backends

@@ -608,7 +608,8 @@ def demo_gui() -> None:
 def main() -> None:
     # The add-ons of the explorer (demo_imgui_bundle.py): the demos shown in place need them
     immapp.run(demo_gui, window_title="Dear ImGui Bundle: the demos", window_size=(1500, 950), with_markdown=True,
-               with_latex=True, with_node_editor=True, with_implot=True, with_implot3d=True, with_im_anim=True)
+               with_latex=True, with_node_editor=True, with_implot=True, with_implot3d=True, with_im_anim=True,
+               with_tex_inspect=True)
 
 
 if __name__ == "__main__":

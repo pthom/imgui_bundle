@@ -1,3 +1,9 @@
+"""Node editor: nodes, pins and links
+
+Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The
+interactions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic
+interaction example.
+"""
 # Adapted from
 # https://github.com/thedmd/imgui-node-editor/blob/master/examples/basic-interaction-example/basic-interaction-example.cpp
 from __future__ import annotations
@@ -8,12 +14,6 @@ from imgui_bundle import (
     imgui_node_editor as ed,
 )
 from imgui_bundle.immapp import static, run_anon_block
-
-import os
-
-# Fallback for __file__ in Pyodide
-if '__file__' not in globals():
-    __file__ = os.getcwd() + '/script.py'
 
 
 class IdProvider:
@@ -95,8 +95,9 @@ class DemoNodeEditor:
         node_a_input_pin_id = ed.PinId(ID.next_id())
         node_a_output_pin_id = ed.PinId(ID.next_id())
 
+        # The nodes near the origin: the default view shows them whole, whatever the window's size
         if self.is_first_frame:
-            ed.set_node_position(node_a_id, imgui.ImVec2(200, -300))
+            ed.set_node_position(node_a_id, imgui.ImVec2(60, 40))
 
         ed.begin_node(node_a_id)
 
@@ -120,7 +121,7 @@ class DemoNodeEditor:
         node_b_output_pin_id = ed.PinId(ID.next_id())
 
         if self.is_first_frame:
-            ed.set_node_position(node_b_id, imgui.ImVec2(210, 60))
+            ed.set_node_position(node_b_id, imgui.ImVec2(360, 200))
 
         ed.begin_node(node_b_id)
 
@@ -212,9 +213,6 @@ class DemoNodeEditor:
         # End of interaction with editor.
         ed.end()
 
-        if self.is_first_frame:
-            ed.navigate_to_content(0.0)
-
         self.is_first_frame = False
 
         # imgui.show_metrics_window()
@@ -229,18 +227,9 @@ def demo_gui():
 
 
 def main():
-
-    this_dir = os.path.dirname(__file__)
-    config = ed.Config()
-    config.settings_file = this_dir + "/demo_node_editor_basic.json"
     from imgui_bundle import immapp
 
-    immapp.run(
-        demo_gui,
-        with_node_editor_config=config,
-        with_markdown=True,
-        window_size=(800, 600),
-    )
+    immapp.run(demo_gui, with_node_editor=True, with_markdown=True, window_size=(800, 600))
 
 
 if __name__ == "__main__":

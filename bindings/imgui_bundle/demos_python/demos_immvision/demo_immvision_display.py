@@ -1,17 +1,30 @@
-from imgui_bundle import immvision, immapp, rich_md, ImVec2, imgui, hello_imgui
-from imgui_bundle.demos_python import demo_utils
+"""ImmVision: display an image, and inspect it
+
+Two ways to show an image held in a NumPy array. `immvision.image_display_resizable()` draws it, and you drag its
+corner to resize it. `immvision.image()` adds the inspection tools: zoom with the mouse wheel until the pixel values
+show, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).
+"""
+import cv2
+from imgui_bundle import immvision, immapp, rich_md, ImVec2, imgui, hello_imgui, register_demos_assets_folder
+
+register_demos_assets_folder()
+
+
+def read_image(asset: str, with_alpha: bool = False):
+    """An image of the demos' assets, in RGB (ImmVision's default order; OpenCV reads BGR)"""
+    path = hello_imgui.asset_file_full_path(asset)
+    if with_alpha:
+        return cv2.cvtColor(cv2.imread(path, cv2.IMREAD_UNCHANGED), cv2.COLOR_BGRA2RGBA)  # type: ignore[arg-type]
+    return cv2.cvtColor(cv2.imread(path), cv2.COLOR_BGR2RGB)  # type: ignore[arg-type]
+
 
 @immapp.static(inited=False)
 def demo_gui() -> None:
     statics = demo_gui
     if not statics.inited:
         statics.image_display_size = ImVec2(0, immapp.em_size(15))
-
-        assets_dir = demo_utils.demos_assets_folder() + "/images/"
-
-        # Load images as numpy arrays
-        statics.bear = demo_utils.imread_demo(assets_dir + "bear_transparent.png", load_alpha=True)
-        statics.tennis = demo_utils.imread_demo(assets_dir + "tennis.jpg")
+        statics.bear = read_image("images/bear_transparent.png", with_alpha=True)
+        statics.tennis = read_image("images/tennis.jpg")
 
         statics.params = immvision.ImageParams()
         bear_display_size = int(hello_imgui.em_size(15))

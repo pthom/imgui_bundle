@@ -1,12 +1,18 @@
-import os.path
+"""ImmVision: images that pan and zoom together
 
+Image params that share a `zoom_key` follow each other: pan or zoom one image, and the others move with it. Here, a
+photo and its three color channels. Pan by dragging, zoom with the mouse wheel. The image is read with OpenCV
+(`pip install imgui-bundle[imgproc]`).
+"""
+import cv2
 import numpy as np
 
-from imgui_bundle import immvision, immapp, imgui, rich_md
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import immvision, immapp, imgui, rich_md, hello_imgui, register_demos_assets_folder
 
-this_dir = os.path.dirname(__file__)
-image = demo_utils.imread_demo(demo_utils.demos_assets_folder() + "/images/tennis.jpg")
+register_demos_assets_folder()
+# In RGB: ImmVision's default order (OpenCV reads BGR)
+image_bgr = cv2.imread(hello_imgui.asset_file_full_path("images/tennis.jpg"))
+image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)  # type: ignore[arg-type]
 channels = [np.ascontiguousarray(image[:, :, i]) for i in range(image.shape[2])]
 
 params_rgb = immvision.ImageParams()

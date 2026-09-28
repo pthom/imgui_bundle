@@ -1,3 +1,10 @@
+"""ImmVision: an image processing pipeline, tuned live
+
+A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at
+once. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the
+filtered image applies colormaps. The processing is OpenCV's (`pip install imgui-bundle[imgproc]`), the display
+ImmVision's.
+"""
 import numpy as np
 from typing import Any
 from numpy.typing import NDArray
@@ -5,8 +12,9 @@ from enum import Enum
 import cv2
 import math
 
-from imgui_bundle import imgui, immvision, immapp, rich_md
-from imgui_bundle.demos_python import demo_utils
+from imgui_bundle import imgui, immvision, immapp, rich_md, hello_imgui, register_demos_assets_folder
+
+register_demos_assets_folder()
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -27,7 +35,7 @@ class SobelParams:
 
 def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     """Our image processing pipeline"""
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    gray = cv2.cvtColor(image, cv2.COLOR_RGB2GRAY)
     img_float = gray / 255.0
     blurred = cv2.GaussianBlur(
         img_float, (0, 0), sigmaX=params.blur_size, sigmaY=params.blur_size  # type: ignore
@@ -105,7 +113,8 @@ class AppState:
     immvision_params_sobel: immvision.ImageParams
 
     def __init__(self, image_file: str):
-        self.image = demo_utils.imread_demo(image_file)
+        # In RGB: ImmVision's default order (OpenCV reads BGR)
+        self.image = cv2.cvtColor(cv2.imread(image_file), cv2.COLOR_BGR2RGB)  # type: ignore[arg-type, assignment]
         self.sobel_params = SobelParams()
         self.image_sobel = compute_sobel(self.image, self.sobel_params)
 
@@ -126,7 +135,7 @@ def demo_gui():
     static = demo_gui
 
     if static.app_state is None:
-        static.app_state = AppState(demo_utils.demos_assets_folder() + "/images/house.jpg")
+        static.app_state = AppState(hello_imgui.asset_file_full_path("images/house.jpg"))
 
     rich_md.render(
         """
