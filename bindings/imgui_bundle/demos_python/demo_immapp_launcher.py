@@ -35,8 +35,8 @@ DETAIL_WIDTH = 28.0  # em
 PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
 MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
 EASE = im_anim.ease_preset(im_anim.ease_type.ease_out_cubic)
-DEAL_DELAY = 0.02  # s: between two cards lighting up, when the gallery arrives on screen
-DEAL_DURATION = 0.3  # s: one card lighting up
+DEAL_DELAY = 0.06  # s: between two cards lighting up, when the gallery arrives on screen
+DEAL_DURATION = 2.0  # s: one card lighting up
 
 # Colors
 ACCENT = ImVec4(0.45, 0.65, 1.0, 1.0)  # the selected card, the chip of the category in view

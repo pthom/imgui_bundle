@@ -26,8 +26,8 @@ from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_utils
 
 WELCOME, DEMOS = "Welcome", "Demos"
-CHANGE_DURATION = 0.3  # s: a change of state, through the background
-DRIFT = 1.5  # em: the page leaving slides that much (up when going forward), the one arriving comes from as far
+CHANGE_DURATION = 0.4  # s: a change of state, through the background
+DRIFT = 3.0  # em: the page leaving slides that much (up when going forward), the one arriving comes from as far
 WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the automations click it)
 DEMOS_LABEL = fa.ICON_FA_TH_LARGE + "  Demos"
 
