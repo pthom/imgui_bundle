@@ -14,20 +14,12 @@ if importlib.util.find_spec("numpy") is None:
 
 from typing import List, Callable
 from types import ModuleType
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 from imgui_bundle import imgui, hello_imgui, immapp
 from imgui_bundle.immapp import static
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
-from imgui_bundle.demos_python import demo_imgui_show_demo_window
-from imgui_bundle.demos_python import demo_implot
-from imgui_bundle.demos_python import demo_immvision_launcher
-from imgui_bundle.demos_python import demo_imguizmo_launcher
-from imgui_bundle.demos_python import demo_node_editor_launcher
 from imgui_bundle.demos_python import demo_immapp_launcher
-from imgui_bundle.demos_python import demo_nanovg_launcher
-from imgui_bundle.demos_python import demo_themes
-from imgui_bundle.demos_python import demo_im_anim
 from imgui_bundle.demos_python import demo_utils
 
 
@@ -50,25 +42,6 @@ class DemoDetails:
     label: str
     demo_module: ModuleType
     show_code: bool = False
-
-
-@dataclass
-class DemoGroup:
-    """A group of demos shown as collapsing headers inside a single tab."""
-    label: str
-    demos: List[DemoDetails] = field(default_factory=list)
-
-
-def _show_group_gui(group: DemoGroup) -> None:
-    """Gui function for a grouped tab: each sub-demo is a collapsing header."""
-    if imgui.get_frame_count() < 2:
-        return
-    for demo in group.demos:
-        demo_module_name = demo.demo_module.__name__.split(".")[-1]
-        if imgui.collapsing_header(demo.label):
-            imgui.indent()
-            show_module_demo(demo_module_name, demo.demo_module.demo_gui, demo.show_code)
-            imgui.unindent()
 
 
 def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
@@ -112,10 +85,8 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     #
     dockable_windows: List[hello_imgui.DockableWindow] = []
 
-    # --- Standalone tabs (no grouping) ---
-    standalone_demos = [
+    standalone_demos = [  # the manuals and the libraries' demos are in the launcher ("Demo Apps")
         DemoDetails("Intro",       demo_imgui_bundle_intro),
-        DemoDetails("Dear ImGui",  demo_imgui_show_demo_window),
         DemoDetails("Demo Apps",   demo_immapp_launcher),
     ]
 
@@ -131,36 +102,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
             return win_fn
 
         window.gui_function = make_win_fn(demo_module_name, demo.demo_module, demo.show_code)
-        dockable_windows.append(window)
-
-    # --- Grouped tabs (sub-demos shown as collapsing headers) ---
-    groups = [
-        DemoGroup("Visualization", [
-            DemoDetails("Plots with ImPlot and ImPlot3D", demo_implot),
-            DemoDetails("ImmVision - Image analyzer", demo_immvision_launcher),
-        ]),
-        DemoGroup("Widgets", [
-            DemoDetails("ImGuizmo - Immediate Mode 3D Gizmo",  demo_imguizmo_launcher),
-        ]),
-        DemoGroup("Tools", [
-            DemoDetails("Node Editor - Visual Node Graphs", demo_node_editor_launcher),
-            DemoDetails("Themes - Style & Color Customization", demo_themes,   show_code=True),
-            DemoDetails("ImAnim - Animation Library",       demo_im_anim),
-            DemoDetails("NanoVG - 2D Vector Drawing", demo_nanovg_launcher),
-        ]),
-    ]
-
-    for group in groups:
-        window = hello_imgui.DockableWindow()
-        window.label = group.label
-        window.dock_space_name = "MainDockSpace"
-
-        def make_group_fn(g: DemoGroup) -> Callable[[], None]:
-            def win_fn() -> None:
-                _show_group_gui(g)
-            return win_fn
-
-        window.gui_function = make_group_fn(group)
         dockable_windows.append(window)
 
     runner_params.docking_params.dockable_windows = dockable_windows

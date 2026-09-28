@@ -192,28 +192,6 @@
     "summary": "A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.",
     "uses": []
   },
-  "imgui_demo.py": {
-    "title": "Dear ImGui: the full demo",
-    "text": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python. The reference to learn\nDear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=imgui).",
-    "summary": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python.",
-    "uses": []
-  },
-  "implot_demo.py": {
-    "title": "ImPlot: the full demo",
-    "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps,\nhistograms, real-time plots and more. A port of implot_demo.cpp: browse it next to its code in the [Dear\nImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).",
-    "summary": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more.",
-    "uses": [
-      "ImPlot"
-    ]
-  },
-  "implot3d_demo.py": {
-    "title": "ImPlot3D: the full demo",
-    "text": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter,\nsurfaces, meshes and more. A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui\nExplorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).",
-    "summary": "Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more.",
-    "uses": [
-      "ImPlot3D"
-    ]
-  },
   "fiatlight_image.py": {
     "title": "Fiatlight: Image Pipeline",
     "text": "[Fiatlight](https://pthom.github.io/fiatlight/) turns Python functions into interactive apps with visual\npipelines.",
@@ -380,10 +358,34 @@
       "terminal"
     ]
   },
-  "im_anim_demo_basics.py": {
-    "title": "ImAnim: the basics",
-    "text": "Animations for Dear ImGui, one section per notion. Tweens of floats and colors (in OKLAB), oscillators, shake and\nwiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code.\n[ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its\nbasics demo.",
-    "summary": "Animations for Dear ImGui, one section per notion.",
+  "manual_imgui.py": {
+    "title": "Dear ImGui: the interactive manual",
+    "text": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), section by section, with the Python and\nC++ code of each beside it. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive\nmanual for Dear ImGui and its libraries.",
+    "summary": "Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), section by section, with the Python and C++ code of each beside it.",
+    "uses": [
+      "ImGui"
+    ]
+  },
+  "manual_implot.py": {
+    "title": "ImPlot: the interactive manual",
+    "text": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), section by section, with the code of each beside\nit. Lines, scatter, bars, heatmaps, histograms, real-time plots and more, in Python and C++. From\n[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.",
+    "summary": "Every kind of plot of [ImPlot](https://github.com/epezent/implot), section by section, with the code of each beside it.",
+    "uses": [
+      "ImPlot"
+    ]
+  },
+  "manual_implot3d.py": {
+    "title": "ImPlot3D: the interactive manual",
+    "text": "The 3D plots of [ImPlot3D](https://github.com/brenocq/implot3d), section by section, with the code of each beside it.\nLines, scatter, surfaces, meshes and more, in Python and C++. From\n[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.",
+    "summary": "The 3D plots of [ImPlot3D](https://github.com/brenocq/implot3d), section by section, with the code of each beside it.",
+    "uses": [
+      "ImPlot3D"
+    ]
+  },
+  "manual_im_anim.py": {
+    "title": "ImAnim: the interactive manual",
+    "text": "The animations of [ImAnim](https://github.com/SoufianeKHIAT/ImAnim), section by section, with the code of each beside\nit. Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in Python and C++. From\n[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.",
+    "summary": "The animations of [ImAnim](https://github.com/SoufianeKHIAT/ImAnim), section by section, with the code of each beside it.",
     "uses": [
       "ImAnim"
     ]

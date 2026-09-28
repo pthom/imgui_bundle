@@ -18,8 +18,9 @@ unique across sources: examples_docs.json is keyed by them.
 The categories answer a reader's question, and an example goes where its kind says: a tutorial or an explanation to
 "Start here" (the haikus too: a few lines that do a lot); a how-to to "Build an app", or to the category of its
 platform when it is bound to one ("Python specifics", "In the browser"); a reference (a library, all of it) to
-"Library tours"; a showcase to "Interactive science" when it teaches science, else to the category of what it shows
-off. Within a category, the entries are in the reader's order: simple first.
+"Library tours", or to "Interactive manuals" when it is a library's demo wrapped by the imgui_explorer tooling (the
+code of each section beside it); a showcase to "Interactive science" when it teaches science, else to the category of
+what it shows off. Within a category, the entries are in the reader's order: simple first.
 
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
 = or -), then a blank line, then a paragraph that tells a visitor what the example shows. Its first sentence, the

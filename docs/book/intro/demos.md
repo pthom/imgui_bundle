@@ -502,64 +502,6 @@ The libraries in the bundle: full demos, widget tours, showcases
 :::::{grid} 1 2 3 3
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/imgui_demo.jpg
-:alt: ImGui full demo
-:::
-
-### ImGui full demo
-
-Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), in Python.
-
-:::{dropdown} More
-The reference to learn Dear ImGui by example (a port of imgui_demo.cpp). Browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
-:::
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=imgui_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imgui) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot_demo.jpg
-:alt: ImPlot full demo
-:::
-
-### ImPlot full demo
-
-Every kind of plot of [ImPlot](https://github.com/epezent/implot), in Python: lines, scatter, bars, heatmaps, histograms, real-time plots and more.
-
-:::{dropdown} More
-A port of implot_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot).
-:::
-
-*Uses: ImPlot*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/implot3d_demo.jpg
-:alt: ImPlot3D full demo
-:::
-
-### ImPlot3D full demo
-
-Rotatable, zoomable 3D plots in Python with [ImPlot3D](https://github.com/brenocq/implot3d): lines, scatter, surfaces, meshes and more.
-
-:::{dropdown} More
-A port of implot3d_demo.cpp: browse it next to its code in the [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/?lib=implot3d).
-:::
-
-*Uses: ImPlot3D*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=implot3d_demo.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot3d) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp)
-
-::::
-
-::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/themes.jpg
 :alt: Themes and theme tweaking
 :::
@@ -908,22 +850,91 @@ The demo starts the bridge (`pty_bridge_server.py`); replace it by a shell on a 
 
 ::::
 
+:::::
+
+## Interactive manuals
+
+Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section, with the code of each beside it: from Dear ImGui Explorer
+
+:::::{grid} 1 2 3 3
+
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/im_anim_demo_basics.jpg
-:alt: ImAnim: the basics
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_imgui.jpg
+:alt: Dear ImGui: the interactive manual
 :::
 
-### ImAnim: the basics
+### Dear ImGui: the interactive manual
 
-Animations for Dear ImGui, one section per notion.
+Every widget and feature of [Dear ImGui](https://github.com/ocornut/imgui), section by section, with the Python and C++ code of each beside it.
 
 :::{dropdown} More
-Tweens of floats and colors (in OKLAB), oscillators, shake and wiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code. [ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its basics demo.
+From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+:::
+
+*Uses: ImGui*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imgui) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_implot.jpg
+:alt: ImPlot: the interactive manual
+:::
+
+### ImPlot: the interactive manual
+
+Every kind of plot of [ImPlot](https://github.com/epezent/implot), section by section, with the code of each beside it.
+
+:::{dropdown} More
+Lines, scatter, bars, heatmaps, histograms, real-time plots and more, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+:::
+
+*Uses: ImPlot*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_implot.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_implot.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_implot3d.jpg
+:alt: ImPlot3D: the interactive manual
+:::
+
+### ImPlot3D: the interactive manual
+
+The 3D plots of [ImPlot3D](https://github.com/brenocq/implot3d), section by section, with the code of each beside it.
+
+:::{dropdown} More
+Lines, scatter, surfaces, meshes and more, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+:::
+
+*Uses: ImPlot3D*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_implot3d.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_implot3d.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=implot3d) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_im_anim.jpg
+:alt: ImAnim: the interactive manual
+:::
+
+### ImAnim: the interactive manual
+
+The animations of [ImAnim](https://github.com/SoufianeKHIAT/ImAnim), section by section, with the code of each beside it.
+
+:::{dropdown} More
+Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
 :::
 
 *Uses: ImAnim*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=im_anim_demo_basics.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=im_anim) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp)
 
 ::::
 

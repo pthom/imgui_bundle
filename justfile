@@ -383,7 +383,7 @@ cf_stage:
     # ------------------------------------------------------------
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
     # demos_python/: only its top-level files are examples (its folders are other sources, or not examples; its .ini
-    # files are the settings of local runs)
+    # files are the settings of local runs). demo_code/ links to the web explorer's (the manuals fetch their code there)
     python ci_scripts/playground_examples_docs.py
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
     rsync -a --copy-unsafe-links --exclude='/demos_python/*/' --exclude='/demos_python/*.ini' \

@@ -10,7 +10,8 @@
         "demos_imguizmo": "../../demos_imguizmo",
         "demos_nanovg": "../../demos_nanovg",
         "demos_terminal": "../../demos_terminal",
-        "demos_imgui_explorer": "../../demos_imgui_explorer"
+        "demos_imgui_explorer": "../../demos_imgui_explorer",
+        "manuals": "../../manuals"
     },
     "categories": [
         {
@@ -28,6 +29,10 @@
         {
             "name": "Library tours",
             "about": "The libraries in the bundle: full demos, widget tours, showcases"
+        },
+        {
+            "name": "Interactive manuals",
+            "about": "Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section, with the code of each beside it: from Dear ImGui Explorer"
         },
         {
             "name": "Python specifics",
@@ -199,43 +204,10 @@
             "where": "desktop"
         },
         {
-            "label": "ImGui full demo",
-            "filename": "imgui_demo.py",
-            "category": "Library tours",
-            "source": "demos_imgui_explorer",
-            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp",
-            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imgui"
-        },
-        {
-            "label": "ImPlot full demo",
-            "filename": "implot_demo.py",
-            "category": "Library tours",
-            "uses": [
-                "ImPlot"
-            ],
-            "source": "demos_imgui_explorer",
-            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp",
-            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot"
-        },
-        {
             "label": "ImPlot stock viewer",
             "filename": "demo_implot_stock.py",
             "category": "Library tours",
             "hidden": true
-        },
-        {
-            "label": "ImPlot3D full demo",
-            "filename": "implot3d_demo.py",
-            "category": "Library tours",
-            "bundle_folders": [
-                "implot3d_libs"
-            ],
-            "uses": [
-                "ImPlot3D"
-            ],
-            "source": "demos_imgui_explorer",
-            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp",
-            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot3d"
         },
         {
             "label": "Fiatlight image pipeline",
@@ -414,10 +386,64 @@
             "category": "Library tours"
         },
         {
-            "label": "ImAnim: the basics",
-            "filename": "im_anim_demo_basics.py",
-            "category": "Library tours",
-            "source": "demos_imgui_explorer"
+            "label": "Dear ImGui: the interactive manual",
+            "filename": "manual_imgui.py",
+            "category": "Interactive manuals",
+            "source": "manuals",
+            "in_place": true,
+            "bundle_folders": [
+                "."
+            ],
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imgui",
+            "uses": [
+                "ImGui"
+            ]
+        },
+        {
+            "label": "ImPlot: the interactive manual",
+            "filename": "manual_implot.py",
+            "category": "Interactive manuals",
+            "source": "manuals",
+            "in_place": true,
+            "bundle_folders": [
+                "."
+            ],
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot",
+            "uses": [
+                "ImPlot"
+            ]
+        },
+        {
+            "label": "ImPlot3D: the interactive manual",
+            "filename": "manual_implot3d.py",
+            "category": "Interactive manuals",
+            "source": "manuals",
+            "in_place": true,
+            "bundle_folders": [
+                "."
+            ],
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=implot3d",
+            "uses": [
+                "ImPlot3D"
+            ]
+        },
+        {
+            "label": "ImAnim: the interactive manual",
+            "filename": "manual_im_anim.py",
+            "category": "Interactive manuals",
+            "source": "manuals",
+            "in_place": true,
+            "bundle_folders": [
+                "."
+            ],
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=im_anim",
+            "uses": [
+                "ImAnim"
+            ]
         },
         {
             "label": "Context managers (imgui_ctx)",

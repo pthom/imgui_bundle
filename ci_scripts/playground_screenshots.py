@@ -126,11 +126,6 @@ def _shell_commands(ctx: Any) -> None:
         ctx.yield_(10)
 
 
-def _open_all(ctx: Any) -> None:
-    """Opens every section of the ImAnim demo (its "Open All" button)"""
-    ctx.item_click("//**/Open All")
-
-
 def _command_palette(ctx: Any) -> None:
     """Opens the command palette (Ctrl+Shift+P), and filters its commands"""
     from imgui_bundle import imgui
@@ -145,9 +140,6 @@ MAIN_WINDOW = "Main window (title bar invisible)"  # Hello ImGui's full window, 
 SHOTS: dict[str, Shot] = {
     "landing_page.py": Shot(crop=(0.0, 0.02, 0.49, 0.57)),
     "welcome_imm_mode.py": Shot(crop=(0.0, 0.52, 0.66, 0.86)),
-    "imgui_demo.py": Shot(test=_open("ImGui Demo##aaa", "Widgets", "Basic"), crop=(0.0, 0.08, 0.98, 0.7)),
-    "implot_demo.py": Shot(test=_open("ImGui Demo##aaa", "Line Plots"), crop=(0.0, 0.12, 1.0, 0.54)),
-    "implot3d_demo.py": Shot(test=_open("ImPlot3d Demo##aaa", "Mesh Plots"), crop=(0.15, 0.42, 0.85, 0.9)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
     "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.08, 0.95, 0.82)),  # layout: fiat_settings
     "fiatlight_dataframe.py": Shot(frames=200, crop=(0.0, 0.04, 0.86, 0.88)),
@@ -169,7 +161,11 @@ SHOTS: dict[str, Shot] = {
     "demo_nanovg_full.py": Shot(crop=(0.0, 0.05, 1.0, 0.883)),
     "demo_nanovg_heart.py": Shot(crop=(0.0, 0.02, 1.0, 0.853)),
     "demo_terminal_pyte.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.603)),
-    "im_anim_demo_basics.py": Shot(test=_open_all, frames=90, crop=(0.0, 0.0, 1.0, 0.446)),
+    # The interactive manuals (source: manuals)
+    "manual_imgui.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    "manual_implot.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    "manual_implot3d.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    "manual_im_anim.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),
