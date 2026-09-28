@@ -434,8 +434,7 @@
             "label": "ImAnim: the basics",
             "filename": "im_anim_demo_basics.py",
             "category": "Library tours",
-            "source": "demos_imgui_explorer",
-            "where": "desktop"
+            "source": "demos_imgui_explorer"
         },
         {
             "label": "Context managers (imgui_ctx)",

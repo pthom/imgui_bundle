@@ -815,11 +815,11 @@ wiggle, the easings, delays, callbacks, stagger, loops and chains: open a sectio
 [ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its
 basics demo.
 
-*Python, Desktop only*
+*Python*
 
 *Uses: ImAnim*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=im_anim_demo_basics.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
 
 ## Python specifics
 

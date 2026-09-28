@@ -973,11 +973,9 @@ Animations for Dear ImGui, one section per notion.
 Tweens of floats and colors (in OKLAB), oscillators, shake and wiggle, the easings, delays, callbacks, stagger, loops and chains: open a section to see it move, and read its code. [ImAnim](https://github.com/SoufianeKHIAT/ImAnim) is Soufiane Khiat's animation engine; this is the port of its basics demo.
 :::
 
-*Desktop only*
-
 *Uses: ImAnim*
 
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=im_anim_demo_basics.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/im_anim_demo_basics.py)
 
 ::::
 
