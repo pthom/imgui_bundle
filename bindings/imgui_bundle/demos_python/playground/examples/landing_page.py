@@ -50,6 +50,7 @@ almost *only python*. **No Client/Server, no JavaScript, no fuss.**
 """
 
 import math
+import sys
 
 from imgui_bundle import (
     imgui, immapp, hello_imgui, rich_md, imgui_color_text_edit as ed, ImVec2, ImVec4, __version__,
@@ -500,8 +501,11 @@ def show_info():
 # ============================================================================
 
 def show_post_it():
+    """In the playground: a note that opens its examples menu"""
+    if sys.platform != "emscripten":
+        return  # the examples menu is the playground's (on desktop, see demo_immapp_launcher.py)
     em = hello_imgui.em_size()
-    text = "Select examples from the\ndrop-down list and click Run!"
+    text = "Browse the examples  " + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT
     padding = em * 0.4
     text_size = imgui.calc_text_size(text)
     note_w = text_size.x + padding * 2
@@ -509,13 +513,19 @@ def show_post_it():
     viewport = imgui.get_main_viewport()
     note_x = viewport.pos.x + viewport.size.x - note_w - em * 1.5
     note_y = viewport.pos.y + em * 0.1
+    hovered = imgui.is_mouse_hovering_rect((note_x, note_y), (note_x + note_w, note_y + note_h), False)
+    if hovered:
+        imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
+        if imgui.is_mouse_clicked(imgui.MouseButton_.left):
+            from js import openExamplesMenu  # type: ignore[import-not-found]  # the playground's page (js/examples.js)
+            openExamplesMenu()
     dl = imgui.get_foreground_draw_list()
     shadow = em * 0.15
     dl.add_rect_filled((note_x + shadow, note_y + shadow),
         (note_x + note_w + shadow, note_y + note_h + shadow),
         imgui.color_convert_float4_to_u32((0, 0, 0, 0.3)))
     dl.add_rect_filled((note_x, note_y), (note_x + note_w, note_y + note_h),
-        imgui.color_convert_float4_to_u32((1.0, 0.95, 0.55, 0.95)))
+        imgui.color_convert_float4_to_u32((1.0, 0.98, 0.7, 1.0) if hovered else (1.0, 0.95, 0.55, 0.95)))
     fold = em * 1.0
     dl.add_triangle_filled((note_x + note_w - fold, note_y), (note_x + note_w, note_y),
         (note_x + note_w, note_y + fold),

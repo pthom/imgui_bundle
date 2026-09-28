@@ -161,6 +161,7 @@ async function populateExampleSelector() {
 
     const list = document.getElementById('examples-list');
     list.innerHTML = '';
+    let count = 0;
     for (const category of examplesCategories) {
         const name = document.createElement('div');
         name.className = 'examples-category-name';
@@ -183,8 +184,10 @@ async function populateExampleSelector() {
                 await loadDemoByFilename(example.filename);
             });
             list.appendChild(item);
+            count++;
         }
     }
+    document.getElementById('examples-button').textContent = `Examples (${count}) ▾`;
 }
 
 // The detail pane of the menu: the example's title, first paragraph (markdown, rendered by marked.js) and picture

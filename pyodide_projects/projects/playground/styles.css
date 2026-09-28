@@ -49,15 +49,15 @@ html, body {
 #examples-button {
     padding: 6px 14px;
     font-size: 1em;
-    background-color: #444;
+    background-color: #4CAF50;  /* the accent of the Run button: the examples are the playground's door */
     color: #fff;
-    border: 1px solid #666;
+    border: 1px solid #45a049;
     border-radius: 4px;
     cursor: pointer;
 }
 
 #examples-button:hover {
-    background-color: #555;
+    background-color: #45a049;
 }
 
 #examples-panel {
