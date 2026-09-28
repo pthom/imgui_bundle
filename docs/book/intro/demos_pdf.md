@@ -355,7 +355,7 @@ documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev
 
 *Python, C++, Desktop only*
 
-[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_testapp.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
 
 ## Library tours
 

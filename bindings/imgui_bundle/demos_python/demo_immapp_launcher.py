@@ -71,7 +71,7 @@ class Demo:
     uses: list[str]  # the libraries it uses (from its imports, named by the generator)
     path: Path  # its Python file
     cpp_path: Optional[Path]  # its C++ version, if any
-    cpp_url: str  # where its C++ version runs online (the explorer's page by default)
+    cpp_url: str  # where its C++ version runs online (the explorer's page by default; "" when it cannot run there)
     variants: list[tuple[str, Path]] = field(default_factory=list)  # the same demo in other files (label, file)
 
     @property
@@ -658,7 +658,7 @@ class Launcher:
             if self.action(fa.ICON_FA_GLOBE + "  Open in the Python playground",
                            "Opens it in your browser, in the Python playground: edit its code, and run it again"):
                 open_url(playground_url(demo))
-        if demo.cpp_path is not None:
+        if demo.cpp_path is not None and demo.cpp_url:
             if self.action(fa.ICON_FA_GLOBE + "  Run the C++ version online",
                            "Opens its C++ version in your browser, compiled to WebAssembly"):
                 open_url(demo.cpp_url)

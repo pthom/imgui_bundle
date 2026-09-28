@@ -203,7 +203,8 @@
             "filename": "demo_testapp.py",
             "category": "Build an app",
             "source": "demos_immapp",
-            "where": "desktop"
+            "where": "desktop",
+            "cpp_url": ""
         },
         {
             "label": "ImPlot stock viewer",

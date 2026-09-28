@@ -182,7 +182,7 @@ def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]])
             "uses": doc.get("uses", []),
             "python_file": path.relative_to(REPO).as_posix(),
             "cpp_file": cpp_path.relative_to(REPO).as_posix() if cpp_path is not None and cpp_path.exists() else None,
-            "cpp_url": e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),
+            "cpp_url": e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),  # "": none online
             "in_place": bool(e.get("in_place")),  # its function may be linked in the explorer
             "variants": [{"label": v["label"], "python_file": (folder / v["filename"]).resolve().relative_to(REPO).as_posix()}
                          for v in e.get("variants", [])],
@@ -207,7 +207,8 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
     has_cpp = cpp_code is not None
     where_tags = {"browser": ["Browser only"], "desktop": ["Desktop only"]}.get(where, [])
     playground = f"{SITE}/playground/?demo={e['filename']}"
-    explorer = e.get("cpp_url", f"{SITE}/explorer/{stem}.html")  # where the C++ version runs online
+    # Where the C++ version runs online; an empty "cpp_url" says it cannot (e.g. it writes screenshots and exits)
+    explorer = e.get("cpp_url", f"{SITE}/explorer/{stem}.html")
     code = f"{GITHUB}{path.relative_to(REPO).as_posix()}"
     # A demo in several files (e.g. the Python backends): a code link per variant, instead of the one code link
     code_links = [f"[Code {v['label']}]({GITHUB}{(path.parent / v['filename']).relative_to(REPO).as_posix()})"
@@ -234,10 +235,11 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
         python_links = ([f"[{RUN_ICON} Run]({playground})"] if where != "desktop" else []) + code_links
         rows = ["{span .demo-lang}`Python:` " + " · ".join(python_links)]
         if has_cpp:
-            rows.append(f"{{span .demo-lang}}`C++:` [{RUN_ICON} Run]({explorer}) · [Code]({cpp_code})")
+            cpp_links = ([f"[{RUN_ICON} Run]({explorer})"] if explorer else []) + [f"[Code]({cpp_code})"]
+            rows.append("{span .demo-lang}`C++:` " + " · ".join(cpp_links))
         return lines + ([f"*{where_tags[0]}*", ""] if where_tags else []) + uses_line + ["\\\n".join(rows), ""]
     links = [f"[Run it in the playground]({playground})"] if where != "desktop" else []
-    links += [f"[C++ version, in the explorer]({explorer})"] if has_cpp else []
+    links += [f"[C++ version, in the explorer]({explorer})"] if has_cpp and explorer else []
     links += [link.replace("[Code", "[Python code") for link in code_links]
     links += [f"[C++ code]({cpp_code})"] if has_cpp else []
     tags = ["Python"] + (["C++"] if has_cpp else []) + where_tags

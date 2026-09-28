@@ -29,7 +29,7 @@ struct DemoEntry
     std::vector<std::string> uses;        // the libraries it uses
     std::string pythonFile;  // relative to the repository
     std::string cppFile;     // its C++ version, relative to the repository; empty when there is none
-    std::string cppUrl;      // where its C++ version runs online (the explorer's page by default)
+    std::string cppUrl;      // where its C++ version runs online (the explorer's page by default; "" when it cannot)
     bool inPlace = false;    // its function may be linked in the explorer
     std::vector<std::pair<std::string, std::string>> variants;  // the same demo in other files: label, Python file
 

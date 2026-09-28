@@ -855,10 +855,12 @@ void DemoLauncher::Detail()
         if (Action(ICON_FA_PLAY "  Run", "Shows the demo here"))
             demoToShowInPlace = demo.stem;
     }
-    else if (!demo.cppFile.empty() && demo.where != "browser")
+    else if (!demo.cppFile.empty())
     {
 #ifdef __EMSCRIPTEN__
-        if (Action(ICON_FA_PLAY "  Run (in a new window)", "Runs its C++ version in a new browser window"))
+        // "where" is about the Python version: the C++ one has a page of its own online, or none
+        if (!demo.cppUrl.empty()
+            && Action(ICON_FA_PLAY "  Run (in a new window)", "Runs its C++ version in a new browser window"))
         {
             if (ExplorerPage(demo))
                 SpawnDemo(demo.stem);
@@ -878,7 +880,7 @@ void DemoLauncher::Detail()
                    "Opens it in your browser, in the Python playground: edit its code, and run it again"))
             ImmApp::BrowseToUrl(PlaygroundUrl(demo).c_str());
 #ifndef __EMSCRIPTEN__
-    if (!demo.cppFile.empty())
+    if (!demo.cppFile.empty() && !demo.cppUrl.empty())
         if (Action(ICON_FA_GLOBE "  Run the C++ version online",
                    "Opens its C++ version in your browser, compiled to WebAssembly"))
             ImmApp::BrowseToUrl(demo.cppUrl.c_str());

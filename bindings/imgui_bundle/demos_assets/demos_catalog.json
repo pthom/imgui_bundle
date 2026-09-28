@@ -335,7 +335,7 @@
           "uses": [],
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp",
-          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_testapp.html",
+          "cpp_url": "",
           "in_place": false,
           "variants": []
         }
