@@ -1,87 +1,305 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
+// Dear ImGui Bundle Explorer: one page with a header, and three states below it (the twin of demo_imgui_bundle.py).
+//
+// Welcome: the intro (the carousel of live mini demos) and a button to the demos. Demos: the launcher (the catalog of
+// demos, with their pictures, descriptions and code). A demo in place: a demo whose function is linked here, shown
+// full size under a slim bar. Escape goes back one state (the code view, the demo, then Welcome).
+#include "demo_imgui_bundle.h"
+#include "demo_immapp_launcher.h"
+
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
-#include "immapp/snippets.h"
-#include "demo_utils/api_demos.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "imgui_rich_md/rich_md.h"
+#include "demo_utils/api_demos.h"
 
-#include <functional>
-#include <map>
-#include <cstdio>
+#include <cmath>
+#include <optional>
+#include <string>
 
-void demo_immapp_launcher();
-void demo_nanovg_launcher();
-void demo_text_edit();
-void demo_imgui_bundle_intro();
-void demo_imgui_show_demo_window();
+// The intro
+void IntroWelcomeGui();  // its content without the title and the links
+void RenderLinksRow();
+// The demos whose function can be linked in the explorer (the catalog says which ones may run in place)
 void demo_widgets();
-void demo_implot();
 void demo_imgui_md();
-void demo_immvision_launcher();
-void demo_imguizmo_launcher();
-void demo_node_editor_launcher();
-void demo_themes();
+void demo_text_edit();
 void demo_logger();
-void demo_utils();
+void demo_romeo_and_juliet();
+void demo_imgui_show_demo_window();
+void demo_implot();
 void demo_im_anim();
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+void demo_immvision_display();
+void demo_immvision_inspector();
+void demo_immvision_link();
+void demo_immvision_process();
+#endif
 
 
-
-using VoidFunction = std::function<void(void)>;
-
-static std::map<std::string, bool> gShowCodeStates;
-
-void ShowModuleDemo(const std::string& demoFilename, VoidFunction demoFunction, bool showCode)
+namespace
 {
-    if (ImGui::GetFrameCount() < 2) // cf https://github.com/pthom/imgui_bundle/issues/293
-        return;
-    if (showCode)
+    const float CHANGE_DURATION = 0.4f;  // s: a change of state, through the background
+    const float DRIFT = 3.f;  // em: the page leaving slides that much (up when going forward), the one arriving as far
+
+    enum class State { Welcome, Demos, Demo };  // Demo: a demo in place
+
+    struct Explorer
     {
-        bool current = gShowCodeStates[demoFilename];
-        if (ImGui::Checkbox(("Show code##" + demoFilename).c_str(), &current))
-            gShowCodeStates[demoFilename] = current;
-        if (current)
-            ShowPythonVsCppFile(demoFilename.c_str(), 40);
-    }
-    demoFunction();
-}
+        State state = State::Welcome;  // the one wanted
+        State shown = State::Welcome;  // the one drawn: the previous state, during the first half of a change
+        std::optional<double> changeStart;  // when the state last changed, while the change animates
+        bool forward = true;  // the change goes deeper (Welcome, Demos, a demo: the pages slide up), or back
+        DemoLauncher launcher;
+        std::string demoInPlace;  // the stem of the demo shown by the Demo state
+        float rightWidth = 0.f;  // of the header's switch, measured on the previous frame
 
-
-struct DemoDetails
-{
-    std::string Label;
-    std::string DemoFilename;
-    VoidFunction DemoFunction;
-    bool ShowCode = false;
-};
-
-struct DemoGroup
-{
-    std::string Label;
-    std::vector<DemoDetails> Demos;
-};
-
-void ShowGroupGui(const DemoGroup& group)
-{
-    if (ImGui::GetFrameCount() < 2)
-        return;
-    for (const auto& demo : group.Demos)
-    {
-        if (ImGui::CollapsingHeader(demo.Label.c_str()))
+        Explorer()
         {
-            ImGui::Indent();
-            ShowModuleDemo(demo.DemoFilename, demo.DemoFunction, demo.ShowCode);
-            ImGui::Unindent();
+            launcher.inPlaceFunctions = {
+                {"demo_widgets", demo_widgets}, {"demo_imgui_md", demo_imgui_md}, {"demo_text_edit", demo_text_edit},
+                {"demo_logger", demo_logger}, {"demo_romeo_and_juliet", demo_romeo_and_juliet},
+                {"manual_imgui", demo_imgui_show_demo_window},
+                {"manual_implot", demo_implot}, {"manual_implot3d", demo_implot}, {"manual_im_anim", demo_im_anim},
+#ifdef IMGUI_BUNDLE_WITH_IMMVISION
+                {"demo_immvision_display", demo_immvision_display}, {"demo_immvision_inspector", demo_immvision_inspector},
+                {"demo_immvision_link", demo_immvision_link}, {"demo_immvision_process", demo_immvision_process},
+#endif
+            };
         }
-    }
+
+        void Go(State newState)
+        {
+            if (newState == state)
+                return;
+            forward = (int)newState > (int)state;
+            state = newState;
+            changeStart = ImGui::GetTime();
+        }
+
+        void Gui()
+        {
+            if (ImGui::GetFrameCount() < 2)  // cf https://github.com/pthom/imgui_bundle/issues/293
+                return;
+            if (launcher.demoToShowInPlace.has_value())  // "Run" on a demo whose function is linked here
+            {
+                demoInPlace = *launcher.demoToShowInPlace;
+                launcher.demoToShowInPlace.reset();
+                Go(State::Demo);
+            }
+            if (ImGui::IsKeyPressed(ImGuiKey_Escape) && !ImGui::IsAnyItemActive())
+            {
+                if (state == State::Demo)
+                    Go(State::Demos);
+                else if (state == State::Demos && launcher.Depth() == 0)  // else the launcher goes back one level
+                    Go(State::Welcome);
+            }
+            Header();
+            Page();
+        }
+
+        // The state's content, in a child; during a change, it fades through the background with a drift: the page
+        // leaving slides away under a veil, then the new one slides into place as the veil lifts
+        void Page()
+        {
+            float drift = 0.f, veil = 0.f;
+            if (changeStart.has_value())
+            {
+                float t = (float)(ImGui::GetTime() - *changeStart) / CHANGE_DURATION;
+                if (t >= 1.f)
+                {
+                    changeStart.reset();
+                    shown = state;
+                }
+                else if (t < 0.5f)
+                {
+                    float u = t / 0.5f;
+                    u = u * u;  // eased in
+                    drift = -DRIFT * u;
+                    veil = u;
+                }
+                else
+                {
+                    if (shown != state)
+                    {
+                        shown = state;
+                        if (shown == State::Demos)
+                            launcher.Deal();
+                    }
+                    float u = (t - 0.5f) / 0.5f;
+                    u = 1.f - (1.f - u) * (1.f - u);  // eased out
+                    drift = DRIFT * (1.f - u);
+                    veil = 1.f - u;
+                }
+                if (!forward)
+                    drift = -drift;
+            }
+            drift = HelloImGui::EmSize(drift);
+            ImVec2 topLeft = ImGui::GetCursorScreenPos();
+            ImVec2 avail = ImGui::GetContentRegionAvail();
+            ImVec2 bottomRight(topLeft.x + avail.x, topLeft.y + avail.y);
+            // The child keeps its bottom (it would overflow the window and bring a scrollbar), and is clipped at its top
+            ImGui::PushClipRect(topLeft, bottomRight, true);
+            ImGui::SetCursorScreenPos(ImVec2(topLeft.x, topLeft.y + drift));
+            ImGui::BeginChild("page", ImVec2(avail.x, avail.y - std::max(drift, 0.f)));
+            if (shown == State::Welcome)
+                Welcome();
+            else if (shown == State::Demos)
+                launcher.Gui(false);
+            else
+                DemoInPlace();
+            ImGui::EndChild();
+            ImGui::PopClipRect();
+            if (veil > 0.f)  // over the child's own draw list, which comes after this window's
+                ImGui::GetForegroundDrawList()->AddRectFilled(topLeft, bottomRight, Curtain(veil));
+        }
+
+        // The title, the sentence of the state, and at the right the switch between the states (on its own row when
+        // the title leaves it no room: a phone)
+        void Header()
+        {
+            float em = HelloImGui::EmSize();
+            float top = ImGui::GetCursorPosY();
+            BigText("Dear ImGui Bundle", 2.f);
+            float titleWidth = ImGui::GetItemRectSize().x;
+            float belowTitle = ImGui::GetCursorPosY();
+            float width = ImGui::GetContentRegionAvail().x;
+            float right = ImGui::GetCursorPosX() + width - em * 0.5f;
+            bool oneRow = titleWidth + rightWidth + em * 1.5f <= width;
+            if (oneRow)
+            {
+                const char* sentence = state == State::Welcome
+                    ? "   Interactive apps in Python and C++, for desktop, web and mobile."
+                    : "   Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.";
+                ImVec4 color = ImGui::GetStyleColorVec4(state == State::Welcome ? ImGuiCol_TextDisabled : ImGuiCol_Text);
+                // Only when it does not reach the switch; SameLine only then: pending, it would make the title's row
+                // the chips' line
+                if (titleWidth + ImGui::CalcTextSize(sentence).x + rightWidth + em * 3.f <= width)
+                {
+                    ImGui::SameLine();
+                    ImGui::SetCursorPosY(top + em * 0.75f);  // the sentence sits on the title's baseline
+                    ImGui::TextColored(color, "%s", sentence);
+                }
+            }
+            // The cursor is set, not put on the same line (see above)
+            ImGui::SetCursorPos(ImVec2(right - rightWidth, oneRow ? top + em * 0.5f : belowTitle));
+            ImGui::BeginGroup();
+            // The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width
+            // comes from the previous frame, and a wrapped group would measure too narrow forever), the state's in
+            // the accent
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(em * 0.8f, 0));
+            const std::pair<State, const char*> switches[] = {{State::Welcome, BundleExplorer::WELCOME_LABEL},
+                                                              {State::Demos, BundleExplorer::DEMOS_LABEL}};
+            for (const auto& [target, label] : switches)
+            {
+                bool current = state == target || (state == State::Demo && target == State::Demos);
+                float highlight = Tween((std::string("switch ") + label).c_str(), current ? 1.f : 0.f, 0.25f);
+                ImVec4 button = ImGui::GetStyleColorVec4(ImGuiCol_Button);
+                ImVec4 accent(LAUNCHER_ACCENT.x, LAUNCHER_ACCENT.y, LAUNCHER_ACCENT.z, 0.55f);
+                ImGui::PushStyleColor(ImGuiCol_Button, Lerp(button, accent, highlight));
+                if (ImGui::SmallButton(label))
+                    Go(target);
+                ImGui::PopStyleColor();
+                ImGui::SameLine();
+            }
+            ImGui::PopStyleVar();
+            ImGui::EndGroup();
+            rightWidth = ImGui::GetItemRectSize().x;
+            ImGui::SetCursorPosY(std::max(ImGui::GetCursorPosY(), belowTitle));  // the chips are shorter than the title
+        }
+
+        void Welcome()
+        {
+            float em = HelloImGui::EmSize();
+            RenderLinksRow();
+            ImVec2 avail = ImGui::GetContentRegionAvail();
+            ImGui::BeginChild("welcome", ImVec2(0, avail.y - em * 3.5f));
+            IntroWelcomeGui();
+            ImGui::EndChild();
+            // The call to action, centered
+            std::string label = std::string(ICON_FA_TH_LARGE "  Browse the ") + std::to_string(launcher.NbDemos()) + " demos";
+            ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 1.3f);
+            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(em * 1.2f, em * 0.4f));
+            float width = ImGui::CalcTextSize(label.c_str()).x + em * 2.4f;
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (avail.x - width) / 2);
+            if (ImGui::Button(label.c_str()))
+                Go(State::Demos);
+            ImGui::PopStyleVar();
+            ImGui::PopFont();
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
+            {
+                std::string categories;
+                for (const auto& category : launcher.Categories())
+                    categories += (categories.empty() ? "" : ", ") + category.name;
+                ImGui::BeginTooltip();
+                ImGui::BeginChild("tip", ImVec2(em * 30.f, 0), ImGuiChildFlags_AutoResizeY);  // wraps the text
+                RichMd::Render("**" + std::to_string(launcher.NbDemos()) + " demos, in "
+                               + std::to_string(launcher.Categories().size()) + " categories:** " + categories + ".\n\n"
+                               "Each one is a documented quickstart: see it, run it, and read its code. Together they "
+                               "are the tutorials and the interactive manuals of the bundle.");
+                ImGui::EndChild();
+                ImGui::EndTooltip();
+            }
+        }
+
+        // A demo whose function is linked here, full size under a slim bar: the way back, its name, its code
+        void DemoInPlace()
+        {
+            const DemoEntry* demo = launcher.Find(demoInPlace);
+            if (demo == nullptr || !launcher.inPlaceFunctions.count(demo->stem))
+            {
+                Go(State::Demos);
+                return;
+            }
+            if (ImGui::Button(ICON_FA_ARROW_LEFT "  All the demos"))
+            {
+                Go(State::Demos);
+                return;
+            }
+            ImGui::SameLine();
+            BigText(demo->label.c_str(), 1.3f);
+            ImGui::SameLine(0, HelloImGui::EmSize(2.f));
+            if (ImGui::SmallButton(ICON_FA_CODE "  Code"))
+            {
+                launcher.ShowCodeOf(*demo);
+                Go(State::Demos);
+            }
+            ImGui::SetItemTooltip("Its code: Python, and C++ side by side");
+#ifdef __EMSCRIPTEN__
+            bool ownWindow = ExplorerPage(*demo);
+#else
+            bool ownWindow = HasDemoExeFile(demo->stem);
+#endif
+            if (ownWindow)
+            {
+                ImGui::SameLine();
+                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  New window"))
+                    SpawnDemo(demo->stem);
+                ImGui::SetItemTooltip("Runs it in a window of its own");
+            }
+            ImGui::Separator();
+            ImGui::BeginChild("demo in place");
+            launcher.inPlaceFunctions.at(demo->stem)();
+            ImGui::EndChild();
+        }
+    };
+
+    Explorer* gExplorer = nullptr;
 }
 
 
-int main(int, char **)
+namespace BundleExplorer
 {
-    printf("Dear ImGui Bundle Explorer - v%s build %s, compiled on %s at %s\n",
-           IMGUI_BUNDLE_VERSION, IMGUI_BUNDLE_BUILD_NUMBER, __DATE__, __TIME__);
-    ChdirBesideAssetsFolder();
+    const char* WELCOME_LABEL = ICON_FA_HOME "  Welcome";
+    const char* DEMOS_LABEL = ICON_FA_TH_LARGE "  Demos";
+    bool OnDemos() { return gExplorer != nullptr && gExplorer->state != State::Welcome; }
+    DemoLauncher* Launcher() { return gExplorer ? &gExplorer->launcher : nullptr; }
+}
+
+
+// The explorer's parameters, apart from its run: a test can drive the page (see the intro's automations)
+std::pair<HelloImGui::RunnerParams, ImmApp::AddOnsParams> ExplorerParams()
+{
     //###############################################################################################
     // Part 1: Define the runner params
     //###############################################################################################
@@ -92,108 +310,28 @@ int main(int, char **)
     runnerParams.appWindowParams.windowTitle = "Dear ImGui Bundle Explorer";
     runnerParams.appWindowParams.windowGeometry.size = {1400, 950};
 
-    // Menu bar
-    runnerParams.imGuiWindowParams.showMenuBar = true;
     runnerParams.imGuiWindowParams.showStatusBar = true;
 
     //###############################################################################################
-    // Part 2: Define the application layout and windows
+    // Part 2: The explorer's page, in a full screen window
     //###############################################################################################
-
-    // First, tell HelloImGui that we want full screen dock space (this will create "MainDockSpace")
-    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenDockSpace;
-    // In this demo, we also demonstrate multiple viewports.
-    // you can drag windows outside out the main window in order to put their content into new native windows
-    runnerParams.imGuiWindowParams.enableViewports = true;
-
-    //
-    // Define our dockable windows : each window provide a Gui callback, and will be displayed
-    // in a docking split.
-    //
-    std::vector<HelloImGui::DockableWindow> dockableWindows;
-
-#define DEMO_DETAILS(label, function_name)           DemoDetails{ label, #function_name, function_name, false }
-#define DEMO_DETAILS_WITH_CODE(label, function_name) DemoDetails{ label, #function_name, function_name, true  }
-
-    // --- Standalone tabs (no grouping) ---
-    std::vector<DemoDetails> standaloneDemos {
-        DEMO_DETAILS("Intro",       demo_imgui_bundle_intro),
-        DEMO_DETAILS("Dear ImGui",  demo_imgui_show_demo_window),
-        DEMO_DETAILS("Demo Apps",   demo_immapp_launcher),
-    };
-
-    for (const auto& demo : standaloneDemos)
-    {
-        HelloImGui::DockableWindow window;
-        window.label = demo.Label;
-        window.dockSpaceName = "MainDockSpace";
-        window.GuiFunction = [demo]()
-        {
-            ShowModuleDemo(demo.DemoFilename, demo.DemoFunction, demo.ShowCode);
-        };
-        dockableWindows.push_back(window);
-    }
-
-    // --- Grouped tabs (sub-demos shown as collapsing headers) ---
-    std::vector<DemoGroup> groups {
-        { "Visualization", {
-            DEMO_DETAILS(          "Plots with ImPlot and ImPlot3D",  demo_implot),
-            DEMO_DETAILS(          "ImmVision - Image analyzer",      demo_immvision_launcher),
-        }},
-        { "Widgets", {
-            DEMO_DETAILS_WITH_CODE("Misc Widgets - Knobs, Toggles, ...", demo_widgets),
-            DEMO_DETAILS_WITH_CODE("Logger - Log Window Widget",         demo_logger),
-            DEMO_DETAILS(          "ImGuizmo - Immediate Mode 3D Gizmo", demo_imguizmo_launcher),
-            DEMO_DETAILS_WITH_CODE("Markdown - Rich Text Rendering",     demo_imgui_md),
-            DEMO_DETAILS          ("Text Editor - Code Editing Widget",  demo_text_edit),
-        }},
-        { "Tools", {
-            DEMO_DETAILS(          "Node Editor - Visual Node Graphs",       demo_node_editor_launcher),
-            DEMO_DETAILS_WITH_CODE("Themes - Style & Color Customization",   demo_themes),
-            DEMO_DETAILS(          "ImAnim - Animation Library",             demo_im_anim),
-#ifdef IMGUI_BUNDLE_WITH_NANOVG
-            DEMO_DETAILS(          "NanoVG - 2D Vector Drawing",      demo_nanovg_launcher),
-#endif
-        }},
-    };
-
-    for (const auto& group : groups)
-    {
-        HelloImGui::DockableWindow window;
-        window.label = group.Label;
-        window.dockSpaceName = "MainDockSpace";
-        window.GuiFunction = [group]()
-        {
-            ShowGroupGui(group);
-        };
-        dockableWindows.push_back(window);
-    }
-
-    runnerParams.dockingParams.dockableWindows = dockableWindows;
-
-    // the main gui is only responsible to give focus to ImGui Bundle dockable window
-    auto showGui = [&runnerParams]
-    {
-        static int nbFrames = 0;
-        if (nbFrames == 1)
-        {
-            // Focus cannot be given at frame 0, since some additional windows will
-            // be created after (and will steal the focus)
-            runnerParams.dockingParams.focusDockableWindow("Dear ImGui Bundle");
-        }
-        nbFrames += 1;
-    };
+    runnerParams.imGuiWindowParams.defaultImGuiWindowType = HelloImGui::DefaultImGuiWindowType::ProvideFullScreenWindow;
+    static Explorer explorer;
+    gExplorer = &explorer;
+    runnerParams.callbacks.ShowGui = [] { explorer.Gui(); };
 
     auto showStatusBar = []()
     {
         ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
         ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
         ImGui::SameLine(0.f, HelloImGui::EmSize(4.f));
-        ImGui::TextDisabled("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
+        if (SmallScreen())  // the bar's right part (idling, FPS) leaves no room for more
+            ImGui::TextDisabled("v" IMGUI_BUNDLE_VERSION);
+        else
+            ImGui::TextDisabled("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
     };
     runnerParams.callbacks.ShowStatus = showStatusBar;
 
-    runnerParams.callbacks.ShowGui = showGui;
     runnerParams.useImGuiTestEngine = true;
 
     runnerParams.callbacks.SetupImGuiConfig = [] {
@@ -201,7 +339,7 @@ int main(int, char **)
     };
 
     // ################################################################################################
-    // Part 3: Run the app
+    // Part 3: The add-ons
     // ################################################################################################
     auto addons = ImmApp::AddOnsParams();
     addons.withMarkdown = true;
@@ -213,8 +351,16 @@ int main(int, char **)
     addons.withImAnim = true;
 
     runnerParams.iniClearPreviousSettings = true;
+    return {runnerParams, addons};
+}
 
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
+int main(int, char **)
+{
+    ChdirBesideAssetsFolder();
+    auto [runnerParams, addons] = ExplorerParams();
     ImmApp::Run(runnerParams, addons);
-
     return 0;
 }
+#endif

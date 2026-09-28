@@ -43,23 +43,58 @@
 #include "imgui_test_engine/imgui_te_context.h"
 #include "imgui_test_engine/imgui_te_ui.h"
 
+#ifdef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY  // the automations drive the explorer's page: none in the intro alone
+#include "demo_imgui_bundle.h"
+#include "demo_immapp_launcher.h"
+
+// Goes to the demos, selects this one (its category's chip scrolls to it, a click on its card) and shows its code
+static void ShowDemoCode(ImGuiTestContext* ctx, const std::string& filename)
+{
+    DemoLauncher* launcher = BundleExplorer::Launcher();
+    if (launcher == nullptr)
+        return;
+    while (launcher->Depth() > 0)  // as a previous automation may have left the code view open
+        launcher->Back();
+    if (!BundleExplorer::OnDemos())
+    {
+        ctx->ItemClick((std::string("//**/") + BundleExplorer::DEMOS_LABEL).c_str());
+        ctx->Sleep(1.5f);  // the change of page, then the cards dealt
+    }
+    for (const auto& category : launcher->Categories())
+    {
+        bool holds = false;
+        for (const auto& demo : category.demos)
+            holds = holds || demo.filename == filename;
+        if (!holds)
+            continue;
+        ctx->ItemClick(("//**/" + launcher->ChipLabel(category)).c_str());
+        ctx->Sleep(0.8f);  // the scroll
+    }
+    if (!launcher->CardRects().count(filename))
+        return;
+    auto [topLeft, bottomRight] = launcher->CardRects().at(filename);
+    ctx->MouseMoveToPos(ImVec2((topLeft.x + bottomRight.x) / 2, (topLeft.y + bottomRight.y) / 2));
+    ctx->MouseClick(0);
+    ctx->Sleep(0.5f);
+    ctx->ItemClick("//**/" ICON_FA_CODE "  View code");
+}
+
 ImGuiTest* AutomationShowMeImmediateApps()
 {
     ImGuiTestEngine *engine = HelloImGui::GetImGuiTestEngine();
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeImmediateApps");
     auto testFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Demo Apps";
-        const char* tabIntroName = "//**/Intro";
-
-        ctx->MouseMove(tabImmAppsName);
-        ctx->MouseClick(0);
-        ctx->ItemClick("//**/demo_docking/View code");
-        ctx->ItemClick("//**/demo_assets_addons/View code");
-        ctx->ItemClick("//**/demo_hello_world/View code");
-        ctx->MouseMove("//**/demo_hello_world/Run");
-        ctx->MouseMove(tabIntroName);
-        ctx->MouseClick(0);
+        const char* allTheDemos = "//**/" ICON_FA_ARROW_LEFT "  All the demos";
+        ShowDemoCode(ctx, "demo_hello_world.py");
+        ctx->Sleep(2.f);
+        ctx->ItemClick(allTheDemos);
+        ShowDemoCode(ctx, "demo_assets_addons.py");
+        ctx->Sleep(2.f);
+        ctx->ItemClick(allTheDemos);
+        ctx->MouseMove("//**/" ICON_FA_PLAY "  Run (in a new window)");
+        ctx->Sleep(1.f);
+        ctx->ItemClick((std::string("//**/") + BundleExplorer::WELCOME_LABEL).c_str());
     };
     automation->TestFunc = testFunc;
     return automation;
@@ -71,12 +106,8 @@ ImGuiTest* AutomationShowMeCustomBackgroundExample()
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeCustomBackgroundExample");
     auto testFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Demo Apps";
-
-        ctx->MouseMove(tabImmAppsName);
-        ctx->MouseClick(0);
-        ctx->ItemClick("//**/demo_custom_background/View code");
-        ctx->MouseMove("//**/Run##CurrentDemo");
+        ShowDemoCode(ctx, "demo_custom_background.py");
+        ctx->MouseMove("//**/" ICON_FA_ARROW_LEFT "  All the demos");
     };
     automation->TestFunc = testFunc;
     return automation;
@@ -88,16 +119,17 @@ ImGuiTest* AutomationShowMeDockingExample()
 
     ImGuiTest* automation = IM_REGISTER_TEST(engine, "Automation", "ShowMeDockingExample");
     auto testFunc = [](ImGuiTestContext *ctx) {
-        const char* tabImmAppsName = "//**/Demo Apps";
-
-        ctx->MouseMove(tabImmAppsName);
-        ctx->MouseClick(0);
-        ctx->ItemClick("//**/demo_docking/View code");
-        ctx->MouseMove("//**/Run##CurrentDemo");
+        ShowDemoCode(ctx, "demo_docking.py");
+        ctx->MouseMove("//**/" ICON_FA_ARROW_LEFT "  All the demos");
     };
     automation->TestFunc = testFunc;
     return automation;
 }
+#else
+ImGuiTest* AutomationShowMeImmediateApps() { return nullptr; }
+ImGuiTest* AutomationShowMeCustomBackgroundExample() { return nullptr; }
+ImGuiTest* AutomationShowMeDockingExample() { return nullptr; }
+#endif
 
 // Centralized automation registration and "More info" link helper
 namespace IntroAutomations
@@ -1665,8 +1697,14 @@ void RenderLinksRow()
         if (i > 0)
         {
             ImGui::SameLine();
-            ImGui::TextDisabled("|");
-            ImGui::SameLine();
+            float needed = ImGui::CalcTextSize((std::string("| ") + links[i].label).c_str()).x + 2 * ImGui::GetStyle().ItemSpacing.x;
+            if (needed > ImGui::GetContentRegionAvail().x)  // the row wraps on a narrow screen
+                ImGui::NewLine();
+            else
+            {
+                ImGui::TextDisabled("|");
+                ImGui::SameLine();
+            }
         }
         RichMd::RenderTextAsLink(links[i].label, links[i].url);
         if (ImGui::IsItemHovered())
@@ -1719,24 +1757,16 @@ Dear ImGui Bundle is a batteries-included framework built on Dear ImGui. It bund
     ImGui::Unindent();
 }
 
-void IntroTopSection()
+void IntroDescription()
 {
-    bool small = IsSmallScreen();
-
-    // Title
-    RichMd::Render("# Dear ImGui Bundle Explorer");
-
-    // Links row (always visible)
-    RenderLinksRow();
-
-    if (!small)
+    if (!IsSmallScreen())
     {
         // Description
         ImGui::Spacing();
-        ImGui::TextWrapped("Explore Dear ImGui Bundle and its libraries. Each tab shows demos with browsable C++/Python source.");
+        ImGui::TextWrapped("Explore Dear ImGui Bundle and its libraries.");
         ImGui::SameLine();
         ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.7f, 1.0f));
-        ImGui::Text("Try the \"Demo Apps\" tab for starter projects");
+        ImGui::Text("The demos, with their Python and C++ code, are behind \"Demos\"");
         ImGui::SameLine();
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
         IntroAutomations::Init();
@@ -1745,7 +1775,7 @@ void IntroTopSection()
             ImGui::SameLine();
             char showMeLabel[64];
             snprintf(showMeLabel, sizeof(showMeLabel), "Show me %s", ICON_FA_EYE);
-            if (ImGui::SmallButton(showMeLabel))
+            if (ImGui::SmallButton(showMeLabel) && IntroAutomations::showImmediateApps != nullptr)
                 ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), IntroAutomations::showImmediateApps);
         }
 #endif
@@ -1999,9 +2029,9 @@ void IntroMiniDemos()
             autoStopped = true;
         }
 
-        // Advance cursor past nav bar
-        ImGui::SetCursorScreenPos(ImVec2(slideAreaPos.x, navY + em * 1.8f));
-        ImGui::Dummy(ImVec2(1, 1));
+        // Advance cursor to the end of the nav bar: exactly the height claimed above, so that no scrollbar appears
+        ImGui::SetCursorScreenPos(ImVec2(slideAreaPos.x, navY + em * 1.7f));
+        ImGui::Dummy(ImVec2(1, 0));
     }
 
     // Navigation via mouse wheel: disabled for now as it can interfere with users trying to scroll inside demos,
@@ -2050,15 +2080,24 @@ void IntroMiniDemos()
 // Main entry point
 // ============================================================================
 
-void demo_imgui_bundle_intro()
+// The intro without its title and links row: the description, "More info", the carousel of mini demos (the
+// explorer draws its own header above it)
+void IntroWelcomeGui()
 {
     // Disable idling so animations run smoothly
     HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
 
-    IntroTopSection();
+    IntroDescription();
     ImGui::Separator();
     RichMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");
     IntroMiniDemos();
+}
+
+void demo_imgui_bundle_intro()
+{
+    RichMd::Render("# Dear ImGui Bundle Explorer");
+    RenderLinksRow();
+    IntroWelcomeGui();
 }
 
 
