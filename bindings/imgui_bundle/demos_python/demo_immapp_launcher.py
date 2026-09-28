@@ -356,6 +356,7 @@ class Launcher:
         self.card_index = 0  # of the card being drawn, in this frame's gallery
         self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
         self.detail_open = False  # on a small screen, the detail is a page of its own (a card opens it) not a pane
+        self.card_rects: dict[str, tuple[ImVec2, ImVec2]] = {}  # on screen, this frame (the intro's automations click)
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -372,6 +373,9 @@ class Launcher:
         words = self.search.lower().split()
         return [d for d in category.demos if (not self.library or self.library in d.uses) and (not words or all(
             w in f"{d.label} {plain_text(d.text)} {category.name} {' '.join(d.uses)}".lower() for w in words))]
+
+    def chip_label(self, category: Category) -> str:
+        return f"{category.name} ({len(self.shown(category))})"
 
     def chip(self, label: str, highlight: float) -> bool:
         """A small button, colored with the accent when highlighted (in view, or in use); a row of chips wraps"""
@@ -400,7 +404,7 @@ class Launcher:
         """The category chips, the library filter and the search box, then a separator"""
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
-            if self.chip(f"{category.name} ({len(self.shown(category))})", highlight) and self.code_view is None:
+            if self.chip(self.chip_label(category), highlight) and self.code_view is None:
                 self.scroll_target = self.category_y.get(category.name)
                 self.nb_scrolls += 1
         imgui.dummy(ImVec2(em_size(1.0), 0))
@@ -447,6 +451,7 @@ class Launcher:
         height = width / PICTURE_ASPECT + imgui.get_text_line_height() * (title_scale + 2) + em_size(1.6)
         top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
+        self.card_rects[demo.filename] = (top_left, bottom_right)
         hovered = imgui.is_mouse_hovering_rect(top_left, bottom_right) and imgui.is_window_hovered(
             imgui.HoveredFlags_.child_windows.value)
         hover = tween(f"hover {demo.filename}", 1.0 if hovered else 0.0, 0.15)

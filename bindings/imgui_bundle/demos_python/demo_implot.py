@@ -23,7 +23,7 @@ def demo_gui():
             if imgui.is_item_hovered():
                 rich_md.render("""
                 > [!TIP]
-                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
+                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see the demos, demo_python_context_manager).
                 """)
 
             imgui_explorer.show_imgui_explorer_gui_python(imgui_explorer.ImGuiExplorerLibrary.implot, get_package_path())

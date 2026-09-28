@@ -28,8 +28,9 @@ from imgui_bundle.demos_python import demo_utils
 WELCOME, DEMOS = "Welcome", "Demos"
 CHANGE_DURATION = 0.4  # s: a change of state, through the background
 DRIFT = 3.0  # em: the page leaving slides that much (up when going forward), the one arriving comes from as far
-WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the automations click it)
+WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the intro's automations click it)
 DEMOS_LABEL = fa.ICON_FA_TH_LARGE + "  Demos"
+_EXPLORER: Optional["Explorer"] = None  # the page, once the app is set up (the intro's automations drive it)
 
 
 class Explorer:
@@ -194,7 +195,8 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.provide_full_screen_window
     )
-    explorer = Explorer()
+    global _EXPLORER
+    explorer = _EXPLORER = Explorer()
     runner_params.callbacks.show_gui = explorer.gui
 
     def show_status_bar():

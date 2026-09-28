@@ -64,6 +64,31 @@ def is_small_screen() -> bool:
 # Test engine automation (unchanged from old file)
 # ============================================================================
 
+def _explorer():
+    """The explorer's module and its page (imported here: the explorer imports this module). None standalone."""
+    from imgui_bundle.demos_python import demo_imgui_bundle
+    return demo_imgui_bundle, demo_imgui_bundle._EXPLORER
+
+
+def _show_demo_code(ctx, filename: str) -> None:
+    """Goes to the demos, selects this one (its category's chip scrolls to it, a click on its card) and shows its
+    code"""
+    explorer_module, explorer = _explorer()
+    launcher = explorer.launcher
+    launcher.code_view = None  # as a previous automation may have left it
+    if explorer.state != explorer_module.DEMOS:
+        ctx.item_click("//**/" + explorer_module.DEMOS_LABEL)
+        ctx.sleep(1.5)  # the change of page, then the cards dealt
+    category = next(c for c in launcher.categories if any(d.filename == filename for d in c.demos))
+    ctx.item_click("//**/" + launcher.chip_label(category))
+    ctx.sleep(0.8)  # the scroll
+    top_left, bottom_right = launcher.card_rects[filename]
+    ctx.mouse_move_to_pos(ImVec2((top_left.x + bottom_right.x) / 2, (top_left.y + bottom_right.y) / 2))
+    ctx.mouse_click(0)
+    ctx.sleep(0.5)
+    ctx.item_click("//**/" + icons_fontawesome_4.ICON_FA_CODE + "  View code")
+
+
 def _automation_show_me_immediate_apps():
     engine = hello_imgui.get_imgui_test_engine()
     automation = imgui.test_engine.register_test(
@@ -71,16 +96,17 @@ def _automation_show_me_immediate_apps():
     )
 
     def test_func(ctx):
-        tab_imm_apps_name = "//**/Demo Apps"
-        tab_intro_name = "//**/Intro"
-        ctx.mouse_move(tab_imm_apps_name)
-        ctx.mouse_click(0)
-        ctx.item_click("//**/demo_docking/View code")
-        ctx.item_click("//**/demo_assets_addons/View code")
-        ctx.item_click("//**/demo_hello_world/View code")
-        ctx.mouse_move("//**/demo_hello_world/Run")
-        ctx.mouse_move(tab_intro_name)
-        ctx.mouse_click(0)
+        explorer_module, _ = _explorer()
+        all_the_demos = "//**/" + icons_fontawesome_4.ICON_FA_ARROW_LEFT + "  All the demos"
+        _show_demo_code(ctx, "demo_hello_world.py")
+        ctx.sleep(2.0)
+        ctx.item_click(all_the_demos)
+        _show_demo_code(ctx, "demo_assets_addons.py")
+        ctx.sleep(2.0)
+        ctx.item_click(all_the_demos)
+        ctx.mouse_move("//**/" + icons_fontawesome_4.ICON_FA_PLAY + "  Run")
+        ctx.sleep(1.0)
+        ctx.item_click("//**/" + explorer_module.WELCOME_LABEL)
 
     automation.test_func = test_func
     return automation
@@ -93,10 +119,8 @@ def _automation_show_me_custom_background():
     )
 
     def test_func(ctx):
-        ctx.mouse_move("//**/Demo Apps")
-        ctx.mouse_click(0)
-        ctx.item_click("//**/demo_custom_background/View code")
-        ctx.mouse_move("//**/Run##CurrentDemo")
+        _show_demo_code(ctx, "demo_custom_background.py")
+        ctx.mouse_move("//**/" + icons_fontawesome_4.ICON_FA_ARROW_LEFT + "  All the demos")
 
     automation.test_func = test_func
     return automation
@@ -109,10 +133,8 @@ def _automation_show_me_docking():
     )
 
     def test_func(ctx):
-        ctx.mouse_move("//**/Demo Apps")
-        ctx.mouse_click(0)
-        ctx.item_click("//**/demo_docking/View code")
-        ctx.mouse_move("//**/Run##CurrentDemo")
+        _show_demo_code(ctx, "demo_docking.py")
+        ctx.mouse_move("//**/" + icons_fontawesome_4.ICON_FA_ARROW_LEFT + "  All the demos")
 
     automation.test_func = test_func
     return automation
@@ -129,8 +151,8 @@ class _IntroAutomations:
     def init():
         if _IntroAutomations._inited:
             return
-        if not hello_imgui.get_runner_params().use_imgui_test_engine:
-            return
+        if not hello_imgui.get_runner_params().use_imgui_test_engine or _explorer()[1] is None:
+            return  # the automations drive the explorer's page: none standalone
         _IntroAutomations._inited = True
         _IntroAutomations.show_immediate_apps = _automation_show_me_immediate_apps()
         _IntroAutomations.show_custom_background = _automation_show_me_custom_background()
@@ -1556,10 +1578,10 @@ def _intro_description():
     if not is_small_screen():
         # Description
         imgui.spacing()
-        imgui.text_wrapped('Explore Dear ImGui Bundle and its libraries. Each tab shows demos with browsable C++/Python source.')
+        imgui.text_wrapped('Explore Dear ImGui Bundle and its libraries.')
         imgui.same_line()
         imgui.push_style_color(imgui.Col_.text, ImVec4(0.7, 0.7, 0.7, 1.0))
-        imgui.text('Try the "Demo Apps" tab for starter projects')
+        imgui.text('The demos, with their Python and C++ code, are behind "Demos"')
         imgui.same_line()
         _IntroAutomations.init()
         if hello_imgui.get_runner_params().use_imgui_test_engine:

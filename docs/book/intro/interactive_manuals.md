@@ -10,7 +10,7 @@
 
 [Dear ImGui Bundle Explorer](https://imgui-bundle.pages.dev/explorer/): interactive reference manual - browse demos, see the code, try the widgets.
 
-Each tab provides demos for the included libraries, along with their C++ and Python source code. The "Demo Apps" tab provides sample starter apps from which you can take inspiration.
+It opens on a welcome page, with a carousel of what the bundle can do. Its "Demos" page is the catalog of demos, by category: starter apps, tours of the libraries, interactive manuals, each with its Python and C++ code.
 
 <img alt="A screenshot of ImGui Bundle Explorer, showing how to open example apps and show their source code" src="../images/bundle_apps.jpg" height="500" />
 

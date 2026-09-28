@@ -209,7 +209,7 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) 
     of the page without them, listed by a copy of the table of contents."""
     intro = [
         "",
-        "The demos of Dear ImGui Bundle, by category, as in its demo launcher (the \"Demo Apps\" tab of "
+        "The demos of Dear ImGui Bundle, by category, as in its demo launcher (the \"Demos\" page of the explorer, "
         "`demo_imgui_bundle`, or `python -m imgui_bundle.demos_python.demo_immapp_launcher`). Most of them run in your "
         f"browser, in the [Python playground]({SITE}/playground/); some also exist in C++, in the "
         f"[interactive explorer]({SITE}/explorer/).",

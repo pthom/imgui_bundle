@@ -128,8 +128,8 @@ need no test: they simply pop automatically.
 
 ```{note}
 `imgui_ctx` offers the same facility for the `imgui.begin_*()` functions.
-Both are demonstrated in the interactive explorer:
-"Demo Apps" tab, *demo_python_context_manager*.
+Both are demonstrated in the explorer's demos (Python specifics):
+*demo_python_context_manager*.
 ```
 
 ### Full Demo

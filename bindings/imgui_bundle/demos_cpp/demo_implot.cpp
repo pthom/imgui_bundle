@@ -21,7 +21,7 @@ void demo_implot()
         if (ImGui::IsItemHovered())
             RichMd::Render(R"(
                 > [!TIP]
-                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see "Demo Apps" tab, demo_python_context_manager).
+                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see the demos, demo_python_context_manager).
                 )");
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
