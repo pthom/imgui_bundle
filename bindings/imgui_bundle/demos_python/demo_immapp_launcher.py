@@ -35,6 +35,8 @@ DETAIL_WIDTH = 28.0  # em
 PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
 MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
 EASE = im_anim.ease_preset(im_anim.ease_type.ease_out_cubic)
+DEAL_DELAY = 0.02  # s: between two cards lighting up, when the gallery arrives on screen
+DEAL_DURATION = 0.3  # s: one card lighting up
 
 # Colors
 ACCENT = ImVec4(0.45, 0.65, 1.0, 1.0)  # the selected card, the chip of the category in view
@@ -277,6 +279,13 @@ def lerp(a: ImVec4, b: ImVec4, t: float) -> ImVec4:
     return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t)
 
 
+def curtain(alpha: float) -> int:
+    """The color of a veil that hides what is under it: the window's background, at this opacity (the theme's
+    background is translucent over black: composited here, so that the veil at alpha 1 hides everything)"""
+    bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    return IM_COL32(int(255 * bg.x * bg.w), int(255 * bg.y * bg.w), int(255 * bg.z * bg.w), int(255 * alpha))
+
+
 def big_text(text: str, scale: float, color: Optional[ImVec4] = None) -> None:
     imgui.push_font(None, imgui.get_style().font_size_base * scale)
     if color is not None:
@@ -329,6 +338,8 @@ class Launcher:
         self.library = ""  # the library in use: the gallery shows the demos that use it (all when empty)
         self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
         self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
+        self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards light up one by one
+        self.card_index = 0  # of the card being drawn, in this frame's gallery
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -454,6 +465,15 @@ class Launcher:
         imgui.text_disabled(shown)
         summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value)
         imgui.pop_text_wrap_pos()
+        if self.dealt_at is not None and self.dealing():  # a veil over the card, lifted at this card's turn
+            u = (imgui.get_time() - self.dealt_at - min(self.card_index, 24) * DEAL_DELAY) / DEAL_DURATION
+            if u < 1.0:
+                veil = 1.0 - max(u, 0.0) * (2.0 - max(u, 0.0))  # eased out
+                draw_list = imgui.get_window_draw_list()
+                draw_list.push_clip_rect_full_screen()  # over the border too
+                draw_list.add_rect_filled(top_left, bottom_right, curtain(veil))
+                draw_list.pop_clip_rect()
+        self.card_index += 1
         imgui.end_child()
         imgui.pop_style_var(3)
         imgui.pop_style_color(2)
@@ -477,8 +497,16 @@ class Launcher:
         if abs(y - target) < 1.0 or imgui.get_io().mouse_wheel != 0.0:
             self.scroll_target = None
 
+    def deal(self) -> None:
+        """Called when the gallery arrives on screen: its cards light up one after another, from the top left"""
+        self.dealt_at = imgui.get_time()
+
+    def dealing(self) -> bool:
+        return self.dealt_at is not None and imgui.get_time() < self.dealt_at + 24 * DEAL_DELAY + DEAL_DURATION
+
     def gallery(self) -> None:
         self.smooth_scroll()
+        self.card_index = 0
         spacing = em_size(1.0)
         avail = imgui.get_content_region_avail().x
         columns = max(1, int((avail + spacing) // (em_size(CARD_WIDTH) + spacing)))
@@ -598,7 +626,7 @@ class Launcher:
     def gui(self, with_title: bool = True) -> None:
         """The launcher; without its title when the explorer draws its own header above"""
         self.pictures.new_frame()
-        self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None)
+        self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None or self.dealing())
         if self.code_view is not None:  # no header: the demo's title and the way back are the only row
             self.show_code()
             return

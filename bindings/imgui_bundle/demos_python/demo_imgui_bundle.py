@@ -18,19 +18,26 @@ if importlib.util.find_spec("numpy") is None:
     )
     sys.exit(1)
 
+from typing import Optional
+
 from imgui_bundle import imgui, hello_imgui, immapp, rich_md, ImVec2, ImVec4, em_size, icons_fontawesome_4 as fa
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_utils
 
 WELCOME, DEMOS = "Welcome", "Demos"
+CHANGE_DURATION = 0.3  # s: a change of state, through the background
+DRIFT = 1.5  # em: the page leaving slides that much (up when going forward), the one arriving comes from as far
 WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the automations click it)
 DEMOS_LABEL = fa.ICON_FA_TH_LARGE + "  Demos"
 
 
 class Explorer:
     def __init__(self) -> None:
-        self.state = WELCOME
+        self.state = WELCOME  # the one wanted
+        self.shown = WELCOME  # the one drawn: the previous state, during the first half of a change
+        self.change_start: Optional[float] = None  # the time when the state last changed, while the change animates
+        self.forward = True  # the change goes from Welcome to Demos (the pages slide up), or back (down)
         self.launcher = demo_immapp_launcher.Launcher()
         self.nb_demos = sum(len(category.demos) for category in self.launcher.categories)
         self.right_width = 0.0  # of the header's switch, measured on the previous frame
@@ -40,12 +47,56 @@ class Explorer:
             return
         if (self.state == DEMOS and self.launcher.code_view is None and not imgui.is_any_item_active()
                 and imgui.is_key_pressed(imgui.Key.escape)):
-            self.state = WELCOME
+            self.go(WELCOME)
         self.header()
-        if self.state == WELCOME:
+        self.page()
+
+    def go(self, state: str) -> None:
+        if state == self.state:
+            return
+        self.state = state
+        self.forward = state == DEMOS
+        self.change_start = imgui.get_time()
+
+    def page(self) -> None:
+        """The state's content, in a child; during a change, it fades through the background with a drift: the
+        page leaving slides away under a veil, then the new one slides into place as the veil lifts"""
+        drift, veil = 0.0, 0.0
+        if self.change_start is not None:
+            t = (imgui.get_time() - self.change_start) / CHANGE_DURATION
+            if t >= 1.0:
+                self.change_start = None
+                self.shown = self.state
+            elif t < 0.5:
+                u = t / 0.5
+                u = u * u  # eased in
+                drift, veil = -DRIFT * u, u
+            else:
+                if self.shown != self.state:
+                    self.shown = self.state
+                    if self.shown == DEMOS:
+                        self.launcher.deal()
+                u = (t - 0.5) / 0.5
+                u = 1.0 - (1.0 - u) * (1.0 - u)  # eased out
+                drift, veil = DRIFT * (1.0 - u), 1.0 - u
+            if not self.forward:
+                drift = -drift
+        drift = em_size(drift)
+        top_left = imgui.get_cursor_screen_pos()
+        avail = imgui.get_content_region_avail()
+        bottom_right = ImVec2(top_left.x + avail.x, top_left.y + avail.y)
+        # The child keeps its bottom (it would overflow the window and bring a scrollbar), and is clipped at its top
+        imgui.push_clip_rect(top_left, bottom_right, True)
+        imgui.set_cursor_screen_pos(ImVec2(top_left.x, top_left.y + drift))
+        imgui.begin_child("page", ImVec2(avail.x, avail.y - max(drift, 0.0)))
+        if self.shown == WELCOME:
             self.welcome()
         else:
             self.launcher.gui(with_title=False)
+        imgui.end_child()
+        imgui.pop_clip_rect()
+        if veil > 0.0:  # over the child's own draw list, which comes after this window's
+            imgui.get_foreground_draw_list().add_rect_filled(top_left, bottom_right, demo_immapp_launcher.curtain(veil))
 
     def header(self) -> None:
         """The title, the sentence of the state, and at the right the switch between the states"""
@@ -74,7 +125,7 @@ class Explorer:
             imgui.push_style_color(imgui.Col_.button,
                                    demo_immapp_launcher.lerp(button, ImVec4(accent.x, accent.y, accent.z, 0.55), highlight))
             if imgui.small_button(label):
-                self.state = state
+                self.go(state)
             imgui.pop_style_color()
             imgui.same_line()
         imgui.pop_style_var()
@@ -95,7 +146,7 @@ class Explorer:
         width = imgui.calc_text_size(label).x + em_size(2.4)
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail.x - width) / 2)
         if imgui.button(label):
-            self.state = DEMOS
+            self.go(DEMOS)
         imgui.pop_style_var()
         imgui.pop_font()
         if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
