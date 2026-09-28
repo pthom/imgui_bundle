@@ -22,6 +22,7 @@ from imgui_bundle.demos_python.demo_utils.api_demos import (
 
 SITE = "https://imgui-bundle.pages.dev"
 PICTURES_URL = SITE + "/resources/playground/"
+GITHUB = "https://github.com/pthom/imgui_bundle/blob/main/"
 # In a clone of the repository, the pictures are also here, before they reach the website
 REPO = Path(main_python_package_folder()).parent.parent
 LOCAL_PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
@@ -242,12 +243,31 @@ def playground_url(demo: Demo) -> str:
     return f"{SITE}/playground/?demo={demo.filename}"
 
 
-def code_snippet(path: Path, language: immapp.snippets.SnippetLanguage, name: str) -> immapp.snippets.SnippetData:
+@dataclass
+class CodeFile:
+    """A source file of a demo, shown by the code view"""
+    language: str  # "Python" or "C++"
+    path: Path
+    snippet: immapp.snippets.SnippetData
+
+    @property
+    def in_repository(self) -> Path:
+        return self.path.relative_to(REPO)
+
+    @property
+    def github_url(self) -> Optional[str]:
+        """Its page on GitHub, for the bundle's own files (a submodule's file has another repository)"""
+        relative = self.in_repository.as_posix()
+        return GITHUB + relative if relative.startswith("bindings/") else None
+
+
+def code_file(path: Path, language: str) -> CodeFile:
     snippet = immapp.snippets.SnippetData()
     snippet.code = read_code(str(path))
-    snippet.language = language
-    snippet.displayed_filename = name
-    return snippet
+    snippet.language = (immapp.snippets.SnippetLanguage.python if language == "Python"
+                        else immapp.snippets.SnippetLanguage.cpp)
+    snippet.displayed_filename = path.name
+    return CodeFile(language, path, snippet)
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -303,7 +323,8 @@ class Launcher:
         self.category_in_view = ""
         self.scroll_target: Optional[float] = None  # a click on a category chip scrolls smoothly to it
         self.nb_scrolls = 0
-        self.code_view: Optional[tuple[Demo, list[immapp.snippets.SnippetData]]] = None
+        self.code_view: Optional[tuple[Demo, list[CodeFile]]] = None
+        self.code_language = "Side by side"  # or "Python", "C++": what the code view shows of a demo in two languages
         self.variant: dict[str, int] = {}  # per demo with variants: the one picked in the detail pane
         self.library = ""  # the library in use: the gallery shows the demos that use it (all when empty)
         self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
@@ -517,36 +538,59 @@ class Launcher:
                 spawn_demo_file(str(path))
         if self.action(fa.ICON_FA_CODE + "  View code",
                        "Shows its code: Python, and C++ side by side when there is a C++ version"):
-            snippets = [code_snippet(path, immapp.snippets.SnippetLanguage.python, "Python")]
+            files = [code_file(path, "Python")]
             if demo.cpp_path is not None:
-                snippets.append(code_snippet(demo.cpp_path, immapp.snippets.SnippetLanguage.cpp, "C++"))
-            self.code_view = (demo, snippets)
+                files.append(code_file(demo.cpp_path, "C++"))
+            self.code_view = (demo, files)
         if demo.where != "desktop":
             if self.action(fa.ICON_FA_GLOBE + "  Open in the Python playground",
                            "Opens it in your browser, in the Python playground: edit its code, and run it again"):
                 open_url(playground_url(demo))
         if demo.cpp_path is not None:
-            if self.action(fa.ICON_FA_EXTERNAL_LINK_ALT + "  Open in the C++ explorer",
-                           "Opens its C++ version in your browser (compiled to WebAssembly)"):
+            if self.action(fa.ICON_FA_GLOBE + "  Run the C++ version online",
+                           "Opens its C++ version in your browser, compiled to WebAssembly"):
                 open_url(demo.cpp_url)
         imgui.pop_style_var()
 
     def show_code(self) -> None:
+        """The demo's code: its files (where they are, a way to open each), then the code, one language or both"""
         assert self.code_view is not None
-        demo, snippets = self.code_view
-        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos"):
+        demo, files = self.code_view
+        if imgui.button(fa.ICON_FA_ARROW_LEFT + "  All the demos") or imgui.is_key_pressed(imgui.Key.escape):
             self.code_view = None
             return
         imgui.same_line()
         big_text(demo.label, 1.3)
+        for file in files:  # where the file is, and how to open it
+            imgui.push_id(file.language)
+            imgui.text_disabled(f"{file.language}:")
+            imgui.same_line()
+            imgui.text(file.in_repository.as_posix())
+            if can_run_subprocess():  # i.e. not in Pyodide
+                imgui.same_line()
+                if imgui.small_button(fa.ICON_FA_FOLDER_OPEN + "  Open"):
+                    open_url(file.path.as_uri())
+                imgui.set_item_tooltip("Opens the file with the application your system uses for it")
+            if file.github_url is not None:
+                imgui.same_line()
+                if imgui.small_button(fa.ICON_FA_GLOBE + "  GitHub"):
+                    open_url(file.github_url)
+            imgui.pop_id()
+        shown = files
+        if len(files) == 2:  # one language, or both side by side
+            for choice in ("Side by side", "Python", "C++"):
+                if self.chip(choice, 1.0 if choice == self.code_language else 0.0):
+                    self.code_language = choice
+            imgui.new_line()
+            shown = [f for f in files if self.code_language in ("Side by side", f.language)]
         lines = int(imgui.get_content_region_avail().y / imgui.get_text_line_height()) - 4
-        for snippet in snippets:
-            snippet.height_in_lines = lines
-            snippet.max_height_in_lines = lines
-        if len(snippets) == 2:
-            immapp.snippets.show_side_by_side_snippets(snippets[0], snippets[1])
+        for file in shown:
+            file.snippet.height_in_lines = lines
+            file.snippet.max_height_in_lines = lines
+        if len(shown) == 2:
+            immapp.snippets.show_side_by_side_snippets(shown[0].snippet, shown[1].snippet)
         else:
-            immapp.snippets.show_code_snippet(snippets[0])
+            immapp.snippets.show_code_snippet(shown[0].snippet)
 
     def gui(self) -> None:
         self.pictures.new_frame()
