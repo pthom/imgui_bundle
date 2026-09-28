@@ -45,10 +45,14 @@ int main(int , char *[]) {
         ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
     };
 
-    ImmApp::Run(
-        gui, "Hello!",
-        /*windowSizeAuto=*/false , /*windowRestorePreviousGeometry==*/false, /*windowSize=*/{300, 450},
-        /*fpsIdle=*/ 25.f, /*withImplot=*/true);
+    HelloImGui::SimpleRunnerParams runnerParams;
+    runnerParams.guiFunction = gui;
+    runnerParams.windowTitle = "Hello!";
+    runnerParams.windowSize = {300, 450};
+    runnerParams.fpsIdle = 25.f;
+    ImmApp::AddOnsParams addOnsParams;
+    addOnsParams.withImplot = true;
+    ImmApp::Run(runnerParams, addOnsParams);
     return 0;
 }
 
