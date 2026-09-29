@@ -64,19 +64,19 @@ from imgui_bundle.implot3d import (
 #-----------------------------------------------------------------------------
 
 
-# static inline double ImLog10(double x) { return log10(x); }    /* original C++ signature */
+# static inline double ImLog10(double x);    /* original C++ signature */
 def im_log10(x: float) -> float:
     """ Computes the common (base-10) logarithm
     (private API)
     """
     pass
-# static inline double ImSinh(double x) { return sinh(x); }    /* original C++ signature */
+# static inline double ImSinh(double x);    /* original C++ signature */
 def im_sinh(x: float) -> float:
     """ Computes the hyperbolic sine
     (private API)
     """
     pass
-# static inline double ImAsinh(double x) { return asinh(x); }    /* original C++ signature */
+# static inline double ImAsinh(double x);    /* original C++ signature */
 def im_asinh(x: float) -> float:
     """ Computes the inverse hyperbolic sine
     (private API)
@@ -84,74 +84,50 @@ def im_asinh(x: float) -> float:
     pass
 
 # Flips a flag in a flagset
-# static inline int ImPosMod(int l, int r) { return (l % r + r) % r; }    /* original C++ signature */
+# static inline int ImPosMod(int l, int r);    /* original C++ signature */
 def im_pos_mod(l: int, r: int) -> int:
     """ Returns always positive modulo (assumes r != 0)
     (private API)
     """
     pass
-# static inline bool ImNan(double val) { return isnan(val); }    /* original C++ signature */
+# static inline bool ImNan(double val);    /* original C++ signature */
 def im_nan(val: float) -> bool:
     """ Returns True if val is NAN
     (private API)
     """
     pass
-# static inline bool ImNanOrInf(double val) { return !(val >= -DBL_MAX && val <= DBL_MAX) || ImNan(val); }    /* original C++ signature */
+# static inline bool ImNanOrInf(double val);    /* original C++ signature */
 def im_nan_or_inf(val: float) -> bool:
     """ Returns True if val is NAN or INFINITY
     (private API)
     """
     pass
-# static inline double ImConstrainNan(double val) { return ImNan(val) ? 0 : val; }    /* original C++ signature */
+# static inline double ImConstrainNan(double val);    /* original C++ signature */
 def im_constrain_nan(val: float) -> float:
     """ Turns NANs to 0s
     (private API)
     """
     pass
-# static inline double ImConstrainInf(double val) {    /* original C++ signature */
-#     const double max_val = DBL_MAX * 0.5;
-#     return val >= max_val ? max_val : val <= -max_val ? -max_val : val;
-# }
+# static inline double ImConstrainInf(double val);    /* original C++ signature */
 def im_constrain_inf(val: float) -> float:
     """ Turns infinity to floating point maximums
      Clamped to half DBL_MAX to prevent overflow in size calculations (Max - Min)
     (private API)
     """
     pass
-# static inline bool ImAlmostEqual(double v1, double v2, int ulp = 2) {    /* original C++ signature */
-#     return ImAbs(v1 - v2) < DBL_EPSILON * ImAbs(v1 + v2) * ulp || ImAbs(v1 - v2) < DBL_MIN;
-# }
+# static inline bool ImAlmostEqual(double v1, double v2, int ulp = 2);    /* original C++ signature */
 def im_almost_equal(v1: float, v2: float, ulp: int = 2) -> bool:
     """ True if two numbers are approximately equal using units in the last place.
     (private API)
     """
     pass
-# static inline ImU32 ImAlphaU32(ImU32 col, float alpha) { return col & ~((ImU32)((1.0f - alpha) * 255) << IM_COL32_A_SHIFT); }    /* original C++ signature */
+# static inline ImU32 ImAlphaU32(ImU32 col, float alpha);    /* original C++ signature */
 def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
     """ Set alpha channel of 32-bit color from float in range [0.0 1.0]
     (private API)
     """
     pass
-# static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s) {    /* original C++ signature */
-# #ifdef IMPLOT3D_MIX64
-#     const ImU32 af = 256 - s;
-#     const ImU32 bf = s;
-#     const ImU64 al = (a & 0x00ff00ff) | (((ImU64)(a & 0xff00ff00)) << 24);
-#     const ImU64 bl = (b & 0x00ff00ff) | (((ImU64)(b & 0xff00ff00)) << 24);
-#     const ImU64 mix = (al * af + bl * bf);
-#     return ((mix >> 32) & 0xff00ff00) | ((mix & 0xff00ff00) >> 8);
-# #else
-#     const ImU32 af = 256 - s;
-#     const ImU32 bf = s;
-#     const ImU32 al = (a & 0x00ff00ff);
-#     const ImU32 ah = (a & 0xff00ff00) >> 8;
-#     const ImU32 bl = (b & 0x00ff00ff);
-#     const ImU32 bh = (b & 0xff00ff00) >> 8;
-#     const ImU32 ml = (al * af + bl * bf);
-#     const ImU32 mh = (ah * af + bh * bf);
-#     return (mh & 0xff00ff00) | ((ml & 0xff00ff00) >> 8);
-# #endif
-# }
+# static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s);    /* original C++ signature */
 def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
     """ Mix color a and b by factor s in [0 256]
     (private API)
@@ -203,20 +179,11 @@ class NextItemData:
     # bool Hidden;    /* original C++ signature */
     hidden: bool
 
-    # ImPlot3DNextItemData() { Reset(); }    /* original C++ signature */
+    # ImPlot3DNextItemData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         Spec = ImPlot3DSpec();
-    #         RenderLine = false;
-    #         RenderFill = false;
-    #         RenderMarkerLine = true;
-    #         RenderMarkerFill = true;
-    #         IsAutoFill = true;
-    #         IsAutoLine = true;
-    #         Hidden = false;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -226,138 +193,69 @@ class ColormapData:
     # int Count;    /* original C++ signature */
     count: int
 
-    # ImPlot3DColormapData() { Count = 0; }    /* original C++ signature */
+    # ImPlot3DColormapData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # int Append(const char* name, const ImU32* keys, int count, bool qual) {    /* original C++ signature */
-    #         if (GetIndex(name) != -1)
-    #             return -1;
-    #         KeyOffsets.push_back(Keys.size());
-    #         KeyCounts.push_back(count);
-    #         Keys.reserve(Keys.size() + count);
-    #         for (int i = 0; i < count; ++i)
-    #             Keys.push_back(keys[i]);
-    #         TextOffsets.push_back(Text.size());
-    #         Text.append(name, name + strlen(name) + 1);
-    #         Quals.push_back(qual);
-    #         ImGuiID id = ImHashStr(name);
-    #         int idx = Count++;
-    #         Map.SetInt(id, idx);
-    #         _AppendTable(idx);
-    #         return idx;
-    #     }
+    # int Append(const char* name, const ImU32* keys, int count, bool qual);    /* original C++ signature */
     def append(self, name: str, keys: ImU32, count: int, qual: bool) -> int:
         """(private API)"""
         pass
 
-    # void _AppendTable(ImPlot3DColormap cmap) {    /* original C++ signature */
-    #         int key_count = GetKeyCount(cmap);
-    #         const ImU32* keys = GetKeys(cmap);
-    #         int off = Tables.size();
-    #         TableOffsets.push_back(off);
-    #         if (IsQual(cmap)) {
-    #             Tables.reserve(key_count);
-    #             for (int i = 0; i < key_count; ++i)
-    #                 Tables.push_back(keys[i]);
-    #             TableSizes.push_back(key_count);
-    #         } else {
-    #             int max_size = 255 * (key_count - 1) + 1;
-    #             Tables.reserve(off + max_size);
-    #             // ImU32 last = keys[0];
-    #             // Tables.push_back(last);
-    #             // int n = 1;
-    #             for (int i = 0; i < key_count - 1; ++i) {
-    #                 for (int s = 0; s < 255; ++s) {
-    #                     ImU32 a = keys[i];
-    #                     ImU32 b = keys[i + 1];
-    #                     ImU32 c = ImPlot3D::ImMixU32(a, b, (ImU32)s);
-    #                     // if (c != last) {
-    #                     Tables.push_back(c);
-    #                     // last = c;
-    #                     // n++;
-    #                     // }
-    #                 }
-    #             }
-    #             ImU32 c = keys[key_count - 1];
-    #             // if (c != last) {
-    #             Tables.push_back(c);
-    #             // n++;
-    #             // }
-    #             // TableSizes.push_back(n);
-    #             TableSizes.push_back(max_size);
-    #         }
-    #     }
+    # void _AppendTable(ImPlot3DColormap cmap);    /* original C++ signature */
     def _append_table(self, cmap: Colormap) -> None:
         """(private API)"""
         pass
 
-    # void RebuildTables() {    /* original C++ signature */
-    #         Tables.resize(0);
-    #         TableSizes.resize(0);
-    #         TableOffsets.resize(0);
-    #         for (int i = 0; i < Count; ++i)
-    #             _AppendTable(i);
-    #     }
+    # void RebuildTables();    /* original C++ signature */
     def rebuild_tables(self) -> None:
         """(private API)"""
         pass
 
-    # inline bool IsQual(ImPlot3DColormap cmap) const { return Quals[cmap]; }    /* original C++ signature */
+    # inline bool IsQual(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def is_qual(self, cmap: Colormap) -> bool:
         """(private API)"""
         pass
-    # inline const char* GetName(ImPlot3DColormap cmap) const { return cmap < Count ? Text.Buf.Data + TextOffsets[cmap] : nullptr; }    /* original C++ signature */
+    # inline const char* GetName(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def get_name(self, cmap: Colormap) -> str:
         """(private API)"""
         pass
-    # inline ImPlot3DColormap GetIndex(const char* name) const {    /* original C++ signature */
-    #         ImGuiID key = ImHashStr(name);
-    #         return Map.GetInt(key, -1);
-    #     }
+    # inline ImPlot3DColormap GetIndex(const char* name) const;    /* original C++ signature */
     def get_index(self, name: str) -> Colormap:
         """(private API)"""
         pass
 
-    # inline const ImU32* GetKeys(ImPlot3DColormap cmap) const { return &Keys[KeyOffsets[cmap]]; }    /* original C++ signature */
+    # inline const ImU32* GetKeys(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def get_keys(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int GetKeyCount(ImPlot3DColormap cmap) const { return KeyCounts[cmap]; }    /* original C++ signature */
+    # inline int GetKeyCount(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def get_key_count(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32 GetKeyColor(ImPlot3DColormap cmap, int idx) const { return Keys[KeyOffsets[cmap] + idx]; }    /* original C++ signature */
+    # inline ImU32 GetKeyColor(ImPlot3DColormap cmap, int idx) const;    /* original C++ signature */
     def get_key_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
-    # inline void SetKeyColor(ImPlot3DColormap cmap, int idx, ImU32 value) {    /* original C++ signature */
-    #         Keys[KeyOffsets[cmap] + idx] = value;
-    #         RebuildTables();
-    #     }
+    # inline void SetKeyColor(ImPlot3DColormap cmap, int idx, ImU32 value);    /* original C++ signature */
     def set_key_color(self, cmap: Colormap, idx: int, value: ImU32) -> None:
         """(private API)"""
         pass
 
-    # inline const ImU32* GetTable(ImPlot3DColormap cmap) const { return &Tables[TableOffsets[cmap]]; }    /* original C++ signature */
+    # inline const ImU32* GetTable(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def get_table(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int GetTableSize(ImPlot3DColormap cmap) const { return TableSizes[cmap]; }    /* original C++ signature */
+    # inline int GetTableSize(ImPlot3DColormap cmap) const;    /* original C++ signature */
     def get_table_size(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32 GetTableColor(ImPlot3DColormap cmap, int idx) const { return Tables[TableOffsets[cmap] + idx]; }    /* original C++ signature */
+    # inline ImU32 GetTableColor(ImPlot3DColormap cmap, int idx) const;    /* original C++ signature */
     def get_table_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
 
-    # inline ImU32 LerpTable(ImPlot3DColormap cmap, float t) const {    /* original C++ signature */
-    #         int off = TableOffsets[cmap];
-    #         int siz = TableSizes[cmap];
-    #         int idx = Quals[cmap] ? ImClamp((int)(siz * t), 0, siz - 1) : (int)((siz - 1) * t + 0.5f);
-    #         return Tables[off + idx];
-    #     }
+    # inline ImU32 LerpTable(ImPlot3DColormap cmap, float t) const;    /* original C++ signature */
     def lerp_table(self, cmap: Colormap, t: float) -> ImU32:
         """(private API)"""
         pass
@@ -379,15 +277,7 @@ class Item:
     # bool SeenThisFrame;    /* original C++ signature */
     seen_this_frame: bool
 
-    # ImPlot3DItem() {    /* original C++ signature */
-    #         ID = 0;
-    #         Color = IM_COL32_WHITE;
-    #         Marker = ImPlot3DMarker_None;
-    #         NameOffset = -1;
-    #         Show = true;
-    #         LegendHovered = false;
-    #         SeenThisFrame = false;
-    #     }
+    # ImPlot3DItem();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -412,19 +302,11 @@ class Legend:
     # bool Held;    /* original C++ signature */
     held: bool
 
-    # ImPlot3DLegend() {    /* original C++ signature */
-    #         PreviousFlags = Flags = ImPlot3DLegendFlags_None;
-    #         Hovered = Held = false;
-    #         PreviousLocation = Location = ImPlot3DLocation_NorthWest;
-    #         Scroll = ImVec2(0, 0);
-    #     }
+    # ImPlot3DLegend();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         Indices.shrink(0);
-    #         Labels.Buf.shrink(0);
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -440,62 +322,53 @@ class ItemGroup:
     # ImPlot3DMarker MarkerIdx;    /* original C++ signature */
     marker_idx: Marker
 
-    # ImPlot3DItemGroup() {    /* original C++ signature */
-    #         ID = 0;
-    #         ColormapIdx = 0;
-    #         MarkerIdx = 0;
-    #     }
+    # ImPlot3DItemGroup();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # int GetItemCount() const { return ItemPool.GetBufSize(); }    /* original C++ signature */
+    # int GetItemCount() const;    /* original C++ signature */
     def get_item_count(self) -> int:
         """(private API)"""
         pass
-    # ImGuiID GetItemID(const char* label_id) { return ImGui::GetID(label_id); }    /* original C++ signature */
+    # ImGuiID GetItemID(const char* label_id);    /* original C++ signature */
     def get_item_id(self, label_id: str) -> ID:
         """(private API)"""
         pass
-    # ImPlot3DItem* GetItem(ImGuiID id) { return ItemPool.GetByKey(id); }    /* original C++ signature */
+    # ImPlot3DItem* GetItem(ImGuiID id);    /* original C++ signature */
     @overload
     def get_item(self, id_: ID) -> Item:
         """(private API)"""
         pass
-    # ImPlot3DItem* GetItem(const char* label_id) { return GetItem(GetItemID(label_id)); }    /* original C++ signature */
+    # ImPlot3DItem* GetItem(const char* label_id);    /* original C++ signature */
     @overload
     def get_item(self, label_id: str) -> Item:
         """(private API)"""
         pass
-    # ImPlot3DItem* GetOrAddItem(ImGuiID id) { return ItemPool.GetOrAddByKey(id); }    /* original C++ signature */
+    # ImPlot3DItem* GetOrAddItem(ImGuiID id);    /* original C++ signature */
     def get_or_add_item(self, id_: ID) -> Item:
         """(private API)"""
         pass
-    # ImPlot3DItem* GetItemByIndex(int i) { return ItemPool.GetByIndex(i); }    /* original C++ signature */
+    # ImPlot3DItem* GetItemByIndex(int i);    /* original C++ signature */
     def get_item_by_index(self, i: int) -> Item:
         """(private API)"""
         pass
-    # int GetItemIndex(ImPlot3DItem* item) { return ItemPool.GetIndex(item); }    /* original C++ signature */
+    # int GetItemIndex(ImPlot3DItem* item);    /* original C++ signature */
     def get_item_index(self, item: Item) -> int:
         """(private API)"""
         pass
-    # int GetLegendCount() const { return Legend.Indices.size(); }    /* original C++ signature */
+    # int GetLegendCount() const;    /* original C++ signature */
     def get_legend_count(self) -> int:
         """(private API)"""
         pass
-    # ImPlot3DItem* GetLegendItem(int i) { return ItemPool.GetByIndex(Legend.Indices[i]); }    /* original C++ signature */
+    # ImPlot3DItem* GetLegendItem(int i);    /* original C++ signature */
     def get_legend_item(self, i: int) -> Item:
         """(private API)"""
         pass
-    # const char* GetLegendLabel(int i) { return Legend.Labels.Buf.Data + GetLegendItem(i)->NameOffset; }    /* original C++ signature */
+    # const char* GetLegendLabel(int i);    /* original C++ signature */
     def get_legend_label(self, i: int) -> str:
         """(private API)"""
         pass
-    # void Reset() {    /* original C++ signature */
-    #         ItemPool.Clear();
-    #         Legend.Reset();
-    #         ColormapIdx = 0;
-    #         MarkerIdx = 0;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -515,40 +388,23 @@ class Tick:
     # int Idx;    /* original C++ signature */
     idx: int
 
-    # ImPlot3DTick(double value, bool major, bool show_label) {    /* original C++ signature */
-    #         PlotPos = value;
-    #         Major = major;
-    #         ShowLabel = show_label;
-    #         TextOffset = -1;
-    #     }
+    # ImPlot3DTick(double value, bool major, bool show_label);    /* original C++ signature */
     def __init__(self, value: float, major: bool, show_label: bool) -> None:
         pass
 
 class Ticker:
     """ Collection of ticks"""
 
-    # ImPlot3DTicker() { Reset(); }    /* original C++ signature */
+    # ImPlot3DTicker();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # ImPlot3DTick& AddTick(double value, bool major, bool show_label, const char* label) {    /* original C++ signature */
-    #         ImPlot3DTick tick(value, major, show_label);
-    #         if (show_label && label != nullptr) {
-    #             tick.TextOffset = TextBuffer.size();
-    #             TextBuffer.append(label, label + strlen(label) + 1);
-    #             tick.LabelSize = ImGui::CalcTextSize(TextBuffer.Buf.Data + tick.TextOffset);
-    #         }
-    #         return AddTick(tick);
-    #     }
+    # ImPlot3DTick& AddTick(double value, bool major, bool show_label, const char* label);    /* original C++ signature */
     @overload
     def add_tick(self, value: float, major: bool, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
-    # inline ImPlot3DTick& AddTick(ImPlot3DTick tick) {    /* original C++ signature */
-    #         tick.Idx = Ticks.size();
-    #         Ticks.push_back(tick);
-    #         return Ticks.back();
-    #     }
+    # inline ImPlot3DTick& AddTick(ImPlot3DTick tick);    /* original C++ signature */
     @overload
     def add_tick(self, tick: Tick) -> Tick:
         """(private API)"""
@@ -556,27 +412,24 @@ class Ticker:
 
 
 
-    # const char* GetText(int idx) const { return TextBuffer.Buf.Data + Ticks[idx].TextOffset; }    /* original C++ signature */
+    # const char* GetText(int idx) const;    /* original C++ signature */
     @overload
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
-    # const char* GetText(const ImPlot3DTick& tick) const { return GetText(tick.Idx); }    /* original C++ signature */
+    # const char* GetText(const ImPlot3DTick& tick) const;    /* original C++ signature */
     @overload
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
 
 
-    # void Reset() {    /* original C++ signature */
-    #         Ticks.shrink(0);
-    #         TextBuffer.Buf.shrink(0);
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
 
-    # int TickCount() const { return Ticks.Size; }    /* original C++ signature */
+    # int TickCount() const;    /* original C++ signature */
     def tick_count(self) -> int:
         """(private API)"""
         pass
@@ -632,269 +485,106 @@ class Axis:
     # ImU32 ColorAct;    /* original C++ signature */
     color_act: ImU32
 
-    # ImPlot3DAxis() {    /* original C++ signature */
-    #         PreviousFlags = Flags = ImPlot3DAxisFlags_None;
-    #         // Range
-    #         Range.Min = 0.0;
-    #         Range.Max = 1.0;
-    #         RangeCond = ImPlot3DCond_None;
-    #         // Scale
-    #         NDCScale = 1.0;
-    #         Scale = ImPlot3DScale_Linear;
-    #         TransformForward = TransformInverse = nullptr;
-    #         TransformData = nullptr;
-    #         // Ticks
-    #         Formatter = nullptr;
-    #         FormatterData = nullptr;
-    #         Locator = nullptr;
-    #         ShowDefaultTicks = true;
-    #         // Fit data
-    #         FitThisFrame = true;
-    #         FitExtents = ImPlot3DRange(HUGE_VAL, -HUGE_VAL);
-    #         // Constraints
-    #         ConstraintRange = ImPlot3DRange(-INFINITY, INFINITY);
-    #         ConstraintZoom = ImPlot3DRange(DBL_MIN, INFINITY);
-    #         // User input
-    #         Hovered = false;
-    #         Held = false;
-    #         // Cached colors
-    #         ColorBg = ColorHov = ColorAct = IM_COL32_BLACK_TRANS;
-    #     }
+    # ImPlot3DAxis();    /* original C++ signature */
     def __init__(self) -> None:
         """ Constructor"""
         pass
 
-    # inline void Reset() {    /* original C++ signature */
-    #         RangeCond = ImPlot3DCond_None;
-    #         // Scale
-    #         Scale = ImPlot3DScale_Linear;
-    #         TransformForward = TransformInverse = nullptr;
-    #         TransformData = nullptr;
-    #         // Ticks
-    #         Ticker.Reset();
-    #         Formatter = nullptr;
-    #         FormatterData = nullptr;
-    #         Locator = nullptr;
-    #         ShowDefaultTicks = true;
-    #         // Fit data
-    #         FitExtents = ImPlot3DRange(HUGE_VAL, -HUGE_VAL);
-    #         // Constraints
-    #         ConstraintRange = ImPlot3DRange(-INFINITY, INFINITY);
-    #         ConstraintZoom = ImPlot3DRange(DBL_MIN, INFINITY);
-    #     }
+    # inline void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
 
-    # inline void SetRange(double v1, double v2) {    /* original C++ signature */
-    #         v1 = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(v1));
-    #         v2 = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(v2));
-    #         Range.Min = ImMin(v1, v2);
-    #         Range.Max = ImMax(v1, v2);
-    #         Constrain();
-    #         UpdateTransformCache();
-    #     }
+    # inline void SetRange(double v1, double v2);    /* original C++ signature */
     def set_range(self, v1: float, v2: float) -> None:
         """(private API)"""
         pass
 
-    # inline bool SetMin(double _min, bool force = false) {    /* original C++ signature */
-    #         if (!force && IsLockedMin())
-    #             return false;
-    #         _min = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(_min));
-    #
-    #         // Constraints
-    #         if (_min < ConstraintRange.Min)
-    #             _min = ConstraintRange.Min;
-    #         double zoom = Range.Max - _min;
-    #         if (zoom < ConstraintZoom.Min)
-    #             _min = Range.Max - ConstraintZoom.Min;
-    #         if (zoom > ConstraintZoom.Max)
-    #             _min = Range.Max - ConstraintZoom.Max;
-    #
-    #         // Ensure min is less than max
-    #         if (_min >= Range.Max)
-    #             return false;
-    #
-    #         Range.Min = _min;
-    #         UpdateTransformCache();
-    #         return true;
-    #     }
+    # inline bool SetMin(double _min, bool force = false);    /* original C++ signature */
     def set_min(self, _min: float, force: bool = False) -> bool:
         """(private API)"""
         pass
 
-    # inline bool SetMax(double _max, bool force = false) {    /* original C++ signature */
-    #         if (!force && IsLockedMax())
-    #             return false;
-    #         _max = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(_max));
-    #
-    #         // Constraints
-    #         if (_max > ConstraintRange.Max)
-    #             _max = ConstraintRange.Max;
-    #         double zoom = _max - Range.Min;
-    #         if (zoom < ConstraintZoom.Min)
-    #             _max = Range.Min + ConstraintZoom.Min;
-    #         if (zoom > ConstraintZoom.Max)
-    #             _max = Range.Min + ConstraintZoom.Max;
-    #
-    #         // Ensure max is greater than min
-    #         if (_max <= Range.Min)
-    #             return false;
-    #
-    #         Range.Max = _max;
-    #         UpdateTransformCache();
-    #         return true;
-    #     }
+    # inline bool SetMax(double _max, bool force = false);    /* original C++ signature */
     def set_max(self, _max: float, force: bool = False) -> bool:
         """(private API)"""
         pass
 
-    # inline void Constrain() {    /* original C++ signature */
-    #         Range.Min = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(Range.Min));
-    #         Range.Max = ImPlot3D::ImConstrainNan(ImPlot3D::ImConstrainInf(Range.Max));
-    #         if (Range.Min < ConstraintRange.Min)
-    #             Range.Min = ConstraintRange.Min;
-    #         if (Range.Max > ConstraintRange.Max)
-    #             Range.Max = ConstraintRange.Max;
-    #         double zoom = Range.Size();
-    #         if (zoom < ConstraintZoom.Min) {
-    #             double delta = (ConstraintZoom.Min - zoom) * 0.5;
-    #             Range.Min -= delta;
-    #             Range.Max += delta;
-    #         }
-    #         if (zoom > ConstraintZoom.Max) {
-    #             double delta = (zoom - ConstraintZoom.Max) * 0.5;
-    #             Range.Min += delta;
-    #             Range.Max -= delta;
-    #         }
-    #         if (Range.Max <= Range.Min)
-    #             Range.Max = Range.Min + DBL_EPSILON;
-    #     }
+    # inline void Constrain();    /* original C++ signature */
     def constrain(self) -> None:
         """(private API)"""
         pass
 
-    # inline void UpdateTransformCache() {    /* original C++ signature */
-    #         if (TransformForward != nullptr) {
-    #             ScaledRange.Min = TransformForward(Range.Min, TransformData);
-    #             ScaledRange.Max = TransformForward(Range.Max, TransformData);
-    #         } else {
-    #             ScaledRange.Min = Range.Min;
-    #             ScaledRange.Max = Range.Max;
-    #         }
-    #     }
+    # inline void UpdateTransformCache();    /* original C++ signature */
     def update_transform_cache(self) -> None:
         """(private API)"""
         pass
 
-    # inline double PlotToNDC(double plt) const {    /* original C++ signature */
-    #         if (TransformForward != nullptr) {
-    #             double s = TransformForward(plt, TransformData);
-    #             return (s - ScaledRange.Min) / (ScaledRange.Max - ScaledRange.Min);
-    #         }
-    #         return (plt - Range.Min) / (Range.Max - Range.Min);
-    #     }
+    # inline double PlotToNDC(double plt) const;    /* original C++ signature */
     def plot_to_ndc(self, plt: float) -> float:
         """(private API)"""
         pass
 
-    # inline double NDCToPlot(double t) const {    /* original C++ signature */
-    #         if (TransformInverse != nullptr) {
-    #             double s = t * (ScaledRange.Max - ScaledRange.Min) + ScaledRange.Min;
-    #             return TransformInverse(s, TransformData);
-    #         }
-    #         return Range.Min + t * (Range.Max - Range.Min);
-    #     }
+    # inline double NDCToPlot(double t) const;    /* original C++ signature */
     def ndc_to_plot(self, t: float) -> float:
         """(private API)"""
         pass
 
-    # inline bool IsRangeLocked() const { return RangeCond == ImPlot3DCond_Always; }    /* original C++ signature */
+    # inline bool IsRangeLocked() const;    /* original C++ signature */
     def is_range_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMin() const { return IsRangeLocked() || ImPlot3D::ImHasFlag(Flags, ImPlot3DAxisFlags_LockMin); }    /* original C++ signature */
+    # inline bool IsLockedMin() const;    /* original C++ signature */
     def is_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMax() const { return IsRangeLocked() || ImPlot3D::ImHasFlag(Flags, ImPlot3DAxisFlags_LockMax); }    /* original C++ signature */
+    # inline bool IsLockedMax() const;    /* original C++ signature */
     def is_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLocked() const { return IsLockedMin() && IsLockedMax(); }    /* original C++ signature */
+    # inline bool IsLocked() const;    /* original C++ signature */
     def is_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMin() const { return IsLockedMin() || IsAutoFitting(); }    /* original C++ signature */
+    # inline bool IsInputLockedMin() const;    /* original C++ signature */
     def is_input_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMax() const { return IsLockedMax() || IsAutoFitting(); }    /* original C++ signature */
+    # inline bool IsInputLockedMax() const;    /* original C++ signature */
     def is_input_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLocked() const { return IsLocked() || IsAutoFitting(); }    /* original C++ signature */
+    # inline bool IsInputLocked() const;    /* original C++ signature */
     def is_input_locked(self) -> bool:
         """(private API)"""
         pass
 
-    # inline bool IsPanLocked(bool increasing) {    /* original C++ signature */
-    #         if (ImPlot3D::ImHasFlag(Flags, ImPlot3DAxisFlags_PanStretch)) {
-    #             return IsInputLocked();
-    #         } else {
-    #             if (IsLockedMin() || IsLockedMax() || IsAutoFitting())
-    #                 return false;
-    #             if (increasing)
-    #                 return Range.Max == ConstraintRange.Max;
-    #             else
-    #                 return Range.Min == ConstraintRange.Min;
-    #         }
-    #     }
+    # inline bool IsPanLocked(bool increasing);    /* original C++ signature */
     def is_pan_locked(self, increasing: bool) -> bool:
         """(private API)"""
         pass
 
-    # inline void SetLabel(const char* label) {    /* original C++ signature */
-    #         Label.Buf.shrink(0);
-    #         if (label && ImGui::FindRenderedTextEnd(label, nullptr) != label)
-    #             Label.append(label, label + strlen(label) + 1);
-    #     }
+    # inline void SetLabel(const char* label);    /* original C++ signature */
     def set_label(self, label: str) -> None:
         """(private API)"""
         pass
 
-    # inline const char* GetLabel() const { return Label.Buf.Data; }    /* original C++ signature */
+    # inline const char* GetLabel() const;    /* original C++ signature */
     def get_label(self) -> str:
         """(private API)"""
         pass
 
-    # inline double NDCSize() const {    /* original C++ signature */
-    #         // By default, the axis span from NDC -0.5 to 0.5, so size is 1.0
-    #         // If NDCScale is applied, the size is scaled accordingly
-    #         return NDCScale;
-    #     }
+    # inline double NDCSize() const;    /* original C++ signature */
     def ndc_size(self) -> float:
         """(private API)"""
         pass
 
-    # inline void SetAspect(double units_per_ndc_unit) {    /* original C++ signature */
-    #         double new_size = units_per_ndc_unit * NDCSize();
-    #         double delta = (new_size - Range.Size()) * 0.5;
-    #         if (IsLocked())
-    #             return;
-    #         else if (IsLockedMin() && !IsLockedMax())
-    #             SetRange(Range.Min, Range.Max + 2 * delta);
-    #         else if (!IsLockedMin() && IsLockedMax())
-    #             SetRange(Range.Min - 2 * delta, Range.Max);
-    #         else
-    #             SetRange(Range.Min - delta, Range.Max + delta);
-    #     }
+    # inline void SetAspect(double units_per_ndc_unit);    /* original C++ signature */
     def set_aspect(self, units_per_ndc_unit: float) -> None:
         """(private API)"""
         pass
 
-    # double GetAspect() const { return Range.Size() / NDCSize(); }    /* original C++ signature */
+    # double GetAspect() const;    /* original C++ signature */
     def get_aspect(self) -> float:
         """(private API)"""
         pass
@@ -984,46 +674,23 @@ class Plot:
     # bool OpenContextThisFrame;    /* original C++ signature */
     open_context_this_frame: bool
 
-    # ImPlot3DPlot() {    /* original C++ signature */
-    #         PreviousFlags = Flags = ImPlot3DFlags_None;
-    #         JustCreated = true;
-    #         Initialized = false;
-    #         InitialRotation = ImPlot3DQuat(-0.513269, -0.212596, -0.318184, 0.76819);
-    #         Rotation = ImPlot3DQuat(0.0, 0.0, 0.0, 1.0);
-    #         RotationCond = ImPlot3DCond_None;
-    #         for (int i = 0; i < 3; i++)
-    #             Axes[i] = ImPlot3DAxis();
-    #         AnimationTime = 0.0f;
-    #         RotationAnimationEnd = Rotation;
-    #         SetupLocked = false;
-    #         Hovered = Held = false;
-    #         HeldEdgeIdx = -1;
-    #         HeldPlaneIdx = -1;
-    #         DragRotationAxis = ImPlot3DPoint(0.0, 0.0, 0.0);
-    #         FitThisFrame = true;
-    #         ContextClick = false;
-    #         OpenContextThisFrame = false;
-    #     }
+    # ImPlot3DPlot();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # inline void SetTitle(const char* title) {    /* original C++ signature */
-    #         Title.Buf.shrink(0);
-    #         if (title && ImGui::FindRenderedTextEnd(title, nullptr) != title)
-    #             Title.append(title, title + strlen(title) + 1);
-    #     }
+    # inline void SetTitle(const char* title);    /* original C++ signature */
     def set_title(self, title: str) -> None:
         """(private API)"""
         pass
-    # inline bool HasTitle() const { return !Title.empty() && !ImPlot3D::ImHasFlag(Flags, ImPlot3DFlags_NoTitle); }    /* original C++ signature */
+    # inline bool HasTitle() const;    /* original C++ signature */
     def has_title(self) -> bool:
         """(private API)"""
         pass
-    # inline const char* GetTitle() const { return Title.Buf.Data; }    /* original C++ signature */
+    # inline const char* GetTitle() const;    /* original C++ signature */
     def get_title(self) -> str:
         """(private API)"""
         pass
-    # inline bool IsRotationLocked() const { return RotationCond == ImPlot3DCond_Always; }    /* original C++ signature */
+    # inline bool IsRotationLocked() const;    /* original C++ signature */
     def is_rotation_locked(self) -> bool:
         """(private API)"""
         pass
@@ -1149,14 +816,12 @@ def get_style_color_name(idx: Col) -> str:
     pass
 
 # Returns white or black text given background color
-# static inline ImU32 CalcTextColor(const ImVec4& bg) {    /* original C++ signature */
-#     return (bg.x * 0.299f + bg.y * 0.587f + bg.z * 0.114f) > 0.5f ? IM_COL32_BLACK : IM_COL32_WHITE;
-# }
+# static inline ImU32 CalcTextColor(const ImVec4& bg);    /* original C++ signature */
 @overload
 def calc_text_color(bg: ImVec4Like) -> ImU32:
     """(private API)"""
     pass
-# static inline ImU32 CalcTextColor(ImU32 bg) { return CalcTextColor(ImGui::ColorConvertU32ToFloat4(bg)); }    /* original C++ signature */
+# static inline ImU32 CalcTextColor(ImU32 bg);    /* original C++ signature */
 @overload
 def calc_text_color(bg: ImU32) -> ImU32:
     """(private API)"""
@@ -1278,22 +943,22 @@ def setup_lock() -> None:
 # [SECTION] Transforms
 #-----------------------------------------------------------------------------
 
-# static inline double TransformForward_Log10(double v, void*) { return ImLog10(v <= 0.0 ? DBL_MIN : v); }    /* original C++ signature */
+# static inline double TransformForward_Log10(double v, void*);    /* original C++ signature */
 def transform_forward_log10(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformInverse_Log10(double v, void*) { return ImPow(10, v); }    /* original C++ signature */
+# static inline double TransformInverse_Log10(double v, void*);    /* original C++ signature */
 def transform_inverse_log10(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformForward_SymLog(double v, void*) { return 2.0 * ImAsinh(v / 2.0); }    /* original C++ signature */
+# static inline double TransformForward_SymLog(double v, void*);    /* original C++ signature */
 def transform_forward_sym_log(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformInverse_SymLog(double v, void*) { return 2.0 * ImSinh(v / 2.0); }    /* original C++ signature */
+# static inline double TransformInverse_SymLog(double v, void*);    /* original C++ signature */
 def transform_inverse_sym_log(v: float, param_1: Any) -> float:
     """(private API)"""
     pass

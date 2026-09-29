@@ -1439,19 +1439,16 @@ class Point:
     y: float  # Coordinates
     # z;    /* original C++ signature */
     z: float  # Coordinates
-    # constexpr ImPlot3DPoint() : x(0.0), y(0.0), z(0.0) {}    /* original C++ signature */
+    # constexpr ImPlot3DPoint() : x(0.0), y(0.0), z(0.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlot3DPoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z) {}    /* original C++ signature */
+    # constexpr ImPlot3DPoint(double _x, double _y, double _z) : x(_x), y(_y), z(_z);    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float, _z: float) -> None:
         pass
     # Accessors
-    # double& operator[](size_t idx) {    /* original C++ signature */
-    #         IM_ASSERT(idx == 0 || idx == 1 || idx == 2);
-    #         return ((double*)(void*)(char*)this)[idx];
-    #     }
+    # double& operator[](size_t idx);    /* original C++ signature */
     def __getitem__(self, idx: int) -> float:
         """(private API)"""
         pass
@@ -1597,12 +1594,12 @@ class Box:
     # ImPlot3DPoint Max;    /* original C++ signature */
     max: Point  # Maximum corner of the box
 
-    # constexpr ImPlot3DBox() : Min(ImPlot3DPoint()), Max(ImPlot3DPoint()) {}    /* original C++ signature */
+    # constexpr ImPlot3DBox() : Min(ImPlot3DPoint()), Max(ImPlot3DPoint());    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         """Default constructor"""
         pass
-    # constexpr ImPlot3DBox(const ImPlot3DPoint& min, const ImPlot3DPoint& max) : Min(min), Max(max) {}    /* original C++ signature */
+    # constexpr ImPlot3DBox(const ImPlot3DPoint& min, const ImPlot3DPoint& max) : Min(min), Max(max);    /* original C++ signature */
     @overload
     def __init__(self, min: Point, max: Point) -> None:
         """Constructor with two points"""
@@ -1632,11 +1629,11 @@ class Range:
     # double Max;    /* original C++ signature */
     max: float  # Maximum value
 
-    # constexpr ImPlot3DRange() : Min(0.0), Max(0.0) {}    /* original C++ signature */
+    # constexpr ImPlot3DRange() : Min(0.0), Max(0.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlot3DRange(double min, double max) : Min(min), Max(max) {}    /* original C++ signature */
+    # constexpr ImPlot3DRange(double min, double max) : Min(min), Max(max);    /* original C++ signature */
     @overload
     def __init__(self, min: float, max: float) -> None:
         pass
@@ -1648,7 +1645,7 @@ class Range:
     def contains(self, value: float) -> bool:
         """Check if value is within range"""
         pass
-    # double Size() const { return Max - Min; }           /* original C++ signature */
+    # double Size() const;    /* original C++ signature */
     def size(self) -> float:
         """(private API)
 
@@ -1673,11 +1670,11 @@ class Quat:
     w: float  # Quaternion components
 
     # Constructors
-    # constexpr ImPlot3DQuat() : x(0.0), y(0.0), z(0.0), w(1.0) {}    /* original C++ signature */
+    # constexpr ImPlot3DQuat() : x(0.0), y(0.0), z(0.0), w(1.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlot3DQuat(double _x, double _y, double _z, double _w) : x(_x), y(_y), z(_z), w(_w) {}    /* original C++ signature */
+    # constexpr ImPlot3DQuat(double _x, double _y, double _z, double _w) : x(_x), y(_y), z(_z), w(_w);    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
@@ -1781,11 +1778,11 @@ class Style:
     # ImVec2 LegendSpacing;    /* original C++ signature */
     legend_spacing: ImVec2  # Spacing between legend entries
     # Colors
-    # inline ImVec4 GetColor(ImPlot3DCol idx) const { return Colors[idx]; }    /* original C++ signature */
+    # inline ImVec4 GetColor(ImPlot3DCol idx) const;    /* original C++ signature */
     def get_color(self, idx: Col) -> ImVec4:
         """(private API)"""
         pass
-    # inline void SetColor(ImPlot3DCol idx, const ImVec4& col) { Colors[idx] = col; }    /* original C++ signature */
+    # inline void SetColor(ImPlot3DCol idx, const ImVec4& col);    /* original C++ signature */
     def set_color(self, idx: Col, col: ImVec4Like) -> None:
         """(private API)"""
         pass

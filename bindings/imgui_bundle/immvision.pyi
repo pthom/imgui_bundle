@@ -77,11 +77,11 @@ class Size2d:
     @overload
     def __init__(self) -> None:
         pass
-    # Size2d(double w, double h) : width(w), height(h) {}    /* original C++ signature */
+    # Size2d(double w, double h) : width(w), height(h);    /* original C++ signature */
     @overload
     def __init__(self, w: float, h: float) -> None:
         pass
-    # Size2d(const Size& s) : width((double)s.width), height((double)s.height) {}    /* original C++ signature */
+    # Size2d(const Size& s) : width((double)s.width), height((double)s.height);    /* original C++ signature */
     @overload
     def __init__(self, s: Size) -> None:
         pass
@@ -91,7 +91,7 @@ class Color4d:
 
     # double v[4] = {0, 0, 0, 255};    /* original C++ signature */
     v: np.ndarray  # ndarray[type=double, size=4] default:float(0, 0, 0, 255)
-    # double& operator[](int i) { return v[i]; }    /* original C++ signature */
+    # double& operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass
@@ -99,7 +99,7 @@ class Color4d:
     @overload
     def __init__(self) -> None:
         pass
-    # Color4d(double v0, double v1, double v2, double v3) : v{v0, v1, v2, v3} {}    /* original C++ signature */
+    # Color4d(double v0, double v1, double v2, double v3) : v{v0, v1, v2, v3};    /* original C++ signature */
     @overload
     def __init__(self, v0: float, v1: float, v2: float, v3: float) -> None:
         pass
@@ -119,34 +119,34 @@ class Rect:
     @overload
     def __init__(self) -> None:
         pass
-    # Rect(int x_, int y_, int w, int h) : x(x_), y(y_), width(w), height(h) {}    /* original C++ signature */
+    # Rect(int x_, int y_, int w, int h) : x(x_), y(y_), width(w), height(h);    /* original C++ signature */
     @overload
     def __init__(self, x_: int, y_: int, w: int, h: int) -> None:
         pass
-    # Rect(Point pt, Size sz) : x(pt.x), y(pt.y), width(sz.width), height(sz.height) {}    /* original C++ signature */
+    # Rect(Point pt, Size sz) : x(pt.x), y(pt.y), width(sz.width), height(sz.height);    /* original C++ signature */
     @overload
     def __init__(self, pt: Point, sz: Size) -> None:
         pass
     # Rect(Point pt1, Point pt2)    /* original C++ signature */
     #             : x(std::min(pt1.x, pt2.x)), y(std::min(pt1.y, pt2.y)),
-    #               width(std::max(pt1.x, pt2.x) - x), height(std::max(pt1.y, pt2.y) - y) {}
+    #               width(std::max(pt1.x, pt2.x) - x), height(std::max(pt1.y, pt2.y) - y);
     @overload
     def __init__(self, pt1: Point, pt2: Point) -> None:
         """Construct from two corner points (top-left and bottom-right)"""
         pass
-    # bool empty() const { return width <= 0 || height <= 0; }    /* original C++ signature */
+    # bool empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # int area() const { return width * height; }    /* original C++ signature */
+    # int area() const;    /* original C++ signature */
     def area(self) -> int:
         """(private API)"""
         pass
-    # bool contains(Point pt) const { return pt.x >= x && pt.x < x + width && pt.y >= y && pt.y < y + height; }    /* original C++ signature */
+    # bool contains(Point pt) const;    /* original C++ signature */
     def contains(self, pt: Point) -> bool:
         """(private API)"""
         pass
-    # Size size() const { return {width, height}; }    /* original C++ signature */
+    # Size size() const;    /* original C++ signature */
     def size(self) -> Size:
         """(private API)"""
         pass

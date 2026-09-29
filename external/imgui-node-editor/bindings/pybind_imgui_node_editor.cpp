@@ -663,7 +663,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         ax::NodeEditor::EndShortcut);
 
     m.def("get_current_zoom",
-        ax::NodeEditor::GetCurrentZoom, "Current canvas zoom factor; 1.0 = 100%.");
+        ax::NodeEditor::GetCurrentZoom, " Returns the INVERSE of the zoom: the size of a pixel in canvas units.\n 1.0 at 100%, 2.0 when the content is drawn at half size (zoomed out), 0.5 when it is drawn twice as big (zoomed in).\n To convert positions, use ScreenToCanvas() / CanvasToScreen().");
 
     m.def("get_hovered_node",
         ax::NodeEditor::GetHoveredNode);

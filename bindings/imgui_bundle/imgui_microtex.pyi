@@ -200,9 +200,7 @@ class FormulaTexture:
     # SetEvictionFrames). Not interesting to direct API consumers.
     last_used_frame: int = 0
 
-    # ImTextureID TextureId() const {    /* original C++ signature */
-    #         return Texture ? Texture->TextureID() : (ImTextureID)0;
-    #     }
+    # ImTextureID TextureId() const;    /* original C++ signature */
     def texture_id(self) -> ImTextureID:
         """ Convenience: returns the GPU texture id, or 0 if no texture is held."""
         pass

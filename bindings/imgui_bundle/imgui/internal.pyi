@@ -398,24 +398,24 @@ def im_alpha_blend_colors(col_a: ImU32, col_b: ImU32) -> ImU32:
     pass
 
 # Helpers: Bit manipulation
-# inline bool             ImIsPowerOfTwo(int v)               { return v != 0 && (v & (v - 1)) == 0; }    /* original C++ signature */
+# inline bool             ImIsPowerOfTwo(int v);    /* original C++ signature */
 @overload
 def im_is_power_of_two(v: int) -> bool:
     """(private API)"""
     pass
 
-# inline bool             ImIsPowerOfTwo(ImU64 v)             { return v != 0 && (v & (v - 1)) == 0; }    /* original C++ signature */
+# inline bool             ImIsPowerOfTwo(ImU64 v);    /* original C++ signature */
 @overload
 def im_is_power_of_two(v: ImU64) -> bool:
     """(private API)"""
     pass
 
-# inline int              ImUpperPowerOfTwo(int v)            { v--; v |= v >> 1; v |= v >> 2; v |= v >> 4; v |= v >> 8; v |= v >> 16; v++; return v; }    /* original C++ signature */
+# inline int              ImUpperPowerOfTwo(int v);    /* original C++ signature */
 def im_upper_power_of_two(v: int) -> int:
     """(private API)"""
     pass
 
-# inline unsigned int     ImCountSetBits(unsigned int v)      { unsigned int count = 0; while (v > 0) { v = v & (v - 1); count++; } return count; }    /* original C++ signature */
+# inline unsigned int     ImCountSetBits(unsigned int v);    /* original C++ signature */
 def im_count_set_bits(v: int) -> int:
     """(private API)"""
     pass
@@ -426,7 +426,7 @@ def im_memdup(src: Any, size: int) -> Any:
     """Duplicate a chunk of memory."""
     pass
 
-# inline bool             ImCharIsBlankW(unsigned int c)  { return c == ' ' || c == '\t' || c == 0x3000; }    /* original C++ signature */
+# inline bool             ImCharIsBlankW(unsigned int c);    /* original C++ signature */
 def im_char_is_blank_w(c: int) -> bool:
     """(private API)"""
     pass
@@ -505,75 +505,75 @@ def im_text_classifier_set_char_class(
 # - Wrapper for standard libs functions. (Note that imgui_demo.cpp does _not_ use them to keep the code easy to copy)
 # - ImMin/ImMax/ImClamp/ImLerp/ImSwap are used by widgets which support variety of types: signed/unsigned int/long long float/double
 # (Exceptionally using templates here but we could also redefine them for those types)
-# inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs)               { return ImVec2(lhs.x < rhs.x ? lhs.x : rhs.x, lhs.y < rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
+# inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
 def im_min(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec2 ImMax(const ImVec2& lhs, const ImVec2& rhs)               { return ImVec2(lhs.x >= rhs.x ? lhs.x : rhs.x, lhs.y >= rhs.y ? lhs.y : rhs.y); }    /* original C++ signature */
+# inline ImVec2 ImMax(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
 def im_max(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec2 ImClamp(const ImVec2& v, const ImVec2&mn, const ImVec2&mx){ return ImVec2((v.x < mn.x) ? mn.x : (v.x > mx.x) ? mx.x : v.x, (v.y < mn.y) ? mn.y : (v.y > mx.y) ? mx.y : v.y); }    /* original C++ signature */
+# inline ImVec2 ImClamp(const ImVec2& v, const ImVec2&mn, const ImVec2&mx);    /* original C++ signature */
 def im_clamp(v: ImVec2Like, mn: ImVec2Like, mx: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, float t)         { return ImVec2(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t); }    /* original C++ signature */
+# inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, float t);    /* original C++ signature */
 @overload
 def im_lerp(a: ImVec2Like, b: ImVec2Like, t: float) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, const ImVec2& t) { return ImVec2(a.x + (b.x - a.x) * t.x, a.y + (b.y - a.y) * t.y); }    /* original C++ signature */
+# inline ImVec2 ImLerp(const ImVec2& a, const ImVec2& b, const ImVec2& t);    /* original C++ signature */
 @overload
 def im_lerp(a: ImVec2Like, b: ImVec2Like, t: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec4 ImLerp(const ImVec4& a, const ImVec4& b, float t)         { return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t); }    /* original C++ signature */
+# inline ImVec4 ImLerp(const ImVec4& a, const ImVec4& b, float t);    /* original C++ signature */
 @overload
 def im_lerp(a: ImVec4Like, b: ImVec4Like, t: float) -> ImVec4:
     """(private API)"""
     pass
 
 # - Misc maths helpers
-# inline float  ImSaturate(float f)                                       { return (f < 0.0f) ? 0.0f : (f > 1.0f) ? 1.0f : f; }    /* original C++ signature */
+# inline float  ImSaturate(float f);    /* original C++ signature */
 def im_saturate(f: float) -> float:
     """(private API)"""
     pass
 
-# inline float  ImLengthSqr(const ImVec2& lhs)                            { return (lhs.x * lhs.x) + (lhs.y * lhs.y); }    /* original C++ signature */
+# inline float  ImLengthSqr(const ImVec2& lhs);    /* original C++ signature */
 @overload
 def im_length_sqr(lhs: ImVec2Like) -> float:
     """(private API)"""
     pass
 
-# inline float  ImLengthSqr(const ImVec4& lhs)                            { return (lhs.x * lhs.x) + (lhs.y * lhs.y) + (lhs.z * lhs.z) + (lhs.w * lhs.w); }    /* original C++ signature */
+# inline float  ImLengthSqr(const ImVec4& lhs);    /* original C++ signature */
 @overload
 def im_length_sqr(lhs: ImVec4Like) -> float:
     """(private API)"""
     pass
 
-# inline float  ImInvLength(const ImVec2& lhs, float fail_value)          { float d = (lhs.x * lhs.x) + (lhs.y * lhs.y); if (d > 0.0f) return ImRsqrt(d); return fail_value; }    /* original C++ signature */
+# inline float  ImInvLength(const ImVec2& lhs, float fail_value);    /* original C++ signature */
 def im_inv_length(lhs: ImVec2Like, fail_value: float) -> float:
     """(private API)"""
     pass
 
-# inline float  ImTrunc(float f)                                          { return (float)(int)(f); }    /* original C++ signature */
+# inline float  ImTrunc(float f);    /* original C++ signature */
 @overload
 def im_trunc(f: float) -> float:
     """(private API)"""
     pass
 
-# inline ImVec2 ImTrunc(const ImVec2& v)                                  { return ImVec2((float)(int)(v.x), (float)(int)(v.y)); }    /* original C++ signature */
+# inline ImVec2 ImTrunc(const ImVec2& v);    /* original C++ signature */
 @overload
 def im_trunc(v: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline float  ImFloor(float f)                                          { return (float)((f >= 0 || (float)(int)f == f) ? (int)f : (int)f - 1); }     /* original C++ signature */
+# inline float  ImFloor(float f);    /* original C++ signature */
 @overload
 def im_floor(f: float) -> float:
     """(private API)
@@ -582,18 +582,18 @@ def im_floor(f: float) -> float:
     """
     pass
 
-# inline ImVec2 ImFloor(const ImVec2& v)                                  { return ImVec2(ImFloor(v.x), ImFloor(v.y)); }    /* original C++ signature */
+# inline ImVec2 ImFloor(const ImVec2& v);    /* original C++ signature */
 @overload
 def im_floor(v: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline float  ImTrunc64(float f)                                        { return (float)(ImS64)(f); }    /* original C++ signature */
+# inline float  ImTrunc64(float f);    /* original C++ signature */
 def im_trunc64(f: float) -> float:
     """(private API)"""
     pass
 
-# inline float  ImRound64(float f)                                        { return (float)(ImS64)(f + 0.5f); }     /* original C++ signature */
+# inline float  ImRound64(float f);    /* original C++ signature */
 def im_round64(f: float) -> float:
     """(private API)
 
@@ -601,7 +601,7 @@ def im_round64(f: float) -> float:
     """
     pass
 
-# inline float  ImCeilFast(float f)                                       { int i = (int)f; return (float)(i + (f > (float)i)); }     /* original C++ signature */
+# inline float  ImCeilFast(float f);    /* original C++ signature */
 def im_ceil_fast(f: float) -> float:
     """(private API)
 
@@ -609,42 +609,42 @@ def im_ceil_fast(f: float) -> float:
     """
     pass
 
-# inline int    ImModPositive(int a, int b)                               { return (a + b) % b; }    /* original C++ signature */
+# inline int    ImModPositive(int a, int b);    /* original C++ signature */
 def im_mod_positive(a: int, b: int) -> int:
     """(private API)"""
     pass
 
-# inline float  ImDot(const ImVec2& a, const ImVec2& b)                   { return a.x * b.x + a.y * b.y; }    /* original C++ signature */
+# inline float  ImDot(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
 def im_dot(a: ImVec2Like, b: ImVec2Like) -> float:
     """(private API)"""
     pass
 
-# inline ImVec2 ImRotate(const ImVec2& v, float cos_a, float sin_a)       { return ImVec2(v.x * cos_a - v.y * sin_a, v.x * sin_a + v.y * cos_a); }    /* original C++ signature */
+# inline ImVec2 ImRotate(const ImVec2& v, float cos_a, float sin_a);    /* original C++ signature */
 def im_rotate(v: ImVec2Like, cos_a: float, sin_a: float) -> ImVec2:
     """(private API)"""
     pass
 
-# inline float  ImLinearSweep(float current, float target, float speed)   { if (current < target) return ImMin(current + speed, target); if (current > target) return ImMax(current - speed, target); return current; }    /* original C++ signature */
+# inline float  ImLinearSweep(float current, float target, float speed);    /* original C++ signature */
 def im_linear_sweep(current: float, target: float, speed: float) -> float:
     """(private API)"""
     pass
 
-# inline float  ImLinearRemapClamp(float s0, float s1, float d0, float d1, float x) { return ImSaturate((x - s0) / (s1 - s0)) * (d1 - d0) + d0; }    /* original C++ signature */
+# inline float  ImLinearRemapClamp(float s0, float s1, float d0, float d1, float x);    /* original C++ signature */
 def im_linear_remap_clamp(s0: float, s1: float, d0: float, d1: float, x: float) -> float:
     """(private API)"""
     pass
 
-# inline ImVec2 ImMul(const ImVec2& lhs, const ImVec2& rhs)               { return ImVec2(lhs.x * rhs.x, lhs.y * rhs.y); }    /* original C++ signature */
+# inline ImVec2 ImMul(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
 def im_mul(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline bool   ImIsFloatAboveGuaranteedIntegerPrecision(float f)         { return f <= -16777216 || f >= 16777216; }    /* original C++ signature */
+# inline bool   ImIsFloatAboveGuaranteedIntegerPrecision(float f);    /* original C++ signature */
 def im_is_float_above_guaranteed_integer_precision(f: float) -> bool:
     """(private API)"""
     pass
 
-# inline float  ImExponentialMovingAverage(float avg, float sample, int n){ avg -= avg / (float)n; avg += sample / (float)n; return avg; }    /* original C++ signature */
+# inline float  ImExponentialMovingAverage(float avg, float sample, int n);    /* original C++ signature */
 def im_exponential_moving_average(avg: float, sample: float, n: int) -> float:
     """(private API)"""
     pass
@@ -690,12 +690,12 @@ def im_triangle_barycentric_coords(
 ) -> Tuple[float, float, float]:
     pass
 
-# inline float         ImTriangleArea(const ImVec2& a, const ImVec2& b, const ImVec2& c)          { return ImFabs((a.x * (b.y - c.y)) + (b.x * (c.y - a.y)) + (c.x * (a.y - b.y))) * 0.5f; }    /* original C++ signature */
+# inline float         ImTriangleArea(const ImVec2& a, const ImVec2& b, const ImVec2& c);    /* original C++ signature */
 def im_triangle_area(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> float:
     """(private API)"""
     pass
 
-# inline bool          ImTriangleIsClockwise(const ImVec2& a, const ImVec2& b, const ImVec2& c)   { return ((b.x - a.x) * (c.y - b.y)) - ((c.x - b.x) * (b.y - a.y)) > 0.0f; }    /* original C++ signature */
+# inline bool          ImTriangleIsClockwise(const ImVec2& a, const ImVec2& b, const ImVec2& c);    /* original C++ signature */
 def im_triangle_is_clockwise(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> bool:
     """(private API)"""
     pass
@@ -703,11 +703,11 @@ def im_triangle_is_clockwise(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> boo
 class ImVec1:
     # float   x;    /* original C++ signature */
     x: float
-    # constexpr inline ImVec1()         : x(0.0f) { }    /* original C++ signature */
+    # constexpr inline ImVec1()         : x(0.0f);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImVec1(float _x) : x(_x) { }    /* original C++ signature */
+    # constexpr inline ImVec1(float _x) : x(_x);    /* original C++ signature */
     @overload
     def __init__(self, _x: float) -> None:
         pass
@@ -719,11 +719,11 @@ class ImVec2i:
     x: int
     # y;    /* original C++ signature */
     y: int
-    # constexpr inline ImVec2i()                             : x(0), y(0) {}    /* original C++ signature */
+    # constexpr inline ImVec2i()                             : x(0), y(0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImVec2i(int _x, int _y)               : x(_x), y(_y) {}    /* original C++ signature */
+    # constexpr inline ImVec2i(int _x, int _y)               : x(_x), y(_y);    /* original C++ signature */
     @overload
     def __init__(self, _x: int, _y: int) -> None:
         pass
@@ -735,15 +735,15 @@ class ImVec2ih:
     x: int
     # y;    /* original C++ signature */
     y: int
-    # constexpr inline ImVec2ih()                           : x(0), y(0) {}    /* original C++ signature */
+    # constexpr inline ImVec2ih()                           : x(0), y(0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImVec2ih(short _x, short _y)         : x(_x), y(_y) {}    /* original C++ signature */
+    # constexpr inline ImVec2ih(short _x, short _y)         : x(_x), y(_y);    /* original C++ signature */
     @overload
     def __init__(self, _x: int, _y: int) -> None:
         pass
-    # constexpr inline explicit ImVec2ih(const ImVec2& rhs) : x((short)rhs.x), y((short)rhs.y) {}    /* original C++ signature */
+    # constexpr inline explicit ImVec2ih(const ImVec2& rhs) : x((short)rhs.x), y((short)rhs.y);    /* original C++ signature */
     @overload
     def __init__(self, rhs: ImVec2Like) -> None:
         pass
@@ -758,193 +758,182 @@ class ImRect:
     # ImVec2      Max;    /* original C++ signature */
     max: ImVec2  # Lower-right
 
-    # constexpr inline ImRect()                                        : Min(0.0f, 0.0f), Max(0.0f, 0.0f)  {}    /* original C++ signature */
+    # constexpr inline ImRect()                                        : Min(0.0f, 0.0f), Max(0.0f, 0.0f);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImRect(const ImVec2& min, const ImVec2& max)    : Min(min), Max(max)                {}    /* original C++ signature */
+    # constexpr inline ImRect(const ImVec2& min, const ImVec2& max)    : Min(min), Max(max);    /* original C++ signature */
     @overload
     def __init__(self, min: ImVec2Like, max: ImVec2Like) -> None:
         pass
-    # constexpr inline ImRect(const ImVec4& v)                         : Min(v.x, v.y), Max(v.z, v.w)      {}    /* original C++ signature */
+    # constexpr inline ImRect(const ImVec4& v)                         : Min(v.x, v.y), Max(v.z, v.w);    /* original C++ signature */
     @overload
     def __init__(self, v: ImVec4Like) -> None:
         pass
-    # constexpr inline ImRect(float x1, float y1, float x2, float y2)  : Min(x1, y1), Max(x2, y2)          {}    /* original C++ signature */
+    # constexpr inline ImRect(float x1, float y1, float x2, float y2)  : Min(x1, y1), Max(x2, y2);    /* original C++ signature */
     @overload
     def __init__(self, x1: float, y1: float, x2: float, y2: float) -> None:
         pass
-    # ImVec2      GetCenter() const                   { return ImVec2((Min.x + Max.x) * 0.5f, (Min.y + Max.y) * 0.5f); }    /* original C++ signature */
+    # ImVec2      GetCenter() const;    /* original C++ signature */
     def get_center(self) -> ImVec2:
         """(private API)"""
         pass
-    # ImVec2      GetSize() const                     { return ImVec2(Max.x - Min.x, Max.y - Min.y); }    /* original C++ signature */
+    # ImVec2      GetSize() const;    /* original C++ signature */
     def get_size(self) -> ImVec2:
         """(private API)"""
         pass
-    # float       GetWidth() const                    { return Max.x - Min.x; }    /* original C++ signature */
+    # float       GetWidth() const;    /* original C++ signature */
     def get_width(self) -> float:
         """(private API)"""
         pass
-    # float       GetHeight() const                   { return Max.y - Min.y; }    /* original C++ signature */
+    # float       GetHeight() const;    /* original C++ signature */
     def get_height(self) -> float:
         """(private API)"""
         pass
-    # float       GetArea() const                     { return (Max.x - Min.x) * (Max.y - Min.y); }    /* original C++ signature */
+    # float       GetArea() const;    /* original C++ signature */
     def get_area(self) -> float:
         """(private API)"""
         pass
-    # ImVec2      GetTL() const                       { return Min; }                       /* original C++ signature */
+    # ImVec2      GetTL() const;    /* original C++ signature */
     def get_tl(self) -> ImVec2:
         """(private API)
 
         Top-left
         """
         pass
-    # ImVec2      GetTR() const                       { return ImVec2(Max.x, Min.y); }      /* original C++ signature */
+    # ImVec2      GetTR() const;    /* original C++ signature */
     def get_tr(self) -> ImVec2:
         """(private API)
 
         Top-right
         """
         pass
-    # ImVec2      GetBL() const                       { return ImVec2(Min.x, Max.y); }      /* original C++ signature */
+    # ImVec2      GetBL() const;    /* original C++ signature */
     def get_bl(self) -> ImVec2:
         """(private API)
 
         Bottom-left
         """
         pass
-    # ImVec2      GetBR() const                       { return Max; }                       /* original C++ signature */
+    # ImVec2      GetBR() const;    /* original C++ signature */
     def get_br(self) -> ImVec2:
         """(private API)
 
         Bottom-right
         """
         pass
-    # bool        Contains(const ImVec2& p) const     { return p.x     >= Min.x && p.y     >= Min.y && p.x     <  Max.x && p.y     <  Max.y; }    /* original C++ signature */
+    # bool        Contains(const ImVec2& p) const;    /* original C++ signature */
     @overload
     def contains(self, p: ImVec2Like) -> bool:
         """(private API)"""
         pass
-    # bool        Contains(const ImRect& r) const     { return r.Min.x >= Min.x && r.Min.y >= Min.y && r.Max.x <= Max.x && r.Max.y <= Max.y; }    /* original C++ signature */
+    # bool        Contains(const ImRect& r) const;    /* original C++ signature */
     @overload
     def contains(self, r: ImRect) -> bool:
         """(private API)"""
         pass
-    # bool        ContainsWithPad(const ImVec2& p, const ImVec2& pad) const { return p.x >= Min.x - pad.x && p.y >= Min.y - pad.y && p.x < Max.x + pad.x && p.y < Max.y + pad.y; }    /* original C++ signature */
+    # bool        ContainsWithPad(const ImVec2& p, const ImVec2& pad) const;    /* original C++ signature */
     def contains_with_pad(self, p: ImVec2Like, pad: ImVec2Like) -> bool:
         """(private API)"""
         pass
-    # bool        Overlaps(const ImRect& r) const     { return r.Min.y <  Max.y && r.Max.y >  Min.y && r.Min.x <  Max.x && r.Max.x >  Min.x; }    /* original C++ signature */
+    # bool        Overlaps(const ImRect& r) const;    /* original C++ signature */
     def overlaps(self, r: ImRect) -> bool:
         """(private API)"""
         pass
-    # void        Add(const ImVec2& p)                { if (Min.x > p.x)     Min.x = p.x;     if (Min.y > p.y)     Min.y = p.y;     if (Max.x < p.x)     Max.x = p.x;     if (Max.y < p.y)     Max.y = p.y; }    /* original C++ signature */
+    # void        Add(const ImVec2& p);    /* original C++ signature */
     @overload
     def add(self, p: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # void        Add(const ImRect& r)                { if (Min.x > r.Min.x) Min.x = r.Min.x; if (Min.y > r.Min.y) Min.y = r.Min.y; if (Max.x < r.Max.x) Max.x = r.Max.x; if (Max.y < r.Max.y) Max.y = r.Max.y; }    /* original C++ signature */
+    # void        Add(const ImRect& r);    /* original C++ signature */
     @overload
     def add(self, r: ImRect) -> None:
         """(private API)"""
         pass
-    # void        AddX(float x)                       { if (Min.x > x)       Min.x = x;       if (Max.x < x)       Max.x = x; }    /* original C++ signature */
+    # void        AddX(float x);    /* original C++ signature */
     def add_x(self, x: float) -> None:
         """(private API)"""
         pass
-    # void        AddY(float y)                       { if (Min.y > y)       Min.y = y;       if (Max.y < y)       Max.y = y; }    /* original C++ signature */
+    # void        AddY(float y);    /* original C++ signature */
     def add_y(self, y: float) -> None:
         """(private API)"""
         pass
-    # void        Expand(const float amount)          { Min.x -= amount;   Min.y -= amount;   Max.x += amount;   Max.y += amount; }    /* original C++ signature */
+    # void        Expand(const float amount);    /* original C++ signature */
     @overload
     def expand(self, amount: float) -> None:
         """(private API)"""
         pass
-    # void        Expand(const ImVec2& amount)        { Min.x -= amount.x; Min.y -= amount.y; Max.x += amount.x; Max.y += amount.y; }    /* original C++ signature */
+    # void        Expand(const ImVec2& amount);    /* original C++ signature */
     @overload
     def expand(self, amount: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # void        Translate(const ImVec2& d)          { Min.x += d.x; Min.y += d.y; Max.x += d.x; Max.y += d.y; }    /* original C++ signature */
+    # void        Translate(const ImVec2& d);    /* original C++ signature */
     def translate(self, d: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # void        TranslateX(float dx)                { Min.x += dx; Max.x += dx; }    /* original C++ signature */
+    # void        TranslateX(float dx);    /* original C++ signature */
     def translate_x(self, dx: float) -> None:
         """(private API)"""
         pass
-    # void        TranslateY(float dy)                { Min.y += dy; Max.y += dy; }    /* original C++ signature */
+    # void        TranslateY(float dy);    /* original C++ signature */
     def translate_y(self, dy: float) -> None:
         """(private API)"""
         pass
-    # void        ClipWith(const ImRect& r)           { Min = ImMax(Min, r.Min); Max = ImMin(Max, r.Max); }                       /* original C++ signature */
+    # void        ClipWith(const ImRect& r);    /* original C++ signature */
     def clip_with(self, r: ImRect) -> None:
         """(private API)
 
         Simple version, may lead to an inverted rectangle, which is fine for Contains/Overlaps test but not for display.
         """
         pass
-    # void        ClipWithFull(const ImRect& r)       { Min = ImClamp(Min, r.Min, r.Max); Max = ImClamp(Max, r.Min, r.Max); }     /* original C++ signature */
+    # void        ClipWithFull(const ImRect& r);    /* original C++ signature */
     def clip_with_full(self, r: ImRect) -> None:
         """(private API)
 
         Full version, ensure both points are fully clipped.
         """
         pass
-    # bool        IsInverted() const                  { return Min.x > Max.x || Min.y > Max.y; }    /* original C++ signature */
+    # bool        IsInverted() const;    /* original C++ signature */
     def is_inverted(self) -> bool:
         """(private API)"""
         pass
-    # ImVec4      ToVec4() const                      { return ImVec4(Min.x, Min.y, Max.x, Max.y); }    /* original C++ signature */
+    # ImVec4      ToVec4() const;    /* original C++ signature */
     def to_vec4(self) -> ImVec4:
         """(private API)"""
         pass
-    # const ImVec4& AsVec4() const                    { return *(const ImVec4*)&Min.x; }    /* original C++ signature */
+    # const ImVec4& AsVec4() const;    /* original C++ signature */
     def as_vec4(self) -> ImVec4:
         """(private API)"""
         pass
 
 # Helper: ImBitArray
-# inline size_t   ImBitArrayGetStorageSizeInBytes(int bitcount)   { return (size_t)((bitcount + 31) >> 5) << 2; }    /* original C++ signature */
+# inline size_t   ImBitArrayGetStorageSizeInBytes(int bitcount);    /* original C++ signature */
 def im_bit_array_get_storage_size_in_bytes(bitcount: int) -> int:
     """(private API)"""
     pass
 
-# inline void     ImBitArrayClearAllBits(ImU32* arr, int bitcount){ memset(arr, 0, ImBitArrayGetStorageSizeInBytes(bitcount)); }    /* original C++ signature */
+# inline void     ImBitArrayClearAllBits(ImU32* arr, int bitcount);    /* original C++ signature */
 def im_bit_array_clear_all_bits(arr: ImU32, bitcount: int) -> None:
     """(private API)"""
     pass
 
-# inline bool     ImBitArrayTestBit(const ImU32* arr, int n)      { ImU32 mask = (ImU32)1 << (n & 31); return (arr[n >> 5] & mask) != 0; }    /* original C++ signature */
+# inline bool     ImBitArrayTestBit(const ImU32* arr, int n);    /* original C++ signature */
 def im_bit_array_test_bit(arr: ImU32, n: int) -> bool:
     """(private API)"""
     pass
 
-# inline void     ImBitArrayClearBit(ImU32* arr, int n)           { ImU32 mask = (ImU32)1 << (n & 31); arr[n >> 5] &= ~mask; }    /* original C++ signature */
+# inline void     ImBitArrayClearBit(ImU32* arr, int n);    /* original C++ signature */
 def im_bit_array_clear_bit(arr: ImU32, n: int) -> None:
     """(private API)"""
     pass
 
-# inline void     ImBitArraySetBit(ImU32* arr, int n)             { ImU32 mask = (ImU32)1 << (n & 31); arr[n >> 5] |= mask; }    /* original C++ signature */
+# inline void     ImBitArraySetBit(ImU32* arr, int n);    /* original C++ signature */
 def im_bit_array_set_bit(arr: ImU32, n: int) -> None:
     """(private API)"""
     pass
 
-# inline void     ImBitArraySetBitRange(ImU32* arr, int n, int n2) // Works on range [n..n2)    /* original C++ signature */
-# {
-#     n2--;
-#     while (n <= n2)
-#     {
-#         int a_mod = (n & 31);
-#         int b_mod = (n2 > (n | 31) ? 31 : (n2 & 31)) + 1;
-#         ImU32 mask = (ImU32)(((ImU64)1 << b_mod) - 1) & ~(ImU32)(((ImU64)1 << a_mod) - 1);
-#         arr[n >> 5] |= mask;
-#         n = (n + 32) & ~31;
-#     }
-# }
+# inline void     ImBitArraySetBitRange(ImU32* arr, int n, int n2) // Works on range [n..n2);    /* original C++ signature */
 def im_bit_array_set_bit_range(arr: ImU32, n: int, n2: int) -> None:
     """(private API)
 
@@ -959,23 +948,23 @@ class ImBitVector:
 
     # ImVector<ImU32> Storage;    /* original C++ signature */
     storage: ImVector_ImU32
-    # void            Create(int sz)              { Storage.resize((sz + 31) >> 5); memset(Storage.Data, 0, (size_t)Storage.Size * sizeof(Storage.Data[0])); }    /* original C++ signature */
+    # void            Create(int sz);    /* original C++ signature */
     def create(self, sz: int) -> None:
         """(private API)"""
         pass
-    # void            Clear()                     { Storage.clear(); }    /* original C++ signature */
+    # void            Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # bool            TestBit(int n) const        { IM_ASSERT(n < (Storage.Size << 5)); return IM_BITARRAY_TESTBIT(Storage.Data, n); }    /* original C++ signature */
+    # bool            TestBit(int n) const;    /* original C++ signature */
     def test_bit(self, n: int) -> bool:
         """(private API)"""
         pass
-    # void            SetBit(int n)               { IM_ASSERT(n < (Storage.Size << 5)); ImBitArraySetBit(Storage.Data, n); }    /* original C++ signature */
+    # void            SetBit(int n);    /* original C++ signature */
     def set_bit(self, n: int) -> None:
         """(private API)"""
         pass
-    # void            ClearBit(int n)             { IM_ASSERT(n < (Storage.Size << 5)); ImBitArrayClearBit(Storage.Data, n); }    /* original C++ signature */
+    # void            ClearBit(int n);    /* original C++ signature */
     def clear_bit(self, n: int) -> None:
         """(private API)"""
         pass
@@ -998,19 +987,19 @@ class TextIndex:
     # int             EndOffset = 0;    /* original C++ signature */
     end_offset: int = 0  # Because we don't own text buffer we need to maintain EndOffset (may bake in LineOffsets?)
 
-    # void            clear()                                 { Offsets.clear(); EndOffset = 0; }    /* original C++ signature */
+    # void            clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # int             size()                                  { return Offsets.Size; }    /* original C++ signature */
+    # int             size();    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # const char*     get_line_begin(const char* base, int n) { return base + (Offsets.Size != 0 ? Offsets[n] : 0); }    /* original C++ signature */
+    # const char*     get_line_begin(const char* base, int n);    /* original C++ signature */
     def get_line_begin(self, base: str, n: int) -> str:
         """(private API)"""
         pass
-    # const char*     get_line_end(const char* base, int n)   { return base + (n + 1 < Offsets.Size ? (Offsets[n + 1] - 1) : EndOffset); }    /* original C++ signature */
+    # const char*     get_line_end(const char* base, int n);    /* original C++ signature */
     def get_line_end(self, base: str, n: int) -> str:
         """(private API)"""
         pass
@@ -1033,27 +1022,27 @@ class PackedDate:
     This is specifically designed to be able to prune old .ini data.
     """
 
-    # ImGuiPackedDate()                           { Year = Month = Day = 0; }    /* original C++ signature */
+    # ImGuiPackedDate();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImGuiPackedDate(int yyyymmdd)               { Year = (ImU16)((yyyymmdd / 10000) - 2000); Month = (ImU16)((yyyymmdd / 100) % 100); Day = (ImU16)(yyyymmdd % 100); }     /* original C++ signature */
+    # ImGuiPackedDate(int yyyymmdd);    /* original C++ signature */
     @overload
     def __init__(self, yyyymmdd: int) -> None:
         """Pack"""
         pass
-    # bool                IsValid()               { return (Year && Month && Day); }    /* original C++ signature */
+    # bool                IsValid();    /* original C++ signature */
     def is_valid(self) -> bool:
         """(private API)"""
         pass
-    # int                 Unpack() const          { return (Year && Month && Day) ? ((Year + 2000) * 10000) + (Month * 100) + Day : 0; }          /* original C++ signature */
+    # int                 Unpack() const;    /* original C++ signature */
     def unpack(self) -> int:
         """(private API)
 
         Unpack
         """
         pass
-    # void                SubtractMonths(int m)   { while (m > 0) { Year -= Month == 1; Month = (Month == 1) ? 12 : Month - 1; m--; } }           /* original C++ signature */
+    # void                SubtractMonths(int m);    /* original C++ signature */
     def subtract_months(self, m: int) -> None:
         """(private API)
 
@@ -1139,7 +1128,7 @@ class ImDrawDataBuilder:
     # ImVector<ImDrawList*>   LayerData1;    /* original C++ signature */
     layer_data1: ImVector_ImDrawList_ptr
 
-    # ImDrawDataBuilder()                     { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImDrawDataBuilder();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1160,7 +1149,7 @@ class ImFontStackData:
 # -----------------------------------------------------------------------------
 
 class StyleVarInfo:
-    # void* GetVarPtr(void* parent) const { return (void*)((uchar*)parent + Offset); }    /* original C++ signature */
+    # void* GetVarPtr(void* parent) const;    /* original C++ signature */
     def get_var_ptr(self, parent: Any) -> Any:
         """(private API)"""
         pass
@@ -1192,15 +1181,15 @@ class StyleMod:
 
     # ImGuiStyleVar   VarIdx;    /* original C++ signature */
     var_idx: StyleVar
-    # ImGuiStyleMod(ImGuiStyleVar idx, int v)     { VarIdx = idx; BackupInt[0] = v; }    /* original C++ signature */
+    # ImGuiStyleMod(ImGuiStyleVar idx, int v);    /* original C++ signature */
     @overload
     def __init__(self, idx: StyleVar, v: int) -> None:
         pass
-    # ImGuiStyleMod(ImGuiStyleVar idx, float v)   { VarIdx = idx; BackupFloat[0] = v; }    /* original C++ signature */
+    # ImGuiStyleMod(ImGuiStyleVar idx, float v);    /* original C++ signature */
     @overload
     def __init__(self, idx: StyleVar, v: float) -> None:
         pass
-    # ImGuiStyleMod(ImGuiStyleVar idx, ImVec2 v)  { VarIdx = idx; BackupFloat[0] = v.x; BackupFloat[1] = v.y; }    /* original C++ signature */
+    # ImGuiStyleMod(ImGuiStyleVar idx, ImVec2 v);    /* original C++ signature */
     @overload
     def __init__(self, idx: StyleVar, v: ImVec2Like) -> None:
         pass
@@ -1596,7 +1585,7 @@ class ComboPreviewData:
     # float           BackupContentRectMaxX;    /* original C++ signature */
     backup_content_rect_max_x: float
 
-    # ImGuiComboPreviewData() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiComboPreviewData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1684,7 +1673,7 @@ class MenuColumns:
         np.ndarray
     )  # ndarray[type=ImU16, size=4]  # Width of:   Icon, Label, Shortcut, Mark  (accumulators for current frame)
 
-    # ImGuiMenuColumns() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiMenuColumns();    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # void        Update(float spacing, bool window_reappearing);    /* original C++ signature */
@@ -1712,10 +1701,10 @@ class InputTextDeactivatedState:
     # ImVector<char>     TextA;    /* original C++ signature */
     text_a: ImVector_char  # text buffer
 
-    # ImGuiInputTextDeactivatedState()    { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiInputTextDeactivatedState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void    ClearFreeMemory()           { ID = 0; ElapseFrame = 0; TextA.clear(); }    /* original C++ signature */
+    # void    ClearFreeMemory();    /* original C++ signature */
     def clear_free_memory(self) -> None:
         """(private API)"""
         pass
@@ -1786,11 +1775,11 @@ class InputTextState:
     # ImGuiInputTextState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void        ClearText()                 { TextLen = 0; TextA[0] = 0; CursorClamp(); }    /* original C++ signature */
+    # void        ClearText();    /* original C++ signature */
     def clear_text(self) -> None:
         """(private API)"""
         pass
-    # void        ClearFreeMemory()           { TextA.clear(); TextToRevertTo.clear(); }    /* original C++ signature */
+    # void        ClearFreeMemory();    /* original C++ signature */
     def clear_free_memory(self) -> None:
         """(private API)"""
         pass
@@ -1809,7 +1798,7 @@ class InputTextState:
     def get_preferred_offset_x(self) -> float:
         """(private API)"""
         pass
-    # const char* GetText()                   { return TextA.Data ? TextA.Data : ""; }    /* original C++ signature */
+    # const char* GetText();    /* original C++ signature */
     def get_text(self) -> str:
         """(private API)"""
         pass
@@ -1978,10 +1967,10 @@ class NextWindowData:
     # ImGuiWindowRefreshFlags     RefreshFlagsVal;    /* original C++ signature */
     refresh_flags_val: WindowRefreshFlags
 
-    # ImGuiNextWindowData()       { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiNextWindowData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # inline void ClearFlags()    { HasFlags = ImGuiNextWindowDataFlags_None; }    /* original C++ signature */
+    # inline void ClearFlags();    /* original C++ signature */
     def clear_flags(self) -> None:
         """(private API)"""
         pass
@@ -2033,10 +2022,10 @@ class NextItemData:
     # ImU32                       ColorMarker;    /* original C++ signature */
     color_marker: ImU32  # Set by SetNextItemColorMarker(). Not exposed yet, supported by DragScalar,SliderScalar and for ImGuiSliderFlags_ColorMarkers.
 
-    # ImGuiNextItemData()         { memset((void*)this, 0, sizeof(*this)); SelectionUserData = -1; }    /* original C++ signature */
+    # ImGuiNextItemData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # inline void ClearFlags()    { HasFlags = ImGuiNextItemDataFlags_None; ItemFlagsSet = ImGuiItemFlags_None; }     /* original C++ signature */
+    # inline void ClearFlags();    /* original C++ signature */
     def clear_flags(self) -> None:
         """(private API)
 
@@ -2065,7 +2054,7 @@ class LastItemData:
     # ImGuiKeyChord           Shortcut;    /* original C++ signature */
     shortcut: KeyChord  # Shortcut at the time of submitting item. ONLY VALID IF (StatusFlags & ImGuiItemStatusFlags_HasShortcut) is set..
 
-    # ImGuiLastItemData()     { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiLastItemData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2136,7 +2125,7 @@ class ErrorRecoveryState:
     # short   SizeOfDisabledStack;    /* original C++ signature */
     size_of_disabled_stack: int
 
-    # ImGuiErrorRecoveryState() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiErrorRecoveryState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2192,11 +2181,11 @@ class PtrOrIndex:
     # int         Index;    /* original C++ signature */
     index: int  # Usually index in a main pool.
 
-    # ImGuiPtrOrIndex(void* ptr)  { Ptr = ptr; Index = -1; }    /* original C++ signature */
+    # ImGuiPtrOrIndex(void* ptr);    /* original C++ signature */
     @overload
     def __init__(self, ptr: Any) -> None:
         pass
-    # ImGuiPtrOrIndex(int index)  { Ptr = NULL; Index = index; }    /* original C++ signature */
+    # ImGuiPtrOrIndex(int index);    /* original C++ signature */
     @overload
     def __init__(self, index: int) -> None:
         pass
@@ -2254,7 +2243,7 @@ class PopupData:
     # ImVec2              OpenMousePos;    /* original C++ signature */
     open_mouse_pos: ImVec2  # Set on OpenPopup(), copy of mouse position at the time of opening popup
 
-    # ImGuiPopupData()    { memset((void*)this, 0, sizeof(*this)); ParentNavLayer = OpenFrameCount = -1; }    /* original C++ signature */
+    # ImGuiPopupData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2400,7 +2389,7 @@ class InputEvent:
     # bool                            AddedByTestEngine;    /* original C++ signature */
     added_by_test_engine: bool
 
-    # ImGuiInputEvent() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiInputEvent();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2423,7 +2412,7 @@ class KeyRoutingData:
     # ImGuiID                         RoutingNext;    /* original C++ signature */
     routing_next: ID
 
-    # ImGuiKeyRoutingData()           { NextEntryIndex = -1; Mods = 0; RoutingCurrScore = RoutingNextScore = 0; RoutingCurr = RoutingNext = ImGuiKeyOwner_NoOwner; }    /* original C++ signature */
+    # ImGuiKeyRoutingData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2437,10 +2426,10 @@ class KeyRoutingTable:
     # ImVector<ImGuiKeyRoutingData>   EntriesNext;    /* original C++ signature */
     entries_next: ImVector_KeyRoutingData  # Double-buffer to avoid reallocation (could use a shared buffer)
 
-    # ImGuiKeyRoutingTable()          { Clear(); }    /* original C++ signature */
+    # ImGuiKeyRoutingTable();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Clear()                    { for (int n = 0; n < IM_COUNTOF(Index); n++) Index[n] = -1; Entries.clear(); EntriesNext.clear(); }    /* original C++ signature */
+    # void Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
@@ -2461,7 +2450,7 @@ class KeyOwnerData:
     # bool        LockUntilRelease;    /* original C++ signature */
     lock_until_release: bool  # Reading this key requires explicit owner id (until key is released). Set by ImGuiInputFlags_LockUntilRelease. When this is True LockThisFrame is always True as well.
 
-    # ImGuiKeyOwnerData()             { OwnerCurr = OwnerNext = ImGuiKeyOwner_NoOwner; LockThisFrame = LockUntilRelease = false; }    /* original C++ signature */
+    # ImGuiKeyOwnerData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2574,12 +2563,12 @@ class ListClipperRange:
     # ImS8    PosToIndexOffsetMax;    /* original C++ signature */
     pos_to_index_offset_max: ImS8  # Add to Min after converting to indices
 
-    # static ImGuiListClipperRange    FromIndices(int min, int max)                               { ImGuiListClipperRange r = { min, max, false, 0, 0 }; return r; }    /* original C++ signature */
+    # static ImGuiListClipperRange    FromIndices(int min, int max);    /* original C++ signature */
     @staticmethod
     def from_indices(min: int, max: int) -> ListClipperRange:
         """(private API)"""
         pass
-    # static ImGuiListClipperRange    FromPositions(float y1, float y2, int off_min, int off_max) { ImGuiListClipperRange r = { (int)y1, (int)y2, true, (ImS8)off_min, (ImS8)off_max }; return r; }    /* original C++ signature */
+    # static ImGuiListClipperRange    FromPositions(float y1, float y2, int off_min, int off_max);    /* original C++ signature */
     @staticmethod
     def from_positions(y1: float, y2: float, off_min: int, off_max: int) -> ListClipperRange:
         """(private API)"""
@@ -2610,10 +2599,10 @@ class ListClipperData:
     # ImVector<ImGuiListClipperRange> Ranges;    /* original C++ signature */
     ranges: ImVector_ListClipperRange
 
-    # ImGuiListClipperData()          { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiListClipperData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void                            Reset(ImGuiListClipper* clipper) { ListClipper = clipper; StepNo = ItemsFrozen = 0; Ranges.resize(0); }    /* original C++ signature */
+    # void                            Reset(ImGuiListClipper* clipper);    /* original C++ signature */
     def reset(self, clipper: ListClipper) -> None:
         """(private API)"""
         pass
@@ -2778,10 +2767,10 @@ class NavItemData:
     # ImGuiSelectionUserData SelectionUserData;    /* original C++ signature */
     selection_user_data: SelectionUserData  # I+Mov    // Best candidate SetNextItemSelectionUserData() value. Valid if (ItemFlags & ImGuiItemFlags_HasSelectionUserData)
 
-    # ImGuiNavItemData()  { Clear(); }    /* original C++ signature */
+    # ImGuiNavItemData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Clear()        { Window = NULL; ID = FocusScopeId = 0; ItemFlags = 0; SelectionUserData = -1; DistBox = DistCenter = DistAxial = FLT_MAX; }    /* original C++ signature */
+    # void Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
@@ -2859,10 +2848,10 @@ class TypingSelectState:
         False  # After a certain single char repeat count we lock into SingleCharMode. Two benefits: 1) buffer never fill, 2) we can provide an immediate SingleChar mode without timer elapsing.
     )
 
-    # ImGuiTypingSelectState() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTypingSelectState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void            Clear()  { SearchBuffer[0] = 0; SingleCharModeLock = false; }     /* original C++ signature */
+    # void            Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
@@ -2904,7 +2893,7 @@ class OldColumnData:
     # ImRect              ClipRect;    /* original C++ signature */
     clip_rect: ImRect
 
-    # ImGuiOldColumnData() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiOldColumnData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2944,7 +2933,7 @@ class OldColumns:
     # ImDrawListSplitter  Splitter;    /* original C++ signature */
     splitter: ImDrawListSplitter
 
-    # ImGuiOldColumns()   { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiOldColumns();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -2985,7 +2974,7 @@ class BoxSelectState:
     # ImRect                  BoxSelectRectCurr;    /* original C++ signature */
     box_select_rect_curr: ImRect
 
-    # ImGuiBoxSelectState()   { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiBoxSelectState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3031,17 +3020,17 @@ class MultiSelectTempData:
     # bool                    IsSoleOrUnknownSelectionSize;    /* original C++ signature */
     is_sole_or_unknown_selection_size: bool
 
-    # ImGuiMultiSelectTempData()  { Clear(); }    /* original C++ signature */
+    # ImGuiMultiSelectTempData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Clear()            { size_t io_sz = sizeof(IO); ClearIO(); memset((void*)(&IO + 1), 0, sizeof(*this) - io_sz); }     /* original C++ signature */
+    # void Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Zero-clear except IO as we preserve IO.Requests[] buffer allocation.
         """
         pass
-    # void ClearIO()          { IO.Requests.resize(0); IO.RangeSrcItem = IO.NavIdItem = ImGuiSelectionUserData_Invalid; IO.NavIdSelected = IO.RangeSrcReset = false; }    /* original C++ signature */
+    # void ClearIO();    /* original C++ signature */
     def clear_io(self) -> None:
         """(private API)"""
         pass
@@ -3066,7 +3055,7 @@ class MultiSelectState:
     # ImGuiSelectionUserData  NavIdItem;    /* original C++ signature */
     nav_id_item: SelectionUserData  # SetNextItemSelectionUserData() value for NavId (if part of submitted items)
 
-    # ImGuiMultiSelectState() { Window = NULL; ID = 0; LastFrameActive = LastSelectionSize = 0; RangeSelected = NavIdSelected = -1; RangeSrcItem = NavIdItem = ImGuiSelectionUserData_Invalid; }    /* original C++ signature */
+    # ImGuiMultiSelectState();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3243,57 +3232,57 @@ class DockNode:
     # ImGuiDockNode(ImGuiID id);    /* original C++ signature */
     def __init__(self, id_: ID) -> None:
         pass
-    # bool                    IsRootNode() const      { return ParentNode == NULL; }    /* original C++ signature */
+    # bool                    IsRootNode() const;    /* original C++ signature */
     def is_root_node(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsDockSpace() const     { return (MergedFlags & ImGuiDockNodeFlags_DockSpace) != 0; }    /* original C++ signature */
+    # bool                    IsDockSpace() const;    /* original C++ signature */
     def is_dock_space(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsFloatingNode() const  { return ParentNode == NULL && (MergedFlags & ImGuiDockNodeFlags_DockSpace) == 0; }    /* original C++ signature */
+    # bool                    IsFloatingNode() const;    /* original C++ signature */
     def is_floating_node(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsCentralNode() const   { return (MergedFlags & ImGuiDockNodeFlags_CentralNode) != 0; }    /* original C++ signature */
+    # bool                    IsCentralNode() const;    /* original C++ signature */
     def is_central_node(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsHiddenTabBar() const  { return (MergedFlags & ImGuiDockNodeFlags_HiddenTabBar) != 0; }     /* original C++ signature */
+    # bool                    IsHiddenTabBar() const;    /* original C++ signature */
     def is_hidden_tab_bar(self) -> bool:
         """(private API)
 
         Hidden tab bar can be shown back by clicking the small triangle
         """
         pass
-    # bool                    IsNoTabBar() const      { return (MergedFlags & ImGuiDockNodeFlags_NoTabBar) != 0; }         /* original C++ signature */
+    # bool                    IsNoTabBar() const;    /* original C++ signature */
     def is_no_tab_bar(self) -> bool:
         """(private API)
 
         Never show a tab bar
         """
         pass
-    # bool                    IsSplitNode() const     { return ChildNodes[0] != NULL; }    /* original C++ signature */
+    # bool                    IsSplitNode() const;    /* original C++ signature */
     def is_split_node(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsLeafNode() const      { return ChildNodes[0] == NULL; }    /* original C++ signature */
+    # bool                    IsLeafNode() const;    /* original C++ signature */
     def is_leaf_node(self) -> bool:
         """(private API)"""
         pass
-    # bool                    IsEmpty() const         { return ChildNodes[0] == NULL && Windows.Size == 0; }    /* original C++ signature */
+    # bool                    IsEmpty() const;    /* original C++ signature */
     def is_empty(self) -> bool:
         """(private API)"""
         pass
-    # ImRect                  Rect() const            { return ImRect(Pos.x, Pos.y, Pos.x + Size.x, Pos.y + Size.y); }    /* original C++ signature */
+    # ImRect                  Rect() const;    /* original C++ signature */
     def rect(self) -> ImRect:
         """(private API)"""
         pass
-    # void                    SetLocalFlags(ImGuiDockNodeFlags flags) { LocalFlags = flags; UpdateMergedFlags(); }    /* original C++ signature */
+    # void                    SetLocalFlags(ImGuiDockNodeFlags flags);    /* original C++ signature */
     def set_local_flags(self, flags: DockNodeFlags) -> None:
         """(private API)"""
         pass
-    # void                    UpdateMergedFlags()     { MergedFlags = SharedFlags | LocalFlags | LocalFlagsInWindows; }    /* original C++ signature */
+    # void                    UpdateMergedFlags();    /* original C++ signature */
     def update_merged_flags(self) -> None:
         """(private API)"""
         pass
@@ -3340,7 +3329,7 @@ class DockContext:
     nodes: Storage  # Map ID -> ImGuiDockNode*: Active nodes
     # bool                            WantFullRebuild;    /* original C++ signature */
     want_full_rebuild: bool
-    # ImGuiDockContext()              { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiDockContext();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3407,23 +3396,23 @@ class ViewportP:
     # ImVec2              BuildWorkInsetMax;    /* original C++ signature */
     build_work_inset_max: ImVec2  # "
 
-    # ImGuiViewportP()                    { Window = NULL; Idx = -1; LastFrameActive = LastFocusedStampCount = -1; LastNameHash = 0; Alpha = LastAlpha = 1.0f; LastFocusedHadNavWindow = false; PlatformMonitor = -1; BgFgDrawLists[0] = BgFgDrawLists[1] = NULL; BgFgDrawListsLastFrameActive[0] = BgFgDrawListsLastFrameActive[1] = -1; BgFgDrawListsLastTimeActive[0] = BgFgDrawListsLastTimeActive[1] = -1.0; LastPlatformPos = LastPlatformSize = LastRendererSize = ImVec2(FLT_MAX, FLT_MAX); }    /* original C++ signature */
+    # ImGuiViewportP();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void    ClearRequestFlags()         { PlatformRequestClose = PlatformRequestMove = PlatformRequestResize = false; }    /* original C++ signature */
+    # void    ClearRequestFlags();    /* original C++ signature */
     def clear_request_flags(self) -> None:
         """(private API)"""
         pass
     # Calculate work rect pos/size given a set of offset (we have 1 pair of offset for rect locked from last frame data, and 1 pair for currently building rect)
-    # ImVec2  CalcWorkRectPos(const ImVec2& inset_min) const                           { return ImVec2(Pos.x + inset_min.x, Pos.y + inset_min.y); }    /* original C++ signature */
+    # ImVec2  CalcWorkRectPos(const ImVec2& inset_min) const;    /* original C++ signature */
     def calc_work_rect_pos(self, inset_min: ImVec2Like) -> ImVec2:
         """(private API)"""
         pass
-    # ImVec2  CalcWorkRectSize(const ImVec2& inset_min, const ImVec2& inset_max) const { return ImVec2(ImMax(0.0f, Size.x - inset_min.x - inset_max.x), ImMax(0.0f, Size.y - inset_min.y - inset_max.y)); }    /* original C++ signature */
+    # ImVec2  CalcWorkRectSize(const ImVec2& inset_min, const ImVec2& inset_max) const;    /* original C++ signature */
     def calc_work_rect_size(self, inset_min: ImVec2Like, inset_max: ImVec2Like) -> ImVec2:
         """(private API)"""
         pass
-    # void    UpdateWorkRect()            { WorkPos = CalcWorkRectPos(WorkInsetMin); WorkSize = CalcWorkRectSize(WorkInsetMin, WorkInsetMax); }     /* original C++ signature */
+    # void    UpdateWorkRect();    /* original C++ signature */
     def update_work_rect(self) -> None:
         """(private API)
 
@@ -3431,15 +3420,15 @@ class ViewportP:
         """
         pass
     # Helpers to retrieve ImRect (we don't need to store BuildWorkRect as every access tend to change it, hence the code asymmetry)
-    # ImRect  GetMainRect() const         { return ImRect(Pos.x, Pos.y, Pos.x + Size.x, Pos.y + Size.y); }    /* original C++ signature */
+    # ImRect  GetMainRect() const;    /* original C++ signature */
     def get_main_rect(self) -> ImRect:
         """(private API)"""
         pass
-    # ImRect  GetWorkRect() const         { return ImRect(WorkPos.x, WorkPos.y, WorkPos.x + WorkSize.x, WorkPos.y + WorkSize.y); }    /* original C++ signature */
+    # ImRect  GetWorkRect() const;    /* original C++ signature */
     def get_work_rect(self) -> ImRect:
         """(private API)"""
         pass
-    # ImRect  GetBuildWorkRect() const    { ImVec2 pos = CalcWorkRectPos(BuildWorkInsetMin); ImVec2 size = CalcWorkRectSize(BuildWorkInsetMin, BuildWorkInsetMax); return ImRect(pos.x, pos.y, pos.x + size.x, pos.y + size.y); }    /* original C++ signature */
+    # ImRect  GetBuildWorkRect() const;    /* original C++ signature */
     def get_build_work_rect(self) -> ImRect:
         """(private API)"""
         pass
@@ -3473,7 +3462,7 @@ class WindowSettings:
     # ImGuiPackedDate LastUsedDate;    /* original C++ signature */
     last_used_date: PackedDate
 
-    # ImGuiWindowSettings()       { memset((void*)this, 0, sizeof(*this)); DockOrder = -1; }    /* original C++ signature */
+    # ImGuiWindowSettings();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3525,7 +3514,7 @@ class SettingsHandler:
     # void*       UserData;    /* original C++ signature */
     user_data: Any
 
-    # ImGuiSettingsHandler() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiSettingsHandler();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3661,7 +3650,7 @@ class DebugAllocInfo:
     # ImS16       LastEntriesIdx;    /* original C++ signature */
     last_entries_idx: ImS16  # Current index in buffer
 
-    # ImGuiDebugAllocInfo() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiDebugAllocInfo();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3736,7 +3725,7 @@ class StackLevelInfo:
     # int                     DescOffset;    /* original C++ signature */
     desc_offset: int  # -1 or offset into parent's ResultsPathsBuf
 
-    # ImGuiStackLevelInfo()   { memset((void*)this, 0, sizeof(*this)); DataType = -1; DescOffset = -1; }    /* original C++ signature */
+    # ImGuiStackLevelInfo();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3756,7 +3745,7 @@ class DebugItemPathQuery:
     # ImGuiTextBuffer         ResultPathBuf;    /* original C++ signature */
     result_path_buf: TextBuffer
 
-    # ImGuiDebugItemPathQuery() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiDebugItemPathQuery();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3772,7 +3761,7 @@ class IDStackTool:
     # float                   CopyToClipboardLastTime;    /* original C++ signature */
     copy_to_clipboard_last_time: float
 
-    # ImGuiIDStackTool()      { memset((void*)this, 0, sizeof(*this)); LastActiveFrame = -1; OptHexEncodeNonAsciiChars = true; CopyToClipboardLastTime = -FLT_MAX; }    /* original C++ signature */
+    # ImGuiIDStackTool();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -3817,7 +3806,7 @@ class ContextHook:
     # void*                       UserData;    /* original C++ signature */
     user_data: Any
 
-    # ImGuiContextHook()          { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiContextHook();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5079,15 +5068,15 @@ class Window:
         """(private API)"""
         pass
     # We don't use g.FontSize because the window may be != g.CurrentWindow.
-    # ImRect      Rect() const            { return ImRect(Pos.x, Pos.y, Pos.x + Size.x, Pos.y + Size.y); }    /* original C++ signature */
+    # ImRect      Rect() const;    /* original C++ signature */
     def rect(self) -> ImRect:
         """(private API)"""
         pass
-    # ImRect      TitleBarRect() const    { return ImRect(Pos, ImVec2(Pos.x + SizeFull.x, Pos.y + TitleBarHeight)); }    /* original C++ signature */
+    # ImRect      TitleBarRect() const;    /* original C++ signature */
     def title_bar_rect(self) -> ImRect:
         """(private API)"""
         pass
-    # ImRect      MenuBarRect() const     { float y1 = Pos.y + TitleBarHeight; return ImRect(Pos.x, y1, Pos.x + SizeFull.x, y1 + MenuBarHeight); }    /* original C++ signature */
+    # ImRect      MenuBarRect() const;    /* original C++ signature */
     def menu_bar_rect(self) -> ImRect:
         """(private API)"""
         pass
@@ -5162,7 +5151,7 @@ class TabItem:
     # bool                WantClose;    /* original C++ signature */
     want_close: bool  # Marked as closed by SetTabItemClosed()
 
-    # ImGuiTabItem()      { memset((void*)this, 0, sizeof(*this)); LastFrameVisible = LastFrameSelected = -1; RequestedWidth = -1.0f; NameOffset = -1; BeginOrder = IndexDuringLayout = -1; }    /* original C++ signature */
+    # ImGuiTabItem();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5346,18 +5335,7 @@ class TableColumn:
     # ImU8                    SortDirectionsAvailList;    /* original C++ signature */
     sort_directions_avail_list: ImU8  # Ordered list of available sort directions (2-bits each, total 8-bits)
 
-    # ImGuiTableColumn()    /* original C++ signature */
-    #     {
-    #         memset((void*)this, 0, sizeof(*this));
-    #         StretchWeight = WidthRequest = -1.0f;
-    #         NameOffset = -1;
-    #         DisplayOrder = IndexWithinEnabledSet = -1;
-    #         PrevEnabledColumn = NextEnabledColumn = -1;
-    #         SortOrder = -1;
-    #         SortDirection = ImGuiSortDirection_None;
-    #         IsJustCreated = true;
-    #         DrawChannelCurrent = DrawChannelFrozen = DrawChannelUnfrozen = (ImU8)-1;
-    #     }
+    # ImGuiTableColumn();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5472,7 +5450,7 @@ class TableInstanceData:
     # int                         HoveredRowNext;    /* original C++ signature */
     hovered_row_next: int  # Index of row hovered this frame, set after encountering it.
 
-    # ImGuiTableInstanceData()    { TableInstanceID = 0; LastOuterHeight = LastTopHeadersRowHeight = LastFrozenHeight = 0.0f; HoveredRowLast = HoveredRowNext = -1; }    /* original C++ signature */
+    # ImGuiTableInstanceData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5718,7 +5696,7 @@ class Table:
     # bool                        HostSkipItems;    /* original C++ signature */
     host_skip_items: bool  # Backup of InnerWindow->SkipItem at the end of BeginTable(), because we will overwrite InnerWindow->SkipItem on a per-column basis
 
-    # ImGuiTable()                { memset((void*)this, 0, sizeof(*this)); LastFrameActive = -1; }    /* original C++ signature */
+    # ImGuiTable();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5769,7 +5747,7 @@ class TableTempData:
     # int                         HostBackupItemWidthStackSize;    /* original C++ signature */
     host_backup_item_width_stack_size: int  # Backup of OuterWindow->DC.ItemWidthStack.Size at the end of BeginTable()
 
-    # ImGuiTableTempData()        { memset((void*)this, 0, sizeof(*this)); LastTimeActive = -1.0f; }    /* original C++ signature */
+    # ImGuiTableTempData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5787,17 +5765,7 @@ class TableColumnSettings:
     # ImGuiTableColumnIdx     SortOrder;    /* original C++ signature */
     sort_order: TableColumnIdx
 
-    # ImGuiTableColumnSettings()    /* original C++ signature */
-    #     {
-    #         WidthOrWeight = 0.0f;
-    #         ID = 0;
-    #         Index = -1;
-    #         DisplayOrder = SortOrder = -1;
-    #         SortDirection = ImGuiSortDirection_None;
-    #         IsEnabled = -1;
-    #         IsStretch = 0;
-    #         IsLoaded = false;
-    #     }
+    # ImGuiTableColumnSettings();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5817,10 +5785,10 @@ class TableSettings:
     # ImGuiPackedDate             LastUsedDate;    /* original C++ signature */
     last_used_date: PackedDate
 
-    # ImGuiTableSettings()        { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTableSettings();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # ImGuiTableColumnSettings*   GetColumnSettings()     { return (ImGuiTableColumnSettings*)(this + 1); }    /* original C++ signature */
+    # ImGuiTableColumnSettings*   GetColumnSettings();    /* original C++ signature */
     def get_column_settings(self) -> TableColumnSettings:
         """(private API)"""
         pass
@@ -5873,7 +5841,7 @@ def table_angled_headers_row_ex(
 ) -> None:
     pass
 
-# inline    ImGuiTable*   GetCurrentTable() { ImGuiContext& g = *GImGui; return g.CurrentTable; }    /* original C++ signature */
+# inline    ImGuiTable*   GetCurrentTable();    /* original C++ signature */
 def get_current_table() -> Table:
     """Tables: Internals
     (private API)
@@ -5946,12 +5914,12 @@ def table_begin_context_menu_popup(table: Table) -> bool:
 def table_merge_draw_channels(table: Table) -> None:
     pass
 
-# inline ImGuiTableInstanceData*  TableGetInstanceData(ImGuiTable* table, int instance_no) { if (instance_no == 0) return &table->InstanceDataFirst; return &table->InstanceDataExtra[instance_no - 1]; }    /* original C++ signature */
+# inline ImGuiTableInstanceData*  TableGetInstanceData(ImGuiTable* table, int instance_no);    /* original C++ signature */
 def table_get_instance_data(table: Table, instance_no: int) -> TableInstanceData:
     """(private API)"""
     pass
 
-# inline ImGuiID                  TableGetInstanceID(ImGuiTable* table, int instance_no)   { return TableGetInstanceData(table, instance_no)->TableInstanceID; }    /* original C++ signature */
+# inline ImGuiID                  TableGetInstanceID(ImGuiTable* table, int instance_no);    /* original C++ signature */
 def table_get_instance_id(table: Table, instance_no: int) -> ID:
     """(private API)"""
     pass
@@ -6151,7 +6119,7 @@ def get_io(ctx: Context) -> IO:
 def get_platform_io(ctx: Context) -> PlatformIO:
     pass
 
-# inline    float         GetScale()                  { ImGuiContext& g = *GImGui; return g.Style._MainScale; }     /* original C++ signature */
+# inline    float         GetScale();    /* original C++ signature */
 def get_scale() -> float:
     """(private API)
 
@@ -6159,7 +6127,7 @@ def get_scale() -> float:
     """
     pass
 
-# inline    ImGuiWindow*  GetCurrentWindowRead()      { ImGuiContext& g = *GImGui; return g.CurrentWindow; }    /* original C++ signature */
+# inline    ImGuiWindow*  GetCurrentWindowRead();    /* original C++ signature */
 def get_current_window_read() -> Window:
     """(private API)"""
     pass
@@ -6224,7 +6192,7 @@ def set_window_hit_test_hole(window: Window, pos: ImVec2Like, size: ImVec2Like) 
 def set_window_hidden_and_skip_items_for_current_frame(window: Window) -> None:
     pass
 
-# inline void             SetWindowParentWindowForFocusRoute(ImGuiWindow* window, ImGuiWindow* parent_window) { window->ParentWindowForFocusRoute = parent_window; }     /* original C++ signature */
+# inline void             SetWindowParentWindowForFocusRoute(ImGuiWindow* window, ImGuiWindow* parent_window);    /* original C++ signature */
 def set_window_parent_window_for_focus_route(window: Window, parent_window: Window) -> None:
     """(private API)
 
@@ -6232,22 +6200,22 @@ def set_window_parent_window_for_focus_route(window: Window, parent_window: Wind
     """
     pass
 
-# inline ImRect           WindowRectAbsToRel(ImGuiWindow* window, const ImRect& r) { ImVec2 off = window->DC.CursorStartPos; return ImRect(r.Min.x - off.x, r.Min.y - off.y, r.Max.x - off.x, r.Max.y - off.y); }    /* original C++ signature */
+# inline ImRect           WindowRectAbsToRel(ImGuiWindow* window, const ImRect& r);    /* original C++ signature */
 def window_rect_abs_to_rel(window: Window, r: ImRect) -> ImRect:
     """(private API)"""
     pass
 
-# inline ImRect           WindowRectRelToAbs(ImGuiWindow* window, const ImRect& r) { ImVec2 off = window->DC.CursorStartPos; return ImRect(r.Min.x + off.x, r.Min.y + off.y, r.Max.x + off.x, r.Max.y + off.y); }    /* original C++ signature */
+# inline ImRect           WindowRectRelToAbs(ImGuiWindow* window, const ImRect& r);    /* original C++ signature */
 def window_rect_rel_to_abs(window: Window, r: ImRect) -> ImRect:
     """(private API)"""
     pass
 
-# inline ImVec2           WindowPosAbsToRel(ImGuiWindow* window, const ImVec2& p)  { ImVec2 off = window->DC.CursorStartPos; return ImVec2(p.x - off.x, p.y - off.y); }    /* original C++ signature */
+# inline ImVec2           WindowPosAbsToRel(ImGuiWindow* window, const ImVec2& p);    /* original C++ signature */
 def window_pos_abs_to_rel(window: Window, p: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
-# inline ImVec2           WindowPosRelToAbs(ImGuiWindow* window, const ImVec2& p)  { ImVec2 off = window->DC.CursorStartPos; return ImVec2(p.x + off.x, p.y + off.y); }    /* original C++ signature */
+# inline ImVec2           WindowPosRelToAbs(ImGuiWindow* window, const ImVec2& p);    /* original C++ signature */
 def window_pos_rel_to_abs(window: Window, p: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
@@ -6331,12 +6299,12 @@ def set_pixel_density(pixel_density: float) -> None:
     """was SetFontRasterizerDensity()"""
     pass
 
-# inline float            GetPixelDensity() { return GImGui->CurrentPixelDensity; }    /* original C++ signature */
+# inline float            GetPixelDensity();    /* original C++ signature */
 def get_pixel_density() -> float:
     """(private API)"""
     pass
 
-# inline float            GetRoundedFontSize(float size) { return IM_ROUND(size); }    /* original C++ signature */
+# inline float            GetRoundedFontSize(float size);    /* original C++ signature */
 def get_rounded_font_size(size: float) -> float:
     """(private API)"""
     pass
@@ -6353,7 +6321,7 @@ def push_password_font() -> None:
 def pop_password_font() -> None:
     pass
 
-# inline ImDrawList*      GetForegroundDrawList(ImGuiWindow* window) { return GetForegroundDrawList(window->Viewport); }    /* original C++ signature */
+# inline ImDrawList*      GetForegroundDrawList(ImGuiWindow* window);    /* original C++ signature */
 def get_foreground_draw_list(window: Window) -> ImDrawList:
     """(private API)"""
     pass
@@ -6505,7 +6473,7 @@ def localize_register_entries(entries: LocEntry, count: int) -> None:
     """Localization"""
     pass
 
-# inline const char*      LocalizeGetMsg(ImGuiLocKey key) { ImGuiContext& g = *GImGui; const char* msg = g.LocalizationTable[key]; return msg ? msg : "*Missing Text*"; }    /* original C++ signature */
+# inline const char*      LocalizeGetMsg(ImGuiLocKey key);    /* original C++ signature */
 def localize_get_msg(key: LocKey) -> str:
     """(private API)"""
     pass
@@ -6540,7 +6508,7 @@ def scroll_to_rect(window: Window, rect: ImRect, flags: ScrollFlags = 0) -> None
 def scroll_to_rect_ex(window: Window, rect: ImRect, flags: ScrollFlags = 0) -> ImVec2:
     pass
 
-# inline void             ScrollToBringRectIntoView(ImGuiWindow* window, const ImRect& rect) { ScrollToRect(window, rect, ImGuiScrollFlags_KeepVisibleEdgeY); }    /* original C++ signature */
+# inline void             ScrollToBringRectIntoView(ImGuiWindow* window, const ImRect& rect);    /* original C++ signature */
 def scroll_to_bring_rect_into_view(window: Window, rect: ImRect) -> None:
     """#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS
     (private API)
@@ -6550,17 +6518,17 @@ def scroll_to_bring_rect_into_view(window: Window, rect: ImRect) -> None:
 ##endif
 
 # Basic Accessors
-# inline ImGuiItemStatusFlags GetItemStatusFlags() { ImGuiContext& g = *GImGui; return g.LastItemData.StatusFlags; }    /* original C++ signature */
+# inline ImGuiItemStatusFlags GetItemStatusFlags();    /* original C++ signature */
 def get_item_status_flags() -> ItemStatusFlags:
     """(private API)"""
     pass
 
-# inline ImGuiID          GetActiveID()   { ImGuiContext& g = *GImGui; return g.ActiveId; }    /* original C++ signature */
+# inline ImGuiID          GetActiveID();    /* original C++ signature */
 def get_active_id() -> ID:
     """(private API)"""
     pass
 
-# inline ImGuiID          GetFocusID()    { ImGuiContext& g = *GImGui; return g.NavId; }    /* original C++ signature */
+# inline ImGuiID          GetFocusID();    /* original C++ signature */
 def get_focus_id() -> ID:
     """(private API)"""
     pass
@@ -6615,7 +6583,7 @@ def item_size(size: ImVec2Like, text_baseline_y: float = -1.0) -> None:
     """Basic Helpers for widget code"""
     pass
 
-# inline void             ItemSize(const ImRect& bb, float text_baseline_y = -1.0f) { ItemSize(bb.GetSize(), text_baseline_y); }     /* original C++ signature */
+# inline void             ItemSize(const ImRect& bb, float text_baseline_y = -1.0f);    /* original C++ signature */
 @overload
 def item_size(bb: ImRect, text_baseline_y: float = -1.0) -> None:
     """(private API)
@@ -6898,42 +6866,42 @@ def activate_item_by_id(id_: ID) -> None:
 
 # Inputs
 # FIXME: Eventually we should aim to move e.g. IsActiveIdUsingKey() into IsKeyXXX functions.
-# inline bool             IsNamedKey(ImGuiKey key)                    { return key >= ImGuiKey_NamedKey_BEGIN && key < ImGuiKey_NamedKey_END; }    /* original C++ signature */
+# inline bool             IsNamedKey(ImGuiKey key);    /* original C++ signature */
 def is_named_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsNamedKeyOrMod(ImGuiKey key)               { return (key >= ImGuiKey_NamedKey_BEGIN && key < ImGuiKey_NamedKey_END) || key == ImGuiMod_Ctrl || key == ImGuiMod_Shift || key == ImGuiMod_Alt || key == ImGuiMod_Super; }    /* original C++ signature */
+# inline bool             IsNamedKeyOrMod(ImGuiKey key);    /* original C++ signature */
 def is_named_key_or_mod(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsLegacyKey(ImGuiKey key)                   { return key >= ImGuiKey_LegacyNativeKey_BEGIN && key < ImGuiKey_LegacyNativeKey_END; }    /* original C++ signature */
+# inline bool             IsLegacyKey(ImGuiKey key);    /* original C++ signature */
 def is_legacy_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsKeyboardKey(ImGuiKey key)                 { return key >= ImGuiKey_Keyboard_BEGIN && key < ImGuiKey_Keyboard_END; }    /* original C++ signature */
+# inline bool             IsKeyboardKey(ImGuiKey key);    /* original C++ signature */
 def is_keyboard_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsGamepadKey(ImGuiKey key)                  { return key >= ImGuiKey_Gamepad_BEGIN && key < ImGuiKey_Gamepad_END; }    /* original C++ signature */
+# inline bool             IsGamepadKey(ImGuiKey key);    /* original C++ signature */
 def is_gamepad_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsMouseKey(ImGuiKey key)                    { return key >= ImGuiKey_Mouse_BEGIN && key < ImGuiKey_Mouse_END; }    /* original C++ signature */
+# inline bool             IsMouseKey(ImGuiKey key);    /* original C++ signature */
 def is_mouse_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsAliasKey(ImGuiKey key)                    { return key >= ImGuiKey_Aliases_BEGIN && key < ImGuiKey_Aliases_END; }    /* original C++ signature */
+# inline bool             IsAliasKey(ImGuiKey key);    /* original C++ signature */
 def is_alias_key(key: Key) -> bool:
     """(private API)"""
     pass
 
-# inline bool             IsLRModKey(ImGuiKey key)                    { return key >= ImGuiKey_LeftCtrl && key <= ImGuiKey_RightSuper; }    /* original C++ signature */
+# inline bool             IsLRModKey(ImGuiKey key);    /* original C++ signature */
 def is_lr_mod_key(key: Key) -> bool:
     """(private API)"""
     pass
@@ -6943,14 +6911,7 @@ def fixup_key_chord(key_chord: KeyChord) -> KeyChord:
     """(private API)"""
     pass
 
-# inline ImGuiKey         ConvertSingleModFlagToKey(ImGuiKey key)    /* original C++ signature */
-#     {
-#         if (key == ImGuiMod_Ctrl) return ImGuiKey_ReservedForModCtrl;
-#         if (key == ImGuiMod_Shift) return ImGuiKey_ReservedForModShift;
-#         if (key == ImGuiMod_Alt) return ImGuiKey_ReservedForModAlt;
-#         if (key == ImGuiMod_Super) return ImGuiKey_ReservedForModSuper;
-#         return key;
-#     }
+# inline ImGuiKey         ConvertSingleModFlagToKey(ImGuiKey key);    /* original C++ signature */
 def convert_single_mod_flag_to_key(key: Key) -> Key:
     """(private API)"""
     pass
@@ -6960,13 +6921,13 @@ def convert_single_mod_flag_to_key(key: Key) -> Key:
 def get_key_data(ctx: Context, key: Key) -> KeyData:
     pass
 
-# inline ImGuiKeyData*    GetKeyData(ImGuiKey key)                                    { ImGuiContext& g = *GImGui; return GetKeyData(&g, key); }    /* original C++ signature */
+# inline ImGuiKeyData*    GetKeyData(ImGuiKey key);    /* original C++ signature */
 @overload
 def get_key_data(key: Key) -> KeyData:
     """(private API)"""
     pass
 
-# inline ImGuiKey         MouseButtonToKey(ImGuiMouseButton button)                   { IM_ASSERT(button >= 0 && button < ImGuiMouseButton_COUNT); return (ImGuiKey)(ImGuiKey_MouseLeft + button); }    /* original C++ signature */
+# inline ImGuiKey         MouseButtonToKey(ImGuiMouseButton button);    /* original C++ signature */
 def mouse_button_to_key(button: MouseButton) -> Key:
     """(private API)"""
     pass
@@ -6999,7 +6960,7 @@ def teleport_mouse_pos(pos: ImVec2Like) -> None:
 def set_active_id_using_all_keyboard_keys() -> None:
     pass
 
-# inline bool             IsActiveIdUsingNavDir(ImGuiDir dir)                         { ImGuiContext& g = *GImGui; return (g.ActiveIdUsingNavDirMask & (1 << dir)) != 0; }    /* original C++ signature */
+# inline bool             IsActiveIdUsingNavDir(ImGuiDir dir);    /* original C++ signature */
 def is_active_id_using_nav_dir(dir: Dir) -> bool:
     """(private API)"""
     pass
@@ -7036,7 +6997,7 @@ def test_key_owner(key: Key, owner_id: ID) -> bool:
     """Test that key is either not owned, either owned by 'owner_id'"""
     pass
 
-# inline ImGuiKeyOwnerData* GetKeyOwnerData(ImGuiContext* ctx, ImGuiKey key)          { if (key & ImGuiMod_Mask_) key = ConvertSingleModFlagToKey(key); IM_ASSERT(IsNamedKey(key)); return &ctx->KeysOwnerData[key - ImGuiKey_NamedKey_BEGIN]; }    /* original C++ signature */
+# inline ImGuiKeyOwnerData* GetKeyOwnerData(ImGuiContext* ctx, ImGuiKey key);    /* original C++ signature */
 def get_key_owner_data(ctx: Context, key: Key) -> KeyOwnerData:
     """(private API)"""
     pass
@@ -7202,27 +7163,27 @@ def dock_node_begin_amend_tab_bar(node: DockNode) -> bool:
 def dock_node_end_amend_tab_bar() -> None:
     pass
 
-# inline ImGuiDockNode*   DockNodeGetRootNode(ImGuiDockNode* node)                 { while (node->ParentNode) node = node->ParentNode; return node; }    /* original C++ signature */
+# inline ImGuiDockNode*   DockNodeGetRootNode(ImGuiDockNode* node);    /* original C++ signature */
 def dock_node_get_root_node(node: DockNode) -> DockNode:
     """(private API)"""
     pass
 
-# inline bool             DockNodeIsInHierarchyOf(ImGuiDockNode* node, ImGuiDockNode* parent) { while (node) { if (node == parent) return true; node = node->ParentNode; } return false; }    /* original C++ signature */
+# inline bool             DockNodeIsInHierarchyOf(ImGuiDockNode* node, ImGuiDockNode* parent);    /* original C++ signature */
 def dock_node_is_in_hierarchy_of(node: DockNode, parent: DockNode) -> bool:
     """(private API)"""
     pass
 
-# inline int              DockNodeGetDepth(const ImGuiDockNode* node)              { int depth = 0; while (node->ParentNode) { node = node->ParentNode; depth++; } return depth; }    /* original C++ signature */
+# inline int              DockNodeGetDepth(const ImGuiDockNode* node);    /* original C++ signature */
 def dock_node_get_depth(node: DockNode) -> int:
     """(private API)"""
     pass
 
-# inline ImGuiID          DockNodeGetWindowMenuButtonId(const ImGuiDockNode* node) { return ImHashStr("#COLLAPSE", 0, node->ID); }    /* original C++ signature */
+# inline ImGuiID          DockNodeGetWindowMenuButtonId(const ImGuiDockNode* node);    /* original C++ signature */
 def dock_node_get_window_menu_button_id(node: DockNode) -> ID:
     """(private API)"""
     pass
 
-# inline ImGuiDockNode*   GetWindowDockNode()                                      { ImGuiContext& g = *GImGui; return g.CurrentWindow->DockNode; }    /* original C++ signature */
+# inline ImGuiDockNode*   GetWindowDockNode();    /* original C++ signature */
 def get_window_dock_node() -> DockNode:
     """(private API)"""
     pass
@@ -7264,7 +7225,7 @@ def dock_builder_dock_window(window_name: str, node_id: ID) -> None:
 def dock_builder_get_node(node_id: ID) -> DockNode:
     pass
 
-# inline ImGuiDockNode*   DockBuilderGetCentralNode(ImGuiID node_id)              { ImGuiDockNode* node = DockBuilderGetNode(node_id); if (!node) return NULL; return DockNodeGetRootNode(node)->CentralNode; }    /* original C++ signature */
+# inline ImGuiDockNode*   DockBuilderGetCentralNode(ImGuiID node_id);    /* original C++ signature */
 def dock_builder_get_central_node(node_id: ID) -> DockNode:
     """(private API)"""
     pass
@@ -7327,7 +7288,7 @@ def pop_focus_scope() -> None:
 def is_in_nav_focus_route(focus_scope_id: ID) -> bool:
     pass
 
-# inline ImGuiID          GetCurrentFocusScope() { ImGuiContext& g = *GImGui; return g.CurrentFocusScopeId; }       /* original C++ signature */
+# inline ImGuiID          GetCurrentFocusScope();    /* original C++ signature */
 def get_current_focus_scope() -> ID:
     """(private API)
 
@@ -7401,17 +7362,17 @@ def multi_select_add_set_range(
 ) -> None:
     pass
 
-# inline ImGuiBoxSelectState*     GetBoxSelectState(ImGuiID id)   { ImGuiContext& g = *GImGui; return (id != 0 && g.BoxSelectState.ID == id && g.BoxSelectState.IsActive) ? &g.BoxSelectState : NULL; }    /* original C++ signature */
+# inline ImGuiBoxSelectState*     GetBoxSelectState(ImGuiID id);    /* original C++ signature */
 def get_box_select_state(id_: ID) -> BoxSelectState:
     """(private API)"""
     pass
 
-# inline ImGuiMultiSelectState*   GetMultiSelectState(ImGuiID id) { ImGuiContext& g = *GImGui; return g.MultiSelectStorage.GetByKey(id); }    /* original C++ signature */
+# inline ImGuiMultiSelectState*   GetMultiSelectState(ImGuiID id);    /* original C++ signature */
 def get_multi_select_state(id_: ID) -> MultiSelectState:
     """(private API)"""
     pass
 
-# inline    ImGuiTabBar*  GetCurrentTabBar() { ImGuiContext& g = *GImGui; return g.CurrentTabBar; }    /* original C++ signature */
+# inline    ImGuiTabBar*  GetCurrentTabBar();    /* original C++ signature */
 def get_current_tab_bar() -> TabBar:
     """Tab Bars
     (private API)
@@ -7446,7 +7407,7 @@ def tab_bar_find_most_recently_selected_tab_for_active_window(tab_bar: TabBar) -
 def tab_bar_get_current_tab(tab_bar: TabBar) -> TabItem:
     pass
 
-# inline int              TabBarGetTabOrder(ImGuiTabBar* tab_bar, ImGuiTabItem* tab) { return tab_bar->Tabs.index_from_ptr(tab); }    /* original C++ signature */
+# inline int              TabBarGetTabOrder(ImGuiTabBar* tab_bar, ImGuiTabItem* tab);    /* original C++ signature */
 def tab_bar_get_tab_order(tab_bar: TabBar, tab: TabItem) -> int:
     """(private API)"""
     pass
@@ -7845,12 +7806,12 @@ def tree_node_update_next_open(storage_id: ID, flags: TreeNodeFlags) -> bool:
 def input_text_deactivate_hook(id_: ID) -> None:
     pass
 
-# inline bool             TempInputIsActive(ImGuiID id)       { ImGuiContext& g = *GImGui; return (g.TempInputId == id && g.ActiveId == id) || (g.InputTextDeactivatedState.ID == id); }    /* original C++ signature */
+# inline bool             TempInputIsActive(ImGuiID id);    /* original C++ signature */
 def temp_input_is_active(id_: ID) -> bool:
     """(private API)"""
     pass
 
-# inline ImGuiInputTextState* GetInputTextState(ImGuiID id)   { ImGuiContext& g = *GImGui; return (id != 0 && g.InputTextState.ID == id) ? &g.InputTextState : NULL; }     /* original C++ signature */
+# inline ImGuiInputTextState* GetInputTextState(ImGuiID id);    /* original C++ signature */
 def get_input_text_state(id_: ID) -> InputTextState:
     """(private API)
 
@@ -7862,7 +7823,7 @@ def get_input_text_state(id_: ID) -> InputTextState:
 def set_next_item_ref_val(data_type: DataType, p_data: Any) -> None:
     pass
 
-# inline bool             IsItemActiveAsInputText() { ImGuiContext& g = *GImGui; return g.ActiveId != 0 && g.ActiveId == g.LastItemData.ID && g.InputTextState.ID == g.LastItemData.ID; }     /* original C++ signature */
+# inline bool             IsItemActiveAsInputText();    /* original C++ signature */
 def is_item_active_as_input_text() -> bool:
     """(private API)
 
@@ -7883,7 +7844,7 @@ def color_edit_options_popup(col: float, flags: ColorEditFlags) -> None:
 def color_picker_options_popup(ref_col: float, flags: ColorEditFlags) -> None:
     pass
 
-# inline void             SetNextItemColorMarker(ImU32 col) { ImGuiContext& g = *GImGui; g.NextItemData.HasFlags |= ImGuiNextItemDataFlags_HasColorMarker; g.NextItemData.ColorMarker = col; }    /* original C++ signature */
+# inline void             SetNextItemColorMarker(ImU32 col);    /* original C++ signature */
 def set_next_item_color_marker(col: ImU32) -> None:
     """(private API)"""
     pass
@@ -8148,7 +8109,7 @@ class ImFontLoader:
     # FIXME: At this point the two other types of buffers may be managed by core to be consistent?
     font_baked_src_loader_data_size: int
 
-    # ImFontLoader()  { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImFontLoader();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -8160,17 +8121,17 @@ class ImFontLoader:
 # (note that _TexID and _TexData are never set simultaneously)
 
 # Refer to ImFontAtlasPackGetRect() to better understand how this works.
-# inline int               ImFontAtlasRectId_GetIndex(ImFontAtlasRectId id)       { return (id & ImFontAtlasRectId_IndexMask_); }    /* original C++ signature */
+# inline int               ImFontAtlasRectId_GetIndex(ImFontAtlasRectId id);    /* original C++ signature */
 def im_font_atlas_rect_id_get_index(id_: ImFontAtlasRectId) -> int:
     """(private API)"""
     pass
 
-# inline unsigned int      ImFontAtlasRectId_GetGeneration(ImFontAtlasRectId id)  { return (unsigned int)(id & ImFontAtlasRectId_GenerationMask_) >> ImFontAtlasRectId_GenerationShift_; }    /* original C++ signature */
+# inline unsigned int      ImFontAtlasRectId_GetGeneration(ImFontAtlasRectId id);    /* original C++ signature */
 def im_font_atlas_rect_id_get_generation(id_: ImFontAtlasRectId) -> int:
     """(private API)"""
     pass
 
-# inline ImFontAtlasRectId ImFontAtlasRectId_Make(int index_idx, int gen_idx)     { IM_ASSERT(index_idx >= 0 && index_idx <= ImFontAtlasRectId_IndexMask_ && gen_idx <= (ImFontAtlasRectId_GenerationMask_ >> ImFontAtlasRectId_GenerationShift_)); return (ImFontAtlasRectId)(index_idx | (gen_idx << ImFontAtlasRectId_GenerationShift_)); }    /* original C++ signature */
+# inline ImFontAtlasRectId ImFontAtlasRectId_Make(int index_idx, int gen_idx);    /* original C++ signature */
 def im_font_atlas_rect_id_make(index_idx: int, gen_idx: int) -> ImFontAtlasRectId:
     """(private API)"""
     pass
@@ -8548,15 +8509,7 @@ class DockRequest:
     # ImGuiDockNode*          UndockTargetNode;    /* original C++ signature */
     undock_target_node: DockNode
 
-    # ImGuiDockRequest()    /* original C++ signature */
-    #     {
-    #         Type = ImGuiDockRequestType_None;
-    #         DockTargetWindow = DockPayload = UndockTargetWindow = NULL;
-    #         DockTargetNode = UndockTargetNode = NULL;
-    #         DockSplitDir = ImGuiDir_None;
-    #         DockSplitRatio = 0.5f;
-    #         DockSplitOuter = false;
-    #     }
+    # ImGuiDockRequest();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -8578,7 +8531,7 @@ class DockPreviewData:
     # float           SplitRatio;    /* original C++ signature */
     split_ratio: float
 
-    # ImGuiDockPreviewData() : FutureNode(0) { IsDropAllowed = IsCenterAvailable = IsSidesAvailable = IsSplitDirExplicit = false; SplitNode = NULL; SplitDir = ImGuiDir_None; SplitRatio = 0.f; for (int n = 0; n < IM_COUNTOF(DropRectsDraw); n++) DropRectsDraw[n] = ImRect(+FLT_MAX, +FLT_MAX, -FLT_MAX, -FLT_MAX); }    /* original C++ signature */
+    # ImGuiDockPreviewData() : FutureNode(0);    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -8605,7 +8558,7 @@ class DockNodeSettings:
     size: ImVec2ih
     # ImVec2ih            SizeRef;    /* original C++ signature */
     size_ref: ImVec2ih
-    # ImGuiDockNodeSettings() { memset((void*)this, 0, sizeof(*this)); SplitAxis = ImGuiAxis_None; }    /* original C++ signature */
+    # ImGuiDockNodeSettings();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 

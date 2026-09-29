@@ -140,7 +140,7 @@ def prompt(options: List[str]) -> None:
 # See https://github.com/pybind/pybind11/issues/2770
 
 class ContextWrapper:
-    # inline ContextWrapper() { ptr = ImCmd::CreateContext(); }    /* original C++ signature */
+    # inline ContextWrapper();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 

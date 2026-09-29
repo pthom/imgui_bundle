@@ -400,51 +400,51 @@ def blend_palettes(result: TogglePalette, a: TogglePalette, b: TogglePalette, bl
 class ImOffsetRect:
     """Helper: ImOffsetRect A set of offsets to apply to an ImRect."""
 
-    # constexpr ImOffsetRect()                                                    : Top(0.0f), Left(0.0f), Bottom(0.0f), Right(0.0f)                  {}    /* original C++ signature */
+    # constexpr ImOffsetRect()                                                    : Top(0.0f), Left(0.0f), Bottom(0.0f), Right(0.0f);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImOffsetRect(const ImVec2& topLeft, const ImVec2& bottomRight)    : ImOffsetRect(topLeft.y, topLeft.x, bottomRight.y, bottomRight.x)  {}    /* original C++ signature */
+    # constexpr ImOffsetRect(const ImVec2& topLeft, const ImVec2& bottomRight)    : ImOffsetRect(topLeft.y, topLeft.x, bottomRight.y, bottomRight.x);    /* original C++ signature */
     @overload
     def __init__(self, top_left: ImVec2Like, bottom_right: ImVec2Like) -> None:
         pass
-    # constexpr ImOffsetRect(const ImVec4& v)                                     : ImOffsetRect(v.x, v.y, v.z, v.w)                                  {}    /* original C++ signature */
+    # constexpr ImOffsetRect(const ImVec4& v)                                     : ImOffsetRect(v.x, v.y, v.z, v.w);    /* original C++ signature */
     @overload
     def __init__(self, v: ImVec4Like) -> None:
         pass
-    # constexpr ImOffsetRect(float top, float left, float bottom, float right)    : Top(top), Left(left), Bottom(bottom), Right(right)                {}    /* original C++ signature */
+    # constexpr ImOffsetRect(float top, float left, float bottom, float right)    : Top(top), Left(left), Bottom(bottom), Right(right);    /* original C++ signature */
     @overload
     def __init__(self, top: float, left: float, bottom: float, right: float) -> None:
         pass
-    # constexpr ImOffsetRect(float all)                                           : Top(all), Left(all), Bottom(all), Right(all)                      {}    /* original C++ signature */
+    # constexpr ImOffsetRect(float all)                                           : Top(all), Left(all), Bottom(all), Right(all);    /* original C++ signature */
     @overload
     def __init__(self, all: float) -> None:
         pass
-    # ImVec2      GetSize() const { return ImVec2(Left + Right, Top + Bottom); }    /* original C++ signature */
+    # ImVec2      GetSize() const;    /* original C++ signature */
     def get_size(self) -> ImVec2:
         """(private API)"""
         pass
-    # float       GetWidth() const { return Left + Right; }    /* original C++ signature */
+    # float       GetWidth() const;    /* original C++ signature */
     def get_width(self) -> float:
         """(private API)"""
         pass
-    # float       GetHeight() const { return Top + Bottom; }    /* original C++ signature */
+    # float       GetHeight() const;    /* original C++ signature */
     def get_height(self) -> float:
         """(private API)"""
         pass
-    # float       GetAverage() const { return (Top + Left + Bottom + Right) / 4.0f; }    /* original C++ signature */
+    # float       GetAverage() const;    /* original C++ signature */
     def get_average(self) -> float:
         """(private API)"""
         pass
-    # ImOffsetRect MirrorHorizontally() const { return ImOffsetRect(Top, Right, Bottom, Left); }    /* original C++ signature */
+    # ImOffsetRect MirrorHorizontally() const;    /* original C++ signature */
     def mirror_horizontally(self) -> ImOffsetRect:
         """(private API)"""
         pass
-    # ImOffsetRect MirrorVertically() const { return ImOffsetRect(Bottom, Left, Top, Right); }    /* original C++ signature */
+    # ImOffsetRect MirrorVertically() const;    /* original C++ signature */
     def mirror_vertically(self) -> ImOffsetRect:
         """(private API)"""
         pass
-    # ImOffsetRect Mirror() const { return ImOffsetRect(Bottom, Right, Top, Left); }    /* original C++ signature */
+    # ImOffsetRect Mirror() const;    /* original C++ signature */
     def mirror(self) -> ImOffsetRect:
         """(private API)"""
         pass

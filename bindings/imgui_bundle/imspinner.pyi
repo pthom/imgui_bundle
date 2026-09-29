@@ -65,16 +65,27 @@ red: ImColor  # = ImColor(1., 0., 0., 1.)
 
 
 class SpinnerTypeT(enum.IntEnum):
+    # e_st_rainbow = 0,    /* original C++ signature */
     e_st_rainbow = enum.auto()      # (= 0)
+    # e_st_angle,    /* original C++ signature */
     e_st_angle = enum.auto()        # (= 1)
+    # e_st_dots,    /* original C++ signature */
     e_st_dots = enum.auto()         # (= 2)
+    # e_st_ang,    /* original C++ signature */
     e_st_ang = enum.auto()          # (= 3)
+    # e_st_vdots,    /* original C++ signature */
     e_st_vdots = enum.auto()        # (= 4)
+    # e_st_bounce_ball,    /* original C++ signature */
     e_st_bounce_ball = enum.auto()  # (= 5)
+    # e_st_eclipse,    /* original C++ signature */
     e_st_eclipse = enum.auto()      # (= 6)
+    # e_st_ingyang,    /* original C++ signature */
     e_st_ingyang = enum.auto()      # (= 7)
+    # e_st_barchartsine,    /* original C++ signature */
     e_st_barchartsine = enum.auto() # (= 8)
 
+    # e_st_count    /* original C++ signature */
+    #     }
     e_st_count = enum.auto()        # (= 9)
 
 PI_DIV_4: float  # = IM_PI / 4.
@@ -92,17 +103,28 @@ PI_2: float  # = IM_PI  2.
 
 
 class ease_mode(enum.IntEnum):
+    # e_ease_none = 0,    /* original C++ signature */
     e_ease_none = enum.auto()      # (= 0)
+    # e_ease_inoutquad = 1,    /* original C++ signature */
     e_ease_inoutquad = enum.auto() # (= 1)
+    # e_ease_inoutexpo = 2,    /* original C++ signature */
     e_ease_inoutexpo = enum.auto() # (= 2)
+    # e_ease_spring = 3,    /* original C++ signature */
     e_ease_spring = enum.auto()    # (= 3)
+    # e_ease_gravity = 4,    /* original C++ signature */
     e_ease_gravity = enum.auto()   # (= 4)
+    # e_ease_infinity = 5,    /* original C++ signature */
     e_ease_infinity = enum.auto()  # (= 5)
+    # e_ease_elastic = 6,    /* original C++ signature */
     e_ease_elastic = enum.auto()   # (= 6)
+    # e_ease_sine = 7,    /* original C++ signature */
     e_ease_sine = enum.auto()      # (= 7)
+    # e_ease_damping = 8,    /* original C++ signature */
+    #     }
     e_ease_damping = enum.auto()   # (= 8)
 
 
+# inline void SpinnerRainbow(const char *label, float radius, float thickness, const ImColor &color, float speed, float ang_min = 0.f, float ang_max = PI_2, int arcs = 1, int mode = 0);    /* original C++ signature */
 def spinner_rainbow(
     label: str,
     radius: float,
@@ -127,6 +149,7 @@ def spinner_rainbow(
     """
     pass
 
+# inline void SpinnerRainbowMix(const char *label, float radius, float thickness, const ImColor &color, float speed, float ang_min = 0.f, float ang_max = PI_2, int arcs = 1, int mode = 0);    /* original C++ signature */
 def spinner_rainbow_mix(
     label: str,
     radius: float,
@@ -140,6 +163,7 @@ def spinner_rainbow_mix(
     ) -> None:
     pass
 
+# inline void SpinnerRotatingHeart(const char *label, float radius, float thickness, const ImColor &color, float speed, float ang_min = 0.f);    /* original C++ signature */
 def spinner_rotating_heart(
     label: str,
     radius: float,
@@ -151,6 +175,7 @@ def spinner_rotating_heart(
     """ This function draws a rotating heart spinner."""
     pass
 
+# inline void SpinnerAng(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = white, float speed = 2.8f, float angle = IM_PI, int mode = 0);    /* original C++ signature */
 def spinner_ang(
     label: str,
     radius: float,
@@ -170,6 +195,7 @@ def spinner_ang(
     """
     pass
 
+# inline void SpinnerAng8(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = white, float speed = 2.8f, float angle = IM_PI, int mode = 0, float rkoef = 0.5f);    /* original C++ signature */
 def spinner_ang8(
     label: str,
     radius: float,
@@ -188,6 +214,7 @@ def spinner_ang8(
     """
     pass
 
+# inline void SpinnerAngMix(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, float angle = IM_PI, int arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_ang_mix(
     label: str,
     radius: float,
@@ -203,6 +230,7 @@ def spinner_ang_mix(
     """
     pass
 
+# inline void SpinnerLoadingRing(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, int segments = 5);    /* original C++ signature */
 def spinner_loading_ring(
     label: str,
     radius: float,
@@ -219,6 +247,7 @@ def spinner_loading_ring(
     """
     pass
 
+# inline void SpinnerClock(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f);    /* original C++ signature */
 def spinner_clock(
     label: str,
     radius: float,
@@ -234,6 +263,7 @@ def spinner_clock(
     """
     pass
 
+# inline void SpinnerPulsar(const char *label, float radius, float thickness, const ImColor &bg = half_white, float speed = 2.8f, bool sequence = true, float angle = 0.f, int mode = 0);    /* original C++ signature */
 def spinner_pulsar(
     label: str,
     radius: float,
@@ -249,6 +279,7 @@ def spinner_pulsar(
     """
     pass
 
+# inline void SpinnerDoubleFadePulsar(const char *label, float radius, float /*thickness*/, const ImColor &bg = half_white, float speed = 2.8f);    /* original C++ signature */
 def spinner_double_fade_pulsar(
     label: str,
     radius: float,
@@ -261,6 +292,7 @@ def spinner_double_fade_pulsar(
     """
     pass
 
+# inline void SpinnerTwinPulsar(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int rings = 2, int mode = 0);    /* original C++ signature */
 def spinner_twin_pulsar(
     label: str,
     radius: float,
@@ -275,6 +307,7 @@ def spinner_twin_pulsar(
     """
     pass
 
+# inline void SpinnerFadePulsar(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, int rings = 2, int mode = 0);    /* original C++ signature */
 def spinner_fade_pulsar(
     label: str,
     radius: float,
@@ -288,6 +321,7 @@ def spinner_fade_pulsar(
     """
     pass
 
+# inline void SpinnerFadePulsarSquare(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, int rings = 2, int mode = 0);    /* original C++ signature */
 def spinner_fade_pulsar_square(
     label: str,
     radius: float,
@@ -301,6 +335,7 @@ def spinner_fade_pulsar_square(
     """
     pass
 
+# inline void SpinnerCircularLines(const char *label, float radius, const ImColor &color = white, float speed = 1.8f, int lines = 8, int mode = 0);    /* original C++ signature */
 def spinner_circular_lines(
     label: str,
     radius: float,
@@ -314,6 +349,7 @@ def spinner_circular_lines(
     """
     pass
 
+# inline void SpinnerDots(const char *label, float *nextdot, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 12, float minth = -1.f, int mode = 0);    /* original C++ signature */
 def spinner_dots(
     label: str,
     nextdot: float,
@@ -330,6 +366,7 @@ def spinner_dots(
     """
     pass
 
+# inline void SpinnerVDots(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bgcolor = white, float speed = 2.8f, size_t dots = 12, size_t mdots = 6, int mode = 0);    /* original C++ signature */
 def spinner_v_dots(
     label: str,
     radius: float,
@@ -357,6 +394,7 @@ def spinner_v_dots(
 
 
 
+# inline void Spinner4Caleidospcope(const char *label, float radius, float thickness, const ImColor &color = 0xffffffff, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner4_caleidospcope(
     label: str,
     radius: float,
@@ -368,6 +406,7 @@ def spinner4_caleidospcope(
     pass
 
 
+# inline void SpinnerThickToSin(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int nt = 1, int lt = 8, int mode = 0);    /* original C++ signature */
 def spinner_thick_to_sin(
     label: str,
     radius: float,
@@ -385,6 +424,7 @@ def spinner_thick_to_sin(
 
 
 
+# inline void SpinnerSquareSpins(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_square_spins(
     label: str,
     radius: float,
@@ -401,6 +441,7 @@ def spinner_square_spins(
 
 
 
+# inline void SpinnerTwinAng(const char *label, float radius1, float radius2, float thickness, const ImColor &color1 = white, const ImColor &color2 = red, float speed = 2.8f, float angle = IM_PI, int mode = 0);    /* original C++ signature */
 def spinner_twin_ang(
     label: str,
     radius1: float,
@@ -419,6 +460,7 @@ def spinner_twin_ang(
     """
     pass
 
+# inline void SpinnerFilling(const char *label, float radius, float thickness, const ImColor &color1 = white, const ImColor &color2 = red, float speed = 2.8f);    /* original C++ signature */
 def spinner_filling(
     label: str,
     radius: float,
@@ -434,6 +476,7 @@ def spinner_filling(
     """
     pass
 
+# inline void SpinnerFillingMem(const char *label, float radius, float thickness, const ImColor &color, ImColor &colorbg, float speed);    /* original C++ signature */
 def spinner_filling_mem(
     label: str,
     radius: float,
@@ -444,6 +487,7 @@ def spinner_filling_mem(
     ) -> None:
     pass
 
+# inline void SpinnerTopup(const char *label, float radius1, float radius2, const ImColor &color = red, const ImColor &fg = white, const ImColor &bg = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_topup(
     label: str,
     radius1: float,
@@ -461,6 +505,7 @@ def spinner_topup(
     """
     pass
 
+# inline void SpinnerTwinAng180(const char *label, float radius1, float radius2, float thickness, const ImColor &color1 = white, const ImColor &color2 = red, float speed = 2.8f, float angle = PI_DIV_4, int mode = 0);    /* original C++ signature */
 def spinner_twin_ang180(
     label: str,
     radius1: float,
@@ -479,6 +524,7 @@ def spinner_twin_ang180(
     """
     pass
 
+# inline void SpinnerTwinAng360(const char *label, float radius1, float radius2, float thickness, const ImColor &color1 = white, const ImColor &color2 = red, float speed1 = 2.8f, float speed2 = 2.5f, int mode = 0);    /* original C++ signature */
 def spinner_twin_ang360(
     label: str,
     radius1: float,
@@ -500,6 +546,7 @@ def spinner_twin_ang360(
 
 
 
+# inline void SpinnerFadeTris(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, size_t dim = 2, bool scale = false, int mode = 0);    /* original C++ signature */
 def spinner_fade_tris(
     label: str,
     radius: float,
@@ -516,6 +563,7 @@ def spinner_fade_tris(
 
 
 
+# inline void SpinnerAngTwin(const char *label, float radius1, float radius2, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, float angle = IM_PI, size_t arcs = 1, int mode = 0);    /* original C++ signature */
 def spinner_ang_twin(
     label: str,
     radius1: float,
@@ -535,6 +583,7 @@ def spinner_ang_twin(
     """
     pass
 
+# inline void SpinnerArcRotation(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_arc_rotation(
     label: str,
     radius: float,
@@ -549,6 +598,7 @@ def spinner_arc_rotation(
     """
     pass
 
+# inline void SpinnerArcFade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_arc_fade(
     label: str,
     radius: float,
@@ -563,6 +613,7 @@ def spinner_arc_fade(
     """
     pass
 
+# inline void SpinnerSimpleArcFade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_simple_arc_fade(
     label: str,
     radius: float,
@@ -575,6 +626,7 @@ def spinner_simple_arc_fade(
     """
     pass
 
+# inline void SpinnerSquareStrokeFade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_square_stroke_fade(
     label: str,
     radius: float,
@@ -589,6 +641,7 @@ def spinner_square_stroke_fade(
 
 
 
+# inline void SpinnerAsciiSymbolPoints(const char *label, const char* text, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_ascii_symbol_points(
     label: str,
     text: str,
@@ -602,6 +655,7 @@ def spinner_ascii_symbol_points(
     """
     pass
 
+# inline void SpinnerSevenSegments(const char *label, const char* text, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_seven_segments(
     label: str,
     text: str,
@@ -615,6 +669,7 @@ def spinner_seven_segments(
     """
     pass
 
+# inline void SpinnerSquareStrokeFill(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_square_stroke_fill(
     label: str,
     radius: float,
@@ -627,6 +682,7 @@ def spinner_square_stroke_fill(
     """
     pass
 
+# inline void SpinnerSquareStrokeLoading(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_square_stroke_loading(
     label: str,
     radius: float,
@@ -639,6 +695,7 @@ def spinner_square_stroke_loading(
     """
     pass
 
+# inline void SpinnerSquareLoading(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_square_loading(
     label: str,
     radius: float,
@@ -651,6 +708,7 @@ def spinner_square_loading(
     """
     pass
 
+# inline void SpinnerFilledArcFade(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_filled_arc_fade(
     label: str,
     radius: float,
@@ -664,6 +722,7 @@ def spinner_filled_arc_fade(
     """
     pass
 
+# inline void SpinnerPointsRoller(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t points = 8, int circles = 2, float rspeed = 1.f);    /* original C++ signature */
 def spinner_points_roller(
     label: str,
     radius: float,
@@ -679,6 +738,7 @@ def spinner_points_roller(
     """
     pass
 
+# inline void SpinnerPointsArcBounce(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t points = 4, int circles = 2, float rspeed = 0.f);    /* original C++ signature */
 def spinner_points_arc_bounce(
     label: str,
     radius: float,
@@ -694,6 +754,7 @@ def spinner_points_arc_bounce(
     """
     pass
 
+# inline void SpinnerFilledArcColor(const char *label, float radius, const ImColor &color = red, const ImColor &bg = white, float speed = 2.8f, size_t arcs = 4);    /* original C++ signature */
 def spinner_filled_arc_color(
     label: str,
     radius: float,
@@ -709,6 +770,7 @@ def spinner_filled_arc_color(
     """
     pass
 
+# inline void SpinnerFilledArcRing(const char *label, float radius, float thickness, const ImColor &color = red, const ImColor &bg = white, float speed = 2.8f, size_t arcs = 4);    /* original C++ signature */
 def spinner_filled_arc_ring(
     label: str,
     radius: float,
@@ -725,6 +787,7 @@ def spinner_filled_arc_ring(
     """
     pass
 
+# inline void SpinnerArcWedges(const char *label, float radius, const ImColor &color = red, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_arc_wedges(
     label: str,
     radius: float,
@@ -738,6 +801,7 @@ def spinner_arc_wedges(
     """
     pass
 
+# inline void SpinnerTwinBall(const char *label, float radius1, float radius2, float thickness, float b_thickness, const ImColor &ball = white, const ImColor &bg = half_white, float speed = 2.8f, size_t balls = 2, int mode = 0);    /* original C++ signature */
 def spinner_twin_ball(
     label: str,
     radius1: float,
@@ -757,6 +821,7 @@ def spinner_twin_ball(
     """
     pass
 
+# inline void SpinnerSolarBalls(const char *label, float radius, float thickness, const ImColor &ball = white, const ImColor &bg = half_white, float speed = 2.8f, size_t balls = 4);    /* original C++ signature */
 def spinner_solar_balls(
     label: str,
     radius: float,
@@ -773,6 +838,7 @@ def spinner_solar_balls(
     """
     pass
 
+# inline void SpinnerSolarScaleBalls(const char *label, float radius, float thickness, const ImColor &ball = white, float speed = 2.8f, size_t balls = 4);    /* original C++ signature */
 def spinner_solar_scale_balls(
     label: str,
     radius: float,
@@ -786,6 +852,7 @@ def spinner_solar_scale_balls(
     """
     pass
 
+# inline void SpinnerSolarArcs(const char *label, float radius, float thickness, const ImColor &ball = white, const ImColor &bg = half_white, float speed = 2.8f, size_t balls = 4);    /* original C++ signature */
 def spinner_solar_arcs(
     label: str,
     radius: float,
@@ -802,6 +869,7 @@ def spinner_solar_arcs(
     """
     pass
 
+# inline void SpinnerMovingArcs(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4);    /* original C++ signature */
 def spinner_moving_arcs(
     label: str,
     radius: float,
@@ -815,6 +883,7 @@ def spinner_moving_arcs(
     """
     pass
 
+# inline void SpinnerRainbowCircle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, float mode = 1);    /* original C++ signature */
 def spinner_rainbow_circle(
     label: str,
     radius: float,
@@ -829,6 +898,7 @@ def spinner_rainbow_circle(
     """
     pass
 
+# inline void SpinnerBounceBall(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int dots = 1, bool shadow = false);    /* original C++ signature */
 def spinner_bounce_ball(
     label: str,
     radius: float,
@@ -843,6 +913,7 @@ def spinner_bounce_ball(
     """
     pass
 
+# inline void SpinnerPulsarBall(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, bool shadow = false, int mode = 0);    /* original C++ signature */
 def spinner_pulsar_ball(
     label: str,
     radius: float,
@@ -859,6 +930,7 @@ def spinner_pulsar_ball(
 
 
 
+# inline void SpinnerAngTriple(const char *label, float radius1, float radius2, float radius3, float thickness, const ImColor &c1 = white, const ImColor &c2 = half_white, const ImColor &c3 = white, float speed = 2.8f, float angle = IM_PI);    /* original C++ signature */
 def spinner_ang_triple(
     label: str,
     radius1: float,
@@ -879,6 +951,7 @@ def spinner_ang_triple(
     """
     pass
 
+# inline void SpinnerAngEclipse(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, float angle = IM_PI);    /* original C++ signature */
 def spinner_ang_eclipse(
     label: str,
     radius: float,
@@ -892,6 +965,7 @@ def spinner_ang_eclipse(
     """
     pass
 
+# inline void SpinnerIngYang(const char *label, float radius, float thickness, bool reverse, float yang_detlta_r, const ImColor &colorI = white, const ImColor &colorY = white, float speed = 2.8f, float angle = IM_PI * 0.7f, int mode = 0);    /* original C++ signature */
 def spinner_ing_yang(
     label: str,
     radius: float,
@@ -912,6 +986,7 @@ def spinner_ing_yang(
     pass
 
 
+# inline void SpinnerGooeyBalls(const char *label, float radius, const ImColor &color, float speed, int mode = 0);    /* original C++ signature */
 def spinner_gooey_balls(
     label: str,
     radius: float,
@@ -922,6 +997,7 @@ def spinner_gooey_balls(
     pass
 
 
+# inline void SpinnerRotateGooeyBalls(const char *label, float radius, float thickness, const ImColor &color, float speed, int balls, int mode = 0);    /* original C++ signature */
 def spinner_rotate_gooey_balls(
     label: str,
     radius: float,
@@ -933,6 +1009,7 @@ def spinner_rotate_gooey_balls(
     ) -> None:
     pass
 
+# inline void SpinnerHerbertBalls(const char *label, float radius, float thickness, const ImColor &color, float speed, int balls);    /* original C++ signature */
 def spinner_herbert_balls(
     label: str,
     radius: float,
@@ -943,6 +1020,7 @@ def spinner_herbert_balls(
     ) -> None:
     pass
 
+# inline void SpinnerHerbertBalls3D(const char *label, float radius, float thickness, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_herbert_balls3_d(
     label: str,
     radius: float,
@@ -952,6 +1030,7 @@ def spinner_herbert_balls3_d(
     ) -> None:
     pass
 
+# inline void SpinnerRotateTriangles(const char *label, float radius, float thickness, const ImColor &color, float speed, int tris, int mode = 0);    /* original C++ signature */
 def spinner_rotate_triangles(
     label: str,
     radius: float,
@@ -963,6 +1042,7 @@ def spinner_rotate_triangles(
     ) -> None:
     pass
 
+# inline void SpinnerRotateShapes(const char *label, float radius, float thickness, const ImColor &color, float speed, int shapes, int pnt);    /* original C++ signature */
 def spinner_rotate_shapes(
     label: str,
     radius: float,
@@ -974,6 +1054,7 @@ def spinner_rotate_shapes(
     ) -> None:
     pass
 
+# inline void SpinnerSinSquares(const char *label, float radius, float thickness, const ImColor &color, float speed, int mode = 0);    /* original C++ signature */
 def spinner_sin_squares(
     label: str,
     radius: float,
@@ -984,6 +1065,7 @@ def spinner_sin_squares(
     ) -> None:
     pass
 
+# inline void SpinnerMoonLine(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = red, float speed = 2.8f, float angle = IM_PI);    /* original C++ signature */
 def spinner_moon_line(
     label: str,
     radius: float,
@@ -1000,6 +1082,7 @@ def spinner_moon_line(
     """
     pass
 
+# inline void SpinnerCircleDrop(const char *label, float radius, float thickness, float thickness_drop, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, float angle = IM_PI);    /* original C++ signature */
 def spinner_circle_drop(
     label: str,
     radius: float,
@@ -1017,6 +1100,7 @@ def spinner_circle_drop(
     """
     pass
 
+# inline void SpinnerSurroundedIndicator(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f);    /* original C++ signature */
 def spinner_surrounded_indicator(
     label: str,
     radius: float,
@@ -1032,6 +1116,7 @@ def spinner_surrounded_indicator(
     """
     pass
 
+# inline void SpinnerWifiIndicator(const char *label, float radius, float thickness, const ImColor &color = red, const ImColor &bg = half_white, float speed = 2.8f, float cangle = 0.f, int dots = 3);    /* original C++ signature */
 def spinner_wifi_indicator(
     label: str,
     radius: float,
@@ -1049,6 +1134,7 @@ def spinner_wifi_indicator(
     """
     pass
 
+# inline void SpinnerTrianglesSelector(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, size_t bars = 8);    /* original C++ signature */
 def spinner_triangles_selector(
     label: str,
     radius: float,
@@ -1066,6 +1152,7 @@ def spinner_triangles_selector(
     pass
 
 
+# inline void SpinnerFlowingGradient(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = red, float speed = 2.8f, float angle = IM_PI);    /* original C++ signature */
 def spinner_flowing_gradient(
     label: str,
     radius: float,
@@ -1082,6 +1169,7 @@ def spinner_flowing_gradient(
     """
     pass
 
+# inline void SpinnerRotateSegments(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, size_t layers = 1, int mode = 0);    /* original C++ signature */
 def spinner_rotate_segments(
     label: str,
     radius: float,
@@ -1097,6 +1185,7 @@ def spinner_rotate_segments(
     """
     pass
 
+# inline void SpinnerLemniscate(const char* label, float radius, float thickness, const ImColor& color = white, float speed = 2.8f, float angle = IM_PI / 2.0f);    /* original C++ signature */
 def spinner_lemniscate(
     label: str,
     radius: float,
@@ -1110,6 +1199,7 @@ def spinner_lemniscate(
     """
     pass
 
+# inline void SpinnerRotateGear(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t pins = 12);    /* original C++ signature */
 def spinner_rotate_gear(
     label: str,
     radius: float,
@@ -1123,6 +1213,7 @@ def spinner_rotate_gear(
     """
     pass
 
+# inline void SpinnerRotateWheel(const char *label, float radius, float thickness, const ImColor &bg_color = white, const ImColor &color = white, float speed = 2.8f, size_t pins = 12);    /* original C++ signature */
 def spinner_rotate_wheel(
     label: str,
     radius: float,
@@ -1139,6 +1230,7 @@ def spinner_rotate_wheel(
     """
     pass
 
+# inline void SpinnerAtom(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3);    /* original C++ signature */
 def spinner_atom(
     label: str,
     radius: float,
@@ -1152,6 +1244,7 @@ def spinner_atom(
     """
     pass
 
+# inline void SpinnerPatternRings(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3);    /* original C++ signature */
 def spinner_pattern_rings(
     label: str,
     radius: float,
@@ -1165,6 +1258,7 @@ def spinner_pattern_rings(
     """
     pass
 
+# inline void SpinnerPatternEclipse(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3, float delta_a = 2.f, float delta_y = 0.f);    /* original C++ signature */
 def spinner_pattern_eclipse(
     label: str,
     radius: float,
@@ -1180,6 +1274,7 @@ def spinner_pattern_eclipse(
     """
     pass
 
+# inline void SpinnerPatternSphere(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3);    /* original C++ signature */
 def spinner_pattern_sphere(
     label: str,
     radius: float,
@@ -1193,6 +1288,7 @@ def spinner_pattern_sphere(
     """
     pass
 
+# inline void SpinnerRingSynchronous(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3);    /* original C++ signature */
 def spinner_ring_synchronous(
     label: str,
     radius: float,
@@ -1206,6 +1302,7 @@ def spinner_ring_synchronous(
     """
     pass
 
+# inline void SpinnerRingWatermarks(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3);    /* original C++ signature */
 def spinner_ring_watermarks(
     label: str,
     radius: float,
@@ -1219,6 +1316,7 @@ def spinner_ring_watermarks(
     """
     pass
 
+# inline void SpinnerRotatedAtom(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int elipses = 3, int mode = 0);    /* original C++ signature */
 def spinner_rotated_atom(
     label: str,
     radius: float,
@@ -1233,6 +1331,7 @@ def spinner_rotated_atom(
     """
     pass
 
+# inline void SpinnerRainbowBalls(const char *label, float radius, float thickness, const ImColor &color, float speed, int balls = 5, int mode = 0, int rings = 1, int mx = 1);    /* original C++ signature */
 def spinner_rainbow_balls(
     label: str,
     radius: float,
@@ -1246,6 +1345,7 @@ def spinner_rainbow_balls(
     ) -> None:
     pass
 
+# inline void SpinnerRainbowShot(const char *label, float radius, float thickness, const ImColor &color, float speed, int balls = 5, int mode = 0);    /* original C++ signature */
 def spinner_rainbow_shot(
     label: str,
     radius: float,
@@ -1257,6 +1357,7 @@ def spinner_rainbow_shot(
     ) -> None:
     pass
 
+# inline void SpinnerSpiral(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4);    /* original C++ signature */
 def spinner_spiral(
     label: str,
     radius: float,
@@ -1270,6 +1371,7 @@ def spinner_spiral(
     """
     pass
 
+# inline void SpinnerSpiralEye(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_spiral_eye(
     label: str,
     radius: float,
@@ -1283,6 +1385,7 @@ def spinner_spiral_eye(
     pass
 
 
+# inline void SpinnerBlocks(const char *label, float radius, float thickness, const ImColor &bg, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_blocks(
     label: str,
     radius: float,
@@ -1293,6 +1396,7 @@ def spinner_blocks(
     ) -> None:
     pass
 
+# inline void SpinnerTwinBlocks(const char *label, float radius, float thickness, const ImColor &bg, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_twin_blocks(
     label: str,
     radius: float,
@@ -1304,6 +1408,7 @@ def spinner_twin_blocks(
     pass
 
 
+# inline void SpinnerScaleBlocks(const char *label, float radius, float thickness, const ImColor &color, float speed, int mode = 0);    /* original C++ signature */
 def spinner_scale_blocks(
     label: str,
     radius: float,
@@ -1314,6 +1419,7 @@ def spinner_scale_blocks(
     ) -> None:
     pass
 
+# inline void SpinnerScaleSquares(const char *label, float radius, float thikness, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_scale_squares(
     label: str,
     radius: float,
@@ -1323,6 +1429,7 @@ def spinner_scale_squares(
     ) -> None:
     pass
 
+# inline void SpinnerSquishSquare(const char *label, float radius, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_squish_square(
     label: str,
     radius: float,
@@ -1332,6 +1439,7 @@ def spinner_squish_square(
     pass
 
 
+# inline void SpinnerArcPolarFade(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_arc_polar_fade(
     label: str,
     radius: float,
@@ -1345,6 +1453,7 @@ def spinner_arc_polar_fade(
     """
     pass
 
+# inline void SpinnerArcPolarRadius(const char *label, float radius, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, int mode = 0);    /* original C++ signature */
 def spinner_arc_polar_radius(
     label: str,
     radius: float,
@@ -1358,6 +1467,7 @@ def spinner_arc_polar_radius(
     """
     pass
 
+# inline void SpinnerCaleidoscope(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 6, int mode = 0);    /* original C++ signature */
 def spinner_caleidoscope(
     label: str,
     radius: float,
@@ -1376,6 +1486,7 @@ def spinner_caleidoscope(
 
 
 
+# inline void SpinnerSineArcs(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_sine_arcs(
     label: str,
     radius: float,
@@ -1388,6 +1499,7 @@ def spinner_sine_arcs(
     """
     pass
 
+# inline void SpinnerTrianglesShift(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, size_t bars = 8);    /* original C++ signature */
 def spinner_triangles_shift(
     label: str,
     radius: float,
@@ -1404,6 +1516,7 @@ def spinner_triangles_shift(
     """
     pass
 
+# inline void SpinnerPointsShift(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = half_white, float speed = 2.8f, size_t bars = 8);    /* original C++ signature */
 def spinner_points_shift(
     label: str,
     radius: float,
@@ -1421,6 +1534,7 @@ def spinner_points_shift(
     pass
 
 
+# inline void SpinnerCircularPoints(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.8f, int lines = 8);    /* original C++ signature */
 def spinner_circular_points(
     label: str,
     radius: float,
@@ -1434,6 +1548,7 @@ def spinner_circular_points(
     """
     pass
 
+# inline void SpinnerCurvedCircle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t circles = 1);    /* original C++ signature */
 def spinner_curved_circle(
     label: str,
     radius: float,
@@ -1447,6 +1562,7 @@ def spinner_curved_circle(
     """
     pass
 
+# inline void SpinnerModCircle(const char *label, float radius, float thickness, const ImColor &color = white, float ang_min = 1.f, float ang_max = 1.f, float speed = 2.8f);    /* original C++ signature */
 def spinner_mod_circle(
     label: str,
     radius: float,
@@ -1463,6 +1579,7 @@ def spinner_mod_circle(
 
 
 
+# inline void SpinnerRotateSegmentsPulsar(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t arcs = 4, size_t layers = 1);    /* original C++ signature */
 def spinner_rotate_segments_pulsar(
     label: str,
     radius: float,
@@ -1477,6 +1594,7 @@ def spinner_rotate_segments_pulsar(
     """
     pass
 
+# inline void SpinnerSplineAng(const char *label, float radius, float thickness, const ImColor &color = white, const ImColor &bg = white, float speed = 2.8f, float angle = IM_PI, int mode = 0);    /* original C++ signature */
 def spinner_spline_ang(
     label: str,
     radius: float,
@@ -1494,6 +1612,7 @@ def spinner_spline_ang(
     """
     pass
 
+# inline void SpinnerConicGrid(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_conic_grid(
     label: str,
     radius: float,
@@ -1513,6 +1632,7 @@ def spinner_conic_grid(
     """
     pass
 
+# inline void SpinnerArcArrow(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_arc_arrow(
     label: str,
     radius: float,
@@ -1531,6 +1651,7 @@ def spinner_arc_arrow(
     """
     pass
 
+# inline void SpinnerOrbitMoon(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_orbit_moon(
     label: str,
     radius: float,
@@ -1549,6 +1670,7 @@ def spinner_orbit_moon(
     """
     pass
 
+# inline void SpinnerConicWheels(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_conic_wheels(
     label: str,
     radius: float,
@@ -1568,6 +1690,7 @@ def spinner_conic_wheels(
     """
     pass
 
+# inline void SpinnerDotRing(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_dot_ring(
     label: str,
     radius: float,
@@ -1606,6 +1729,7 @@ def spinner_dot_ring(
 #
 
 
+# inline void SpinnerBounceDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 3, int mode = 0);    /* original C++ signature */
 def spinner_bounce_dots(
     label: str,
     radius: float,
@@ -1620,6 +1744,7 @@ def spinner_bounce_dots(
     """
     pass
 
+# inline void SpinnerZipDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 5);    /* original C++ signature */
 def spinner_zip_dots(
     label: str,
     radius: float,
@@ -1633,6 +1758,7 @@ def spinner_zip_dots(
     """
     pass
 
+# inline void SpinnerDotsToPoints(const char *label, float radius, float thickness, float offset_k, const ImColor &color = white, float speed = 1.8f, size_t dots = 5);    /* original C++ signature */
 def spinner_dots_to_points(
     label: str,
     radius: float,
@@ -1647,6 +1773,7 @@ def spinner_dots_to_points(
     """
     pass
 
+# inline void SpinnerDotsToBar(const char *label, float radius, float thickness, float offset_k, const ImColor &color = white, float speed = 2.8f, size_t dots = 5);    /* original C++ signature */
 def spinner_dots_to_bar(
     label: str,
     radius: float,
@@ -1661,6 +1788,7 @@ def spinner_dots_to_bar(
     """
     pass
 
+# inline void SpinnerWaveDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner_wave_dots(
     label: str,
     radius: float,
@@ -1674,6 +1802,7 @@ def spinner_wave_dots(
     """
     pass
 
+# inline void SpinnerFadeDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8, int mode = 0);    /* original C++ signature */
 def spinner_fade_dots(
     label: str,
     radius: float,
@@ -1688,6 +1817,7 @@ def spinner_fade_dots(
     """
     pass
 
+# inline void SpinnerThreeDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner_three_dots(
     label: str,
     radius: float,
@@ -1701,6 +1831,7 @@ def spinner_three_dots(
     """
     pass
 
+# inline void SpinnerFiveDots(const char *label, float radius, float thickness, const ImColor &color = 0xffffffff, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner_five_dots(
     label: str,
     radius: float,
@@ -1711,6 +1842,7 @@ def spinner_five_dots(
     ) -> None:
     pass
 
+# inline void SpinnerMultiFadeDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner_multi_fade_dots(
     label: str,
     radius: float,
@@ -1724,6 +1856,7 @@ def spinner_multi_fade_dots(
     """
     pass
 
+# inline void SpinnerScaleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8);    /* original C++ signature */
 def spinner_scale_dots(
     label: str,
     radius: float,
@@ -1737,6 +1870,7 @@ def spinner_scale_dots(
     """
     pass
 
+# inline void SpinnerMovingDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 3);    /* original C++ signature */
 def spinner_moving_dots(
     label: str,
     radius: float,
@@ -1750,6 +1884,7 @@ def spinner_moving_dots(
     """
     pass
 
+# inline void SpinnerRotateDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int dots = 2, int mode = 0);    /* original C++ signature */
 def spinner_rotate_dots(
     label: str,
     radius: float,
@@ -1764,6 +1899,7 @@ def spinner_rotate_dots(
     """
     pass
 
+# inline void SpinnerOrionDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int arcs = 4);    /* original C++ signature */
 def spinner_orion_dots(
     label: str,
     radius: float,
@@ -1777,6 +1913,7 @@ def spinner_orion_dots(
     """
     pass
 
+# inline void SpinnerGalaxyDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int arcs = 4);    /* original C++ signature */
 def spinner_galaxy_dots(
     label: str,
     radius: float,
@@ -1790,6 +1927,7 @@ def spinner_galaxy_dots(
     """
     pass
 
+# inline void SpinnerIncDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 6);    /* original C++ signature */
 def spinner_inc_dots(
     label: str,
     radius: float,
@@ -1803,6 +1941,7 @@ def spinner_inc_dots(
     """
     pass
 
+# inline void SpinnerIncFullDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 4);    /* original C++ signature */
 def spinner_inc_full_dots(
     label: str,
     radius: float,
@@ -1816,6 +1955,7 @@ def spinner_inc_full_dots(
     """
     pass
 
+# inline void SpinnerIncScaleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 6, float angle = 0.f, int mode = 0);    /* original C++ signature */
 def spinner_inc_scale_dots(
     label: str,
     radius: float,
@@ -1831,6 +1971,7 @@ def spinner_inc_scale_dots(
     """
     pass
 
+# inline void SpinnerSomeScaleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, size_t dots = 6, int mode = 0);    /* original C++ signature */
 def spinner_some_scale_dots(
     label: str,
     radius: float,
@@ -1845,6 +1986,7 @@ def spinner_some_scale_dots(
     """
     pass
 
+# inline void SpinnerDotsLoading(const char *label, float radius, float thickness, const ImColor &color, const ImColor &bg, float speed);    /* original C++ signature */
 def spinner_dots_loading(
     label: str,
     radius: float,
@@ -1855,6 +1997,7 @@ def spinner_dots_loading(
     ) -> None:
     pass
 
+# inline void SpinnerSquareRandomDots(const char *label, float radius, float thickness, const ImColor &bg, const ImColor &color, float speed);    /* original C++ signature */
 def spinner_square_random_dots(
     label: str,
     radius: float,
@@ -1865,6 +2008,7 @@ def spinner_square_random_dots(
     ) -> None:
     pass
 
+# inline void SpinnerHboDots(const char *label, float radius, float thickness, const ImColor &color = white, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, int mode = 0);    /* original C++ signature */
 def spinner_hbo_dots(
     label: str,
     radius: float,
@@ -1883,6 +2027,7 @@ def spinner_hbo_dots(
     """
     pass
 
+# inline void SpinnerMoonDots(const char *label, float radius, float thickness, const ImColor &first, const ImColor &second, float speed = 1.1f);    /* original C++ signature */
 def spinner_moon_dots(
     label: str,
     radius: float,
@@ -1893,6 +2038,7 @@ def spinner_moon_dots(
     ) -> None:
     pass
 
+# inline void SpinnerTwinHboDots(const char *label, float radius, float thickness, const ImColor &color = white, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, size_t dots = 6, float delta = 0.f);    /* original C++ signature */
 def spinner_twin_hbo_dots(
     label: str,
     radius: float,
@@ -1909,6 +2055,7 @@ def spinner_twin_hbo_dots(
     """
     pass
 
+# inline void SpinnerThreeDotsStar(const char *label, float radius, float thickness, const ImColor &color = white, float minfade = 0.0f, float ryk = 0.f, float speed = 1.1f, float delta = 0.f);    /* original C++ signature */
 def spinner_three_dots_star(
     label: str,
     radius: float,
@@ -1924,6 +2071,7 @@ def spinner_three_dots_star(
     """
     pass
 
+# inline void SpinnerSwingDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_swing_dots(
     label: str,
     radius: float,
@@ -1936,6 +2084,7 @@ def spinner_swing_dots(
     """
     pass
 
+# inline void SpinnerDnaDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.8f, int lt = 8, float delta = 0.5f, bool mode = 0);    /* original C++ signature */
 def spinner_dna_dots(
     label: str,
     radius: float,
@@ -1951,6 +2100,7 @@ def spinner_dna_dots(
     """
     pass
 
+# inline void Spinner3SmuggleDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 4.8f, int lt = 8, float delta = 0.5f, bool mode = 0);    /* original C++ signature */
 def spinner3_smuggle_dots(
     label: str,
     radius: float,
@@ -1966,6 +2116,7 @@ def spinner3_smuggle_dots(
     """
     pass
 
+# inline void SpinnerDotsTyping(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int dots = 3);    /* original C++ signature */
 def spinner_dots_typing(
     label: str,
     radius: float,
@@ -1983,6 +2134,7 @@ def spinner_dots_typing(
     """
     pass
 
+# inline void SpinnerDotsStep(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int dots = 3);    /* original C++ signature */
 def spinner_dots_step(
     label: str,
     radius: float,
@@ -2000,6 +2152,7 @@ def spinner_dots_step(
     """
     pass
 
+# inline void SpinnerDotsGather(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.5f, int dots = 3);    /* original C++ signature */
 def spinner_dots_gather(
     label: str,
     radius: float,
@@ -2017,6 +2170,7 @@ def spinner_dots_gather(
     """
     pass
 
+# inline void SpinnerDotsShift(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.5f);    /* original C++ signature */
 def spinner_dots_shift(
     label: str,
     radius: float,
@@ -2034,6 +2188,7 @@ def spinner_dots_shift(
     """
     pass
 
+# inline void SpinnerDotsOrbit(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.66f);    /* original C++ signature */
 def spinner_dots_orbit(
     label: str,
     radius: float,
@@ -2052,6 +2207,7 @@ def spinner_dots_orbit(
     """
     pass
 
+# inline void SpinnerDotsCircle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.66f);    /* original C++ signature */
 def spinner_dots_circle(
     label: str,
     radius: float,
@@ -2068,6 +2224,7 @@ def spinner_dots_circle(
     """
     pass
 
+# inline void SpinnerDotsSquare(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_square(
     label: str,
     radius: float,
@@ -2085,6 +2242,7 @@ def spinner_dots_square(
     """
     pass
 
+# inline void SpinnerDotsShuffle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_shuffle(
     label: str,
     radius: float,
@@ -2102,6 +2260,7 @@ def spinner_dots_shuffle(
     """
     pass
 
+# inline void SpinnerDotsSplit(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_split(
     label: str,
     radius: float,
@@ -2119,6 +2278,7 @@ def spinner_dots_split(
     """
     pass
 
+# inline void SpinnerDotsLeader(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_leader(
     label: str,
     radius: float,
@@ -2136,6 +2296,7 @@ def spinner_dots_leader(
     """
     pass
 
+# inline void SpinnerDotsRolling(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_rolling(
     label: str,
     radius: float,
@@ -2154,6 +2315,7 @@ def spinner_dots_rolling(
     """
     pass
 
+# inline void SpinnerDotsTriangle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_triangle(
     label: str,
     radius: float,
@@ -2166,6 +2328,7 @@ def spinner_dots_triangle(
     """
     pass
 
+# inline void SpinnerDotsCascade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_cascade(
     label: str,
     radius: float,
@@ -2178,6 +2341,7 @@ def spinner_dots_cascade(
     """
     pass
 
+# inline void SpinnerDotsSwap(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_swap(
     label: str,
     radius: float,
@@ -2190,6 +2354,7 @@ def spinner_dots_swap(
     """
     pass
 
+# inline void SpinnerDotsSpread(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_spread(
     label: str,
     radius: float,
@@ -2202,6 +2367,7 @@ def spinner_dots_spread(
     """
     pass
 
+# inline void SpinnerDotsTwin(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.5f);    /* original C++ signature */
 def spinner_dots_twin(
     label: str,
     radius: float,
@@ -2214,6 +2380,7 @@ def spinner_dots_twin(
     """
     pass
 
+# inline void SpinnerDotsHop(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f / 1.5f);    /* original C++ signature */
 def spinner_dots_hop(
     label: str,
     radius: float,
@@ -2226,6 +2393,7 @@ def spinner_dots_hop(
     """
     pass
 
+# inline void SpinnerDotsJiggle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_jiggle(
     label: str,
     radius: float,
@@ -2242,6 +2410,7 @@ def spinner_dots_jiggle(
     """
     pass
 
+# inline void SpinnerDotsVibrate(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_vibrate(
     label: str,
     radius: float,
@@ -2259,6 +2428,7 @@ def spinner_dots_vibrate(
     """
     pass
 
+# inline void SpinnerDotsWiper(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.f);    /* original C++ signature */
 def spinner_dots_wiper(
     label: str,
     radius: float,
@@ -2275,6 +2445,7 @@ def spinner_dots_wiper(
     """
     pass
 
+# inline void SpinnerDotsCollapse(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.5f);    /* original C++ signature */
 def spinner_dots_collapse(
     label: str,
     radius: float,
@@ -2291,6 +2462,7 @@ def spinner_dots_collapse(
     """
     pass
 
+# inline void SpinnerDotsFlip(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_flip(
     label: str,
     radius: float,
@@ -2307,6 +2479,7 @@ def spinner_dots_flip(
     """
     pass
 
+# inline void SpinnerDotsTurn(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_turn(
     label: str,
     radius: float,
@@ -2323,6 +2496,7 @@ def spinner_dots_turn(
     """
     pass
 
+# inline void SpinnerDotsCarousel(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_carousel(
     label: str,
     radius: float,
@@ -2339,6 +2513,7 @@ def spinner_dots_carousel(
     """
     pass
 
+# inline void SpinnerDotsHalfTurn(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_half_turn(
     label: str,
     radius: float,
@@ -2355,6 +2530,7 @@ def spinner_dots_half_turn(
     """
     pass
 
+# inline void SpinnerDotsSlideFlip(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_slide_flip(
     label: str,
     radius: float,
@@ -2371,6 +2547,7 @@ def spinner_dots_slide_flip(
     """
     pass
 
+# inline void SpinnerDotsStaggerTurn(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_stagger_turn(
     label: str,
     radius: float,
@@ -2387,6 +2564,7 @@ def spinner_dots_stagger_turn(
     """
     pass
 
+# inline void SpinnerDotsStretch(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_stretch(
     label: str,
     radius: float,
@@ -2403,6 +2581,7 @@ def spinner_dots_stretch(
     """
     pass
 
+# inline void SpinnerDotsMirrorStretch(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_mirror_stretch(
     label: str,
     radius: float,
@@ -2418,6 +2597,7 @@ def spinner_dots_mirror_stretch(
     """
     pass
 
+# inline void SpinnerDotsPinch(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_pinch(
     label: str,
     radius: float,
@@ -2434,6 +2614,7 @@ def spinner_dots_pinch(
     """
     pass
 
+# inline void SpinnerDotsCorners(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 2.f);    /* original C++ signature */
 def spinner_dots_corners(
     label: str,
     radius: float,
@@ -2450,6 +2631,7 @@ def spinner_dots_corners(
     """
     pass
 
+# inline void SpinnerDotsNudgeRotate(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_nudge_rotate(
     label: str,
     radius: float,
@@ -2466,6 +2648,7 @@ def spinner_dots_nudge_rotate(
     """
     pass
 
+# inline void SpinnerDotsUnfold(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_unfold(
     label: str,
     radius: float,
@@ -2482,6 +2665,7 @@ def spinner_dots_unfold(
     """
     pass
 
+# inline void SpinnerDotsShuttle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_shuttle(
     label: str,
     radius: float,
@@ -2498,6 +2682,7 @@ def spinner_dots_shuttle(
     """
     pass
 
+# inline void SpinnerDotsSpreadShuttle(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_spread_shuttle(
     label: str,
     radius: float,
@@ -2514,6 +2699,7 @@ def spinner_dots_spread_shuttle(
     """
     pass
 
+# inline void SpinnerDotsTriad(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_triad(
     label: str,
     radius: float,
@@ -2530,6 +2716,7 @@ def spinner_dots_triad(
     """
     pass
 
+# inline void SpinnerDotsSatellite(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_dots_satellite(
     label: str,
     radius: float,
@@ -2546,6 +2733,9 @@ def spinner_dots_satellite(
     """
     pass
 
+# inline void SpinnerDotsTrack(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 0.5f)    /* original C++ signature */
+#
+# };
 def spinner_dots_track(
     label: str,
     radius: float,
@@ -2583,6 +2773,7 @@ def spinner_dots_track(
 #
 
 
+# inline void SpinnerTextFade(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_fade(
     label: str,
     radius: float,
@@ -2601,6 +2792,7 @@ def spinner_text_fade(
     """
     pass
 
+# inline void SpinnerTextFading(const char *label, const char* text, float radius, float fsize, const ImColor &color = white, float speed = 2.8f);    /* original C++ signature */
 def spinner_text_fading(
     label: str,
     text: str,
@@ -2617,6 +2809,7 @@ def spinner_text_fading(
     """
     pass
 
+# inline void SpinnerTextUnderline(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, float thickness = 3.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_underline(
     label: str,
     radius: float,
@@ -2636,6 +2829,7 @@ def spinner_text_underline(
     """
     pass
 
+# inline void SpinnerTextUnderlineDots(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, float thickness = 3.f, int dashes = 6, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_underline_dots(
     label: str,
     radius: float,
@@ -2656,6 +2850,7 @@ def spinner_text_underline_dots(
     """
     pass
 
+# inline void SpinnerTextTyping(const char *label, float radius, const ImColor &color = white, float speed = 1.f, int tail = 3, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_typing(
     label: str,
     radius: float,
@@ -2677,6 +2872,7 @@ def spinner_text_typing(
     """
     pass
 
+# inline void SpinnerTextScroll(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_scroll(
     label: str,
     radius: float,
@@ -2696,6 +2892,7 @@ def spinner_text_scroll(
     """
     pass
 
+# inline void SpinnerTextColorFill(const char *label, float radius, const ImColor &color = ImColor(0xC0, 0x29, 0x42), const ImColor &bg = white, float speed = 0.5f, int mode = 0, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_color_fill(
     label: str,
     radius: float,
@@ -2720,6 +2917,7 @@ def spinner_text_color_fill(
     """
     pass
 
+# inline void SpinnerTextScrollColors(const char *label, float radius, const ImColor &color = white, float speed = 0.2f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_scroll_colors(
     label: str,
     radius: float,
@@ -2740,6 +2938,7 @@ def spinner_text_scroll_colors(
     """
     pass
 
+# inline void SpinnerTextColorCycle(const char *label, float radius, const ImColor &color = white, float speed = 0.2f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_color_cycle(
     label: str,
     radius: float,
@@ -2760,6 +2959,7 @@ def spinner_text_color_cycle(
     """
     pass
 
+# inline void SpinnerTextBounce(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_bounce(
     label: str,
     radius: float,
@@ -2778,6 +2978,7 @@ def spinner_text_bounce(
     """
     pass
 
+# inline void SpinnerTextSplit(const char *label, float radius, const ImColor &color = white, float speed = 1.f, int mode = 0, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_split(
     label: str,
     radius: float,
@@ -2799,6 +3000,7 @@ def spinner_text_split(
     """
     pass
 
+# inline void SpinnerTextUnderlineScroll(const char *label, float radius, const ImColor &color = white, float speed = 0.66f, float thickness = 3.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_underline_scroll(
     label: str,
     radius: float,
@@ -2818,6 +3020,7 @@ def spinner_text_underline_scroll(
     """
     pass
 
+# inline void SpinnerTextRoll(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_roll(
     label: str,
     radius: float,
@@ -2835,6 +3038,7 @@ def spinner_text_roll(
     """
     pass
 
+# inline void SpinnerTextColorful(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_colorful(
     label: str,
     radius: float,
@@ -2854,6 +3058,7 @@ def spinner_text_colorful(
     """
     pass
 
+# inline void SpinnerTextCascade(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_cascade(
     label: str,
     radius: float,
@@ -2871,6 +3076,7 @@ def spinner_text_cascade(
     """
     pass
 
+# inline void SpinnerTextConveyor(const char *label, float radius, const ImColor &color = white, float speed = 0.33f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_conveyor(
     label: str,
     radius: float,
@@ -2888,6 +3094,7 @@ def spinner_text_conveyor(
     """
     pass
 
+# inline void SpinnerTextReveal(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_reveal(
     label: str,
     radius: float,
@@ -2905,6 +3112,7 @@ def spinner_text_reveal(
     """
     pass
 
+# inline void SpinnerTextWave(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_wave(
     label: str,
     radius: float,
@@ -2922,6 +3130,7 @@ def spinner_text_wave(
     """
     pass
 
+# inline void SpinnerTextSweep(const char *label, float radius, const ImColor &color = white, const ImColor &bg = ImColor(0, 0, 0), float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_sweep(
     label: str,
     radius: float,
@@ -2943,6 +3152,7 @@ def spinner_text_sweep(
     """
     pass
 
+# inline void SpinnerTextShine(const char *label, float radius, const ImColor &color = white, const ImColor &bg = ImColor(0, 0, 0), float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_shine(
     label: str,
     radius: float,
@@ -2963,6 +3173,7 @@ def spinner_text_shine(
     """
     pass
 
+# inline void SpinnerTextScrollSweep(const char *label, float radius, const ImColor &color = white, const ImColor &bg = ImColor(0, 0, 0), float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_scroll_sweep(
     label: str,
     radius: float,
@@ -2984,6 +3195,7 @@ def spinner_text_scroll_sweep(
     """
     pass
 
+# inline void SpinnerTextSpotlight(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_spotlight(
     label: str,
     radius: float,
@@ -3002,6 +3214,7 @@ def spinner_text_spotlight(
     """
     pass
 
+# inline void SpinnerTextShake(const char *label, float radius, const ImColor &color = white, float speed = 1.f, int mode = 0, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_shake(
     label: str,
     radius: float,
@@ -3020,6 +3233,7 @@ def spinner_text_shake(
     """
     pass
 
+# inline void SpinnerTextFlip(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_flip(
     label: str,
     radius: float,
@@ -3038,6 +3252,7 @@ def spinner_text_flip(
     """
     pass
 
+# inline void SpinnerTextSpin(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_spin(
     label: str,
     radius: float,
@@ -3055,6 +3270,7 @@ def spinner_text_spin(
     """
     pass
 
+# inline void SpinnerTextTumble(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, int mode = 0, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_tumble(
     label: str,
     radius: float,
@@ -3074,6 +3290,7 @@ def spinner_text_tumble(
     """
     pass
 
+# inline void SpinnerTextSwirl(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_swirl(
     label: str,
     radius: float,
@@ -3092,6 +3309,7 @@ def spinner_text_swirl(
     """
     pass
 
+# inline void SpinnerTextRollWave(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_roll_wave(
     label: str,
     radius: float,
@@ -3109,6 +3327,7 @@ def spinner_text_roll_wave(
     """
     pass
 
+# inline void SpinnerTextVibrate(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_vibrate(
     label: str,
     radius: float,
@@ -3126,6 +3345,7 @@ def spinner_text_vibrate(
     """
     pass
 
+# inline void SpinnerTextGlitch(const char *label, float radius, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_glitch(
     label: str,
     radius: float,
@@ -3140,6 +3360,7 @@ def spinner_text_glitch(
     """
     pass
 
+# inline void SpinnerTextBlur(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_blur(
     label: str,
     radius: float,
@@ -3157,6 +3378,7 @@ def spinner_text_blur(
     """
     pass
 
+# inline void SpinnerTextDropout(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_dropout(
     label: str,
     radius: float,
@@ -3174,6 +3396,7 @@ def spinner_text_dropout(
     """
     pass
 
+# inline void SpinnerTextScanline(const char *label, float radius, const ImColor &color = white, float speed = 1.f, int mode = 0, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_scanline(
     label: str,
     radius: float,
@@ -3194,6 +3417,7 @@ def spinner_text_scanline(
     """
     pass
 
+# inline void SpinnerTextSquash(const char *label, float radius, const ImColor &color = white, float speed = 1.f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_squash(
     label: str,
     radius: float,
@@ -3210,6 +3434,7 @@ def spinner_text_squash(
     """
     pass
 
+# inline void SpinnerTextScramble(const char *label, float radius, const ImColor &color = white, float speed = 1.f);    /* original C++ signature */
 def spinner_text_scramble(
     label: str,
     radius: float,
@@ -3227,6 +3452,7 @@ def spinner_text_scramble(
     """
     pass
 
+# inline void SpinnerTextDecode(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...");    /* original C++ signature */
 def spinner_text_decode(
     label: str,
     radius: float,
@@ -3244,6 +3470,9 @@ def spinner_text_decode(
     """
     pass
 
+# inline void SpinnerTextVanish(const char *label, float radius, const ImColor &color = white, float speed = 0.5f, const char *text = "Loading...")    /* original C++ signature */
+#
+# };
 def spinner_text_vanish(
     label: str,
     radius: float,
@@ -3283,6 +3512,7 @@ def spinner_text_vanish(
 # #endif
 #
 
+# inline void SpinnerFadeBars(const char *label, float w, const ImColor &color = white, float speed = 2.8f, size_t bars = 3, bool scale = false);    /* original C++ signature */
 def spinner_fade_bars(
     label: str,
     w: float,
@@ -3295,6 +3525,7 @@ def spinner_fade_bars(
         If color is None, then its default value will be: white
     """
     pass
+# inline void SpinnerBarsRotateFade(const char *label, float rmin, float rmax , float thickness, const ImColor &color = white, float speed = 2.8f, size_t bars = 6);    /* original C++ signature */
 def spinner_bars_rotate_fade(
     label: str,
     rmin: float,
@@ -3308,6 +3539,7 @@ def spinner_bars_rotate_fade(
         If color is None, then its default value will be: white
     """
     pass
+# inline void SpinnerBarsScaleMiddle(const char *label, float w, const ImColor &color = white, float speed = 2.8f, size_t bars = 3);    /* original C++ signature */
 def spinner_bars_scale_middle(
     label: str,
     w: float,
@@ -3319,6 +3551,7 @@ def spinner_bars_scale_middle(
         If color is None, then its default value will be: white
     """
     pass
+# inline void SpinnerBarChartSine(const char *label, float radius, float thickness, const ImColor &color, float speed, int bars = 5, int mode = 0);    /* original C++ signature */
 def spinner_bar_chart_sine(
     label: str,
     radius: float,
@@ -3330,6 +3563,7 @@ def spinner_bar_chart_sine(
     ) -> None:
     pass
 
+# inline void SpinnerBarChartAdvSine(const char *label, float radius, float thickness, const ImColor &color, float speed, int mode = 0);    /* original C++ signature */
 def spinner_bar_chart_adv_sine(
     label: str,
     radius: float,
@@ -3340,6 +3574,7 @@ def spinner_bar_chart_adv_sine(
     ) -> None:
     pass
 
+# inline void SpinnerBarChartAdvSineFade(const char *label, float radius, float thickness, const ImColor &color, float speed, int mode = 0);    /* original C++ signature */
 def spinner_bar_chart_adv_sine_fade(
     label: str,
     radius: float,
@@ -3350,6 +3585,7 @@ def spinner_bar_chart_adv_sine_fade(
     ) -> None:
     pass
 
+# inline void SpinnerBarChartRainbow(const char *label, float radius, float thickness, const ImColor &color, float speed, int bars = 5, int mode = 0);    /* original C++ signature */
 def spinner_bar_chart_rainbow(
     label: str,
     radius: float,
@@ -3360,6 +3596,7 @@ def spinner_bar_chart_rainbow(
     mode: int = 0
     ) -> None:
     pass
+# inline void SpinnerFluid(const char *label, float radius, const ImColor &color, float speed, int bars = 3);    /* original C++ signature */
 def spinner_fluid(
     label: str,
     radius: float,
@@ -3369,6 +3606,7 @@ def spinner_fluid(
     ) -> None:
     pass
 
+# inline void SpinnerFluidPoints(const char *label, float radius, float thickness, const ImColor &color, float speed, size_t dots = 6, float delta = 0.35f);    /* original C++ signature */
 def spinner_fluid_points(
     label: str,
     radius: float,
@@ -3393,6 +3631,7 @@ def spinner_fluid_points(
 
 
 
+# inline void SpinnerBarsSeqPulse(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_seq_pulse(
     label: str,
     radius: float,
@@ -3409,6 +3648,7 @@ def spinner_bars_seq_pulse(
     """
     pass
 
+# inline void SpinnerBarsCascadeGrow(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_cascade_grow(
     label: str,
     radius: float,
@@ -3425,6 +3665,7 @@ def spinner_bars_cascade_grow(
     """
     pass
 
+# inline void SpinnerBarsRise(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_rise(
     label: str,
     radius: float,
@@ -3441,6 +3682,7 @@ def spinner_bars_rise(
     """
     pass
 
+# inline void SpinnerBarsCornerHop(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_corner_hop(
     label: str,
     radius: float,
@@ -3457,6 +3699,7 @@ def spinner_bars_corner_hop(
     """
     pass
 
+# inline void SpinnerBarsDiagonalGrow(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_diagonal_grow(
     label: str,
     radius: float,
@@ -3473,6 +3716,7 @@ def spinner_bars_diagonal_grow(
     """
     pass
 
+# inline void SpinnerBarsBounceCenter(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_bounce_center(
     label: str,
     radius: float,
@@ -3489,6 +3733,7 @@ def spinner_bars_bounce_center(
     """
     pass
 
+# inline void SpinnerBarsScaleAlt(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_scale_alt(
     label: str,
     radius: float,
@@ -3505,6 +3750,7 @@ def spinner_bars_scale_alt(
     """
     pass
 
+# inline void SpinnerBarsCornerWave(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_corner_wave(
     label: str,
     radius: float,
@@ -3521,6 +3767,7 @@ def spinner_bars_corner_wave(
     """
     pass
 
+# inline void SpinnerBarsJump(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_jump(
     label: str,
     radius: float,
@@ -3537,6 +3784,7 @@ def spinner_bars_jump(
     """
     pass
 
+# inline void SpinnerBarsDoubleRow(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_double_row(
     label: str,
     radius: float,
@@ -3553,6 +3801,7 @@ def spinner_bars_double_row(
     """
     pass
 
+# inline void SpinnerBarsSixPulse(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_six_pulse(
     label: str,
     radius: float,
@@ -3569,6 +3818,7 @@ def spinner_bars_six_pulse(
     """
     pass
 
+# inline void SpinnerBarsSixStagger(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_six_stagger(
     label: str,
     radius: float,
@@ -3585,6 +3835,7 @@ def spinner_bars_six_stagger(
     """
     pass
 
+# inline void SpinnerBarsMorphPlus(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_morph_plus(
     label: str,
     radius: float,
@@ -3601,6 +3852,7 @@ def spinner_bars_morph_plus(
     """
     pass
 
+# inline void SpinnerBarsFlipSix(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_flip_six(
     label: str,
     radius: float,
@@ -3617,6 +3869,7 @@ def spinner_bars_flip_six(
     """
     pass
 
+# inline void SpinnerBarsSwapTriBottom(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_swap_tri_bottom(
     label: str,
     radius: float,
@@ -3633,6 +3886,7 @@ def spinner_bars_swap_tri_bottom(
     """
     pass
 
+# inline void SpinnerBarsSwapTriZigzag(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_swap_tri_zigzag(
     label: str,
     radius: float,
@@ -3649,6 +3903,7 @@ def spinner_bars_swap_tri_zigzag(
     """
     pass
 
+# inline void SpinnerBarsMorphDiagonal(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_morph_diagonal(
     label: str,
     radius: float,
@@ -3665,6 +3920,7 @@ def spinner_bars_morph_diagonal(
     """
     pass
 
+# inline void SpinnerBarsSlideDiagonal(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_slide_diagonal(
     label: str,
     radius: float,
@@ -3681,6 +3937,7 @@ def spinner_bars_slide_diagonal(
     """
     pass
 
+# inline void SpinnerBarsConicAlternate(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_conic_alternate(
     label: str,
     radius: float,
@@ -3697,6 +3954,7 @@ def spinner_bars_conic_alternate(
     """
     pass
 
+# inline void SpinnerBarsConicWalk(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_conic_walk(
     label: str,
     radius: float,
@@ -3713,6 +3971,7 @@ def spinner_bars_conic_walk(
     """
     pass
 
+# inline void SpinnerBarsMarchIn(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_march_in(
     label: str,
     radius: float,
@@ -3729,6 +3988,7 @@ def spinner_bars_march_in(
     """
     pass
 
+# inline void SpinnerBarsMarchDown(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_march_down(
     label: str,
     radius: float,
@@ -3745,6 +4005,7 @@ def spinner_bars_march_down(
     """
     pass
 
+# inline void SpinnerBarsWaveSkew(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_wave_skew(
     label: str,
     radius: float,
@@ -3761,6 +4022,7 @@ def spinner_bars_wave_skew(
     """
     pass
 
+# inline void SpinnerBarsRowDrop(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_row_drop(
     label: str,
     radius: float,
@@ -3777,6 +4039,7 @@ def spinner_bars_row_drop(
     """
     pass
 
+# inline void SpinnerBarsZigzagRows(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_zigzag_rows(
     label: str,
     radius: float,
@@ -3793,6 +4056,7 @@ def spinner_bars_zigzag_rows(
     """
     pass
 
+# inline void SpinnerBarsFillCascade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_fill_cascade(
     label: str,
     radius: float,
@@ -3809,6 +4073,7 @@ def spinner_bars_fill_cascade(
     """
     pass
 
+# inline void SpinnerBarsPingPongRows(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_ping_pong_rows(
     label: str,
     radius: float,
@@ -3825,6 +4090,7 @@ def spinner_bars_ping_pong_rows(
     """
     pass
 
+# inline void SpinnerBarsWaveRowsWide(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_wave_rows_wide(
     label: str,
     radius: float,
@@ -3841,6 +4107,7 @@ def spinner_bars_wave_rows_wide(
     """
     pass
 
+# inline void SpinnerBarsGridFade(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_grid_fade(
     label: str,
     radius: float,
@@ -3857,6 +4124,7 @@ def spinner_bars_grid_fade(
     """
     pass
 
+# inline void SpinnerBarsGridSpread(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_grid_spread(
     label: str,
     radius: float,
@@ -3873,6 +4141,7 @@ def spinner_bars_grid_spread(
     """
     pass
 
+# inline void SpinnerBarsStretch(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_stretch(
     label: str,
     radius: float,
@@ -3890,6 +4159,7 @@ def spinner_bars_stretch(
     """
     pass
 
+# inline void SpinnerBarsStretchSeq(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_stretch_seq(
     label: str,
     radius: float,
@@ -3907,6 +4177,7 @@ def spinner_bars_stretch_seq(
     """
     pass
 
+# inline void SpinnerBarsBounceBall(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_bounce_ball(
     label: str,
     radius: float,
@@ -3925,6 +4196,7 @@ def spinner_bars_bounce_ball(
     """
     pass
 
+# inline void SpinnerBarsKnockDots(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_knock_dots(
     label: str,
     radius: float,
@@ -3943,6 +4215,7 @@ def spinner_bars_knock_dots(
     """
     pass
 
+# inline void SpinnerBarsStaircase(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_staircase(
     label: str,
     radius: float,
@@ -3961,6 +4234,7 @@ def spinner_bars_staircase(
     """
     pass
 
+# inline void SpinnerBarsKnockAway(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_knock_away(
     label: str,
     radius: float,
@@ -3979,6 +4253,7 @@ def spinner_bars_knock_away(
     """
     pass
 
+# inline void SpinnerBarsGates(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_gates(
     label: str,
     radius: float,
@@ -3997,6 +4272,7 @@ def spinner_bars_gates(
     """
     pass
 
+# inline void SpinnerBarsCapture(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_capture(
     label: str,
     radius: float,
@@ -4015,6 +4291,7 @@ def spinner_bars_capture(
     """
     pass
 
+# inline void SpinnerBarsEscape(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_escape(
     label: str,
     radius: float,
@@ -4033,6 +4310,7 @@ def spinner_bars_escape(
     """
     pass
 
+# inline void SpinnerBarsDevour(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_devour(
     label: str,
     radius: float,
@@ -4051,6 +4329,7 @@ def spinner_bars_devour(
     """
     pass
 
+# inline void SpinnerBarsLift(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_lift(
     label: str,
     radius: float,
@@ -4069,6 +4348,7 @@ def spinner_bars_lift(
     """
     pass
 
+# inline void SpinnerBarsGapSlide(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_gap_slide(
     label: str,
     radius: float,
@@ -4087,6 +4367,7 @@ def spinner_bars_gap_slide(
     """
     pass
 
+# inline void SpinnerBarsConverge(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_converge(
     label: str,
     radius: float,
@@ -4105,6 +4386,7 @@ def spinner_bars_converge(
     """
     pass
 
+# inline void SpinnerBarsSwapEnds(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_swap_ends(
     label: str,
     radius: float,
@@ -4123,6 +4405,7 @@ def spinner_bars_swap_ends(
     """
     pass
 
+# inline void SpinnerBarsRelay(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_relay(
     label: str,
     radius: float,
@@ -4141,6 +4424,7 @@ def spinner_bars_relay(
     """
     pass
 
+# inline void SpinnerBarsPush(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_push(
     label: str,
     radius: float,
@@ -4160,6 +4444,7 @@ def spinner_bars_push(
     pass
 
 
+# inline void SpinnerBarsPushWave(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_push_wave(
     label: str,
     radius: float,
@@ -4178,6 +4463,7 @@ def spinner_bars_push_wave(
     """
     pass
 
+# inline void SpinnerBarsGather(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_gather(
     label: str,
     radius: float,
@@ -4196,6 +4482,7 @@ def spinner_bars_gather(
     """
     pass
 
+# inline void SpinnerBarsSplit(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_split(
     label: str,
     radius: float,
@@ -4214,6 +4501,7 @@ def spinner_bars_split(
     """
     pass
 
+# inline void SpinnerBarsSlot(const char *label, float radius, float thickness, const ImColor &color = white, float speed = 1.f, int mode = 0);    /* original C++ signature */
 def spinner_bars_slot(
     label: str,
     radius: float,

@@ -89,8 +89,7 @@ class ImCoolBarSettings:
     #                       const float aAnimStep = 0.05f,
     #                       const float aEffectStrength = 0.5f,
     #                       const ImCoolBarFlags aMode = ImCoolBarFlags_Horizontal)
-    #         : anchor(aAnchor), normalSize(aNormalSize), hoveredSize(aHoveredSize), animStep(aAnimStep), effectStrength(aEffectStrength), mode(aMode) {
-    #     }
+    #         : anchor(aAnchor), normalSize(aNormalSize), hoveredSize(aHoveredSize), animStep(aAnimStep), effectStrength(aEffectStrength), mode(aMode);
     def __init__(
         self,
         a_anchor: Optional[ImVec2Like] = None,

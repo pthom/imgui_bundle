@@ -1014,19 +1014,19 @@ class Point:
     x: float
     # y;    /* original C++ signature */
     y: float
-    # constexpr ImPlotPoint()                     : x(0.0), y(0.0) { }    /* original C++ signature */
+    # constexpr ImPlotPoint()                     : x(0.0), y(0.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlotPoint(double _x, double _y) : x(_x), y(_y) { }    /* original C++ signature */
+    # constexpr ImPlotPoint(double _x, double _y) : x(_x), y(_y);    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float) -> None:
         pass
-    # constexpr ImPlotPoint(const ImVec2& p)      : x((double)p.x), y((double)p.y) { }    /* original C++ signature */
+    # constexpr ImPlotPoint(const ImVec2& p)      : x((double)p.x), y((double)p.y);    /* original C++ signature */
     @overload
     def __init__(self, p: ImVec2Like) -> None:
         pass
-    # IMPLOT_API double& operator[] (size_t idx)             { IM_ASSERT(idx == 0 || idx == 1); return ((double*)(void*)(char*)this)[idx]; }    /* original C++ signature */
+    # IMPLOT_API double& operator[] (size_t idx);    /* original C++ signature */
     def __getitem__(self, idx: int) -> float:
         pass
 
@@ -1037,21 +1037,21 @@ class Range:
     min: float
     # Max;    /* original C++ signature */
     max: float
-    # constexpr ImPlotRange()                         : Min(0.0), Max(0.0) { }    /* original C++ signature */
+    # constexpr ImPlotRange()                         : Min(0.0), Max(0.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlotRange(double _min, double _max) : Min(_min), Max(_max) { }    /* original C++ signature */
+    # constexpr ImPlotRange(double _min, double _max) : Min(_min), Max(_max);    /* original C++ signature */
     @overload
     def __init__(self, _min: float, _max: float) -> None:
         pass
-    # IMPLOT_API bool Contains(double value) const               { return value >= Min && value <= Max;                      }    /* original C++ signature */
+    # IMPLOT_API bool Contains(double value) const;    /* original C++ signature */
     def contains(self, value: float) -> bool:
         pass
-    # IMPLOT_API double Size() const                             { return Max - Min;                                         }    /* original C++ signature */
+    # IMPLOT_API double Size() const;    /* original C++ signature */
     def size(self) -> float:
         pass
-    # IMPLOT_API double Clamp(double value) const                { return (value < Min) ? Min : (value > Max) ? Max : value; }    /* original C++ signature */
+    # IMPLOT_API double Clamp(double value) const;    /* original C++ signature */
     def clamp(self, value: float) -> float:
         pass
 
@@ -1062,37 +1062,37 @@ class Rect:
     x: Range
     # Y;    /* original C++ signature */
     y: Range
-    # constexpr ImPlotRect()                                                       : X(0.0,0.0), Y(0.0,0.0) { }    /* original C++ signature */
+    # constexpr ImPlotRect()                                                       : X(0.0,0.0), Y(0.0,0.0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImPlotRect(double x_min, double x_max, double y_min, double y_max) : X(x_min, x_max), Y(y_min, y_max) { }    /* original C++ signature */
+    # constexpr ImPlotRect(double x_min, double x_max, double y_min, double y_max) : X(x_min, x_max), Y(y_min, y_max);    /* original C++ signature */
     @overload
     def __init__(self, x_min: float, x_max: float, y_min: float, y_max: float) -> None:
         pass
-    # IMPLOT_API bool Contains(const ImPlotPoint& p) const                                    { return Contains(p.x, p.y);                 }    /* original C++ signature */
+    # IMPLOT_API bool Contains(const ImPlotPoint& p) const;    /* original C++ signature */
     @overload
     def contains(self, p: Point) -> bool:
         pass
-    # IMPLOT_API bool Contains(double x, double y) const                                      { return X.Contains(x) && Y.Contains(y);     }    /* original C++ signature */
+    # IMPLOT_API bool Contains(double x, double y) const;    /* original C++ signature */
     @overload
     def contains(self, x: float, y: float) -> bool:
         pass
-    # IMPLOT_API ImPlotPoint Size() const                                                     { return ImPlotPoint(X.Size(), Y.Size());    }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Size() const;    /* original C++ signature */
     def size(self) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Clamp(const ImPlotPoint& p) const                                { return Clamp(p.x, p.y);                    }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Clamp(const ImPlotPoint& p) const;    /* original C++ signature */
     @overload
     def clamp(self, p: Point) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Clamp(double x, double y) const                                  { return ImPlotPoint(X.Clamp(x),Y.Clamp(y)); }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Clamp(double x, double y) const;    /* original C++ signature */
     @overload
     def clamp(self, x: float, y: float) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Min() const                                                      { return ImPlotPoint(X.Min, Y.Min);          }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Min() const;    /* original C++ signature */
     def min(self) -> Point:
         pass
-    # IMPLOT_API ImPlotPoint Max() const                                                      { return ImPlotPoint(X.Max, Y.Max);          }    /* original C++ signature */
+    # IMPLOT_API ImPlotPoint Max() const;    /* original C++ signature */
     def max(self) -> Point:
         pass
 
@@ -1152,11 +1152,11 @@ class Style:
     # python adapter for ImPlotStyle::Colors[ImPlotCol_COUNT]
     # You can query and modify those values (0 <= idxColor < implot.Col_.count)
 
-    # inline IMPLOT_API  ImVec4& Color_(size_t idxColor) { IM_ASSERT( (idxColor >=0) && (idxColor < ImPlotCol_COUNT)); return Colors[idxColor]; }    /* original C++ signature */
+    # inline IMPLOT_API  ImVec4& Color_(size_t idxColor);    /* original C++ signature */
     def color_(self, idx_color: int) -> ImVec4:
         """Array of styling colors (index from implot.Col_.xxx)"""
         pass
-    # inline IMPLOT_API  void SetColor_(size_t idxColor, ImVec4 color) { IM_ASSERT( (idxColor >=0) && (idxColor < ImPlotCol_COUNT)); Colors[idxColor] = color; }    /* original C++ signature */
+    # inline IMPLOT_API  void SetColor_(size_t idxColor, ImVec4 color);    /* original C++ signature */
     def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
         """Array of styling colors (index from implot.Col_.xxx)"""
         pass
@@ -1360,12 +1360,7 @@ class SubplotsRowColRatios:
 #                               int cols,
 #                               const ImVec2& size,
 #                               ImPlotSubplotFlags flags = 0,
-#                               SubplotsRowColRatios* row_col_ratios = nullptr)
-# {
-#     if (row_col_ratios == nullptr)
-#         return BeginSubplots(title_id, rows, cols, size, flags, nullptr , nullptr);
-#     return BeginSubplots(title_id, rows, cols, size, flags, row_col_ratios->row_ratios.data(), row_col_ratios->col_ratios.data());
-# }
+#                               SubplotsRowColRatios* row_col_ratios = nullptr);
 def begin_subplots(
     title_id: str,
     rows: int,
@@ -1431,7 +1426,7 @@ def setup_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Optional[C
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# IMPLOT_API inline void SetupAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max) { SetupAxisLinks(axis, &link_min->value, &link_max->value); }    /* original C++ signature */
+# IMPLOT_API inline void SetupAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max);    /* original C++ signature */
 def setup_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -> None:
     """Links an axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot)."""
     pass
@@ -1523,7 +1518,7 @@ def set_next_axis_limits(axis: ImAxis, v_min: float, v_max: float, cond: Optiona
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# IMPLOT_API inline void SetNextAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max) { SetNextAxisLinks(axis, &link_min->value, &link_max->value); }    /* original C++ signature */
+# IMPLOT_API inline void SetNextAxisLinks(ImAxis axis, BoxedValue* link_min, BoxedValue* link_max);    /* original C++ signature */
 def set_next_axis_links(axis: ImAxis, link_min: BoxedValue, link_max: BoxedValue) -> None:
     """Links an upcoming axis range limits to external values. Use BoxedValue to transmit values (which will be updated after EndPlot)."""
     pass

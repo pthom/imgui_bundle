@@ -63,19 +63,15 @@ class color_set:
     active: ImColor
 
     # color_set(ImColor base, ImColor hovered, ImColor active)    /* original C++ signature */
-    #             : base(base), hovered(hovered), active(active) {}
+    #             : base(base), hovered(hovered), active(active);
     @overload
     def __init__(self, base: ImColor, hovered: ImColor, active: ImColor) -> None:
         pass
-    # color_set() : base(ImColor(0, 0, 0)), hovered(ImColor(0, 0, 0)), active(ImColor(0, 0, 0)) {}    /* original C++ signature */
+    # color_set() : base(ImColor(0, 0, 0)), hovered(ImColor(0, 0, 0)), active(ImColor(0, 0, 0));    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # color_set(ImColor color) {    /* original C++ signature */
-    #             base = color;
-    #             hovered = color;
-    #             active = color;
-    #         }
+    # color_set(ImColor color);    /* original C++ signature */
     @overload
     def __init__(self, color: ImColor) -> None:
         pass

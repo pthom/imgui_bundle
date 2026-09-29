@@ -463,33 +463,33 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     class Matrix16:
         # float values[16]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=16] default:float()
-        # Matrix16() { for (float & value : values) value = 0.f; }    /* original C++ signature */
+        # Matrix16();    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
-        # explicit Matrix16(const std::array<float, 16>& v) { for (int i = 0; i < 16; ++i) values[i] = v[i]; }    /* original C++ signature */
+        # explicit Matrix16(const std::array<float, 16>& v);    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
     class Matrix6:
         # float values[6]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=6] default:float()
-        # Matrix6() { for (float & value : values) value = 0.f; }    /* original C++ signature */
+        # Matrix6();    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
-        # explicit Matrix6(const std::array<float, 6>& v) { for (int i = 0; i < 6; ++i) values[i] = v[i]; }    /* original C++ signature */
+        # explicit Matrix6(const std::array<float, 6>& v);    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
     class Matrix3:
         # float values[3]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=3] default:float()
-        # Matrix3() { for (float & value : values) value = 0.f; }    /* original C++ signature */
+        # Matrix3();    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
-        # explicit Matrix3(const std::array<float, 3>& v) { for (int i = 0; i < 3; ++i) values[i] = v[i]; }    /* original C++ signature */
+        # explicit Matrix3(const std::array<float, 3>& v);    /* original C++ signature */
         @overload
         def __init__(self, v: List[float]) -> None:
             pass

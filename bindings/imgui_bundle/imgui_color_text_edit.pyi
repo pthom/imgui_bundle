@@ -98,34 +98,34 @@ class TextEditor:
         def __init__(self) -> None:
             """ represents the logical position of a glyph in a document expressed as a line number and glyph index (both zero-based)"""
             pass
-        # DocPos(size_t line, size_t index) : line(line), index(index) {}    /* original C++ signature */
+        # DocPos(size_t line, size_t index) : line(line), index(index);    /* original C++ signature */
         @overload
         def __init__(self, line: int, index: int) -> None:
             pass
 
-        # inline bool operator ==(const DocPos& rhs) const { return line == rhs.line && index == rhs.index; }    /* original C++ signature */
+        # inline bool operator ==(const DocPos& rhs) const;    /* original C++ signature */
         def __eq__(self, rhs: object) -> bool:
             pass
-        # inline bool operator !=(const DocPos& rhs) const { return line != rhs.line || index != rhs.index; }    /* original C++ signature */
+        # inline bool operator !=(const DocPos& rhs) const;    /* original C++ signature */
         def __ne__(self, rhs: object) -> bool:
             pass
-        # inline bool operator <(const DocPos& rhs) const { return line != rhs.line ? line < rhs.line : index < rhs.index; }    /* original C++ signature */
+        # inline bool operator <(const DocPos& rhs) const;    /* original C++ signature */
         def __lt__(self, rhs: TextEditor.DocPos) -> bool:
             pass
-        # inline bool operator >(const DocPos& rhs) const { return line != rhs.line ? line > rhs.line : index > rhs.index; }    /* original C++ signature */
+        # inline bool operator >(const DocPos& rhs) const;    /* original C++ signature */
         def __gt__(self, rhs: TextEditor.DocPos) -> bool:
             pass
-        # inline bool operator <=(const DocPos& rhs) const { return line != rhs.line ? line < rhs.line : index <= rhs.index; }    /* original C++ signature */
+        # inline bool operator <=(const DocPos& rhs) const;    /* original C++ signature */
         def __le__(self, rhs: TextEditor.DocPos) -> bool:
             pass
-        # inline bool operator >=(const DocPos& rhs) const { return line != rhs.line ? line > rhs.line : index >= rhs.index; }    /* original C++ signature */
+        # inline bool operator >=(const DocPos& rhs) const;    /* original C++ signature */
         def __ge__(self, rhs: TextEditor.DocPos) -> bool:
             pass
 
-        # inline DocPos operator -(const DocPos& rhs) const { return DocPos(line - rhs.line, index - rhs.index); }    /* original C++ signature */
+        # inline DocPos operator -(const DocPos& rhs) const;    /* original C++ signature */
         def __sub__(self, rhs: TextEditor.DocPos) -> TextEditor.DocPos:
             pass
-        # inline DocPos operator +(const DocPos& rhs) const { return DocPos(line + rhs.line, index + rhs.index); }    /* original C++ signature */
+        # inline DocPos operator +(const DocPos& rhs) const;    /* original C++ signature */
         def __add__(self, rhs: TextEditor.DocPos) -> TextEditor.DocPos:
             pass
 
@@ -140,7 +140,7 @@ class TextEditor:
         def __init__(self) -> None:
             """ represents a range of glyphs from a starting position to an end position"""
             pass
-        # DocSelection(DocPos start, DocPos end) : start(start), end(end) {}    /* original C++ signature */
+        # DocSelection(DocPos start, DocPos end) : start(start), end(end);    /* original C++ signature */
         @overload
         def __init__(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
             pass
@@ -159,34 +159,34 @@ class TextEditor:
              word-wrapping creates a vertical offset between line and row
             """
             pass
-        # VisPos(size_t row, size_t column) : row(row), column(column) {}    /* original C++ signature */
+        # VisPos(size_t row, size_t column) : row(row), column(column);    /* original C++ signature */
         @overload
         def __init__(self, row: int, column: int) -> None:
             pass
 
-        # inline bool operator ==(const VisPos& rhs) const { return row == rhs.row && column == rhs.column; }    /* original C++ signature */
+        # inline bool operator ==(const VisPos& rhs) const;    /* original C++ signature */
         def __eq__(self, rhs: object) -> bool:
             pass
-        # inline bool operator !=(const VisPos& rhs) const { return row != rhs.row || column != rhs.column; }    /* original C++ signature */
+        # inline bool operator !=(const VisPos& rhs) const;    /* original C++ signature */
         def __ne__(self, rhs: object) -> bool:
             pass
-        # inline bool operator <(const VisPos& rhs) const { return row != rhs.row ? row < rhs.row : column < rhs.column; }    /* original C++ signature */
+        # inline bool operator <(const VisPos& rhs) const;    /* original C++ signature */
         def __lt__(self, rhs: TextEditor.VisPos) -> bool:
             pass
-        # inline bool operator >(const VisPos& rhs) const { return row != rhs.row ? row > rhs.row : column > rhs.column; }    /* original C++ signature */
+        # inline bool operator >(const VisPos& rhs) const;    /* original C++ signature */
         def __gt__(self, rhs: TextEditor.VisPos) -> bool:
             pass
-        # inline bool operator <=(const VisPos& rhs) const { return row != rhs.row ? row < rhs.row : column <= rhs.column; }    /* original C++ signature */
+        # inline bool operator <=(const VisPos& rhs) const;    /* original C++ signature */
         def __le__(self, rhs: TextEditor.VisPos) -> bool:
             pass
-        # inline bool operator >=(const VisPos& rhs) const { return row != rhs.row ? row > rhs.row : column >= rhs.column; }    /* original C++ signature */
+        # inline bool operator >=(const VisPos& rhs) const;    /* original C++ signature */
         def __ge__(self, rhs: TextEditor.VisPos) -> bool:
             pass
 
-        # inline VisPos operator -(const VisPos& rhs) const { return VisPos(row - rhs.row, column - rhs.column); }    /* original C++ signature */
+        # inline VisPos operator -(const VisPos& rhs) const;    /* original C++ signature */
         def __sub__(self, rhs: TextEditor.VisPos) -> TextEditor.VisPos:
             pass
-        # inline VisPos operator +(const VisPos& rhs) const { return VisPos(row + rhs.row, column + rhs.column); }    /* original C++ signature */
+        # inline VisPos operator +(const VisPos& rhs) const;    /* original C++ signature */
         def __add__(self, rhs: TextEditor.VisPos) -> TextEditor.VisPos:
             pass
 
@@ -196,146 +196,146 @@ class TextEditor:
         column: int = 0
 
     # access editor's configuration options
-    # inline void SetTabSize(size_t value) { config.tabSize = value; }    /* original C++ signature */
+    # inline void SetTabSize(size_t value);    /* original C++ signature */
     def set_tab_size(self, value: int) -> None:
         pass
-    # inline size_t GetTabSize() const { return config.tabSize; }    /* original C++ signature */
+    # inline size_t GetTabSize() const;    /* original C++ signature */
     def get_tab_size(self) -> int:
         pass
-    # inline void SetInsertSpacesOnTabs(bool value) { config.insertSpacesOnTabs = value; }    /* original C++ signature */
+    # inline void SetInsertSpacesOnTabs(bool value);    /* original C++ signature */
     def set_insert_spaces_on_tabs(self, value: bool) -> None:
         pass
-    # inline bool IsInsertSpacesOnTabs() const { return config.insertSpacesOnTabs; }    /* original C++ signature */
+    # inline bool IsInsertSpacesOnTabs() const;    /* original C++ signature */
     def is_insert_spaces_on_tabs(self) -> bool:
         pass
-    # inline void SetLineSpacing(float value) { config.lineSpacing = std::max(1.0f, std::min(2.0f, value)); }    /* original C++ signature */
+    # inline void SetLineSpacing(float value);    /* original C++ signature */
     def set_line_spacing(self, value: float) -> None:
         pass
-    # inline float GetLineSpacing() const { return config.lineSpacing; }    /* original C++ signature */
+    # inline float GetLineSpacing() const;    /* original C++ signature */
     def get_line_spacing(self) -> float:
         pass
-    # inline void SetWordWrapEnabled(bool value) { config.wordWrap = value; }    /* original C++ signature */
+    # inline void SetWordWrapEnabled(bool value);    /* original C++ signature */
     def set_word_wrap_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsWordWrapEnabled() const { return config.wordWrap; }    /* original C++ signature */
+    # inline bool IsWordWrapEnabled() const;    /* original C++ signature */
     def is_word_wrap_enabled(self) -> bool:
         pass
-    # inline void SetReadOnlyEnabled(bool value) { config.readOnly = value; }    /* original C++ signature */
+    # inline void SetReadOnlyEnabled(bool value);    /* original C++ signature */
     def set_read_only_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsReadOnlyEnabled() const { return config.readOnly; }    /* original C++ signature */
+    # inline bool IsReadOnlyEnabled() const;    /* original C++ signature */
     def is_read_only_enabled(self) -> bool:
         pass
-    # inline void SetCaretsVisible(bool value) { config.caretsVisible = value; }    /* original C++ signature */
+    # inline void SetCaretsVisible(bool value);    /* original C++ signature */
     def set_carets_visible(self, value: bool) -> None:
         pass
-    # inline bool IsCaretsVisible() const { return config.caretsVisible; }    /* original C++ signature */
+    # inline bool IsCaretsVisible() const;    /* original C++ signature */
     def is_carets_visible(self) -> bool:
         pass
-    # inline void SetAutoIndentEnabled(bool value) { config.autoIndent = value; }    /* original C++ signature */
+    # inline void SetAutoIndentEnabled(bool value);    /* original C++ signature */
     def set_auto_indent_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsAutoIndentEnabled() const { return config.autoIndent; }    /* original C++ signature */
+    # inline bool IsAutoIndentEnabled() const;    /* original C++ signature */
     def is_auto_indent_enabled(self) -> bool:
         pass
-    # inline void SetShowWhitespacesEnabled(bool value) { config.showSpaces = value; config.showTabs = value; }    /* original C++ signature */
+    # inline void SetShowWhitespacesEnabled(bool value);    /* original C++ signature */
     def set_show_whitespaces_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowWhitespacesEnabled() const { return config.showSpaces && config.showTabs; }    /* original C++ signature */
+    # inline bool IsShowWhitespacesEnabled() const;    /* original C++ signature */
     def is_show_whitespaces_enabled(self) -> bool:
         pass
-    # inline void SetShowSpacesEnabled(bool value) { config.showSpaces = value; }    /* original C++ signature */
+    # inline void SetShowSpacesEnabled(bool value);    /* original C++ signature */
     def set_show_spaces_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowSpacesEnabled() const { return config.showSpaces; }    /* original C++ signature */
+    # inline bool IsShowSpacesEnabled() const;    /* original C++ signature */
     def is_show_spaces_enabled(self) -> bool:
         pass
-    # inline void SetShowTabsEnabled(bool value) { config.showTabs = value; }    /* original C++ signature */
+    # inline void SetShowTabsEnabled(bool value);    /* original C++ signature */
     def set_show_tabs_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowTabsEnabled() const { return config.showTabs; }    /* original C++ signature */
+    # inline bool IsShowTabsEnabled() const;    /* original C++ signature */
     def is_show_tabs_enabled(self) -> bool:
         pass
-    # inline void SetShowLineNumbersEnabled(bool value) { config.showLineNumbers = value; }    /* original C++ signature */
+    # inline void SetShowLineNumbersEnabled(bool value);    /* original C++ signature */
     def set_show_line_numbers_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowLineNumbersEnabled() const { return config.showLineNumbers; }    /* original C++ signature */
+    # inline bool IsShowLineNumbersEnabled() const;    /* original C++ signature */
     def is_show_line_numbers_enabled(self) -> bool:
         pass
-    # inline void SetShowMiniMapEnabled(bool value) { config.showMiniMap = value; }    /* original C++ signature */
+    # inline void SetShowMiniMapEnabled(bool value);    /* original C++ signature */
     def set_show_mini_map_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowMiniMapEnabled() const { return config.showMiniMap; }    /* original C++ signature */
+    # inline bool IsShowMiniMapEnabled() const;    /* original C++ signature */
     def is_show_mini_map_enabled(self) -> bool:
         pass
-    # inline void SetMiniMapColumns(size_t value) { config.miniMapColumns = value; }    /* original C++ signature */
+    # inline void SetMiniMapColumns(size_t value);    /* original C++ signature */
     def set_mini_map_columns(self, value: int) -> None:
         pass
-    # inline size_t GetMiniMapColumns() const { return config.miniMapColumns; }    /* original C++ signature */
+    # inline size_t GetMiniMapColumns() const;    /* original C++ signature */
     def get_mini_map_columns(self) -> int:
         pass
-    # inline void SetShowScrollbarMiniMapEnabled(bool value) { config.showScrollbarMiniMap = value; }    /* original C++ signature */
+    # inline void SetShowScrollbarMiniMapEnabled(bool value);    /* original C++ signature */
     def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowScrollbarMiniMapEnabled() const { return config.showScrollbarMiniMap; }    /* original C++ signature */
+    # inline bool IsShowScrollbarMiniMapEnabled() const;    /* original C++ signature */
     def is_show_scrollbar_mini_map_enabled(self) -> bool:
         pass
-    # inline void SetShowPanScrollIndicatorEnabled(bool value) { config.showPanScrollIndicator = value; }    /* original C++ signature */
+    # inline void SetShowPanScrollIndicatorEnabled(bool value);    /* original C++ signature */
     def set_show_pan_scroll_indicator_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowPanScrollIndicatorEnabled() const { return config.showPanScrollIndicator; }    /* original C++ signature */
+    # inline bool IsShowPanScrollIndicatorEnabled() const;    /* original C++ signature */
     def is_show_pan_scroll_indicator_enabled(self) -> bool:
         pass
-    # inline void SetShowMatchingBrackets(bool value) { config.showMatchingBrackets = value; if (!value) { config.lineFolding = false; } }    /* original C++ signature */
+    # inline void SetShowMatchingBrackets(bool value);    /* original C++ signature */
     def set_show_matching_brackets(self, value: bool) -> None:
         pass
-    # inline bool IsShowingMatchingBrackets() const { return config.showMatchingBrackets; }    /* original C++ signature */
+    # inline bool IsShowingMatchingBrackets() const;    /* original C++ signature */
     def is_showing_matching_brackets(self) -> bool:
         pass
-    # inline void SetCompletePairedGlyphs(bool value) { config.completePairedGlyphs = value; }    /* original C++ signature */
+    # inline void SetCompletePairedGlyphs(bool value);    /* original C++ signature */
     def set_complete_paired_glyphs(self, value: bool) -> None:
         pass
-    # inline bool IsCompletingPairedGlyphs() const { return config.completePairedGlyphs; }    /* original C++ signature */
+    # inline bool IsCompletingPairedGlyphs() const;    /* original C++ signature */
     def is_completing_paired_glyphs(self) -> bool:
         pass
-    # inline void SetLineFoldingEnabled(bool value) { config.lineFolding = value; if (value) { config.showMatchingBrackets = true; } }    /* original C++ signature */
+    # inline void SetLineFoldingEnabled(bool value);    /* original C++ signature */
     def set_line_folding_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsLineFoldingEnabled() const { return config.lineFolding; }    /* original C++ signature */
+    # inline bool IsLineFoldingEnabled() const;    /* original C++ signature */
     def is_line_folding_enabled(self) -> bool:
         pass
-    # inline void SetOverwriteEnabled(bool value) { config.overwrite = value; }    /* original C++ signature */
+    # inline void SetOverwriteEnabled(bool value);    /* original C++ signature */
     def set_overwrite_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsOverwriteEnabled() const { return config.overwrite; }    /* original C++ signature */
+    # inline bool IsOverwriteEnabled() const;    /* original C++ signature */
     def is_overwrite_enabled(self) -> bool:
         pass
-    # inline void SetMiddleMousePanMode() { config.panMode = true; }    /* original C++ signature */
+    # inline void SetMiddleMousePanMode();    /* original C++ signature */
     def set_middle_mouse_pan_mode(self) -> None:
         pass
-    # inline void SetMiddleMouseScrollMode() { config.panMode = false; }    /* original C++ signature */
+    # inline void SetMiddleMouseScrollMode();    /* original C++ signature */
     def set_middle_mouse_scroll_mode(self) -> None:
         pass
-    # inline bool IsMiddleMousePanMode() const { return config.panMode; }    /* original C++ signature */
+    # inline bool IsMiddleMousePanMode() const;    /* original C++ signature */
     def is_middle_mouse_pan_mode(self) -> bool:
         pass
-    # inline void SetLineNumberLeftMargin(size_t value) { config.leftMargin = value; }     /* original C++ signature */
+    # inline void SetLineNumberLeftMargin(size_t value);    /* original C++ signature */
     def set_line_number_left_margin(self, value: int) -> None:
         """ margins are expressed in glyphs"""
         pass
-    # inline size_t GetLineNumberLeftMargin() const { return config.leftMargin; }    /* original C++ signature */
+    # inline size_t GetLineNumberLeftMargin() const;    /* original C++ signature */
     def get_line_number_left_margin(self) -> int:
         pass
-    # inline void SetDecorationLeftMargin(size_t value) { config.decorationMargin = value; }    /* original C++ signature */
+    # inline void SetDecorationLeftMargin(size_t value);    /* original C++ signature */
     def set_decoration_left_margin(self, value: int) -> None:
         pass
-    # inline size_t GetDecorationLeftMargin() const { return config.decorationMargin; }    /* original C++ signature */
+    # inline size_t GetDecorationLeftMargin() const;    /* original C++ signature */
     def get_decoration_left_margin(self) -> int:
         pass
-    # inline void SetTextLeftMargin(size_t value) { config.textMargin = value; }    /* original C++ signature */
+    # inline void SetTextLeftMargin(size_t value);    /* original C++ signature */
     def set_text_left_margin(self, value: int) -> None:
         pass
-    # inline size_t GetTextLeftMargin() const { return config.textMargin; }    /* original C++ signature */
+    # inline size_t GetTextLeftMargin() const;    /* original C++ signature */
     def get_text_left_margin(self) -> int:
         pass
 
@@ -346,11 +346,11 @@ class TextEditor:
     # Dear ImGui also uses UTF-8 encoding across the board for all internal string processing, text rendering, and widgets
 
     # load UTF-8 encoded string(s)
-    # inline void SetText(const std::string_view& text) { reset(); document.setUtf8Text(config, text); }    /* original C++ signature */
+    # inline void SetText(const std::string_view& text);    /* original C++ signature */
     @overload
     def set_text(self, text: str) -> None:
         pass
-    # inline void SetText(const std::vector<std::string_view>& lines) { reset(); document.setUtf8Text(config, lines); }    /* original C++ signature */
+    # inline void SetText(const std::vector<std::string_view>& lines);    /* original C++ signature */
     @overload
     def set_text(self, lines: List[str]) -> None:
         pass
@@ -360,7 +360,7 @@ class TextEditor:
 
 
 
-    # inline std::string GetText() const { return document.getUtf8Text<char>(); }    /* original C++ signature */
+    # inline std::string GetText() const;    /* original C++ signature */
     def get_text(self) -> str:
         """ get text from editor as UTF-8 encoded strings"""
         pass
@@ -370,23 +370,23 @@ class TextEditor:
 
 
     # get part of text from editor as UTF-8 encoded strings
-    # inline std::string GetSectionText(DocPos start, DocPos end) const { return document.getSectionText(normalizePos(start), normalizePos(end)); }    /* original C++ signature */
+    # inline std::string GetSectionText(DocPos start, DocPos end) const;    /* original C++ signature */
     @overload
     def get_section_text(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> str:
         pass
-    # inline std::string GetSectionText(const DocSelection& selection) const { return GetSectionText(selection.start, selection.end); }    /* original C++ signature */
+    # inline std::string GetSectionText(const DocSelection& selection) const;    /* original C++ signature */
     @overload
     def get_section_text(self, selection: TextEditor.DocSelection) -> str:
         pass
-    # inline std::string GetCursorText(size_t cursor) const { return cursor < cursors.size() ? document.getSectionText(cursors[cursor].getSelectionStart(), cursors[cursor].getSelectionEnd()) : ""; }    /* original C++ signature */
+    # inline std::string GetCursorText(size_t cursor) const;    /* original C++ signature */
     def get_cursor_text(self, cursor: int) -> str:
         pass
-    # inline std::string GetLineText(size_t line) const { return line < document.size() ? document.getSectionText(DocPos(line, 0), document.getEndOfLine(DocPos(line, 0))) : ""; }    /* original C++ signature */
+    # inline std::string GetLineText(size_t line) const;    /* original C++ signature */
     def get_line_text(self, line: int) -> str:
         pass
 
     # replace text in editor (new text must be UTF-8 encoded)
-    # inline void ReplaceSectionText(DocPos start, DocPos end, const std::string_view& text) { replaceSectionText(normalizePos(start), normalizePos(end), text); }    /* original C++ signature */
+    # inline void ReplaceSectionText(DocPos start, DocPos end, const std::string_view& text);    /* original C++ signature */
     @overload
     def replace_section_text(
         self,
@@ -395,25 +395,25 @@ class TextEditor:
         text: str
         ) -> None:
         pass
-    # inline void ReplaceSectionText(const DocSelection& selection, const std::string_view& text) { ReplaceSectionText(selection.start, selection.end, text); }    /* original C++ signature */
+    # inline void ReplaceSectionText(const DocSelection& selection, const std::string_view& text);    /* original C++ signature */
     @overload
     def replace_section_text(self, selection: TextEditor.DocSelection, text: str) -> None:
         pass
 
-    # inline void ClearText() { SetText(""); }    /* original C++ signature */
+    # inline void ClearText();    /* original C++ signature */
     def clear_text(self) -> None:
         """ clear the editor"""
         pass
 
     # get editor status
-    # inline bool IsEmpty() const { return document.isEmpty(); }    /* original C++ signature */
+    # inline bool IsEmpty() const;    /* original C++ signature */
     def is_empty(self) -> bool:
         pass
-    # inline size_t GetLineCount() const { return document.size(); }    /* original C++ signature */
+    # inline size_t GetLineCount() const;    /* original C++ signature */
     def get_line_count(self) -> int:
         pass
 
-    # inline bool Render(const char* title, const ImVec2& size=ImVec2(), ImGuiChildFlags childFlags=0, ImGuiWindowFlags windowFlags=ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar) { return render(title, size, childFlags, windowFlags); }    /* original C++ signature */
+    # inline bool Render(const char* title, const ImVec2& size=ImVec2(), ImGuiChildFlags childFlags=0, ImGuiWindowFlags windowFlags=ImGuiWindowFlags_NoMove | ImGuiWindowFlags_HorizontalScrollbar);    /* original C++ signature */
     def render(
         self,
         title: str,
@@ -434,118 +434,118 @@ class TextEditor:
         """
         pass
 
-    # inline void SetFocus() { focusOnEditor = true; }    /* original C++ signature */
+    # inline void SetFocus();    /* original C++ signature */
     def set_focus(self) -> None:
         """ programmatically set focus on the editor"""
         pass
 
     # clipboard actions
-    # inline void Cut() { if (!config.readOnly) cut(); }    /* original C++ signature */
+    # inline void Cut();    /* original C++ signature */
     def cut(self) -> None:
         pass
-    # inline void Copy() const { copy(); }    /* original C++ signature */
+    # inline void Copy() const;    /* original C++ signature */
     def copy(self) -> None:
         pass
-    # inline void Paste() { if (!config.readOnly) paste(); }    /* original C++ signature */
+    # inline void Paste();    /* original C++ signature */
     def paste(self) -> None:
         pass
-    # inline void Undo() { if (!config.readOnly) undo(); }    /* original C++ signature */
+    # inline void Undo();    /* original C++ signature */
     def undo(self) -> None:
         pass
-    # inline void Redo() { if (!config.readOnly) redo(); }    /* original C++ signature */
+    # inline void Redo();    /* original C++ signature */
     def redo(self) -> None:
         pass
-    # inline bool CanUndo() const { return !config.readOnly && transactions.canUndo(); }    /* original C++ signature */
+    # inline bool CanUndo() const;    /* original C++ signature */
     def can_undo(self) -> bool:
         pass
-    # inline bool CanRedo() const { return !config.readOnly && transactions.canRedo(); }    /* original C++ signature */
+    # inline bool CanRedo() const;    /* original C++ signature */
     def can_redo(self) -> bool:
         pass
-    # inline size_t GetUndoIndex() const { return transactions.getUndoIndex(); }    /* original C++ signature */
+    # inline size_t GetUndoIndex() const;    /* original C++ signature */
     def get_undo_index(self) -> int:
         pass
 
     # manipulate cursors and selections (line numbers are zero-based)
-    # inline void SelectAll() { selectAll(); }    /* original C++ signature */
+    # inline void SelectAll();    /* original C++ signature */
     def select_all(self) -> None:
         pass
-    # inline void SelectLine(size_t line) { selectLine(normalizeLine(line)); }    /* original C++ signature */
+    # inline void SelectLine(size_t line);    /* original C++ signature */
     def select_line(self, line: int) -> None:
         pass
-    # inline void SelectLines(size_t start, size_t end) { if (end < document.size() && start <= end) { selectLines(start, end); }}    /* original C++ signature */
+    # inline void SelectLines(size_t start, size_t end);    /* original C++ signature */
     def select_lines(self, start: int, end: int) -> None:
         pass
-    # inline void SelectRegion(DocPos start, DocPos end) { selectRegion(normalizePos(start), normalizePos(end)); }    /* original C++ signature */
+    # inline void SelectRegion(DocPos start, DocPos end);    /* original C++ signature */
     def select_region(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
         pass
-    # inline void SelectToBrackets(bool includeBrackets=true) { selectToBrackets(includeBrackets); }    /* original C++ signature */
+    # inline void SelectToBrackets(bool includeBrackets=true);    /* original C++ signature */
     def select_to_brackets(self, include_brackets: bool = True) -> None:
         pass
-    # inline void GrowSelections() { growSelections(); }    /* original C++ signature */
+    # inline void GrowSelections();    /* original C++ signature */
     def grow_selections(self) -> None:
         pass
-    # inline void ShrinkSelections() { shrinkSelections(); }    /* original C++ signature */
+    # inline void ShrinkSelections();    /* original C++ signature */
     def shrink_selections(self) -> None:
         pass
-    # inline void AddNextOccurrence(bool wholeWord=false) { addNextOccurrence(wholeWord); }    /* original C++ signature */
+    # inline void AddNextOccurrence(bool wholeWord=false);    /* original C++ signature */
     def add_next_occurrence(self, whole_word: bool = False) -> None:
         pass
-    # inline void SelectAllOccurrences(bool wholeWord=false) { selectAllOccurrences(wholeWord); }    /* original C++ signature */
+    # inline void SelectAllOccurrences(bool wholeWord=false);    /* original C++ signature */
     def select_all_occurrences(self, whole_word: bool = False) -> None:
         pass
-    # inline bool AnyCursorHasSelection() const { return cursors.anyHasSelection(); }    /* original C++ signature */
+    # inline bool AnyCursorHasSelection() const;    /* original C++ signature */
     def any_cursor_has_selection(self) -> bool:
         pass
-    # inline bool AllCursorsHaveSelection() const { return cursors.allHaveSelection(); }    /* original C++ signature */
+    # inline bool AllCursorsHaveSelection() const;    /* original C++ signature */
     def all_cursors_have_selection(self) -> bool:
         pass
-    # inline bool CursorHasSelection(size_t cursor) const { return cursors.cursorHasSelection(cursor); }    /* original C++ signature */
+    # inline bool CursorHasSelection(size_t cursor) const;    /* original C++ signature */
     def cursor_has_selection(self, cursor: int) -> bool:
         pass
-    # inline bool MainCursorHasSelection() const { return cursors.mainCursorHasSelection(); }    /* original C++ signature */
+    # inline bool MainCursorHasSelection() const;    /* original C++ signature */
     def main_cursor_has_selection(self) -> bool:
         pass
-    # inline bool CurrentCursorHasSelection() const { return cursors.currentCursorHasSelection(); }    /* original C++ signature */
+    # inline bool CurrentCursorHasSelection() const;    /* original C++ signature */
     def current_cursor_has_selection(self) -> bool:
         pass
-    # inline void ClearCursors() { cursors.clearAll(); }    /* original C++ signature */
+    # inline void ClearCursors();    /* original C++ signature */
     def clear_cursors(self) -> None:
         pass
 
     # get cursor positions (the meaning of main and current is explained in README.md)
-    # inline size_t GetNumberOfCursors() const { return cursors.size(); }    /* original C++ signature */
+    # inline size_t GetNumberOfCursors() const;    /* original C++ signature */
     def get_number_of_cursors(self) -> int:
         pass
-    # inline DocPos GetCursorPosition(size_t cursor) const { return getCursorPosition(cursor); }    /* original C++ signature */
+    # inline DocPos GetCursorPosition(size_t cursor) const;    /* original C++ signature */
     def get_cursor_position(self, cursor: int) -> TextEditor.DocPos:
         pass
-    # inline DocPos GetMainCursorPosition() const { return getCursorPosition(cursors.getMainIndex()); }    /* original C++ signature */
+    # inline DocPos GetMainCursorPosition() const;    /* original C++ signature */
     def get_main_cursor_position(self) -> TextEditor.DocPos:
         pass
-    # inline DocPos GetCurrentCursorPosition() const { return getCursorPosition(cursors.getCurrentIndex()); }    /* original C++ signature */
+    # inline DocPos GetCurrentCursorPosition() const;    /* original C++ signature */
     def get_current_cursor_position(self) -> TextEditor.DocPos:
         pass
-    # inline DocSelection GetCursorSelection(size_t cursor) const { return getCursorSelection(cursor); }    /* original C++ signature */
+    # inline DocSelection GetCursorSelection(size_t cursor) const;    /* original C++ signature */
     def get_cursor_selection(self, cursor: int) -> TextEditor.DocSelection:
         pass
-    # inline DocSelection GetMainCursorSelection() const { return getCursorSelection(cursors.getMainIndex()); }    /* original C++ signature */
+    # inline DocSelection GetMainCursorSelection() const;    /* original C++ signature */
     def get_main_cursor_selection(self) -> TextEditor.DocSelection:
         pass
-    # inline DocSelection GetCurrentCursorSelection() const { return getCursorSelection(cursors.getCurrentIndex()); }    /* original C++ signature */
+    # inline DocSelection GetCurrentCursorSelection() const;    /* original C++ signature */
     def get_current_cursor_selection(self) -> TextEditor.DocSelection:
         pass
 
     # get information at mouse position (e.g. from ImGui::GetMousePos())
-    # inline bool IsMousePosOverGlyph(const ImVec2& mousePos) const { return isMousePosOverGlyph(mousePos); }    /* original C++ signature */
+    # inline bool IsMousePosOverGlyph(const ImVec2& mousePos) const;    /* original C++ signature */
     def is_mouse_pos_over_glyph(self, mouse_pos: ImVec2Like) -> bool:
         pass
-    # inline bool IsMousePosOverTextArea(const ImVec2& mousePos) const { return isMousePosOverTextArea(mousePos); }    /* original C++ signature */
+    # inline bool IsMousePosOverTextArea(const ImVec2& mousePos) const;    /* original C++ signature */
     def is_mouse_pos_over_text_area(self, mouse_pos: ImVec2Like) -> bool:
         pass
-    # inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const {return  getDocPosAtMousePos(mousePos); }    /* original C++ signature */
+    # inline DocPos GetDocPosAtMousePos(const ImVec2& mousePos) const;    /* original C++ signature */
     def get_doc_pos_at_mouse_pos(self, mouse_pos: ImVec2Like) -> TextEditor.DocPos:
         pass
-    # inline std::string GetWordAtMousePos(const ImVec2& mousePos) const { return getWordAtMousePos(mousePos); }    /* original C++ signature */
+    # inline std::string GetWordAtMousePos(const ImVec2& mousePos) const;    /* original C++ signature */
     def get_word_at_mouse_pos(self, mouse_pos: ImVec2Like) -> str:
         pass
 
@@ -559,27 +559,27 @@ class TextEditor:
         # 	}
         align_bottom = enum.auto()                # (= 2)
 
-    # inline void ScrollToLine(size_t line, Scroll alignment=Scroll::alignMiddle) { scrollToLine(normalizeLine(line), alignment); }    /* original C++ signature */
+    # inline void ScrollToLine(size_t line, Scroll alignment=Scroll::alignMiddle);    /* original C++ signature */
     def scroll_to_line(
         self,
         line: int,
         alignment: TextEditor.Scroll = TextEditor.Scroll.align_middle
         ) -> None:
         pass
-    # inline size_t GetFirstVisibleRow() const { return firstVisibleRow; }    /* original C++ signature */
+    # inline size_t GetFirstVisibleRow() const;    /* original C++ signature */
     def get_first_visible_row(self) -> int:
         pass
-    # inline size_t GetLastVisibleRow() const { return lastVisibleRow; }    /* original C++ signature */
+    # inline size_t GetLastVisibleRow() const;    /* original C++ signature */
     def get_last_visible_row(self) -> int:
         pass
-    # inline size_t GetFirstVisibleColumn() const { return firstVisibleColumn; }    /* original C++ signature */
+    # inline size_t GetFirstVisibleColumn() const;    /* original C++ signature */
     def get_first_visible_column(self) -> int:
         pass
-    # inline size_t GetLastVisibleColumn() const { return lastVisibleColumn; }    /* original C++ signature */
+    # inline size_t GetLastVisibleColumn() const;    /* original C++ signature */
     def get_last_visible_column(self) -> int:
         pass
 
-    # inline void SetCursor(DocPos pos) { setCursor(normalizePos(pos)); }    /* original C++ signature */
+    # inline void SetCursor(DocPos pos);    /* original C++ signature */
     def set_cursor(self, pos: TextEditor.DocPos) -> None:
         """ specify a new cursor position and scroll to it (if required)
          if the new position is currently in a folded region, it will be automatically unfolded
@@ -603,40 +603,40 @@ class TextEditor:
     # this works while opening the editor for the first time as well as later
 
     # get glyph size in pixels
-    # inline float GetLineHeight() const { return glyphSize.y; }    /* original C++ signature */
+    # inline float GetLineHeight() const;    /* original C++ signature */
     def get_line_height(self) -> float:
         pass
-    # inline float GetGlyphWidth() const { return glyphSize.x; }    /* original C++ signature */
+    # inline float GetGlyphWidth() const;    /* original C++ signature */
     def get_glyph_width(self) -> float:
         pass
 
     # coordinate transformation
-    # inline VisPos DocPos2VisPos(DocPos pos) const { return docPos2VisPos(normalizePos(pos)); }    /* original C++ signature */
+    # inline VisPos DocPos2VisPos(DocPos pos) const;    /* original C++ signature */
     def doc_pos2_vis_pos(self, pos: TextEditor.DocPos) -> TextEditor.VisPos:
         pass
-    # inline DocPos VisPos2DocPos(VisPos pos) const { return visPos2DocPos(normalizePos(pos)); }    /* original C++ signature */
+    # inline DocPos VisPos2DocPos(VisPos pos) const;    /* original C++ signature */
     def vis_pos2_doc_pos(self, pos: TextEditor.VisPos) -> TextEditor.DocPos:
         pass
 
-    # inline bool IsDocPosVisible(DocPos pos) const { return isDocPosVisible(normalizePos(pos)); }    /* original C++ signature */
+    # inline bool IsDocPosVisible(DocPos pos) const;    /* original C++ signature */
     def is_doc_pos_visible(self, pos: TextEditor.DocPos) -> bool:
         """ see if a specified document location is visible (not folded and currently on screen)"""
         pass
 
-    # inline bool IsVisPosOverGlyph(VisPos pos) const { return typeSetter.isVisPosOverGlyph(normalizePos(pos)); }    /* original C++ signature */
+    # inline bool IsVisPosOverGlyph(VisPos pos) const;    /* original C++ signature */
     def is_vis_pos_over_glyph(self, pos: TextEditor.VisPos) -> bool:
         """ see if a visual position covers a glyph"""
         pass
 
     # find start or end of word from provided position
-    # inline DocPos FindWordStart(DocPos pos, bool wholeWord=false) const { return document.findWordStart(normalizePos(pos), wholeWord); }    /* original C++ signature */
+    # inline DocPos FindWordStart(DocPos pos, bool wholeWord=false) const;    /* original C++ signature */
     def find_word_start(
         self,
         pos: TextEditor.DocPos,
         whole_word: bool = False
         ) -> TextEditor.DocPos:
         pass
-    # inline DocPos FindWordEnd(DocPos pos, bool wholeWord=false) const { return document.findWordEnd(normalizePos(pos), wholeWord); }    /* original C++ signature */
+    # inline DocPos FindWordEnd(DocPos pos, bool wholeWord=false) const;    /* original C++ signature */
     def find_word_end(
         self,
         pos: TextEditor.DocPos,
@@ -645,7 +645,7 @@ class TextEditor:
         pass
 
     # find/replace support (strings must be UTF-8 encoded)
-    # inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectFirstOccurrenceOf(text, caseSensitive, wholeWord); }    /* original C++ signature */
+    # inline void SelectFirstOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false);    /* original C++ signature */
     def select_first_occurrence_of(
         self,
         text: str,
@@ -653,7 +653,7 @@ class TextEditor:
         whole_word: bool = False
         ) -> None:
         pass
-    # inline void SelectNextOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectNextOccurrenceOf(text, caseSensitive, wholeWord); }    /* original C++ signature */
+    # inline void SelectNextOccurrenceOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false);    /* original C++ signature */
     def select_next_occurrence_of(
         self,
         text: str,
@@ -661,7 +661,7 @@ class TextEditor:
         whole_word: bool = False
         ) -> None:
         pass
-    # inline void SelectAllOccurrencesOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false) { selectAllOccurrencesOf(text, caseSensitive, wholeWord); }    /* original C++ signature */
+    # inline void SelectAllOccurrencesOf(const std::string_view& text, bool caseSensitive=true, bool wholeWord=false);    /* original C++ signature */
     def select_all_occurrences_of(
         self,
         text: str,
@@ -669,40 +669,40 @@ class TextEditor:
         whole_word: bool = False
         ) -> None:
         pass
-    # inline void ReplaceTextInCurrentCursor(const std::string_view& text) { if (!config.readOnly) replaceTextInCurrentCursor(text); }    /* original C++ signature */
+    # inline void ReplaceTextInCurrentCursor(const std::string_view& text);    /* original C++ signature */
     def replace_text_in_current_cursor(self, text: str) -> None:
         pass
-    # inline void ReplaceTextInAllCursors(const std::string_view& text) { if (!config.readOnly) replaceTextInAllCursors(text); }    /* original C++ signature */
+    # inline void ReplaceTextInAllCursors(const std::string_view& text);    /* original C++ signature */
     def replace_text_in_all_cursors(self, text: str) -> None:
         pass
 
-    # inline void OpenFindReplaceWindow() { openFindReplace(); }    /* original C++ signature */
+    # inline void OpenFindReplaceWindow();    /* original C++ signature */
     def open_find_replace_window(self) -> None:
         pass
-    # inline void CloseFindReplaceWindow() { closeFindReplace(); }    /* original C++ signature */
+    # inline void CloseFindReplaceWindow();    /* original C++ signature */
     def close_find_replace_window(self) -> None:
         pass
-    # inline bool HasFindString() const { return findText.size(); }    /* original C++ signature */
+    # inline bool HasFindString() const;    /* original C++ signature */
     def has_find_string(self) -> bool:
         pass
-    # inline void FindNext() { findNext(); }    /* original C++ signature */
+    # inline void FindNext();    /* original C++ signature */
     def find_next(self) -> None:
         pass
-    # inline void FindAll() { findAll(); }    /* original C++ signature */
+    # inline void FindAll();    /* original C++ signature */
     def find_all(self) -> None:
         pass
 
     # internationalize find window labels (strings must be UTF-8 encoded)
-    # inline void SetFindButtonLabel(const std::string_view& label) { findButtonLabel = label; }    /* original C++ signature */
+    # inline void SetFindButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_find_button_label(self, label: str) -> None:
         pass
-    # inline void SetFindAllButtonLabel(const std::string_view& label) { findAllButtonLabel = label; }    /* original C++ signature */
+    # inline void SetFindAllButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_find_all_button_label(self, label: str) -> None:
         pass
-    # inline void SetReplaceButtonLabel(const std::string_view& label) { replaceButtonLabel = label; }    /* original C++ signature */
+    # inline void SetReplaceButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_replace_button_label(self, label: str) -> None:
         pass
-    # inline void SetReplaceAllButtonLabel(const std::string_view& label) { replaceAllButtonLabel = label; }    /* original C++ signature */
+    # inline void SetReplaceAllButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_replace_all_button_label(self, label: str) -> None:
         pass
 
@@ -710,7 +710,7 @@ class TextEditor:
     # markers are attached to lines and are not effected by inserts or deletes before that line
     # if a line with a marker is deleted, undo doesn't restore it
     # tooltips must be UTF-8 encoded
-    # inline void AddMarker(size_t line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip) { addMarker(normalizeLine(line), lineNumberColor, textColor, lineNumberTooltip, textTooltip); }    /* original C++ signature */
+    # inline void AddMarker(size_t line, ImU32 lineNumberColor, ImU32 textColor, const std::string_view& lineNumberTooltip, const std::string_view& textTooltip);    /* original C++ signature */
     def add_marker(
         self,
         line: int,
@@ -720,10 +720,10 @@ class TextEditor:
         text_tooltip: str
         ) -> None:
         pass
-    # inline void ClearMarkers() { clearMarkers(); }    /* original C++ signature */
+    # inline void ClearMarkers();    /* original C++ signature */
     def clear_markers(self) -> None:
         pass
-    # inline bool HasMarkers() const { return markers.size() != 0; }    /* original C++ signature */
+    # inline bool HasMarkers() const;    /* original C++ signature */
     def has_markers(self) -> bool:
         pass
 
@@ -731,7 +731,7 @@ class TextEditor:
     # squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
     # if a glyph with a squiggle is deleted, undo doesn't restore it
     # tooltips must be UTF-8 encoded
-    # inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view()) { addSquiggle(normalizePos(start), normalizePos(end), type, color, tooltip); }    /* original C++ signature */
+    # inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view());    /* original C++ signature */
     def add_squiggle(
         self,
         start: TextEditor.DocPos,
@@ -741,26 +741,23 @@ class TextEditor:
         tooltip: str = str()
         ) -> None:
         pass
-    # inline void ClearSquiggles(DocPos start, DocPos end) { clearSquiggles(normalizePos(start), normalizePos(end)); }    /* original C++ signature */
+    # inline void ClearSquiggles(DocPos start, DocPos end);    /* original C++ signature */
     @overload
     def clear_squiggles(self, start: TextEditor.DocPos, end: TextEditor.DocPos) -> None:
         pass
-    # inline void ClearSquiggles(size_t type) { clearSquiggles(type); }    /* original C++ signature */
+    # inline void ClearSquiggles(size_t type);    /* original C++ signature */
     @overload
     def clear_squiggles(self, type: int) -> None:
         pass
-    # inline void ClearSquiggles() { clearSquiggles(); }    /* original C++ signature */
+    # inline void ClearSquiggles();    /* original C++ signature */
     @overload
     def clear_squiggles(self) -> None:
         pass
-    # inline bool HasSquiggles() const { return squiggles.size() != 0; }    /* original C++ signature */
+    # inline bool HasSquiggles() const;    /* original C++ signature */
     def has_squiggles(self) -> bool:
         pass
 
-    # inline void SetChangeCallback(std::function<void()> callback, int delay=0) {    /* original C++ signature */
-    # 		delayedChangeCallback = callback;
-    # 		delayedChangeDelay = std::chrono::milliseconds(delay);
-    # 	}
+    # inline void SetChangeCallback(std::function<void()> callback, int delay=0);    /* original C++ signature */
     def set_change_callback(self, callback: Callable[[], None], delay: int = 0) -> None:
         """ specify a change callback (called when changes are made (including undo/redo))
          the delay parameter specifies a time in miliseconds that the editor will wait for before calling
@@ -768,10 +765,10 @@ class TextEditor:
         """
         pass
 
-    # inline void ClearChangeCallback() { SetChangeCallback(nullptr); }    /* original C++ signature */
+    # inline void ClearChangeCallback();    /* original C++ signature */
     def clear_change_callback(self) -> None:
         pass
-    # inline bool HasChangeCallback() const { return delayedChangeCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasChangeCallback() const;    /* original C++ signature */
     def has_change_callback(self) -> bool:
         pass
 
@@ -813,16 +810,16 @@ class TextEditor:
     # specify a transaction callback (live document changes in great detail)
     # it provides a list of changes made to the document in a single transaction (in the right order)
     # be carefull with this callback as it gets very verbose (called on every keystroke, delete, cut, paste, undo and redo)
-    # inline void SetTransactionCallback(std::function<void(const std::vector<Change>&)> callback) { transactions.setCallback(callback); }    /* original C++ signature */
+    # inline void SetTransactionCallback(std::function<void(const std::vector<Change>&)> callback);    /* original C++ signature */
     def set_transaction_callback(
         self,
         callback: Callable[[List[TextEditor.Change]], None]
         ) -> None:
         pass
-    # inline void ClearTransactionCallback() { SetTransactionCallback(nullptr); }    /* original C++ signature */
+    # inline void ClearTransactionCallback();    /* original C++ signature */
     def clear_transaction_callback(self) -> None:
         pass
-    # inline bool HasTransactionCallback() const { return transactions.hasCallback(); }    /* original C++ signature */
+    # inline bool HasTransactionCallback() const;    /* original C++ signature */
     def has_transaction_callback(self) -> bool:
         pass
 
@@ -864,10 +861,7 @@ class TextEditor:
             """
             pass
 
-    # inline void SetLineDecorator(size_t width, std::function<void(Decorator& decorator)> callback) {    /* original C++ signature */
-    # 		decoratorWidth = width;
-    # 		decoratorCallback = callback;
-    # 	}
+    # inline void SetLineDecorator(size_t width, std::function<void(Decorator& decorator)> callback);    /* original C++ signature */
     def set_line_decorator(
         self,
         width: int,
@@ -876,10 +870,10 @@ class TextEditor:
         """ setup a line decorator (width is number of glyphs)"""
         pass
 
-    # inline void ClearLineDecorator() { SetLineDecorator(0, nullptr); }    /* original C++ signature */
+    # inline void ClearLineDecorator();    /* original C++ signature */
     def clear_line_decorator(self) -> None:
         pass
-    # inline bool HasLineDecorator() const { return decoratorWidth != 0 && decoratorCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasLineDecorator() const;    /* original C++ signature */
     def has_line_decorator(self) -> bool:
         pass
 
@@ -930,16 +924,16 @@ class TextEditor:
             """
             pass
 
-    # inline void SetCustomCaretRenderer(std::function<void(const CustomCaret& data)> callback) { customCaretCallback = callback; }    /* original C++ signature */
+    # inline void SetCustomCaretRenderer(std::function<void(const CustomCaret& data)> callback);    /* original C++ signature */
     def set_custom_caret_renderer(
         self,
         callback: Callable[[TextEditor.CustomCaret], None]
         ) -> None:
         pass
-    # inline void ClearCustomCaretRenderer() { customCaretCallback = nullptr; }    /* original C++ signature */
+    # inline void ClearCustomCaretRenderer();    /* original C++ signature */
     def clear_custom_caret_renderer(self) -> None:
         pass
-    # inline bool HasCustomCaretRenderer() const { return customCaretCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasCustomCaretRenderer() const;    /* original C++ signature */
     def has_custom_caret_renderer(self) -> bool:
         pass
 
@@ -995,16 +989,16 @@ class TextEditor:
             """
             pass
 
-    # inline void SetCustomLineNumberRenderer(std::function<void(const CustomLineNumber& data)> callback) { customLineNumberCallback = callback; }    /* original C++ signature */
+    # inline void SetCustomLineNumberRenderer(std::function<void(const CustomLineNumber& data)> callback);    /* original C++ signature */
     def set_custom_line_number_renderer(
         self,
         callback: Callable[[TextEditor.CustomLineNumber], None]
         ) -> None:
         pass
-    # inline void ClearCustomLineNumberRenderer() { customLineNumberCallback = nullptr; }    /* original C++ signature */
+    # inline void ClearCustomLineNumberRenderer();    /* original C++ signature */
     def clear_custom_line_number_renderer(self) -> None:
         pass
-    # inline bool HasCustomLineNumberRenderer() const { return customLineNumberCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasCustomLineNumberRenderer() const;    /* original C++ signature */
     def has_custom_line_number_renderer(self) -> bool:
         pass
 
@@ -1026,110 +1020,110 @@ class TextEditor:
             """
             pass
 
-    # inline void SetLineNumberContextMenuCallback(std::function<void(PopupData& data)> callback) { lineNumberContextMenuCallback = callback; }    /* original C++ signature */
+    # inline void SetLineNumberContextMenuCallback(std::function<void(PopupData& data)> callback);    /* original C++ signature */
     def set_line_number_context_menu_callback(
         self,
         callback: Callable[[TextEditor.PopupData], None]
         ) -> None:
         pass
-    # inline void ClearLineNumberContextMenuCallback() { SetLineNumberContextMenuCallback(nullptr); }    /* original C++ signature */
+    # inline void ClearLineNumberContextMenuCallback();    /* original C++ signature */
     def clear_line_number_context_menu_callback(self) -> None:
         pass
-    # inline bool HasLineNumberContextMenuCallback() const { return lineNumberContextMenuCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasLineNumberContextMenuCallback() const;    /* original C++ signature */
     def has_line_number_context_menu_callback(self) -> bool:
         pass
 
-    # inline void SetTextContextMenuCallback(std::function<void(PopupData& data)> callback) { textContextMenuCallback = callback; }    /* original C++ signature */
+    # inline void SetTextContextMenuCallback(std::function<void(PopupData& data)> callback);    /* original C++ signature */
     def set_text_context_menu_callback(
         self,
         callback: Callable[[TextEditor.PopupData], None]
         ) -> None:
         pass
-    # inline void ClearTextContextMenuCallback() { SetTextContextMenuCallback(nullptr); }    /* original C++ signature */
+    # inline void ClearTextContextMenuCallback();    /* original C++ signature */
     def clear_text_context_menu_callback(self) -> None:
         pass
-    # inline bool HasTextContextMenuCallback() const { return textContextMenuCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasTextContextMenuCallback() const;    /* original C++ signature */
     def has_text_context_menu_callback(self) -> bool:
         pass
 
-    # inline void SetTextHoverCallback(std::function<void(PopupData& data)> callback) { textHoverCallback = callback; }    /* original C++ signature */
+    # inline void SetTextHoverCallback(std::function<void(PopupData& data)> callback);    /* original C++ signature */
     def set_text_hover_callback(
         self,
         callback: Callable[[TextEditor.PopupData], None]
         ) -> None:
         pass
-    # inline void ClearTextHoverCallback() { SetTextHoverCallback(nullptr); }    /* original C++ signature */
+    # inline void ClearTextHoverCallback();    /* original C++ signature */
     def clear_text_hover_callback(self) -> None:
         pass
-    # inline bool HasTextHoverCallback() const { return textHoverCallback != nullptr; }    /* original C++ signature */
+    # inline bool HasTextHoverCallback() const;    /* original C++ signature */
     def has_text_hover_callback(self) -> bool:
         pass
 
     # line folding support (only works when line folding is activated)
-    # inline void FoldAroundLine(size_t line) { if (config.lineFolding) { lineFold.foldAroundLine(document, normalizeLine(line)); } }    /* original C++ signature */
+    # inline void FoldAroundLine(size_t line);    /* original C++ signature */
     def fold_around_line(self, line: int) -> None:
         pass
-    # inline void UnfoldAroundLine(size_t line) { if (config.lineFolding) { lineFold.unfoldAroundLine(document, normalizeLine(line)); } }    /* original C++ signature */
+    # inline void UnfoldAroundLine(size_t line);    /* original C++ signature */
     def unfold_around_line(self, line: int) -> None:
         pass
-    # inline void ToggleAtLine(size_t line) { if (config.lineFolding) { lineFold.toggleAtLine(document, normalizeLine(line)); } }    /* original C++ signature */
+    # inline void ToggleAtLine(size_t line);    /* original C++ signature */
     def toggle_at_line(self, line: int) -> None:
         pass
-    # inline void UnfoldAll() { if (config.lineFolding) { lineFold.unfoldAll(document); } }    /* original C++ signature */
+    # inline void UnfoldAll();    /* original C++ signature */
     def unfold_all(self) -> None:
         pass
 
-    # inline bool IsLineFoldable(size_t line) const { return isLineFoldable(normalizeLine(line)); }    /* original C++ signature */
+    # inline bool IsLineFoldable(size_t line) const;    /* original C++ signature */
     def is_line_foldable(self, line: int) -> bool:
         pass
-    # inline bool IsLineFolded(size_t line) const { return isLineFolded(normalizeLine(line)); }    /* original C++ signature */
+    # inline bool IsLineFolded(size_t line) const;    /* original C++ signature */
     def is_line_folded(self, line: int) -> bool:
         pass
-    # inline bool IsLineVisible(size_t line) const { return isLineVisible(normalizeLine(line)); }    /* original C++ signature */
+    # inline bool IsLineVisible(size_t line) const;    /* original C++ signature */
     def is_line_visible(self, line: int) -> bool:
         pass
-    # inline bool IsLineHidden(size_t line) const { return isLineHidden(normalizeLine(line)); }    /* original C++ signature */
+    # inline bool IsLineHidden(size_t line) const;    /* original C++ signature */
     def is_line_hidden(self, line: int) -> bool:
         pass
 
     # useful functions to work on selections
     # NOTE: functions provided to FilterSelections or FilterLines should accept and return UTF-8 encoded strings
-    # inline void IndentLines() { if (!config.readOnly) indentLines(); }    /* original C++ signature */
+    # inline void IndentLines();    /* original C++ signature */
     def indent_lines(self) -> None:
         pass
-    # inline void DeindentLines() { if (!config.readOnly) deindentLines(); }    /* original C++ signature */
+    # inline void DeindentLines();    /* original C++ signature */
     def deindent_lines(self) -> None:
         pass
-    # inline void MoveUpLines() { if (!config.readOnly) moveUpLines(); }    /* original C++ signature */
+    # inline void MoveUpLines();    /* original C++ signature */
     def move_up_lines(self) -> None:
         pass
-    # inline void MoveDownLines() { if (!config.readOnly) moveDownLines(); }    /* original C++ signature */
+    # inline void MoveDownLines();    /* original C++ signature */
     def move_down_lines(self) -> None:
         pass
-    # inline void ToggleComments() { if (!config.readOnly && config.language) toggleComments(); }    /* original C++ signature */
+    # inline void ToggleComments();    /* original C++ signature */
     def toggle_comments(self) -> None:
         pass
-    # inline void FilterSelections(std::function<std::string(std::string_view)> filter) { if (!config.readOnly) filterSelections(filter); }    /* original C++ signature */
+    # inline void FilterSelections(std::function<std::string(std::string_view)> filter);    /* original C++ signature */
     def filter_selections(self, filter: Callable[[str], str]) -> None:
         pass
-    # inline void SelectionToLowerCase() { if (!config.readOnly) selectionToLowerCase(); }    /* original C++ signature */
+    # inline void SelectionToLowerCase();    /* original C++ signature */
     def selection_to_lower_case(self) -> None:
         pass
-    # inline void SelectionToUpperCase() { if (!config.readOnly) selectionToUpperCase(); }    /* original C++ signature */
+    # inline void SelectionToUpperCase();    /* original C++ signature */
     def selection_to_upper_case(self) -> None:
         pass
 
     # useful functions to work on entire text
-    # inline void StripTrailingWhitespaces() { if (!config.readOnly) stripTrailingWhitespaces(); }    /* original C++ signature */
+    # inline void StripTrailingWhitespaces();    /* original C++ signature */
     def strip_trailing_whitespaces(self) -> None:
         pass
-    # inline void FilterLines(std::function<std::string(std::string_view)> filter) { if (!config.readOnly) filterLines(filter); }    /* original C++ signature */
+    # inline void FilterLines(std::function<std::string(std::string_view)> filter);    /* original C++ signature */
     def filter_lines(self, filter: Callable[[str], str]) -> None:
         pass
-    # inline void TabsToSpaces() { if (!config.readOnly) tabsToSpaces(); }    /* original C++ signature */
+    # inline void TabsToSpaces();    /* original C++ signature */
     def tabs_to_spaces(self) -> None:
         pass
-    # inline void SpacesToTabs() { if (!config.readOnly) spacesToTabs(); }    /* original C++ signature */
+    # inline void SpacesToTabs();    /* original C++ signature */
     def spaces_to_tabs(self) -> None:
         pass
 
@@ -1181,7 +1175,7 @@ class TextEditor:
         current_line_number = enum.auto()         # (= 21)
 
     class Palette:
-        # inline ImU32 get(Color color) const { return at(static_cast<size_t>(color)); }    /* original C++ signature */
+        # inline ImU32 get(Color color) const;    /* original C++ signature */
         def get(self, color: TextEditor.Color) -> ImU32:
             pass
         # Palette();    /* original C++ signature */
@@ -1189,17 +1183,17 @@ class TextEditor:
             """Auto-generated default constructor"""
             pass
 
-    # inline void SetPalette(const Palette& newPalette) { paletteBase = newPalette; paletteAlpha = -1.0f; }    /* original C++ signature */
+    # inline void SetPalette(const Palette& newPalette);    /* original C++ signature */
     def set_palette(self, new_palette: TextEditor.Palette) -> None:
         pass
-    # inline const Palette& GetPalette() const { return paletteBase; }    /* original C++ signature */
+    # inline const Palette& GetPalette() const;    /* original C++ signature */
     def get_palette(self) -> TextEditor.Palette:
         pass
-    # static inline void SetDefaultPalette(const Palette& aValue) { defaultPalette = aValue; }    /* original C++ signature */
+    # static inline void SetDefaultPalette(const Palette& aValue);    /* original C++ signature */
     @staticmethod
     def set_default_palette(a_value: TextEditor.Palette) -> None:
         pass
-    # static inline Palette& GetDefaultPalette() { return defaultPalette; }    /* original C++ signature */
+    # static inline Palette& GetDefaultPalette();    /* original C++ signature */
     @staticmethod
     def get_default_palette() -> TextEditor.Palette:
         pass
@@ -1271,20 +1265,20 @@ class TextEditor:
     # void SetLanguage(const Language* language);    /* original C++ signature */
     def set_language(self, language: TextEditor.Language) -> None:
         pass
-    # inline const Language* GetLanguage() const { return config.language; }    /* original C++ signature */
+    # inline const Language* GetLanguage() const;    /* original C++ signature */
     def get_language(self) -> TextEditor.Language:
         pass
-    # inline bool HasLanguage() const { return config.language != nullptr; }    /* original C++ signature */
+    # inline bool HasLanguage() const;    /* original C++ signature */
     def has_language(self) -> bool:
         pass
-    # inline std::string GetLanguageName() const { return config.language == nullptr ? "None" : config.language->name; }    /* original C++ signature */
+    # inline std::string GetLanguageName() const;    /* original C++ signature */
     def get_language_name(self) -> str:
         pass
-    # inline void SetLanguageChangeCallback(std::function<void()> callback) { languageChangeCallback = callback; }    /* original C++ signature */
+    # inline void SetLanguageChangeCallback(std::function<void()> callback);    /* original C++ signature */
     def set_language_change_callback(self, callback: Callable[[], None]) -> None:
         pass
 
-    # inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) const { document.iterateIdentifiers(callback); }    /* original C++ signature */
+    # inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) const;    /* original C++ signature */
     def iterate_identifiers(self, callback: Callable[[str], None]) -> None:
         """ iterate through identifiers detected by the colorizer (based on current language)"""
         pass
@@ -1446,7 +1440,7 @@ class TextEditor:
             """Auto-generated default constructor with named params"""
             pass
 
-    # inline void SetLineBreakConfig(LineBreakConfig& newConfig) { typeSetter.setLineBreakConfig(newConfig); }    /* original C++ signature */
+    # inline void SetLineBreakConfig(LineBreakConfig& newConfig);    /* original C++ signature */
     def set_line_break_config(self, new_config: TextEditor.LineBreakConfig) -> None:
         """ set the line break configuration"""
         pass
@@ -1482,72 +1476,72 @@ class TextDiff:
         pass
 
     # specify options
-    # inline void SetSideBySideMode(bool flag) { diff.sideBySideMode = flag; }    /* original C++ signature */
+    # inline void SetSideBySideMode(bool flag);    /* original C++ signature */
     def set_side_by_side_mode(self, flag: bool) -> None:
         pass
-    # inline bool GetSideBySideMode() const { return diff.sideBySideMode; }    /* original C++ signature */
+    # inline bool GetSideBySideMode() const;    /* original C++ signature */
     def get_side_by_side_mode(self) -> bool:
         pass
-    # inline void SetTabSize(size_t value) { diff.config.tabSize = value; }    /* original C++ signature */
+    # inline void SetTabSize(size_t value);    /* original C++ signature */
     def set_tab_size(self, value: int) -> None:
         pass
-    # inline size_t GetTabSize() const { return diff.config.tabSize; }    /* original C++ signature */
+    # inline size_t GetTabSize() const;    /* original C++ signature */
     def get_tab_size(self) -> int:
         pass
-    # inline void SetLineSpacing(float value) { diff.config.lineSpacing = std::max(1.0f, std::min(2.0f, value)); }    /* original C++ signature */
+    # inline void SetLineSpacing(float value);    /* original C++ signature */
     def set_line_spacing(self, value: float) -> None:
         pass
-    # inline float GetLineSpacing() const { return diff.config.lineSpacing; }    /* original C++ signature */
+    # inline float GetLineSpacing() const;    /* original C++ signature */
     def get_line_spacing(self) -> float:
         pass
-    # inline void SetWordWrapEnabled(bool value) { diff.config.wordWrap = value; }    /* original C++ signature */
+    # inline void SetWordWrapEnabled(bool value);    /* original C++ signature */
     def set_word_wrap_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsWordWrapEnabled() const { return diff.config.wordWrap; }    /* original C++ signature */
+    # inline bool IsWordWrapEnabled() const;    /* original C++ signature */
     def is_word_wrap_enabled(self) -> bool:
         pass
-    # inline void SetShowWhitespacesEnabled(bool value) { diff.config.showSpaces = value; diff.config.showTabs = value; }    /* original C++ signature */
+    # inline void SetShowWhitespacesEnabled(bool value);    /* original C++ signature */
     def set_show_whitespaces_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowWhitespacesEnabled() const { return diff.config.showSpaces && diff.config.showTabs; }    /* original C++ signature */
+    # inline bool IsShowWhitespacesEnabled() const;    /* original C++ signature */
     def is_show_whitespaces_enabled(self) -> bool:
         pass
-    # inline void SetShowSpacesEnabled(bool value) { diff.config.showSpaces = value; }    /* original C++ signature */
+    # inline void SetShowSpacesEnabled(bool value);    /* original C++ signature */
     def set_show_spaces_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowSpacesEnabled() const { return diff.config.showSpaces; }    /* original C++ signature */
+    # inline bool IsShowSpacesEnabled() const;    /* original C++ signature */
     def is_show_spaces_enabled(self) -> bool:
         pass
-    # inline void SetShowTabsEnabled(bool value) { diff.config.showTabs = value; }    /* original C++ signature */
+    # inline void SetShowTabsEnabled(bool value);    /* original C++ signature */
     def set_show_tabs_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowTabsEnabled() const { return diff.config.showTabs; }    /* original C++ signature */
+    # inline bool IsShowTabsEnabled() const;    /* original C++ signature */
     def is_show_tabs_enabled(self) -> bool:
         pass
-    # inline void SetShowScrollbarMiniMapEnabled(bool value) { diff.config.showScrollbarMiniMap = value; }    /* original C++ signature */
+    # inline void SetShowScrollbarMiniMapEnabled(bool value);    /* original C++ signature */
     def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:
         pass
-    # inline bool IsShowScrollbarMiniMapEnabled() const { return diff.config.showScrollbarMiniMap; }    /* original C++ signature */
+    # inline bool IsShowScrollbarMiniMapEnabled() const;    /* original C++ signature */
     def is_show_scrollbar_mini_map_enabled(self) -> bool:
         pass
-    # inline void SetLanguage(const TextEditor::Language* language) { diff.config.language = language; }    /* original C++ signature */
+    # inline void SetLanguage(const TextEditor::Language* language);    /* original C++ signature */
     def set_language(self, language: TextEditor.Language) -> None:
         pass
-    # inline const TextEditor::Language* GetLanguage() const { return diff.config.language; }    /* original C++ signature */
+    # inline const TextEditor::Language* GetLanguage() const;    /* original C++ signature */
     def get_language(self) -> TextEditor.Language:
         pass
-    # inline void SetColors(ImU32 ac, ImU32 dc) { diff.addedColor = ac; diff.deletedColor = dc; }    /* original C++ signature */
+    # inline void SetColors(ImU32 ac, ImU32 dc);    /* original C++ signature */
     def set_colors(self, ac: ImU32, dc: ImU32) -> None:
         pass
 
-    # inline void SetPalette(const TextEditor::Palette& newPalette) { diff.paletteBase = newPalette; diff.paletteAlpha = -1.0f; }    /* original C++ signature */
+    # inline void SetPalette(const TextEditor::Palette& newPalette);    /* original C++ signature */
     def set_palette(self, new_palette: TextEditor.Palette) -> None:
         pass
-    # inline const TextEditor::Palette& GetPalette() const { return diff.paletteBase; }    /* original C++ signature */
+    # inline const TextEditor::Palette& GetPalette() const;    /* original C++ signature */
     def get_palette(self) -> TextEditor.Palette:
         pass
 
-    # inline void SetFocus() { diff.focusOnDiff = true; }    /* original C++ signature */
+    # inline void SetFocus();    /* original C++ signature */
     def set_focus(self) -> None:
         """ programmatically set focus on the editor"""
         pass

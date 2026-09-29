@@ -204,9 +204,7 @@ class Config:
     #                               # else
     #         , SmoothZoomPower(1.3f)
     #                               # endif
-    #         , ForceWindowContentWidthToNodeWidth(false)
-    #     {
-    #     }
+    #         , ForceWindowContentWidthToNodeWidth(false);
     def __init__(self) -> None:
         pass
     # File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file
@@ -384,58 +382,7 @@ class Style:
         ImVec2  # size of a background grid cell, in canvas units (x and y independent)
     )
 
-    # Style()    /* original C++ signature */
-    #     {
-    #         NodePadding              = ImVec4(8, 8, 8, 8);
-    #         NodeRounding             = 12.0f;
-    #         NodeBorderWidth          = 1.5f;
-    #         HoveredNodeBorderWidth   = 3.5f;
-    #         HoverNodeBorderOffset    = 0.0f;
-    #         SelectedNodeBorderWidth  = 3.5f;
-    #         SelectedNodeBorderOffset = 0.0f;
-    #         PinRounding              = 4.0f;
-    #         PinBorderWidth           = 0.0f;
-    #         LinkStrength             = 100.0f;
-    #         SourceDirection          = ImVec2(1.0f, 0.0f);
-    #         TargetDirection          = ImVec2(-1.0f, 0.0f);
-    #         ScrollDuration           = 0.35f;
-    #         FlowMarkerDistance       = 30.0f;
-    #         FlowSpeed                = 150.0f;
-    #         FlowDuration             = 2.0f;
-    #         PivotAlignment           = ImVec2(0.5f, 0.5f);
-    #         PivotSize                = ImVec2(0.0f, 0.0f);
-    #         PivotScale               = ImVec2(1, 1);
-    #         PinCorners               = ImDrawFlags_RoundCornersAll;
-    #         PinRadius                = 0.0f;
-    #         PinArrowSize             = 0.0f;
-    #         PinArrowWidth            = 0.0f;
-    #         GroupRounding            = 6.0f;
-    #         GroupBorderWidth         = 1.0f;
-    #         HighlightConnectedLinks  = 0.0f;
-    #         SnapLinkToPinDir         = 0.0f;
-    #         AngledLinks              = true;
-    #         GridSize                 = ImVec2(32.0f, 32.0f);
-    #
-    #         Colors[StyleColor_Bg]                 = ImColor( 60,  60,  70, 200);
-    #         Colors[StyleColor_Grid]               = ImColor(120, 120, 120,  40);
-    #         Colors[StyleColor_NodeBg]             = ImColor( 32,  32,  32, 200);
-    #         Colors[StyleColor_NodeBorder]         = ImColor(255, 255, 255,  96);
-    #         Colors[StyleColor_HovNodeBorder]      = ImColor( 50, 176, 255, 255);
-    #         Colors[StyleColor_SelNodeBorder]      = ImColor(255, 176,  50, 255);
-    #         Colors[StyleColor_NodeSelRect]        = ImColor(  5, 130, 255,  64);
-    #         Colors[StyleColor_NodeSelRectBorder]  = ImColor(  5, 130, 255, 128);
-    #         Colors[StyleColor_HovLinkBorder]      = ImColor( 50, 176, 255, 255);
-    #         Colors[StyleColor_SelLinkBorder]      = ImColor(255, 176,  50, 255);
-    #         Colors[StyleColor_HighlightLinkBorder]= ImColor(204, 105,   0, 255);
-    #         Colors[StyleColor_LinkSelRect]        = ImColor(  5, 130, 255,  64);
-    #         Colors[StyleColor_LinkSelRectBorder]  = ImColor(  5, 130, 255, 128);
-    #         Colors[StyleColor_PinRect]            = ImColor( 60, 180, 255, 100);
-    #         Colors[StyleColor_PinRectBorder]      = ImColor( 60, 180, 255, 128);
-    #         Colors[StyleColor_Flow]               = ImColor(255, 128,  64, 255);
-    #         Colors[StyleColor_FlowMarker]         = ImColor(255, 128,  64, 255);
-    #         Colors[StyleColor_GroupBg]            = ImColor(  0,   0,   0, 160);
-    #         Colors[StyleColor_GroupBorder]        = ImColor(255, 255, 255,  32);
-    #     }
+    # Style();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1089,7 +1036,10 @@ def end_shortcut() -> None:
 
 # IMGUI_NODE_EDITOR_API float GetCurrentZoom();    /* original C++ signature */
 def get_current_zoom() -> float:
-    """Current canvas zoom factor; 1.0 = 100%."""
+    """Returns the INVERSE of the zoom: the size of a pixel in canvas units.
+    1.0 at 100%, 2.0 when the content is drawn at half size (zoomed out), 0.5 when it is drawn twice as big (zoomed in).
+    To convert positions, use ScreenToCanvas() / CanvasToScreen().
+    """
     pass
 
 # --- Input queries (call between Begin and End) ---------------------------

@@ -732,7 +732,7 @@ class ImGuiThemeTweaks:
     # (Background of checkbox, radio button, plot, slider, text input)
     value_multiplier_frame_bg: float = -1.0
 
-    # ImGuiThemeTweaks() {}    /* original C++ signature */
+    # ImGuiThemeTweaks();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -743,7 +743,7 @@ class ImGuiTweakedTheme:
     tweaks: ImGuiThemeTweaks = ImGuiThemeTweaks()
 
     # ImGuiTweakedTheme(ImGuiTheme_ theme = ImGuiTheme_DarculaDarker, const ImGuiThemeTweaks& tweaks = ImGuiThemeTweaks())    /* original C++ signature */
-    #             : Theme(theme), Tweaks(tweaks) {}
+    #             : Theme(theme), Tweaks(tweaks);
     def __init__(
         self,
         theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker,
@@ -943,13 +943,13 @@ class ScreenBounds:
     # ScreenSize size = DefaultWindowSize;    /* original C++ signature */
     size: ScreenSize = DefaultWindowSize
 
-    # ScreenPosition TopLeftCorner() const{ return position; }    /* original C++ signature */
+    # ScreenPosition TopLeftCorner() const;    /* original C++ signature */
     def top_left_corner(self) -> ScreenPosition:
         pass
-    # ScreenPosition BottomRightCorner() const{ return { position[0] + size[0], position[1] + size[1] }; }    /* original C++ signature */
+    # ScreenPosition BottomRightCorner() const;    /* original C++ signature */
     def bottom_right_corner(self) -> ScreenPosition:
         pass
-    # ScreenPosition Center() const{ return { position[0] + size[0] / 2, position[1] + size[1] / 2 }; }    /* original C++ signature */
+    # ScreenPosition Center() const;    /* original C++ signature */
     def center(self) -> ScreenPosition:
         pass
     # bool Contains(ScreenPosition pixel) const;    /* original C++ signature */
@@ -1524,7 +1524,7 @@ class ImGuiWindowParams:
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# inline VoidFunction EmptyVoidFunction() { return {}; }    /* original C++ signature */
+# inline VoidFunction EmptyVoidFunction();    /* original C++ signature */
 def empty_void_function() -> VoidFunction:
     pass
 
@@ -1533,11 +1533,11 @@ def sequence_functions(f1: VoidFunction, f2: VoidFunction) -> VoidFunction:
     """SequenceFunctions: returns a function that will call f1 and f2 in sequence"""
     pass
 
-# inline AnyEventCallback EmptyEventCallback() {return {}; }    /* original C++ signature */
+# inline AnyEventCallback EmptyEventCallback();    /* original C++ signature */
 def empty_event_callback() -> AnyEventCallback:
     pass
 
-# inline ConfirmExitCallback EmptyConfirmExitCallback() { return {}; }    /* original C++ signature */
+# inline ConfirmExitCallback EmptyConfirmExitCallback();    /* original C++ signature */
 def empty_confirm_exit_callback() -> ConfirmExitCallback:
     pass
 
@@ -2148,7 +2148,7 @@ class DockingSplit:
     # DockingSplit(const DockSpaceName& initialDock_ = "", const DockSpaceName& newDock_ = "",    /* original C++ signature */
     #                  ImGuiDir direction_ = ImGuiDir_Down, float ratio_ = 0.25f,
     #                  ImGuiDockNodeFlags nodeFlags_ = ImGuiDockNodeFlags_None)
-    #         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_) {}
+    #         : initialDock(initialDock_), newDock(newDock_), direction(direction_), ratio(ratio_), nodeFlags(nodeFlags_);
     def __init__(
         self,
         initial_dock_: DockSpaceName = "",
@@ -2258,7 +2258,7 @@ class DockableWindow:
     #         : label(label_), dockSpaceName(dockSpaceName_),
     #           GuiFunction(guiFunction_),
     #           isVisible(isVisible_),
-    #           canBeClosed(canBeClosed_) {}
+    #           canBeClosed(canBeClosed_);
     def __init__(
         self,
         label_: str = "",
@@ -3280,7 +3280,7 @@ class InputTextData:
     # The size of the input field in em units
     size_em: ImVec2 = ImVec2(0, 0)
 
-    # InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em) {}    /* original C++ signature */
+    # InputTextData(const std::string& text = "", bool multiline = false, ImVec2 size_em = ImVec2(0, 0)) : Text(text), Multiline(multiline), SizeEm(size_em);    /* original C++ signature */
     def __init__(
         self,
         text: str = "",

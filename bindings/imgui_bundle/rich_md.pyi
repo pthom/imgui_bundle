@@ -492,7 +492,7 @@ class MarkdownFontSpec:
     header_level: int = 0  # 0 means no header, 1 means h1, 2 means h2, etc.
 
     # MarkdownFontSpec(bool italic_ = false, bool bold_ = false, int headerLevel_ = 0) :    /* original C++ signature */
-    #             italic(italic_), bold(bold_), headerLevel(headerLevel_) {}
+    #             italic(italic_), bold(bold_), headerLevel(headerLevel_);
     def __init__(
         self, italic_: bool = False, bold_: bool = False, header_level_: int = 0
     ) -> None:

@@ -494,11 +494,11 @@ class ImVec2(Vec2Protocol):
     x: float
     # y;    /* original C++ signature */
     y: float
-    # constexpr inline ImVec2()                    : x(0.0f), y(0.0f) { }    /* original C++ signature */
+    # constexpr inline ImVec2()                    : x(0.0f), y(0.0f);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImVec2(float _x, float _y)  : x(_x), y(_y) { }    /* original C++ signature */
+    # constexpr inline ImVec2(float _x, float _y)  : x(_x), y(_y);    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float) -> None:
         pass
@@ -531,11 +531,11 @@ class ImVec4(Vec4Protocol):
     z: float
     # w;    /* original C++ signature */
     w: float
-    # constexpr inline ImVec4()                                        : x(0.0f), y(0.0f), z(0.0f), w(0.0f) { }    /* original C++ signature */
+    # constexpr inline ImVec4()                                        : x(0.0f), y(0.0f), z(0.0f), w(0.0f);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr inline ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w) { }    /* original C++ signature */
+    # constexpr inline ImVec4(float _x, float _y, float _z, float _w)  : x(_x), y(_y), z(_z), w(_w);    /* original C++ signature */
     @overload
     def __init__(self, _x: float, _y: float, _z: float, _w: float) -> None:
         pass
@@ -583,11 +583,11 @@ class ImVec4(Vec4Protocol):
 # - From 2026/03/12 to 2026/03/19 we experimented with changing to default to -1, but I worried it would cause too many issues in third-party code so it was reverted.
 
 class ImTextureRef:
-    # ImTextureRef()                          { _TexData = NULL; _TexID = ImTextureID_Invalid; }    /* original C++ signature */
+    # ImTextureRef();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImTextureRef(ImTextureID tex_id)        { _TexData = NULL; _TexID = tex_id; }    /* original C++ signature */
+    # ImTextureRef(ImTextureID tex_id);    /* original C++ signature */
     @overload
     def __init__(self, tex_id: ImTextureID) -> None:
         pass
@@ -5273,7 +5273,7 @@ class TableSortSpecs:
         bool  # Set to True when specs have changed since last time! Use this to sort again, then clear the flag.
     )
 
-    # ImGuiTableSortSpecs()       { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTableSortSpecs();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5292,7 +5292,7 @@ class TableColumnSortSpecs:
     # ImGuiSortDirection          SortDirection;    /* original C++ signature */
     sort_direction: SortDirection  # ImGuiSortDirection_Ascending or ImGuiSortDirection_Descending
 
-    # ImGuiTableColumnSortSpecs() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiTableColumnSortSpecs();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -5340,50 +5340,50 @@ class ImVector_int:  # Python specialization for ImVector<int>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_int) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> int:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: int) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: int) -> None:
         """(private API)"""
         pass
@@ -5403,50 +5403,50 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_uint) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> uint:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: uint) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: uint) -> None:
         """(private API)"""
         pass
@@ -5466,50 +5466,50 @@ class ImVector_float:  # Python specialization for ImVector<float>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_float) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> float:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: float) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: float) -> None:
         """(private API)"""
         pass
@@ -5529,50 +5529,50 @@ class ImVector_char:  # Python specialization for ImVector<char>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_char) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> char:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: str) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: str) -> None:
         """(private API)"""
         pass
@@ -5592,50 +5592,50 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_uchar) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> uchar:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: uchar) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: uchar) -> None:
         """(private API)"""
         pass
@@ -5655,50 +5655,50 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImDrawCmd) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawCmd:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImDrawCmd) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImDrawCmd) -> None:
         """(private API)"""
         pass
@@ -5718,50 +5718,50 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImDrawChannel) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawChannel:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImDrawChannel) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImDrawChannel) -> None:
         """(private API)"""
         pass
@@ -5781,50 +5781,50 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImDrawVert) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawVert:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImDrawVert) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImDrawVert) -> None:
         """(private API)"""
         pass
@@ -5844,50 +5844,50 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImVec4Like) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImVec4:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImVec4Like) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImVec4Like) -> None:
         """(private API)"""
         pass
@@ -5907,50 +5907,50 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImVec2Like) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImVec2:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImVec2Like) -> None:
         """(private API)"""
         pass
@@ -5970,50 +5970,50 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImDrawList_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImDrawList:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImDrawList) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImDrawList) -> None:
         """(private API)"""
         pass
@@ -6033,50 +6033,50 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFont_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFont:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImFont) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImFont) -> None:
         """(private API)"""
         pass
@@ -6096,50 +6096,50 @@ class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtla
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFontAtlas_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontAtlas:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImFontAtlas) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImFontAtlas) -> None:
         """(private API)"""
         pass
@@ -6159,50 +6159,50 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFontGlyph) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontGlyph:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImFontGlyph) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImFontGlyph) -> None:
         """(private API)"""
         pass
@@ -6222,50 +6222,50 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_PlatformMonitor) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> PlatformMonitor:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: PlatformMonitor) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: PlatformMonitor) -> None:
         """(private API)"""
         pass
@@ -6285,50 +6285,50 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_Viewport_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> Viewport:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: Viewport) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: Viewport) -> None:
         """(private API)"""
         pass
@@ -6348,50 +6348,50 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_Window_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> Window:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: Window) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: Window) -> None:
         """(private API)"""
         pass
@@ -6411,50 +6411,50 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFontConfig) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImFontConfig) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImFontConfig) -> None:
         """(private API)"""
         pass
@@ -6474,50 +6474,50 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImFontConfig_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImFontConfig:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImFontConfig) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImFontConfig) -> None:
         """(private API)"""
         pass
@@ -6537,50 +6537,50 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_FocusScopeData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> FocusScopeData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: FocusScopeData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: FocusScopeData) -> None:
         """(private API)"""
         pass
@@ -6600,50 +6600,50 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_SelectionRequest) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> SelectionRequest:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: SelectionRequest) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: SelectionRequest) -> None:
         """(private API)"""
         pass
@@ -6663,50 +6663,50 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImRect) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImRect:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImRect) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImRect) -> None:
         """(private API)"""
         pass
@@ -6726,50 +6726,50 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ColorMod) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ColorMod:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ColorMod) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ColorMod) -> None:
         """(private API)"""
         pass
@@ -6789,50 +6789,50 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_GroupData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> GroupData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: GroupData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: GroupData) -> None:
         """(private API)"""
         pass
@@ -6852,50 +6852,50 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_PopupData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> PopupData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: PopupData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: PopupData) -> None:
         """(private API)"""
         pass
@@ -6915,50 +6915,50 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ViewportP_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ViewportP:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ViewportP) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ViewportP) -> None:
         """(private API)"""
         pass
@@ -6978,50 +6978,50 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_InputEvent) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> InputEvent:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: InputEvent) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: InputEvent) -> None:
         """(private API)"""
         pass
@@ -7041,50 +7041,50 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_WindowStackData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> WindowStackData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: WindowStackData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: WindowStackData) -> None:
         """(private API)"""
         pass
@@ -7104,50 +7104,50 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TableColumnSortSpecs) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TableColumnSortSpecs:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TableColumnSortSpecs) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TableColumnSortSpecs) -> None:
         """(private API)"""
         pass
@@ -7167,50 +7167,50 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TableInstanceData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TableInstanceData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TableInstanceData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TableInstanceData) -> None:
         """(private API)"""
         pass
@@ -7230,50 +7230,50 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TableTempData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TableTempData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TableTempData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TableTempData) -> None:
         """(private API)"""
         pass
@@ -7293,50 +7293,50 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_PtrOrIndex) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> PtrOrIndex:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: PtrOrIndex) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: PtrOrIndex) -> None:
         """(private API)"""
         pass
@@ -7356,50 +7356,50 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_SettingsHandler) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> SettingsHandler:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: SettingsHandler) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: SettingsHandler) -> None:
         """(private API)"""
         pass
@@ -7419,50 +7419,50 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ShrinkWidthItem) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ShrinkWidthItem:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ShrinkWidthItem) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ShrinkWidthItem) -> None:
         """(private API)"""
         pass
@@ -7482,50 +7482,50 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_StackLevelInfo) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> StackLevelInfo:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: StackLevelInfo) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: StackLevelInfo) -> None:
         """(private API)"""
         pass
@@ -7545,50 +7545,50 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TabItem) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TabItem:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TabItem) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TabItem) -> None:
         """(private API)"""
         pass
@@ -7608,50 +7608,50 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_KeyRoutingData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> KeyRoutingData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: KeyRoutingData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: KeyRoutingData) -> None:
         """(private API)"""
         pass
@@ -7671,50 +7671,50 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ListClipperData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ListClipperData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ListClipperData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ListClipperData) -> None:
         """(private API)"""
         pass
@@ -7734,50 +7734,50 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ListClipperRange) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ListClipperRange:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ListClipperRange) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ListClipperRange) -> None:
         """(private API)"""
         pass
@@ -7797,50 +7797,50 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_OldColumnData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> OldColumnData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: OldColumnData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: OldColumnData) -> None:
         """(private API)"""
         pass
@@ -7860,50 +7860,50 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_OldColumns) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> OldColumns:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: OldColumns) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: OldColumns) -> None:
         """(private API)"""
         pass
@@ -7923,50 +7923,50 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_StyleMod) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> StyleMod:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: StyleMod) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: StyleMod) -> None:
         """(private API)"""
         pass
@@ -7986,50 +7986,50 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TableHeaderData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TableHeaderData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TableHeaderData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TableHeaderData) -> None:
         """(private API)"""
         pass
@@ -8049,50 +8049,50 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_TreeNodeStackData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> TreeNodeStackData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: TreeNodeStackData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: TreeNodeStackData) -> None:
         """(private API)"""
         pass
@@ -8112,50 +8112,50 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_MultiSelectTempData) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> MultiSelectTempData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: MultiSelectTempData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: MultiSelectTempData) -> None:
         """(private API)"""
         pass
@@ -8175,50 +8175,50 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImTextureData_ptr) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureData:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImTextureData) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImTextureData) -> None:
         """(private API)"""
         pass
@@ -8238,50 +8238,50 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImTextureRef) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureRef:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImTextureRef) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImTextureRef) -> None:
         """(private API)"""
         pass
@@ -8301,50 +8301,50 @@ class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRec
     # Provide standard typedefs but we don't use them ourselves.
 
     # Constructors, destructor
-    # inline ImVector()                                       { Size = Capacity = 0; Data = NULL; }    /* original C++ signature */
+    # inline ImVector();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # inline ImVector(const ImVector<T>& src)                 { Size = Capacity = 0; Data = NULL; operator=(src); }    /* original C++ signature */
+    # inline ImVector(const ImVector<T>& src);    /* original C++ signature */
     @overload
     def __init__(self, src: ImVector_ImTextureRect) -> None:
         pass
-    # inline void         clear()                             { if (Data) { Size = Capacity = 0; IM_FREE(Data); Data = NULL; } }      /* original C++ signature */
+    # inline void         clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
         Important: does not destruct anything
         """
         pass
-    # inline void         clear_destruct()                    { for (int n = 0; n < Size; n++) Data[n].~T(); clear(); }               /* original C++ signature */
+    # inline void         clear_destruct();    /* original C++ signature */
     def clear_destruct(self) -> None:
         """(private API)
 
         Important: never called automatically! always explicit.
         """
         pass
-    # inline bool         empty() const                       { return Size == 0; }    /* original C++ signature */
+    # inline bool         empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # inline int          size() const                        { return Size; }    /* original C++ signature */
+    # inline int          size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # inline T&        operator[](int i)       { IM_ASSERT(i >= 0 && i < Size); return Data[i]; }    /* original C++ signature */
+    # inline T&        operator[](int i);    /* original C++ signature */
     def __getitem__(self, i: int) -> ImTextureRect:
         """(private API)"""
         pass
     # NB: It is illegal to call push_back/push_front/insert with a reference pointing inside the ImVector data itself! e.g. v.push_back(v[10]) is forbidden.
-    # inline void         push_back(const T& v)               { if (Size == Capacity) reserve(_grow_capacity(Size + 1)); memcpy(&Data[Size], &v, sizeof(v)); Size++; }    /* original C++ signature */
+    # inline void         push_back(const T& v);    /* original C++ signature */
     def push_back(self, v: ImTextureRect) -> None:
         """(private API)"""
         pass
-    # inline void         pop_back()                          { IM_ASSERT(Size > 0); Size--; }    /* original C++ signature */
+    # inline void         pop_back();    /* original C++ signature */
     def pop_back(self) -> None:
         """(private API)"""
         pass
-    # inline void         push_front(const T& v)              { if (Size == 0) push_back(v); else insert(Data, v); }    /* original C++ signature */
+    # inline void         push_front(const T& v);    /* original C++ signature */
     def push_front(self, v: ImTextureRect) -> None:
         """(private API)"""
         pass
@@ -9153,19 +9153,19 @@ class InputTextCallbackData:
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
     def insert_chars(self, pos: int, text: str, text_end: Optional[str] = None) -> None:
         pass
-    # void                SelectAll()                 { SelectionStart = 0; CursorPos = SelectionEnd = BufTextLen; }    /* original C++ signature */
+    # void                SelectAll();    /* original C++ signature */
     def select_all(self) -> None:
         """(private API)"""
         pass
-    # void                SetSelection(int s, int e)  { IM_ASSERT(s >= 0 && s <= BufTextLen); IM_ASSERT(e >= 0 && e <= BufTextLen); SelectionStart = s; CursorPos = SelectionEnd = e; }    /* original C++ signature */
+    # void                SetSelection(int s, int e);    /* original C++ signature */
     def set_selection(self, s: int, e: int) -> None:
         """(private API)"""
         pass
-    # void                ClearSelection()            { SelectionStart = SelectionEnd = BufTextLen; }    /* original C++ signature */
+    # void                ClearSelection();    /* original C++ signature */
     def clear_selection(self) -> None:
         """(private API)"""
         pass
-    # bool                HasSelection() const        { return SelectionStart != SelectionEnd; }    /* original C++ signature */
+    # bool                HasSelection() const;    /* original C++ signature */
     def has_selection(self) -> bool:
         """(private API)"""
         pass
@@ -9235,7 +9235,7 @@ class WindowClass:
     # void*               PlatformIconData;    /* original C++ signature */
     platform_icon_data: Any  # [EXPERIMENTAL] Pass opaque data for Platform backend to handle.
 
-    # ImGuiWindowClass() { memset((void*)this, 0, sizeof(*this)); ParentViewportId = (ImGuiID)-1; DockingAllowUnclassed = true; }    /* original C++ signature */
+    # ImGuiWindowClass();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -9260,22 +9260,22 @@ class Payload:
     # bool            Delivery;    /* original C++ signature */
     delivery: bool  # Set when AcceptDragDropPayload() was called and mouse button is released over the target item.
 
-    # ImGuiPayload()  { Clear(); }    /* original C++ signature */
+    # ImGuiPayload();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Clear()    { SourceId = SourceParentId = 0; Data = NULL; DataSize = 0; memset(DataType, 0, sizeof(DataType)); DataFrameCount = -1; Preview = Delivery = false; }    /* original C++ signature */
+    # void Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # bool IsDataType(const char* type) const { return DataFrameCount != -1 && strcmp(type, DataType) == 0; }    /* original C++ signature */
+    # bool IsDataType(const char* type) const;    /* original C++ signature */
     def is_data_type(self, type: str) -> bool:
         """(private API)"""
         pass
-    # bool IsPreview() const                  { return Preview; }    /* original C++ signature */
+    # bool IsPreview() const;    /* original C++ signature */
     def is_preview(self) -> bool:
         """(private API)"""
         pass
-    # bool IsDelivery() const                 { return Delivery; }    /* original C++ signature */
+    # bool IsDelivery() const;    /* original C++ signature */
     def is_delivery(self) -> bool:
         """(private API)"""
         pass
@@ -9291,12 +9291,12 @@ class OnceUponAFrame:
     Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text("This will be called only once per frame");
     """
 
-    # ImGuiOnceUponAFrame() { RefFrame = -1; }    /* original C++ signature */
+    # ImGuiOnceUponAFrame();    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # mutable int RefFrame;    /* original C++ signature */
     ref_frame: int
-    # operator bool() const { int current_frame = ImGui::GetFrameCount(); if (RefFrame == current_frame) return false; RefFrame = current_frame; return true; }    /* original C++ signature */
+    # operator bool() const;    /* original C++ signature */
     def __bool__(self) -> bool:
         pass
 
@@ -9316,11 +9316,11 @@ class TextFilter:
     # IMGUI_API void      Build();    /* original C++ signature */
     def build(self) -> None:
         pass
-    # void                Clear()          { InputBuf[0] = 0; Build(); }    /* original C++ signature */
+    # void                Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # bool                IsActive() const { return !Filters.empty(); }    /* original C++ signature */
+    # bool                IsActive() const;    /* original C++ signature */
     def is_active(self) -> bool:
         """(private API)"""
         pass
@@ -9333,15 +9333,15 @@ class TextFilter:
         # const char*     e;    /* original C++ signature */
         e: str  # (const)
 
-        # ImGuiTextRange()                                { b = e = NULL; }    /* original C++ signature */
+        # ImGuiTextRange();    /* original C++ signature */
         @overload
         def __init__(self) -> None:
             pass
-        # ImGuiTextRange(const char* _b, const char* _e)  { b = _b; e = _e; }    /* original C++ signature */
+        # ImGuiTextRange(const char* _b, const char* _e);    /* original C++ signature */
         @overload
         def __init__(self, _b: str, _e: str) -> None:
             pass
-        # bool            empty() const                   { return b == e; }    /* original C++ signature */
+        # bool            empty() const;    /* original C++ signature */
         def empty(self) -> bool:
             """(private API)"""
             pass
@@ -9365,48 +9365,48 @@ class TextBuffer:
     # ImVector<char>      Buf;    /* original C++ signature */
     buf: ImVector_char
 
-    # ImGuiTextBuffer()   { }    /* original C++ signature */
+    # ImGuiTextBuffer();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # inline char         operator[](int i) const { IM_ASSERT(Buf.Data != NULL); return Buf.Data[i]; }    /* original C++ signature */
+    # inline char         operator[](int i) const;    /* original C++ signature */
     def __getitem__(self, i: int) -> int:
         """(private API)"""
         pass
-    # const char*         begin() const           { return Buf.Data ? &Buf.front() : EmptyString; }    /* original C++ signature */
+    # const char*         begin() const;    /* original C++ signature */
     def begin(self) -> str:
         """(private API)"""
         pass
-    # const char*         end() const             { return Buf.Data ? &Buf.back() : EmptyString; }     /* original C++ signature */
+    # const char*         end() const;    /* original C++ signature */
     def end(self) -> str:
         """(private API)
 
         Buf is zero-terminated, so end() will point on the zero-terminator
         """
         pass
-    # int                 size() const            { return Buf.Size ? Buf.Size - 1 : 0; }    /* original C++ signature */
+    # int                 size() const;    /* original C++ signature */
     def size(self) -> int:
         """(private API)"""
         pass
-    # bool                empty() const           { return Buf.Size <= 1; }    /* original C++ signature */
+    # bool                empty() const;    /* original C++ signature */
     def empty(self) -> bool:
         """(private API)"""
         pass
-    # void                clear()                 { Buf.clear(); }    /* original C++ signature */
+    # void                clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # void                resize(int size)        { if (Buf.Size > size) Buf.Data[size] = 0; Buf.resize(size ? size + 1 : 0, 0); }     /* original C++ signature */
+    # void                resize(int size);    /* original C++ signature */
     def resize(self, size: int) -> None:
         """(private API)
 
         Similar to resize(0) on ImVector: empty string but don't free buffer.
         """
         pass
-    # void                reserve(int capacity)   { Buf.reserve(capacity); }    /* original C++ signature */
+    # void                reserve(int capacity);    /* original C++ signature */
     def reserve(self, capacity: int) -> None:
         """(private API)"""
         pass
-    # const char*         c_str() const           { return Buf.Data ? Buf.Data : EmptyString; }    /* original C++ signature */
+    # const char*         c_str() const;    /* original C++ signature */
     def c_str(self) -> str:
         """(private API)"""
         pass
@@ -9422,15 +9422,15 @@ class StoragePair:
 
     # ImGuiID     key;    /* original C++ signature */
     key: ID
-    # ImGuiStoragePair(ImGuiID _key, int _val)    { key = _key; val_i = _val; }    /* original C++ signature */
+    # ImGuiStoragePair(ImGuiID _key, int _val);    /* original C++ signature */
     @overload
     def __init__(self, _key: ID, _val: int) -> None:
         pass
-    # ImGuiStoragePair(ImGuiID _key, float _val)  { key = _key; val_f = _val; }    /* original C++ signature */
+    # ImGuiStoragePair(ImGuiID _key, float _val);    /* original C++ signature */
     @overload
     def __init__(self, _key: ID, _val: float) -> None:
         pass
-    # ImGuiStoragePair(ImGuiID _key, void* _val)  { key = _key; val_p = _val; }    /* original C++ signature */
+    # ImGuiStoragePair(ImGuiID _key, void* _val);    /* original C++ signature */
     @overload
     def __init__(self, _key: ID, _val: Any) -> None:
         pass
@@ -9446,7 +9446,7 @@ class Storage:
     Types are NOT stored, so it is up to you to make sure your Key don't collide with different types.
     """
 
-    # void                Clear() { Data.clear(); }    /* original C++ signature */
+    # void                Clear();    /* original C++ signature */
     def clear(self) -> None:
         """- Get***() functions find pair, never add/allocate. Pairs are sorted so a query is O(log N)
          - Set***() functions find pair, insertion on demand if missing.
@@ -9578,7 +9578,7 @@ class ListClipper:
     def step(self) -> bool:
         """Call until it returns False. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items."""
         pass
-    # inline void     IncludeItemByIndex(int item_index)                  { IncludeItemsByIndex(item_index, item_index + 1); }    /* original C++ signature */
+    # inline void     IncludeItemByIndex(int item_index);    /* original C++ signature */
     def include_item_by_index(self, item_index: int) -> None:
         """Call IncludeItemByIndex() or IncludeItemsByIndex() *BEFORE* first call to Step() if you need a range of items to not be clipped, regardless of their visibility.
          (Due to alignment / padding of certain items it is possible that an extra item may be included on either end of the display range).
@@ -9616,32 +9616,32 @@ class ImColor:
     # ImVec4          Value;    /* original C++ signature */
     value: ImVec4
 
-    # constexpr ImColor()                                             { }    /* original C++ signature */
+    # constexpr ImColor();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # constexpr ImColor(float r, float g, float b, float a = 1.0f)    : Value(r, g, b, a) { }    /* original C++ signature */
+    # constexpr ImColor(float r, float g, float b, float a = 1.0f)    : Value(r, g, b, a);    /* original C++ signature */
     @overload
     def __init__(self, r: float, g: float, b: float, a: float = 1.0) -> None:
         pass
-    # constexpr ImColor(const ImVec4& col)                            : Value(col) {}    /* original C++ signature */
+    # constexpr ImColor(const ImVec4& col)                            : Value(col);    /* original C++ signature */
     @overload
     def __init__(self, col: ImVec4Like) -> None:
         pass
-    # constexpr ImColor(int r, int g, int b, int a = 255)             : Value((float)r * (1.0f / 255.0f), (float)g * (1.0f / 255.0f), (float)b * (1.0f / 255.0f), (float)a* (1.0f / 255.0f)) {}    /* original C++ signature */
+    # constexpr ImColor(int r, int g, int b, int a = 255)             : Value((float)r * (1.0f / 255.0f), (float)g * (1.0f / 255.0f), (float)b * (1.0f / 255.0f), (float)a* (1.0f / 255.0f));    /* original C++ signature */
     @overload
     def __init__(self, r: int, g: int, b: int, a: int = 255) -> None:
         pass
-    # constexpr ImColor(ImU32 rgba)                                   : Value((float)((rgba >> IM_COL32_R_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_G_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_B_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_A_SHIFT) & 0xFF) * (1.0f / 255.0f)) {}    /* original C++ signature */
+    # constexpr ImColor(ImU32 rgba)                                   : Value((float)((rgba >> IM_COL32_R_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_G_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_B_SHIFT) & 0xFF) * (1.0f / 255.0f), (float)((rgba >> IM_COL32_A_SHIFT) & 0xFF) * (1.0f / 255.0f));    /* original C++ signature */
     @overload
     def __init__(self, rgba: ImU32) -> None:
         pass
     # FIXME-OBSOLETE: May need to obsolete/cleanup those helpers.
-    # inline void    SetHSV(float h, float s, float v, float a = 1.0f){ ImGui::ColorConvertHSVtoRGB(h, s, v, Value.x, Value.y, Value.z); Value.w = a; }    /* original C++ signature */
+    # inline void    SetHSV(float h, float s, float v, float a = 1.0f);    /* original C++ signature */
     def set_hsv(self, h: float, s: float, v: float, a: float = 1.0) -> None:
         """(private API)"""
         pass
-    # static ImColor HSV(float h, float s, float v, float a = 1.0f)   { float r, g, b; ImGui::ColorConvertHSVtoRGB(h, s, v, r, g, b); return ImColor(r, g, b, a); }    /* original C++ signature */
+    # static ImColor HSV(float h, float s, float v, float a = 1.0f);    /* original C++ signature */
     @staticmethod
     def hsv(h: float, s: float, v: float, a: float = 1.0) -> ImColor:
         """(private API)"""
@@ -9923,7 +9923,7 @@ class SelectionBasicStorage:
     def set_item_selected(self, id_: ID, selected: bool) -> None:
         """Add/remove an item from selection (generally done by ApplyRequests() function)"""
         pass
-    # inline ImGuiID  GetStorageIdFromIndex(int idx)              { return AdapterIndexToStorageId(this, idx); }      /* original C++ signature */
+    # inline ImGuiID  GetStorageIdFromIndex(int idx);    /* original C++ signature */
     def get_storage_id_from_index(self, idx: int) -> ID:
         """(private API)
 
@@ -9993,7 +9993,7 @@ class ImDrawCmd:
     # int             UserCallbackDataOffset;    /* original C++ signature */
     user_callback_data_offset: int  # 4 // [Internal] Offset of callback user data when using storage, otherwise -1.
 
-    # ImDrawCmd()     { memset((void*)this, 0, sizeof(*this)); }     /* original C++ signature */
+    # ImDrawCmd();    /* original C++ signature */
     def __init__(self) -> None:
         """Also ensure our padding fields are zeroed"""
         pass
@@ -10085,10 +10085,10 @@ class ImDrawListSplitter:
     # ImVector<ImDrawChannel>     _Channels;    /* original C++ signature */
     _channels: ImVector_ImDrawChannel  # Draw channels (not resized down so _Count might be < Channels.Size)
 
-    # inline ImDrawListSplitter()  { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # inline ImDrawListSplitter();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # inline void                 Clear() { _Current = 0; _Count = 1; }     /* original C++ signature */
+    # inline void                 Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)
 
@@ -10273,11 +10273,11 @@ class ImDrawList:
     # IMGUI_API void  PopTexture();    /* original C++ signature */
     def pop_texture(self) -> None:
         pass
-    # inline ImVec2   GetClipRectMin() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.x, cr.y); }    /* original C++ signature */
+    # inline ImVec2   GetClipRectMin() const;    /* original C++ signature */
     def get_clip_rect_min(self) -> ImVec2:
         """(private API)"""
         pass
-    # inline ImVec2   GetClipRectMax() const { const ImVec4& cr = _ClipRectStack.back(); return ImVec2(cr.z, cr.w); }    /* original C++ signature */
+    # inline ImVec2   GetClipRectMax() const;    /* original C++ signature */
     def get_clip_rect_max(self) -> ImVec2:
         """(private API)"""
         pass
@@ -10468,27 +10468,27 @@ class ImDrawList:
     # Stateful path API, add points then finish with PathFillConvex() or PathStroke()
     # - Important: filled shapes must always use clockwise winding order! The anti-aliasing fringe depends on it. Counter-clockwise shapes will have "inward" anti-aliasing.
     #   so e.g. 'PathArcTo(center, radius, PI * -0.5, PI)' is ok, whereas 'PathArcTo(center, radius, PI, PI * -0.5)' won't have correct anti-aliasing when followed by PathFillConvex().
-    # inline    void  PathClear()                                                 { _Path.Size = 0; }    /* original C++ signature */
+    # inline    void  PathClear();    /* original C++ signature */
     def path_clear(self) -> None:
         """(private API)"""
         pass
-    # inline    void  PathLineTo(const ImVec2& pos)                               { _Path.push_back(pos); }    /* original C++ signature */
+    # inline    void  PathLineTo(const ImVec2& pos);    /* original C++ signature */
     def path_line_to(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # inline    void  PathLineToMergeDuplicate(const ImVec2& pos)                 { if (_Path.Size == 0 || memcmp(&_Path.Data[_Path.Size - 1], &pos, 8) != 0) _Path.push_back(pos); }    /* original C++ signature */
+    # inline    void  PathLineToMergeDuplicate(const ImVec2& pos);    /* original C++ signature */
     def path_line_to_merge_duplicate(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # inline    void  PathFillConvex(ImU32 col)                                   { AddConvexPolyFilled(_Path.Data, _Path.Size, col); _Path.Size = 0; }    /* original C++ signature */
+    # inline    void  PathFillConvex(ImU32 col);    /* original C++ signature */
     def path_fill_convex(self, col: ImU32) -> None:
         """(private API)"""
         pass
-    # inline    void  PathFillConcave(ImU32 col)                                  { AddConcavePolyFilled(_Path.Data, _Path.Size, col); _Path.Size = 0; }    /* original C++ signature */
+    # inline    void  PathFillConcave(ImU32 col);    /* original C++ signature */
     def path_fill_concave(self, col: ImU32) -> None:
         """(private API)"""
         pass
-    # inline    void  PathStroke(ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0) { AddPolyline(_Path.Data, _Path.Size, col, thickness, flags); _Path.Size = 0; }    /* original C++ signature */
+    # inline    void  PathStroke(ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def path_stroke(self, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0) -> None:
         """(private API)"""
         pass
@@ -10533,15 +10533,15 @@ class ImDrawList:
     # - This API shouldn't have been in ImDrawList in the first place!
     #   Prefer using your own persistent instance of ImDrawListSplitter as you can stack them.
     #   Using the ImDrawList::ChannelsXXXX you cannot stack a split over another.
-    # inline void     ChannelsSplit(int count)    { _Splitter.Split(this, count); }    /* original C++ signature */
+    # inline void     ChannelsSplit(int count);    /* original C++ signature */
     def channels_split(self, count: int) -> None:
         """(private API)"""
         pass
-    # inline void     ChannelsMerge()             { _Splitter.Merge(this); }    /* original C++ signature */
+    # inline void     ChannelsMerge();    /* original C++ signature */
     def channels_merge(self) -> None:
         """(private API)"""
         pass
-    # inline void     ChannelsSetCurrent(int n)   { _Splitter.SetCurrentChannel(this, n); }    /* original C++ signature */
+    # inline void     ChannelsSetCurrent(int n);    /* original C++ signature */
     def channels_set_current(self, n: int) -> None:
         """(private API)"""
         pass
@@ -10575,15 +10575,15 @@ class ImDrawList:
         col: ImU32,
     ) -> None:
         pass
-    # inline    void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)    { _VtxWritePtr->pos = pos; _VtxWritePtr->uv = uv; _VtxWritePtr->col = col; _VtxWritePtr++; _VtxCurrentIdx++; }    /* original C++ signature */
+    # inline    void  PrimWriteVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col);    /* original C++ signature */
     def prim_write_vtx(self, pos: ImVec2Like, uv: ImVec2Like, col: ImU32) -> None:
         """(private API)"""
         pass
-    # inline    void  PrimWriteIdx(ImDrawIdx idx)                                     { *_IdxWritePtr = idx; _IdxWritePtr++; }    /* original C++ signature */
+    # inline    void  PrimWriteIdx(ImDrawIdx idx);    /* original C++ signature */
     def prim_write_idx(self, idx: ImDrawIdx) -> None:
         """(private API)"""
         pass
-    # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)         { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }     /* original C++ signature */
+    # inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col);    /* original C++ signature */
     def prim_vtx(self, pos: ImVec2Like, uv: ImVec2Like, col: ImU32) -> None:
         """(private API)
 
@@ -10678,7 +10678,7 @@ class ImDrawData:
     # ImVector<ImTextureData*>* Textures;    /* original C++ signature */
     textures: ImVector_ImTextureData_ptr  # List of textures to update. Most of the times the list is shared by all ImDrawData, has only 1 texture and it doesn't need any update. This almost always points to ImGui::GetPlatformIO().Textures[]. May be overridden or set to None if you want to manually update textures.
 
-    # ImDrawData()    { Clear(); }    /* original C++ signature */
+    # ImDrawData();    /* original C++ signature */
     def __init__(self) -> None:
         """Functions"""
         pass
@@ -10806,7 +10806,7 @@ class ImTextureData:
     # bool                WantDestroyNextFrame;    /* original C++ signature */
     want_destroy_next_frame: bool  # rw   -   // [Internal] Queued to set ImTextureStatus_WantDestroy next frame. May still be used in the current frame.
 
-    # ImTextureData()     { memset((void*)this, 0, sizeof(*this)); Status = ImTextureStatus_Destroyed; TexID = ImTextureID_Invalid; }    /* original C++ signature */
+    # ImTextureData();    /* original C++ signature */
     def __init__(self) -> None:
         """Functions
         - If GetPixels() functions asserts while being called by your render loop, it could be caused by calling ImFontAtlas::Clear()/ClearFonts()?
@@ -10818,30 +10818,30 @@ class ImTextureData:
     # IMGUI_API void      DestroyPixels();    /* original C++ signature */
     def destroy_pixels(self) -> None:
         pass
-    # int                 GetSizeInBytes() const      { return Width * Height * BytesPerPixel; }    /* original C++ signature */
+    # int                 GetSizeInBytes() const;    /* original C++ signature */
     def get_size_in_bytes(self) -> int:
         """(private API)"""
         pass
-    # int                 GetPitch() const            { return Width * BytesPerPixel; }    /* original C++ signature */
+    # int                 GetPitch() const;    /* original C++ signature */
     def get_pitch(self) -> int:
         """(private API)"""
         pass
-    # ImTextureRef        GetTexRef()                 { ImTextureRef tex_ref; tex_ref._TexData = this; tex_ref._TexID = ImTextureID_Invalid; return tex_ref; }    /* original C++ signature */
+    # ImTextureRef        GetTexRef();    /* original C++ signature */
     def get_tex_ref(self) -> ImTextureRef:
         """(private API)"""
         pass
-    # ImTextureID         GetTexID() const            { return TexID; }    /* original C++ signature */
+    # ImTextureID         GetTexID() const;    /* original C++ signature */
     def get_tex_id(self) -> ImTextureID:
         """(private API)"""
         pass
     # Called by Renderer backend
     # - Call SetTexID() and SetStatus() after honoring texture requests. Never modify TexID and Status directly!
     # - A backend may decide to destroy a texture that we did not request to destroy, which is fine (e.g. freeing resources), but we immediately set the texture back in _WantCreate mode.
-    # void    SetTexID(ImTextureID tex_id)            { TexID = tex_id; }    /* original C++ signature */
+    # void    SetTexID(ImTextureID tex_id);    /* original C++ signature */
     def set_tex_id(self, tex_id: ImTextureID) -> None:
         """(private API)"""
         pass
-    # void    SetStatus(ImTextureStatus status)       { Status = status; if (status == ImTextureStatus_Destroyed && !WantDestroyNextFrame && Pixels != nullptr) Status = ImTextureStatus_WantCreate; }    /* original C++ signature */
+    # void    SetStatus(ImTextureStatus status);    /* original C++ signature */
     def set_status(self, status: ImTextureStatus) -> None:
         """(private API)"""
         pass
@@ -10943,7 +10943,7 @@ class ImFontGlyph:
     # int             PackId;    /* original C++ signature */
     pack_id: int  # [Internal] ImFontAtlasRectId value (FIXME: Cold data, could be moved elsewhere?)
 
-    # ImFontGlyph()   { memset((void*)this, 0, sizeof(*this)); PackId = -1; }    /* original C++ signature */
+    # ImFontGlyph();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -10967,28 +10967,28 @@ class ImFontGlyphRangesBuilder:
     # ImVector<ImU32> UsedChars;    /* original C++ signature */
     used_chars: ImVector_ImU32  # Store 1-bit per Unicode code point (0=unused, 1=used)
 
-    # ImFontGlyphRangesBuilder()              { Clear(); }    /* original C++ signature */
+    # ImFontGlyphRangesBuilder();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # inline void     Clear()                 { int size_in_bytes = (IM_UNICODE_CODEPOINT_MAX + 1) / 8; UsedChars.resize(size_in_bytes / (int)sizeof(ImU32)); memset(UsedChars.Data, 0, (size_t)size_in_bytes); }    /* original C++ signature */
+    # inline void     Clear();    /* original C++ signature */
     def clear(self) -> None:
         """(private API)"""
         pass
-    # inline bool     GetBit(size_t n) const  { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); return (UsedChars[off] & mask) != 0; }      /* original C++ signature */
+    # inline bool     GetBit(size_t n) const;    /* original C++ signature */
     def get_bit(self, n: int) -> bool:
         """(private API)
 
         Get bit n in the array
         """
         pass
-    # inline void     SetBit(size_t n)        { int off = (int)(n >> 5); ImU32 mask = 1u << (n & 31); UsedChars[off] |= mask; }                   /* original C++ signature */
+    # inline void     SetBit(size_t n);    /* original C++ signature */
     def set_bit(self, n: int) -> None:
         """(private API)
 
         Set bit n in the array
         """
         pass
-    # inline void     AddChar(ImWchar c)      { SetBit(c); }                          /* original C++ signature */
+    # inline void     AddChar(ImWchar c);    /* original C++ signature */
     def add_char(self, c: ImWchar) -> None:
         """(private API)
 
@@ -11023,7 +11023,7 @@ class ImFontAtlasRect:
     # uv1;    /* original C++ signature */
     uv1: ImVec2  # UV coordinates (in current texture)
 
-    # ImFontAtlasRect() { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImFontAtlasRect();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -11363,11 +11363,11 @@ class ImFont:
     # IMGUI_API bool              IsGlyphInFont(ImWchar c);    /* original C++ signature */
     def is_glyph_in_font(self, c: ImWchar) -> bool:
         pass
-    # bool                        IsLoaded() const                { return OwnerAtlas != NULL; }    /* original C++ signature */
+    # bool                        IsLoaded() const;    /* original C++ signature */
     def is_loaded(self) -> bool:
         """(private API)"""
         pass
-    # const char*                 GetDebugName() const            { return Sources.Size ? Sources[0]->Name : "<unknown>"; }     /* original C++ signature */
+    # const char*                 GetDebugName() const;    /* original C++ signature */
     def get_debug_name(self) -> str:
         """(private API)
 
@@ -11539,17 +11539,17 @@ class Viewport:
     # bool                PlatformRequestClose;    /* original C++ signature */
     platform_request_close: bool  # Platform window requested closure (e.g. window was moved by the OS / host window manager, e.g. pressing ALT-F4)
 
-    # ImGuiViewport()     { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiViewport();    /* original C++ signature */
     def __init__(self) -> None:
         pass
     # [/ADAPT_IMGUI_BUNDLE]
 
     # Helpers
-    # ImVec2              GetCenter() const       { return ImVec2(Pos.x + Size.x * 0.5f, Pos.y + Size.y * 0.5f); }    /* original C++ signature */
+    # ImVec2              GetCenter() const;    /* original C++ signature */
     def get_center(self) -> ImVec2:
         """(private API)"""
         pass
-    # ImVec2              GetWorkCenter() const   { return ImVec2(WorkPos.x + WorkSize.x * 0.5f, WorkPos.y + WorkSize.y * 0.5f); }    /* original C++ signature */
+    # ImVec2              GetWorkCenter() const;    /* original C++ signature */
     def get_work_center(self) -> ImVec2:
         """(private API)"""
         pass
@@ -11734,7 +11734,7 @@ class PlatformMonitor:
     dpi_scale: float  # 1.0 = 96 DPI
     # void*   PlatformHandle;    /* original C++ signature */
     platform_handle: Any  # Backend dependant data (e.g. HMONITOR, GLFWmonitor*, SDL Display Index, NSScreen*)
-    # ImGuiPlatformMonitor()          { MainPos = MainSize = WorkPos = WorkSize = ImVec2(0, 0); DpiScale = 1.0f; PlatformHandle = NULL; }    /* original C++ signature */
+    # ImGuiPlatformMonitor();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -11752,7 +11752,7 @@ class PlatformImeData:
     # ImGuiID ViewportId;    /* original C++ signature */
     viewport_id: ID  # ID of platform window/viewport.
 
-    # ImGuiPlatformImeData()          { memset((void*)this, 0, sizeof(*this)); }    /* original C++ signature */
+    # ImGuiPlatformImeData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 

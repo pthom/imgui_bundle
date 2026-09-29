@@ -94,13 +94,13 @@ class InspectorFlags_(enum.IntEnum):
 class SizeIncludingBorder:
     # ImVec2 Size;    /* original C++ signature */
     size: ImVec2
-    # SizeIncludingBorder(ImVec2 size):Size(size){}    /* original C++ signature */
+    # SizeIncludingBorder(ImVec2 size):Size(size);    /* original C++ signature */
     def __init__(self, size: ImVec2Like) -> None:
         pass
 class SizeExcludingBorder:
     # ImVec2 size;    /* original C++ signature */
     size: ImVec2
-    # SizeExcludingBorder(ImVec2 size):size(size){}    /* original C++ signature */
+    # SizeExcludingBorder(ImVec2 size):size(size);    /* original C++ signature */
     def __init__(self, size: ImVec2Like) -> None:
         pass
 # BeginInspectorPanel
@@ -175,7 +175,7 @@ def current_inspector_set_flags(
     to_clear: InspectorFlags = 0
     ) -> None:
     pass
-# inline void CurrentInspector_ClearFlags(InspectorFlags toClear) {CurrentInspector_SetFlags(0, toClear);}    /* original C++ signature */
+# inline void CurrentInspector_ClearFlags(InspectorFlags toClear);    /* original C++ signature */
 def current_inspector_clear_flags(to_clear: InspectorFlags) -> None:
     pass
 # void CurrentInspector_SetGridColor(ImU32 color);    /* original C++ signature */
@@ -366,19 +366,12 @@ class Transform2D:
     # ImVec2 Translate;    /* original C++ signature */
     translate: ImVec2
 
-    # ImVec2 operator*(const ImVec2 &rhs) const    /* original C++ signature */
-    #     {
-    #         return ImVec2(Scale.x * rhs.x + Translate.x, Scale.y * rhs.y + Translate.y);
-    #     }
+    # ImVec2 operator*(const ImVec2 &rhs) const;    /* original C++ signature */
     def __mul__(self, rhs: ImVec2Like) -> ImVec2:
         """ Transform a vector by this transform.  Scale is applied first"""
         pass
 
-    # Transform2D Inverse() const    /* original C++ signature */
-    #     {
-    #         ImVec2 inverseScale(1 / Scale.x, 1 / Scale.y);
-    #         return {inverseScale, ImVec2(-inverseScale.x * Translate.x, -inverseScale.y * Translate.y)};
-    #     }
+    # Transform2D Inverse() const;    /* original C++ signature */
     def inverse(self) -> Transform2D:
         """ Return an inverse transform such that transform.Inverse() * transform * vector == vector"""
         pass

@@ -128,9 +128,7 @@ class message:
     def kill(self) -> bool:
         pass
 
-# std::vector<std::string> all_files_filter() {    /* original C++ signature */
-#         return {"All files", "*"};
-#     }
+# std::vector<std::string> all_files_filter();    /* original C++ signature */
 def all_files_filter() -> List[str]:
     pass
 

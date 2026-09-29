@@ -336,7 +336,7 @@ class drag_opts:
     ease_type: int          # Easing type for snap animation
 
     # drag_opts() : snap_grid(0, 0), snap_points(nullptr), snap_points_count(0),    /* original C++ signature */
-    # 		snap_duration(0.2f), overshoot(0), ease_type(ease_out_cubic) {}
+    # 		snap_duration(0.2f), overshoot(0), ease_type(ease_out_cubic);
     def __init__(self) -> None:
         pass
 
@@ -813,27 +813,27 @@ def get_blended_color(
 # ----------------------------------------------------
 # Convenience shorthands for common easings
 # ----------------------------------------------------
-# inline ease_desc ease_preset(int type) { ease_desc e = { type, 0,0,0,0 }; return e; }                                                   /* original C++ signature */
+# inline ease_desc ease_preset(int type);    /* original C++ signature */
 def ease_preset(type: int) -> ease_desc:
     """ Create descriptor from preset enum."""
     pass
-# inline ease_desc ease_bezier(float x1, float y1, float x2, float y2) { ease_desc e = { ease_cubic_bezier, x1,y1,x2,y2 }; return e; }     /* original C++ signature */
+# inline ease_desc ease_bezier(float x1, float y1, float x2, float y2);    /* original C++ signature */
 def ease_bezier(x1: float, y1: float, x2: float, y2: float) -> ease_desc:
     """ Create cubic bezier easing."""
     pass
-# inline ease_desc ease_steps_desc(int steps, int mode) { ease_desc e = { ease_steps, (float)steps,(float)mode,0,0 }; return e; }         /* original C++ signature */
+# inline ease_desc ease_steps_desc(int steps, int mode);    /* original C++ signature */
 def ease_steps_desc(steps: int, mode: int) -> ease_desc:
     """ Create step function easing."""
     pass
-# inline ease_desc ease_back(float overshoot) { ease_desc e = { ease_out_back, overshoot,0,0,0 }; return e; }                             /* original C++ signature */
+# inline ease_desc ease_back(float overshoot);    /* original C++ signature */
 def ease_back(overshoot: float) -> ease_desc:
     """ Create back easing with overshoot."""
     pass
-# inline ease_desc ease_elastic(float amplitude, float period) { ease_desc e = { ease_out_elastic, amplitude, period,0,0 }; return e; }     /* original C++ signature */
+# inline ease_desc ease_elastic(float amplitude, float period);    /* original C++ signature */
 def ease_elastic(amplitude: float, period: float) -> ease_desc:
     """ Create elastic easing."""
     pass
-# inline ease_desc ease_spring_desc(float mass, float stiffness, float damping, float v0) { ease_desc e = { ease_spring, mass, stiffness, damping, v0 }; return e; }     /* original C++ signature */
+# inline ease_desc ease_spring_desc(float mass, float stiffness, float damping, float v0);    /* original C++ signature */
 def ease_spring_desc(
     mass: float,
     stiffness: float,
@@ -842,7 +842,7 @@ def ease_spring_desc(
     ) -> ease_desc:
     """ Create physics spring."""
     pass
-# inline ease_desc ease_custom_fn(int slot) { ease_desc e = { ease_custom, (float)slot,0,0,0 }; return e; }                                                             /* original C++ signature */
+# inline ease_desc ease_custom_fn(int slot);    /* original C++ signature */
 def ease_custom_fn(slot: int) -> ease_desc:
     """ Use registered custom easing (slot 0-15)."""
     pass
@@ -909,22 +909,22 @@ class ease_per_axis:
 
     # ease_per_axis()    /* original C++ signature */
     # 		: x(ease_preset(ease_linear)), y(ease_preset(ease_linear)),
-    # 		  z(ease_preset(ease_linear)), w(ease_preset(ease_linear)) {}
+    # 		  z(ease_preset(ease_linear)), w(ease_preset(ease_linear));
     @overload
     def __init__(self) -> None:
         pass
     # ease_per_axis(ease_desc all)    /* original C++ signature */
-    # 		: x(all), y(all), z(all), w(all) {}
+    # 		: x(all), y(all), z(all), w(all);
     @overload
     def __init__(self, all: ease_desc) -> None:
         pass
     # ease_per_axis(ease_desc ex, ease_desc ey)    /* original C++ signature */
-    # 		: x(ex), y(ey), z(ease_preset(ease_linear)), w(ease_preset(ease_linear)) {}
+    # 		: x(ex), y(ey), z(ease_preset(ease_linear)), w(ease_preset(ease_linear));
     @overload
     def __init__(self, ex: ease_desc, ey: ease_desc) -> None:
         pass
     # ease_per_axis(ease_desc ex, ease_desc ey, ease_desc ez, ease_desc ew)    /* original C++ signature */
-    # 		: x(ex), y(ey), z(ez), w(ew) {}
+    # 		: x(ex), y(ey), z(ez), w(ew);
     @overload
     def __init__(self, ex: ease_desc, ey: ease_desc, ez: ease_desc, ew: ease_desc) -> None:
         pass
@@ -1082,7 +1082,7 @@ class path:
         """ Finalize and register path."""
         pass
 
-    # ImGuiID id() const { return m_path_id; }    /* original C++ signature */
+    # ImGuiID id() const;    /* original C++ signature */
     def id(self) -> int:
         pass
 
@@ -1180,7 +1180,7 @@ class morph_opts:
     # bool  use_arc_length;    /* original C++ signature */
     use_arc_length: bool   # Use arc-length parameterization for smoother morphing (default: True)
 
-    # morph_opts() : samples(64), match_endpoints(true), use_arc_length(true) {}    /* original C++ signature */
+    # morph_opts() : samples(64), match_endpoints(true), use_arc_length(true);    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1293,7 +1293,7 @@ class text_path_opts:
     font_scale: float      # Additional font scale (1.0 = normal)
 
     # text_path_opts() : origin(0, 0), offset(0), letter_spacing(0), align(text_align_start),    /* original C++ signature */
-    # 	                       flip_y(false), color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f) {}
+    # 	                       flip_y(false), color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f);
     def __init__(self) -> None:
         pass
 
@@ -1414,7 +1414,7 @@ class text_stagger_opts:
     # text_stagger_opts()    /* original C++ signature */
     # 		: pos(0, 0), effect(text_fx_fade), char_delay(0.05f), char_duration(0.3f),
     # 		  effect_intensity(20.0f), ease(ease_preset(ease_out_cubic)),
-    # 		  color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f), letter_spacing(0.0f) {}
+    # 		  color(IM_COL32_WHITE), font(nullptr), font_scale(1.0f), letter_spacing(0.0f);
     def __init__(self) -> None:
         pass
 
@@ -1485,7 +1485,7 @@ class noise_opts:
     seed: int           # Random seed for noise generation
 
     # noise_opts()    /* original C++ signature */
-    # 		: type(noise_perlin), octaves(4), persistence(0.5f), lacunarity(2.0f), seed(0) {}
+    # 		: type(noise_perlin), octaves(4), persistence(0.5f), lacunarity(2.0f), seed(0);
     def __init__(self) -> None:
         pass
 
@@ -1661,7 +1661,7 @@ class gradient:
     # ImVector<ImVec4> colors;    /* original C++ signature */
     colors: ImVector_ImVec4    # Colors at each position (sRGB)
 
-    # gradient() {}    /* original C++ signature */
+    # gradient();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1670,14 +1670,12 @@ class gradient:
     def add(self, position: float, color: ImVec4Like) -> gradient:
         """ Add a stop to the gradient (automatically sorted by position)"""
         pass
-    # gradient& add(float position, ImU32 color) {    /* original C++ signature */
-    # 		return add(position, ImGui::ColorConvertU32ToFloat4(color));
-    # 	}
+    # gradient& add(float position, ImU32 color);    /* original C++ signature */
     @overload
     def add(self, position: float, color: ImU32) -> gradient:
         pass
 
-    # int stop_count() const { return positions.Size; }    /* original C++ signature */
+    # int stop_count() const;    /* original C++ signature */
     def stop_count(self) -> int:
         """ Get stop count"""
         pass
@@ -1751,12 +1749,12 @@ class transform:
     # float rotation;    /* original C++ signature */
     rotation: float   # Rotation in radians
 
-    # transform() : position(0, 0), scale(1, 1), rotation(0) {}    /* original C++ signature */
+    # transform() : position(0, 0), scale(1, 1), rotation(0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
     # transform(ImVec2 pos, float rot = 0, ImVec2 scl = ImVec2(1, 1))    /* original C++ signature */
-    # 		: position(pos), scale(scl), rotation(rot) {}
+    # 		: position(pos), scale(scl), rotation(rot);
     @overload
     def __init__(
         self,
@@ -1769,7 +1767,7 @@ class transform:
         """
         pass
 
-    # static transform identity() { return transform(); }    /* original C++ signature */
+    # static transform identity();    /* original C++ signature */
     @staticmethod
     def identity() -> transform:
         """ Create identity transform"""
@@ -2145,204 +2143,111 @@ class variation_color:
 # ----------------------------------------------------
 
 # Float variation helpers
-# static inline variation_float varf_none(void) {    /* original C++ signature */
-# 	variation_float v = {var_none, 0, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_none(void);    /* original C++ signature */
 def varf_none() -> variation_float:
     pass
-# static inline variation_float varf_inc(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_increment, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_inc(float amt);    /* original C++ signature */
 def varf_inc(amt: float) -> variation_float:
     pass
-# static inline variation_float varf_dec(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_decrement, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_dec(float amt);    /* original C++ signature */
 def varf_dec(amt: float) -> variation_float:
     pass
-# static inline variation_float varf_mul(float f) {    /* original C++ signature */
-# 	variation_float v = {var_multiply, f, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_mul(float f);    /* original C++ signature */
 def varf_mul(f: float) -> variation_float:
     pass
-# static inline variation_float varf_rand(float r) {    /* original C++ signature */
-# 	variation_float v = {var_random, r, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_rand(float r);    /* original C++ signature */
 def varf_rand(r: float) -> variation_float:
     pass
-# static inline variation_float varf_rand_abs(float r) {    /* original C++ signature */
-# 	variation_float v = {var_random_abs, r, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_rand_abs(float r);    /* original C++ signature */
 def varf_rand_abs(r: float) -> variation_float:
     pass
-# static inline variation_float varf_pingpong(float amt) {    /* original C++ signature */
-# 	variation_float v = {var_pingpong, amt, -FLT_MAX, FLT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_float varf_pingpong(float amt);    /* original C++ signature */
 def varf_pingpong(amt: float) -> variation_float:
     pass
-# static inline variation_float varf_fn(variation_float_fn fn, void* user) {    /* original C++ signature */
-# 	variation_float v = {var_callback, 0, -FLT_MAX, FLT_MAX, 0, fn, user};
-# 	return v;
-# }
+# static inline variation_float varf_fn(variation_float_fn fn, void* user);    /* original C++ signature */
 def varf_fn(fn: variation_float_fn, user: Any) -> variation_float:
     pass
-# static inline variation_float varf_clamp(variation_float v, float mn, float mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
+# static inline variation_float varf_clamp(variation_float v, float mn, float mx);    /* original C++ signature */
 def varf_clamp(v: variation_float, mn: float, mx: float) -> variation_float:
     pass
-# static inline variation_float varf_seed(variation_float v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
+# static inline variation_float varf_seed(variation_float v, unsigned int s);    /* original C++ signature */
 def varf_seed(v: variation_float, s: int) -> variation_float:
     pass
 
 # Int variation helpers
-# static inline variation_int vari_none(void) {    /* original C++ signature */
-# 	variation_int v = {var_none, 0, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_int vari_none(void);    /* original C++ signature */
 def vari_none() -> variation_int:
     pass
-# static inline variation_int vari_inc(int amt) {    /* original C++ signature */
-# 	variation_int v = {var_increment, amt, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_int vari_inc(int amt);    /* original C++ signature */
 def vari_inc(amt: int) -> variation_int:
     pass
-# static inline variation_int vari_dec(int amt) {    /* original C++ signature */
-# 	variation_int v = {var_decrement, amt, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_int vari_dec(int amt);    /* original C++ signature */
 def vari_dec(amt: int) -> variation_int:
     pass
-# static inline variation_int vari_rand(int r) {    /* original C++ signature */
-# 	variation_int v = {var_random, r, INT_MIN, INT_MAX, 0, 0, 0};
-# 	return v;
-# }
+# static inline variation_int vari_rand(int r);    /* original C++ signature */
 def vari_rand(r: int) -> variation_int:
     pass
-# static inline variation_int vari_fn(variation_int_fn fn, void* user) {    /* original C++ signature */
-# 	variation_int v = {var_callback, 0, INT_MIN, INT_MAX, 0, fn, user};
-# 	return v;
-# }
+# static inline variation_int vari_fn(variation_int_fn fn, void* user);    /* original C++ signature */
 def vari_fn(fn: variation_int_fn, user: Any) -> variation_int:
     pass
-# static inline variation_int vari_clamp(variation_int v, int mn, int mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
+# static inline variation_int vari_clamp(variation_int v, int mn, int mx);    /* original C++ signature */
 def vari_clamp(v: variation_int, mn: int, mx: int) -> variation_int:
     pass
-# static inline variation_int vari_seed(variation_int v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
+# static inline variation_int vari_seed(variation_int v, unsigned int s);    /* original C++ signature */
 def vari_seed(v: variation_int, s: int) -> variation_int:
     pass
 
 # Vec2 variation helpers (global)
-# static inline variation_vec2 varv2_none(void) {    /* original C++ signature */
-# 	variation_vec2 v = {var_none, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_none(void);    /* original C++ signature */
 def varv2_none() -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_inc(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_increment, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_inc(float x, float y);    /* original C++ signature */
 def varv2_inc(x: float, y: float) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_dec(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_decrement, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_dec(float x, float y);    /* original C++ signature */
 def varv2_dec(x: float, y: float) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_mul(float f) {    /* original C++ signature */
-# 	variation_vec2 v = {var_multiply, {f,f}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_mul(float f);    /* original C++ signature */
 def varv2_mul(f: float) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_rand(float x, float y) {    /* original C++ signature */
-# 	variation_vec2 v = {var_random, {x,y}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_rand(float x, float y);    /* original C++ signature */
 def varv2_rand(x: float, y: float) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_fn(variation_vec2_fn fn, void* user) {    /* original C++ signature */
-# 	variation_vec2 v = {var_callback, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, fn, user, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_fn(variation_vec2_fn fn, void* user);    /* original C++ signature */
 def varv2_fn(fn: variation_vec2_fn, user: Any) -> variation_vec2:
     pass
 # Vec2 per-axis helper
-# static inline variation_vec2 varv2_axis(variation_float vx, variation_float vy) {    /* original C++ signature */
-# 	variation_vec2 v = {var_none, {0,0}, {-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX}, 0, 0, 0, vx, vy};
-# 	return v;
-# }
+# static inline variation_vec2 varv2_axis(variation_float vx, variation_float vy);    /* original C++ signature */
 def varv2_axis(vx: variation_float, vy: variation_float) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_clamp(variation_vec2 v, ImVec2 mn, ImVec2 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
+# static inline variation_vec2 varv2_clamp(variation_vec2 v, ImVec2 mn, ImVec2 mx);    /* original C++ signature */
 def varv2_clamp(v: variation_vec2, mn: ImVec2Like, mx: ImVec2Like) -> variation_vec2:
     pass
-# static inline variation_vec2 varv2_seed(variation_vec2 v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
+# static inline variation_vec2 varv2_seed(variation_vec2 v, unsigned int s);    /* original C++ signature */
 def varv2_seed(v: variation_vec2, s: int) -> variation_vec2:
     pass
 
 # Vec4 variation helpers (global)
-# static inline variation_vec4 varv4_none(void) {    /* original C++ signature */
-# 	variation_vec4 v = {var_none, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_none(void);    /* original C++ signature */
 def varv4_none() -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_inc(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_increment, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_inc(float x, float y, float z, float w);    /* original C++ signature */
 def varv4_inc(x: float, y: float, z: float, w: float) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_dec(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_decrement, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_dec(float x, float y, float z, float w);    /* original C++ signature */
 def varv4_dec(x: float, y: float, z: float, w: float) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_mul(float f) {    /* original C++ signature */
-# 	variation_vec4 v = {var_multiply, {f,f,f,f}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_mul(float f);    /* original C++ signature */
 def varv4_mul(f: float) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_rand(float x, float y, float z, float w) {    /* original C++ signature */
-# 	variation_vec4 v = {var_random, {x,y,z,w}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_rand(float x, float y, float z, float w);    /* original C++ signature */
 def varv4_rand(x: float, y: float, z: float, w: float) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_fn(variation_vec4_fn fn, void* user) {    /* original C++ signature */
-# 	variation_vec4 v = {var_callback, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, fn, user, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_fn(variation_vec4_fn fn, void* user);    /* original C++ signature */
 def varv4_fn(fn: variation_vec4_fn, user: Any) -> variation_vec4:
     pass
 # Vec4 per-axis helper
-# static inline variation_vec4 varv4_axis(variation_float vx, variation_float vy, variation_float vz, variation_float vw) {    /* original C++ signature */
-# 	variation_vec4 v = {var_none, {0,0,0,0}, {-FLT_MAX,-FLT_MAX,-FLT_MAX,-FLT_MAX}, {FLT_MAX,FLT_MAX,FLT_MAX,FLT_MAX}, 0, 0, 0, vx, vy, vz, vw};
-# 	return v;
-# }
+# static inline variation_vec4 varv4_axis(variation_float vx, variation_float vy, variation_float vz, variation_float vw);    /* original C++ signature */
 def varv4_axis(
     vx: variation_float,
     vy: variation_float,
@@ -2350,59 +2255,34 @@ def varv4_axis(
     vw: variation_float
     ) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_clamp(variation_vec4 v, ImVec4 mn, ImVec4 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
+# static inline variation_vec4 varv4_clamp(variation_vec4 v, ImVec4 mn, ImVec4 mx);    /* original C++ signature */
 def varv4_clamp(v: variation_vec4, mn: ImVec4Like, mx: ImVec4Like) -> variation_vec4:
     pass
-# static inline variation_vec4 varv4_seed(variation_vec4 v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
+# static inline variation_vec4 varv4_seed(variation_vec4 v, unsigned int s);    /* original C++ signature */
 def varv4_seed(v: variation_vec4, s: int) -> variation_vec4:
     pass
 
 # Color variation helpers (global)
-# static inline variation_color varc_none(void) {    /* original C++ signature */
-# 	variation_color v = {var_none, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_none(void);    /* original C++ signature */
 def varc_none() -> variation_color:
     pass
-# static inline variation_color varc_inc(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_increment, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_inc(float r, float g, float b, float a);    /* original C++ signature */
 def varc_inc(r: float, g: float, b: float, a: float) -> variation_color:
     pass
-# static inline variation_color varc_dec(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_decrement, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_dec(float r, float g, float b, float a);    /* original C++ signature */
 def varc_dec(r: float, g: float, b: float, a: float) -> variation_color:
     pass
-# static inline variation_color varc_mul(float f) {    /* original C++ signature */
-# 	variation_color v = {var_multiply, {f,f,f,1}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_mul(float f);    /* original C++ signature */
 def varc_mul(f: float) -> variation_color:
     pass
-# static inline variation_color varc_rand(float r, float g, float b, float a) {    /* original C++ signature */
-# 	variation_color v = {var_random, {r,g,b,a}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_rand(float r, float g, float b, float a);    /* original C++ signature */
 def varc_rand(r: float, g: float, b: float, a: float) -> variation_color:
     pass
-# static inline variation_color varc_fn(variation_vec4_fn fn, void* user) {    /* original C++ signature */
-# 	variation_color v = {var_callback, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, fn, user, {0}, {0}, {0}, {0}};
-# 	return v;
-# }
+# static inline variation_color varc_fn(variation_vec4_fn fn, void* user);    /* original C++ signature */
 def varc_fn(fn: variation_vec4_fn, user: Any) -> variation_color:
     pass
 # Color per-channel helper
-# static inline variation_color varc_channel(variation_float vr, variation_float vg, variation_float vb, variation_float va) {    /* original C++ signature */
-# 	variation_color v = {var_none, {0,0,0,0}, {0,0,0,0}, {1,1,1,1}, col_oklab, 0, 0, 0, vr, vg, vb, va};
-# 	return v;
-# }
+# static inline variation_color varc_channel(variation_float vr, variation_float vg, variation_float vb, variation_float va);    /* original C++ signature */
 def varc_channel(
     vr: variation_float,
     vg: variation_float,
@@ -2410,19 +2290,13 @@ def varc_channel(
     va: variation_float
     ) -> variation_color:
     pass
-# static inline variation_color varc_space(variation_color v, int space) {    /* original C++ signature */
-# 	v.color_space = space; return v;
-# }
+# static inline variation_color varc_space(variation_color v, int space);    /* original C++ signature */
 def varc_space(v: variation_color, space: int) -> variation_color:
     pass
-# static inline variation_color varc_clamp(variation_color v, ImVec4 mn, ImVec4 mx) {    /* original C++ signature */
-# 	v.min_clamp = mn; v.max_clamp = mx; return v;
-# }
+# static inline variation_color varc_clamp(variation_color v, ImVec4 mn, ImVec4 mx);    /* original C++ signature */
 def varc_clamp(v: variation_color, mn: ImVec4Like, mx: ImVec4Like) -> variation_color:
     pass
-# static inline variation_color varc_seed(variation_color v, unsigned int s) {    /* original C++ signature */
-# 	v.seed = s; return v;
-# }
+# static inline variation_color varc_seed(variation_color v, unsigned int s);    /* original C++ signature */
 def varc_seed(v: variation_color, s: int) -> variation_color:
     pass
 
@@ -2703,7 +2577,7 @@ class clip:
         """ Finalize the clip"""
         pass
 
-    # ImGuiID id() const { return m_clip_id; }    /* original C++ signature */
+    # ImGuiID id() const;    /* original C++ signature */
     def id(self) -> int:
         """ Get the clip ID"""
         pass
@@ -2714,11 +2588,11 @@ class instance:
      instance - playback control for a clip
      ----------------------------------------------------
     """
-    # instance() : m_inst_id(0) {}    /* original C++ signature */
+    # instance() : m_inst_id(0);    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # instance(ImGuiID inst_id) : m_inst_id(inst_id) {}    /* original C++ signature */
+    # instance(ImGuiID inst_id) : m_inst_id(inst_id);    /* original C++ signature */
     @overload
     def __init__(self, inst_id: int) -> None:
         pass
@@ -2792,19 +2666,19 @@ class instance:
 
     # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
-    # inline std::pair<bool, float> get_float(ImGuiID channel) const { float v = 0.f; bool ok = get_float(channel, &v); return {ok, v}; }    /* original C++ signature */
+    # inline std::pair<bool, float> get_float(ImGuiID channel) const;    /* original C++ signature */
     def get_float(self, channel: int) -> Tuple[bool, float]:
         pass
-    # inline std::pair<bool, ImVec2> get_vec2(ImGuiID channel) const { ImVec2 v; bool ok = get_vec2(channel, &v); return {ok, v}; }    /* original C++ signature */
+    # inline std::pair<bool, ImVec2> get_vec2(ImGuiID channel) const;    /* original C++ signature */
     def get_vec2(self, channel: int) -> Tuple[bool, ImVec2]:
         pass
-    # inline std::pair<bool, ImVec4> get_vec4(ImGuiID channel) const { ImVec4 v; bool ok = get_vec4(channel, &v); return {ok, v}; }    /* original C++ signature */
+    # inline std::pair<bool, ImVec4> get_vec4(ImGuiID channel) const;    /* original C++ signature */
     def get_vec4(self, channel: int) -> Tuple[bool, ImVec4]:
         pass
-    # inline std::pair<bool, int> get_int(ImGuiID channel) const { int v = 0; bool ok = get_int(channel, &v); return {ok, v}; }    /* original C++ signature */
+    # inline std::pair<bool, int> get_int(ImGuiID channel) const;    /* original C++ signature */
     def get_int(self, channel: int) -> Tuple[bool, int]:
         pass
-    # inline std::pair<bool, ImVec4> get_color(ImGuiID channel, int color_space = color_space::col_oklab) const { ImVec4 v; bool ok = get_color(channel, &v, color_space); return {ok, v}; }    /* original C++ signature */
+    # inline std::pair<bool, ImVec4> get_color(ImGuiID channel, int color_space = color_space::col_oklab) const;    /* original C++ signature */
     def get_color(
         self,
         channel: int,
@@ -2819,11 +2693,11 @@ class instance:
     def valid(self) -> bool:
         """ Check validity"""
         pass
-    # operator bool() const { return valid(); }    /* original C++ signature */
+    # operator bool() const;    /* original C++ signature */
     def __bool__(self) -> bool:
         pass
 
-    # ImGuiID id() const { return m_inst_id; }    /* original C++ signature */
+    # ImGuiID id() const;    /* original C++ signature */
     def id(self) -> int:
         pass
 
@@ -2919,7 +2793,7 @@ class stagger_grid_opts:
 
     # stagger_grid_opts() : cols(1), rows(1), from(stagger_first),    /* original C++ signature */
     # 	                          from_index(0), axis(stagger_both),
-    # 	                          delay(0.05f), ease(ease_linear), start_delay(0) {}
+    # 	                          delay(0.05f), ease(ease_linear), start_delay(0);
     def __init__(self) -> None:
         pass
 
@@ -2954,16 +2828,16 @@ def layer_end(instance_id: int) -> None:
 
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
-# inline std::pair<bool, float> get_blended_float(ImGuiID instance_id, ImGuiID channel) { float v = 0.f; bool ok = get_blended_float(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+# inline std::pair<bool, float> get_blended_float(ImGuiID instance_id, ImGuiID channel);    /* original C++ signature */
 def get_blended_float(instance_id: int, channel: int) -> Tuple[bool, float]:
     pass
-# inline std::pair<bool, ImVec2> get_blended_vec2(ImGuiID instance_id, ImGuiID channel) { ImVec2 v; bool ok = get_blended_vec2(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+# inline std::pair<bool, ImVec2> get_blended_vec2(ImGuiID instance_id, ImGuiID channel);    /* original C++ signature */
 def get_blended_vec2(instance_id: int, channel: int) -> Tuple[bool, ImVec2]:
     pass
-# inline std::pair<bool, ImVec4> get_blended_vec4(ImGuiID instance_id, ImGuiID channel) { ImVec4 v; bool ok = get_blended_vec4(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+# inline std::pair<bool, ImVec4> get_blended_vec4(ImGuiID instance_id, ImGuiID channel);    /* original C++ signature */
 def get_blended_vec4(instance_id: int, channel: int) -> Tuple[bool, ImVec4]:
     pass
-# inline std::pair<bool, int> get_blended_int(ImGuiID instance_id, ImGuiID channel) { int v = 0; bool ok = get_blended_int(instance_id, channel, &v); return {ok, v}; }    /* original C++ signature */
+# inline std::pair<bool, int> get_blended_int(ImGuiID instance_id, ImGuiID channel);    /* original C++ signature */
 def get_blended_int(instance_id: int, channel: int) -> Tuple[bool, int]:
     pass
 # #endif

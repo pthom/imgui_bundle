@@ -616,14 +616,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         #     }
         light = enum.auto()  # (= 2)
 
-    # inline SnippetLanguage DefaultSnippetLanguage()    /* original C++ signature */
-    #     {
-    # #ifdef IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON
-    #         return SnippetLanguage::Python;
-    # #else
-    #         return SnippetLanguage::Cpp;
-    # #endif
-    #     }
+    # inline SnippetLanguage DefaultSnippetLanguage();    /* original C++ signature */
     @staticmethod
     def default_snippet_language() -> SnippetLanguage:
         """DefaultSnippetLanguage: Cpp, or Python when the host defines IMGUI_RICHMD_DEFAULT_SNIPPET_LANGUAGE_PYTHON

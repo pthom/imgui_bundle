@@ -132,61 +132,61 @@ time_t = int
 #-----------------------------------------------------------------------------
 
 # Computes the common (base-10) logarithm
-# static inline float  ImLog10(float x)  { return log10f(x); }    /* original C++ signature */
+# static inline float  ImLog10(float x);    /* original C++ signature */
 def im_log10(x: float) -> float:
     """(private API)"""
     pass
-# static inline float  ImSinh(float x)   { return sinhf(x);  }    /* original C++ signature */
+# static inline float  ImSinh(float x);    /* original C++ signature */
 def im_sinh(x: float) -> float:
     """(private API)"""
     pass
-# static inline float  ImAsinh(float x)  { return asinhf(x); }    /* original C++ signature */
+# static inline float  ImAsinh(float x);    /* original C++ signature */
 def im_asinh(x: float) -> float:
     """(private API)"""
     pass
-# static inline int ImPosMod(int l, int r) { return (l % r + r) % r; }    /* original C++ signature */
+# static inline int ImPosMod(int l, int r);    /* original C++ signature */
 def im_pos_mod(l: int, r: int) -> int:
     """ Returns always positive modulo (assumes r != 0)
     (private API)
     """
     pass
-# static inline bool ImNan(double val) { return isnan(val); }    /* original C++ signature */
+# static inline bool ImNan(double val);    /* original C++ signature */
 def im_nan(val: float) -> bool:
     """ Returns True if val is NAN
     (private API)
     """
     pass
-# static inline bool ImNanOrInf(double val) { return !(val >= -DBL_MAX && val <= DBL_MAX) || ImNan(val); }    /* original C++ signature */
+# static inline bool ImNanOrInf(double val);    /* original C++ signature */
 def im_nan_or_inf(val: float) -> bool:
     """ Returns True if val is NAN or INFINITY
     (private API)
     """
     pass
-# static inline double ImConstrainNan(double val) { return ImNan(val) ? 0 : val; }    /* original C++ signature */
+# static inline double ImConstrainNan(double val);    /* original C++ signature */
 def im_constrain_nan(val: float) -> float:
     """ Turns NANs to 0s
     (private API)
     """
     pass
-# static inline double ImConstrainInf(double val) { return val >= DBL_MAX ?  DBL_MAX : val <= -DBL_MAX ? - DBL_MAX : val; }    /* original C++ signature */
+# static inline double ImConstrainInf(double val);    /* original C++ signature */
 def im_constrain_inf(val: float) -> float:
     """ Turns infinity to floating point maximums
     (private API)
     """
     pass
-# static inline double ImConstrainLog(double val) { return val <= 0 ? 0.001f : val; }    /* original C++ signature */
+# static inline double ImConstrainLog(double val);    /* original C++ signature */
 def im_constrain_log(val: float) -> float:
     """ Turns numbers less than or equal to 0 to 0.001 (sort of arbitrary, is there a better way?)
     (private API)
     """
     pass
-# static inline double ImConstrainTime(double val) { return val < IMPLOT_MIN_TIME ? IMPLOT_MIN_TIME : (val > IMPLOT_MAX_TIME ? IMPLOT_MAX_TIME : val); }    /* original C++ signature */
+# static inline double ImConstrainTime(double val);    /* original C++ signature */
 def im_constrain_time(val: float) -> float:
     """ Turns numbers less than 0 to zero
     (private API)
     """
     pass
-# static inline bool ImAlmostEqual(double v1, double v2, int ulp = 2) { return ImAbs(v1-v2) < DBL_EPSILON * ImAbs(v1+v2) * ulp || ImAbs(v1-v2) < DBL_MIN; }    /* original C++ signature */
+# static inline bool ImAlmostEqual(double v1, double v2, int ulp = 2);    /* original C++ signature */
 def im_almost_equal(v1: float, v2: float, ulp: int = 2) -> bool:
     """ True if two numbers are approximately equal using units in the last place.
     (private API)
@@ -194,52 +194,21 @@ def im_almost_equal(v1: float, v2: float, ulp: int = 2) -> bool:
     pass
 
 
-# static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s) {    /* original C++ signature */
-# #ifdef IMPLOT_MIX64
-#     const ImU32 af = 256-s;
-#     const ImU32 bf = s;
-#     const ImU64 al = (a & 0x00ff00ff) | (((ImU64)(a & 0xff00ff00)) << 24);
-#     const ImU64 bl = (b & 0x00ff00ff) | (((ImU64)(b & 0xff00ff00)) << 24);
-#     const ImU64 mix = (al * af + bl * bf);
-#     return ((mix >> 32) & 0xff00ff00) | ((mix & 0xff00ff00) >> 8);
-# #else
-#     const ImU32 af = 256-s;
-#     const ImU32 bf = s;
-#     const ImU32 al = (a & 0x00ff00ff);
-#     const ImU32 ah = (a & 0xff00ff00) >> 8;
-#     const ImU32 bl = (b & 0x00ff00ff);
-#     const ImU32 bh = (b & 0xff00ff00) >> 8;
-#     const ImU32 ml = (al * af + bl * bf);
-#     const ImU32 mh = (ah * af + bh * bf);
-#     return (mh & 0xff00ff00) | ((ml & 0xff00ff00) >> 8);
-# #endif
-# }
+# static inline ImU32 ImMixU32(ImU32 a, ImU32 b, ImU32 s);    /* original C++ signature */
 def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
     """ Mix color a and b by factor s in [0 256]
     (private API)
     """
     pass
 
-# static inline ImU32 ImLerpU32(const ImU32* colors, int size, float t) {    /* original C++ signature */
-#     int i1 = (int)((size - 1 ) * t);
-#     int i2 = i1 + 1;
-#     if (i2 == size || size == 1)
-#         return colors[i1];
-#     float den = 1.0f / (size - 1);
-#     float t1 = i1 * den;
-#     float t2 = i2 * den;
-#     float tr = ImRemap01(t, t1, t2);
-#     return ImMixU32(colors[i1], colors[i2], (ImU32)(tr*256));
-# }
+# static inline ImU32 ImLerpU32(const ImU32* colors, int size, float t);    /* original C++ signature */
 def im_lerp_u32(colors: ImU32, size: int, t: float) -> ImU32:
     """ Lerp across an array of 32-bit colors given t in [0.0 1.0]
     (private API)
     """
     pass
 
-# static inline ImU32 ImAlphaU32(ImU32 col, float alpha) {    /* original C++ signature */
-#     return col & ~((ImU32)((1.0f-alpha)*255)<<IM_COL32_A_SHIFT);
-# }
+# static inline ImU32 ImAlphaU32(ImU32 col, float alpha);    /* original C++ signature */
 def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
     """ Set alpha channel of 32-bit color from float in range [0.0 1.0]
     (private API)
@@ -327,16 +296,11 @@ class MarkerInternal_(enum.IntFlag):
 
 class DateTimeSpec:
     """ Combined date/time format spec"""
-    # ImPlotDateTimeSpec() {}    /* original C++ signature */
+    # ImPlotDateTimeSpec();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImPlotDateTimeSpec(ImPlotDateFmt date_fmt, ImPlotTimeFmt time_fmt, bool use_24_hr_clk = false, bool use_iso_8601 = false) {    /* original C++ signature */
-    #         Date           = date_fmt;
-    #         Time           = time_fmt;
-    #         UseISO8601     = use_iso_8601;
-    #         Use24HourClock = use_24_hr_clk;
-    #     }
+    # ImPlotDateTimeSpec(ImPlotDateFmt date_fmt, ImPlotTimeFmt time_fmt, bool use_24_hr_clk = false, bool use_iso_8601 = false);    /* original C++ signature */
     @overload
     def __init__(self, date_fmt: DateFmt, time_fmt: TimeFmt, use_24_hr_clk: bool = False, use_iso_8601: bool = False) -> None:
         pass
@@ -355,23 +319,23 @@ class Time:
     s: time_t  # second part
     # int    Us;    /* original C++ signature */
     us: int    # microsecond part
-    # ImPlotTime() { S = 0; Us = 0; }    /* original C++ signature */
+    # ImPlotTime();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImPlotTime(time_t s, int us = 0) { S  = s + us / 1000000; Us = us % 1000000; }    /* original C++ signature */
+    # ImPlotTime(time_t s, int us = 0);    /* original C++ signature */
     @overload
     def __init__(self, s: time_t, us: int = 0) -> None:
         pass
-    # void RollOver() { S  = S + Us / 1000000;  Us = Us % 1000000; }    /* original C++ signature */
+    # void RollOver();    /* original C++ signature */
     def roll_over(self) -> None:
         """(private API)"""
         pass
-    # double ToDouble() const { return (double)S + (double)Us / 1000000.0; }    /* original C++ signature */
+    # double ToDouble() const;    /* original C++ signature */
     def to_double(self) -> float:
         """(private API)"""
         pass
-    # static ImPlotTime FromDouble(double t) { return ImPlotTime((time_t)t, (int)(t * 1000000 - floor(t) * 1000000)); }    /* original C++ signature */
+    # static ImPlotTime FromDouble(double t);    /* original C++ signature */
     @staticmethod
     def from_double(t: float) -> Time:
         """(private API)"""
@@ -401,133 +365,69 @@ class ColormapData:
     # int             Count;    /* original C++ signature */
     count: int
 
-    # ImPlotColormapData() { Count = 0; }    /* original C++ signature */
+    # ImPlotColormapData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # int Append(const char* name, const ImU32* keys, int count, bool qual) {    /* original C++ signature */
-    #         if (GetIndex(name) != -1)
-    #             return -1;
-    #         KeyOffsets.push_back(Keys.size());
-    #         KeyCounts.push_back(count);
-    #         Keys.reserve(Keys.size()+count);
-    #         for (int i = 0; i < count; ++i)
-    #             Keys.push_back(keys[i]);
-    #         TextOffsets.push_back(Text.size());
-    #         Text.append(name, name + strlen(name) + 1);
-    #         Quals.push_back(qual);
-    #         ImGuiID id = ImHashStr(name);
-    #         int idx = Count++;
-    #         Map.SetInt(id,idx);
-    #         _AppendTable(idx);
-    #         return idx;
-    #     }
+    # int Append(const char* name, const ImU32* keys, int count, bool qual);    /* original C++ signature */
     def append(self, name: str, keys: ImU32, count: int, qual: bool) -> int:
         """(private API)"""
         pass
 
-    # void _AppendTable(ImPlotColormap cmap) {    /* original C++ signature */
-    #         int key_count     = GetKeyCount(cmap);
-    #         const ImU32* keys = GetKeys(cmap);
-    #         int off = Tables.size();
-    #         TableOffsets.push_back(off);
-    #         if (IsQual(cmap)) {
-    #             Tables.reserve(key_count);
-    #             for (int i = 0; i < key_count; ++i)
-    #                 Tables.push_back(keys[i]);
-    #             TableSizes.push_back(key_count);
-    #         }
-    #         else {
-    #             int max_size = 255 * (key_count-1) + 1;
-    #             Tables.reserve(off + max_size);
-    #             // ImU32 last = keys[0];
-    #             // Tables.push_back(last);
-    #             // int n = 1;
-    #             for (int i = 0; i < key_count-1; ++i) {
-    #                 for (int s = 0; s < 255; ++s) {
-    #                     ImU32 a = keys[i];
-    #                     ImU32 b = keys[i+1];
-    #                     ImU32 c = ImMixU32(a,b,s);
-    #                     // if (c != last) {
-    #                         Tables.push_back(c);
-    #                         // last = c;
-    #                         // n++;
-    #                     // }
-    #                 }
-    #             }
-    #             ImU32 c = keys[key_count-1];
-    #             // if (c != last) {
-    #                 Tables.push_back(c);
-    #                 // n++;
-    #             // }
-    #             // TableSizes.push_back(n);
-    #             TableSizes.push_back(max_size);
-    #         }
-    #     }
+    # void _AppendTable(ImPlotColormap cmap);    /* original C++ signature */
     def _append_table(self, cmap: Colormap) -> None:
         """(private API)"""
         pass
 
-    # void RebuildTables() {    /* original C++ signature */
-    #         Tables.resize(0);
-    #         TableSizes.resize(0);
-    #         TableOffsets.resize(0);
-    #         for (int i = 0; i < Count; ++i)
-    #             _AppendTable(i);
-    #     }
+    # void RebuildTables();    /* original C++ signature */
     def rebuild_tables(self) -> None:
         """(private API)"""
         pass
 
-    # inline bool           IsQual(ImPlotColormap cmap) const                      { return Quals[cmap];                                                }    /* original C++ signature */
+    # inline bool           IsQual(ImPlotColormap cmap) const;    /* original C++ signature */
     def is_qual(self, cmap: Colormap) -> bool:
         """(private API)"""
         pass
-    # inline const char*    GetName(ImPlotColormap cmap) const                     { return cmap < Count ? Text.Buf.Data + TextOffsets[cmap] : nullptr; }    /* original C++ signature */
+    # inline const char*    GetName(ImPlotColormap cmap) const;    /* original C++ signature */
     def get_name(self, cmap: Colormap) -> str:
         """(private API)"""
         pass
-    # inline ImPlotColormap GetIndex(const char* name) const                       { ImGuiID key = ImHashStr(name); return Map.GetInt(key,-1);          }    /* original C++ signature */
+    # inline ImPlotColormap GetIndex(const char* name) const;    /* original C++ signature */
     def get_index(self, name: str) -> Colormap:
         """(private API)"""
         pass
 
-    # inline const ImU32*   GetKeys(ImPlotColormap cmap) const                     { return &Keys[KeyOffsets[cmap]];                                    }    /* original C++ signature */
+    # inline const ImU32*   GetKeys(ImPlotColormap cmap) const;    /* original C++ signature */
     def get_keys(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int            GetKeyCount(ImPlotColormap cmap) const                 { return KeyCounts[cmap];                                            }    /* original C++ signature */
+    # inline int            GetKeyCount(ImPlotColormap cmap) const;    /* original C++ signature */
     def get_key_count(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32          GetKeyColor(ImPlotColormap cmap, int idx) const        { return Keys[KeyOffsets[cmap]+idx];                                 }    /* original C++ signature */
+    # inline ImU32          GetKeyColor(ImPlotColormap cmap, int idx) const;    /* original C++ signature */
     def get_key_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
-    # inline void           SetKeyColor(ImPlotColormap cmap, int idx, ImU32 value) { Keys[KeyOffsets[cmap]+idx] = value; RebuildTables();               }    /* original C++ signature */
+    # inline void           SetKeyColor(ImPlotColormap cmap, int idx, ImU32 value);    /* original C++ signature */
     def set_key_color(self, cmap: Colormap, idx: int, value: ImU32) -> None:
         """(private API)"""
         pass
 
-    # inline const ImU32*   GetTable(ImPlotColormap cmap) const                    { return &Tables[TableOffsets[cmap]];                                }    /* original C++ signature */
+    # inline const ImU32*   GetTable(ImPlotColormap cmap) const;    /* original C++ signature */
     def get_table(self, cmap: Colormap) -> ImU32:
         """(private API)"""
         pass
-    # inline int            GetTableSize(ImPlotColormap cmap) const                { return TableSizes[cmap];                                           }    /* original C++ signature */
+    # inline int            GetTableSize(ImPlotColormap cmap) const;    /* original C++ signature */
     def get_table_size(self, cmap: Colormap) -> int:
         """(private API)"""
         pass
-    # inline ImU32          GetTableColor(ImPlotColormap cmap, int idx) const      { return Tables[TableOffsets[cmap]+idx];                             }    /* original C++ signature */
+    # inline ImU32          GetTableColor(ImPlotColormap cmap, int idx) const;    /* original C++ signature */
     def get_table_color(self, cmap: Colormap, idx: int) -> ImU32:
         """(private API)"""
         pass
 
-    # inline ImU32 LerpTable(ImPlotColormap cmap, float t) const {    /* original C++ signature */
-    #         int off = TableOffsets[cmap];
-    #         int siz = TableSizes[cmap];
-    #         int idx = Quals[cmap] ? ImClamp((int)(siz*t),0,siz-1) : (int)((siz - 1) * t + 0.5f);
-    #         return Tables[off + idx];
-    #     }
+    # inline ImU32 LerpTable(ImPlotColormap cmap, float t) const;    /* original C++ signature */
     def lerp_table(self, cmap: Colormap, t: float) -> ImU32:
         """(private API)"""
         pass
@@ -542,13 +442,11 @@ class PointError:
     neg: float
     # Pos;    /* original C++ signature */
     pos: float
-    # ImPlotPointError() { X = 0; Y = 0; Neg = 0; Pos = 0; }    /* original C++ signature */
+    # ImPlotPointError();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImPlotPointError(double x, double y, double neg, double pos) {    /* original C++ signature */
-    #         X = x; Y = y; Neg = neg; Pos = pos;
-    #     }
+    # ImPlotPointError(double x, double y, double neg, double pos);    /* original C++ signature */
     @overload
     def __init__(self, x: float, y: float, neg: float, pos: float) -> None:
         pass
@@ -567,11 +465,7 @@ class Annotation:
     text_offset: int
     # bool   Clamp;    /* original C++ signature */
     clamp: bool
-    # ImPlotAnnotation() {    /* original C++ signature */
-    #         ColorBg = ColorFg = 0;
-    #         TextOffset = 0;
-    #         Clamp = false;
-    #     }
+    # ImPlotAnnotation();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -583,33 +477,22 @@ class AnnotationCollection:
     # int                        Size;    /* original C++ signature */
     size: int
 
-    # ImPlotAnnotationCollection() { Reset(); }    /* original C++ signature */
+    # ImPlotAnnotationCollection();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
 
-    # void Append(const ImVec2& pos, const ImVec2& off, ImU32 bg, ImU32 fg, bool clamp, const char* fmt,  ...)  {    /* original C++ signature */
-    #         va_list args;
-    #         va_start(args, fmt);
-    #         AppendV(pos, off, bg, fg, clamp, fmt, args);
-    #         va_end(args);
-    #     }
+    # void Append(const ImVec2& pos, const ImVec2& off, ImU32 bg, ImU32 fg, bool clamp, const char* fmt,  ...);    /* original C++ signature */
     def append(self, pos: ImVec2Like, off: ImVec2Like, bg: ImU32, fg: ImU32, clamp: bool, fmt: str) -> None:
         """(private API)"""
         pass
 
-    # const char* GetText(int idx) {    /* original C++ signature */
-    #         return TextBuffer.Buf.Data + Annotations[idx].TextOffset;
-    #     }
+    # const char* GetText(int idx);    /* original C++ signature */
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         Annotations.shrink(0);
-    #         TextBuffer.Buf.shrink(0);
-    #         Size = 0;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -626,13 +509,7 @@ class Tag:
     # int    TextOffset;    /* original C++ signature */
     text_offset: int
 
-    # ImPlotTag() {    /* original C++ signature */
-    #         Axis       = 0;
-    #         Value      = 0;
-    #         ColorBg    = 0;
-    #         ColorFg    = 0;
-    #         TextOffset = 0;
-    #     }
+    # ImPlotTag();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -643,33 +520,22 @@ class TagCollection:
     # int                 Size;    /* original C++ signature */
     size: int
 
-    # ImPlotTagCollection() { Reset(); }    /* original C++ signature */
+    # ImPlotTagCollection();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
 
-    # void Append(ImAxis axis, double value, ImU32 bg, ImU32 fg, const char* fmt, ...)  {    /* original C++ signature */
-    #         va_list args;
-    #         va_start(args, fmt);
-    #         AppendV(axis, value, bg, fg, fmt, args);
-    #         va_end(args);
-    #     }
+    # void Append(ImAxis axis, double value, ImU32 bg, ImU32 fg, const char* fmt, ...);    /* original C++ signature */
     def append(self, axis: ImAxis, value: float, bg: ImU32, fg: ImU32, fmt: str) -> None:
         """(private API)"""
         pass
 
-    # const char* GetText(int idx) {    /* original C++ signature */
-    #         return TextBuffer.Buf.Data + Tags[idx].TextOffset;
-    #     }
+    # const char* GetText(int idx);    /* original C++ signature */
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         Tags.shrink(0);
-    #         TextBuffer.Buf.shrink(0);
-    #         Size = 0;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -693,27 +559,11 @@ class Tick:
     # int    Idx;    /* original C++ signature */
     idx: int
 
-    # ImPlotTick() {    /* original C++ signature */
-    #         PlotPos      = 0;
-    #         PixelPos     = 0;
-    #         LabelSize    = ImVec2(0,0);
-    #         TextOffset   = -1;
-    #         Major        = false;
-    #         ShowLabel    = false;
-    #         Level        = 0;
-    #         Idx          = -1;
-    #     }
+    # ImPlotTick();    /* original C++ signature */
     @overload
     def __init__(self) -> None:
         pass
-    # ImPlotTick(double value, bool major, int level, bool show_label) {    /* original C++ signature */
-    #         PixelPos     = 0;
-    #         PlotPos      = value;
-    #         Major        = major;
-    #         ShowLabel    = show_label;
-    #         Level        = level;
-    #         TextOffset   = -1;
-    #     }
+    # ImPlotTick(double value, bool major, int level, bool show_label);    /* original C++ signature */
     @overload
     def __init__(self, value: float, major: bool, level: int, show_label: bool) -> None:
         pass
@@ -730,34 +580,16 @@ class Ticker:
     # int                  Levels;    /* original C++ signature */
     levels: int
 
-    # ImPlotTicker() {    /* original C++ signature */
-    #         Reset();
-    #     }
+    # ImPlotTicker();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # ImPlotTick& AddTick(double value, bool major, int level, bool show_label, const char* label) {    /* original C++ signature */
-    #         ImPlotTick tick(value, major, level, show_label);
-    #         if (show_label && label != nullptr) {
-    #             tick.TextOffset = TextBuffer.size();
-    #             TextBuffer.append(label, label + strlen(label) + 1);
-    #             tick.LabelSize = ImGui::CalcTextSize(TextBuffer.Buf.Data + tick.TextOffset);
-    #         }
-    #         return AddTick(tick);
-    #     }
+    # ImPlotTick& AddTick(double value, bool major, int level, bool show_label, const char* label);    /* original C++ signature */
     @overload
     def add_tick(self, value: float, major: bool, level: int, show_label: bool, label: str) -> Tick:
         """(private API)"""
         pass
-    # inline ImPlotTick& AddTick(ImPlotTick tick) {    /* original C++ signature */
-    #         if (tick.ShowLabel) {
-    #             MaxSize.x     =  tick.LabelSize.x > MaxSize.x ? tick.LabelSize.x : MaxSize.x;
-    #             MaxSize.y     =  tick.LabelSize.y > MaxSize.y ? tick.LabelSize.y : MaxSize.y;
-    #         }
-    #         tick.Idx = Ticks.size();
-    #         Ticks.push_back(tick);
-    #         return Ticks.back();
-    #     }
+    # inline ImPlotTick& AddTick(ImPlotTick tick);    /* original C++ signature */
     @overload
     def add_tick(self, tick: Tick) -> Tick:
         """(private API)"""
@@ -765,44 +597,29 @@ class Ticker:
 
 
 
-    # const char* GetText(int idx) const {    /* original C++ signature */
-    #         return TextBuffer.Buf.Data + Ticks[idx].TextOffset;
-    #     }
+    # const char* GetText(int idx) const;    /* original C++ signature */
     @overload
     def get_text(self, idx: int) -> str:
         """(private API)"""
         pass
-    # const char* GetText(const ImPlotTick& tick) {    /* original C++ signature */
-    #         return GetText(tick.Idx);
-    #     }
+    # const char* GetText(const ImPlotTick& tick);    /* original C++ signature */
     @overload
     def get_text(self, tick: Tick) -> str:
         """(private API)"""
         pass
 
 
-    # void OverrideSizeLate(const ImVec2& size) {    /* original C++ signature */
-    #         LateSize.x = size.x > LateSize.x ? size.x : LateSize.x;
-    #         LateSize.y = size.y > LateSize.y ? size.y : LateSize.y;
-    #     }
+    # void OverrideSizeLate(const ImVec2& size);    /* original C++ signature */
     def override_size_late(self, size: ImVec2Like) -> None:
         """(private API)"""
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         Ticks.shrink(0);
-    #         TextBuffer.Buf.shrink(0);
-    #         MaxSize = LateSize;
-    #         LateSize = ImVec2(0,0);
-    #         Levels = 1;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
 
-    # int TickCount() const {    /* original C++ signature */
-    #         return Ticks.Size;
-    #     }
+    # int TickCount() const;    /* original C++ signature */
     def tick_count(self) -> int:
         """(private API)"""
         pass
@@ -902,359 +719,172 @@ class Axis:
     # bool                 Held;    /* original C++ signature */
     held: bool
 
-    # ImPlotAxis() {    /* original C++ signature */
-    #         ID               = 0;
-    #         Flags            = PreviousFlags = ImPlotAxisFlags_None;
-    #         Range.Min        = 0;
-    #         Range.Max        = 1;
-    #         Scale            = ImPlotScale_Linear;
-    #         TransformForward = TransformInverse = nullptr;
-    #         TransformData    = nullptr;
-    #         FitExtents.Min   = HUGE_VAL;
-    #         FitExtents.Max   = -HUGE_VAL;
-    #         OrthoAxis        = nullptr;
-    #         ConstraintRange  = ImPlotRange(-INFINITY,INFINITY);
-    #         ConstraintZoom   = ImPlotRange(DBL_MIN,INFINITY);
-    #         LinkedMin        = LinkedMax = nullptr;
-    #         PickerLevel      = 0;
-    #         Datum1           = Datum2 = 0;
-    #         PixelMin         = PixelMax = 0;
-    #         LabelOffset      = -1;
-    #         ColorMaj         = ColorMin = ColorTick = ColorTxt = ColorBg = ColorHov = ColorAct = 0;
-    #         ColorHiLi        = IM_COL32_BLACK_TRANS;
-    #         Formatter        = nullptr;
-    #         FormatterData    = nullptr;
-    #         Locator          = nullptr;
-    #         Enabled          = Hovered = Held = FitThisFrame = HasRange = HasFormatSpec = false;
-    #         ShowDefaultTicks = true;
-    #     }
+    # ImPlotAxis();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # inline void Reset() {    /* original C++ signature */
-    #         Enabled          = false;
-    #         Scale            = ImPlotScale_Linear;
-    #         TransformForward = TransformInverse = nullptr;
-    #         TransformData    = nullptr;
-    #         LabelOffset      = -1;
-    #         HasFormatSpec    = false;
-    #         Formatter        = nullptr;
-    #         FormatterData    = nullptr;
-    #         Locator          = nullptr;
-    #         ShowDefaultTicks = true;
-    #         FitThisFrame     = false;
-    #         FitExtents.Min   = HUGE_VAL;
-    #         FitExtents.Max   = -HUGE_VAL;
-    #         OrthoAxis        = nullptr;
-    #         ConstraintRange  = ImPlotRange(-INFINITY,INFINITY);
-    #         ConstraintZoom   = ImPlotRange(DBL_MIN,INFINITY);
-    #         Ticker.Reset();
-    #     }
+    # inline void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
 
-    # inline bool SetMin(double _min, bool force=false) {    /* original C++ signature */
-    #         if (!force && IsLockedMin())
-    #             return false;
-    #         _min = ImConstrainNan(ImConstrainInf(_min));
-    #         if (_min < ConstraintRange.Min)
-    #             _min = ConstraintRange.Min;
-    #         double z = Range.Max - _min;
-    #         if (z < ConstraintZoom.Min)
-    #             _min = Range.Max - ConstraintZoom.Min;
-    #         if (z > ConstraintZoom.Max)
-    #             _min = Range.Max - ConstraintZoom.Max;
-    #         if (_min >= Range.Max)
-    #             return false;
-    #         Range.Min = _min;
-    #         PickerTimeMin = ImPlotTime::FromDouble(Range.Min);
-    #         UpdateTransformCache();
-    #         return true;
-    #     }
+    # inline bool SetMin(double _min, bool force=false);    /* original C++ signature */
     def set_min(self, _min: float, force: bool = False) -> bool:
         """(private API)"""
         pass
 
-    # inline bool SetMax(double _max, bool force=false) {    /* original C++ signature */
-    #         if (!force && IsLockedMax())
-    #             return false;
-    #         _max = ImConstrainNan(ImConstrainInf(_max));
-    #         if (_max > ConstraintRange.Max)
-    #             _max = ConstraintRange.Max;
-    #         double z = _max - Range.Min;
-    #         if (z < ConstraintZoom.Min)
-    #             _max = Range.Min + ConstraintZoom.Min;
-    #         if (z > ConstraintZoom.Max)
-    #             _max = Range.Min + ConstraintZoom.Max;
-    #         if (_max <= Range.Min)
-    #             return false;
-    #         Range.Max = _max;
-    #         PickerTimeMax = ImPlotTime::FromDouble(Range.Max);
-    #         UpdateTransformCache();
-    #         return true;
-    #     }
+    # inline bool SetMax(double _max, bool force=false);    /* original C++ signature */
     def set_max(self, _max: float, force: bool = False) -> bool:
         """(private API)"""
         pass
 
-    # inline void SetRange(double v1, double v2) {    /* original C++ signature */
-    #         Range.Min = ImMin(v1,v2);
-    #         Range.Max = ImMax(v1,v2);
-    #         Constrain();
-    #         PickerTimeMin = ImPlotTime::FromDouble(Range.Min);
-    #         PickerTimeMax = ImPlotTime::FromDouble(Range.Max);
-    #         UpdateTransformCache();
-    #     }
+    # inline void SetRange(double v1, double v2);    /* original C++ signature */
     @overload
     def set_range(self, v1: float, v2: float) -> None:
         """(private API)"""
         pass
-    # inline void SetRange(const ImPlotRange& range) {    /* original C++ signature */
-    #         SetRange(range.Min, range.Max);
-    #     }
+    # inline void SetRange(const ImPlotRange& range);    /* original C++ signature */
     @overload
     def set_range(self, range: Range) -> None:
         """(private API)"""
         pass
 
 
-    # inline void SetAspect(double unit_per_pix) {    /* original C++ signature */
-    #         double new_size = unit_per_pix * PixelSize();
-    #         double delta    = (new_size - Range.Size()) * 0.5;
-    #         if (IsLocked())
-    #             return;
-    #         else if (IsLockedMin() && !IsLockedMax())
-    #             SetRange(Range.Min, Range.Max  + 2*delta);
-    #         else if (!IsLockedMin() && IsLockedMax())
-    #             SetRange(Range.Min - 2*delta, Range.Max);
-    #         else
-    #             SetRange(Range.Min - delta, Range.Max + delta);
-    #     }
+    # inline void SetAspect(double unit_per_pix);    /* original C++ signature */
     def set_aspect(self, unit_per_pix: float) -> None:
         """(private API)"""
         pass
 
-    # inline float PixelSize() const { return ImAbs(PixelMax - PixelMin); }    /* original C++ signature */
+    # inline float PixelSize() const;    /* original C++ signature */
     def pixel_size(self) -> float:
         """(private API)"""
         pass
 
-    # inline double GetAspect() const { return Range.Size() / PixelSize(); }    /* original C++ signature */
+    # inline double GetAspect() const;    /* original C++ signature */
     def get_aspect(self) -> float:
         """(private API)"""
         pass
 
-    # inline void Constrain() {    /* original C++ signature */
-    #         Range.Min = ImConstrainNan(ImConstrainInf(Range.Min));
-    #         Range.Max = ImConstrainNan(ImConstrainInf(Range.Max));
-    #         if (Range.Min < ConstraintRange.Min)
-    #             Range.Min = ConstraintRange.Min;
-    #         if (Range.Max > ConstraintRange.Max)
-    #             Range.Max = ConstraintRange.Max;
-    #         double z = Range.Size();
-    #         if (z < ConstraintZoom.Min) {
-    #             double delta = (ConstraintZoom.Min - z) * 0.5;
-    #             Range.Min -= delta;
-    #             Range.Max += delta;
-    #         }
-    #         if (z > ConstraintZoom.Max) {
-    #             double delta = (z - ConstraintZoom.Max) * 0.5;
-    #             Range.Min += delta;
-    #             Range.Max -= delta;
-    #         }
-    #         if (Range.Max <= Range.Min)
-    #             Range.Max = Range.Min + DBL_EPSILON;
-    #     }
+    # inline void Constrain();    /* original C++ signature */
     def constrain(self) -> None:
         """(private API)"""
         pass
 
-    # inline void UpdateTransformCache() {    /* original C++ signature */
-    #         ScaleToPixel = (PixelMax - PixelMin) / Range.Size();
-    #         if (TransformForward != nullptr) {
-    #             ScaleMin = TransformForward(Range.Min, TransformData);
-    #             ScaleMax = TransformForward(Range.Max, TransformData);
-    #         }
-    #         else {
-    #             ScaleMin = Range.Min;
-    #             ScaleMax = Range.Max;
-    #         }
-    #     }
+    # inline void UpdateTransformCache();    /* original C++ signature */
     def update_transform_cache(self) -> None:
         """(private API)"""
         pass
 
-    # inline float PlotToPixels(double plt) const {    /* original C++ signature */
-    #         if (TransformForward != nullptr) {
-    #             double s = TransformForward(plt, TransformData);
-    #             double t = (s - ScaleMin) / (ScaleMax - ScaleMin);
-    #             plt      = Range.Min + Range.Size() * t;
-    #         }
-    #         return (float)(PixelMin + ScaleToPixel * (plt - Range.Min));
-    #     }
+    # inline float PlotToPixels(double plt) const;    /* original C++ signature */
     def plot_to_pixels(self, plt: float) -> float:
         """(private API)"""
         pass
 
 
-    # inline double PixelsToPlot(float pix) const {    /* original C++ signature */
-    #         double plt = (pix - PixelMin) / ScaleToPixel + Range.Min;
-    #         if (TransformInverse != nullptr) {
-    #             double t = (plt - Range.Min) / Range.Size();
-    #             double s = t * (ScaleMax - ScaleMin) + ScaleMin;
-    #             plt = TransformInverse(s, TransformData);
-    #         }
-    #         return plt;
-    #     }
+    # inline double PixelsToPlot(float pix) const;    /* original C++ signature */
     def pixels_to_plot(self, pix: float) -> float:
         """(private API)"""
         pass
 
-    # inline void ExtendFit(double v) {    /* original C++ signature */
-    #         if (!ImNanOrInf(v) && v >= ConstraintRange.Min && v <= ConstraintRange.Max) {
-    #             FitExtents.Min = v < FitExtents.Min ? v : FitExtents.Min;
-    #             FitExtents.Max = v > FitExtents.Max ? v : FitExtents.Max;
-    #         }
-    #     }
+    # inline void ExtendFit(double v);    /* original C++ signature */
     def extend_fit(self, v: float) -> None:
         """(private API)"""
         pass
 
-    # inline void ExtendFitWith(ImPlotAxis& alt, double v, double v_alt) {    /* original C++ signature */
-    #         if (ImHasFlag(Flags, ImPlotAxisFlags_RangeFit) && !alt.Range.Contains(v_alt))
-    #             return;
-    #         if (!ImNanOrInf(v) && v >= ConstraintRange.Min && v <= ConstraintRange.Max) {
-    #             FitExtents.Min = v < FitExtents.Min ? v : FitExtents.Min;
-    #             FitExtents.Max = v > FitExtents.Max ? v : FitExtents.Max;
-    #         }
-    #     }
+    # inline void ExtendFitWith(ImPlotAxis& alt, double v, double v_alt);    /* original C++ signature */
     def extend_fit_with(self, alt: Axis, v: float, v_alt: float) -> None:
         """(private API)"""
         pass
 
-    # inline void ApplyFit(float padding) {    /* original C++ signature */
-    #         const double ext_size = FitExtents.Size() * 0.5;
-    #         FitExtents.Min -= ext_size * padding;
-    #         FitExtents.Max += ext_size * padding;
-    #         if (!IsLockedMin() && !ImNanOrInf(FitExtents.Min))
-    #             Range.Min = FitExtents.Min;
-    #         if (!IsLockedMax() && !ImNanOrInf(FitExtents.Max))
-    #             Range.Max = FitExtents.Max;
-    #         if (ImAlmostEqual(Range.Min, Range.Max))  {
-    #             Range.Max += 0.5;
-    #             Range.Min -= 0.5;
-    #         }
-    #         Constrain();
-    #         UpdateTransformCache();
-    #     }
+    # inline void ApplyFit(float padding);    /* original C++ signature */
     def apply_fit(self, padding: float) -> None:
         """(private API)"""
         pass
 
-    # inline bool HasLabel()          const { return LabelOffset != -1 && !ImHasFlag(Flags, ImPlotAxisFlags_NoLabel);                          }    /* original C++ signature */
+    # inline bool HasLabel()          const;    /* original C++ signature */
     def has_label(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasGridLines()      const { return !ImHasFlag(Flags, ImPlotAxisFlags_NoGridLines);                                           }    /* original C++ signature */
+    # inline bool HasGridLines()      const;    /* original C++ signature */
     def has_grid_lines(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasTickLabels()     const { return !ImHasFlag(Flags, ImPlotAxisFlags_NoTickLabels);                                          }    /* original C++ signature */
+    # inline bool HasTickLabels()     const;    /* original C++ signature */
     def has_tick_labels(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasTickMarks()      const { return !ImHasFlag(Flags, ImPlotAxisFlags_NoTickMarks);                                           }    /* original C++ signature */
+    # inline bool HasTickMarks()      const;    /* original C++ signature */
     def has_tick_marks(self) -> bool:
         """(private API)"""
         pass
-    # inline bool WillRender()        const { return Enabled && (HasGridLines() || HasTickLabels() || HasTickMarks());                         }    /* original C++ signature */
+    # inline bool WillRender()        const;    /* original C++ signature */
     def will_render(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsOpposite()        const { return ImHasFlag(Flags, ImPlotAxisFlags_Opposite);                                               }    /* original C++ signature */
+    # inline bool IsOpposite()        const;    /* original C++ signature */
     def is_opposite(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInverted()        const { return ImHasFlag(Flags, ImPlotAxisFlags_Invert);                                                 }    /* original C++ signature */
+    # inline bool IsInverted()        const;    /* original C++ signature */
     def is_inverted(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsForeground()      const { return ImHasFlag(Flags, ImPlotAxisFlags_Foreground);                                             }    /* original C++ signature */
+    # inline bool IsForeground()      const;    /* original C++ signature */
     def is_foreground(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsAutoFitting()     const { return ImHasFlag(Flags, ImPlotAxisFlags_AutoFit);                                                }    /* original C++ signature */
+    # inline bool IsAutoFitting()     const;    /* original C++ signature */
     def is_auto_fitting(self) -> bool:
         """(private API)"""
         pass
-    # inline bool CanInitFit()        const { return !ImHasFlag(Flags, ImPlotAxisFlags_NoInitialFit) && !HasRange && !LinkedMin && !LinkedMax; }    /* original C++ signature */
+    # inline bool CanInitFit()        const;    /* original C++ signature */
     def can_init_fit(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsRangeLocked()     const { return HasRange && RangeCond == ImPlotCond_Always;                                               }    /* original C++ signature */
+    # inline bool IsRangeLocked()     const;    /* original C++ signature */
     def is_range_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMin()       const { return !Enabled || IsRangeLocked() || ImHasFlag(Flags, ImPlotAxisFlags_LockMin);                 }    /* original C++ signature */
+    # inline bool IsLockedMin()       const;    /* original C++ signature */
     def is_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMax()       const { return !Enabled || IsRangeLocked() || ImHasFlag(Flags, ImPlotAxisFlags_LockMax);                 }    /* original C++ signature */
+    # inline bool IsLockedMax()       const;    /* original C++ signature */
     def is_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLocked()          const { return IsLockedMin() && IsLockedMax();                                                           }    /* original C++ signature */
+    # inline bool IsLocked()          const;    /* original C++ signature */
     def is_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMin()  const { return IsLockedMin() || IsAutoFitting();                                                         }    /* original C++ signature */
+    # inline bool IsInputLockedMin()  const;    /* original C++ signature */
     def is_input_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMax()  const { return IsLockedMax() || IsAutoFitting();                                                         }    /* original C++ signature */
+    # inline bool IsInputLockedMax()  const;    /* original C++ signature */
     def is_input_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLocked()     const { return IsLocked()    || IsAutoFitting();                                                         }    /* original C++ signature */
+    # inline bool IsInputLocked()     const;    /* original C++ signature */
     def is_input_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasMenus()          const { return !ImHasFlag(Flags, ImPlotAxisFlags_NoMenus);                                               }    /* original C++ signature */
+    # inline bool HasMenus()          const;    /* original C++ signature */
     def has_menus(self) -> bool:
         """(private API)"""
         pass
 
-    # inline bool IsPanLocked(bool increasing) {    /* original C++ signature */
-    #         if (ImHasFlag(Flags, ImPlotAxisFlags_PanStretch)) {
-    #             return IsInputLocked();
-    #         }
-    #         else {
-    #             if (IsLockedMin() || IsLockedMax() || IsAutoFitting())
-    #                 return false;
-    #             if (increasing)
-    #                 return Range.Max == ConstraintRange.Max;
-    #             else
-    #                 return Range.Min == ConstraintRange.Min;
-    #         }
-    #     }
+    # inline bool IsPanLocked(bool increasing);    /* original C++ signature */
     def is_pan_locked(self, increasing: bool) -> bool:
         """(private API)"""
         pass
 
-    # void PushLinks() {    /* original C++ signature */
-    #         if (LinkedMin) { *LinkedMin = Range.Min; }
-    #         if (LinkedMax) { *LinkedMax = Range.Max; }
-    #     }
+    # void PushLinks();    /* original C++ signature */
     def push_links(self) -> None:
         """(private API)"""
         pass
 
-    # void PullLinks() {    /* original C++ signature */
-    #         if (LinkedMin && LinkedMax) { SetRange(*LinkedMin, *LinkedMax); }
-    #         else if (LinkedMin) { SetMin(*LinkedMin,true); }
-    #         else if (LinkedMax) { SetMax(*LinkedMax,true); }
-    #     }
+    # void PullLinks();    /* original C++ signature */
     def pull_links(self) -> None:
         """(private API)"""
         pass
@@ -1271,31 +901,22 @@ class AlignmentData:
     pad_a_max: float
     # float PadBMax;    /* original C++ signature */
     pad_b_max: float
-    # ImPlotAlignmentData() {    /* original C++ signature */
-    #         Vertical    = true;
-    #         PadA = PadB = PadAMax = PadBMax = 0;
-    #     }
+    # ImPlotAlignmentData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Begin() { PadAMax = PadBMax = 0; }    /* original C++ signature */
+    # void Begin();    /* original C++ signature */
     def begin(self) -> None:
         """(private API)"""
         pass
-    # void Update(float& pad_a, float& pad_b, float& delta_a, float& delta_b) {    /* original C++ signature */
-    #         float bak_a = pad_a; float bak_b = pad_b;
-    #         if (PadAMax < pad_a) { PadAMax = pad_a; }
-    #         if (PadBMax < pad_b) { PadBMax = pad_b; }
-    #         if (pad_a < PadA)    { pad_a = PadA; delta_a = pad_a - bak_a; } else { delta_a = 0; }
-    #         if (pad_b < PadB)    { pad_b = PadB; delta_b = pad_b - bak_b; } else { delta_b = 0; }
-    #     }
+    # void Update(float& pad_a, float& pad_b, float& delta_a, float& delta_b);    /* original C++ signature */
     def update(self, pad_a: float, pad_b: float, delta_a: float, delta_b: float) -> Tuple[float, float, float, float]:
         """(private API)"""
         pass
-    # void End()   { PadA = PadAMax; PadB = PadBMax;      }    /* original C++ signature */
+    # void End();    /* original C++ signature */
     def end(self) -> None:
         """(private API)"""
         pass
-    # void Reset() { PadA = PadB = PadAMax = PadBMax = 0; }    /* original C++ signature */
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -1319,15 +940,7 @@ class Item:
     # bool         SeenThisFrame;    /* original C++ signature */
     seen_this_frame: bool
 
-    # ImPlotItem() {    /* original C++ signature */
-    #         ID            = 0;
-    #         Color         = IM_COL32_WHITE;
-    #         Marker        = ImPlotMarker_None;
-    #         NameOffset    = -1;
-    #         Show          = true;
-    #         SeenThisFrame = false;
-    #         LegendHovered = false;
-    #     }
+    # ImPlotItem();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
@@ -1359,17 +972,11 @@ class Legend:
     # bool              CanGoInside;    /* original C++ signature */
     can_go_inside: bool
 
-    # ImPlotLegend() {    /* original C++ signature */
-    #         Flags        = PreviousFlags = ImPlotLegendFlags_None;
-    #         CanGoInside  = true;
-    #         Hovered      = Held = false;
-    #         Location     = PreviousLocation = ImPlotLocation_NorthWest;
-    #         Scroll       = ImVec2(0,0);
-    #     }
+    # ImPlotLegend();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # void Reset() { Indices.shrink(0); Labels.Buf.shrink(0); }    /* original C++ signature */
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -1385,53 +992,53 @@ class ItemGroup:
     # ImPlotMarker       MarkerIdx;    /* original C++ signature */
     marker_idx: Marker
 
-    # ImPlotItemGroup() { ID = 0; ColormapIdx = 0; MarkerIdx = 0; }    /* original C++ signature */
+    # ImPlotItemGroup();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # int         GetItemCount() const             { return ItemPool.GetBufSize();                                 }    /* original C++ signature */
+    # int         GetItemCount() const;    /* original C++ signature */
     def get_item_count(self) -> int:
         """(private API)"""
         pass
-    # ImGuiID     GetItemID(const char*  label_id) { return ImGui::GetID(label_id); /* GetIDWithSeed */            }    /* original C++ signature */
+    # ImGuiID     GetItemID(const char*  label_id);    /* original C++ signature */
     def get_item_id(self, label_id: str) -> ID:
         """(private API)"""
         pass
-    # ImPlotItem* GetItem(ImGuiID id)              { return ItemPool.GetByKey(id);                                 }    /* original C++ signature */
+    # ImPlotItem* GetItem(ImGuiID id);    /* original C++ signature */
     @overload
     def get_item(self, id_: ID) -> Item:
         """(private API)"""
         pass
-    # ImPlotItem* GetItem(const char* label_id)    { return GetItem(GetItemID(label_id));                          }    /* original C++ signature */
+    # ImPlotItem* GetItem(const char* label_id);    /* original C++ signature */
     @overload
     def get_item(self, label_id: str) -> Item:
         """(private API)"""
         pass
-    # ImPlotItem* GetOrAddItem(ImGuiID id)         { return ItemPool.GetOrAddByKey(id);                            }    /* original C++ signature */
+    # ImPlotItem* GetOrAddItem(ImGuiID id);    /* original C++ signature */
     def get_or_add_item(self, id_: ID) -> Item:
         """(private API)"""
         pass
-    # ImPlotItem* GetItemByIndex(int i)            { return ItemPool.GetByIndex(i);                                }    /* original C++ signature */
+    # ImPlotItem* GetItemByIndex(int i);    /* original C++ signature */
     def get_item_by_index(self, i: int) -> Item:
         """(private API)"""
         pass
-    # int         GetItemIndex(ImPlotItem* item)   { return ItemPool.GetIndex(item);                               }    /* original C++ signature */
+    # int         GetItemIndex(ImPlotItem* item);    /* original C++ signature */
     def get_item_index(self, item: Item) -> int:
         """(private API)"""
         pass
-    # int         GetLegendCount() const           { return Legend.Indices.size();                                 }    /* original C++ signature */
+    # int         GetLegendCount() const;    /* original C++ signature */
     def get_legend_count(self) -> int:
         """(private API)"""
         pass
-    # ImPlotItem* GetLegendItem(int i)             { return ItemPool.GetByIndex(Legend.Indices[i]);                }    /* original C++ signature */
+    # ImPlotItem* GetLegendItem(int i);    /* original C++ signature */
     def get_legend_item(self, i: int) -> Item:
         """(private API)"""
         pass
-    # const char* GetLegendLabel(int i)            { return Legend.Labels.Buf.Data + GetLegendItem(i)->NameOffset; }    /* original C++ signature */
+    # const char* GetLegendLabel(int i);    /* original C++ signature */
     def get_legend_label(self, i: int) -> str:
         """(private API)"""
         pass
-    # void        Reset()                          { ItemPool.Clear(); Legend.Reset(); ColormapIdx = 0;            }    /* original C++ signature */
+    # void        Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -1489,109 +1096,58 @@ class Plot:
     # bool                 ContextLocked;    /* original C++ signature */
     context_locked: bool
 
-    # ImPlotPlot() {    /* original C++ signature */
-    #         Flags             = PreviousFlags = ImPlotFlags_None;
-    #         for (int i = 0; i < IMPLOT_NUM_X_AXES; ++i)
-    #             XAxis(i).Vertical = false;
-    #         for (int i = 0; i < IMPLOT_NUM_Y_AXES; ++i)
-    #             YAxis(i).Vertical = true;
-    #         SelectStart       = ImVec2(0,0);
-    #         CurrentX          = ImAxis_X1;
-    #         CurrentY          = ImAxis_Y1;
-    #         MouseTextLocation  = ImPlotLocation_South | ImPlotLocation_East;
-    #         MouseTextFlags     = ImPlotMouseTextFlags_None;
-    #         TitleOffset       = -1;
-    #         JustCreated       = true;
-    #         Initialized = SetupLocked = FitThisFrame = false;
-    #         Hovered = Held = Selected = Selecting = ContextLocked = false;
-    #     }
+    # ImPlotPlot();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # inline bool IsInputLocked() const {    /* original C++ signature */
-    #         for (int i = 0; i < IMPLOT_NUM_X_AXES; ++i) {
-    #             if (!XAxis(i).IsInputLocked())
-    #                 return false;
-    #         }
-    #         for (int i = 0; i < IMPLOT_NUM_Y_AXES; ++i) {
-    #             if (!YAxis(i).IsInputLocked())
-    #                 return false;
-    #         }
-    #         return true;
-    #     }
+    # inline bool IsInputLocked() const;    /* original C++ signature */
     def is_input_locked(self) -> bool:
         """(private API)"""
         pass
 
-    # inline void ClearTextBuffer() { TextBuffer.Buf.shrink(0); }    /* original C++ signature */
+    # inline void ClearTextBuffer();    /* original C++ signature */
     def clear_text_buffer(self) -> None:
         """(private API)"""
         pass
 
-    # inline void SetTitle(const char* title) {    /* original C++ signature */
-    #         if (title && ImGui::FindRenderedTextEnd(title, nullptr) != title) {
-    #             TitleOffset = TextBuffer.size();
-    #             TextBuffer.append(title, title + strlen(title) + 1);
-    #         }
-    #         else {
-    #             TitleOffset = -1;
-    #         }
-    #     }
+    # inline void SetTitle(const char* title);    /* original C++ signature */
     def set_title(self, title: str) -> None:
         """(private API)"""
         pass
-    # inline bool HasTitle() const { return TitleOffset != -1 && !ImHasFlag(Flags, ImPlotFlags_NoTitle); }    /* original C++ signature */
+    # inline bool HasTitle() const;    /* original C++ signature */
     def has_title(self) -> bool:
         """(private API)"""
         pass
-    # inline const char* GetTitle() const { return TextBuffer.Buf.Data + TitleOffset; }    /* original C++ signature */
+    # inline const char* GetTitle() const;    /* original C++ signature */
     def get_title(self) -> str:
         """(private API)"""
         pass
 
-    # inline       ImPlotAxis& XAxis(int i)       { return Axes[ImAxis_X1 + i]; }    /* original C++ signature */
+    # inline       ImPlotAxis& XAxis(int i);    /* original C++ signature */
     def x_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
-    # inline       ImPlotAxis& YAxis(int i)       { return Axes[ImAxis_Y1 + i]; }    /* original C++ signature */
+    # inline       ImPlotAxis& YAxis(int i);    /* original C++ signature */
     def y_axis(self, i: int) -> Axis:
         """(private API)"""
         pass
 
-    # inline int EnabledAxesX() {    /* original C++ signature */
-    #         int cnt = 0;
-    #         for (int i = 0; i < IMPLOT_NUM_X_AXES; ++i)
-    #             cnt += XAxis(i).Enabled;
-    #         return cnt;
-    #     }
+    # inline int EnabledAxesX();    /* original C++ signature */
     def enabled_axes_x(self) -> int:
         """(private API)"""
         pass
 
-    # inline int EnabledAxesY() {    /* original C++ signature */
-    #         int cnt = 0;
-    #         for (int i = 0; i < IMPLOT_NUM_Y_AXES; ++i)
-    #             cnt += YAxis(i).Enabled;
-    #         return cnt;
-    #     }
+    # inline int EnabledAxesY();    /* original C++ signature */
     def enabled_axes_y(self) -> int:
         """(private API)"""
         pass
 
-    # inline void SetAxisLabel(ImPlotAxis& axis, const char* label) {    /* original C++ signature */
-    #         if (label && ImGui::FindRenderedTextEnd(label, nullptr) != label) {
-    #             axis.LabelOffset = TextBuffer.size();
-    #             TextBuffer.append(label, label + strlen(label) + 1);
-    #         }
-    #         else {
-    #             axis.LabelOffset = -1;
-    #         }
-    #     }
+    # inline void SetAxisLabel(ImPlotAxis& axis, const char* label);    /* original C++ signature */
     def set_axis_label(self, axis: Axis, label: str) -> None:
         """(private API)"""
         pass
 
-    # inline const char* GetAxisLabel(const ImPlotAxis& axis) const { return TextBuffer.Buf.Data + axis.LabelOffset; }    /* original C++ signature */
+    # inline const char* GetAxisLabel(const ImPlotAxis& axis) const;    /* original C++ signature */
     def get_axis_label(self, axis: Axis) -> str:
         """(private API)"""
         pass
@@ -1629,34 +1185,18 @@ class Subplot:
     # bool                          HasTitle;    /* original C++ signature */
     has_title: bool
 
-    # ImPlotSubplot() {    /* original C++ signature */
-    #         ID                          = 0;
-    #         Flags = PreviousFlags       = ImPlotSubplotFlags_None;
-    #         Rows = Cols = CurrentIdx    = 0;
-    #         Items.Legend.Location       = ImPlotLocation_North;
-    #         Items.Legend.Flags          = ImPlotLegendFlags_Horizontal|ImPlotLegendFlags_Outside;
-    #         Items.Legend.CanGoInside    = false;
-    #         TempSizes[0] = TempSizes[1] = 0;
-    #         FrameHovered                = false;
-    #         HasTitle                    = false;
-    #     }
+    # ImPlotSubplot();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
 class NextPlotData:
     """ Temporary data storage for upcoming plot"""
 
-    # ImPlotNextPlotData() { Reset(); }    /* original C++ signature */
+    # ImPlotNextPlotData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
 
-    # void Reset() {    /* original C++ signature */
-    #         for (int i = 0; i < ImAxis_COUNT; ++i) {
-    #             HasRange[i]                 = false;
-    #             Fit[i]                      = false;
-    #             LinkedMin[i] = LinkedMax[i] = nullptr;
-    #         }
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -1682,14 +1222,10 @@ class NextItemData:
     hidden: bool
     # ImPlotCond      HiddenCond;    /* original C++ signature */
     hidden_cond: Cond
-    # ImPlotNextItemData() { Reset(); }    /* original C++ signature */
+    # ImPlotNextItemData();    /* original C++ signature */
     def __init__(self) -> None:
         pass
-    # void Reset() {    /* original C++ signature */
-    #         Spec      = ImPlotSpec();
-    #         HasHidden = Hidden = false;
-    #         HiddenCond = ImPlotCond_None;
-    #     }
+    # void Reset();    /* original C++ signature */
     def reset(self) -> None:
         """(private API)"""
         pass
@@ -1834,12 +1370,7 @@ def show_plot_context_menu(plot: Plot) -> None:
 # [SECTION] Setup Utils
 #-----------------------------------------------------------------------------
 
-# static inline void SetupLock() {    /* original C++ signature */
-#     ImPlotContext& gp = *GImPlot;
-#     if (!gp.CurrentPlot->SetupLocked)
-#         SetupFinish();
-#     gp.CurrentPlot->SetupLocked = true;
-# }
+# static inline void SetupLock();    /* original C++ signature */
 def setup_lock() -> None:
     """ Lock Setup and call SetupFinish if necessary.
     (private API)
@@ -1903,100 +1434,59 @@ def bust_item_cache() -> None:
 # [SECTION] Axis Utils
 #-----------------------------------------------------------------------------
 
-# static inline bool AnyAxesInputLocked(ImPlotAxis* axes, int count) {    /* original C++ signature */
-#     for (int i = 0; i < count; ++i) {
-#         if (axes[i].Enabled && axes[i].IsInputLocked())
-#             return true;
-#     }
-#     return false;
-# }
+# static inline bool AnyAxesInputLocked(ImPlotAxis* axes, int count);    /* original C++ signature */
 def any_axes_input_locked(axes: Axis, count: int) -> bool:
     """ Returns True if any enabled axis is locked from user input.
     (private API)
     """
     pass
 
-# static inline bool AllAxesInputLocked(ImPlotAxis* axes, int count) {    /* original C++ signature */
-#     for (int i = 0; i < count; ++i) {
-#         if (axes[i].Enabled && !axes[i].IsInputLocked())
-#             return false;
-#     }
-#     return true;
-# }
+# static inline bool AllAxesInputLocked(ImPlotAxis* axes, int count);    /* original C++ signature */
 def all_axes_input_locked(axes: Axis, count: int) -> bool:
     """ Returns True if all enabled axes are locked from user input.
     (private API)
     """
     pass
 
-# static inline bool AnyAxesHeld(ImPlotAxis* axes, int count) {    /* original C++ signature */
-#     for (int i = 0; i < count; ++i) {
-#         if (axes[i].Enabled && axes[i].Held)
-#             return true;
-#     }
-#     return false;
-# }
+# static inline bool AnyAxesHeld(ImPlotAxis* axes, int count);    /* original C++ signature */
 def any_axes_held(axes: Axis, count: int) -> bool:
     """(private API)"""
     pass
 
-# static inline bool AnyAxesHovered(ImPlotAxis* axes, int count) {    /* original C++ signature */
-#     for (int i = 0; i < count; ++i) {
-#         if (axes[i].Enabled && axes[i].Hovered)
-#             return true;
-#     }
-#     return false;
-# }
+# static inline bool AnyAxesHovered(ImPlotAxis* axes, int count);    /* original C++ signature */
 def any_axes_hovered(axes: Axis, count: int) -> bool:
     """(private API)"""
     pass
 
-# static inline bool FitThisFrame() {    /* original C++ signature */
-#     return GImPlot->CurrentPlot->FitThisFrame;
-# }
+# static inline bool FitThisFrame();    /* original C++ signature */
 def fit_this_frame() -> bool:
     """ Returns True if the user has requested data to be fit.
     (private API)
     """
     pass
 
-# static inline void FitPointX(double x) {    /* original C++ signature */
-#     ImPlotPlot& plot   = *GetCurrentPlot();
-#     ImPlotAxis& x_axis = plot.Axes[plot.CurrentX];
-#     x_axis.ExtendFit(x);
-# }
+# static inline void FitPointX(double x);    /* original C++ signature */
 def fit_point_x(x: float) -> None:
     """ Extends the current plot's axes so that it encompasses a vertical line at x
     (private API)
     """
     pass
 
-# static inline void FitPointY(double y) {    /* original C++ signature */
-#     ImPlotPlot& plot   = *GetCurrentPlot();
-#     ImPlotAxis& y_axis = plot.Axes[plot.CurrentY];
-#     y_axis.ExtendFit(y);
-# }
+# static inline void FitPointY(double y);    /* original C++ signature */
 def fit_point_y(y: float) -> None:
     """ Extends the current plot's axes so that it encompasses a horizontal line at y
     (private API)
     """
     pass
 
-# static inline void FitPoint(const ImPlotPoint& p) {    /* original C++ signature */
-#     ImPlotPlot& plot   = *GetCurrentPlot();
-#     ImPlotAxis& x_axis = plot.Axes[plot.CurrentX];
-#     ImPlotAxis& y_axis = plot.Axes[plot.CurrentY];
-#     x_axis.ExtendFitWith(y_axis, p.x, p.y);
-#     y_axis.ExtendFitWith(x_axis, p.y, p.x);
-# }
+# static inline void FitPoint(const ImPlotPoint& p);    /* original C++ signature */
 def fit_point(p: Point) -> None:
     """ Extends the current plot's axes so that it encompasses point p
     (private API)
     """
     pass
 
-# static inline bool RangesOverlap(const ImPlotRange& r1, const ImPlotRange& r2)    /* original C++ signature */
-# { return r1.Min <= r2.Max && r2.Min <= r1.Max; }
+# static inline bool RangesOverlap(const ImPlotRange& r1, const ImPlotRange& r2);    /* original C++ signature */
 def ranges_overlap(r1: Range, r2: Range) -> bool:
     """ Returns True if two ranges overlap
     (private API)
@@ -2054,21 +1544,21 @@ def show_legend_context_menu(legend: Legend, visible: bool) -> bool:
 # [SECTION] Styling Utils
 #-----------------------------------------------------------------------------
 
-# static inline const ImPlotNextItemData& GetItemData() { return GImPlot->NextItemData; }    /* original C++ signature */
+# static inline const ImPlotNextItemData& GetItemData();    /* original C++ signature */
 def get_item_data() -> NextItemData:
     """ Get styling data for next item (call between Begin/EndItem)
     (private API)
     """
     pass
 
-# static inline bool IsColorAuto(const ImVec4& col) { return col.w == -1; }    /* original C++ signature */
+# static inline bool IsColorAuto(const ImVec4& col);    /* original C++ signature */
 @overload
 def is_color_auto(col: ImVec4Like) -> bool:
     """ Returns True if a color is set to be automatically determined
     (private API)
     """
     pass
-# static inline bool IsColorAuto(ImPlotCol idx) { return IsColorAuto(GImPlot->Style.Colors[idx]); }    /* original C++ signature */
+# static inline bool IsColorAuto(ImPlotCol idx);    /* original C++ signature */
 @overload
 def is_color_auto(idx: Col) -> bool:
     """ Returns True if a style color is set to be automatically determined
@@ -2081,11 +1571,11 @@ def get_auto_color(idx: Col) -> ImVec4:
     pass
 
 # Returns the style color whether it is automatic or custom set
-# static inline ImVec4 GetStyleColorVec4(ImPlotCol idx) { return IsColorAuto(idx) ? GetAutoColor(idx) : GImPlot->Style.Colors[idx]; }    /* original C++ signature */
+# static inline ImVec4 GetStyleColorVec4(ImPlotCol idx);    /* original C++ signature */
 def get_style_color_vec4(idx: Col) -> ImVec4:
     """(private API)"""
     pass
-# static inline ImU32  GetStyleColorU32(ImPlotCol idx)  { return ImGui::ColorConvertFloat4ToU32(GetStyleColorVec4(idx)); }    /* original C++ signature */
+# static inline ImU32  GetStyleColorU32(ImPlotCol idx);    /* original C++ signature */
 def get_style_color_u32(idx: Col) -> ImU32:
     """(private API)"""
     pass
@@ -2098,40 +1588,31 @@ def add_text_vertical(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32, text_b
 def add_text_centered(draw_list: ImDrawList, top_center: ImVec2Like, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
     """ Draws multiline horizontal text centered."""
     pass
-# static inline ImVec2 CalcTextSizeVertical(const char *text) {    /* original C++ signature */
-#     ImVec2 sz = ImGui::CalcTextSize(text);
-#     return ImVec2(sz.y, sz.x);
-# }
+# static inline ImVec2 CalcTextSizeVertical(const char *text);    /* original C++ signature */
 def calc_text_size_vertical(text: str) -> ImVec2:
     """ Calculates the size of vertical text
     (private API)
     """
     pass
 # Returns white or black text given background color
-# static inline ImU32 CalcTextColor(const ImVec4& bg) { return (bg.x * 0.299f + bg.y * 0.587f + bg.z * 0.114f) > 0.5f ? IM_COL32_BLACK : IM_COL32_WHITE; }    /* original C++ signature */
+# static inline ImU32 CalcTextColor(const ImVec4& bg);    /* original C++ signature */
 @overload
 def calc_text_color(bg: ImVec4Like) -> ImU32:
     """(private API)"""
     pass
-# static inline ImU32 CalcTextColor(ImU32 bg)         { return CalcTextColor(ImGui::ColorConvertU32ToFloat4(bg)); }    /* original C++ signature */
+# static inline ImU32 CalcTextColor(ImU32 bg);    /* original C++ signature */
 @overload
 def calc_text_color(bg: ImU32) -> ImU32:
     """(private API)"""
     pass
-# static inline ImU32 CalcHoverColor(ImU32 col)       {  return ImMixU32(col, CalcTextColor(col), 32); }    /* original C++ signature */
+# static inline ImU32 CalcHoverColor(ImU32 col);    /* original C++ signature */
 def calc_hover_color(col: ImU32) -> ImU32:
     """ Lightens or darkens a color for hover
     (private API)
     """
     pass
 
-# static inline ImVec2 ClampLabelPos(ImVec2 pos, const ImVec2& size, const ImVec2& Min, const ImVec2& Max) {    /* original C++ signature */
-#     if (pos.x < Min.x)              pos.x = Min.x;
-#     if (pos.y < Min.y)              pos.y = Min.y;
-#     if ((pos.x + size.x) > Max.x)   pos.x = Max.x - size.x;
-#     if ((pos.y + size.y) > Max.y)   pos.y = Max.y - size.y;
-#     return pos;
-# }
+# static inline ImVec2 ClampLabelPos(ImVec2 pos, const ImVec2& size, const ImVec2& Min, const ImVec2& Max);    /* original C++ signature */
 def clamp_label_pos(pos: ImVec2Like, size: ImVec2Like, min: ImVec2Like, max: ImVec2Like) -> ImVec2:
     """ Clamps a label position so that it fits a rect defined by Min/Max
     (private API)
@@ -2166,36 +1647,32 @@ def render_color_bar(colors: ImU32, size: int, draw_list: ImDrawList, bounds: Im
 def nice_num(x: float, round: bool) -> float:
     """ Rounds x to powers of 2,5 and 10 for generating axis labels (from Graphics Gems 1 Chapter 11.2)"""
     pass
-# static inline int OrderOfMagnitude(double val) { return val == 0 ? 0 : (int)(floor(log10(fabs(val)))); }    /* original C++ signature */
+# static inline int OrderOfMagnitude(double val);    /* original C++ signature */
 def order_of_magnitude(val: float) -> int:
     """ Computes order of magnitude of double.
     (private API)
     """
     pass
-# static inline int OrderToPrecision(int order) { return order > 0 ? 0 : 1 - order; }    /* original C++ signature */
+# static inline int OrderToPrecision(int order);    /* original C++ signature */
 def order_to_precision(order: int) -> int:
     """ Returns the precision required for a order of magnitude.
     (private API)
     """
     pass
-# static inline int Precision(double val) { return OrderToPrecision(OrderOfMagnitude(val)); }    /* original C++ signature */
+# static inline int Precision(double val);    /* original C++ signature */
 def precision(val: float) -> int:
     """ Returns a floating point precision to use given a value
     (private API)
     """
     pass
-# static inline double RoundTo(double val, int prec) { double p = pow(10,(double)prec); return floor(val*p+0.5)/p; }    /* original C++ signature */
+# static inline double RoundTo(double val, int prec);    /* original C++ signature */
 def round_to(val: float, prec: int) -> float:
     """ Round a value to a given precision
     (private API)
     """
     pass
 
-# static inline ImVec2 Intersection(const ImVec2& a1, const ImVec2& a2, const ImVec2& b1, const ImVec2& b2) {    /* original C++ signature */
-#     float v1 = (a1.x * a2.y - a1.y * a2.x);  float v2 = (b1.x * b2.y - b1.y * b2.x);
-#     float v3 = ((a1.x - a2.x) * (b1.y - b2.y) - (a1.y - a2.y) * (b1.x - b2.x));
-#     return ImVec2((v1 * (b1.x - b2.x) - v2 * (a1.x - a2.x)) / v3, (v1 * (b1.y - b2.y) - v2 * (a1.y - a2.y)) / v3);
-# }
+# static inline ImVec2 Intersection(const ImVec2& a1, const ImVec2& a2, const ImVec2& b1, const ImVec2& b2);    /* original C++ signature */
 def intersection(a1: ImVec2Like, a2: ImVec2Like, b1: ImVec2Like, b2: ImVec2Like) -> ImVec2:
     """ Returns the intersection point of two lines A and B (assumes they are not parallel!)
     (private API)
@@ -2208,18 +1685,13 @@ def intersection(a1: ImVec2Like, a2: ImVec2Like, b1: ImVec2Like, b2: ImVec2Like)
 # Time Utils
 #-----------------------------------------------------------------------------
 
-# static inline bool IsLeapYear(int year) {    /* original C++ signature */
-#     return  year % 4 == 0 && (year % 100 != 0 || year % 400 == 0);
-# }
+# static inline bool IsLeapYear(int year);    /* original C++ signature */
 def is_leap_year(year: int) -> bool:
     """ Returns True if year is leap year (366 days long)
     (private API)
     """
     pass
-# static inline int GetDaysInMonth(int year, int month) {    /* original C++ signature */
-#     constexpr int days[12] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-#     return  days[month] + (int)(month == 1 && IsLeapYear(year));
-# }
+# static inline int GetDaysInMonth(int year, int month);    /* original C++ signature */
 def get_days_in_month(year: int, month: int) -> int:
     """ Returns the number of days in a month, accounting for Feb. leap years. #month is zero indexed.
     (private API)
@@ -2268,13 +1740,13 @@ def combine_date_time(date_part: Time, time_part: Time) -> Time:
     """ Combines the date of one timestamp with the time-of-day of another timestamp."""
     pass
 
-# static inline ImPlotTime Now() { return ImPlotTime::FromDouble((double)time(nullptr)); }    /* original C++ signature */
+# static inline ImPlotTime Now();    /* original C++ signature */
 def now() -> Time:
     """ Get the current time as a timestamp.
     (private API)
     """
     pass
-# static inline ImPlotTime Today() { return ImPlot::FloorTime(Now(), ImPlotTimeUnit_Day); }    /* original C++ signature */
+# static inline ImPlotTime Today();    /* original C++ signature */
 def today() -> Time:
     """ Get the current date as a timestamp.
     (private API)
@@ -2318,46 +1790,32 @@ def show_time_picker(id_: str, t: Time) -> bool:
 # [SECTION] Transforms
 #-----------------------------------------------------------------------------
 
-# static inline double TransformForward_Log10(double v, void*) {    /* original C++ signature */
-#     v = v <= 0.0 ? DBL_MIN : v;
-#     return ImLog10(v);
-# }
+# static inline double TransformForward_Log10(double v, void*);    /* original C++ signature */
 def transform_forward_log10(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformInverse_Log10(double v, void*) {    /* original C++ signature */
-#     return ImPow(10, v);
-# }
+# static inline double TransformInverse_Log10(double v, void*);    /* original C++ signature */
 def transform_inverse_log10(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformForward_SymLog(double v, void*) {    /* original C++ signature */
-#     return 2.0 * ImAsinh(v / 2.0);
-# }
+# static inline double TransformForward_SymLog(double v, void*);    /* original C++ signature */
 def transform_forward_sym_log(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformInverse_SymLog(double v, void*) {    /* original C++ signature */
-#     return 2.0 * ImSinh(v / 2.0);
-# }
+# static inline double TransformInverse_SymLog(double v, void*);    /* original C++ signature */
 def transform_inverse_sym_log(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformForward_Logit(double v, void*) {    /* original C++ signature */
-#     v = ImClamp(v, DBL_MIN, 1.0 - DBL_EPSILON);
-#     return ImLog10(v / (1 - v));
-# }
+# static inline double TransformForward_Logit(double v, void*);    /* original C++ signature */
 def transform_forward_logit(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
 
-# static inline double TransformInverse_Logit(double v, void*) {    /* original C++ signature */
-#     return 1.0 / (1.0 + ImPow(10,-v));
-# }
+# static inline double TransformInverse_Logit(double v, void*);    /* original C++ signature */
 def transform_inverse_logit(v: float, param_1: Any) -> float:
     """(private API)"""
     pass
