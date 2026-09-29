@@ -620,15 +620,16 @@ def _intro_sentence(library: Library, module: str, stub: Path, functions: int, c
 
 
 def _bound_entries(entries: list[Entry]) -> list[Entry]:
-    """The entries written by litgen, for the C++ pages: the stubs' hand-written parts (Python helpers, IM_COL32...)
-    bind nothing. A dropped entry's part or section passes to the next kept entry"""
+    """The entries written by litgen from a library's headers, for the C++ pages: the stubs' hand-written parts
+    (Python helpers, IM_COL32...) bind nothing, and the bundle's `*_pywrappers.h` headers exist for Python only.
+    A dropped entry's part or section passes to the next kept entry"""
     kept: list[Entry] = []
     part: Optional[str] = None
     section: Optional[tuple[str, list[str]]] = None
     for entry in entries:
         part = entry.part or part
         section = entry.section or section
-        if not entry.generated:
+        if not entry.generated or "pywrappers" in entry.header:
             continue
         if part is not None and entry.part is None:
             entry.part = part
