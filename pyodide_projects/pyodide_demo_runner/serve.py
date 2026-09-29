@@ -20,6 +20,8 @@ import os
 
 THIS_DIR = os.path.dirname(os.path.abspath(__file__))
 DEMOS_DIR = os.path.join(THIS_DIR, "demos")  # symlink to demos_python
+# The bundle's icon, for the browser, which asks for /favicon.ico (the runner's page declares no icon)
+FAVICON = os.path.join(THIS_DIR, "..", "..", "logo", "favicons", "favicon.ico")
 
 
 class PyodideRunnerHandler(SimpleHTTPRequestHandler):
@@ -46,6 +48,14 @@ class PyodideRunnerHandler(SimpleHTTPRequestHandler):
     def do_GET(self):
         if self.path == '/list_demos':
             self._serve_demo_listing()
+        elif self.path == '/favicon.ico' and os.path.isfile(FAVICON):
+            with open(FAVICON, "rb") as f:
+                data = f.read()
+            self.send_response(200)
+            self.send_header("Content-Type", "image/x-icon")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
         else:
             super().do_GET()
 

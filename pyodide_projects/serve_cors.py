@@ -15,8 +15,12 @@ Example:
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from pathlib import Path
 import argparse
 import sys
+
+# The bundle's icon, for a browser that asks for /favicon.ico (a page that declares no icon)
+FAVICON = Path(__file__).resolve().parent.parent / "logo" / "favicons" / "favicon.ico"
 
 
 class CORSRequestHandler(SimpleHTTPRequestHandler):
@@ -37,6 +41,18 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
 
         SimpleHTTPRequestHandler.end_headers(self)
+
+    def do_GET(self) -> None:
+        """The bundle's icon, when the served folder has none"""
+        if self.path == "/favicon.ico" and not Path(self.translate_path(self.path)).is_file() and FAVICON.is_file():
+            data = FAVICON.read_bytes()
+            self.send_response(200)
+            self.send_header("Content-Type", "image/x-icon")
+            self.send_header("Content-Length", str(len(data)))
+            self.end_headers()
+            self.wfile.write(data)
+        else:
+            super().do_GET()
 
     def do_OPTIONS(self):
         """Handle CORS preflight requests."""
