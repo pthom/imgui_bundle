@@ -725,6 +725,16 @@ def _cpp_intro(library: Library, module: str, python_index: str) -> str:
             "From the stubs: the functions excluded from the bindings, the typedefs and the macros are absent.")
 
 
+def _module_doc(stubs: list[Path]) -> str:
+    """The module's docstring (the first stub's that has one), in markdown: its first paragraph says what the module
+    is for, the next ones are for Python users"""
+    for stub in stubs:
+        doc = ast.get_docstring(ast.parse(stub.read_text()))
+        if doc:
+            return doc.replace("\x00", "\\0")
+    return ""
+
+
 def write_module_pages(library: Library, module: str, stubs: list[Path], folder: Path, stem: str,
                        manifest: dict[str, Any], docs: dict[str, dict[str, Any]], cpp: bool = False) -> ModulePages:
     """The reference of one module, one page (Ctrl-F finds everything; the outline stops at the sections). With
@@ -745,7 +755,12 @@ def write_module_pages(library: Library, module: str, stubs: list[Path], folder:
     # the theme reads outline_maxdepth from the page's frontmatter (site:) over the site's option (myst.yml, 2)
     frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if module not in OUTLINE_WITHOUT_ENTRIES else []
     cards = _demo_cards(manifest, docs, index, [], MODULE_DEMOS.get(module, []))
-    index.write_text("\n".join([*frontmatter, GENERATED, "", f"# {title}", "", intro, "",
+    doc = _module_doc(stubs)
+    if cpp:
+        doc = doc.split("\n\n")[0]  # the aim; the next paragraphs are for Python users
+    intro_note = ["::::::{div}", ":class: bindings-note", intro, "::::::"]  # small: the source and the counts
+    index.write_text("\n".join([*frontmatter, GENERATED, "", f"# {title}", "", *([doc, ""] if doc else []),
+                                *intro_note, "",
                                 *_start_line(entries, module, namespace), *cards,
                                 *_render_entries(entries, module, namespace)]))
     return ModulePages(module, index, functions, classes, enums)
@@ -902,12 +917,14 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
         if module in CPP_NAMESPACES:
             cpp_pages.append(write_module_pages(library, module, stub_paths, folder, stem, manifest, docs, cpp=True))
     index = folder / "index.md"
-    out = [GENERATED, "", f"# {library.title}", "", library.tagline, ""]
+    main_doc = _module_doc([STUBS / name.strip() for name in library.modules[0][1].split("+")])
+    out = [GENERATED, "", f"# {library.title}", "", main_doc or library.tagline, ""]
     links = [f"[Upstream repository]({library.upstream})"]
     if library.book_page:
         links.append(f"[The book's page]({os.path.relpath(BOOK / (library.book_page + '.md'), folder)})")
     out += [" · ".join(links), ""]
-    out += ["## Modules", "", "In `imgui_bundle` (`from imgui_bundle import imgui`):", ""]
+    first = library.modules[0][0].removeprefix("imgui_bundle.").split(".")[0]
+    out += ["## Modules", "", f"In `imgui_bundle` (`from imgui_bundle import {first}`):", ""]
     for m in modules:
         cpp = next((c for c in cpp_pages if c.module == m.module), None)
         view = f" · [the C++ view]({cpp.index.name})" if cpp else ""
