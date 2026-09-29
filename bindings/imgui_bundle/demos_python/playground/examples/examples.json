@@ -337,7 +337,8 @@
             "label": "Node editor: a color mixer",
             "filename": "demo_node_editor_color_mixer.py",
             "source": "demos_node_editor",
-            "category": "Library tours"
+            "category": "Library tours",
+            "in_place": true
         },
         {
             "label": "Node editor: an image pipeline",
@@ -349,7 +350,8 @@
             "bundle_folders": [
                 "../demos_assets"
             ],
-            "category": "Library tours"
+            "category": "Library tours",
+            "in_place": true
         },
         {
             "label": "Node editor: nodes, pins and links",

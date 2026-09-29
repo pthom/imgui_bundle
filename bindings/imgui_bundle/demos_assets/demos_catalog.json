@@ -520,9 +520,9 @@
             "node editor"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py",
-          "cpp_file": null,
+          "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_color_mixer.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_node_editor_color_mixer.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -539,9 +539,9 @@
             "OpenCV"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py",
-          "cpp_file": null,
+          "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_image_pipeline.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_node_editor_image_pipeline.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {

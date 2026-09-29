@@ -880,25 +880,6 @@ namespace IntroNotebook
 
 
 // ============================================================================
-// Slide 7: Node Editor — static screenshot
-// ============================================================================
-
-namespace IntroNodeEditor
-{
-    void SlideGui(ImVec2 contentSize)
-    {
-        float imgAspect = 800.f / 516.f;
-        float linkH = ImGui::GetFrameHeight();
-        float w = contentSize.x;
-        float h = w / imgAspect;
-        if (h > contentSize.y - linkH) { h = contentSize.y - linkH; w = h * imgAspect; }
-        HelloImGui::ImageFromAsset("images/node_editor_fiat.jpg", ImVec2(w, h));
-        RichMd::Render("Built with [fiatlight](https://pthom.github.io/fiatlight/)");
-    }
-} // namespace IntroNodeEditor
-
-
-// ============================================================================
 // Slide 7: Markdown rendering — side-by-side source / rendered
 // ============================================================================
 
@@ -1660,7 +1641,6 @@ static void ImmVisionSlideGui(ImVec2)    { ImGui::TextWrapped("ImmVision not ava
 #endif
 
 static void NotebookSlideGui(ImVec2 cs)    { IntroNotebook::SlideGui(cs); }
-static void NodeEditorSlideGui(ImVec2 cs)  { IntroNodeEditor::SlideGui(cs); }
 static void MarkdownSlideGui(ImVec2 cs)    { IntroMarkdown::SlideGui(cs); }
 static void WebDeploySlideGui(ImVec2 cs)   { IntroWebDeploy::SlideGui(cs); }
 
@@ -1862,10 +1842,6 @@ void IntroMiniDemos()
         { "Feature-Rich Widgets",
           "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
           TableSlideGui },
-
-        { "Explore Ideas in a Node Editor",
-          "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
-          NodeEditorSlideGui },
 
         { "Rich Documentation, Built In",
           "Render markdown directly in your UI - headers, code blocks, tables, links, and images, all from a simple string.",

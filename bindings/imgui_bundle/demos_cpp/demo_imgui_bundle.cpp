@@ -26,6 +26,8 @@ void demo_imgui_md();
 void demo_text_edit();
 void demo_logger();
 void demo_romeo_and_juliet();
+void demo_node_editor_color_mixer();
+void demo_node_editor_image_pipeline();
 void demo_imgui_show_demo_window();
 void demo_implot();
 void demo_im_anim();
@@ -59,6 +61,8 @@ namespace
             launcher.inPlaceFunctions = {
                 {"demo_widgets", demo_widgets}, {"demo_imgui_md", demo_imgui_md}, {"demo_text_edit", demo_text_edit},
                 {"demo_logger", demo_logger}, {"demo_romeo_and_juliet", demo_romeo_and_juliet},
+                {"demo_node_editor_color_mixer", demo_node_editor_color_mixer},
+                {"demo_node_editor_image_pipeline", demo_node_editor_image_pipeline},
                 {"manual_imgui", demo_imgui_show_demo_window},
                 {"manual_implot", demo_implot}, {"manual_implot3d", demo_implot}, {"manual_im_anim", demo_im_anim},
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
@@ -344,7 +348,12 @@ std::pair<HelloImGui::RunnerParams, ImmApp::AddOnsParams> ExplorerParams()
     auto addons = ImmApp::AddOnsParams();
     addons.withMarkdown = true;
     addons.withLatex = true;
-    addons.withNodeEditor = true;
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    // The node editor's config of the demos shown in place: the image pipeline's main() sets this option
+    ImmApp::NodeEditorConfig nodeEditorConfig;
+    nodeEditorConfig.ForceWindowContentWidthToNodeWidth = true;
+    addons.withNodeEditorConfig = nodeEditorConfig;
+#endif
     addons.withImplot = true;
     addons.withImplot3d = true;
     addons.withTexInspect = true;

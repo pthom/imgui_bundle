@@ -317,7 +317,7 @@
     "uses": [
       "node editor"
     ],
-    "cpp": false
+    "cpp": true
   },
   "demo_node_editor_image_pipeline.py": {
     "title": "Node editor: an image pipeline",
@@ -329,7 +329,7 @@
       "node editor",
       "OpenCV"
     ],
-    "cpp": false
+    "cpp": true
   },
   "demo_node_editor_basic.py": {
     "title": "Node editor: nodes, pins and links",
