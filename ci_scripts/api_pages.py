@@ -31,6 +31,7 @@ STUBS = REPO / "bindings/imgui_bundle"
 BOOK = REPO / "docs/book"
 API = BOOK / "api"
 CPP_MARK = "/* original C++ signature */"
+AMALGAMATION_MARK = re.compile(r"^#\s+(\S+\.h) included by \S+\s*//$")  # hello_imgui's amalgamation
 HEADER_MARK = re.compile(r"^#+\s*<generated_from:(.+?)>\s*#+$")
 GENERATED = "% Written by ci_scripts/api_pages.py from the Python stubs: do not edit it by hand"
 
@@ -231,7 +232,8 @@ def _leading_comments(lines: list[str], first_line: int) -> list[str]:
         if _is_stop_block(block):
             break
         kept = block + kept
-    return [b for b in kept if not re.match(r"^\s*#+\s*$", b) and not HEADER_MARK.match(b.strip())]
+    return [b for b in kept if not re.match(r"^\s*#+\s*$", b) and not HEADER_MARK.match(b.strip())
+            and not AMALGAMATION_MARK.match(b)]
 
 
 def _split_comments(block: list[str]) -> tuple[str, list[str], list[str]]:
@@ -359,7 +361,7 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
     for i, line in enumerate(lines):
         if (m := HEADER_MARK.match(line.strip())):
             headers.append((i + 1, m.group(1)))
-        elif (m := re.match(r"^#\s+(\S+\.h) included by \S+\s*//$", line)):  # an amalgamation's marker
+        elif (m := AMALGAMATION_MARK.match(line)):
             headers.append((i + 1, m.group(1)))
     entries: list[Entry] = []
     for node in tree.body:
@@ -372,7 +374,8 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         entries.append(entry)
     entries = _merge_overloads(entries)
     if len({e.part for e in entries if e.part}) < 2 or not any(e.section for e in entries):
-        # parts hold sections: a lone banner (hello_imgui's), or banners with no section inside (rich_md's), are sections
+        # parts hold sections: a lone banner (hello_imgui's), or banners with no section inside (rich_md's), are
+        # sections
         for entry in entries:
             if entry.part is not None:
                 entry.section = entry.section or (entry.part, [])
@@ -586,35 +589,47 @@ def _pack(parts: list[tuple[Optional[str], list[Entry]]]) -> list[tuple[list[str
     return pages
 
 
-def write_module_pages(library: Library, module: str, stub: Path, folder: Path, stem: str) -> ModulePages:
+def _cpp_intro(library: Library, module: str, python_index: str) -> str:
+    return (f"The C++ API of [{library.title}](index.md) as it is bound to Python: the entries of [`{module}`]"
+            f"({python_index}), in the same order, with the C++ name and signature first and the Python name beside. "
+            "From the stubs: the functions excluded from the bindings, the typedefs and the macros are absent.")
+
+
+def write_module_pages(library: Library, module: str, stub: Path, folder: Path, stem: str,
+                       cpp: bool = False) -> ModulePages:
     """The reference of one module: one page, or, above SPLIT_ABOVE entries and when the header has parts, a page
-    per group of parts and an index page listing them"""
+    per group of parts and an index page listing them. With `cpp`: the C++ view of the module, the same pages with
+    a `_cpp` suffix"""
     entries = read_stub(stub, REPO / library.headers if library.headers else None)
     functions = sum(1 for e in entries if e.kind == "function")
     classes = sum(1 for e in entries if e.kind == "class")
     enums = sum(1 for e in entries if e.kind == "enum")
     folder.mkdir(parents=True, exist_ok=True)
-    index = folder / f"{stem}.md"
-    intro = _intro_sentence(library, stub, functions, classes, enums)
+    index = folder / (f"{stem}_cpp.md" if cpp else f"{stem}.md")
+    namespace = CPP_NAMESPACES.get(module) if cpp else None
+    title = f"{module} (C++)" if cpp else module
+    intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
+             else _intro_sentence(library, stub, functions, classes, enums))
     packed = _pack(_parts(entries)) if len(entries) > SPLIT_ABOVE else []
     if len(packed) <= 1:
-        index.write_text("\n".join([GENERATED, "", f"# {module}", "", intro, "", *_render_entries(entries, module)]))
+        index.write_text("\n".join([GENERATED, "", f"# {title}", "", intro, "",
+                                    *_render_entries(entries, module, namespace)]))
         return ModulePages(module, index, [], functions, classes, enums)
     pages: list[tuple[str, Path]] = []
     for n, (titles, page_entries) in enumerate(packed, 1):
-        title = ", ".join(titles[:3]) + (f", ... ({len(titles)} parts)" if len(titles) > 4 else "")
-        title = title or page_entries[0].header or module
-        page = folder / f"{stem}_{n}.md"
+        page_title = ", ".join(titles[:3]) + (f", ... ({len(titles)} parts)" if len(titles) > 4 else "")
+        page_title = (page_title or page_entries[0].header or module) + (" (C++)" if cpp else "")
+        page = folder / (f"{stem}_cpp_{n}.md" if cpp else f"{stem}_{n}.md")
         header = page_entries[0].header
-        lines = [GENERATED, "", f"# {title}", "",
-                 f"Page {n} of {len(packed)} of [`{module}`]({index.name}). "
-                 + intro.split(": ", 1)[1].split(". ", 1)[1], ""]
+        lines = [GENERATED, "", f"# {page_title}", "",
+                 f"Page {n} of {len(packed)} of [`{title}`]({index.name}). "
+                 + intro.split(". ", 1)[1], ""]
         if header:
             lines += [f"## {header}", ""]
-        lines += _render_entries(page_entries, module, None, header)
+        lines += _render_entries(page_entries, module, namespace, header)
         page.write_text("\n".join(lines))
-        pages.append((title, page))
-    lines = [GENERATED, "", f"# {module}", "", intro, "",
+        pages.append((page_title, page))
+    lines = [GENERATED, "", f"# {title}", "", intro, "",
              f"The module is in {len(pages)} pages, by part of the header:", ""]
     for (titles, _), (title, page) in zip(packed, pages):
         lines.append(f"- [{title}]({page.name})" + (f": {', '.join(titles)}" if len(titles) > 4 else ""))
@@ -622,8 +637,22 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     return ModulePages(module, index, pages, functions, classes, enums)
 
 
-CPP_PROTOTYPES = {"implot": "ImPlot", "imgui_knobs": "ImGuiKnobs"}  # library key: its C++ namespace. A prototype
-# (Q2b, option A): a C++ view of the first module, from the same stubs, for two libraries
+CPP_NAMESPACES = {  # the C++ namespace of each module's functions, for the C++ pages ("" when the C++ names carry
+    # their own prefix, as nvgBeginPath, or when the module is Python-only: no C++ page)
+    "imgui_bundle.imgui": "ImGui", "imgui_bundle.imgui.internal": "ImGui", "imgui_bundle.imgui.test_engine": "",
+    "imgui_bundle.imgui.backends": "", "imgui_bundle.hello_imgui": "HelloImGui",
+    "imgui_bundle.immapp (C++ part)": "ImmApp", "imgui_bundle.implot": "ImPlot",
+    "imgui_bundle.implot.internal": "ImPlot", "imgui_bundle.implot3d": "ImPlot3D",
+    "imgui_bundle.implot3d.internal": "ImPlot3D", "imgui_bundle.immvision": "ImmVision",
+    "imgui_bundle.imgui_node_editor": "ax::NodeEditor", "imgui_bundle.imguizmo": "ImGuizmo",
+    "imgui_bundle.nanovg": "", "imgui_bundle.im_anim": "", "imgui_bundle.imgui_color_text_edit": "",
+    "imgui_bundle.rich_md": "RichMd", "imgui_bundle.imgui_microtex": "ImGuiMicroTeX",
+    "imgui_bundle.imgui_knobs": "ImGuiKnobs", "imgui_bundle.imgui_toggle": "ImGui",
+    "imgui_bundle.imspinner": "ImSpinner", "imgui_bundle.im_cool_bar": "ImGui",
+    "imgui_bundle.imgui_command_palette": "ImCmd", "imgui_bundle.im_file_dialog": "ifd",
+    "imgui_bundle.portable_file_dialogs": "pfd", "imgui_bundle.imgui_tex_inspect": "ImGuiTexInspect",
+    "imgui_bundle.imgui_explorer": "",
+}
 
 
 def _cpp_name(entry: Entry, namespace: str, owner: str = "") -> str:
@@ -682,16 +711,6 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
     return out
 
 
-def write_cpp_page(library: Library, module: str, entries: list[Entry], page: Path, python_page: str) -> None:
-    """The C++ view of a module (a prototype): the same entries, in the same order, the C++ names first"""
-    out = [GENERATED, "", f"# {library.title}: the C++ API", "",
-           f"A prototype: the same entries as [`{module}`]({python_page}), in the same order, with the C++ name and "
-           "signature first and the Python name beside. It lists what is bound to Python, from the stubs: an overload "
-           "or a function excluded from the bindings is absent.", ""]
-    out += _render_entries(entries, module, CPP_PROTOTYPES[library.key])
-    page.write_text("\n".join(out))
-
-
 def _demo_cards(library: Library, manifest: dict[str, Any], docs: dict[str, dict[str, Any]], page: Path) -> list[str]:
     """The cards of the demos that use the library, as on the demos page (the pictures' paths made relative to here)"""
     if not library.uses and not library.demos:
@@ -722,6 +741,7 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     folder = API / library.key
     folder.mkdir(parents=True, exist_ok=True)
     modules: list[ModulePages] = []
+    cpp_pages: list[ModulePages] = []  # the C++ view of each module, when it has one
     for module, stub in library.modules:
         stub_path = STUBS / stub
         if not stub_path.is_file():
@@ -729,11 +749,8 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
             continue
         stem = re.sub(r"[^a-z0-9_]+", "_", module.removeprefix("imgui_bundle.").lower()).strip("_") or "module"
         modules.append(write_module_pages(library, module, stub_path, folder, stem))
-    cpp_page: Optional[Path] = None
-    if library.key in CPP_PROTOTYPES:
-        module, stub = library.modules[0]
-        cpp_page = folder / f"{modules[0].index.stem}_cpp.md"
-        write_cpp_page(library, module, read_stub(STUBS / stub), cpp_page, modules[0].index.name)
+        if module in CPP_NAMESPACES:
+            cpp_pages.append(write_module_pages(library, module, stub_path, folder, stem, cpp=True))
     index = folder / "index.md"
     out = [GENERATED, "", f"# {library.title}", "", library.tagline, ""]
     links = [f"[Upstream repository]({library.upstream})"]
@@ -743,21 +760,21 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     out += ["## Modules", ""]
     for m in modules:
         pages = f" (in {len(m.pages)} pages)" if m.pages else ""
+        cpp = next((c for c in cpp_pages if c.module == m.module), None)
+        view = f" · [the C++ view]({cpp.index.name})" if cpp else ""
         out.append(f"- [`{m.module}`]({m.index.name}): {m.functions} functions, {m.classes} classes, "
-                   f"{m.enums} enums{pages}")
-    if cpp_page is not None:
-        out.append(f"- [The C++ view of `{library.modules[0][0]}`]({cpp_page.name}) (a prototype)")
+                   f"{m.enums} enums{pages}{view}")
     out.append("")
     out += _demo_cards(library, manifest, docs, index)
     index.write_text("\n".join(out))
     toc = [f"      - file: api/{library.key}/index", "        sections:"]
     for m in modules:
-        toc.append(f"          - file: api/{library.key}/{m.index.stem}")
-        if m.pages:
-            toc.append("            sections:")
-            toc += [f"              - file: api/{library.key}/{page.stem}" for _, page in m.pages]
-    if cpp_page is not None:
-        toc.append(f"          - file: api/{library.key}/{cpp_page.stem}")
+        cpp = next((c for c in cpp_pages if c.module == m.module), None)
+        for mp in ([m, cpp] if cpp else [m]):
+            toc.append(f"          - file: api/{library.key}/{mp.index.stem}")
+            if mp.pages:
+                toc.append("            sections:")
+                toc += [f"              - file: api/{library.key}/{page.stem}" for _, page in mp.pages]
     return toc
 
 
