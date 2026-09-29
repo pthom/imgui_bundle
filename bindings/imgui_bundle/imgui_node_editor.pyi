@@ -178,7 +178,8 @@ class Config:
     # get a default width derived from the window.
     # Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).
     # - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one
-    #   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses.
+    #   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses (this is
+    #   detected, and reported with an IM_ASSERT).
     # - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),
     #   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).
     force_window_content_width_to_node_width: bool
@@ -684,11 +685,15 @@ def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> N
 #           if (AcceptNewItem())         // -> typical UX: open a "Add node" popup
 #               /* spawn a new node and connect pin `a` to one of its pins */;
 #       }
+#       EndCreate();                    // only when BeginCreate() returned True
 #   }
-#   EndCreate();
 #
 # The QueryNewLink/QueryNewNode/AcceptNewItem overloads taking a color and
 # thickness customize the in-progress link's drawing while the user drags.
+#
+# Once QueryNewLink() or QueryNewNode() returned True, and until EndCreate(), the editor is suspended (it draws the
+# dragged link in screen space): ImGui::GetMousePos() and the cursor are then in SCREEN coords, while everywhere else
+# between Begin() and End() they are in CANVAS coords. To place a new node at the mouse, use GetMousePosOnCanvas().
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(0, 0, 0, 0), float thickness = 1.0f);    /* original C++ signature */
 def begin_create(color: Optional[ImVec4Like] = None, thickness: float = 1.0) -> bool:
     """Python bindings defaults:
@@ -830,11 +835,11 @@ def restore_node_state(node_id: NodeId) -> None:
     pass
 
 # --- Suspend / Resume -----------------------------------------------------
-# Temporarily disable the editor's input/canvas state machine. You MUST
-# suspend before calling ImGui popup APIs like ImGui::OpenPopup or
-# ImGui::BeginPopup that should appear ABOVE the canvas (otherwise the
-# popup's coordinates and event capture will be wrong). Resume() restores
-# editor input handling. See the ShowNodeContextMenu example below.
+# Temporarily disable the editor's input/canvas state machine: positions are then in SCREEN coords. With a stock
+# Dear ImGui, you MUST suspend before calling ImGui popup APIs like ImGui::OpenPopup or ImGui::BeginPopup that should
+# appear ABOVE the canvas (otherwise the popup's coordinates and event capture will be wrong). With a Dear ImGui that
+# has the patches of docs/fork_imgui_bundle.md (chapter 3), popups work without it. Resume() restores editor input
+# handling. See the ShowNodeContextMenu example below.
 # IMGUI_NODE_EDITOR_API void Suspend();    /* original C++ signature */
 def suspend() -> None:
     pass
@@ -1114,6 +1119,14 @@ def screen_to_canvas(pos: ImVec2Like) -> ImVec2:
 
 # IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);    /* original C++ signature */
 def canvas_to_screen(pos: ImVec2Like) -> ImVec2:
+    pass
+
+# IMGUI_NODE_EDITOR_API ImVec2 GetMousePosOnCanvas();    /* original C++ signature */
+def get_mouse_pos_on_canvas() -> ImVec2:
+    """The mouse position in CANVAS coords, anywhere between Begin() and End(). ImGui::GetMousePos() gives the same, except
+    where the editor is suspended (after Suspend(), and in the create action once QueryNewLink() or QueryNewNode()
+    returned True): it then gives SCREEN coords.
+    """
     pass
 
 # IMGUI_NODE_EDITOR_API int GetNodeCount();                                    /* original C++ signature */

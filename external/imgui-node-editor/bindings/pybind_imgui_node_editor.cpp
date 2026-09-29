@@ -168,7 +168,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         .def_rw("context_menu_button_index", &ax::NodeEditor::Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")
         .def_rw("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "")
         .def_rw("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "")
-        .def_rw("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:\n Separator(), SeparatorText(), CollapsingHeader() and TextWrapped() go far beyond the node, and sliders / input fields\n get a default width derived from the window.\n Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).\n - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one\n   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses.\n - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),\n   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).")
+        .def_rw("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:\n Separator(), SeparatorText(), CollapsingHeader() and TextWrapped() go far beyond the node, and sliders / input fields\n get a default width derived from the window.\n Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).\n - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one\n   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses (this is\n   detected, and reported with an IM_ASSERT).\n - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),\n   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).")
         .def(nb::init<>())
         ;
 
@@ -713,6 +713,9 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("canvas_to_screen",
         ax::NodeEditor::CanvasToScreen, nb::arg("pos"));
+
+    m.def("get_mouse_pos_on_canvas",
+        ax::NodeEditor::GetMousePosOnCanvas, " The mouse position in CANVAS coords, anywhere between Begin() and End(). ImGui::GetMousePos() gives the same, except\n where the editor is suspended (after Suspend(), and in the create action once QueryNewLink() or QueryNewNode()\n returned True): it then gives SCREEN coords.");
 
     m.def("get_node_count",
         ax::NodeEditor::GetNodeCount, "Returns number of submitted nodes since Begin() call");
