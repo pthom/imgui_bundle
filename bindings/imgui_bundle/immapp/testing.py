@@ -219,6 +219,7 @@ def capture_final_frame(
     with_implot: bool = False,
     with_implot3d: bool = False,
     with_node_editor: bool = False,
+    add_ons_params: Optional[immapp.AddOnsParams] = None,
 ) -> Path:
     """One-shot: run `gui_function` for a few frames, save the last
     framebuffer as PNG, return the absolute output path.
@@ -237,6 +238,8 @@ def capture_final_frame(
         ini_disable: disable imgui .ini to avoid side effects.
         fps_idle: 0 (no throttle) — we want the few frames to render fast.
         with_*: standard immapp.run addons.
+        add_ons_params: immapp addons, for those without a shortcut above (e.g. with_node_editor_config).
+            If given, the with_* flags are ignored.
     """
     output_path = Path(output_path).expanduser().resolve()
 
@@ -248,18 +251,28 @@ def capture_final_frame(
         if state["frames"] >= exit_after_frames:
             hello_imgui.get_runner_params().app_shall_exit = True
 
-    immapp.run(
-        gui_function=_wrapped,
-        window_title=window_title,
-        window_size=window_size,
-        ini_disable=ini_disable,
-        fps_idle=fps_idle,
-        with_markdown=with_markdown,
-        with_latex=with_latex,
-        with_implot=with_implot,
-        with_implot3d=with_implot3d,
-        with_node_editor=with_node_editor,
-    )
+    if add_ons_params is None:
+        immapp.run(
+            gui_function=_wrapped,
+            window_title=window_title,
+            window_size=window_size,
+            ini_disable=ini_disable,
+            fps_idle=fps_idle,
+            with_markdown=with_markdown,
+            with_latex=with_latex,
+            with_implot=with_implot,
+            with_implot3d=with_implot3d,
+            with_node_editor=with_node_editor,
+        )
+    else:
+        simple = hello_imgui.SimpleRunnerParams()
+        simple.gui_function = _wrapped
+        simple.window_title = window_title
+        simple.window_size = window_size
+        simple.fps_idle = fps_idle
+        runner_params = simple.to_runner_params()
+        runner_params.ini_disable = ini_disable
+        immapp.run(runner_params, add_ons_params)
 
     img = hello_imgui.final_app_window_screenshot()
     if img is None or img.size == 0:

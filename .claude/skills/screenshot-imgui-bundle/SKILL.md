@@ -54,6 +54,7 @@ testing.capture_final_frame(
     window_size=(900, 950),     # logical pixels; framebuffer is 2x on retina
     with_latex=True,            # any immapp.run addon works
 )
+# An addon without a shortcut (e.g. with_node_editor_config): pass add_ons_params=immapp.AddOnsParams(...)
 ```
 
 Run it and read the PNG:
