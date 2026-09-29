@@ -548,7 +548,7 @@ def _prose_lines(lines: list[str]) -> list[str]:
     for i in range(len(out) - 1):  # a hard break between two lines of text (imgui.h's one idea per line), except
         # before a list item, and before a line that continues a sentence (wrapped prose: it starts in lower case)
         if (out[i].strip() and out[i + 1].strip() and not out[i].endswith("\\")
-                and not re.match(r"^\s*([-*+]|\d+[.)])\s", out[i + 1]) and not re.match(r"^\s*[a-z(]", out[i + 1])):
+                and not re.match(r"^\s*([-*+]|\d+[.)])\s", out[i + 1]) and not re.match(r"^\s*[a-z(`]", out[i + 1])):
             out[i] += "\\"
     return out
 
