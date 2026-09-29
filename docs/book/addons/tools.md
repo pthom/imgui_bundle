@@ -61,12 +61,14 @@ Enable the node editor by passing `with_node_editor=True` (Python) or `addons.wi
 :::
 
 
-### Full Demo
+### Demos
 
-[Try online](https://imgui-bundle.pages.dev/explorer/demo_node_editor_launcher.html) - A launcher with several demos:
+Each demo opens in the online playground from its name.
 
 | Demo | Python | C++ |
 |------|--------|-----|
+| [A color mixer](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_color_mixer.py): colors flow through a graph | [demo_node_editor_color_mixer.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py) | |
+| [An image pipeline](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py): filters, typed pins, a histogram in a node | [demo_node_editor_image_pipeline.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py) | |
 | Basic Demo | [demo_node_editor_basic.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_basic.py) | [demo_node_editor_basic.cpp](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_basic.cpp) |
 | Romeo and Juliet | [demo_romeo_and_juliet.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py) | [demo_romeo_and_juliet.cpp](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp) |
 
