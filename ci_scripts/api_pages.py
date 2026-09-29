@@ -518,16 +518,10 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
     return out
 
 
-SPLIT_ABOVE = 300  # top-level entries: a module with more, and parts ([SECTION] marks), gets a page per group of
-# parts and an index page (imgui and imgui.internal)
-PAGE_ENTRIES = 100  # about, per page of a split module (a part larger than that keeps a page of its own)
-
-
 @dataclass
 class ModulePages:
     module: str
-    index: Path  # the module's page: the reference itself, or the index of its pages when split
-    pages: list[tuple[str, Path]]  # (title, page) when split
+    index: Path  # the module's page
     functions: int
     classes: int
     enums: int
@@ -540,52 +534,27 @@ def _intro_sentence(library: Library, module: str, stub: Path, functions: int, c
             "The sections are the header's.")
 
 
-def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[str] = None,
-                    header: Optional[str] = None) -> list[str]:
-    """The entries as markdown, under the headings of their headers, parts and sections (the levels shift by one
-    when the entries have parts). With a C++ namespace: the C++ view of the entries"""
+def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[str] = None) -> list[str]:
+    """The entries as markdown, under the headings of their headers and parts (both H2), their sections (H3); the
+    entries are H4. With a C++ namespace: the C++ view of the entries"""
     out: list[str] = []
-    shift = 1 if any(e.part for e in entries) else 0
+    header: Optional[str] = None
     for entry in entries:
         if entry.header != header:
             header = entry.header
             out += [f"## {header}", ""] if header else []
         if entry.part is not None:
-            out += [f"### {entry.part}", ""]
+            out += [f"## {entry.part}", ""]
         if entry.section is not None:
             title, text = entry.section
-            out += [f"{'#' * (3 + shift)} {title}", ""]
+            out += [f"### {title}", ""]
             if text:
                 out += [_safe_markdown("\n".join(text)), ""]
         if cpp_namespace is None:
-            out += _render_entry(entry, module, 4 + shift)
+            out += _render_entry(entry, module, 4)
         else:
-            out += _render_cpp_entry(entry, module, cpp_namespace, 4 + shift)
+            out += _render_cpp_entry(entry, module, cpp_namespace, 4)
     return out
-
-
-def _parts(entries: list[Entry]) -> list[tuple[Optional[str], list[Entry]]]:
-    """The entries by part (the entries before the first part form a part without a title)"""
-    parts: list[tuple[Optional[str], list[Entry]]] = []
-    for entry in entries:
-        if entry.part is not None or not parts:
-            parts.append((entry.part, []))
-        parts[-1][1].append(entry)
-    return parts
-
-
-def _pack(parts: list[tuple[Optional[str], list[Entry]]]) -> list[tuple[list[str], list[Entry]]]:
-    """The parts packed into pages of about PAGE_ENTRIES entries: (the parts' titles, the entries). A page still
-    small (under half of that) takes the next part whatever its size"""
-    pages: list[tuple[list[str], list[Entry]]] = []
-    for title, entries in parts:
-        if pages and (len(pages[-1][1]) + len(entries) <= PAGE_ENTRIES or len(pages[-1][1]) < PAGE_ENTRIES / 2):
-            pages[-1][1].extend(entries)
-        else:
-            pages.append(([], list(entries)))
-        if title:
-            pages[-1][0].append(title)
-    return pages
 
 
 def _cpp_intro(library: Library, module: str, python_index: str) -> str:
@@ -597,9 +566,8 @@ def _cpp_intro(library: Library, module: str, python_index: str) -> str:
 
 def write_module_pages(library: Library, module: str, stub: Path, folder: Path, stem: str,
                        cpp: bool = False) -> ModulePages:
-    """The reference of one module: one page, or, above SPLIT_ABOVE entries and when the header has parts, a page
-    per group of parts and an index page listing them. With `cpp`: the C++ view of the module, the same pages with
-    a `_cpp` suffix"""
+    """The reference of one module, one page (Ctrl-F finds everything; the outline stops at the sections). With
+    `cpp`: the C++ view of the module, the same page with a `_cpp` suffix"""
     entries = read_stub(stub, REPO / library.headers if library.headers else None)
     functions = sum(1 for e in entries if e.kind == "function")
     classes = sum(1 for e in entries if e.kind == "class")
@@ -611,31 +579,9 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     title = f"{short} (C++)" if cpp else short
     intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
              else _intro_sentence(library, module, stub, functions, classes, enums))
-    packed = _pack(_parts(entries)) if len(entries) > SPLIT_ABOVE else []
-    if len(packed) <= 1:
-        index.write_text("\n".join([GENERATED, "", f"# {title}", "", intro, "",
-                                    *_render_entries(entries, module, namespace)]))
-        return ModulePages(module, index, [], functions, classes, enums)
-    pages: list[tuple[str, Path]] = []
-    for n, (titles, page_entries) in enumerate(packed, 1):
-        page_title = ", ".join(titles[:3]) + (f", ... ({len(titles)} parts)" if len(titles) > 4 else "")
-        page_title = (page_title or page_entries[0].header or short) + (" (C++)" if cpp else "")
-        page = folder / (f"{stem}_cpp_{n}.md" if cpp else f"{stem}_{n}.md")
-        header = page_entries[0].header
-        lines = [GENERATED, "", f"# {page_title}", "",
-                 f"Page {n} of {len(packed)} of [`{title}`]({index.name}). "
-                 + intro.split(". ", 1)[1], ""]
-        if header:
-            lines += [f"## {header}", ""]
-        lines += _render_entries(page_entries, module, namespace, header)
-        page.write_text("\n".join(lines))
-        pages.append((page_title, page))
-    lines = [GENERATED, "", f"# {title}", "", intro, "",
-             f"The module is in {len(pages)} pages, by part of the header:", ""]
-    for (titles, _), (title, page) in zip(packed, pages):
-        lines.append(f"- [{title}]({page.name})" + (f": {', '.join(titles)}" if len(titles) > 4 else ""))
-    index.write_text("\n".join(lines) + "\n")
-    return ModulePages(module, index, pages, functions, classes, enums)
+    index.write_text("\n".join([GENERATED, "", f"# {title}", "", intro, "",
+                                *_render_entries(entries, module, namespace)]))
+    return ModulePages(module, index, functions, classes, enums)
 
 
 CPP_NAMESPACES = {  # the C++ namespace of each module's functions, for the C++ pages ("" when the C++ names carry
@@ -760,11 +706,10 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     out += [" · ".join(links), ""]
     out += ["## Modules", "", "In `imgui_bundle` (`from imgui_bundle import imgui`):", ""]
     for m in modules:
-        pages = f" (in {len(m.pages)} pages)" if m.pages else ""
         cpp = next((c for c in cpp_pages if c.module == m.module), None)
         view = f" · [the C++ view]({cpp.index.name})" if cpp else ""
         out.append(f"- [`{m.module.removeprefix('imgui_bundle.')}`]({m.index.name}): {m.functions} functions, "
-                   f"{m.classes} classes, {m.enums} enums{pages}{view}")
+                   f"{m.classes} classes, {m.enums} enums{view}")
     out.append("")
     out += _demo_cards(library, manifest, docs, index)
     index.write_text("\n".join(out))
@@ -773,9 +718,6 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
         cpp = next((c for c in cpp_pages if c.module == m.module), None)
         for mp in ([m, cpp] if cpp else [m]):
             toc.append(f"          - file: api/{library.key}/{mp.index.stem}")
-            if mp.pages:
-                toc.append("            sections:")
-                toc += [f"              - file: api/{library.key}/{page.stem}" for _, page in mp.pages]
     return toc
 
 

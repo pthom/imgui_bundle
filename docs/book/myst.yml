@@ -22,6 +22,7 @@ site:
     folders: true
     style: _static/custom.css
     template: book-theme
+    outline_maxdepth: 3   # the API pages: the outline lists the parts and sections, not the entries
   nav:
     - title: Interactive explorer
       url: https://imgui-bundle.pages.dev/explorer/
