@@ -248,26 +248,43 @@ def _split_comments(block: list[str]) -> tuple[str, list[str], list[str]]:
     return cpp, before, after
 
 
+def _part_title(line: str) -> str:
+    """The title of a part: without its [SECTION] mark, and without the list of its structs in parentheses"""
+    return re.sub(r"\s*\([^)]*\)$", "", line.strip().removeprefix("[SECTION]").strip())
+
+
 def _section_or_note(before: list[str]) -> tuple[Optional[str], Optional[tuple[str, list[str]]], str]:
     """The lines above a C++ signature: a part of the header (a [SECTION] mark), a section (a title, then its lines),
     or a mere note. Not a section: a sentence, a bullet, a marker of the bundle's patches ([ADAPT_IMGUI_BUNDLE]),
     a preprocessor line"""
+    is_rule = [bool(re.match(r"^[/=-]{4,}$", b)) for b in before]
+    before = [b for i, b in enumerate(before) if not (is_rule[i] and i > 0 and is_rule[i - 1])]  # one rule per run
+    is_rule = [bool(re.match(r"^[/=-]{4,}$", b)) for b in before]
+    if len(before) >= 3 and is_rule[0] and is_rule[2] and _is_title(before[1]):  # a banner: a part (the node editor's)
+        nearer, section, note = _section_or_note(before[3:])
+        return nearer or _part_title(before[1]), section, note
     before = [b for b in before if not re.match(r"^#?\s*(if|ifdef|ifndef|elif|else|endif|define|include|pragma)\b", b)
               and not re.match(r"^[/=-]{4,}$", b) and not b.startswith("[ADAPT_") and not b.startswith("</")]
     if not before:
         return None, None, ""
     title = before[0]
-    if title.startswith("[SECTION]"):  # imgui's and implot's marks, some listing their structs in parentheses
-        part = re.sub(r"\s*\([^)]*\)$", "", title.removeprefix("[SECTION]").strip())
+    if (m := re.match(r"^-{3,}\s*(.+?)\s*-{3,}$", title)):  # `--- Title ---`: the node editor's sections
+        title = m.group(1)
+    if title.startswith("[SECTION]"):  # imgui's and implot's marks: a part
         nearer, section, note = _section_or_note(before[1:])  # a part without bound entries: the next one counts
-        return nearer or part, section, note
+        return nearer or _part_title(title), section, note
     if (m := re.match(r"^<submodule (\w+)>$", title)):  # litgen's marker of a nested namespace
         title = f"Submodule {m.group(1)}"
-    if (title.startswith(("-", "<", "[/")) or len(title) > 60 or title.endswith((".", ",", ";", ":"))
-            or re.search(r'[;"]', title) or ("," in title and ":" not in title and len(title.split()) > 3)):
-        # a sentence, a marker, a line of code
+    if not _is_title(title):
         return None, None, "\n".join(before)
     return None, (title, before[1:]), ""
+
+
+def _is_title(title: str) -> bool:
+    """A comment line that can title a section: not a sentence, a marker, a line of code"""
+    title = title.strip()
+    return not (title.startswith(("-", "<", "[/")) or len(title) > 60 or title.endswith((".", ",", ";", ":"))
+                or re.search(r'[;"]', title) or ("," in title and ":" not in title and len(title.split()) > 3))
 
 
 def _trailing_comment(lines: list[str], node: ast.AST) -> str:
@@ -354,6 +371,11 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         entry.header = next((h for (ln, h) in reversed(headers) if ln < node.lineno), "")
         entries.append(entry)
     entries = _merge_overloads(entries)
+    if len({e.part for e in entries if e.part}) < 2:  # a lone banner is a section, not a part (hello_imgui's)
+        for entry in entries:
+            if entry.part is not None:
+                entry.section = entry.section or (entry.part, [])
+                entry.part = None
     if headers_dir is not None:
         texts = {f"{headers_dir.name}/{h.name}": h.read_text() for h in sorted(headers_dir.glob("*.h"))}
         for entry in entries:
