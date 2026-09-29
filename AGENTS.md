@@ -145,6 +145,8 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
   * After editing Python, run mypy on the touched files, from the repo root: mypy writes `.mypy_cache/` in the current folder, and a cache left in a demo folder gets packed into the web explorer's data.
 
 * Demos: a flat `main()` with sensible defaults, tunables as constants at the top (with a one-line comment), a 1-2 line docstring. No argparse, no modes: the reader edits the code.
+  * A demo has a module-level `demo_gui()` (C++: `demo_<file name>()`), and a `main()` that runs it with the add-ons and configs it needs, under `if __name__ == "__main__"` (C++: `#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY`). It runs alone, and the explorer can show it in place: the explorer then gives it the same config.
+  * In C++, everything but these two functions goes into an anonymous namespace: the demos of a folder are also compiled together, into one library.
 
 ## Writing docs and commits
 
