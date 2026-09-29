@@ -49,6 +49,8 @@ class Library:
     # use is not tagged (every demo imports them)
     headers: str = ""  # the folder of the C++ headers, when the stub comes from an amalgamation: the entries are then
     # classified by the header that declares them (the amalgamation's markers only mark the include points)
+    comments: str = "markdown"  # how the comments render: "markdown", or "pre" for a header laid out in ASCII (imgui.h:
+    # aligned columns, one idea per line): a multi-line comment is then a preformatted block, a one-liner a paragraph
 
 
 LIBRARIES = [
@@ -59,7 +61,8 @@ LIBRARIES = [
              ("imgui_bundle.imgui.test_engine", "imgui/test_engine.pyi"),
              ("imgui_bundle.imgui.backends", "imgui/backends.pyi")],
             demos=["demo_widgets.py", "layout_child.py", "demo_drag_and_drop.py", "manual_imgui.py",
-                   "demo_hello_world.py"]),
+                   "demo_hello_world.py"],
+            comments="pre"),
     Library("hello_imgui", "Hello ImGui",
             "The app runner: the window and its backends, docking layouts, fonts, assets, DPI, idling.",
             "https://github.com/pthom/hello_imgui", "core_libs/hello_imgui_immapp",
@@ -454,6 +457,9 @@ def _code(language: str, text: str) -> list[str]:
     return [f"```{language}", text, "```", ""]
 
 
+COMMENT_STYLE = "markdown"  # the current library's Library.comments, while its pages are written
+
+
 def _safe_markdown(text: str) -> str:
     """A docstring as markdown, with the hazards of C++ comments neutralized: a line of "=" or "-" (a setext heading
     for the line above), a leading "#" (a heading; ImPlot writes #xs for a parameter), "<Type>" (an HTML tag), an
@@ -461,6 +467,8 @@ def _safe_markdown(text: str) -> str:
     keep their breaks (a trailing backslash), since the headers lay out one idea per line; a [SECTION] mark left in
     a text (a part without bound entries) becomes a bold line"""
     text = text.replace("\x00", "\\0")
+    if COMMENT_STYLE == "pre" and "\n" in text.strip():
+        return "````text\n" + text.rstrip() + "\n````"
     out = []
     in_fence = False
     for line in text.splitlines():
@@ -478,9 +486,9 @@ def _safe_markdown(text: str) -> str:
         line = re.sub(r"^(\s*)#", r"\1\\#", line)
         line = re.sub(r"(?<![`\\])<(?=[A-Za-z_])", r"\\<", line)
         out.append(line)
-    for i in range(len(out) - 1):  # a hard break between two lines of text (not around blank lines or fences)
+    for i in range(len(out) - 1):  # a hard break between two lines of text (not around blank lines, fences, list items)
         if out[i].strip() and out[i + 1].strip() and not out[i].startswith("```") and not out[i + 1].startswith("```") \
-                and not out[i].endswith("\\"):
+                and not out[i].endswith("\\") and not re.match(r"^\s*([-*+]|\d+[.)])\s", out[i + 1]):
             out[i] += "\\"
     if sum(1 for line in out if line.strip().startswith("```")) % 2:
         out.append("```")
@@ -701,6 +709,8 @@ def _demo_cards(library: Library, manifest: dict[str, Any], docs: dict[str, dict
 
 def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> list[str]:
     """The intro page and the module pages of a library; returns the TOC lines"""
+    global COMMENT_STYLE
+    COMMENT_STYLE = library.comments
     folder = API / library.key
     folder.mkdir(parents=True, exist_ok=True)
     modules: list[ModulePages] = []
