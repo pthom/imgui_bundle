@@ -793,7 +793,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
                 out.append(f"| `{_cell(a.cpp)}` | {_cell(a.note)} |")
             out.append("")
         for c in entry.children:
-            if c.kind != "attribute":
+            if c.kind != "attribute" and (c.kind != "method" or c.cpp):  # a method without C++: litgen's invention
                 out += _render_cpp_entry(c, module, namespace, min(level + 1, 6), name)
     return out
 

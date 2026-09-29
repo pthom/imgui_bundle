@@ -790,7 +790,6 @@ class TextEditor:
         end: TextEditor.DocPos
         # std::string text;    /* original C++ signature */
         text: str
-        # Change(bool insert = bool(), DocPos start = DocPos(), DocPos end = DocPos(), std::string text = std::string());    /* original C++ signature */
         def __init__(
             self,
             insert: bool = bool(),
@@ -846,7 +845,6 @@ class TextEditor:
         height: float
         # ImVec2 glyphSize;    /* original C++ signature */
         glyph_size: ImVec2
-        # Decorator(size_t line = size_t(), float width = float(), float height = float(), ImVec2 glyphSize = ImVec2());    /* original C++ signature */
         def __init__(
             self,
             line: int = int(),
@@ -905,7 +903,6 @@ class TextEditor:
         # size_t cursorIndex;    /* original C++ signature */
         # index of the cursor being rendered (in case additional cursor information is required)
         cursor_index: int
-        # CustomCaret(ImVec2 glyphPos = ImVec2(), ImVec2 glyphSize = ImVec2(), bool caretVisible = bool(), ImU32 caretColor = ImU32(), size_t cursorIndex = size_t());    /* original C++ signature */
         def __init__(
             self,
             glyph_pos: Optional[ImVec2Like] = None,
@@ -969,7 +966,6 @@ class TextEditor:
         # line number color from current palette
         # this can be ignored if custom renderer has its own palette or animation
         color: ImU32
-        # CustomLineNumber(ImVec2 pos = ImVec2(), ImVec2 size = ImVec2(), size_t digits = size_t(), size_t lineNumber = size_t(), size_t cursorLineNumber = size_t(), ImU32 color = ImU32());    /* original C++ signature */
         def __init__(
             self,
             pos: Optional[ImVec2Like] = None,
@@ -1011,7 +1007,6 @@ class TextEditor:
         """
         # DocPos pos;    /* original C++ signature */
         pos: TextEditor.DocPos
-        # PopupData(DocPos pos = DocPos());    /* original C++ signature */
         def __init__(self, pos: Optional[TextEditor.DocPos] = None) -> None:
             """Auto-generated default constructor with named params
 
@@ -1178,7 +1173,6 @@ class TextEditor:
         # inline ImU32 get(Color color) const;    /* original C++ signature */
         def get(self, color: TextEditor.Color) -> ImU32:
             pass
-        # Palette();    /* original C++ signature */
         def __init__(self) -> None:
             """Auto-generated default constructor"""
             pass
@@ -1257,7 +1251,6 @@ class TextEditor:
         @staticmethod
         def sql() -> TextEditor.Language:
             pass
-        # Language();    /* original C++ signature */
         def __init__(self) -> None:
             """Auto-generated default constructor"""
             pass
@@ -1388,7 +1381,6 @@ class TextEditor:
         lb30a: bool = True
         # bool lb30b = true;    /* original C++ signature */
         lb30b: bool = True
-        # LineBreakConfig(bool useUnicodeAnnex14 = false, std::string breakAfter = " \t{[(", std::string breakBefore = ".", bool lb2 = true, bool lb3 = true, bool lb4 = true, bool lb5 = true, bool lb6 = true, bool lb7 = true, bool lb8 = true, bool lb8a = true, bool lb9 = true, bool lb10 = true, bool lb11 = true, bool lb12 = true, bool lb12a = true, bool lb13 = true, bool lb14 = true, bool lb15a = true, bool lb15b = true, bool lb15c = true, bool lb15d = true, bool lb16 = true, bool lb17 = true, bool lb18 = true, bool lb19 = true, bool lb19a = true, bool lb20 = true, bool lb20a = true, bool lb21 = true, bool lb21a = true, bool lb21b = true, bool lb22 = true, bool lb23 = true, bool lb23a = true, bool lb24 = true, bool lb25 = true, bool lb26 = true, bool lb27 = true, bool lb28 = true, bool lb28a = true, bool lb29 = true, bool lb30 = true, bool lb30a = true, bool lb30b = true);    /* original C++ signature */
         def __init__(
             self,
             use_unicode_annex14: bool = False,

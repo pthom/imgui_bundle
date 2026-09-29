@@ -199,7 +199,6 @@ ItemFlags_None = ItemFlags_.none
 class BoxedValue:
     # double value;    /* original C++ signature */
     value: float
-    # BoxedValue(double value = double());    /* original C++ signature */
     def __init__(self, value: float = float()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -966,7 +965,6 @@ class Spec:
         ItemFlags_None  # optional item flags; can be composed from common ImPlotItemFlags and/or specialized ImPlotXFlags
     )
 
-    # ImPlotSpec(ImVec4 LineColor = IMPLOT_AUTO_COL, float LineWeight = 1.0f, ImVec4 FillColor = IMPLOT_AUTO_COL, float FillAlpha = 1.0f, ImPlotMarker Marker = ImPlotMarker_None, float MarkerSize = 4, ImVec4 MarkerLineColor = IMPLOT_AUTO_COL, ImVec4 MarkerFillColor = IMPLOT_AUTO_COL, float Size = 4, int Offset = 0, int Stride = IMPLOT_AUTO, ImPlotItemFlags Flags = ImPlotItemFlags_None);    /* original C++ signature */
     def __init__(
         self,
         line_color: Optional[ImVec4Like] = None,
@@ -1344,7 +1342,6 @@ class SubplotsRowColRatios:
     row_ratios: List[float]
     # std::vector<float> col_ratios;    /* original C++ signature */
     col_ratios: List[float]
-    # SubplotsRowColRatios(std::vector<float> row_ratios = std::vector<float>(), std::vector<float> col_ratios = std::vector<float>());    /* original C++ signature */
     def __init__(self, row_ratios: Optional[List[float]] = None, col_ratios: Optional[List[float]] = None) -> None:
         """Auto-generated default constructor with named params
 

@@ -343,7 +343,6 @@ class TestEngineResultSummary:
     count_success: int = 0  # Number of tests succeeded
     # int     CountInQueue = 0;    /* original C++ signature */
     count_in_queue: int = 0  # Number of tests remaining in queue (e.g. aborted, crashed)
-    # ImGuiTestEngineResultSummary(int CountTested = 0, int CountSuccess = 0, int CountInQueue = 0);    /* original C++ signature */
     def __init__(self, count_tested: int = 0, count_success: int = 0, count_in_queue: int = 0) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -632,7 +631,6 @@ class TestEngineIO:
     )
     # bool                        IsCapturing = false;    /* original C++ signature */
     is_capturing: bool = False  # Capture is in progress
-    # ImGuiTestEngineIO(bool ConfigSavedSettings = true, ImGuiTestRunSpeed ConfigRunSpeed = ImGuiTestRunSpeed_Fast, bool ConfigStopOnError = false, bool ConfigBreakOnError = false, bool ConfigKeepGuiFunc = false, bool ConfigRestoreFocusAfterTests = true, bool ConfigCaptureEnabled = true, bool ConfigCaptureOnError = false, bool ConfigNoThrottle = false, bool ConfigMouseDrawCursor = true, float ConfigFixedDeltaTime = 0.0f, int PerfStressAmount = 1, ImGuiTestVerboseLevel ConfigVerboseLevel = ImGuiTestVerboseLevel_Warning, ImGuiTestVerboseLevel ConfigVerboseLevelOnError = ImGuiTestVerboseLevel_Info, bool ConfigLogToTTY = false, bool ConfigLogToDebugger = false, float MouseSpeed = 600.0f, float MouseWobble = 0.25f, float ScrollSpeed = 1400.0f, float TypingSpeed = 20.0f, float ActionDelayShort = 0.15f, float ActionDelayStandard = 0.40f, float ConfigWatchdogWarning = 30.0f, float ConfigWatchdogKillTest = 60.0f, float ConfigWatchdogKillApp = FLT_MAX, ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0, bool CheckDrawDataIntegrity = false, bool IsRunningTests = false, bool IsRequestingMaxAppSpeed = false, bool IsCapturing = false);    /* original C++ signature */
     def __init__(
         self,
         config_saved_settings: bool = True,
@@ -742,7 +740,7 @@ class TestItemList:
     def __getitem__(self, n: int) -> TestItemInfo:
         """(private API)"""
         pass
-    # ImGuiTestItemList();    /* original C++ signature */
+
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -756,7 +754,6 @@ class TestLogLineInfo:
     level: TestVerboseLevel
     # int                             LineOffset;    /* original C++ signature */
     line_offset: int
-    # ImGuiTestLogLineInfo(ImGuiTestVerboseLevel Level = ImGuiTestVerboseLevel(), int LineOffset = int());    /* original C++ signature */
     def __init__(self, level: TestVerboseLevel = TestVerboseLevel.warning, line_offset: int = int()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -825,7 +822,6 @@ class TestOutput:
     start_time: ImU64 = 0
     # ImU64                           EndTime = 0;    /* original C++ signature */
     end_time: ImU64 = 0
-    # ImGuiTestOutput(ImGuiTestStatus Status = ImGuiTestStatus_Unknown, ImGuiTestLog Log = ImGuiTestLog(), ImU64 StartTime = 0, ImU64 EndTime = 0);    /* original C++ signature */
     def __init__(
         self,
         status: TestStatus = TestStatus_Unknown,
@@ -911,7 +907,6 @@ class TestRunTask:
     test: Optional[Test] = None
     # ImGuiTestRunFlags   RunFlags = ImGuiTestRunFlags_None;    /* original C++ signature */
     run_flags: TestRunFlags = TestRunFlags_None
-    # ImGuiTestRunTask(ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None);    /* original C++ signature */
     def __init__(self, run_flags: TestRunFlags = TestRunFlags_None) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2191,7 +2186,7 @@ class TestContext:
         FIXME: Aim to remove this system...
         """
         pass
-    # ImGuiTestContext(ImGuiTestGenericVars GenericVars = ImGuiTestGenericVars(), ImGuiTestOpFlags OpFlags = ImGuiTestOpFlags_None, int PerfStressAmount = 0, int FrameCount = 0, int FirstTestFrameCount = 0, bool FirstGuiFrame = false, bool HasDock = false, ImGuiTestRunFlags RunFlags = ImGuiTestRunFlags_None, ImGuiTestActiveFunc ActiveFunc = ImGuiTestActiveFunc_None, double RunningTime = 0.0, int ActionDepth = 0, int CaptureCounter = 0, int ErrorCounter = 0, bool Abort = false, double PerfRefDt = -1.0, int PerfIterations = 400, ImGuiID RefID = 0, ImGuiID RefWindowID = 0, ImGuiInputSource InputMode = ImGuiInputSource_Mouse, ImVector<char> TempString = ImVector<char>(), ImVector<char> Clipboard = ImVector<char>(), ImVector<ImGuiWindow*> ForeignWindowsToHide = ImVector<ImGuiWindow*>(), ImGuiTestItemInfo DummyItemInfoNull = ImGuiTestItemInfo(), bool CachedLinesPrintedToTTY = false);    /* original C++ signature */
+
     def __init__(
         self,
         generic_vars: Optional[TestGenericVars] = None,
@@ -2285,7 +2280,6 @@ class TestInfoTask:
     # ImGuiTestItemInfo       Result;    /* original C++ signature */
     # Output
     result: TestItemInfo
-    # ImGuiTestInfoTask(ImGuiID ID = 0, int FrameCount = -1, ImGuiTestItemInfo Result = ImGuiTestItemInfo());    /* original C++ signature */
     def __init__(self, id_: ID = 0, frame_count: int = -1, result: Optional[TestItemInfo] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -2315,7 +2309,7 @@ class TestGatherTask:
     def clear(self) -> None:
         """(private API)"""
         pass
-    # ImGuiTestGatherTask(ImGuiID InParentID = 0, int InMaxDepth = 0, short InLayerMask = 0);    /* original C++ signature */
+
     def __init__(self, in_parent_id: ID = 0, in_max_depth: int = 0, in_layer_mask: int = 0) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2348,7 +2342,6 @@ class TestFindByLabelTask:
     # Output
     # ImGuiID                 OutItemId = 0;    /* original C++ signature */
     out_item_id: ID = 0  # Result item ID
-    # ImGuiTestFindByLabelTask(ImGuiID InPrefixId = 0, int InSuffixDepth = 0, ImGuiID InSuffixLastItemHash = 0, ImGuiItemStatusFlags InFilterItemStatusFlags = 0, ImGuiID OutItemId = 0);    /* original C++ signature */
     def __init__(
         self,
         in_prefix_id: ID = 0,
@@ -2423,7 +2416,7 @@ class TestInput:
     def for_viewport_close(viewport_id: ID) -> TestInput:
         """(private API)"""
         pass
-    # ImGuiTestInput(ImGuiTestInputType Type = ImGuiTestInputType_None, ImGuiKeyChord KeyChord = ImGuiKey_None, ImWchar Char = 0, bool Down = false, ImGuiID ViewportId = 0, ImVec2 ViewportPosSize = ImVec2());    /* original C++ signature */
+
     def __init__(
         self,
         type: TestInputType = TestInputType_None,
@@ -2457,7 +2450,6 @@ class TestInputs:
     host_esc_down_duration: float = -1.0  # Maintain our own DownDuration for host/backend ESC key so we can abort.
     # ImVec2                      HostMousePos;    /* original C++ signature */
     host_mouse_pos: ImVec2
-    # ImGuiTestInputs(ImVec2 MousePosValue = ImVec2(), ImVec2 MouseWheel = ImVec2(), ImGuiID MouseHoveredViewport = 0, int MouseButtonsValue = 0x00, bool HostEscDown = false, float HostEscDownDuration = -1.0f, ImVec2 HostMousePos = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         mouse_pos_value: Optional[ImVec2Like] = None,
@@ -2762,7 +2754,6 @@ class CaptureArgs:
     # [Output]
     # ImVec2                  OutImageSize;    /* original C++ signature */
     out_image_size: ImVec2  # Produced image size.
-    # ImGuiCaptureArgs(ImGuiCaptureFlags InFlags = 0, ImVector<ImGuiWindow*> InCaptureWindows = ImVector<ImGuiWindow*>(), ImRect InCaptureRect = ImRect(), float InPadding = 16.0f, int InRecordFPSTarget = 30, int InSizeAlign = 0, ImVec2 OutImageSize = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         in_flags: CaptureFlags = 0,
@@ -2799,7 +2790,6 @@ class CaptureWindowData:
     backup_rect: ImRect
     # ImVec2                  PosDuringCapture;    /* original C++ signature */
     pos_during_capture: ImVec2
-    # ImGuiCaptureWindowData(ImRect BackupRect = ImRect(), ImVec2 PosDuringCapture = ImVec2());    /* original C++ signature */
     def __init__(self, backup_rect: Optional[ImRect] = None, pos_during_capture: Optional[ImVec2Like] = None) -> None:
         """Auto-generated default constructor with named params
 

@@ -1296,7 +1296,6 @@ class Context:
     # bool CanDragPlotInNodeEditor = false;    /* original C++ signature */
     # Specific to ImGui Bundle, when used inside imgui-node-editor
     can_drag_plot_in_node_editor: bool = False
-    # ImPlotContext(ImPlotTicker CTicker = ImPlotTicker(), ImPlotAnnotationCollection Annotations = ImPlotAnnotationCollection(), ImPlotTagCollection Tags = ImPlotTagCollection(), ImPlotStyle Style = ImPlotStyle(), ImVector<ImGuiColorMod> ColorModifiers = ImVector<ImGuiColorMod>(), ImVector<ImGuiStyleMod> StyleModifiers = ImVector<ImGuiStyleMod>(), ImPlotColormapData ColormapData = ImPlotColormapData(), ImVector<int> TempInt1 = ImVector<int>(), int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), ImPlotNextPlotData NextPlotData = ImPlotNextPlotData(), ImPlotNextItemData NextItemData = ImPlotNextItemData(), ImPlotInputMap InputMap = ImPlotInputMap(), bool OpenContextThisFrame = bool(), ImGuiTextBuffer MousePosStringBuilder = ImGuiTextBuffer(), bool CanDragPlotInNodeEditor = false);    /* original C++ signature */
     def __init__(self, c_ticker: Optional[Ticker] = None, annotations: Optional[AnnotationCollection] = None, tags: Optional[TagCollection] = None, style: Optional[Style] = None, color_modifiers: Optional[ImVector_ColorMod] = None, style_modifiers: Optional[ImVector_StyleMod] = None, colormap_data: Optional[ColormapData] = None, temp_int1: Optional[ImVector_int] = None, digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: Optional[NextPlotData] = None, next_item_data: Optional[NextItemData] = None, input_map: Optional[InputMap] = None, open_context_this_frame: bool = bool(), mouse_pos_string_builder: Optional[TextBuffer] = None, can_drag_plot_in_node_editor: bool = False) -> None:
         """Auto-generated default constructor with named params
 
@@ -1833,7 +1832,6 @@ class Formatter_Time_Data:
     spec: DateTimeSpec
     # void* UserFormatterData;    /* original C++ signature */
     user_formatter_data: Any
-    # Formatter_Time_Data(ImPlotTime Time = ImPlotTime(), ImPlotDateTimeSpec Spec = ImPlotDateTimeSpec());    /* original C++ signature */
     def __init__(self, time: Optional[Time] = None, spec: Optional[DateTimeSpec] = None) -> None:
         """Auto-generated default constructor with named params
 

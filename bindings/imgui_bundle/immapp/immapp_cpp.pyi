@@ -102,7 +102,6 @@ class AddOnsParams:
     # std::optional<RichMd::MarkdownOptions> withMarkdownOptions = std::nullopt;    /* original C++ signature */
     # You can tweak MarkdownOptions (but this is optional)
     with_markdown_options: Optional[RichMd.MarkdownOptions] = None
-    # AddOnsParams(bool withImplot = false, bool withImplot3d = false, bool withMarkdown = false, bool withNodeEditor = false, bool withTexInspect = false, bool withImAnim = false, bool withLatex = false, std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt, bool updateNodeEditorColorsFromImguiColors = true, std::optional<RichMd::MarkdownOptions> withMarkdownOptions = std::nullopt);    /* original C++ signature */
     def __init__(
         self,
         with_implot: bool = False,
@@ -663,7 +662,6 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         add_final_empty_line: bool = (
             False  # Add an empty line at the end of the code if missing
         )
-        # void blah(std::string Code = "", SnippetLanguage Language = DefaultSnippetLanguage(), SnippetTheme Palette = SnippetTheme::Auto, bool ShowCopyButton = true, bool ShowCursorPosition = true, std::string DisplayedFilename = __srcmlcpp_brace_init__(), int HeightInLines = 0, int MaxHeightInLines = 40, bool ReadOnly = true, bool Border = false, bool DeIndentCode = true, bool AddFinalEmptyLine = false);    /* original C++ signature */
         def __init__(
             self,
             code: str = "",

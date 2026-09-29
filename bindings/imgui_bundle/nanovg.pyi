@@ -93,7 +93,6 @@ class Paint:
     outer_color: Color
     # int image;    /* original C++ signature */
     image: int
-    # NVGpaint(float radius = float(), float feather = float(), NVGcolor innerColor = NVGcolor(), NVGcolor outerColor = NVGcolor(), int image = int());    /* original C++ signature */
     def __init__(
         self,
         radius: float = float(),
@@ -213,7 +212,6 @@ class CompositeOperationState:
     src_alpha: int
     # int dstAlpha;    /* original C++ signature */
     dst_alpha: int
-    # NVGcompositeOperationState(int srcRGB = int(), int dstRGB = int(), int srcAlpha = int(), int dstAlpha = int());    /* original C++ signature */
     def __init__(
         self,
         src_rgb: int = int(),
@@ -233,7 +231,6 @@ class GlyphPosition:
     minx: float  # The bounds of the glyph shape.
     # maxx;    /* original C++ signature */
     maxx: float  # The bounds of the glyph shape.
-    # NVGglyphPosition(float x = float(), float minx = float(), float maxx = float());    /* original C++ signature */
     def __init__(
         self,
         x: float = float(),
@@ -256,7 +253,6 @@ class TextRow:
     minx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
     # maxx;    /* original C++ signature */
     maxx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
-    # NVGtextRow(float width = float(), float minx = float(), float maxx = float());    /* original C++ signature */
     def __init__(
         self,
         width: float = float(),
@@ -1068,7 +1064,6 @@ class Scissor:
     xform: np.ndarray   # ndarray[type=float, size=6]
     # float extent[2];    /* original C++ signature */
     extent: np.ndarray  # ndarray[type=float, size=2]
-    # NVGscissor();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -1082,7 +1077,6 @@ class Vertex:
     u: float
     # v;    /* original C++ signature */
     v: float
-    # NVGvertex(float x = float(), float y = float(), float u = float(), float v = float());    /* original C++ signature */
     def __init__(
         self,
         x: float = float(),
@@ -1114,7 +1108,6 @@ class Path:
     winding: int
     # int convex;    /* original C++ signature */
     convex: int
-    # NVGpath(int first = int(), int count = int(), int nbevel = int(), int nfill = int(), int nstroke = int(), int winding = int(), int convex = int());    /* original C++ signature */
     def __init__(
         self,
         first: int = int(),
@@ -1133,7 +1126,6 @@ class Params:
     user_ptr: Any
     # int edgeAntiAlias;    /* original C++ signature */
     edge_anti_alias: int
-    # NVGparams(int edgeAntiAlias = int());    /* original C++ signature */
     def __init__(self, edge_anti_alias: int = int()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1391,7 +1383,6 @@ class TextMetricsData:
     descender: float
     # float lineh;    /* original C++ signature */
     lineh: float
-    # TextMetricsData(float ascender = float(), float descender = float(), float lineh = float());    /* original C++ signature */
     def __init__(
         self,
         ascender: float = float(),
@@ -1418,7 +1409,6 @@ class TextRowSimple:
     minx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
     # maxx;    /* original C++ signature */
     maxx: float   # Actual bounds of the row. Logical with and bounds can differ because of kerning and some parts over extending.
-    # NVGtextRowSimple(std::string row_text = std::string(), float width = float(), float minx = float(), float maxx = float());    /* original C++ signature */
     def __init__(
         self,
         row_text: str = "",

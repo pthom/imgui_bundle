@@ -83,7 +83,6 @@ class KnobColors:
     secondary: color_set
     # color_set track;    /* original C++ signature */
     track: color_set
-    # KnobColors(color_set primary = color_set(), color_set secondary = color_set(), color_set track = color_set());    /* original C++ signature */
     def __init__(
         self,
         primary: Optional[color_set] = None,

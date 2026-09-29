@@ -765,7 +765,6 @@ class Context:
     style: Style
     # ImPlot3DColormapData ColormapData;    /* original C++ signature */
     colormap_data: ColormapData
-    # ImPlot3DContext(ImPlot3DNextItemData NextItemData = ImPlot3DNextItemData(), ImPlot3DStyle Style = ImPlot3DStyle(), ImPlot3DColormapData ColormapData = ImPlot3DColormapData());    /* original C++ signature */
     def __init__(self, next_item_data: Optional[NextItemData] = None, style: Optional[Style] = None, colormap_data: Optional[ColormapData] = None) -> None:
         """Auto-generated default constructor with named params
 

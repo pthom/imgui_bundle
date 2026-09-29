@@ -375,7 +375,6 @@ class Transform2D:
     def inverse(self) -> Transform2D:
         """ Return an inverse transform such that transform.Inverse() * transform * vector == vector"""
         pass
-    # Transform2D(ImVec2 Scale = ImVec2(), ImVec2 Translate = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         scale: Optional[ImVec2Like] = None,
@@ -410,7 +409,6 @@ class Texture:
     texture: ImTextureID
     # ImVec2 size;    /* original C++ signature */
     size: ImVec2
-    # Texture(ImTextureID texture = ImTextureID(), ImVec2 size = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         texture: Optional[ImTextureID] = None,

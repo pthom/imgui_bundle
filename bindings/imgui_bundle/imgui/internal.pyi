@@ -968,7 +968,7 @@ class ImBitVector:
     def clear_bit(self, n: int) -> None:
         """(private API)"""
         pass
-    # ImBitVector(ImVector<ImU32> Storage = ImVector<ImU32>());    /* original C++ signature */
+
     def __init__(self, storage: Optional[ImVector_ImU32] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -1007,7 +1007,7 @@ class TextIndex:
     def append(self, base: str, old_size: int, new_size: int) -> None:
         """(private API)"""
         pass
-    # ImGuiTextIndex(ImVector<int> Offsets = ImVector<int>(), int EndOffset = 0);    /* original C++ signature */
+
     def __init__(self, offsets: Optional[ImVector_int] = None, end_offset: int = 0) -> None:
         """Auto-generated default constructor with named params
 
@@ -1139,7 +1139,6 @@ class ImFontStackData:
     font_size_before_scaling: float  # ~~ style.FontSizeBase
     # float       FontSizeAfterScaling;    /* original C++ signature */
     font_size_after_scaling: float  # ~~ g.FontSize
-    # ImFontStackData(float FontSizeBeforeScaling = float(), float FontSizeAfterScaling = float());    /* original C++ signature */
     def __init__(self, font_size_before_scaling: float = float(), font_size_after_scaling: float = float()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1153,7 +1152,7 @@ class StyleVarInfo:
     def get_var_ptr(self, parent: Any) -> Any:
         """(private API)"""
         pass
-    # ImGuiStyleVarInfo();    /* original C++ signature */
+
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -1165,7 +1164,6 @@ class ColorMod:
     col: Col
     # ImVec4          BackupValue;    /* original C++ signature */
     backup_value: ImVec4
-    # ImGuiColorMod(ImGuiCol Col = ImGuiCol(), ImVec4 BackupValue = ImVec4());    /* original C++ signature */
     def __init__(self, col: Optional[Col] = None, backup_value: Optional[ImVec4Like] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -1201,7 +1199,6 @@ class StyleMod:
 class DataTypeStorage:
     # ImU8        Data[8];    /* original C++ signature */
     data: np.ndarray  # ndarray[type=ImU8, size=8]  # Opaque storage to fit any data up to ImGuiDataType_COUNT
-    # ImGuiDataTypeStorage();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -1217,7 +1214,6 @@ class DataTypeInfo:
     print_fmt: str  # Default printf format for the type # (const)
     # const char* ScanFmt;    /* original C++ signature */
     scan_fmt: str  # Default scanf format for the type # (const)
-    # ImGuiDataTypeInfo(size_t Size = size_t());    /* original C++ signature */
     def __init__(self, size: int = int()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -1620,7 +1616,6 @@ class GroupData:
     backup_is_same_line: bool
     # bool        EmitItem;    /* original C++ signature */
     emit_item: bool
-    # ImGuiGroupData(ImGuiID WindowID = ImGuiID(), ImVec2 BackupCursorPos = ImVec2(), ImVec2 BackupCursorMaxPos = ImVec2(), ImVec2 BackupCursorPosPrevLine = ImVec2(), ImVec1 BackupIndent = ImVec1(), ImVec1 BackupGroupOffset = ImVec1(), ImVec2 BackupCurrLineSize = ImVec2(), float BackupCurrLineTextBaseOffset = float(), ImGuiID BackupActiveIdIsAlive = ImGuiID(), bool BackupAnyIdHasBeenEditedThisFrame = bool(), bool BackupDeactivatedIdIsAlive = bool(), bool BackupHoveredIdIsAlive = bool(), bool BackupIsSameLine = bool(), bool EmitItem = bool());    /* original C++ signature */
     def __init__(
         self,
         window_id: ID = ID(),
@@ -2079,7 +2074,6 @@ class TreeNodeStackData:
     draw_lines_to_nodes_y2: float
     # ImGuiTableColumnIdx     DrawLinesTableColumn;    /* original C++ signature */
     draw_lines_table_column: TableColumnIdx
-    # ImGuiTreeNodeStackData(ImGuiID ID = ImGuiID(), ImGuiTreeNodeFlags TreeFlags = ImGuiTreeNodeFlags(), ImGuiItemFlags ItemFlags = ImGuiItemFlags(), ImRect NavRect = ImRect(), float DrawLinesX1 = float(), float DrawLinesToNodesY2 = float(), ImGuiTableColumnIdx DrawLinesTableColumn = ImGuiTableColumnIdx());    /* original C++ signature */
     def __init__(
         self,
         id_: ID = ID(),
@@ -2144,7 +2138,6 @@ class WindowStackData:
     disabled_override_reenable_alpha_backup: float
     # ImRect                  ParentLastComboPreviewRect;    /* original C++ signature */
     parent_last_combo_preview_rect: ImRect
-    # ImGuiWindowStackData(ImGuiLastItemData ParentLastItemDataBackup = ImGuiLastItemData(), ImGuiErrorRecoveryState StackSizesInBegin = ImGuiErrorRecoveryState(), bool DisabledOverrideReenable = bool(), float DisabledOverrideReenableAlphaBackup = float(), ImRect ParentLastComboPreviewRect = ImRect());    /* original C++ signature */
     def __init__(
         self,
         parent_last_item_data_backup: Optional[LastItemData] = None,
@@ -2170,7 +2163,6 @@ class ShrinkWidthItem:
     width: float
     # float       InitialWidth;    /* original C++ signature */
     initial_width: float
-    # ImGuiShrinkWidthItem(int Index = int(), float Width = float(), float InitialWidth = float());    /* original C++ signature */
     def __init__(self, index: int = int(), width: float = float(), initial_width: float = float()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2203,7 +2195,6 @@ class DeactivatedItemData:
     has_been_edited_before: bool
     # bool        IsAlive;    /* original C++ signature */
     is_alive: bool
-    # ImGuiDeactivatedItemData(ImGuiID ID = ImGuiID(), int ElapseFrame = int(), bool HasBeenEditedBefore = bool(), bool IsAlive = bool());    /* original C++ signature */
     def __init__(
         self, id_: ID = ID(), elapse_frame: int = int(), has_been_edited_before: bool = bool(), is_alive: bool = bool()
     ) -> None:
@@ -2298,7 +2289,6 @@ class InputEventMousePos:
     pos_y: float
     # ImGuiMouseSource MouseSource;    /* original C++ signature */
     mouse_source: MouseSource
-    # ImGuiInputEventMousePos(float PosX = float(), float PosY = float(), ImGuiMouseSource MouseSource = ImGuiMouseSource());    /* original C++ signature */
     def __init__(
         self, pos_x: float = float(), pos_y: float = float(), mouse_source: Optional[MouseSource] = None
     ) -> None:
@@ -2316,7 +2306,6 @@ class InputEventMouseWheel:
     wheel_y: float
     # ImGuiMouseSource MouseSource;    /* original C++ signature */
     mouse_source: MouseSource
-    # ImGuiInputEventMouseWheel(float WheelX = float(), float WheelY = float(), ImGuiMouseSource MouseSource = ImGuiMouseSource());    /* original C++ signature */
     def __init__(
         self, wheel_x: float = float(), wheel_y: float = float(), mouse_source: Optional[MouseSource] = None
     ) -> None:
@@ -2334,7 +2323,6 @@ class InputEventMouseButton:
     down: bool
     # ImGuiMouseSource MouseSource;    /* original C++ signature */
     mouse_source: MouseSource
-    # ImGuiInputEventMouseButton(int Button = int(), bool Down = bool(), ImGuiMouseSource MouseSource = ImGuiMouseSource());    /* original C++ signature */
     def __init__(self, button: int = int(), down: bool = bool(), mouse_source: Optional[MouseSource] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -2346,7 +2334,6 @@ class InputEventMouseButton:
 class InputEventMouseViewport:
     # ImGuiID HoveredViewportID;    /* original C++ signature */
     hovered_viewport_id: ID
-    # ImGuiInputEventMouseViewport(ImGuiID HoveredViewportID = ImGuiID());    /* original C++ signature */
     def __init__(self, hovered_viewport_id: ID = ID()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2358,7 +2345,6 @@ class InputEventKey:
     down: bool
     # float AnalogValue;    /* original C++ signature */
     analog_value: float
-    # ImGuiInputEventKey(ImGuiKey Key = ImGuiKey(), bool Down = bool(), float AnalogValue = float());    /* original C++ signature */
     def __init__(self, key: Key = Key(), down: bool = bool(), analog_value: float = float()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2366,7 +2352,6 @@ class InputEventKey:
 class InputEventText:
     # unsigned int Char;    /* original C++ signature */
     char: int
-    # ImGuiInputEventText();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -2374,7 +2359,6 @@ class InputEventText:
 class InputEventAppFocused:
     # bool Focused;    /* original C++ signature */
     focused: bool
-    # ImGuiInputEventAppFocused(bool Focused = bool());    /* original C++ signature */
     def __init__(self, focused: bool = bool()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2573,7 +2557,7 @@ class ListClipperRange:
     def from_positions(y1: float, y2: float, off_min: int, off_max: int) -> ListClipperRange:
         """(private API)"""
         pass
-    # ImGuiListClipperRange(int Min = int(), int Max = int(), bool PosToIndexConvert = bool(), ImS8 PosToIndexOffsetMin = ImS8(), ImS8 PosToIndexOffsetMax = ImS8());    /* original C++ signature */
+
     def __init__(
         self,
         min: int = int(),
@@ -2782,7 +2766,6 @@ class FocusScopeData:
     id_: ID
     # ImGuiID             WindowID;    /* original C++ signature */
     window_id: ID
-    # ImGuiFocusScopeData(ImGuiID ID = ImGuiID(), ImGuiID WindowID = ImGuiID());    /* original C++ signature */
     def __init__(self, id_: ID = ID(), window_id: ID = ID()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -2820,7 +2803,6 @@ class TypingSelectRequest:
     single_char_mode: bool  # Notify when buffer contains same character repeated, to implement special mode. In this situation it preferred to not display any on-screen search indication.
     # ImS8                    SingleCharSize;    /* original C++ signature */
     single_char_size: ImS8  # Length in bytes of first letter codepoint (1 for ascii, 2-4 for UTF-8). If (SearchBufferLen==RepeatCharSize) only 1 letter has been input.
-    # ImGuiTypingSelectRequest(ImGuiTypingSelectFlags Flags = ImGuiTypingSelectFlags(), int SearchBufferLen = int(), bool SelectRequest = bool(), bool SingleCharMode = bool(), ImS8 SingleCharSize = ImS8());    /* original C++ signature */
     def __init__(
         self,
         flags: TypingSelectFlags = TypingSelectFlags(),
@@ -3319,7 +3301,6 @@ class WindowDockStyleCol(enum.IntFlag):
 class WindowDockStyle:
     """We don't store style.Alpha: dock_node->LastBgColor embeds it and otherwise it would only affect the docking tab, which intuitively I would say we don't want to."""
 
-    # ImGuiWindowDockStyle();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -3492,7 +3473,6 @@ class SettingsCleanupArgs:
     )
     # int             _DiscardOlderThanDate = 0;    /* original C++ signature */
     _discard_older_than_date: int = 0  # [Internal]
-    # ImGuiSettingsCleanupArgs(ImGuiID TypeHashFilter = 0, int DiscardOlderThanMonths = 0, bool DiscardWhenMissingDate = false, bool DiscardAll = false, bool SetCurrentSessionDateToAll = false, bool SetCurrentSessionDateWhenMissingDate = false, int _DiscardOlderThanDate = 0);    /* original C++ signature */
     def __init__(
         self,
         type_hash_filter: ID = 0,
@@ -3565,7 +3545,6 @@ class LocEntry:
     key: LocKey
     # const char*     Text;    /* original C++ signature */
     text: str  # (const)
-    # ImGuiLocEntry(ImGuiLocKey Key = ImGuiLocKey());    /* original C++ signature */
     def __init__(self, key: LocKey = LocKey()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -3637,7 +3616,6 @@ class DebugAllocEntry:
     alloc_count: ImS16
     # ImS16       FreeCount;    /* original C++ signature */
     free_count: ImS16
-    # ImGuiDebugAllocEntry(int FrameCount = int(), ImS16 AllocCount = ImS16(), ImS16 FreeCount = ImS16());    /* original C++ signature */
     def __init__(self, frame_count: int = int(), alloc_count: ImS16 = ImS16(), free_count: ImS16 = ImS16()) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -3689,7 +3667,6 @@ class MetricsConfig:
     settings_highlight_old_entries: bool = False
     # bool        ShowFontPreview = true;    /* original C++ signature */
     show_font_preview: bool = True
-    # ImGuiMetricsConfig(bool ShowDebugLog = false, bool ShowIDStackTool = false, bool ShowWindowsRects = false, bool ShowWindowsBeginOrder = false, bool ShowTablesRects = false, bool ShowDrawCmdMesh = true, bool ShowDrawCmdBoundingBoxes = true, bool ShowTextEncodingViewer = false, bool ShowTextureUsedRect = false, bool ShowDockingNodes = false, int ShowWindowsRectsType = -1, int ShowTablesRectsType = -1, int HighlightMonitorIdx = -1, ImGuiID HighlightViewportID = 0, int SettingsDiscardMonths = 6, bool SettingsHighlightOldEntries = false, bool ShowFontPreview = true);    /* original C++ signature */
     def __init__(
         self,
         show_debug_log: bool = False,
@@ -4704,7 +4681,6 @@ class WindowTempData:
     item_width_stack: ImVector_float  # Store item widths to restore (attention: .back() is not == ItemWidth)
     # ImVector<float>         TextWrapPosStack;    /* original C++ signature */
     text_wrap_pos_stack: ImVector_float  # Store text wrap pos to restore (attention: .back() is not == TextWrapPos)
-    # ImGuiWindowTempData(ImVec2 CursorPos = ImVec2(), ImVec2 CursorPosPrevLine = ImVec2(), ImVec2 CursorStartPos = ImVec2(), ImVec2 CursorMaxPos = ImVec2(), ImVec2 IdealMaxPos = ImVec2(), ImVec2 CurrLineSize = ImVec2(), ImVec2 PrevLineSize = ImVec2(), float CurrLineTextBaseOffset = float(), float PrevLineTextBaseOffset = float(), bool IsSameLine = bool(), bool IsSetPos = bool(), ImVec1 Indent = ImVec1(), ImVec1 ColumnsOffset = ImVec1(), ImVec1 GroupOffset = ImVec1(), ImVec2 CursorStartPosLossyness = ImVec2(), ImGuiNavLayer NavLayerCurrent = ImGuiNavLayer(), short NavLayersActiveMask = short(), short NavLayersActiveMaskNext = short(), bool NavIsScrollPushableX = bool(), bool NavHideHighlightOneFrame = bool(), bool NavWindowHasScrollY = bool(), bool MenuBarAppending = bool(), ImVec2 MenuBarOffset = ImVec2(), ImGuiMenuColumns MenuColumns = ImGuiMenuColumns(), int TreeDepth = int(), ImU32 TreeHasStackDataDepthMask = ImU32(), ImU32 TreeRecordsClippedNodesY2Mask = ImU32(), ImVector<ImGuiWindow*> ChildWindows = ImVector<ImGuiWindow*>(), int CurrentTableIdx = int(), ImGuiLayoutType LayoutType = ImGuiLayoutType(), ImGuiLayoutType ParentLayoutType = ImGuiLayoutType(), ImU32 ModalDimBgColor = ImU32(), ImGuiItemStatusFlags WindowItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags ChildItemStatusFlags = ImGuiItemStatusFlags(), ImGuiItemStatusFlags DockTabItemStatusFlags = ImGuiItemStatusFlags(), ImRect DockTabItemRect = ImRect(), float ItemWidth = float(), float ItemWidthDefault = float(), float TextWrapPos = float(), ImVector<float> ItemWidthStack = ImVector<float>(), ImVector<float> TextWrapPosStack = ImVector<float>());    /* original C++ signature */
     def __init__(
         self,
         cursor_pos: Optional[ImVec2Like] = None,
@@ -5363,7 +5339,6 @@ class TableReconcileColumnData:
     column_old_idx: TableColumnIdx  # Index in the previous frame table.
     # ImGuiTableColumn        ColumnOldData;    /* original C++ signature */
     column_old_data: TableColumn  # Full backup of the column. Could be avoided by storing 1 of them and applying reconcile in the right order. Not worth bothering.
-    # ImGuiTableReconcileColumnData(ImGuiID ID = ImGuiID(), ImS16 NameOffset = ImS16(), ImGuiTableColumnFlags Flags = ImGuiTableColumnFlags(), float InitWidthOrWeight = float(), ImGuiID UserData = ImGuiID(), ImGuiTableColumnIdx ColumnNewIdx = ImGuiTableColumnIdx(), ImGuiTableColumnIdx ColumnOldIdx = ImGuiTableColumnIdx(), ImGuiTableColumn ColumnOldData = ImGuiTableColumn());    /* original C++ signature */
     def __init__(
         self,
         id_: ID = ID(),
@@ -5394,7 +5369,6 @@ class TableCellData:
     bg_color: ImU32  # Actual color
     # ImGuiTableColumnIdx         Column;    /* original C++ signature */
     column: TableColumnIdx  # Column number
-    # ImGuiTableCellData(ImU32 BgColor = ImU32(), ImGuiTableColumnIdx Column = ImGuiTableColumnIdx());    /* original C++ signature */
     def __init__(self, bg_color: ImU32 = ImU32(), column: Optional[TableColumnIdx] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -5417,7 +5391,6 @@ class TableHeaderData:
     bg_color0: ImU32
     # ImU32                       BgColor1;    /* original C++ signature */
     bg_color1: ImU32
-    # ImGuiTableHeaderData(ImGuiTableColumnIdx Index = ImGuiTableColumnIdx(), ImU32 TextColor = ImU32(), ImU32 BgColor0 = ImU32(), ImU32 BgColor1 = ImU32());    /* original C++ signature */
     def __init__(
         self,
         index: Optional[TableColumnIdx] = None,
@@ -8144,7 +8117,6 @@ class ImFontAtlasRectEntry:
     Having this also makes it easier to e.g. sort rectangles during repack.
     """
 
-    # ImFontAtlasRectEntry();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -8174,7 +8146,6 @@ class ImFontAtlasPostProcessData:
     width: int
     # int                 Height;    /* original C++ signature */
     height: int
-    # ImFontAtlasPostProcessData(ImTextureFormat Format = ImTextureFormat(), int Pitch = int(), int Width = int(), int Height = int());    /* original C++ signature */
     def __init__(
         self, format: Optional[ImTextureFormat] = None, pitch: int = int(), width: int = int(), height: int = int()
     ) -> None:
@@ -8187,7 +8158,6 @@ class ImFontAtlasPostProcessData:
 
 # We avoid dragging imstb_rectpack.h into public header (partly because binding generators are having issues with it)
 class stbrp_context_opaque:
-    # stbrp_context_opaque();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -8593,7 +8563,6 @@ class DockBuilderSplitNodeResult:
     id_at_dir: ID
     # ImGuiID id_at_opposite_dir;    /* original C++ signature */
     id_at_opposite_dir: ID
-    # DockBuilderSplitNodeResult(ImGuiID id_at_dir = ImGuiID(), ImGuiID id_at_opposite_dir = ImGuiID());    /* original C++ signature */
     def __init__(self, id_at_dir: ID = ID(), id_at_opposite_dir: ID = ID()) -> None:
         """Auto-generated default constructor with named params"""
         pass

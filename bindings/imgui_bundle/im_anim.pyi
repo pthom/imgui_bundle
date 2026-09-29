@@ -200,7 +200,6 @@ class ease_desc:
     p2: float
     # p3;    /* original C++ signature */
     p3: float
-    # ease_desc(int type = int(), float p0 = float(), float p1 = float(), float p2 = float(), float p3 = float());    /* original C++ signature */
     def __init__(
         self,
         type: int = int(),
@@ -353,7 +352,6 @@ class drag_feedback:
     is_snapping: bool     # Currently snapping to target
     # float snap_progress;    /* original C++ signature */
     snap_progress: float  # Snap animation progress (0-1)
-    # drag_feedback(ImVec2 position = ImVec2(), ImVec2 offset = ImVec2(), ImVec2 velocity = ImVec2(), bool is_dragging = bool(), bool is_snapping = bool(), float snap_progress = float());    /* original C++ signature */
     def __init__(
         self,
         position: Optional[ImVec2Like] = None,
@@ -1881,7 +1879,6 @@ class spring_params:
     damping: float
     # float initial_velocity;    /* original C++ signature */
     initial_velocity: float
-    # spring_params(float mass = float(), float stiffness = float(), float damping = float(), float initial_velocity = float());    /* original C++ signature */
     def __init__(
         self,
         mass: float = float(),
@@ -1939,7 +1936,6 @@ class variation_float:
     callback: variation_float_fn
     # void*                   user;    /* original C++ signature */
     user: Any
-    # variation_float(int mode = int(), float amount = float(), float min_clamp = float(), float max_clamp = float(), variation_float_fn callback = variation_float_fn());    /* original C++ signature */
     def __init__(
         self,
         mode: int = int(),
@@ -1971,7 +1967,6 @@ class variation_int:
     callback: variation_int_fn
     # void*                 user;    /* original C++ signature */
     user: Any
-    # variation_int(int mode = int(), int amount = int(), int min_clamp = int(), int max_clamp = int(), variation_int_fn callback = variation_int_fn());    /* original C++ signature */
     def __init__(
         self,
         mode: int = int(),
@@ -2007,7 +2002,6 @@ class variation_vec2:
     x: variation_float  # Per-axis (used when mode == var_none)
     # y;    /* original C++ signature */
     y: variation_float  # Per-axis (used when mode == var_none)
-    # variation_vec2(int mode = int(), ImVec2 amount = ImVec2(), ImVec2 min_clamp = ImVec2(), ImVec2 max_clamp = ImVec2(), variation_vec2_fn callback = variation_vec2_fn(), variation_float x = variation_float(), variation_float y = variation_float());    /* original C++ signature */
     def __init__(
         self,
         mode: int = int(),
@@ -2055,7 +2049,6 @@ class variation_vec4:
     z: variation_float  # Per-axis
     # w;    /* original C++ signature */
     w: variation_float  # Per-axis
-    # variation_vec4(int mode = int(), ImVec4 amount = ImVec4(), ImVec4 min_clamp = ImVec4(), ImVec4 max_clamp = ImVec4(), variation_vec4_fn callback = variation_vec4_fn(), variation_float x = variation_float(), variation_float y = variation_float(), variation_float z = variation_float(), variation_float w = variation_float());    /* original C++ signature */
     def __init__(
         self,
         mode: int = int(),
@@ -2109,7 +2102,6 @@ class variation_color:
     b: variation_float           # Per-channel
     # a;    /* original C++ signature */
     a: variation_float           # Per-channel
-    # variation_color(int mode = int(), ImVec4 amount = ImVec4(), ImVec4 min_clamp = ImVec4(), ImVec4 max_clamp = ImVec4(), int color_space = int(), variation_vec4_fn callback = variation_vec4_fn(), variation_float r = variation_float(), variation_float g = variation_float(), variation_float b = variation_float(), variation_float a = variation_float());    /* original C++ signature */
     def __init__(
         self,
         mode: int = int(),

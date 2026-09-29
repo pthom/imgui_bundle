@@ -122,7 +122,6 @@ class RenderedFormula:
     #     ImGui::Image(texId, ImVec2(formula.Width, formula.Height));
     #
     baseline_y: int = 0
-    # RenderedFormula(int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0);    /* original C++ signature */
     def __init__(
         self,
         width: int = 0,
@@ -204,7 +203,6 @@ class FormulaTexture:
     def texture_id(self) -> ImTextureID:
         """ Convenience: returns the GPU texture id, or 0 if no texture is held."""
         pass
-    # FormulaTexture(std::shared_ptr<HelloImGui::TextureGpu> Texture = std::shared_ptr<HelloImGui::TextureGpu>(), int Width = 0, int Height = 0, int Depth = 0, int BaselineY = 0, int LastUsedFrame = 0);    /* original C++ signature */
     def __init__(
         self,
         texture: Optional[HelloImGui.TextureGpu] = None,

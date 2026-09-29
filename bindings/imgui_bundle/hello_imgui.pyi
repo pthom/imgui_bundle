@@ -150,7 +150,6 @@ class DpiAwareParams:
     #  so that fonts are scaled at display time (via the dynamic font atlas),
     #  and it calls `ImGui::GetStyle().ScaleAllSizes()` to scale paddings/spacings.
     dpi_window_size_factor: float = 0.0
-    # DpiAwareParams(float dpiWindowSizeFactor = 0.0f);    /* original C++ signature */
     def __init__(self, dpi_window_size_factor: float = 0.0) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -329,7 +328,6 @@ class AssetFileData:
     data: Optional[Any] = None
     # size_t dataSize = 0;    /* original C++ signature */
     data_size: int = 0
-    # AssetFileData(size_t dataSize = 0);    /* original C++ signature */
     def __init__(self, data_size: int = 0) -> None:
         """Auto-generated default constructor with named params"""
         pass
@@ -583,7 +581,6 @@ class ImageAndSize:
     texture_id: ImTextureID = ImTextureID(0)
     # ImVec2 size = ImVec2(0.f, 0.f);    /* original C++ signature */
     size: ImVec2 = ImVec2(0.0, 0.0)
-    # ImageAndSize(ImTextureID textureId = ImTextureID(0), ImVec2 size = ImVec2(0.f, 0.f));    /* original C++ signature */
     def __init__(
         self,
         texture_id: Optional[ImTextureID] = None,
@@ -868,7 +865,6 @@ class FontLoadingParams:
     # ImFontConfig fontConfig = ImFontConfig();    /* original C++ signature */
     # ImGui native font config to use
     font_config: ImFontConfig = ImFontConfig()
-    # FontLoadingParams(bool mergeToLastFont = false, bool loadColor = false, bool insideAssets = true, ImFontConfig fontConfig = ImFontConfig());    /* original C++ signature */
     def __init__(
         self,
         merge_to_last_font: bool = False,
@@ -976,7 +972,7 @@ class ScreenBounds:
     # bool operator==(const ScreenBounds& other) const;    /* original C++ signature */
     def __eq__(self, other: object) -> bool:
         pass
-    # ScreenBounds(ScreenPosition position = DefaultScreenPosition, ScreenSize size = DefaultWindowSize);    /* original C++ signature */
+
     def __init__(
         self,
         position: Optional[ScreenPosition] = None,
@@ -1144,7 +1140,6 @@ class WindowGeometry:
     #  Note: this flag is intended to be used during execution, not at startup
     #  (use sizeAuto at startup).
     resize_app_window_at_next_frame: bool = False
-    # WindowGeometry(ScreenSize size = DefaultWindowSize, bool sizeAuto = false, WindowSizeState windowSizeState = WindowSizeState::Standard, WindowSizeMeasureMode windowSizeMeasureMode = WindowSizeMeasureMode::RelativeTo96Ppi, WindowPositionMode positionMode = WindowPositionMode::OsDefault, ScreenPosition position = DefaultScreenPosition, int monitorIdx = 0, FullScreenMode fullScreenMode = FullScreenMode::NoFullScreen, bool resizeAppWindowAtNextFrame = false);    /* original C++ signature */
     def __init__(
         self,
         size: Optional[ScreenSize] = None,
@@ -1177,7 +1172,6 @@ class EdgeInsets:
     bottom: float = 0.0  # Typically around 34
     # double right = 0.;    /* original C++ signature */
     right: float = 0.0  # Typically 0
-    # EdgeInsets(double top = 0., double left = 0., double bottom = 0., double right = 0.);    /* original C++ signature */
     def __init__(
         self,
         top: float = 0.0,
@@ -1300,7 +1294,6 @@ class AppWindowParams:
     # Do read https://github.com/pthom/hello_imgui/issues/112 for info about the possible gotchas
     # (This API is not stable, as the name suggests, and this is not supported)
     repaint_during_resize_gotcha_reentrant_repaint: bool = False
-    # AppWindowParams(std::string windowTitle = std::string(), WindowGeometry windowGeometry = WindowGeometry(), bool restorePreviousGeometry = false, bool resizable = true, bool hidden = false, bool topMost = false, bool borderless = false, bool borderlessMovable = true, bool borderlessResizable = true, bool borderlessClosable = true, ImVec4 borderlessHighlightColor = ImVec4(0.2f, 0.4f, 1.f, 0.3f), EdgeInsets edgeInsets = EdgeInsets(), bool handleEdgeInsets = true, EmscriptenKeyboardElement emscriptenKeyboardElement = EmscriptenKeyboardElement::Default, bool emscriptenAllowBrowserZoomShortcuts = true, bool repaintDuringResize_GotchaReentrantRepaint = false);    /* original C++ signature */
     def __init__(
         self,
         window_title: str = "",
@@ -1485,7 +1478,6 @@ class ImGuiWindowParams:
     # control over what is drawn behind the Gui.
     background_color: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
 
-    # ImGuiWindowParams(DefaultImGuiWindowType defaultImGuiWindowType = DefaultImGuiWindowType::ProvideFullScreenWindow, bool enableViewports = false, bool configWindowsMoveFromTitleBarOnly = true, std::string menuAppTitle = "", bool showMenuBar = false, bool showMenu_App = true, bool showMenu_App_Quit = true, bool showMenu_View = true, bool showMenu_View_Themes = true, bool rememberTheme = true, bool showStatusBar = false, bool showStatus_Fps = true, bool rememberStatusBarSettings = true, ImVec2 fullScreenWindow_MarginTopLeft = ImVec2(0.f, 0.f), ImVec2 fullScreenWindow_MarginBottomRight = ImVec2(0.f, 0.f), ImGuiTheme::ImGuiTweakedTheme tweakedTheme = ImGuiTheme::ImGuiTweakedTheme(), ImVec4 backgroundColor = ImVec4(0.f, 0.f, 0.f, 0.f));    /* original C++ signature */
     def __init__(
         self,
         default_imgui_window_type: DefaultImGuiWindowType = DefaultImGuiWindowType.provide_full_screen_window,
@@ -1580,7 +1572,6 @@ class MobileCallbacks:
     # Note: 'OnPause' and 'OnResume' are called twice consecutively under iOS
     # (before and after entering background or foreground).
     on_resume: VoidFunction = empty_void_function()
-    # MobileCallbacks(VoidFunction OnDestroy = EmptyVoidFunction(), VoidFunction OnLowMemory = EmptyVoidFunction(), VoidFunction OnPause = EmptyVoidFunction(), VoidFunction OnResume = EmptyVoidFunction());    /* original C++ signature */
     def __init__(
         self,
         on_destroy: Optional[VoidFunction] = None,
@@ -1627,7 +1618,6 @@ class EdgeToolbarOptions:
     # ImVec4 WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f);    /* original C++ signature */
     # Window background color, only used if WindowBg.w > 0
     window_bg: ImVec4 = ImVec4(0.0, 0.0, 0.0, 0.0)
-    # EdgeToolbarOptions(float sizeEm = 2.5f, ImVec2 WindowPaddingEm = ImVec2(0.3f, 0.3f), ImVec4 WindowBg = ImVec4(0.f, 0.f, 0.f, 0.f));    /* original C++ signature */
     def __init__(
         self,
         size_em: float = 2.5,
@@ -1652,7 +1642,6 @@ class EdgeToolbar:
     show_toolbar: VoidFunction = empty_void_function()
     # EdgeToolbarOptions options;    /* original C++ signature */
     options: EdgeToolbarOptions
-    # EdgeToolbar(VoidFunction ShowToolbar = EmptyVoidFunction(), EdgeToolbarOptions options = EdgeToolbarOptions());    /* original C++ signature */
     def __init__(
         self,
         show_toolbar: Optional[VoidFunction] = None,
@@ -1913,7 +1902,6 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = empty_event_callback()
 
     # --------------- Mobile callbacks -------------------
-    # RunnerCallbacks(VoidFunction ShowGui = EmptyVoidFunction(), VoidFunction ShowMenus = EmptyVoidFunction(), VoidFunction ShowAppMenuItems = EmptyVoidFunction(), VoidFunction ShowStatus = EmptyVoidFunction(), VoidFunction PostInit_AddPlatformBackendCallbacks = EmptyVoidFunction(), VoidFunction PostInit = EmptyVoidFunction(), VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons, DefaultIconFont defaultIconFont = DefaultIconFont::FontAwesome4, VoidFunction SetupImGuiConfig = ImGuiDefaultSettings::SetupDefaultImGuiConfig, VoidFunction SetupImGuiStyle = ImGuiDefaultSettings::SetupDefaultImGuiStyle, VoidFunction RegisterTests = EmptyVoidFunction(), bool registerTestsCalled = false, ConfirmExitCallback ConfirmExit = EmptyConfirmExitCallback(), VoidFunction BeforeExit = EmptyVoidFunction(), VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction(), VoidFunction PreNewFrame = EmptyVoidFunction(), VoidFunction PostNewFrame = EmptyVoidFunction(), VoidFunction BeforeImGuiRender = EmptyVoidFunction(), VoidFunction BeforeSwap = EmptyVoidFunction(), VoidFunction AfterSwap = EmptyVoidFunction(), VoidFunction CustomBackground = EmptyVoidFunction(), VoidFunction PostRenderDockableWindows = EmptyVoidFunction(), VoidFunction ThemeChanged = EmptyVoidFunction(), AnyEventCallback AnyBackendEventCallback = EmptyEventCallback());    /* original C++ signature */
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,
@@ -2365,7 +2353,7 @@ class DockingParams:
         returns the ImGuiID corresponding to the dockspace with this name
         """
         pass
-    # DockingParams(std::vector<DockingSplit> dockingSplits = std::vector<DockingSplit>(), std::vector<DockableWindow> dockableWindows = std::vector<DockableWindow>(), std::string layoutName = "Default", ImGuiDockNodeFlags mainDockSpaceNodeFlags = ImGuiDockNodeFlags_PassthruCentralNode, DockingLayoutCondition layoutCondition = DockingLayoutCondition::FirstUseEver, bool layoutReset = false);    /* original C++ signature */
+
     def __init__(
         self,
         docking_splits: Optional[List[DockingSplit]] = None,
@@ -2418,7 +2406,6 @@ class BackendPointers:
     #  Only filled if the backend is SDL (or emscripten + sdl)
     # void* sdlGlContext   = nullptr;    /* original C++ signature */
     sdl_gl_context: Optional[Any] = None  # SDL_GLContext
-    # BackendPointers();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -2464,7 +2451,6 @@ class RemoteParams:
     # bool transmitWindowSize = false;    /* original C++ signature */
     # If True, transmit the window size to the server
     transmit_window_size: bool = False
-    # RemoteParams(bool enableRemoting = false, int wsPort = 5003, std::string wsHttpRootFolder = "", bool wsProvideIndexHtml = true, bool exitWhenServerDisconnected = false, double durationMaxDisconnected = 30.0, std::string serverHost = "localhost", uint32_t serverPort = 8888, bool transmitWindowSize = false);    /* original C++ signature */
     def __init__(
         self,
         enable_remoting: bool = False,
@@ -2544,7 +2530,6 @@ class OpenGlOptions:
     #     - 8: optimal
     #     - 16: optimal if using imgui-node-editor and you want to render very small text when unzooming
     anti_aliasing_samples: Optional[int] = None
-    # OpenGlOptions(std::optional<std::string> GlslVersion = std::nullopt, std::optional<int> MajorVersion = std::nullopt, std::optional<int> MinorVersion = std::nullopt, std::optional<bool> UseCoreProfile = std::nullopt, std::optional<bool> UseForwardCompat = std::nullopt, std::optional<int> AntiAliasingSamples = std::nullopt);    /* original C++ signature */
     def __init__(
         self,
         glsl_version: Optional[str] = None,
@@ -2596,7 +2581,6 @@ class RendererBackendOptions:
     # `openGlOptions`:
     # Advanced options for OpenGL. Use at your own risk.
     open_gl_options: OpenGlOptions
-    # RendererBackendOptions(bool requestFloatBuffer = false, OpenGlOptions openGlOptions = OpenGlOptions());    /* original C++ signature */
     def __init__(
         self,
         request_float_buffer: bool = False,
@@ -2632,7 +2616,6 @@ class OpenGlOptionsFilled_:
     use_forward_compat: bool = True
     # int          AntiAliasingSamples = 8;    /* original C++ signature */
     anti_aliasing_samples: int = 8
-    # OpenGlOptionsFilled_(std::string GlslVersion = "150", int MajorVersion = 3, int MinorVersion = 3, bool UseCoreProfile = true, bool UseForwardCompat = true, int AntiAliasingSamples = 8);    /* original C++ signature */
     def __init__(
         self,
         glsl_version: str = "150",
@@ -2888,7 +2871,6 @@ class FpsIdling:
     # When both vsyncToMonitor and fpsMax are enabled:
     #   - The lower (stricter) limit dominates.
     fps_max: float = 0.0
-    # FpsIdling(float fpsIdle = 9.f, float timeActiveAfterLastEvent = 3.f, bool enableIdling = true, bool isIdling = false, bool rememberEnableIdling = false, FpsIdlingMode fpsIdlingMode = FpsIdlingMode::Auto, bool vsyncToMonitor = true, float fpsMax = 0.f);    /* original C++ signature */
     def __init__(
         self,
         fps_idle: float = 9.0,
@@ -3049,7 +3031,6 @@ class RunnerParams:
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
 
-    # RunnerParams(RunnerCallbacks callbacks = RunnerCallbacks(), AppWindowParams appWindowParams = AppWindowParams(), ImGuiWindowParams imGuiWindowParams = ImGuiWindowParams(), DockingParams dockingParams = DockingParams(), std::vector<DockingParams> alternativeDockingLayouts = std::vector<DockingParams>(), bool rememberSelectedAlternativeLayout = true, BackendPointers backendPointers = BackendPointers(), RendererBackendOptions rendererBackendOptions = RendererBackendOptions(), PlatformBackendType platformBackendType = PlatformBackendType::FirstAvailable, RendererBackendType rendererBackendType = RendererBackendType::FirstAvailable, IniFolderType iniFolderType = IniFolderType::CurrentFolder, std::string iniFilename = "", bool iniFilename_useAppWindowTitle = true, bool iniDisable = false, bool iniClearPreviousSettings = false, bool appShallExit = false, FpsIdling fpsIdling = FpsIdling(), DpiAwareParams dpiAwareParams = DpiAwareParams(), bool useImGuiTestEngine = false, int emscripten_fps = 0);    /* original C++ signature */
     def __init__(
         self,
         callbacks: Optional[RunnerCallbacks] = None,
@@ -3177,7 +3158,7 @@ class SimpleRunnerParams:
     # RunnerParams ToRunnerParams() const;    /* original C++ signature */
     def to_runner_params(self) -> RunnerParams:
         pass
-    # SimpleRunnerParams(VoidFunction guiFunction = EmptyVoidFunction(), std::string windowTitle = "", bool windowSizeAuto = false, bool windowRestorePreviousGeometry = false, ScreenSize windowSize = DefaultWindowSize, float fpsIdle = 9.f, bool enableIdling = true, bool topMost = false, bool iniDisable = false);    /* original C++ signature */
+
     def __init__(
         self,
         gui_function: Optional[VoidFunction] = None,

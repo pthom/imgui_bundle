@@ -671,7 +671,6 @@ class Spec:
         ItemFlags_None  # Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags
     )
 
-    # ImPlot3DSpec(ImVec4 LineColor = IMPLOT3D_AUTO_COL, float LineWeight = 1.0f, ImVec4 FillColor = IMPLOT3D_AUTO_COL, float FillAlpha = IMPLOT3D_AUTO, ImPlot3DMarker Marker = ImPlot3DMarker_Auto, float MarkerSize = IMPLOT3D_AUTO, ImVec4 MarkerLineColor = IMPLOT3D_AUTO_COL, ImVec4 MarkerFillColor = IMPLOT3D_AUTO_COL, int Offset = 0, int Stride = IMPLOT3D_AUTO, ImPlot3DItemFlags Flags = ImPlot3DItemFlags_None);    /* original C++ signature */
     def __init__(
         self,
         line_color: Optional[ImVec4Like] = None,
@@ -1019,7 +1018,6 @@ class Mesh:
     points: List[Point]
     # std::vector<UInt> Idx;    /* original C++ signature */
     idx: List[UInt]  # Triangles are defined by the index buffer (every 3 indices form a triangle)
-    # Mesh(std::vector<ImPlot3DPoint> Points = std::vector<ImPlot3DPoint>(), std::vector<UInt> Idx = std::vector<UInt>());    /* original C++ signature */
     def __init__(self, points: Optional[List[Point]] = None, idx: Optional[List[UInt]] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -1549,7 +1547,6 @@ class Ray:
     origin: Point  # Ray origin point
     # ImPlot3DPoint Direction;    /* original C++ signature */
     direction: Point  # Ray direction (not necessarily normalized)
-    # ImPlot3DRay(ImPlot3DPoint Origin = ImPlot3DPoint(), ImPlot3DPoint Direction = ImPlot3DPoint());    /* original C++ signature */
     def __init__(self, origin: Optional[Point] = None, direction: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -1571,7 +1568,6 @@ class Plane:
     point: Point  # A point on the plane
     # ImPlot3DPoint Normal;    /* original C++ signature */
     normal: Point  # Plane normal vector
-    # ImPlot3DPlane(ImPlot3DPoint Point = ImPlot3DPoint(), ImPlot3DPoint Normal = ImPlot3DPoint());    /* original C++ signature */
     def __init__(self, point: Optional[Point] = None, normal: Optional[Point] = None) -> None:
         """Auto-generated default constructor with named params
 

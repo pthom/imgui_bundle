@@ -5317,7 +5317,6 @@ class TableColumnSortSpecs:
 # -----------------------------------------------------------------------------
 
 class ImNewWrapper:
-    # ImNewWrapper();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -8625,7 +8624,6 @@ class KeyData:
     down_duration_prev: float  # Last frame duration the key has been down
     # float       AnalogValue;    /* original C++ signature */
     analog_value: float  # 0.0..1.0 for gamepad values
-    # ImGuiKeyData(bool Down = bool(), float DownDuration = float(), float DownDurationPrev = float(), float AnalogValue = float());    /* original C++ signature */
     def __init__(
         self,
         down: bool = bool(),
@@ -9185,7 +9183,6 @@ class SizeCallbackData:
     desired_size: (
         ImVec2  # Read-write.  Desired size, based on user's mouse position. Write to this field to restrain resizing.
     )
-    # ImGuiSizeCallbackData(ImVec2 Pos = ImVec2(), ImVec2 CurrentSize = ImVec2(), ImVec2 DesiredSize = ImVec2());    /* original C++ signature */
     def __init__(
         self,
         pos: Optional[ImVec2Like] = None,
@@ -9500,7 +9497,7 @@ class Storage:
     def set_all_int(self, val: int) -> None:
         """Obsolete: use on your own storage if you know only integer are being stored (open/close all tree nodes)"""
         pass
-    # ImGuiStorage();    /* original C++ signature */
+
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -9800,7 +9797,6 @@ class MultiSelectIO:
     range_src_reset: bool  #        app:w     /  ms:r          // (If using deletion) Set before EndMultiSelect() to reset ResetSrcItem (e.g. if deleted selection).
     # int                         ItemsCount;    /* original C++ signature */
     items_count: int  #  ms:w, app:r     /        app:r   // 'int items_count' parameter to BeginMultiSelect() is copied here for convenience, allowing simpler calls to your ApplyRequests handler. Not used internally.
-    # ImGuiMultiSelectIO(ImVector<ImGuiSelectionRequest> Requests = ImVector<ImGuiSelectionRequest>(), ImGuiSelectionUserData RangeSrcItem = ImGuiSelectionUserData(), ImGuiSelectionUserData NavIdItem = ImGuiSelectionUserData(), bool NavIdSelected = bool(), bool RangeSrcReset = bool(), int ItemsCount = int());    /* original C++ signature */
     def __init__(
         self,
         requests: Optional[ImVector_SelectionRequest] = None,
@@ -9848,7 +9844,6 @@ class SelectionRequest:
     range_first_item: SelectionUserData  #                  /  ms:w, app:r   // Parameter for SetRange request (this is generally == RangeSrcItem when shift selecting from top to bottom).
     # ImGuiSelectionUserData      RangeLastItem;    /* original C++ signature */
     range_last_item: SelectionUserData  #                  /  ms:w, app:r   // Parameter for SetRange request (this is generally == RangeSrcItem when shift selecting from bottom to top). Inclusive!
-    # ImGuiSelectionRequest(ImGuiSelectionRequestType Type = ImGuiSelectionRequestType(), bool Selected = bool(), ImS8 RangeDirection = ImS8(), ImGuiSelectionUserData RangeFirstItem = ImGuiSelectionUserData(), ImGuiSelectionUserData RangeLastItem = ImGuiSelectionUserData());    /* original C++ signature */
     def __init__(
         self,
         type: SelectionRequestType = SelectionRequestType.none,
@@ -10017,7 +10012,6 @@ class ImDrawVert:
     uv: ImVec2
     # ImU32   col;    /* original C++ signature */
     col: ImU32
-    # ImDrawVert(ImVec2 pos = ImVec2(), ImVec2 uv = ImVec2(), ImU32 col = ImU32());    /* original C++ signature */
     def __init__(self, pos: Optional[ImVec2Like] = None, uv: Optional[ImVec2Like] = None, col: ImU32 = ImU32()) -> None:
         """Auto-generated default constructor with named params
 
@@ -10042,7 +10036,6 @@ class ImDrawCmdHeader:
     tex_ref: ImTextureRef
     # unsigned int    VtxOffset;    /* original C++ signature */
     vtx_offset: int
-    # ImDrawCmdHeader(ImVec4 ClipRect = ImVec4(), ImTextureRef TexRef = ImTextureRef());    /* original C++ signature */
     def __init__(self, clip_rect: Optional[ImVec4Like] = None, tex_ref: Optional[ImTextureRef] = None) -> None:
         """Auto-generated default constructor with named params
 
@@ -10060,7 +10053,6 @@ class ImDrawChannel:
     _cmd_buffer: ImVector_ImDrawCmd
     # ImVector<ImDrawIdx>         _IdxBuffer;    /* original C++ signature */
     _idx_buffer: ImVector_ImDrawIdx
-    # ImDrawChannel(ImVector<ImDrawCmd> _CmdBuffer = ImVector<ImDrawCmd>(), ImVector<ImDrawIdx> _IdxBuffer = ImVector<ImDrawIdx>());    /* original C++ signature */
     def __init__(
         self, _cmd_buffer: Optional[ImVector_ImDrawCmd] = None, _idx_buffer: Optional[ImVector_ImDrawIdx] = None
     ) -> None:
@@ -10753,7 +10745,6 @@ class ImTextureRect:
     w: int  # Size of rectangle to update (in pixels)
     # h;    /* original C++ signature */
     h: int  # Size of rectangle to update (in pixels)
-    # ImTextureRect();    /* original C++ signature */
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
@@ -12077,7 +12068,6 @@ class Payload_PyId:
     # std::string Type;    /* original C++ signature */
     # A string representing the type of payload. It cannot exceed 32 characters.
     type: str
-    # ImGuiPayload_PyId(ImGuiPayloadId DataId = ImGuiPayloadId(), std::string Type = std::string());    /* original C++ signature */
     def __init__(self, data_id: Optional[PayloadId] = None, type: str = "") -> None:
         """Auto-generated default constructor with named params
 
