@@ -291,29 +291,31 @@ class AppState:
         self.frame = 0
 
 
+state = AppState()
+
+
+def demo_gui() -> None:
+    rich_md.render(HELP)
+    ed.begin("Color mixer")
+    if state.graph is None:
+        state.graph = initial_graph()
+    for node in state.graph.nodes:
+        draw_node(state.graph, node)
+    draw_links(state.graph)
+    handle_new_links(state.graph)
+    handle_deletions(state.graph)
+    handle_menus(state.graph, state.menu)
+    ed.end()
+
+    # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
+    # fit has no effect). The navigation functions work after ed.end().
+    if state.frame == 2:
+        ed.navigate_to_content(0.0)
+    state.frame += 1
+
+
 def main() -> None:
-    state = AppState()
-
-    def gui() -> None:
-        rich_md.render(HELP)
-        ed.begin("Color mixer")
-        if state.graph is None:
-            state.graph = initial_graph()
-        for node in state.graph.nodes:
-            draw_node(state.graph, node)
-        draw_links(state.graph)
-        handle_new_links(state.graph)
-        handle_deletions(state.graph)
-        handle_menus(state.graph, state.menu)
-        ed.end()
-
-        # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second,
-        # the fit has no effect). The navigation functions work after ed.end().
-        if state.frame == 2:
-            ed.navigate_to_content(0.0)
-        state.frame += 1
-
-    immapp.run(gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
+    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
                with_markdown=True, with_latex=True)
 
 
