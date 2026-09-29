@@ -32,7 +32,8 @@ void demo_logger();
 void demo_node_editor_color_mixer();
 void demo_node_editor_image_pipeline();
 void demo_imgui_show_demo_window();
-void demo_implot();
+void manual_implot();
+void manual_implot3d();
 void demo_im_anim();
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 void demo_immvision_display();
@@ -100,7 +101,7 @@ namespace
                 {"demo_node_editor_color_mixer", demo_node_editor_color_mixer},
                 {"demo_node_editor_image_pipeline", demo_node_editor_image_pipeline},
                 {"manual_imgui", demo_imgui_show_demo_window},
-                {"manual_implot", demo_implot}, {"manual_implot3d", demo_implot}, {"manual_im_anim", demo_im_anim},
+                {"manual_implot", manual_implot}, {"manual_implot3d", manual_implot3d}, {"manual_im_anim", demo_im_anim},
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
                 {"demo_immvision_display", demo_immvision_display}, {"demo_immvision_inspector", demo_immvision_inspector},
                 {"demo_immvision_link", demo_immvision_link}, {"demo_immvision_process", demo_immvision_process},

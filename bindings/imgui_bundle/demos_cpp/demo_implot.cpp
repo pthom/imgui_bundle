@@ -3,49 +3,32 @@
 
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
-#include "immapp/immapp.h"
-#include "hello_imgui/icons_font_awesome_4.h"
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
 #include "imgui_explorer.h"
 #endif
 
 
-void demo_implot()
+// The ImPlot manual alone, and the ImPlot3D manual alone (the explorer's "interactive manuals", as in Python)
+void manual_implot()
 {
-    RichMd::Render(R"(
-        [Implot](https://github.com/epezent/implot) and [Implot3D](https://github.com/brenocq/implot3d) are fast and efficient libraries which provide immediate Mode Plotting.
-    )");
-    if (ImGui::CollapsingHeader("ImPlot: Full Demo"))
-    {
-        ImGui::Text(ICON_FA_INFO_CIRCLE);
-        if (ImGui::IsItemHovered())
-            RichMd::Render(R"(
-                > [!TIP]
-                > Python users: `implot_ctx` provides context managers for the begin/end and push/pop pairs (see the demos, demo_python_context_manager).
-                )");
-
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-        ImGui::PushID("ImPlotDemo");
-        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot);
-        ImGui::PopID();
+    ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot);
 #else
-        ImPlot::ShowDemoWindow_MaybeDocked(false);
+    ImPlot::ShowDemoWindow_MaybeDocked(false);
 #endif
-    }
+}
 
-    if (ImGui::CollapsingHeader("ImPlot3D: Full Demo"))
-    {
+void manual_implot3d()
+{
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-        ImGui::PushID("ImPlot3DDemo");
-        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D);
-        ImGui::PopID();
+    ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D);
 #else
-        ImPlot3D::ShowAllDemos();
+    ImPlot3D::ShowAllDemos();
 #endif
-    }
 }
 
 #else // defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
 #include "imgui.h"
-void demo_implot() { ImGui::Text("Dear ImGui Bundle was compiled without support for both ImPlot and ImPlot3D"); }
+void manual_implot() { ImGui::Text("Dear ImGui Bundle was compiled without support for both ImPlot and ImPlot3D"); }
+void manual_implot3d() { manual_implot(); }
 #endif
