@@ -17,6 +17,7 @@ REPO = Path(__file__).resolve().parent.parent
 RESOURCES = REPO / "bindings/imgui_bundle/demos_assets/resources.md"
 URL = re.compile(r"https?://[^\s)\"'<>\]]+")
 IMAGE = (".png", ".gif", ".svg", ".jpg")
+RESOURCES_PAGE = "https://imgui-bundle.pages.dev/doc/intro/resources"  # the book's page that shows the whole list
 
 # The hand-written lists: (file, the text that starts the list, the text that ends it)
 HAND_WRITTEN = [
@@ -40,7 +41,7 @@ def test_hand_written_links_are_in_the_resources_list(path: str, start: str, end
     text = (REPO / path).read_text()
     begin = text.index(start)  # a ValueError here: the list moved; update HAND_WRITTEN
     links = text[begin:text.index(end, begin + len(start))]
-    known = addresses(RESOURCES.read_text())
+    known = addresses(RESOURCES.read_text()) | {RESOURCES_PAGE}  # a short list may link to the whole list
     unknown = sorted(addresses(links) - known)
     assert addresses(links), f"no link found in the list of {path}"
     assert not unknown, f"{path}: addresses missing from {RESOURCES.name} (or different there): {unknown}"

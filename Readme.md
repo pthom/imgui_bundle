@@ -38,7 +38,7 @@ Dear ImGui Bundle is a framework built on top of [Dear ImGui](https://github.com
 
 ### Documentation
 
-The documentation is [available here](https://imgui-bundle.pages.dev/doc).
+The documentation is [available here](https://imgui-bundle.pages.dev/doc), with the [API reference](https://imgui-bundle.pages.dev/doc/api/) of every library. [All the resources](https://imgui-bundle.pages.dev/doc/intro/resources/) (the docs, the interactive manuals, the videos, the community) are listed in one page.
 
 
 ### Community

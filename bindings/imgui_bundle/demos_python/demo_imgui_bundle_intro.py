@@ -1496,6 +1496,7 @@ def links_row():
         ("Documentation", "https://imgui-bundle.pages.dev/doc/", "Full documentation for Dear ImGui Bundle"),
         ("Python Playground", "https://imgui-bundle.pages.dev/playground/", "Live Python sandbox with demos - edit and run in your browser"),
         ("Discord", "https://discord.gg/xkzpKMeYN3", "Join the community for questions, showcase, and discussion (new!)"),
+        ("All the resources", "https://imgui-bundle.pages.dev/doc/intro/resources/", "Every documentation, manual, video and community link, in one page"),
     ]
     for i, (label, url, tooltip) in enumerate(links):
         if i > 0:

@@ -43,9 +43,10 @@ almost *only python*. **No Client/Server, no JavaScript, no fuss.**
 ## See also
 * [Project Site](https://imgui-bundle.pages.dev/): Home page of the project
 * [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): Interactive manual - all libraries, live demos (even more than here!), browsable source
-* [Documentation](https://imgui-bundle.pages.dev/doc): Official doc - [Repository](https://github.com/pthom/imgui_bundle): Source code
+* [Documentation](https://imgui-bundle.pages.dev/doc): Official doc, with the [API reference](https://imgui-bundle.pages.dev/doc/api/) - [Repository](https://github.com/pthom/imgui_bundle): Source code
 * [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
 * [Discord](https://discord.gg/xkzpKMeYN3): join the community (new!)
+* [All the resources](https://imgui-bundle.pages.dev/doc/intro/resources/): every documentation, manual, video and community link, in one page
 
 """
 

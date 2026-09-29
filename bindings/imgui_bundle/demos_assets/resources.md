@@ -3,7 +3,7 @@
 - [Home page](https://imgui-bundle.pages.dev/): the project's site
 - [Interactive Explorer](https://imgui-bundle.pages.dev/explorer/): all the libraries, with live demos and their C++ and Python code
 - [Python Playground](https://imgui-bundle.pages.dev/playground/): a live Python sandbox with ready-to-run demos: edit the code, see the result at once
-- [Documentation](https://imgui-bundle.pages.dev/doc/): the full documentation
+- [Documentation](https://imgui-bundle.pages.dev/doc/): the full documentation, with the [API reference](https://imgui-bundle.pages.dev/doc/api/) of every library
 - [GitHub](https://github.com/pthom/imgui_bundle): the source code, issues and discussions
 - [Discord](https://discord.gg/xkzpKMeYN3): the community, for questions, showcase and discussion
 - [DeepWiki](https://deepwiki.com/pthom/imgui_bundle): AI-powered Q&A about the framework
@@ -11,6 +11,7 @@
 ## Documentation
 
 - [Dear ImGui Bundle documentation](https://imgui-bundle.pages.dev/doc/), also as a [PDF](https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf)
+- [API reference](https://imgui-bundle.pages.dev/doc/api/): every function, class and enum of each library, with its Python and C++ signatures; also [in plain text](https://imgui-bundle.pages.dev/llms/api/index.txt), for AI assistants
 - [For AI assistants](https://imgui-bundle.pages.dev/doc/intro/ai-guide/): a page written for them (also at https://imgui-bundle.pages.dev/llms.txt)
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui), also as a [PDF](https://pthom.github.io/hello_imgui/hello_imgui_book.pdf). Hello ImGui provides a simple framework to quickly create applications using Dear ImGui. It is included in Dear ImGui Bundle.
 - [Fiatlight documentation](https://pthom.github.io/fiatlight), also as a [PDF](https://pthom.github.io/fiatlight/flgt.pdf). Fiatlight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is built on top of Dear ImGui Bundle.
