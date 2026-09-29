@@ -30,6 +30,13 @@ HELP = (
     "**Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>  ·  **Zoom in an image**: the wheel over it"
 )
 
+# A note of the graph: how to look at the images (ImmVision)
+TIPS = """**About the images**
+
+* Zoom with the wheel, and pan by dragging: all the images follow
+* Zoom in far enough, and the values of the pixels show
+* The button at the bottom right of an image opens more options"""
+
 Image = NDArray[np.uint8]  # an OpenCV image: height x width (x 3 for a color image, in RGB order)
 
 register_demos_assets_folder()
@@ -86,8 +93,10 @@ class Node:
         self.computed_frame = -1  # the frame of the last result (its output links then show the data flowing)
         self.image_params = immvision.ImageParams()  # how the node shows its image
         self.image_params.image_display_size = (int(em_size(IMAGE_WIDTH_EM)), 0)
-        for tool in ("show_options_button", "show_zoom_buttons", "show_image_info", "show_pixel_info"):
-            setattr(self.image_params, tool, False)  # the image alone: zoom and pan stay, with the mouse
+        for tool in ("show_zoom_buttons", "show_image_info", "show_pixel_info"):
+            setattr(self.image_params, tool, False)  # the image and its options button: zoom and pan are with the mouse
+        self.image_params.zoom_key = "images"  # the images with the same zoom key zoom and pan together
+        self.image_params.show_options_in_tooltip = True  # the options in a popup: inline, they would widen the node
 
     def draw_params(self) -> bool:
         """Draws the widgets of the parameters, and returns True when one of them changed"""
@@ -327,11 +336,20 @@ class Group:
     id: ed.NodeId = field(default_factory=ed.NodeId.create)
 
 
+@dataclass(eq=False)
+class Note:
+    """A node without pins, that shows a text (markdown)"""
+    text: str
+    width_em: float
+    id: ed.NodeId = field(default_factory=ed.NodeId.create)
+
+
 class Graph:
     def __init__(self) -> None:
         self.nodes: list[Node] = []
         self.links: list[Link] = []
         self.groups: list[Group] = []
+        self.notes: list[Note] = []
 
     def add_node(self, node: Node, position: ImVec2) -> Node:
         """Adds a node at a position in the editor's coordinates (pixels at zoom 1)"""
@@ -343,6 +361,10 @@ class Graph:
         self.groups.append(group)
         ed.set_node_position(group.id, position)
 
+    def add_note(self, note: Note, position: ImVec2) -> None:
+        self.notes.append(note)
+        ed.set_node_position(note.id, position)
+
     def connect(self, output: Pin, input: Pin) -> None:
         self.links = [link for link in self.links if link.end is not input]  # an input receives one link at most
         self.links.append(Link(output, input))
@@ -351,8 +373,9 @@ class Graph:
         return next((link for link in self.links if link.end is input), None)
 
     def remove(self, node_id: ed.NodeId) -> None:
-        """Removes a node and its links, or a group"""
+        """Removes a node and its links, a group, or a note"""
         self.groups = [group for group in self.groups if group.id != node_id]
+        self.notes = [note for note in self.notes if note.id != node_id]
         self.nodes = [node for node in self.nodes if node.id != node_id]
         self.links = [link for link in self.links if link.start.node in self.nodes and link.end.node in self.nodes]
 
@@ -406,6 +429,7 @@ def initial_graph() -> Graph:
     em = em_size()
     graph = Graph()
     graph.add_group(Group("Draw the edges", ImVec2(62, 24)), ImVec2(15, 27) * em)
+    graph.add_note(Note(TIPS, 17), ImVec2(38, 1) * em)
     image = graph.add_node(ImageFile(), ImVec2(0, 0) * em)
     levels = graph.add_node(Levels(), ImVec2(17, 0) * em)
     gray = graph.add_node(Grayscale(), ImVec2(16, 30) * em)
@@ -490,6 +514,13 @@ def draw_group(group: Group) -> None:
     ed.group(group.size_em * em_size())  # its size at creation; then the user resizes it
     ed.end_node()
     ed.pop_style_color(2)
+
+
+def draw_note(note: Note) -> None:
+    ed.begin_node(note.id)
+    imgui.dummy(ImVec2(em_size(note.width_em), 0))  # text alone gives no width to a node (see draw_node())
+    rich_md.render(note.text)
+    ed.end_node()
 
 
 def draw_links(graph: Graph) -> None:
@@ -631,6 +662,8 @@ def demo_gui() -> None:
         evaluate(state.graph, node)
     for group in state.graph.groups:  # the groups first: they are behind the nodes
         draw_group(group)
+    for note in state.graph.notes:
+        draw_note(note)
     for node in state.graph.nodes:
         draw_node(state.graph, node)
     draw_links(state.graph)
