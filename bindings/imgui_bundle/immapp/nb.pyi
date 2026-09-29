@@ -1,6 +1,11 @@
-"""Type stubs for immapp.nb notebook convenience API.
+"""Run an ImmApp app from a Jupyter notebook, with its add-ons (ImPlot, markdown...). Use it as `immapp.nb`.
 
-Full documentation is in the implementation file (nb.py).
+- `run()`: runs the app and waits until its window closes, then shows a screenshot of it in the notebook.
+- `start()`: runs the app without blocking the notebook, which stays usable while the app runs. It returns an
+  `asyncio.Task`.
+- `stop()`, `is_running()`: stop the app started by `start()`, or query it.
+
+`hello_imgui.nb` does the same without the add-ons.
 """
 
 from typing import Callable, Optional, overload

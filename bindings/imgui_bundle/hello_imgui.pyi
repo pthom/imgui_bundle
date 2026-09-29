@@ -1,5 +1,12 @@
-"""Hello, Dear ImGui: cross-platform Gui apps for Windows / Mac / Linux / iOS / Android / Emscripten with the simplicity of a "Hello World" app
-https://github.com/pthom/hello_imgui
+"""Hello ImGui: the app runner. It creates the window and the rendering backend, and runs the loop, on desktop, mobile
+and the web.
+
+Around Dear ImGui, it adds what an app needs: dockable windows and layouts, a menu and a status bar, fonts and
+icons, assets, DPI awareness, themes, power saving when idle, and the user's settings.
+
+Start with `hello_imgui.run(gui_function)`; for more control, fill a `RunnerParams`. `immapp.run` does the same, and
+also sets up the add-ons (ImPlot, markdown, the node editor...): most apps of the bundle use it.
+Docs: https://pthom.github.io/hello_imgui/book/
 """
 
 ###############################################################################

@@ -9,6 +9,12 @@
 ###############################################################################
 # ruff: noqa: F403, F405, B008
 # mypy: disable-error-code="overload-cannot-match, overload-overlap, call-arg"
+"""Dear ImGui's internal API (imgui_internal.h): the functions and structures that the widgets are built with.
+
+Use it to write custom widgets, or to reach what the public API does not expose. It may change between versions
+of Dear ImGui, without notice.
+"""
+
 from typing import Any, Tuple, Optional, Callable, overload
 import enum
 import numpy as np

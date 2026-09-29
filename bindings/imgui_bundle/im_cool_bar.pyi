@@ -1,5 +1,7 @@
-"""ImCoolbar: A Cool bar for Dear ImGui
-Python bindings for https://github.com/aiekick/ImCoolBar
+"""ImCoolBar: a bar of icons that grow under the mouse, as in the macOS dock.
+
+Between `begin_cool_bar()` and `end_cool_bar()`, each `cool_bar_item()` returns true when the item is visible: the
+app then draws its icon.
 """
 
 ###############################################################################

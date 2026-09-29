@@ -1,4 +1,13 @@
-"""ImmApp: Immediate App Toolkit for ImGui Bundle"""
+"""ImmApp: runs an app in one call, with the bundle's add-ons set up: ImPlot, ImPlot3D, markdown, LaTeX, the node
+editor, ImAnim.
+
+`immapp.run(gui_function, window_title="My app", with_implot=True)` is the usual way to start an app of the bundle;
+`AddOnsParams` lists the add-ons. It relies on Hello ImGui: a `hello_imgui.RunnerParams` gives full control over the
+window, the docking and the callbacks.
+
+It also holds helpers: sizes in em units (`em_size`, `em_to_vec2`), a render loop driven by the app
+(`manual_render`), plots and widgets inside the node editor, and the code utilities of the demos.
+"""
 
 ###############################################################################
 # This file is a part of Dear ImGui Bundle

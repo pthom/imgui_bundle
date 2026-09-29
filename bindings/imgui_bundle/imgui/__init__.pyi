@@ -9,6 +9,16 @@
 ###############################################################################
 # ruff: noqa: B008, E741
 # mypy: disable-error-code="overload-cannot-match, overload-overlap"
+"""Dear ImGui: the immediate mode GUI library, on which every other module of the bundle builds.
+
+The app's code draws its widgets at each frame, and reads the user's actions from them in the same call:
+`if imgui.button("OK"): ...`. This module holds the widgets, the windows, the layout, the tables, the draw
+lists, the styles and the IO. To run an app, see `immapp.run` (or `hello_imgui.run`).
+
+The names follow the C++ API: `ImGui::Button` is `imgui.button`, `ImGuiWindowFlags_NoTitleBar` is
+`imgui.WindowFlags_.no_title_bar`. Its interactive manual, each demo next to its code, is in the ImGui Explorer.
+"""
+
 from __future__ import annotations
 import sys
 from typing import (

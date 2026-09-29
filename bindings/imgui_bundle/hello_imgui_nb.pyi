@@ -1,6 +1,12 @@
-"""Type stubs for hello_imgui.nb notebook convenience API.
+"""Run a Hello ImGui app from a Jupyter notebook. Import it as `hello_imgui.nb`.
 
-This module provides notebook-friendly wrappers for hello_imgui (without AddOnsParams).
+- `run()`: runs the app and waits until its window closes, as `hello_imgui.run` does.
+- `start()`: runs the app without blocking the notebook, which stays usable while the app runs. It returns an
+  `asyncio.Task`.
+- `stop()`, `is_running()`: stop the app started by `start()`, or query it.
+
+`immapp.nb` does the same with the add-ons (ImPlot, markdown...), and its `run()` shows a screenshot of the app in
+the notebook.
 """
 
 from typing import Callable, Optional, overload

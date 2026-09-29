@@ -16,6 +16,16 @@
 #   See https://github.com/pthom/imgui_bundle/issues/467
 #
 # ruff: noqa: B008, F821, F811
+"""ImPlot: 2D plots for Dear ImGui: lines, scatter, bars, shaded areas, heatmaps, histograms, pie charts, real-time
+data.
+
+A plot lives between `begin_plot()` and `end_plot()`: the `setup_*` functions (axes, limits, legend) come first,
+then the `plot_*` functions. Run the app with `immapp.run(..., with_implot=True)`, which creates ImPlot's context.
+
+In Python, the data are numpy arrays. ImPlot's functions are templated on one numeric type, so the arrays of one
+call must share their dtype: convert them first (`xs = xs.astype(ys.dtype)`). Mismatched dtypes raise an error.
+"""
+
 from typing import Any, Optional, Tuple, List, overload
 import numpy as np
 import enum

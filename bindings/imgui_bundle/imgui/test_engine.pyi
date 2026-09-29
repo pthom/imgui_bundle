@@ -7,13 +7,15 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 
-"""ImGui Test Engine python bindings
+"""Dear ImGui Test Engine: automate and test an app, by scripting mouse and keyboard actions on its widgets.
 
-Note: Integrating ImGui TestEngine directly from python, and without using HelloImGui and ImmApp is very difficult:
-         ImGui Test Engine uses two different threads (one for the main gui, and one for the scenario runner).
-         Your python code will be called from two separate threads, and this breaks the GIL!
-         HelloImGui and ImmApp handle this well by transferring the GIL between threads (from C++)
-     For gory details, see https://github.com/pthom/imgui_test_engine/blob/imgui_bundle/imgui_test_engine/imgui_te_python_gil.jpg
+A test drives the GUI as a user would: it clicks a button by its label, types text, checks a value. Run it inside
+Hello ImGui or ImmApp: set `runner_params.use_imgui_test_engine = True`, and register the tests in
+`runner_params.callbacks.register_tests`.
+
+In Python, the test engine runs the tests on a second thread, and Hello ImGui and ImmApp hand the GIL between the
+two threads. Using it without them is very difficult (details:
+https://github.com/pthom/imgui_test_engine/blob/imgui_bundle/imgui_test_engine/imgui_te_python_gil.jpg).
 """
 
 # ruff: noqa: B008, F821

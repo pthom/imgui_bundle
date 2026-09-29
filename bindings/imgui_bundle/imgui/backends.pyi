@@ -1,6 +1,12 @@
 # Backend API
 # Note: all this code is generated *manually*
 
+"""Dear ImGui's platform and renderer backends for GLFW, OpenGL 3 and OpenGL 2, for an app that runs its own loop.
+
+Most apps do not need them: `immapp.run` and `hello_imgui.run` set up the backends. An app that creates its window
+itself (with GLFW, pygame, pyglet...) calls them at each frame: see `imgui_bundle/python_backends/examples`.
+"""
+
 from imgui_bundle.imgui import ImDrawData
 
 ###############################################################################

@@ -16,6 +16,14 @@
 #   See https://github.com/pthom/imgui_bundle/issues/467
 #
 # ruff: noqa: B008, F821, F811
+"""ImPlot3D: 3D plots for Dear ImGui: lines, scatter, surfaces, meshes, rotated, panned and zoomed with the mouse.
+
+Its API follows ImPlot's: `begin_plot()`, the `setup_*` functions, the `plot_*` functions, `end_plot()`. Run the app
+with `immapp.run(..., with_implot3d=True)`, which creates ImPlot3D's context.
+
+In Python, the data are numpy arrays, and the arrays of one call must share their dtype (as in ImPlot).
+"""
+
 from typing import Any, Optional, List, overload
 import numpy as np
 import enum

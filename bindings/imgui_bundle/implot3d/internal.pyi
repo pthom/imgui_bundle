@@ -8,6 +8,11 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: E741, B008
+"""ImPlot3D's internal API (implot3d_internal.h): the structures and helpers that ImPlot3D is built with.
+
+It may change between versions of ImPlot3D.
+"""
+
 from typing import Any, Optional, Tuple, overload
 import enum
 

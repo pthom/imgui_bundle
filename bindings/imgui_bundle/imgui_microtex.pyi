@@ -1,4 +1,8 @@
-"""imgui_microtex: native LaTeX math rendering via MicroTeX + FreeType."""
+"""MicroTeX: LaTeX formulas rendered as images, natively (MicroTeX and FreeType). The markdown's math uses it.
+
+`render()` gives a formula as an image (its pixels and its size), `render_to_texture()` as a texture to show with
+`imgui.image()`. Run the app with `immapp.run(..., with_latex=True)`, which initializes it.
+"""
 
 from typing import Callable, Optional, overload
 import numpy as np

@@ -8,6 +8,11 @@
 # and is generally very close to the C++ version. Comments, docs are identical.
 ###############################################################################
 # ruff: noqa: E741, B008
+"""ImPlot's internal API (implot_internal.h): the structures and helpers that ImPlot is built with.
+
+Use it for custom plot items, or to reach ImPlot's state. It may change between versions of ImPlot.
+"""
+
 from typing import Any, Optional, Tuple, overload
 import numpy as np
 import enum
