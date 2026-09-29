@@ -83,7 +83,7 @@ LIBRARIES = [
             "2D plots: lines, scatter, bars, heatmaps, histograms, pies, real-time data.",
             "https://github.com/epezent/implot", "addons/plotting",
             [("imgui_bundle.implot", "implot/__init__.pyi"), ("imgui_bundle.implot.internal", "implot/internal.pyi")],
-            uses=["ImPlot"]),
+            uses=["ImPlot"], comments="pre"),
     Library("implot3d", "ImPlot3D",
             "3D plots: lines, scatter, surfaces, meshes, with rotation and zoom.",
             "https://github.com/brenocq/implot3d", "addons/plotting",
