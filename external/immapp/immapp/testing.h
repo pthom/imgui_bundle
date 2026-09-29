@@ -16,6 +16,7 @@
 
 #include <cstdio>
 #include <functional>
+#include <optional>
 #include <string>
 
 #include "imgui.h"
@@ -97,6 +98,9 @@ struct CaptureFinalFrameOptions
     bool withImplot = false;
     bool withImplot3d = false;
     bool withNodeEditor = false;
+
+    // ImmApp addons, for those without a flag above (e.g. withNodeEditorConfig). If set, the flags above are ignored.
+    std::optional<ImmApp::AddOnsParams> addOnsParams;
 };
 
 
@@ -128,6 +132,8 @@ inline bool CaptureFinalFrame(std::function<void()> guiFn,
     addons.withImplot = opts.withImplot;
     addons.withImplot3d = opts.withImplot3d;
     addons.withNodeEditor = opts.withNodeEditor;
+    if (opts.addOnsParams.has_value())
+        addons = opts.addOnsParams.value();
 
     ImmApp::Run(simple, addons);
 
