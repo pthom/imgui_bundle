@@ -563,39 +563,6 @@ real app: typed pins, links refused with a reason, a node created by dropping a 
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_node_editor_image_pipeline.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_image_pipeline.cpp)
 
-### Node editor: nodes, pins and links
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_node_editor_basic.jpg
-:alt: Node editor: nodes, pins and links
-:width: 400px
-:::
-
-Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The
-interactions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic
-interaction example.
-
-*Python, C++*
-
-*Uses: node editor*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_basic.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_node_editor_basic.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_basic.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_basic.cpp)
-
-### Node editor: Romeo and Juliet
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_romeo_and_juliet.jpg
-:alt: Node editor: Romeo and Juliet
-:width: 400px
-:::
-
-Three characters as nodes, their feelings as links: green for love, red for hate. Drag the nodes around, and follow
-the links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor).
-
-*Python, C++*
-
-*Uses: node editor*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_romeo_and_juliet.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_romeo_and_juliet.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp)
-
 ### ImGuizmo: a 3D gizmo
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_gizmo.jpg

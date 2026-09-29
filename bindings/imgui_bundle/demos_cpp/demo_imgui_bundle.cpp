@@ -25,7 +25,6 @@ void demo_widgets();
 void demo_imgui_md();
 void demo_text_edit();
 void demo_logger();
-void demo_romeo_and_juliet();
 void demo_node_editor_color_mixer();
 void demo_node_editor_image_pipeline();
 void demo_imgui_show_demo_window();
@@ -60,7 +59,7 @@ namespace
         {
             launcher.inPlaceFunctions = {
                 {"demo_widgets", demo_widgets}, {"demo_imgui_md", demo_imgui_md}, {"demo_text_edit", demo_text_edit},
-                {"demo_logger", demo_logger}, {"demo_romeo_and_juliet", demo_romeo_and_juliet},
+                {"demo_logger", demo_logger},
                 {"demo_node_editor_color_mixer", demo_node_editor_color_mixer},
                 {"demo_node_editor_image_pipeline", demo_node_editor_image_pipeline},
                 {"manual_imgui", demo_imgui_show_demo_window},

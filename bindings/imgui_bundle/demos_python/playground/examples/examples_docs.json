@@ -331,24 +331,6 @@
     ],
     "cpp": true
   },
-  "demo_node_editor_basic.py": {
-    "title": "Node editor: nodes, pins and links",
-    "text": "Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The\ninteractions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic\ninteraction example.",
-    "summary": "Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it.",
-    "uses": [
-      "node editor"
-    ],
-    "cpp": true
-  },
-  "demo_romeo_and_juliet.py": {
-    "title": "Node editor: Romeo, Juliet and Count Paris",
-    "text": "Three characters as nodes, their feelings as links: green for love, red for hate. Drag the nodes around, and follow\nthe links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor).",
-    "summary": "Three characters as nodes, their feelings as links: green for love, red for hate.",
-    "uses": [
-      "node editor"
-    ],
-    "cpp": true
-  },
   "demo_gizmo.py": {
     "title": "ImGuizmo: a 3D gizmo on a cube",
     "text": "Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the\neditor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is\n[ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo); the camera matrices are a few lines of plain Python.",

@@ -684,46 +684,6 @@ Change a parameter, and the nodes downstream follow at once. The patterns of [im
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_node_editor_basic.jpg
-:alt: Node editor: nodes, pins and links
-:::
-
-### Node editor: nodes, pins and links
-
-Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it.
-
-:::{dropdown} More
-The interactions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic interaction example.
-:::
-
-*Uses: node editor*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_basic.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_basic.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_node_editor_basic.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_basic.cpp)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_romeo_and_juliet.jpg
-:alt: Node editor: Romeo and Juliet
-:::
-
-### Node editor: Romeo and Juliet
-
-Three characters as nodes, their feelings as links: green for love, red for hate.
-
-:::{dropdown} More
-Drag the nodes around, and follow the links. A small graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor).
-:::
-
-*Uses: node editor*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_romeo_and_juliet.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_romeo_and_juliet.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_romeo_and_juliet.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_romeo_and_juliet.cpp)
-
-::::
-
-::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_gizmo.jpg
 :alt: ImGuizmo: a 3D gizmo
 :::

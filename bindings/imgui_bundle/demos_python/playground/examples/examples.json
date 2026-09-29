@@ -354,20 +354,6 @@
             "in_place": true
         },
         {
-            "label": "Node editor: nodes, pins and links",
-            "filename": "demo_node_editor_basic.py",
-            "source": "demos_node_editor",
-            "category": "Library tours",
-            "in_place": true
-        },
-        {
-            "label": "Node editor: Romeo and Juliet",
-            "filename": "demo_romeo_and_juliet.py",
-            "source": "demos_node_editor",
-            "category": "Library tours",
-            "in_place": true
-        },
-        {
             "label": "ImGuizmo: a 3D gizmo",
             "filename": "demo_gizmo.py",
             "source": "demos_imguizmo",

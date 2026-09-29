@@ -158,8 +158,6 @@ SHOTS: dict[str, Shot] = {
     # the node editor's demos: 200 frames, so that the flow animation along the links has ended (about 2 seconds)
     "demo_node_editor_color_mixer.py": Shot(frames=200, crop=(0.04, 0.1, 0.77, 0.94)),
     "demo_node_editor_image_pipeline.py": Shot(frames=200, crop=(0.05, 0.075, 0.955, 1.0)),
-    "demo_node_editor_basic.py": Shot(crop=(0.0, 0.0, 0.65, 0.542)),
-    "demo_romeo_and_juliet.py": Shot(crop=(0.0, 0.0, 0.6, 0.469)),
     "demo_gizmo.py": Shot(crop=(0.0, 0.0, 1.0, 0.938)),
     "demo_nanovg_full.py": Shot(crop=(0.0, 0.05, 1.0, 0.883)),
     "demo_nanovg_heart.py": Shot(crop=(0.0, 0.02, 1.0, 0.853)),
