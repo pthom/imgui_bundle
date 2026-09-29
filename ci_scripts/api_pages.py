@@ -203,6 +203,7 @@ class Entry:
     header: str = ""  # the C++ header it comes from
     children: list["Entry"] = field(default_factory=list)
     overloads: list[tuple[str, str]] = field(default_factory=list)  # the other signatures (Python, C++) of an overload
+    generated: bool = True  # written by litgen (between its markers), as opposed to the stub's hand-written parts
 
 
 def _clean_comment(line: str) -> str:
@@ -370,6 +371,8 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
             headers.append((i + 1, m.group(1)))
         elif (m := AMALGAMATION_MARK.match(line)):
             headers.append((i + 1, m.group(1)))
+    generated_start = next((i + 1 for i, line in enumerate(lines) if "<litgen_stub>" in line), 0)
+    generated_end = next((i + 1 for i, line in enumerate(lines) if "</litgen_stub>" in line), len(lines) + 1)
     entries: list[Entry] = []
     for node in tree.body:
         if not isinstance(node, (ast.FunctionDef, ast.ClassDef)):
@@ -378,6 +381,7 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         if entry is None:
             continue
         entry.header = next((h for (ln, h) in reversed(headers) if ln < node.lineno), "")
+        entry.generated = generated_start < node.lineno < generated_end
         entries.append(entry)
     entries = _merge_overloads(entries)
     if len({e.part for e in entries if e.part}) < 2 or not any(e.section for e in entries):
@@ -604,9 +608,31 @@ def _intro_sentence(library: Library, module: str, stub: Path, functions: int, c
             "The sections are the header's.")
 
 
+def _bound_entries(entries: list[Entry]) -> list[Entry]:
+    """The entries written by litgen, for the C++ pages: the stubs' hand-written parts (Python helpers, IM_COL32...)
+    bind nothing. A dropped entry's part or section passes to the next kept entry"""
+    kept: list[Entry] = []
+    part: Optional[str] = None
+    section: Optional[tuple[str, list[str]]] = None
+    for entry in entries:
+        part = entry.part or part
+        section = entry.section or section
+        if not entry.generated:
+            continue
+        if part is not None and entry.part is None:
+            entry.part = part
+        if section is not None and entry.section is None:
+            entry.section = section
+        part, section = None, None
+        kept.append(entry)
+    return kept
+
+
 def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[str] = None) -> list[str]:
     """The entries as markdown, under the headings of their headers and parts (both H2), their sections (H3); the
     entries are H4. With a C++ namespace: the C++ view of the entries"""
+    if cpp_namespace is not None:
+        entries = _bound_entries(entries)
     out: list[str] = []
     header: Optional[str] = None
     for entry in entries:
