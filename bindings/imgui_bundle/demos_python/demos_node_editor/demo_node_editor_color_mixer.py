@@ -256,9 +256,10 @@ def handle_deletions(graph: Graph) -> None:
         ed.end_delete()
 
 
+@dataclass
 class MenuState:
-    new_node_position = ImVec2(0, 0)  # where the background menu was opened
-    node_id = ed.NodeId()  # the node whose menu is open
+    new_node_position: ImVec2 = field(default_factory=ImVec2)  # where the background menu was opened
+    node_id: ed.NodeId = field(default_factory=ed.NodeId)  # the node whose menu is open
 
 
 def handle_menus(graph: Graph, menu: MenuState) -> None:
@@ -281,39 +282,38 @@ def handle_menus(graph: Graph, menu: MenuState) -> None:
 
 
 # =====================================================================================================================
-# 5. The GUI function
+# 5. The app
 # =====================================================================================================================
 class AppState:
-    graph: Graph | None = None  # created at the first frame: node positions need the editor
-    menu = MenuState()
-    frame = 0
-
-
-state = AppState()
-
-
-def demo_gui() -> None:
-    rich_md.render(HELP)
-    ed.begin("Color mixer")
-    if state.graph is None:
-        state.graph = initial_graph()
-    for node in state.graph.nodes:
-        draw_node(state.graph, node)
-    draw_links(state.graph)
-    handle_new_links(state.graph)
-    handle_deletions(state.graph)
-    handle_menus(state.graph, state.menu)
-    ed.end()
-
-    # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
-    # fit has no effect). The navigation functions work after ed.end().
-    if state.frame == 2:
-        ed.navigate_to_content(0.0)
-    state.frame += 1
+    def __init__(self) -> None:
+        self.graph: Graph | None = None  # created at the first frame: the node positions need the editor
+        self.menu = MenuState()
+        self.frame = 0
 
 
 def main() -> None:
-    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
+    state = AppState()
+
+    def gui() -> None:
+        rich_md.render(HELP)
+        ed.begin("Color mixer")
+        if state.graph is None:
+            state.graph = initial_graph()
+        for node in state.graph.nodes:
+            draw_node(state.graph, node)
+        draw_links(state.graph)
+        handle_new_links(state.graph)
+        handle_deletions(state.graph)
+        handle_menus(state.graph, state.menu)
+        ed.end()
+
+        # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second,
+        # the fit has no effect). The navigation functions work after ed.end().
+        if state.frame == 2:
+            ed.navigate_to_content(0.0)
+        state.frame += 1
+
+    immapp.run(gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
                with_markdown=True, with_latex=True)
 
 
