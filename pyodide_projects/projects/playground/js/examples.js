@@ -329,7 +329,8 @@ function openGallery() {
     if (current) current.scrollIntoView({block: 'center'});
     markCategoryInView();
     if (wasHidden) dealCards();
-    if (window.innerWidth > 768) document.getElementById('gallery-search').focus();  // not on a phone: its keyboard
+    // Not on a touch screen, where the keyboard would cover the gallery (a phone held sideways is wider than 768 px)
+    if (!window.matchMedia('(pointer: coarse)').matches) document.getElementById('gallery-search').focus();
 }
 
 function closeGallery() {

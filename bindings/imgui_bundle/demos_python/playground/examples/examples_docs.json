@@ -217,27 +217,6 @@
     "uses": [],
     "cpp": true
   },
-  "fiatlight_image.py": {
-    "title": "Fiatlight: Image Pipeline",
-    "text": "[Fiatlight](https://pthom.github.io/fiatlight/) turns Python functions into interactive apps with visual\npipelines.",
-    "summary": "[Fiatlight](https://pthom.github.io/fiatlight/) turns Python functions into interactive apps with visual pipelines.",
-    "uses": [
-      "Fiatlight",
-      "OpenCV"
-    ],
-    "cpp": false
-  },
-  "fiatlight_dataframe.py": {
-    "title": "Fiatlight: Titanic DataFrame Explorer",
-    "text": "Explore the passengers of the Titanic in a **filterable dataframe**, with linked plots: filter them by class,\nsurvival, sex and age, and watch the survival rate and the age histogram update. Built with\n[Fiatlight](https://pthom.github.io/fiatlight), which turns Python functions into interactive apps with visual\npipelines.",
-    "summary": "Explore the passengers of the Titanic in a **filterable dataframe**, with linked plots: filter them by class, survival, sex and age, and watch the survival rate and the age histogram update.",
-    "uses": [
-      "ImPlot",
-      "Fiatlight",
-      "pandas"
-    ],
-    "cpp": false
-  },
   "themes.py": {
     "title": "Theming",
     "text": "Pick a complete look for your app, then fine-tune its colors, rounding and spacing. The complete\nlooks come from [Hello ImGui](https://github.com/pthom/hello_imgui).",

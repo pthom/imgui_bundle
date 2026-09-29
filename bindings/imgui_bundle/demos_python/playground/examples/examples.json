@@ -223,7 +223,8 @@
             "bundle_folders": [
                 "fiat_settings"
             ],
-            "launcher": false
+            "launcher": false,
+            "hidden": true
         },
         {
             "label": "Fiatlight dataframe explorer",
@@ -236,7 +237,8 @@
             "bundle_folders": [
                 "fiat_settings"
             ],
-            "launcher": false
+            "launcher": false,
+            "hidden": true
         },
         {
             "label": "Themes and theme tweaking",
