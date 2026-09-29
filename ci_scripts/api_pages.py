@@ -672,7 +672,7 @@ def _cpp_intro(library: Library, module: str, python_index: str) -> str:
 
 
 def write_module_pages(library: Library, module: str, stub: Path, folder: Path, stem: str,
-                       cpp: bool = False) -> ModulePages:
+                       manifest: dict[str, Any], docs: dict[str, dict[str, Any]], cpp: bool = False) -> ModulePages:
     """The reference of one module, one page (Ctrl-F finds everything; the outline stops at the sections). With
     `cpp`: the C++ view of the module, the same page with a `_cpp` suffix"""
     entries = read_stub(stub, REPO / library.headers if library.headers else None)
@@ -688,7 +688,8 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
              else _intro_sentence(library, module, stub, functions, classes, enums))
     # the theme reads outline_maxdepth from the page's frontmatter (site:) over the site's option (myst.yml, 2)
     frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if module not in OUTLINE_WITHOUT_ENTRIES else []
-    index.write_text("\n".join([*frontmatter, GENERATED, "", f"# {title}", "", intro, "",
+    cards = _demo_cards(manifest, docs, index, [], MODULE_DEMOS.get(module, []))
+    index.write_text("\n".join([*frontmatter, GENERATED, "", f"# {title}", "", intro, "", *cards,
                                 *_render_entries(entries, module, namespace)]))
     return ModulePages(module, index, functions, classes, enums)
 
@@ -768,16 +769,23 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
     return out
 
 
-def _demo_cards(library: Library, manifest: dict[str, Any], docs: dict[str, dict[str, Any]], page: Path) -> list[str]:
-    """The cards of the demos that use the library, as on the demos page (the pictures' paths made relative to here)"""
-    if not library.uses and not library.demos:
+MODULE_DEMOS = {  # the demos shown at the top of a module's page, by file name (a module used by a few demos only)
+    "imgui_bundle.imgui.test_engine": ["demo_testengine.py", "demo_testapp.py"],
+}
+
+
+def _demo_cards(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], page: Path, uses: list[str],
+                demos: list[str]) -> list[str]:
+    """The cards of the demos tagged with one of `uses`, or named in `demos`, as on the demos page (the pictures'
+    paths made relative to here)"""
+    if not uses and not demos:
         return []
     out: list[str] = []
     for e in manifest["examples"]:
         if e.get("hidden") or not e.get("launcher", True):
             continue
-        tagged = set(docs.get(e["filename"], {}).get("uses", [])) & set(library.uses)
-        if not tagged and Path(e["filename"]).name not in library.demos:
+        tagged = set(docs.get(e["filename"], {}).get("uses", [])) & set(uses)
+        if not tagged and Path(e["filename"]).name not in demos:
             continue
         card = demo_card(manifest, docs, e, in_grid=True)
         for i, line in enumerate(card):  # demo_card writes the pictures' paths relative to the demos page
@@ -788,8 +796,7 @@ def _demo_cards(library: Library, manifest: dict[str, Any], docs: dict[str, dict
     if not out:
         return []
     return ["## Demos using it", "",
-            "The demos of the catalog that use the library (the pictures link to their code and to the playground).",
-            "",
+            "The demos of the catalog that use it (the pictures link to their code and to the playground).", "",
             ":::::{grid} 1 2 3 3", "", *out, ":::::", ""]
 
 
@@ -807,9 +814,9 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
             print(f"warning: {stub_path} not found")
             continue
         stem = re.sub(r"[^a-z0-9_]+", "_", module.removeprefix("imgui_bundle.").lower()).strip("_") or "module"
-        modules.append(write_module_pages(library, module, stub_path, folder, stem))
+        modules.append(write_module_pages(library, module, stub_path, folder, stem, manifest, docs))
         if module in CPP_NAMESPACES:
-            cpp_pages.append(write_module_pages(library, module, stub_path, folder, stem, cpp=True))
+            cpp_pages.append(write_module_pages(library, module, stub_path, folder, stem, manifest, docs, cpp=True))
     index = folder / "index.md"
     out = [GENERATED, "", f"# {library.title}", "", library.tagline, ""]
     links = [f"[Upstream repository]({library.upstream})"]
@@ -823,7 +830,7 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
         out.append(f"- [`{m.module.removeprefix('imgui_bundle.')}`]({m.index.name}): {m.functions} functions, "
                    f"{m.classes} classes, {m.enums} enums{view}")
     out.append("")
-    out += _demo_cards(library, manifest, docs, index)
+    out += _demo_cards(manifest, docs, index, library.uses, library.demos)
     index.write_text("\n".join(out))
     toc = [f"      - file: api/{library.key}/index", "        sections:"]
     for m in modules:
