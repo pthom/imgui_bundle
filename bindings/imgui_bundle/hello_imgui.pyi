@@ -470,6 +470,7 @@ def log_gui(size: Optional[ImVec2Like] = None) -> None:
 #                       hello_imgui/image_from_asset.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# Images from the assets
 #
 # Images are loaded when first displayed, and then cached
 # (they will be freed just before the application exits).
@@ -836,14 +837,11 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 #                       hello_imgui/hello_imgui_font.h included by hello_imgui.h                               //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# When loading fonts, use
-#          HelloImGui::LoadFont(..)
-#      or
-#      	HelloImGui::LoadDpiResponsiveFont()
+# Font loading
 #
-# Use these functions instead of ImGui::GetIO().Fonts->AddFontFromFileTTF(),
-# because they will automatically adjust the font size to account for HighDPI,
-# and will help you to get consistent font size across different OSes.
+# To load a font, use HelloImGui::LoadFont() or HelloImGui::LoadDpiResponsiveFont(),
+# instead of ImGui::GetIO().Fonts->AddFontFromFileTTF(): they adjust the font size
+# to the screen's DPI, and give a consistent font size across OSes.
 
 class FontLoadingParams:
     """
@@ -931,7 +929,8 @@ def load_font_ttf_with_font_awesome_icons(
 #                       hello_imgui/screen_bounds.h included by hello_imgui/app_window_params.h                //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-# Note: note related to DPI and high resolution screens:
+# Screen coordinates and high DPI screens
+#
 # ScreenPosition and ScreenSize are in "Screen Coordinates":
 # Screen coordinates *might* differ from real pixel on high dpi screens; but this depends on the OS.
 # - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
@@ -2602,8 +2601,7 @@ class RendererBackendOptions:
         """
         pass
 
-# Note:
-# If using Metal, Vulkan or DirectX, you can find interesting pointers inside:
+# Metal, Vulkan and DirectX: the pointers to their objects are in the internal headers
 #     src/hello_imgui/internal/backend_impls/rendering_metal.h
 #     src/hello_imgui/internal/backend_impls/rendering_vulkan.h
 #     src/hello_imgui/internal/backend_impls/rendering_dx11.h
