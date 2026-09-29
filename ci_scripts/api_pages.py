@@ -941,13 +941,141 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     return toc
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# The plain-text version, for AI assistants (published at LLMS_URL by `just cf_stage`, linked from llms.txt)
+# ---------------------------------------------------------------------------------------------------------------------
+LLMS_URL = "https://imgui-bundle.pages.dev/llms/api"
+LLMS_DOC_CHARS = 300  # an entry's doc: its first paragraph, cut at this length (the full docs are on the pages)
+
+
+def _one_line(text: str, limit: int = LLMS_DOC_CHARS) -> str:
+    text = re.sub(r"\s+", " ", text.replace("\x00", "\\0")).strip()
+    return text if len(text) <= limit else text[:limit].rsplit(" ", 1)[0] + " ..."
+
+
+def _first_paragraph(doc: str) -> str:
+    doc, _ = _split_bindings_notes(doc)
+    if not doc.strip() or doc.startswith("Auto-generated default constructor"):  # litgen's, says nothing
+        return ""
+    return _one_line(doc.strip().split("\n\n")[0])
+
+
+def _llms_entry(entry: Entry, indent: str = "") -> list[str]:
+    """An entry in plain text: its Python signature(s), each followed by its C++ declaration, then its doc's first
+    paragraph; a class's attributes and methods, an enum's members, indented under it"""
+    sub = indent + "    "
+    out: list[str] = []
+    if entry.kind in ("function", "method"):
+        for python, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
+            out += [indent + line for line in python.splitlines() if line.strip() != "@overload"]
+            if cpp:
+                out.append(f"{sub}C++: {cpp}")
+    else:
+        kind = "enum" if entry.kind == "enum" else "class"
+        out.append(f"{indent}{kind} {entry.name}" + (f"    C++: {entry.cpp}" if entry.cpp else ""))
+    doc = _first_paragraph(entry.doc)
+    if doc:
+        out.append(sub + doc)
+    for child in entry.children:
+        note = f"  # {_one_line(child.note, 160)}" if child.note else ""
+        if child.kind == "member":
+            out.append(f"{sub}{child.name}" + (f" = {child.value}" if child.value else "") + note)
+        elif child.kind == "attribute":
+            out.append(f"{sub}{child.signature}{note}")
+        else:
+            out += _llms_entry(child, sub)
+    return out
+
+
+LLMS_FILE_CHARS = 120_000  # about 30k tokens: a module above is cut at its parts into several files
+
+
+def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
+    """A module's entries in plain text, by chunk: a header or a part starts one (its title, its lines)"""
+    chunks: list[tuple[str, list[str]]] = []
+    header: Optional[str] = None
+    first_vector = ""
+    for entry in entries:
+        if entry.header != header or entry.part is not None or not chunks:
+            title = entry.part or entry.header or ""
+            chunks.append((title, []))
+        lines = chunks[-1][1]
+        if entry.header != header:
+            header = entry.header
+            lines += [f"### {header}", ""] if header else []
+        if entry.part is not None:
+            lines += [f"### {entry.part}", ""]
+        if entry.section is not None:
+            lines += [f"#### {entry.section[0]}", ""]
+        if entry.kind == "class" and entry.name.startswith("ImVector_"):  # imgui's ImVector specializations
+            if first_vector:
+                lines += [f"class {entry.name}: the same methods as {first_vector}, for another element type", ""]
+                continue
+            first_vector = entry.name
+        lines += _llms_entry(entry) + [""]
+    return chunks
+
+
+def write_llms_module(library: Library, module: str, stubs: list[Path]) -> list[tuple[Path, list[str]]]:
+    """The plain-text API of a module: one file, or several cut at its parts when it is large; returns each file with
+    the titles of its parts"""
+    entries: list[Entry] = []
+    for path in stubs:
+        entries += read_stub(path, REPO / library.headers if library.headers else None)
+    packed: list[tuple[list[str], list[str]]] = []  # (the parts' titles, the lines)
+    for title, lines in _llms_chunks(entries):
+        size = sum(len(line) + 1 for line in lines)
+        if packed and sum(len(line) + 1 for line in packed[-1][1]) + size > LLMS_FILE_CHARS:
+            packed.append(([], []))
+        if not packed:
+            packed.append(([], []))
+        if title and title not in packed[-1][0]:
+            packed[-1][0].append(title)
+        packed[-1][1].extend(lines)
+    short = module.removeprefix("imgui_bundle.")
+    doc = _module_doc(stubs)
+    about = ("Generated from the Python stubs of Dear ImGui Bundle. Each entry gives its Python signature, its C++ "
+             "declaration (\"C++:\"), and the first paragraph of its doc. The Python names follow the C++ ones "
+             "(`ImGui::Button` is `imgui.button`, `ImPlotFlags_` is `implot.Flags_`). The full docs: "
+             f"https://imgui-bundle.pages.dev/doc/api/{library.key.replace('_', '-')}/")
+    written: list[tuple[Path, list[str]]] = []
+    for n, (titles, lines) in enumerate(packed, 1):
+        name = short if len(packed) == 1 else f"{short}.{n}"
+        head = [f"# `{module}`" + (f", file {n} of {len(packed)}: {', '.join(titles)}" if len(packed) > 1 else ""), ""]
+        if n == 1 and doc:
+            head += [doc, ""]
+        head += [about, ""]
+        path = API / "llms" / f"{name}.txt"
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("\n".join(head + lines))
+        written.append((path, titles))
+    return written
+
+
+def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]]]]) -> None:
+    out = ["# Dear ImGui Bundle: the API, in plain text", "",
+           "One file per module (a large module is cut into several files, by part): every function, class and enum, "
+           "with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a "
+           "question needs.", ""]
+    library_key = ""
+    for library, module, module_files in files:
+        if library.key != library_key:
+            library_key = library.key
+            out += ["", f"## {library.title}: {library.tagline}", ""]
+        for path, titles in module_files:
+            parts = f" ({', '.join(titles)})" if len(module_files) > 1 else ""
+            out.append(f"- `{module}`{parts}: {LLMS_URL}/{path.name}")
+    (API / "llms" / "index.txt").write_text("\n".join(out) + "\n")
+
+
 def write_index() -> None:
     out = [GENERATED, "", "# API reference", "",
            "The libraries of Dear ImGui Bundle, as Python modules, with the C++ signature next to each Python one: "
            "the bindings are generated from the C++ headers, and their names follow them (`ImGui::Button` is "
            "`imgui.button`, `ImPlotFlags_` is `implot.Flags_`). These pages come from the Python stubs (`.pyi`), "
            "which keep the headers' comments. To learn, start with the [demos](../intro/demos.md); to look up a name, "
-           "use these pages, or the stubs in your editor.", "",
+           "use these pages, or the stubs in your editor. For AI assistants, the same reference exists in plain "
+           f"text, one file per library: {LLMS_URL}/index.txt", "",
            "| Library | What it does | Modules |", "|---|---|---|"]
     for library in LIBRARIES:
         modules = ", ".join(f"`{m}`" for m, _ in library.modules)
@@ -975,8 +1103,17 @@ def main() -> None:
         toc += write_library_pages(library, manifest, docs)
     write_index()
     write_toc(toc)
+    llms: list[tuple[Library, str, list[tuple[Path, list[str]]]]] = []
+    for library in LIBRARIES:
+        for module, stub in library.modules:
+            stubs = [STUBS / name.strip() for name in stub.split("+")]
+            if all(path.is_file() for path in stubs):
+                llms.append((library, module, write_llms_module(library, module, stubs)))
+    write_llms_index(llms)
+    texts = [path for _, _, module_files in llms for path, _ in module_files]
     pages = sorted(API.rglob("*.md"))
-    print(f"wrote {len(pages)} pages in {API} ({sum(p.stat().st_size for p in pages) // 1024} KB)")
+    print(f"wrote {len(pages)} pages in {API} ({sum(p.stat().st_size for p in pages) // 1024} KB), "
+          f"and {len(texts)} plain-text files in {API / 'llms'} ({sum(p.stat().st_size for p in texts) // 1024} KB)")
 
 
 if __name__ == "__main__":

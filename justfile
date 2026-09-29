@@ -413,6 +413,7 @@ cf_stage:
     rm -rf {{_CF_STAGING}}/doc
     rsync -a docs/book/_build/html/ {{_CF_STAGING}}/doc/
     cp docs/book/intro/ai_guide.md {{_CF_STAGING}}/llms.txt  # the guide for AI assistants (llmstxt.org convention)
+    mkdir -p {{_CF_STAGING}}/llms/api && rsync -a docs/book/api/llms/ {{_CF_STAGING}}/llms/api/  # the API in plain text (written by api_pages)
     #
     # 6. Place an up to date assets.zip
     # ------------------------------------------------------------

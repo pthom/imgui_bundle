@@ -23,6 +23,9 @@ Please do read to the following documentation for a comprehensive understanding 
 **Dear ImGui Bundle, full doc (PDF):**
 https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf
 
+**The API, in plain text (if needed):**
+https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt or https://imgui-bundle.pages.dev/llms/api/implot.txt. Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a question needs, to check that a name exists and how to call it.
+
 **Hello ImGui**
 https://pthom.github.io/hello_imgui/book/intro.html
 https://pthom.github.io/hello_imgui/book/doc_params.html
