@@ -61,8 +61,7 @@ LIBRARIES = [
              ("imgui_bundle.imgui.test_engine", "imgui/test_engine.pyi"),
              ("imgui_bundle.imgui.backends", "imgui/backends.pyi")],
             demos=["demo_widgets.py", "layout_child.py", "demo_drag_and_drop.py", "manual_imgui.py",
-                   "demo_hello_world.py"],
-            comments="pre"),
+                   "demo_hello_world.py"]),
     Library("hello_imgui", "Hello ImGui",
             "The app runner: the window and its backends, docking layouts, fonts, assets, DPI, idling.",
             "https://github.com/pthom/hello_imgui", "core_libs/hello_imgui_immapp",
@@ -83,7 +82,7 @@ LIBRARIES = [
             "2D plots: lines, scatter, bars, heatmaps, histograms, pies, real-time data.",
             "https://github.com/epezent/implot", "addons/plotting",
             [("imgui_bundle.implot", "implot/__init__.pyi"), ("imgui_bundle.implot.internal", "implot/internal.pyi")],
-            uses=["ImPlot"], comments="pre"),
+            uses=["ImPlot"]),
     Library("implot3d", "ImPlot3D",
             "3D plots: lines, scatter, surfaces, meshes, with rotation and zoom.",
             "https://github.com/brenocq/implot3d", "addons/plotting",
@@ -204,7 +203,8 @@ class Entry:
 
 
 def _clean_comment(line: str) -> str:
-    return line.strip().lstrip("#").strip()
+    """The text of a stub's comment line, keeping its indentation (a code example in a comment)"""
+    return re.sub(r"^\s*#\s?", "", line).rstrip()
 
 
 def _is_stop_block(block: list[str]) -> bool:
@@ -268,7 +268,8 @@ def _section_or_note(before: list[str]) -> tuple[Optional[str], Optional[tuple[s
     if len(before) >= 3 and is_rule[0] and is_rule[2] and _is_title(before[1]):  # a banner: a part (the node editor's)
         nearer, section, note = _section_or_note(before[3:])
         return nearer or _part_title(before[1]), section, note
-    before = [b for b in before if not re.match(r"^#?\s*(if|ifdef|ifndef|elif|else|endif|define|include|pragma)\b", b)
+    preprocessor = r"^(#\s*(if|else)|#?\s*(ifdef|ifndef|elif|endif|define|include|pragma))\b"
+    before = [b for b in before if not re.match(preprocessor, b)
               and not re.match(r"^[/=-]{4,}$", b) and not b.startswith("[ADAPT_") and not b.startswith("</")]
     if not before:
         return None, None, ""
@@ -460,25 +461,49 @@ def _code(language: str, text: str) -> list[str]:
 COMMENT_STYLE = "markdown"  # the current library's Library.comments, while its pages are written
 
 
-def _safe_markdown(text: str) -> str:
-    """A docstring as markdown, with the hazards of C++ comments neutralized: a line of "=" or "-" (a setext heading
-    for the line above), a leading "#" (a heading; ImPlot writes #xs for a parameter), "<Type>" (an HTML tag), an
-    unclosed code fence (it would swallow the rest of the page), a NUL (a docstring's \0, as in Combo's). The lines
-    keep their breaks (a trailing backslash), since the headers lay out one idea per line; a [SECTION] mark left in
-    a text (a part without bound entries) becomes a bold line"""
-    text = text.replace("\x00", "\\0")
-    if COMMENT_STYLE == "pre" and "\n" in text.strip():  # a text block; custom.css wraps its long lines (pre-wrap)
-        return "::::::{code-block} text\n:class: header-comment\n" + text.rstrip() + "\n::::::"
-    out = []
+def _is_code_line(line: str) -> bool:
+    """A comment line laid out as code or as a table: a statement's end, a comment column, aligned columns"""
+    text = line.rstrip()
+    return bool(re.search(r"[;{}]\s*(//.*)?$", text) or re.search(r"\S\s{2,}//", text)
+                or re.search(r"\S\s{3,}\S", text))
+
+
+def _runs(lines: list[str]) -> list[tuple[str, list[str]]]:
+    """The lines of a comment by run: "fence" (a markdown code fence, verbatim), "code" (lines laid out as code or
+    tables, and the short lines between them, such as "..."), "prose" (the rest)"""
+    runs: list[tuple[str, list[str]]] = []
     in_fence = False
-    for line in text.splitlines():
+    for line in lines:
         if line.strip().startswith("```"):
+            if not in_fence:
+                runs.append(("fence", []))
             in_fence = not in_fence
-            out.append(line)
+            runs[-1][1].append(line)
             continue
         if in_fence:
-            out.append(line)
+            runs[-1][1].append(line)
             continue
+        kind = "code" if _is_code_line(line) else "prose"
+        if kind == "prose" and runs and runs[-1][0] == "code" and len(line.strip()) < 8:
+            kind = "code"  # a short line between code lines ("...", "}")
+        if not runs or runs[-1][0] != kind:
+            runs.append((kind, []))
+        runs[-1][1].append(line)
+    for i in range(len(runs) - 1):  # a code run must hold two lines, unless it stands between prose and the end
+        if runs[i][0] == "code" and len([x for x in runs[i][1] if x.strip()]) < 2 and runs[i + 1][0] == "prose":
+            runs[i] = ("prose", runs[i][1])
+    return runs
+
+
+def _pre_block(lines: list[str]) -> str:
+    """A text block; custom.css wraps its long lines (pre-wrap)"""
+    return "::::::{code-block} text\n:class: header-comment\n" + "\n".join(lines).rstrip() + "\n::::::"
+
+
+def _prose_lines(lines: list[str]) -> list[str]:
+    """Prose lines as markdown: the hazards neutralized, the breaks kept, a [SECTION] mark as a bold line"""
+    out = []
+    for line in lines:
         if re.match(r"^\s*(=+|-{3,}|/{4,})\s*$", line):
             continue
         if line.strip().startswith("[SECTION]"):
@@ -486,13 +511,31 @@ def _safe_markdown(text: str) -> str:
         line = re.sub(r"^(\s*)#", r"\1\\#", line)
         line = re.sub(r"(?<![`\\])<(?=[A-Za-z_])", r"\\<", line)
         out.append(line)
-    for i in range(len(out) - 1):  # a hard break between two lines of text (not around blank lines, fences, list items)
-        if out[i].strip() and out[i + 1].strip() and not out[i].startswith("```") and not out[i + 1].startswith("```") \
-                and not out[i].endswith("\\") and not re.match(r"^\s*([-*+]|\d+[.)])\s", out[i + 1]):
+    for i in range(len(out) - 1):  # a hard break between two lines of text (not around blank lines or list items)
+        if (out[i].strip() and out[i + 1].strip() and not out[i].endswith("\\")
+                and not re.match(r"^\s*([-*+]|\d+[.)])\s", out[i + 1])):
             out[i] += "\\"
-    if sum(1 for line in out if line.strip().startswith("```")) % 2:
-        out.append("```")
-    return "\n".join(out)
+    return out
+
+
+def _safe_markdown(text: str) -> str:
+    """A comment as markdown, with the hazards of C++ comments neutralized: a line of "=" or "-" (a setext heading
+    for the line above), a leading "#" (a heading; ImPlot writes #xs for a parameter), "<Type>" (an HTML tag), an
+    unclosed code fence (it would swallow the rest of the page), a NUL (a docstring's \0, as in Combo's). The lines
+    laid out as code or as tables (imgui.h's examples and option lists) are text blocks, the prose keeps its breaks.
+    A library with comments="pre" gets every multi-line comment as one text block"""
+    text = text.replace("\x00", "\\0")
+    if COMMENT_STYLE == "pre" and "\n" in text.strip():
+        return _pre_block(text.splitlines())
+    out: list[str] = []
+    for kind, lines in _runs(text.splitlines()):
+        if kind == "code":
+            out += ["", _pre_block(lines), ""]
+        elif kind == "fence":
+            out += lines + ([] if len([x for x in lines if x.strip().startswith("```")]) % 2 == 0 else ["```"])
+        else:
+            out += _prose_lines(lines)
+    return "\n".join(out).strip("\n")
 
 
 def _doc_lines(text: str) -> list[str]:
