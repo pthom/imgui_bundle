@@ -371,7 +371,8 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         entry.header = next((h for (ln, h) in reversed(headers) if ln < node.lineno), "")
         entries.append(entry)
     entries = _merge_overloads(entries)
-    if len({e.part for e in entries if e.part}) < 2:  # a lone banner is a section, not a part (hello_imgui's)
+    if len({e.part for e in entries if e.part}) < 2 or not any(e.section for e in entries):
+        # parts hold sections: a lone banner (hello_imgui's), or banners with no section inside (rich_md's), are sections
         for entry in entries:
             if entry.part is not None:
                 entry.section = entry.section or (entry.part, [])
