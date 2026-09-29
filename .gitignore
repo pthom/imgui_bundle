@@ -144,3 +144,6 @@ hello_imgui.ini
 
 # Cloned on demand by `just cf_resources_sync` (was a submodule)
 /docs/clone_website_resources/
+
+# The API pages, written by ci_scripts/api_pages.py at each doc build (just api_pages)
+docs/book/api/

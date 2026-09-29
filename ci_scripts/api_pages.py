@@ -156,11 +156,16 @@ def _split_comments(block: list[str]) -> tuple[str, list[str], list[str]]:
 
 
 def _section_or_note(before: list[str]) -> tuple[Optional[tuple[str, list[str]]], str]:
-    """The lines above a C++ signature: a section of the header (a title, then its lines) or a mere note"""
+    """The lines above a C++ signature: a section of the header (a title, then its lines) or a mere note. Not a
+    section: a sentence, a bullet, a marker of the bundle's patches ([ADAPT_IMGUI_BUNDLE]), a preprocessor line"""
+    before = [b for b in before if not re.match(r"^#?\s*(if|ifdef|ifndef|elif|else|endif|define|include|pragma)\b", b)
+              and not re.match(r"^[/=-]{4,}$", b) and not b.startswith("[ADAPT_") and not b.startswith("</")]
     if not before:
         return None, ""
     title = before[0]
-    if title.startswith("-") or len(title) > 90 or title.endswith((".", ":")) and len(before) == 1 and len(title) > 50:
+    if (m := re.match(r"^<submodule (\w+)>$", title)):  # litgen's marker of a nested namespace
+        title = f"Submodule {m.group(1)}"
+    if title.startswith(("-", "<")) or len(title) > 60 or title.endswith((".", ",", ";")):  # a sentence, a marker
         return None, "\n".join(before)
     return (title, before[1:]), ""
 
@@ -248,7 +253,7 @@ def _read_node(lines: list[str], node: ast.AST, in_class: bool = False) -> Optio
                 trailing = _trailing_comment(lines, child)
                 value = ""
                 if (m := re.match(r"\(=\s*(.+?)\)\s*(.*)", trailing)):
-                    value, trailing = m.group(1), m.group(2)
+                    value, trailing = m.group(1), m.group(2).lstrip("# ")
                 entry.children.append(Entry("member", child.targets[0].id, "", c_cpp.rstrip(","), "", trailing, value))
         return entry
     return None
@@ -265,8 +270,28 @@ def _code(language: str, text: str) -> list[str]:
     return [f"```{language}", text, "```", ""]
 
 
+def _safe_markdown(text: str) -> str:
+    """A docstring as markdown, with the hazards of C++ comments neutralized: a line of "=" or "-" (a setext heading
+    for the line above), a leading "#" (a heading; ImPlot writes #xs for a parameter), "<Type>" (an HTML tag), an
+    unclosed code fence (it would swallow the rest of the page)"""
+    out = []
+    for line in text.splitlines():
+        if re.match(r"^\s*(=+|-{3,}|/{4,})\s*$", line):
+            continue
+        line = re.sub(r"^(\s*)#", r"\1\\#", line)
+        line = re.sub(r"(?<![`\\])<(?=[A-Za-z_])", r"\\<", line)
+        out.append(line)
+    if sum(1 for line in out if line.strip().startswith("```")) % 2:
+        out.append("```")
+    return "\n".join(out)
+
+
 def _doc_lines(text: str) -> list[str]:
-    return [text, ""] if text else []
+    return [_safe_markdown(text), ""] if text else []
+
+
+def _cell(text: str) -> str:
+    return text.replace("|", "\\|")
 
 
 def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> list[str]:
@@ -281,7 +306,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
                 out += _code("cpp", cpp)
         out += _doc_lines(entry.doc)
         if entry.note:
-            out += [entry.note, ""]
+            out += [_safe_markdown(entry.note), ""]
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
@@ -289,7 +314,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         out += _doc_lines(entry.doc)
         out += ["| Member | Value | C++ | |", "|---|---|---|---|"]
         for m in entry.children:
-            out.append(f"| `{m.name}` | {m.value} | `{m.cpp}` | {m.note} |")
+            out.append(f"| `{m.name}` | {_cell(m.value)} | `{_cell(m.cpp)}` | {_cell(m.note)} |")
         out.append("")
     elif entry.kind == "class":
         out[1] = f"{hashes} `{qualified}` (class)"
@@ -300,7 +325,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         if attributes:
             out += ["| Attribute | C++ | |", "|---|---|---|"]
             for a in attributes:
-                out.append(f"| `{a.signature}` | `{a.cpp}` | {a.note} |")
+                out.append(f"| `{_cell(a.signature)}` | `{_cell(a.cpp)}` | {_cell(a.note)} |")
             out.append("")
         for c in entry.children:
             if c.kind != "attribute":
@@ -326,7 +351,7 @@ def write_module_page(library: Library, module: str, stub: Path, page: Path) -> 
             title, text = entry.section
             out += [f"### {title}", ""]
             if text:
-                out += ["\n".join(text), ""]
+                out += [_safe_markdown("\n".join(text)), ""]
         out += _render_entry(entry, module, 4)
     page.parent.mkdir(parents=True, exist_ok=True)
     page.write_text("\n".join(out))
