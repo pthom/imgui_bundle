@@ -868,6 +868,7 @@ void HandleMenus(Graph& graph, MenuState& menu)
 // =====================================================================================================================
 struct AppState
 {
+    ed::EditorContext* editor = nullptr;  // the demo's own editor (see Editor())
     std::unique_ptr<Graph> graph;  // created at the first frame: the node positions need the editor
     MenuState menu;
     int frame = 0;  // since the graph was created
@@ -877,6 +878,23 @@ AppState& State()
 {
     static AppState state;
     return state;
+}
+
+// The demo's own editor, with its own config, whatever the app that shows it: an app such as the bundle's explorer
+// shows several node editor demos, which need different configs.
+ed::EditorContext* Editor()
+{
+    AppState& state = State();
+    if (!state.editor)
+    {
+        ed::Config config;
+        config.SettingsFile = nullptr;  // the demo places its nodes at start: nothing to save
+        // Inside a node, text wraps at the width of the node, and separators span it (instead of the width of the
+        // window). A node then needs an item with a fixed width: see DrawNode().
+        config.ForceWindowContentWidthToNodeWidth = true;
+        state.editor = ed::CreateEditor(&config);
+    }
+    return state.editor;
 }
 
 }  // namespace
@@ -891,6 +909,8 @@ void demo_node_editor_image_pipeline()
         state.graph.reset();
         state.frame = 0;
     }
+    ed::EditorContext* previousEditor = ed::GetCurrentEditor();
+    ed::SetCurrentEditor(Editor());
     ed::Begin("Image pipeline");
     if (!state.graph)
         state.graph = std::make_unique<Graph>(InitialGraph());
@@ -914,6 +934,7 @@ void demo_node_editor_image_pipeline()
     if (state.frame == 2)
         ed::NavigateToContent(0.0f);
     state.frame++;
+    ed::SetCurrentEditor(previousEditor);
 }
 
 
@@ -924,12 +945,8 @@ int main(int, char**)
     params.callbacks.ShowGui = demo_node_editor_image_pipeline;
     params.appWindowParams.windowTitle = "Node editor: an image pipeline";
     params.appWindowParams.windowGeometry.size = {1400, 850};
-    ed::Config config;
-    // Inside a node, text wraps at the width of the node, and separators span it (instead of the width of the window).
-    // A node then needs an item with a fixed width: see DrawNode().
-    config.ForceWindowContentWidthToNodeWidth = true;
-    ImmApp::AddOnsParams addOns;
-    addOns.withNodeEditorConfig = config;
+    params.callbacks.BeforeExit = [] { ed::DestroyEditor(Editor()); };
+    ImmApp::AddOnsParams addOns;  // the demo creates its own node editor
     addOns.withLatex = true;  // implies withMarkdown
     addOns.withImplot = true;
     ImmApp::Run(params, addOns);

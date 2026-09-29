@@ -86,16 +86,19 @@ class Explorer:
         top_left = imgui.get_cursor_screen_pos()
         avail = imgui.get_content_region_avail()
         bottom_right = ImVec2(top_left.x + avail.x, top_left.y + avail.y)
-        # The child keeps its bottom (it would overflow the window and bring a scrollbar), and is clipped at its top
-        imgui.push_clip_rect(top_left, bottom_right, True)
-        imgui.set_cursor_screen_pos(ImVec2(top_left.x, top_left.y + drift))
-        imgui.begin_child("page", ImVec2(avail.x, avail.y - max(drift, 0.0)))
+        # The page keeps its size while it drifts: a demo shown in place would otherwise see its size change during the
+        # transition (a node editor adapts its view to its size, and would lose its fit). A frame without scrollbar
+        # holds the page, and clips it.
+        frame_flags = imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse
+        imgui.begin_child("page frame", avail, 0, frame_flags)
+        imgui.set_cursor_pos(ImVec2(0.0, drift))
+        imgui.begin_child("page", avail)
         if self.shown == WELCOME:
             self.welcome()
         else:
             self.launcher.gui(with_title=False)
         imgui.end_child()
-        imgui.pop_clip_rect()
+        imgui.end_child()
         if veil > 0.0:  # over the child's own draw list, which comes after this window's
             imgui.get_foreground_draw_list().add_rect_filled(top_left, bottom_right, demo_immapp_launcher.curtain(veil))
 
@@ -227,7 +230,6 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
     addons = immapp.AddOnsParams()
     addons.with_markdown = True
     addons.with_latex = True
-    addons.with_node_editor = True
     addons.with_implot = True
     addons.with_implot3d = True
     addons.with_im_anim = True

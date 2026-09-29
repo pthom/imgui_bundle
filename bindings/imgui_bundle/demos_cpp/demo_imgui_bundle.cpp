@@ -141,10 +141,13 @@ namespace
             ImVec2 topLeft = ImGui::GetCursorScreenPos();
             ImVec2 avail = ImGui::GetContentRegionAvail();
             ImVec2 bottomRight(topLeft.x + avail.x, topLeft.y + avail.y);
-            // The child keeps its bottom (it would overflow the window and bring a scrollbar), and is clipped at its top
-            ImGui::PushClipRect(topLeft, bottomRight, true);
-            ImGui::SetCursorScreenPos(ImVec2(topLeft.x, topLeft.y + drift));
-            ImGui::BeginChild("page", ImVec2(avail.x, avail.y - std::max(drift, 0.f)));
+            // The page keeps its size while it drifts: a demo shown in place would otherwise see its size change during
+            // the transition (a node editor adapts its view to its size, and would lose its fit). A frame without
+            // scrollbar holds the page, and clips it.
+            ImGui::BeginChild("page frame", avail, ImGuiChildFlags_None,
+                              ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
+            ImGui::SetCursorPos(ImVec2(0.f, drift));
+            ImGui::BeginChild("page", avail);
             if (shown == State::Welcome)
                 Welcome();
             else if (shown == State::Demos)
@@ -152,7 +155,7 @@ namespace
             else
                 DemoInPlace();
             ImGui::EndChild();
-            ImGui::PopClipRect();
+            ImGui::EndChild();
             if (veil > 0.f)  // over the child's own draw list, which comes after this window's
                 ImGui::GetForegroundDrawList()->AddRectFilled(topLeft, bottomRight, Curtain(veil));
         }
@@ -347,12 +350,6 @@ std::pair<HelloImGui::RunnerParams, ImmApp::AddOnsParams> ExplorerParams()
     auto addons = ImmApp::AddOnsParams();
     addons.withMarkdown = true;
     addons.withLatex = true;
-#ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
-    // The node editor's config of the demos shown in place: the image pipeline's main() sets this option
-    ImmApp::NodeEditorConfig nodeEditorConfig;
-    nodeEditorConfig.ForceWindowContentWidthToNodeWidth = true;
-    addons.withNodeEditorConfig = nodeEditorConfig;
-#endif
     addons.withImplot = true;
     addons.withImplot3d = true;
     addons.withTexInspect = true;

@@ -401,6 +401,7 @@ void HandleMenus(Graph& graph, MenuState& menu)
 // =====================================================================================================================
 struct AppState
 {
+    ed::EditorContext* editor = nullptr;  // the demo's own editor (see Editor())
     std::unique_ptr<Graph> graph;  // created at the first frame: the node positions need the editor
     MenuState menu;
     int frame = 0;
@@ -412,12 +413,28 @@ AppState& State()
     return state;
 }
 
+// The demo's own editor, with its own config, whatever the app that shows it: an app such as the bundle's explorer
+// shows several node editor demos, which need different configs (the image pipeline wraps the text in its nodes).
+ed::EditorContext* Editor()
+{
+    AppState& state = State();
+    if (!state.editor)
+    {
+        ed::Config config;
+        config.SettingsFile = nullptr;  // the demo places its nodes at start: nothing to save
+        state.editor = ed::CreateEditor(&config);
+    }
+    return state.editor;
+}
+
 }  // namespace
 
 void demo_node_editor_color_mixer()
 {
     AppState& state = State();
     RichMd::Render(HELP);
+    ed::EditorContext* previousEditor = ed::GetCurrentEditor();
+    ed::SetCurrentEditor(Editor());
     ed::Begin("Color mixer");
     if (!state.graph)
         state.graph = std::make_unique<Graph>(InitialGraph());
@@ -434,6 +451,7 @@ void demo_node_editor_color_mixer()
     if (state.frame == 2)
         ed::NavigateToContent(0.0f);
     state.frame++;
+    ed::SetCurrentEditor(previousEditor);
 }
 
 
@@ -444,8 +462,8 @@ int main(int, char**)
     params.callbacks.ShowGui = demo_node_editor_color_mixer;
     params.appWindowParams.windowTitle = "Node editor: a color mixer";
     params.appWindowParams.windowGeometry.size = {1100, 600};
-    ImmApp::AddOnsParams addOns;
-    addOns.withNodeEditor = true;
+    params.callbacks.BeforeExit = [] { ed::DestroyEditor(Editor()); };
+    ImmApp::AddOnsParams addOns;  // the demo creates its own node editor
     addOns.withLatex = true;  // implies withMarkdown
     ImmApp::Run(params, addOns);
     return 0;

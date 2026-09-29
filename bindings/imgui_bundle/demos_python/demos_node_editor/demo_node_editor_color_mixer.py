@@ -285,6 +285,7 @@ def handle_menus(graph: Graph, menu: MenuState) -> None:
 # =====================================================================================================================
 class AppState:
     def __init__(self) -> None:
+        self.editor: ed.EditorContext | None = None  # the demo's own editor (see editor())
         self.graph: Graph | None = None  # created at the first frame: the node positions need the editor
         self.menu = MenuState()
         self.frame = 0
@@ -293,8 +294,20 @@ class AppState:
 state = AppState()
 
 
+def editor() -> ed.EditorContext:
+    """The demo's own editor, with its own config, whatever the app that shows it: an app such as the bundle's explorer
+    shows several node editor demos, which need different configs (the image pipeline wraps the text in its nodes)."""
+    if state.editor is None:
+        config = ed.Config()
+        config.settings_file = None  # the demo places its nodes at start: nothing to save
+        state.editor = ed.create_editor(config)
+    return state.editor
+
+
 def demo_gui() -> None:
     rich_md.render(HELP)
+    previous_editor = ed.get_current_editor()
+    ed.set_current_editor(editor())
     ed.begin("Color mixer")
     if state.graph is None:
         state.graph = initial_graph()
@@ -311,11 +324,14 @@ def demo_gui() -> None:
     if state.frame == 2:
         ed.navigate_to_content(0.0)
     state.frame += 1
+    if previous_editor is not None:  # the app's own editor, if it has one
+        ed.set_current_editor(previous_editor)
 
 
 def main() -> None:
-    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
-               with_markdown=True, with_latex=True)
+    # The demo creates its own node editor: no need for immapp's (with_node_editor)
+    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_markdown=True,
+               with_latex=True)
 
 
 if __name__ == "__main__":
