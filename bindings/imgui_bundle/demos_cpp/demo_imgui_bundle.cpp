@@ -16,6 +16,10 @@
 #include <cmath>
 #include <optional>
 #include <string>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#include <cstdlib>
+#endif
 
 // The intro
 void IntroWelcomeGui();  // its content without the title and the links
@@ -40,6 +44,36 @@ void demo_immvision_process();
 
 namespace
 {
+#ifdef __EMSCRIPTEN__
+    // The route in the browser's address: its hash, without the '#'
+    std::string BrowserRoute()
+    {
+        char* route = (char*)EM_ASM_PTR({
+            var hash = window.location.hash.slice(1);
+            var len = lengthBytesUTF8(hash) + 1;
+            var buf = _malloc(len);
+            stringToUTF8(hash, buf, len);
+            return buf;
+        });
+        std::string r = route;
+        free(route);
+        return r;
+    }
+
+    // A new history entry with this route (or the current entry replaced); the Welcome's route is the bare address
+    void SetBrowserRoute(const std::string& route, bool replace)
+    {
+        EM_ASM({
+            var route = UTF8ToString($0);
+            var url = route === "" ? window.location.pathname + window.location.search : "#" + route;
+            if ($1)
+                window.history.replaceState(null, "", url);
+            else
+                window.history.pushState(null, "", url);
+        }, route.c_str(), replace);
+    }
+#endif
+
     const float CHANGE_DURATION = 0.4f;  // s: a change of state, through the background
     const float DRIFT = 3.f;  // em: the page leaving slides that much (up when going forward), the one arriving as far
 
@@ -53,6 +87,9 @@ namespace
         bool forward = true;  // the change goes deeper (Welcome, Demos, a demo: the pages slide up), or back
         DemoLauncher launcher;
         std::string demoInPlace;  // the stem of the demo shown by the Demo state
+#ifdef __EMSCRIPTEN__
+        std::string browserRoute;  // the route of the browser's current history entry
+#endif
         float rightWidth = 0.f;  // of the header's switch, measured on the previous frame
 
         Explorer()
@@ -99,7 +136,64 @@ namespace
             }
             Header();
             Page();
+#ifdef __EMSCRIPTEN__
+            FollowBrowserHistory();
+#endif
         }
+
+        // The place shown, as a route: "" (Welcome), "demos" (and the launcher's level: "demos/code/<stem>"), or
+        // "demo/<stem>" (a demo in place)
+        std::string Route() const
+        {
+            if (state == State::Welcome)
+                return "";
+            if (state == State::Demo)
+                return "demo/" + demoInPlace;
+            std::string level = launcher.Route();
+            return level.empty() ? "demos" : "demos/" + level;
+        }
+
+        // The place of a route; a route that leads nowhere leads to the Welcome
+        void GoTo(const std::string& route)
+        {
+            if (route.rfind("demo/", 0) == 0 && launcher.inPlaceFunctions.count(route.substr(5)))
+            {
+                demoInPlace = route.substr(5);
+                launcher.GoTo("");
+                Go(State::Demo);
+            }
+            else if (route == "demos" || route.rfind("demos/", 0) == 0)
+            {
+                launcher.GoTo(route == "demos" ? "" : route.substr(6));
+                Go(State::Demos);
+            }
+            else
+            {
+                launcher.GoTo("");
+                Go(State::Welcome);
+            }
+        }
+
+#ifdef __EMSCRIPTEN__
+        // The browser's history follows the explorer: each move in the explorer adds a history entry (as a link would),
+        // and the browser's back and forward, or an address with a route, move the explorer
+        void FollowBrowserHistory()
+        {
+            std::string route = BrowserRoute();
+            if (route != browserRoute)  // the browser moved
+            {
+                GoTo(route);
+                browserRoute = Route();
+                if (browserRoute != route)  // a route that leads nowhere: the address shows where the explorer went
+                    SetBrowserRoute(browserRoute, true);
+            }
+            else if (Route() != browserRoute)  // the explorer moved
+            {
+                browserRoute = Route();
+                SetBrowserRoute(browserRoute, false);
+            }
+        }
+#endif
 
         // The state's content, in a child; during a change, it fades through the background with a drift: the page
         // leaving slides away under a veil, then the new one slides into place as the veil lifts

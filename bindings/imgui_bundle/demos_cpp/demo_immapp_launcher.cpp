@@ -965,6 +965,36 @@ void DemoLauncher::Back()
         _detailOpen = false;
 }
 
+std::string DemoLauncher::Route() const
+{
+    if (_codeView.has_value())
+        return "code/" + _codeView->first->stem;
+    if (_detailOpen && _selected != nullptr)
+        return "detail/" + _selected->stem;
+    return "";
+}
+
+void DemoLauncher::GoTo(const std::string& route)
+{
+    // A route that names no level, or no demo of the catalog, leaves the gallery
+    _codeView.reset();
+    _detailOpen = false;
+    size_t slash = route.find('/');
+    if (slash == std::string::npos)
+        return;
+    const DemoEntry* demo = Find(route.substr(slash + 1));
+    if (demo == nullptr)
+        return;
+    std::string level = route.substr(0, slash);
+    if (level == "code")
+        ShowCodeOf(*demo);
+    else if (level == "detail")
+    {
+        _selected = demo;
+        _detailOpen = SmallScreen();  // on a larger screen, the detail is beside the gallery
+    }
+}
+
 void DemoLauncher::DetailPage()
 {
     // On a small screen: the detail alone, full width, with the way back to the gallery

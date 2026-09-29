@@ -66,6 +66,9 @@ public:
     // Escape's levels: the code view, then the detail page of a small screen
     int Depth() const;
     void Back();
+    // The level shown, as a route for the browser's history ("", "code/<stem>", "detail/<stem>"), and the way to one
+    std::string Route() const;
+    void GoTo(const std::string& route);
 
     // For the explorer's page
     void Deal();  // when the gallery arrives on screen: its cards in view are dealt one after another
