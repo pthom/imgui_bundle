@@ -22,6 +22,16 @@ function onSplitDrag() {
     window.dispatchEvent(new Event('resize'));
 }
 
+// The header's button hides the code editor (the canvas takes the whole width), and shows it again
+const codeButton = document.getElementById('code-button');
+codeButton.addEventListener('click', () => {
+    const hidden = document.getElementById('editor-and-canvas-container').classList.toggle('code-hidden');
+    codeButton.textContent = hidden ? 'Show code' : 'Hide code';
+    codeButton.setAttribute('aria-pressed', hidden ? 'true' : 'false');
+    window.dispatchEvent(new Event('resize'));
+    if (!hidden) editor.refresh();  // CodeMirror measures its lines again once visible
+});
+
 // Initialize CodeMirror for the code editor
 const editor = CodeMirror(document.getElementById('editor'), {
     mode: 'python',

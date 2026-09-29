@@ -40,6 +40,28 @@ html, body {
 }
 
 
+/* The button that hides the code editor (see js/main.js): discreet, the Demos button stays the accent */
+#code-button {
+    margin-right: 10px;
+    padding: 6px 14px;
+    font-size: 1em;
+    color: #ddd;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#code-button:hover {
+    background-color: #4a4a4a;
+}
+.code-hidden #editor-container,
+.code-hidden .gutter {
+    display: none;
+}
+.code-hidden #canvas-container {
+    width: 100% !important;  /* over the width that Split.js sets inline, which it gives back when the code shows */
+}
+
 /* The gallery of demos: a button in the header, and an overlay under it (see js/examples.js) */
 #examples-menu {
     margin-right: 10px;
