@@ -121,6 +121,7 @@ cython_debug/
 /_imgui_bundle_opencv_packages/
 imgui.ini
 /imgui_app_window.ini
+*.node_editor.json
 .vscode/settings.json
 /_icons_test/
 _logos_brainstorm/
