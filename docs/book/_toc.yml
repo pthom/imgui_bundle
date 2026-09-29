@@ -47,7 +47,17 @@ parts:
       - file: api/imgui/index
         sections:
           - file: api/imgui/imgui
+            sections:
+              - file: api/imgui/imgui_1
+              - file: api/imgui/imgui_2
+              - file: api/imgui/imgui_3
           - file: api/imgui/imgui_internal
+            sections:
+              - file: api/imgui/imgui_internal_1
+              - file: api/imgui/imgui_internal_2
+              - file: api/imgui/imgui_internal_3
+              - file: api/imgui/imgui_internal_4
+              - file: api/imgui/imgui_internal_5
           - file: api/imgui/imgui_test_engine
           - file: api/imgui/imgui_backends
       - file: api/hello_imgui/index
@@ -63,6 +73,7 @@ parts:
         sections:
           - file: api/implot/implot
           - file: api/implot/implot_internal
+          - file: api/implot/implot_cpp
       - file: api/implot3d/index
         sections:
           - file: api/implot3d/implot3d
@@ -94,6 +105,7 @@ parts:
       - file: api/imgui_knobs/index
         sections:
           - file: api/imgui_knobs/imgui_knobs
+          - file: api/imgui_knobs/imgui_knobs_cpp
       - file: api/imgui_toggle/index
         sections:
           - file: api/imgui_toggle/imgui_toggle
