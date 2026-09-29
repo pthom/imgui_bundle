@@ -22,15 +22,24 @@ function onSplitDrag() {
     window.dispatchEvent(new Event('resize'));
 }
 
-// The header's button hides the code editor (the canvas takes the whole width), and shows it again
-const codeButton = document.getElementById('code-button');
-codeButton.addEventListener('click', () => {
-    const hidden = document.getElementById('editor-and-canvas-container').classList.toggle('code-hidden');
-    codeButton.textContent = hidden ? 'Show code' : 'Hide code';
-    codeButton.setAttribute('aria-pressed', hidden ? 'true' : 'false');
-    window.dispatchEvent(new Event('resize'));
-    if (!hidden) editor.refresh();  // CodeMirror measures its lines again once visible
-});
+// The editor folds into a slim rail at the left (the canvas takes the width), and unfolds from it
+const CODE_FOLD_DURATION_MS = 250;  // as the width transition of .code-folding in styles.css
+function setCodeFolded(folded) {
+    const container = document.getElementById('editor-and-canvas-container');
+    container.classList.add('code-folding');
+    container.classList.toggle('code-hidden', folded);
+    // The canvas follows the slide. From a timer, as the splitter from mouse events: a resize clears the canvas, and
+    // a timer runs before the frame is drawn (an animation frame callback may run after, and show a black canvas)
+    const follow = setInterval(() => window.dispatchEvent(new Event('resize')), 16);
+    setTimeout(() => {
+        clearInterval(follow);
+        window.dispatchEvent(new Event('resize'));
+        container.classList.remove('code-folding');  // Split.js drags without a transition
+        if (!folded) editor.refresh();  // CodeMirror measures its lines again once visible
+    }, CODE_FOLD_DURATION_MS + 50);
+}
+document.getElementById('code-fold').addEventListener('click', () => setCodeFolded(true));
+document.getElementById('code-rail').addEventListener('click', () => setCodeFolded(false));
 
 // Initialize CodeMirror for the code editor
 const editor = CodeMirror(document.getElementById('editor'), {

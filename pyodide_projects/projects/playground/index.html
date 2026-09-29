@@ -100,8 +100,6 @@
             </div>
         </div>
         <div id="header-right">
-            <!-- Hides the code editor, and shows it again: js/main.js -->
-            <button id="code-button" aria-pressed="false">Hide code</button>
             <!-- The gallery's button (the gallery itself is at the end of the body): js/examples.js -->
             <div id="examples-menu">
                 <button id="examples-button" aria-haspopup="true" aria-expanded="false">Demos &#9662;</button>
@@ -114,7 +112,19 @@
     <div id="main-container">
         <div id="editor-and-canvas-container">
             <div id="editor-container">
+                <!-- The editor folds into this rail, and unfolds from it: js/main.js -->
+                <button id="code-rail" title="Show the code" aria-label="Show the code">
+                    <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                        <path d="M6 3 L11 8 L6 13"/>
+                    </svg>
+                    <span id="code-rail-label">Code</span>
+                </button>
                 <div id="editor-toolbar">
+                    <button id="code-fold" title="Hide the code" aria-label="Hide the code">
+                        <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                            <path d="M10 3 L5 8 L10 13"/>
+                        </svg>
+                    </button>
                     <span id="editor-modified">●</span><span id="editor-label">Welcome to Dear ImGui Bundle</span>
                     <div id="editor-toolbar-right">
                         <button id="run-button" disabled>&#9654; Run</button>

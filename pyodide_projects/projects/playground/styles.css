@@ -40,28 +40,6 @@ html, body {
 }
 
 
-/* The button that hides the code editor (see js/main.js): discreet, the Demos button stays the accent */
-#code-button {
-    margin-right: 10px;
-    padding: 6px 14px;
-    font-size: 1em;
-    color: #ddd;
-    background-color: #3a3a3a;
-    border: 1px solid #555;
-    border-radius: 4px;
-    cursor: pointer;
-}
-#code-button:hover {
-    background-color: #4a4a4a;
-}
-.code-hidden #editor-container,
-.code-hidden .gutter {
-    display: none;
-}
-.code-hidden #canvas-container {
-    width: 100% !important;  /* over the width that Split.js sets inline, which it gives back when the code shows */
-}
-
 /* The gallery of demos: a button in the header, and an overlay under it (see js/examples.js) */
 #examples-menu {
     margin-right: 10px;
@@ -344,10 +322,15 @@ html, body {
     animation: run-button-pulse 1.5s ease-in-out infinite;
 }
 
-/* Main container below header */
+/* The header, then the main container in the height left (the header is taller on a phone) */
+body {
+    display: flex;
+    flex-direction: column;
+}
 #main-container {
     display: flex;
-    height: calc(100% - 56px); /* Subtract header height */
+    flex: 1;
+    min-height: 0;
     width: 100%;
 }
 
@@ -383,6 +366,8 @@ html, body {
 }
 
 #editor-label {
+    flex: 1;
+    min-width: 0;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -410,6 +395,83 @@ html, body {
 #run-shortcut {
     color: #777;
     font-size: 0.75rem;
+}
+
+/* The code folds into a slim rail at the left, and unfolds from it (js/main.js) */
+#code-fold svg, #code-rail svg {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+#code-fold {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-left: -4px;
+    padding: 0;
+    color: #999;
+    background: none;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+#code-fold:hover {
+    color: #fff;
+    background-color: #3a3a3a;
+}
+#code-rail {
+    display: none;
+}
+.code-hidden #code-rail {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    height: 100%;
+    padding: 7px 0 0;
+    color: #ccc;
+    background-color: #1e1e1e;
+    border: none;
+    border-right: 1px solid #333;
+    font-family: system-ui, sans-serif;
+    font-size: 0.8rem;
+    cursor: pointer;
+}
+.code-hidden #code-rail:hover {
+    color: #fff;
+    background-color: #2a2a2a;
+}
+#code-rail-label {
+    writing-mode: vertical-rl;
+    letter-spacing: 0.08em;
+}
+.code-hidden #editor-toolbar,
+.code-hidden #editor,
+.code-hidden #error-output,
+.code-hidden .gutter {
+    display: none;
+}
+/* Over the widths that Split.js sets inline: it gives them back when the code unfolds */
+.code-hidden #editor-container {
+    width: 28px !important;
+}
+.code-hidden #canvas-container {
+    width: calc(100% - 28px) !important;
+}
+.code-folding #editor-container,
+.code-folding #canvas-container {
+    transition: width 0.25s ease-out;
+}
+@media (prefers-reduced-motion: reduce) {
+    .code-folding #editor-container,
+    .code-folding #canvas-container {
+        transition: none;
+    }
 }
 
 #editor {
