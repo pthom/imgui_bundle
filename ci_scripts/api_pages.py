@@ -457,15 +457,31 @@ def _code(language: str, text: str) -> list[str]:
 def _safe_markdown(text: str) -> str:
     """A docstring as markdown, with the hazards of C++ comments neutralized: a line of "=" or "-" (a setext heading
     for the line above), a leading "#" (a heading; ImPlot writes #xs for a parameter), "<Type>" (an HTML tag), an
-    unclosed code fence (it would swallow the rest of the page), a NUL (a docstring's \0, as in Combo's)"""
+    unclosed code fence (it would swallow the rest of the page), a NUL (a docstring's \0, as in Combo's). The lines
+    keep their breaks (a trailing backslash), since the headers lay out one idea per line; a [SECTION] mark left in
+    a text (a part without bound entries) becomes a bold line"""
     text = text.replace("\x00", "\\0")
     out = []
+    in_fence = False
     for line in text.splitlines():
+        if line.strip().startswith("```"):
+            in_fence = not in_fence
+            out.append(line)
+            continue
+        if in_fence:
+            out.append(line)
+            continue
         if re.match(r"^\s*(=+|-{3,}|/{4,})\s*$", line):
             continue
+        if line.strip().startswith("[SECTION]"):
+            line = f"**{_part_title(line)}**"
         line = re.sub(r"^(\s*)#", r"\1\\#", line)
         line = re.sub(r"(?<![`\\])<(?=[A-Za-z_])", r"\\<", line)
         out.append(line)
+    for i in range(len(out) - 1):  # a hard break between two lines of text (not around blank lines or fences)
+        if out[i].strip() and out[i + 1].strip() and not out[i].startswith("```") and not out[i + 1].startswith("```") \
+                and not out[i].endswith("\\"):
+            out[i] += "\\"
     if sum(1 for line in out if line.strip().startswith("```")) % 2:
         out.append("```")
     return "\n".join(out)
