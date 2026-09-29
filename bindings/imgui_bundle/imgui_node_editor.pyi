@@ -100,8 +100,6 @@ def resume_editor_canvas() -> None:
 
 # ------------------------------------------------------------------------------
 
-# ------------------------------------------------------------------------------
-
 class PinKind(enum.IntEnum):
     """------------------------------------------------------------------------------"""
 
@@ -400,62 +398,77 @@ class Style:
 # You may keep multiple editors and switch between them with SetCurrentEditor.
 # Pass a Config to CreateEditor to set e.g. SettingsFile (where node positions
 # are persisted) or to override the default mouse buttons.
+
 # IMGUI_NODE_EDITOR_API void SetCurrentEditor(EditorContext* ctx);    /* original C++ signature */
 def set_current_editor(ctx: EditorContext) -> None:
+    """Makes this editor the current one: all the other functions apply to the current editor."""
     pass
 
-# IMGUI_NODE_EDITOR_API EditorContext* GetCurrentEditor();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API EditorContext* GetCurrentEditor();     /* original C++ signature */
 def get_current_editor() -> EditorContext:
+    """The current editor (None if none)"""
     pass
 
 # IMGUI_NODE_EDITOR_API EditorContext* CreateEditor(const Config* config = nullptr);    /* original C++ signature */
 def create_editor(config: Optional[Config] = None) -> EditorContext:
+    """Creates an editor, with a copy of this config (or the default one). It does not become current (SetCurrentEditor)."""
     pass
 
-# IMGUI_NODE_EDITOR_API void DestroyEditor(EditorContext* ctx);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void DestroyEditor(EditorContext* ctx);     /* original C++ signature */
 def destroy_editor(ctx: EditorContext) -> None:
+    """Destroys an editor created by CreateEditor()"""
     pass
 
 # IMGUI_NODE_EDITOR_API const Config& GetConfig(EditorContext* ctx = nullptr);    /* original C++ signature */
 def get_config(ctx: Optional[EditorContext] = None) -> Config:
+    """The config of this editor (None: the current one). It is read-only: give your Config to CreateEditor()."""
     pass
 
 # --- Style ----------------------------------------------------------------
 # Editor-specific style, separate from ImGui::GetStyle().
 # Push/PopStyleColor and Push/PopStyleVar work like the ImGui equivalents.
-# IMGUI_NODE_EDITOR_API Style& GetStyle();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API Style& GetStyle();     /* original C++ signature */
 def get_style() -> Style:
+    """The style of the current editor: its fields can be changed"""
     pass
 
-# IMGUI_NODE_EDITOR_API const char* GetStyleColorName(StyleColor colorIndex);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API const char* GetStyleColorName(StyleColor colorIndex);     /* original C++ signature */
 def get_style_color_name(color_index: StyleColor) -> str:
+    """The name of a style color"""
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleColor(StyleColor colorIndex, const ImVec4& color);    /* original C++ signature */
 def push_style_color(color_index: StyleColor, color: ImVec4Like) -> None:
+    """Pushes a style color until PopStyleColor(), e.g. PushStyleColor(StyleColor_NodeBg, color)."""
     pass
 
-# IMGUI_NODE_EDITOR_API void PopStyleColor(int count = 1);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PopStyleColor(int count = 1);     /* original C++ signature */
 def pop_style_color(count: int = 1) -> None:
+    """Pops the last `count` colors pushed by PushStyleColor()"""
     pass
 
 # IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, float value);    /* original C++ signature */
 @overload
 def push_style_var(var_index: StyleVar, value: float) -> None:
+    """Pushes a style variable until PopStyleVar(). This one for a float variable, the next ones for an ImVec2 or an ImVec4."""
     pass
 
-# IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec2& value);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec2& value);     /* original C++ signature */
 @overload
 def push_style_var(var_index: StyleVar, value: ImVec2Like) -> None:
+    """PushStyleVar(), for an ImVec2"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec4& value);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PushStyleVar(StyleVar varIndex, const ImVec4& value);     /* original C++ signature */
 @overload
 def push_style_var(var_index: StyleVar, value: ImVec4Like) -> None:
+    """PushStyleVar(), for an ImVec4"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PopStyleVar(int count = 1);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PopStyleVar(int count = 1);     /* original C++ signature */
 def pop_style_var(count: int = 1) -> None:
+    """Pops the last `count` variables pushed by PushStyleVar()"""
     pass
 
 # --- Frame ----------------------------------------------------------------
@@ -463,15 +476,19 @@ def pop_style_var(count: int = 1) -> None:
 # between Begin() and End(), and Begin() must be called inside a real ImGui
 # window. `id` distinguishes editor instances inside the same window;
 # `size` matches ImGui::BeginChild semantics (0 = available).
+
 # IMGUI_NODE_EDITOR_API void Begin(const char* id, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
 def begin(id: str, size: Optional[ImVec2Like] = None) -> None:
-    """Python bindings defaults:
-    If size is None, then its default value will be: ImVec2(0, 0)
+    """Starts drawing the current editor, in the current ImGui window: the other calls follow, until End().
+
+    Python bindings defaults:
+        If size is None, then its default value will be: ImVec2(0, 0)
     """
     pass
 
-# IMGUI_NODE_EDITOR_API void End();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void End();     /* original C++ signature */
 def end() -> None:
+    """Ends the editor started by Begin()"""
     pass
 
 # --- Nodes & pins ---------------------------------------------------------
@@ -480,12 +497,15 @@ def end() -> None:
 # in between. Anything you draw between the Begin/End is rendered inside
 # the node; pins are typically wrapped around a Text/Button so the user
 # has something to grab onto.
-# IMGUI_NODE_EDITOR_API void BeginNode(NodeId id);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API void BeginNode(NodeId id);     /* original C++ signature */
 def begin_node(id: NodeId) -> None:
+    """Starts a node: its widgets follow, until EndNode()"""
     pass
 
-# IMGUI_NODE_EDITOR_API void BeginPin(PinId id, PinKind kind);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void BeginPin(PinId id, PinKind kind);     /* original C++ signature */
 def begin_pin(id: PinId, kind: PinKind) -> None:
+    """Starts a pin: its widgets follow, until EndPin()"""
     pass
 
 # --- Pin geometry overrides (advanced) -----------------------------------
@@ -505,28 +525,35 @@ def begin_pin(id: PinId, kind: PinKind) -> None:
 #
 # You will rarely need these unless you draw custom-shaped pins (e.g. a
 # triangle whose tip should be the link attach point).
-# IMGUI_NODE_EDITOR_API void PinRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API void PinRect(const ImVec2& a, const ImVec2& b);     /* original C++ signature */
 def pin_rect(a: ImVec2Like, b: ImVec2Like) -> None:
+    """Sets the pin's hover rectangle"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PinPivotRect(const ImVec2& a, const ImVec2& b);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PinPivotRect(const ImVec2& a, const ImVec2& b);     /* original C++ signature */
 def pin_pivot_rect(a: ImVec2Like, b: ImVec2Like) -> None:
+    """Sets the rectangle where links attach"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PinPivotSize(const ImVec2& size);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PinPivotSize(const ImVec2& size);     /* original C++ signature */
 def pin_pivot_size(size: ImVec2Like) -> None:
+    """Sets the pivot's size (-1 on an axis: the pin's)"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PinPivotScale(const ImVec2& scale);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PinPivotScale(const ImVec2& scale);     /* original C++ signature */
 def pin_pivot_scale(scale: ImVec2Like) -> None:
+    """Scales the pivot's size"""
     pass
 
-# IMGUI_NODE_EDITOR_API void PinPivotAlignment(const ImVec2& alignment);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void PinPivotAlignment(const ImVec2& alignment);     /* original C++ signature */
 def pin_pivot_alignment(alignment: ImVec2Like) -> None:
+    """Where links attach: (0.5, 0.5) is the center"""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndPin();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndPin();     /* original C++ signature */
 def end_pin() -> None:
+    """Ends the pin started by BeginPin()"""
     pass
 
 # --- Group nodes ----------------------------------------------------------
@@ -567,12 +594,15 @@ def end_pin() -> None:
 # then for each candidate node test whether its center sits inside the
 # group's rectangle.
 #
-# IMGUI_NODE_EDITOR_API void Group(const ImVec2& size);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API void Group(const ImVec2& size);     /* original C++ signature */
 def group(size: ImVec2Like) -> None:
+    """Makes the current node a group, of this initial size"""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndNode();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndNode();     /* original C++ signature */
 def end_node() -> None:
+    """Ends the node started by BeginNode()"""
     pass
 
 # --- Group hints ----------------------------------------------------------
@@ -611,28 +641,35 @@ def end_node() -> None:
 #                     "My Group")
 #     ed.end_group_hint()
 #
-# IMGUI_NODE_EDITOR_API bool BeginGroupHint(NodeId nodeId);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API bool BeginGroupHint(NodeId nodeId);     /* original C++ signature */
 def begin_group_hint(node_id: NodeId) -> bool:
+    """True when zoomed out: draw the group's hint then"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 GetGroupMin();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 GetGroupMin();     /* original C++ signature */
 def get_group_min() -> ImVec2:
+    """The top left corner of the group, in screen coords (in a hint)"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 GetGroupMax();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 GetGroupMax();     /* original C++ signature */
 def get_group_max() -> ImVec2:
+    """The bottom right corner of the group, in screen coords (in a hint)"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImDrawList* GetHintForegroundDrawList();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImDrawList* GetHintForegroundDrawList();     /* original C++ signature */
 def get_hint_foreground_draw_list() -> ImDrawList:
+    """A draw list above the editor's content (in a hint)"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImDrawList* GetHintBackgroundDrawList();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImDrawList* GetHintBackgroundDrawList();     /* original C++ signature */
 def get_hint_background_draw_list() -> ImDrawList:
+    """A draw list below the editor's content (in a hint)"""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndGroupHint();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndGroupHint();     /* original C++ signature */
 def end_group_hint() -> None:
+    """Ends the group hint (see the example above)"""
     pass
 
 # IMGUI_NODE_EDITOR_API ImDrawList* GetNodeBackgroundDrawList(NodeId nodeId);    /* original C++ signature */
@@ -652,7 +689,7 @@ def link(
     thickness: float = 1.0,
 ) -> bool:
     """Declares an existing link between two pins. Call once per frame for every
-     link you want shown. Returns True if the link is currently visible/active.
+     link you want shown. Returns False when one of its pins was not drawn this frame.
      `color` default is the sentinel ImVec4(0,0,0,0) ("auto"): when alpha is 0
      the implementation substitutes the current ImGuiCol_Text, so links stay
      readable on both light and dark themes. Pass any non-zero-alpha color to
@@ -694,16 +731,20 @@ def flow(link_id: LinkId, direction: FlowDirection = FlowDirection.forward) -> N
 # Once QueryNewLink() or QueryNewNode() returned True, and until EndCreate(), the editor is suspended (it draws the
 # dragged link in screen space): ImGui::GetMousePos() and the cursor are then in SCREEN coords, while everywhere else
 # between Begin() and End() they are in CANVAS coords. To place a new node at the mouse, use GetMousePosOnCanvas().
+
 # IMGUI_NODE_EDITOR_API bool BeginCreate(const ImVec4& color = ImVec4(0, 0, 0, 0), float thickness = 1.0f);    /* original C++ signature */
 def begin_create(color: Optional[ImVec4Like] = None, thickness: float = 1.0) -> bool:
-    """Python bindings defaults:
-    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)
+    """Starts the create action: True while the user drags a link from a pin. Then call EndCreate().
+
+    Python bindings defaults:
+        If color is None, then its default value will be: ImVec4(0, 0, 0, 0)
     """
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId);    /* original C++ signature */
 @overload
 def query_new_link(start_id: PinId, end_id: PinId) -> bool:
+    """True while the dragged link is not over empty space: the pin it starts from, and the pin under the mouse (0 if none)."""
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewLink(PinId* startId, PinId* endId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
@@ -711,40 +752,48 @@ def query_new_link(start_id: PinId, end_id: PinId) -> bool:
 def query_new_link(
     start_id: PinId, end_id: PinId, color: ImVec4Like, thickness: float = 1.0
 ) -> bool:
+    """QueryNewLink(), with the color and thickness of the dragged link."""
     pass
 
-# IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId);     /* original C++ signature */
 @overload
 def query_new_node(pin_id: PinId) -> bool:
+    """True while the dragged link is over empty space: its pin"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryNewNode(PinId* pinId, const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
 def query_new_node(pin_id: PinId, color: ImVec4Like, thickness: float = 1.0) -> bool:
+    """QueryNewNode(), with the color and thickness of the dragged link."""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptNewItem();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptNewItem();     /* original C++ signature */
 @overload
 def accept_new_item() -> bool:
+    """Accepts the queried link or node: True when the mouse is released"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
 def accept_new_item(color: ImVec4Like, thickness: float = 1.0) -> bool:
+    """AcceptNewItem(), with the color and thickness of the dragged link."""
     pass
 
-# IMGUI_NODE_EDITOR_API void RejectNewItem();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void RejectNewItem();     /* original C++ signature */
 @overload
 def reject_new_item() -> None:
+    """Refuses the queried link or node: the dragged link shows it"""
     pass
 
 # IMGUI_NODE_EDITOR_API void RejectNewItem(const ImVec4& color, float thickness = 1.0f);    /* original C++ signature */
 @overload
 def reject_new_item(color: ImVec4Like, thickness: float = 1.0) -> None:
+    """RejectNewItem(), with the color and thickness of the dragged link (e.g. red)."""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndCreate();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndCreate();     /* original C++ signature */
 def end_create() -> None:
+    """Ends the create action: only when BeginCreate() returned True"""
     pass
 
 # --- Item deletion (Delete key, "Delete" context-menu, etc.) -------------
@@ -764,30 +813,37 @@ def end_create() -> None:
 # `deleteDependencies = True` (the default for AcceptDeletedItem) tells the
 # editor to also enqueue links touching the accepted node, so a subsequent
 # QueryDeletedLink call yields them too.
-# IMGUI_NODE_EDITOR_API bool BeginDelete();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API bool BeginDelete();     /* original C++ signature */
 def begin_delete() -> bool:
+    """Starts the delete action: True when items are to be deleted this frame"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool QueryDeletedLink(LinkId* linkId, PinId* startId = nullptr, PinId* endId = nullptr);    /* original C++ signature */
 def query_deleted_link(
     link_id: LinkId, start_id: Optional[PinId] = None, end_id: Optional[PinId] = None
 ) -> bool:
+    """True for each link to delete, one per call: its id, and its pins if you want them."""
     pass
 
-# IMGUI_NODE_EDITOR_API bool QueryDeletedNode(NodeId* nodeId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool QueryDeletedNode(NodeId* nodeId);     /* original C++ signature */
 def query_deleted_node(node_id: NodeId) -> bool:
+    """True for each node to delete, one per call: its id"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool AcceptDeletedItem(bool deleteDependencies = true);    /* original C++ signature */
 def accept_deleted_item(delete_dependencies: bool = True) -> bool:
+    """Accepts the deletion of the queried item: then remove it from your data (see deleteDependencies above)."""
     pass
 
-# IMGUI_NODE_EDITOR_API void RejectDeletedItem();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void RejectDeletedItem();     /* original C++ signature */
 def reject_deleted_item() -> None:
+    """Refuses the deletion of the queried item: it stays"""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndDelete();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndDelete();     /* original C++ signature */
 def end_delete() -> None:
+    """Ends the delete action (harmless when BeginDelete() returned False)"""
     pass
 
 # --- Node geometry --------------------------------------------------------
@@ -795,25 +851,30 @@ def end_delete() -> None:
 # CanvasToScreen / ScreenToCanvas to convert.
 # GetNodeSize returns (0,0) on the very first frame a node is drawn (the
 # editor has no measurement yet). It stabilizes immediately after.
-# CenterNodeOnScreen moves the node so it lands at the center of the view.
+
 # IMGUI_NODE_EDITOR_API void SetNodePosition(NodeId nodeId, const ImVec2& editorPosition);    /* original C++ signature */
 def set_node_position(node_id: NodeId, editor_position: ImVec2Like) -> None:
+    """Sets a node's position, in canvas coords (e.g. once, when you create it): the editor keeps it afterwards."""
     pass
 
-# IMGUI_NODE_EDITOR_API void SetGroupSize(NodeId nodeId, const ImVec2& size);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void SetGroupSize(NodeId nodeId, const ImVec2& size);     /* original C++ signature */
 def set_group_size(node_id: NodeId, size: ImVec2Like) -> None:
+    """Sets the size of a group node"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 GetNodePosition(NodeId nodeId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 GetNodePosition(NodeId nodeId);     /* original C++ signature */
 def get_node_position(node_id: NodeId) -> ImVec2:
+    """In canvas coords; (FLT_MAX, FLT_MAX) if unknown"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 GetNodeSize(NodeId nodeId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 GetNodeSize(NodeId nodeId);     /* original C++ signature */
 def get_node_size(node_id: NodeId) -> ImVec2:
+    """In canvas coords; (0, 0) before the node was drawn"""
     pass
 
 # IMGUI_NODE_EDITOR_API void CenterNodeOnScreen(NodeId nodeId);    /* original C++ signature */
 def center_node_on_screen(node_id: NodeId) -> None:
+    """Moves the node (a group: with its nodes) to the center of the view, when it is next drawn."""
     pass
 
 # IMGUI_NODE_EDITOR_API void SetNodeZPosition(NodeId nodeId, float z);     /* original C++ signature */
@@ -840,73 +901,88 @@ def restore_node_state(node_id: NodeId) -> None:
 # appear ABOVE the canvas (otherwise the popup's coordinates and event capture will be wrong). With a Dear ImGui that
 # has the patches of docs/fork_imgui_bundle.md (chapter 3), popups work without it. Resume() restores editor input
 # handling. See the ShowNodeContextMenu example below.
-# IMGUI_NODE_EDITOR_API void Suspend();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API void Suspend();     /* original C++ signature */
 def suspend() -> None:
+    """Suspends the canvas: positions are in screen coords until Resume()"""
     pass
 
-# IMGUI_NODE_EDITOR_API void Resume();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void Resume();     /* original C++ signature */
 def resume() -> None:
+    """Resumes the canvas suspended by Suspend()"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool IsSuspended();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool IsSuspended();     /* original C++ signature */
 def is_suspended() -> bool:
+    """True between Suspend() and Resume()"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool IsActive();    /* original C++ signature */
 def is_active() -> bool:
-    """True while the editor is processing user input this frame (drag, select,
-    pan, zoom, link-create, etc.).
-    """
+    """True when the editor's window has the focus: the editor's keyboard shortcuts work only then."""
     pass
 
 # --- Selection ------------------------------------------------------------
 # HasSelectionChanged returns True for one frame after the selection set
 # changed (use it to react to selection changes once, not every frame).
 # SelectNode/SelectLink with append=False replaces the current selection.
-# IMGUI_NODE_EDITOR_API bool HasSelectionChanged();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API bool HasSelectionChanged();     /* original C++ signature */
 def has_selection_changed() -> bool:
+    """True during the frame after the selection changed"""
     pass
 
-# IMGUI_NODE_EDITOR_API int  GetSelectedObjectCount();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API int  GetSelectedObjectCount();     /* original C++ signature */
 def get_selected_object_count() -> int:
+    """The number of selected nodes and links"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool IsNodeSelected(NodeId nodeId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool IsNodeSelected(NodeId nodeId);     /* original C++ signature */
 def is_node_selected(node_id: NodeId) -> bool:
+    """True if the node is selected"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool IsLinkSelected(LinkId linkId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool IsLinkSelected(LinkId linkId);     /* original C++ signature */
 def is_link_selected(link_id: LinkId) -> bool:
+    """True if the link is selected"""
     pass
 
-# IMGUI_NODE_EDITOR_API void ClearSelection();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void ClearSelection();     /* original C++ signature */
 def clear_selection() -> None:
+    """Deselects all the nodes and links"""
     pass
 
-# IMGUI_NODE_EDITOR_API void SelectNode(NodeId nodeId, bool append = false);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void SelectNode(NodeId nodeId, bool append = false);     /* original C++ signature */
 def select_node(node_id: NodeId, append: bool = False) -> None:
+    """Selects a node (append: keep the others)"""
     pass
 
-# IMGUI_NODE_EDITOR_API void SelectLink(LinkId linkId, bool append = false);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void SelectLink(LinkId linkId, bool append = false);     /* original C++ signature */
 def select_link(link_id: LinkId, append: bool = False) -> None:
+    """Selects a link (append: keep the others)"""
     pass
 
-# IMGUI_NODE_EDITOR_API void DeselectNode(NodeId nodeId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void DeselectNode(NodeId nodeId);     /* original C++ signature */
 def deselect_node(node_id: NodeId) -> None:
+    """Removes a node from the selection"""
     pass
 
-# IMGUI_NODE_EDITOR_API void DeselectLink(LinkId linkId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void DeselectLink(LinkId linkId);     /* original C++ signature */
 def deselect_link(link_id: LinkId) -> None:
+    """Removes a link from the selection"""
     pass
 
 # Programmatically queue a node/link for deletion. The next BeginDelete()
 # loop will yield it via QueryDeletedNode/QueryDeletedLink.
-# IMGUI_NODE_EDITOR_API bool DeleteNode(NodeId nodeId);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API bool DeleteNode(NodeId nodeId);     /* original C++ signature */
 def delete_node(node_id: NodeId) -> bool:
+    """Queues a node for deletion (see BeginDelete())"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool DeleteLink(LinkId linkId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool DeleteLink(LinkId linkId);     /* original C++ signature */
 def delete_link(link_id: LinkId) -> bool:
+    """Queues a link for deletion (see BeginDelete())"""
     pass
 
 # IMGUI_NODE_EDITOR_API bool HasAnyLinks(NodeId nodeId);     /* original C++ signature */
@@ -937,12 +1013,17 @@ def break_links(pin_id: PinId) -> int:
 # Programmatic equivalents of pressing F (with no modifier and with Shift).
 # `duration` is the animation length in seconds; -1 means "use the editor
 # default". NavigateToSelection requires a non-empty selection.
+
 # IMGUI_NODE_EDITOR_API void NavigateToContent(float duration = -1);    /* original C++ signature */
 def navigate_to_content(duration: float = -1) -> None:
+    """Moves the view to show all the nodes, as F does. Call it after End(). New nodes are measured over two frames:
+    to fit them, call it at their third frame.
+    """
     pass
 
 # IMGUI_NODE_EDITOR_API void NavigateToSelection(bool zoomIn = false, float duration = -1);    /* original C++ signature */
 def navigate_to_selection(zoom_in: bool = False, duration: float = -1) -> None:
+    """Moves the view to the selected nodes, as Shift+F does (zoomIn: zoom in too, to fit them)."""
     pass
 
 # Shows context menu for node, link or background
@@ -963,32 +1044,41 @@ def navigate_to_selection(zoom_in: bool = False, duration: float = -1) -> None:
 #        ed::Resume();
 #        ...
 #        ed::End();
-# IMGUI_NODE_EDITOR_API bool ShowNodeContextMenu(NodeId* nodeId);    /* original C++ signature */
+# (With the Dear ImGui patches of docs/fork_imgui_bundle.md, the Suspend() / Resume() pairs are not needed.)
+
+# IMGUI_NODE_EDITOR_API bool ShowNodeContextMenu(NodeId* nodeId);     /* original C++ signature */
 def show_node_context_menu(node_id: NodeId) -> bool:
+    """True when the user opens a node's menu: its id"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool ShowPinContextMenu(PinId* pinId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool ShowPinContextMenu(PinId* pinId);     /* original C++ signature */
 def show_pin_context_menu(pin_id: PinId) -> bool:
+    """True when the user opens a pin's menu: its id"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool ShowLinkContextMenu(LinkId* linkId);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool ShowLinkContextMenu(LinkId* linkId);     /* original C++ signature */
 def show_link_context_menu(link_id: LinkId) -> bool:
+    """True when the user opens a link's menu: its id"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool ShowBackgroundContextMenu();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool ShowBackgroundContextMenu();     /* original C++ signature */
 def show_background_context_menu() -> bool:
+    """True when the user opens the background's menu"""
     pass
 
 # --- Keyboard shortcuts ---------------------------------------------------
 # Master switch: when disabled the editor never reacts to F / Ctrl+X /
 # Ctrl+C / Ctrl+V / Ctrl+D / Space etc. Useful when an ImGui text input
 # has focus and you want shortcuts ignored.
-# IMGUI_NODE_EDITOR_API void EnableShortcuts(bool enable);    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API void EnableShortcuts(bool enable);     /* original C++ signature */
 def enable_shortcuts(enable: bool) -> None:
+    """Enables or disables the editor's keyboard shortcuts"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AreShortcutsEnabled();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AreShortcutsEnabled();     /* original C++ signature */
 def are_shortcuts_enabled() -> bool:
+    """True if the keyboard shortcuts are enabled"""
     pass
 
 # --- Shortcut handling protocol ------------------------------------------
@@ -1000,43 +1090,52 @@ def are_shortcuts_enabled() -> bool:
 #       if (AcceptPaste())      /* user pressed Ctrl+V: paste at mouse */;
 #       if (AcceptCut())        /* user pressed Ctrl+X */;
 #       if (AcceptDuplicate())  /* user pressed Ctrl+D */;
-#       if (AcceptCreateNode()) /* user dragged a link out into empty space */;
+#       if (AcceptCreateNode()) /* user pressed Space */;
 #   }
 #   EndShortcut();
 #
 # GetActionContextNodes / GetActionContextLinks return the objects the
 # shortcut applies to (typically the current selection at the moment the
 # shortcut fired). They are valid only between Begin/EndShortcut.
-# IMGUI_NODE_EDITOR_API bool BeginShortcut();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API bool BeginShortcut();     /* original C++ signature */
 def begin_shortcut() -> bool:
+    """Starts the shortcut action: True when a shortcut fired this frame"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptCut();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptCut();     /* original C++ signature */
 def accept_cut() -> bool:
+    """True if the shortcut is Cut (Ctrl+X)"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptCopy();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptCopy();     /* original C++ signature */
 def accept_copy() -> bool:
+    """True if the shortcut is Copy (Ctrl+C)"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptPaste();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptPaste();     /* original C++ signature */
 def accept_paste() -> bool:
+    """True if the shortcut is Paste (Ctrl+V)"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptDuplicate();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptDuplicate();     /* original C++ signature */
 def accept_duplicate() -> bool:
+    """True if the shortcut is Duplicate (Ctrl+D)"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool AcceptCreateNode();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool AcceptCreateNode();     /* original C++ signature */
 def accept_create_node() -> bool:
+    """True if the shortcut is Create a node (Space)"""
     pass
 
-# IMGUI_NODE_EDITOR_API int  GetActionContextSize();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API int  GetActionContextSize();     /* original C++ signature */
 def get_action_context_size() -> int:
+    """The number of nodes and links the shortcut applies to"""
     pass
 
-# IMGUI_NODE_EDITOR_API void EndShortcut();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API void EndShortcut();     /* original C++ signature */
 def end_shortcut() -> None:
+    """Ends the shortcut action (harmless when BeginShortcut() returned False)"""
     pass
 
 # IMGUI_NODE_EDITOR_API float GetCurrentZoom();    /* original C++ signature */
@@ -1051,36 +1150,45 @@ def get_current_zoom() -> float:
 # These return the object under the mouse this frame (NodeId/PinId/LinkId,
 # 0 if none) and which buttons were clicked or double-clicked on the empty
 # background. The "BackgroundClick" pair returns -1 when no click happened.
-# IMGUI_NODE_EDITOR_API NodeId GetHoveredNode();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API NodeId GetHoveredNode();     /* original C++ signature */
 def get_hovered_node() -> NodeId:
+    """The node under the mouse (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API PinId GetHoveredPin();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API PinId GetHoveredPin();     /* original C++ signature */
 def get_hovered_pin() -> PinId:
+    """The pin under the mouse (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API LinkId GetHoveredLink();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API LinkId GetHoveredLink();     /* original C++ signature */
 def get_hovered_link() -> LinkId:
+    """The link under the mouse (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API NodeId GetDoubleClickedNode();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API NodeId GetDoubleClickedNode();     /* original C++ signature */
 def get_double_clicked_node() -> NodeId:
+    """The node double-clicked this frame (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API PinId GetDoubleClickedPin();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API PinId GetDoubleClickedPin();     /* original C++ signature */
 def get_double_clicked_pin() -> PinId:
+    """The pin double-clicked this frame (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API LinkId GetDoubleClickedLink();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API LinkId GetDoubleClickedLink();     /* original C++ signature */
 def get_double_clicked_link() -> LinkId:
+    """The link double-clicked this frame (0 if none)"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool IsBackgroundClicked();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool IsBackgroundClicked();     /* original C++ signature */
 def is_background_clicked() -> bool:
+    """True if the background was clicked this frame"""
     pass
 
-# IMGUI_NODE_EDITOR_API bool IsBackgroundDoubleClicked();    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API bool IsBackgroundDoubleClicked();     /* original C++ signature */
 def is_background_double_clicked() -> bool:
+    """True if the background was double-clicked this frame"""
     pass
 
 # IMGUI_NODE_EDITOR_API ImGuiMouseButton GetBackgroundClickButtonIndex();     /* original C++ signature */
@@ -1109,16 +1217,20 @@ def pin_had_any_links(pin_id: PinId) -> bool:
 # SCREEN coords are pixels in the OS window. CANVAS coords are the editor's
 # virtual space (what GetNodePosition / SetNodePosition use). The two
 # differ by the current pan + zoom transform.
-# IMGUI_NODE_EDITOR_API ImVec2 GetScreenSize();    /* original C++ signature */
+
+# IMGUI_NODE_EDITOR_API ImVec2 GetScreenSize();     /* original C++ signature */
 def get_screen_size() -> ImVec2:
+    """The size of the editor on screen, in pixels"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 ScreenToCanvas(const ImVec2& pos);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 ScreenToCanvas(const ImVec2& pos);     /* original C++ signature */
 def screen_to_canvas(pos: ImVec2Like) -> ImVec2:
+    """Converts a position from screen to canvas coords"""
     pass
 
-# IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);    /* original C++ signature */
+# IMGUI_NODE_EDITOR_API ImVec2 CanvasToScreen(const ImVec2& pos);     /* original C++ signature */
 def canvas_to_screen(pos: ImVec2Like) -> ImVec2:
+    """Converts a position from canvas to screen coords"""
     pass
 
 # IMGUI_NODE_EDITOR_API ImVec2 GetMousePosOnCanvas();    /* original C++ signature */

@@ -40,6 +40,9 @@ def main() -> None:
     options.namespaces_root = ["ax", "NodeEditor", "ax::NodeEditor"]
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
+    # The header documents each function on the line above or at the end of the line; its group comments end with
+    # an empty line
+    options.srcmlcpp_options.comment_above_is_doc_when_next_has_eol_comment = True
     options.type_replacements.add_last_replacement(r"ImVector<(\w*)>", r"List[\1]")
     options.type_replacements.add_last_replacement(
         r"CanvasSizeModeAlias", "CanvasSizeMode"

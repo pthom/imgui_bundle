@@ -22,6 +22,18 @@ It is heavily configurable by [a wide range of options](https://github.com/pthom
 
 See for examples the [specific options for imgui bindings generation](https://github.com/pthom/imgui_bundle/blob/main/external/imgui/bindings/litgen_options_imgui.py).
 
+## Docstrings
+
+The docstrings of the Python API (in the stubs, and in `__doc__` at runtime) come from the comments of the C++ headers. litgen decides which comment documents which declaration:
+- a comment at the end of a declaration's line documents it;
+- a comment on the lines directly above a declaration documents it;
+- a comment followed by an empty line is standalone: write section titles this way;
+- a comment directly above several declarations on consecutive lines is a group comment: it stays standalone.
+
+The last rule drops the docstring of a function documented on the line above, when the next function has an end-of-line comment. A header that documents each function either way can set `options.srcmlcpp_options.comment_above_is_doc_when_next_has_eol_comment = True` in its generation script, and end its section titles with an empty line. The node editor does. The option is off by default, because `imgui.h` writes its section titles directly above such pairs of functions.
+
+Details and examples: the section "Comments and docstrings" of the litgen book's [Generated code layout](https://github.com/pthom/litgen/blob/main/docs/book/03_05_00_code_layout.ipynb) chapter.
+
 ## Folders structure
 
 In order to work on bindings, it is essential to understand the folders structure inside Dear ImGui Bundle.

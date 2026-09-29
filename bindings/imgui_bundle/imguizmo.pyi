@@ -127,6 +127,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def is_over() -> bool:
         """ return True if mouse cursor is over any gizmo control (axis, plan or screen component)"""
         pass
+    # return True if the cursor is over the operation's gizmo
     # IMGUI_API bool IsOver(OPERATION op);    /* original C++ signature */
     @staticmethod
     @overload
@@ -309,7 +310,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def get_id(ptr_id: Any) -> ImGuiID:
         pass
 
-    # return True if the cursor is over the operation's gizmo
     # IMGUI_API void SetGizmoSizeClipSpace(float value);    /* original C++ signature */
     @staticmethod
     def set_gizmo_size_clip_space(value: float) -> None:

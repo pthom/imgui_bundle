@@ -505,6 +505,7 @@ def im_text_classifier_set_char_class(
 # - Wrapper for standard libs functions. (Note that imgui_demo.cpp does _not_ use them to keep the code easy to copy)
 # - ImMin/ImMax/ImClamp/ImLerp/ImSwap are used by widgets which support variety of types: signed/unsigned int/long long float/double
 # (Exceptionally using templates here but we could also redefine them for those types)
+# - Misc maths helpers
 # inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
 def im_min(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
@@ -538,7 +539,6 @@ def im_lerp(a: ImVec4Like, b: ImVec4Like, t: float) -> ImVec4:
     """(private API)"""
     pass
 
-# - Misc maths helpers
 # inline float  ImSaturate(float f);    /* original C++ signature */
 def im_saturate(f: float) -> float:
     """(private API)"""

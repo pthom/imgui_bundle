@@ -303,49 +303,72 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
 
     m.def("set_current_editor",
-        ax::NodeEditor::SetCurrentEditor, nb::arg("ctx"));
+        ax::NodeEditor::SetCurrentEditor,
+        nb::arg("ctx"),
+        "Makes this editor the current one: all the other functions apply to the current editor.");
 
     m.def("get_current_editor",
-        ax::NodeEditor::GetCurrentEditor, nb::rv_policy::reference);
+        ax::NodeEditor::GetCurrentEditor,
+        "The current editor (None if none)",
+        nb::rv_policy::reference);
 
     m.def("create_editor",
         ax::NodeEditor::CreateEditor,
         nb::arg("config") = nb::none(),
+        "Creates an editor, with a copy of this config (or the default one). It does not become current (SetCurrentEditor).",
         nb::rv_policy::reference);
 
     m.def("destroy_editor",
-        ax::NodeEditor::DestroyEditor, nb::arg("ctx"));
+        ax::NodeEditor::DestroyEditor,
+        nb::arg("ctx"),
+        "Destroys an editor created by CreateEditor()");
 
     m.def("get_config",
         ax::NodeEditor::GetConfig,
         nb::arg("ctx") = nb::none(),
+        "The config of this editor (None: the current one). It is read-only: give your Config to CreateEditor().",
         nb::rv_policy::reference);
 
     m.def("get_style",
-        ax::NodeEditor::GetStyle, nb::rv_policy::reference);
+        ax::NodeEditor::GetStyle,
+        "The style of the current editor: its fields can be changed",
+        nb::rv_policy::reference);
 
     m.def("get_style_color_name",
         ax::NodeEditor::GetStyleColorName,
         nb::arg("color_index"),
+        "The name of a style color",
         nb::rv_policy::reference);
 
     m.def("push_style_color",
-        ax::NodeEditor::PushStyleColor, nb::arg("color_index"), nb::arg("color"));
+        ax::NodeEditor::PushStyleColor,
+        nb::arg("color_index"), nb::arg("color"),
+        "Pushes a style color until PopStyleColor(), e.g. PushStyleColor(StyleColor_NodeBg, color).");
 
     m.def("pop_style_color",
-        ax::NodeEditor::PopStyleColor, nb::arg("count") = 1);
+        ax::NodeEditor::PopStyleColor,
+        nb::arg("count") = 1,
+        "Pops the last `count` colors pushed by PushStyleColor()");
 
     m.def("push_style_var",
-        nb::overload_cast<ax::NodeEditor::StyleVar, float>(ax::NodeEditor::PushStyleVar), nb::arg("var_index"), nb::arg("value"));
+        nb::overload_cast<ax::NodeEditor::StyleVar, float>(ax::NodeEditor::PushStyleVar),
+        nb::arg("var_index"), nb::arg("value"),
+        "Pushes a style variable until PopStyleVar(). This one for a float variable, the next ones for an ImVec2 or an ImVec4.");
 
     m.def("push_style_var",
-        nb::overload_cast<ax::NodeEditor::StyleVar, const ImVec2 &>(ax::NodeEditor::PushStyleVar), nb::arg("var_index"), nb::arg("value"));
+        nb::overload_cast<ax::NodeEditor::StyleVar, const ImVec2 &>(ax::NodeEditor::PushStyleVar),
+        nb::arg("var_index"), nb::arg("value"),
+        "PushStyleVar(), for an ImVec2");
 
     m.def("push_style_var",
-        nb::overload_cast<ax::NodeEditor::StyleVar, const ImVec4 &>(ax::NodeEditor::PushStyleVar), nb::arg("var_index"), nb::arg("value"));
+        nb::overload_cast<ax::NodeEditor::StyleVar, const ImVec4 &>(ax::NodeEditor::PushStyleVar),
+        nb::arg("var_index"), nb::arg("value"),
+        "PushStyleVar(), for an ImVec4");
 
     m.def("pop_style_var",
-        ax::NodeEditor::PopStyleVar, nb::arg("count") = 1);
+        ax::NodeEditor::PopStyleVar,
+        nb::arg("count") = 1,
+        "Pops the last `count` variables pushed by PushStyleVar()");
 
     m.def("begin",
         [](const char * id, const std::optional<const ImVec2> & size = std::nullopt)
@@ -366,58 +389,80 @@ void py_init_module_imgui_node_editor(nb::module_& m)
             Begin_adapt_mutable_param_with_default_value(id, size);
         },
         nb::arg("id"), nb::arg("size").none() = nb::none(),
-        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
+        " Starts drawing the current editor, in the current ImGui window: the other calls follow, until End().\n\nPython bindings defaults:\n    If size is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("end",
-        ax::NodeEditor::End);
+        ax::NodeEditor::End, "Ends the editor started by Begin()");
 
     m.def("begin_node",
-        ax::NodeEditor::BeginNode, nb::arg("id"));
+        ax::NodeEditor::BeginNode,
+        nb::arg("id"),
+        "Starts a node: its widgets follow, until EndNode()");
 
     m.def("begin_pin",
-        ax::NodeEditor::BeginPin, nb::arg("id"), nb::arg("kind"));
+        ax::NodeEditor::BeginPin,
+        nb::arg("id"), nb::arg("kind"),
+        "Starts a pin: its widgets follow, until EndPin()");
 
     m.def("pin_rect",
-        ax::NodeEditor::PinRect, nb::arg("a"), nb::arg("b"));
+        ax::NodeEditor::PinRect,
+        nb::arg("a"), nb::arg("b"),
+        "Sets the pin's hover rectangle");
 
     m.def("pin_pivot_rect",
-        ax::NodeEditor::PinPivotRect, nb::arg("a"), nb::arg("b"));
+        ax::NodeEditor::PinPivotRect,
+        nb::arg("a"), nb::arg("b"),
+        "Sets the rectangle where links attach");
 
     m.def("pin_pivot_size",
-        ax::NodeEditor::PinPivotSize, nb::arg("size"));
+        ax::NodeEditor::PinPivotSize,
+        nb::arg("size"),
+        "Sets the pivot's size (-1 on an axis: the pin's)");
 
     m.def("pin_pivot_scale",
-        ax::NodeEditor::PinPivotScale, nb::arg("scale"));
+        ax::NodeEditor::PinPivotScale,
+        nb::arg("scale"),
+        "Scales the pivot's size");
 
     m.def("pin_pivot_alignment",
-        ax::NodeEditor::PinPivotAlignment, nb::arg("alignment"));
+        ax::NodeEditor::PinPivotAlignment,
+        nb::arg("alignment"),
+        "Where links attach: (0.5, 0.5) is the center");
 
     m.def("end_pin",
-        ax::NodeEditor::EndPin);
+        ax::NodeEditor::EndPin, "Ends the pin started by BeginPin()");
 
     m.def("group",
-        ax::NodeEditor::Group, nb::arg("size"));
+        ax::NodeEditor::Group,
+        nb::arg("size"),
+        "Makes the current node a group, of this initial size");
 
     m.def("end_node",
-        ax::NodeEditor::EndNode);
+        ax::NodeEditor::EndNode, "Ends the node started by BeginNode()");
 
     m.def("begin_group_hint",
-        ax::NodeEditor::BeginGroupHint, nb::arg("node_id"));
+        ax::NodeEditor::BeginGroupHint,
+        nb::arg("node_id"),
+        "True when zoomed out: draw the group's hint then");
 
     m.def("get_group_min",
-        ax::NodeEditor::GetGroupMin);
+        ax::NodeEditor::GetGroupMin, "The top left corner of the group, in screen coords (in a hint)");
 
     m.def("get_group_max",
-        ax::NodeEditor::GetGroupMax);
+        ax::NodeEditor::GetGroupMax, "The bottom right corner of the group, in screen coords (in a hint)");
 
     m.def("get_hint_foreground_draw_list",
-        ax::NodeEditor::GetHintForegroundDrawList, nb::rv_policy::reference);
+        ax::NodeEditor::GetHintForegroundDrawList,
+        "A draw list above the editor's content (in a hint)",
+        nb::rv_policy::reference);
 
     m.def("get_hint_background_draw_list",
-        ax::NodeEditor::GetHintBackgroundDrawList, nb::rv_policy::reference);
+        ax::NodeEditor::GetHintBackgroundDrawList,
+        "A draw list below the editor's content (in a hint)",
+        nb::rv_policy::reference);
 
     m.def("end_group_hint",
-        ax::NodeEditor::EndGroupHint);
+        ax::NodeEditor::EndGroupHint, "Ends the group hint (see the example above)");
 
     m.def("get_node_background_draw_list",
         ax::NodeEditor::GetNodeBackgroundDrawList,
@@ -445,7 +490,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
             return Link_adapt_mutable_param_with_default_value(id, startPinId, endPinId, color, thickness);
         },
         nb::arg("id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"), nb::arg("color").none() = nb::none(), nb::arg("thickness") = 1.0f,
-        " Declares an existing link between two pins. Call once per frame for every\n link you want shown. Returns True if the link is currently visible/active.\n `color` default is the sentinel ImVec4(0,0,0,0) (\"auto\"): when alpha is 0\n the implementation substitutes the current ImGuiCol_Text, so links stay\n readable on both light and dark themes. Pass any non-zero-alpha color to\n override.\n\nPython bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
+        " Declares an existing link between two pins. Call once per frame for every\n link you want shown. Returns False when one of its pins was not drawn this frame.\n `color` default is the sentinel ImVec4(0,0,0,0) (\"auto\"): when alpha is 0\n the implementation substitutes the current ImGuiCol_Text, so links stay\n readable on both light and dark themes. Pass any non-zero-alpha color to\n override.\n\nPython bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
 
     m.def("flow",
         ax::NodeEditor::Flow,
@@ -472,67 +517,95 @@ void py_init_module_imgui_node_editor(nb::module_& m)
             return BeginCreate_adapt_mutable_param_with_default_value(color, thickness);
         },
         nb::arg("color").none() = nb::none(), nb::arg("thickness") = 1.0f,
-        "Python bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
+        " Starts the create action: True while the user drags a link from a pin. Then call EndCreate().\n\nPython bindings defaults:\n    If color is None, then its default value will be: ImVec4(0, 0, 0, 0)");
 
     m.def("query_new_link",
-        nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *>(ax::NodeEditor::QueryNewLink), nb::arg("start_id"), nb::arg("end_id"));
+        nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *>(ax::NodeEditor::QueryNewLink),
+        nb::arg("start_id"), nb::arg("end_id"),
+        "True while the dragged link is not over empty space: the pin it starts from, and the pin under the mouse (0 if none).");
 
     m.def("query_new_link",
-        nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *, const ImVec4 &, float>(ax::NodeEditor::QueryNewLink), nb::arg("start_id"), nb::arg("end_id"), nb::arg("color"), nb::arg("thickness") = 1.0f);
+        nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *, const ImVec4 &, float>(ax::NodeEditor::QueryNewLink),
+        nb::arg("start_id"), nb::arg("end_id"), nb::arg("color"), nb::arg("thickness") = 1.0f,
+        "QueryNewLink(), with the color and thickness of the dragged link.");
 
     m.def("query_new_node",
-        nb::overload_cast<ax::NodeEditor::PinId *>(ax::NodeEditor::QueryNewNode), nb::arg("pin_id"));
+        nb::overload_cast<ax::NodeEditor::PinId *>(ax::NodeEditor::QueryNewNode),
+        nb::arg("pin_id"),
+        "True while the dragged link is over empty space: its pin");
 
     m.def("query_new_node",
-        nb::overload_cast<ax::NodeEditor::PinId *, const ImVec4 &, float>(ax::NodeEditor::QueryNewNode), nb::arg("pin_id"), nb::arg("color"), nb::arg("thickness") = 1.0f);
+        nb::overload_cast<ax::NodeEditor::PinId *, const ImVec4 &, float>(ax::NodeEditor::QueryNewNode),
+        nb::arg("pin_id"), nb::arg("color"), nb::arg("thickness") = 1.0f,
+        "QueryNewNode(), with the color and thickness of the dragged link.");
 
     m.def("accept_new_item",
-        nb::overload_cast<>(ax::NodeEditor::AcceptNewItem));
+        nb::overload_cast<>(ax::NodeEditor::AcceptNewItem), "Accepts the queried link or node: True when the mouse is released");
 
     m.def("accept_new_item",
-        nb::overload_cast<const ImVec4 &, float>(ax::NodeEditor::AcceptNewItem), nb::arg("color"), nb::arg("thickness") = 1.0f);
+        nb::overload_cast<const ImVec4 &, float>(ax::NodeEditor::AcceptNewItem),
+        nb::arg("color"), nb::arg("thickness") = 1.0f,
+        "AcceptNewItem(), with the color and thickness of the dragged link.");
 
     m.def("reject_new_item",
-        nb::overload_cast<>(ax::NodeEditor::RejectNewItem));
+        nb::overload_cast<>(ax::NodeEditor::RejectNewItem), "Refuses the queried link or node: the dragged link shows it");
 
     m.def("reject_new_item",
-        nb::overload_cast<const ImVec4 &, float>(ax::NodeEditor::RejectNewItem), nb::arg("color"), nb::arg("thickness") = 1.0f);
+        nb::overload_cast<const ImVec4 &, float>(ax::NodeEditor::RejectNewItem),
+        nb::arg("color"), nb::arg("thickness") = 1.0f,
+        "RejectNewItem(), with the color and thickness of the dragged link (e.g. red).");
 
     m.def("end_create",
-        ax::NodeEditor::EndCreate);
+        ax::NodeEditor::EndCreate, "Ends the create action: only when BeginCreate() returned True");
 
     m.def("begin_delete",
-        ax::NodeEditor::BeginDelete);
+        ax::NodeEditor::BeginDelete, "Starts the delete action: True when items are to be deleted this frame");
 
     m.def("query_deleted_link",
-        ax::NodeEditor::QueryDeletedLink, nb::arg("link_id"), nb::arg("start_id") = nb::none(), nb::arg("end_id") = nb::none());
+        ax::NodeEditor::QueryDeletedLink,
+        nb::arg("link_id"), nb::arg("start_id") = nb::none(), nb::arg("end_id") = nb::none(),
+        "True for each link to delete, one per call: its id, and its pins if you want them.");
 
     m.def("query_deleted_node",
-        ax::NodeEditor::QueryDeletedNode, nb::arg("node_id"));
+        ax::NodeEditor::QueryDeletedNode,
+        nb::arg("node_id"),
+        "True for each node to delete, one per call: its id");
 
     m.def("accept_deleted_item",
-        ax::NodeEditor::AcceptDeletedItem, nb::arg("delete_dependencies") = true);
+        ax::NodeEditor::AcceptDeletedItem,
+        nb::arg("delete_dependencies") = true,
+        "Accepts the deletion of the queried item: then remove it from your data (see deleteDependencies above).");
 
     m.def("reject_deleted_item",
-        ax::NodeEditor::RejectDeletedItem);
+        ax::NodeEditor::RejectDeletedItem, "Refuses the deletion of the queried item: it stays");
 
     m.def("end_delete",
-        ax::NodeEditor::EndDelete);
+        ax::NodeEditor::EndDelete, "Ends the delete action (harmless when BeginDelete() returned False)");
 
     m.def("set_node_position",
-        ax::NodeEditor::SetNodePosition, nb::arg("node_id"), nb::arg("editor_position"));
+        ax::NodeEditor::SetNodePosition,
+        nb::arg("node_id"), nb::arg("editor_position"),
+        "Sets a node's position, in canvas coords (e.g. once, when you create it): the editor keeps it afterwards.");
 
     m.def("set_group_size",
-        ax::NodeEditor::SetGroupSize, nb::arg("node_id"), nb::arg("size"));
+        ax::NodeEditor::SetGroupSize,
+        nb::arg("node_id"), nb::arg("size"),
+        "Sets the size of a group node");
 
     m.def("get_node_position",
-        ax::NodeEditor::GetNodePosition, nb::arg("node_id"));
+        ax::NodeEditor::GetNodePosition,
+        nb::arg("node_id"),
+        "In canvas coords; (FLT_MAX, FLT_MAX) if unknown");
 
     m.def("get_node_size",
-        ax::NodeEditor::GetNodeSize, nb::arg("node_id"));
+        ax::NodeEditor::GetNodeSize,
+        nb::arg("node_id"),
+        "In canvas coords; (0, 0) before the node was drawn");
 
     m.def("center_node_on_screen",
-        ax::NodeEditor::CenterNodeOnScreen, nb::arg("node_id"));
+        ax::NodeEditor::CenterNodeOnScreen,
+        nb::arg("node_id"),
+        "Moves the node (a group: with its nodes) to the center of the view, when it is next drawn.");
 
     m.def("set_node_z_position",
         ax::NodeEditor::SetNodeZPosition,
@@ -550,49 +623,65 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         " Re-load the node's position/size from the editor's persisted settings\n (the SettingsFile, if any). Useful right after creating a node whose\n previous layout you want to bring back without the user having to drag it.");
 
     m.def("suspend",
-        ax::NodeEditor::Suspend);
+        ax::NodeEditor::Suspend, "Suspends the canvas: positions are in screen coords until Resume()");
 
     m.def("resume",
-        ax::NodeEditor::Resume);
+        ax::NodeEditor::Resume, "Resumes the canvas suspended by Suspend()");
 
     m.def("is_suspended",
-        ax::NodeEditor::IsSuspended);
+        ax::NodeEditor::IsSuspended, "True between Suspend() and Resume()");
 
     m.def("is_active",
-        ax::NodeEditor::IsActive, " True while the editor is processing user input this frame (drag, select,\n pan, zoom, link-create, etc.).");
+        ax::NodeEditor::IsActive, "True when the editor's window has the focus: the editor's keyboard shortcuts work only then.");
 
     m.def("has_selection_changed",
-        ax::NodeEditor::HasSelectionChanged);
+        ax::NodeEditor::HasSelectionChanged, "True during the frame after the selection changed");
 
     m.def("get_selected_object_count",
-        ax::NodeEditor::GetSelectedObjectCount);
+        ax::NodeEditor::GetSelectedObjectCount, "The number of selected nodes and links");
 
     m.def("is_node_selected",
-        ax::NodeEditor::IsNodeSelected, nb::arg("node_id"));
+        ax::NodeEditor::IsNodeSelected,
+        nb::arg("node_id"),
+        "True if the node is selected");
 
     m.def("is_link_selected",
-        ax::NodeEditor::IsLinkSelected, nb::arg("link_id"));
+        ax::NodeEditor::IsLinkSelected,
+        nb::arg("link_id"),
+        "True if the link is selected");
 
     m.def("clear_selection",
-        ax::NodeEditor::ClearSelection);
+        ax::NodeEditor::ClearSelection, "Deselects all the nodes and links");
 
     m.def("select_node",
-        ax::NodeEditor::SelectNode, nb::arg("node_id"), nb::arg("append") = false);
+        ax::NodeEditor::SelectNode,
+        nb::arg("node_id"), nb::arg("append") = false,
+        "Selects a node (append: keep the others)");
 
     m.def("select_link",
-        ax::NodeEditor::SelectLink, nb::arg("link_id"), nb::arg("append") = false);
+        ax::NodeEditor::SelectLink,
+        nb::arg("link_id"), nb::arg("append") = false,
+        "Selects a link (append: keep the others)");
 
     m.def("deselect_node",
-        ax::NodeEditor::DeselectNode, nb::arg("node_id"));
+        ax::NodeEditor::DeselectNode,
+        nb::arg("node_id"),
+        "Removes a node from the selection");
 
     m.def("deselect_link",
-        ax::NodeEditor::DeselectLink, nb::arg("link_id"));
+        ax::NodeEditor::DeselectLink,
+        nb::arg("link_id"),
+        "Removes a link from the selection");
 
     m.def("delete_node",
-        ax::NodeEditor::DeleteNode, nb::arg("node_id"));
+        ax::NodeEditor::DeleteNode,
+        nb::arg("node_id"),
+        "Queues a node for deletion (see BeginDelete())");
 
     m.def("delete_link",
-        ax::NodeEditor::DeleteLink, nb::arg("link_id"));
+        ax::NodeEditor::DeleteLink,
+        nb::arg("link_id"),
+        "Queues a link for deletion (see BeginDelete())");
 
     m.def("has_any_links",
         nb::overload_cast<ax::NodeEditor::NodeId>(ax::NodeEditor::HasAnyLinks),
@@ -615,79 +704,91 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         "Break all links connected to this pin");
 
     m.def("navigate_to_content",
-        ax::NodeEditor::NavigateToContent, nb::arg("duration") = -1);
+        ax::NodeEditor::NavigateToContent,
+        nb::arg("duration") = -1,
+        " Moves the view to show all the nodes, as F does. Call it after End(). New nodes are measured over two frames:\n to fit them, call it at their third frame.");
 
     m.def("navigate_to_selection",
-        ax::NodeEditor::NavigateToSelection, nb::arg("zoom_in") = false, nb::arg("duration") = -1);
+        ax::NodeEditor::NavigateToSelection,
+        nb::arg("zoom_in") = false, nb::arg("duration") = -1,
+        "Moves the view to the selected nodes, as Shift+F does (zoomIn: zoom in too, to fit them).");
 
     m.def("show_node_context_menu",
-        ax::NodeEditor::ShowNodeContextMenu, nb::arg("node_id"));
+        ax::NodeEditor::ShowNodeContextMenu,
+        nb::arg("node_id"),
+        "True when the user opens a node's menu: its id");
 
     m.def("show_pin_context_menu",
-        ax::NodeEditor::ShowPinContextMenu, nb::arg("pin_id"));
+        ax::NodeEditor::ShowPinContextMenu,
+        nb::arg("pin_id"),
+        "True when the user opens a pin's menu: its id");
 
     m.def("show_link_context_menu",
-        ax::NodeEditor::ShowLinkContextMenu, nb::arg("link_id"));
+        ax::NodeEditor::ShowLinkContextMenu,
+        nb::arg("link_id"),
+        "True when the user opens a link's menu: its id");
 
     m.def("show_background_context_menu",
-        ax::NodeEditor::ShowBackgroundContextMenu);
+        ax::NodeEditor::ShowBackgroundContextMenu, "True when the user opens the background's menu");
 
     m.def("enable_shortcuts",
-        ax::NodeEditor::EnableShortcuts, nb::arg("enable"));
+        ax::NodeEditor::EnableShortcuts,
+        nb::arg("enable"),
+        "Enables or disables the editor's keyboard shortcuts");
 
     m.def("are_shortcuts_enabled",
-        ax::NodeEditor::AreShortcutsEnabled);
+        ax::NodeEditor::AreShortcutsEnabled, "True if the keyboard shortcuts are enabled");
 
     m.def("begin_shortcut",
-        ax::NodeEditor::BeginShortcut);
+        ax::NodeEditor::BeginShortcut, "Starts the shortcut action: True when a shortcut fired this frame");
 
     m.def("accept_cut",
-        ax::NodeEditor::AcceptCut);
+        ax::NodeEditor::AcceptCut, "True if the shortcut is Cut (Ctrl+X)");
 
     m.def("accept_copy",
-        ax::NodeEditor::AcceptCopy);
+        ax::NodeEditor::AcceptCopy, "True if the shortcut is Copy (Ctrl+C)");
 
     m.def("accept_paste",
-        ax::NodeEditor::AcceptPaste);
+        ax::NodeEditor::AcceptPaste, "True if the shortcut is Paste (Ctrl+V)");
 
     m.def("accept_duplicate",
-        ax::NodeEditor::AcceptDuplicate);
+        ax::NodeEditor::AcceptDuplicate, "True if the shortcut is Duplicate (Ctrl+D)");
 
     m.def("accept_create_node",
-        ax::NodeEditor::AcceptCreateNode);
+        ax::NodeEditor::AcceptCreateNode, "True if the shortcut is Create a node (Space)");
 
     m.def("get_action_context_size",
-        ax::NodeEditor::GetActionContextSize);
+        ax::NodeEditor::GetActionContextSize, "The number of nodes and links the shortcut applies to");
 
     m.def("end_shortcut",
-        ax::NodeEditor::EndShortcut);
+        ax::NodeEditor::EndShortcut, "Ends the shortcut action (harmless when BeginShortcut() returned False)");
 
     m.def("get_current_zoom",
         ax::NodeEditor::GetCurrentZoom, " Returns the INVERSE of the zoom: the size of a pixel in canvas units.\n 1.0 at 100%, 2.0 when the content is drawn at half size (zoomed out), 0.5 when it is drawn twice as big (zoomed in).\n To convert positions, use ScreenToCanvas() / CanvasToScreen().");
 
     m.def("get_hovered_node",
-        ax::NodeEditor::GetHoveredNode);
+        ax::NodeEditor::GetHoveredNode, "The node under the mouse (0 if none)");
 
     m.def("get_hovered_pin",
-        ax::NodeEditor::GetHoveredPin);
+        ax::NodeEditor::GetHoveredPin, "The pin under the mouse (0 if none)");
 
     m.def("get_hovered_link",
-        ax::NodeEditor::GetHoveredLink);
+        ax::NodeEditor::GetHoveredLink, "The link under the mouse (0 if none)");
 
     m.def("get_double_clicked_node",
-        ax::NodeEditor::GetDoubleClickedNode);
+        ax::NodeEditor::GetDoubleClickedNode, "The node double-clicked this frame (0 if none)");
 
     m.def("get_double_clicked_pin",
-        ax::NodeEditor::GetDoubleClickedPin);
+        ax::NodeEditor::GetDoubleClickedPin, "The pin double-clicked this frame (0 if none)");
 
     m.def("get_double_clicked_link",
-        ax::NodeEditor::GetDoubleClickedLink);
+        ax::NodeEditor::GetDoubleClickedLink, "The link double-clicked this frame (0 if none)");
 
     m.def("is_background_clicked",
-        ax::NodeEditor::IsBackgroundClicked);
+        ax::NodeEditor::IsBackgroundClicked, "True if the background was clicked this frame");
 
     m.def("is_background_double_clicked",
-        ax::NodeEditor::IsBackgroundDoubleClicked);
+        ax::NodeEditor::IsBackgroundDoubleClicked, "True if the background was double-clicked this frame");
 
     m.def("get_background_click_button_index",
         ax::NodeEditor::GetBackgroundClickButtonIndex, "-1 if none");
@@ -706,13 +807,17 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         " True if the pin was ever connected to a link in its lifetime, even if it\n is currently disconnected.");
 
     m.def("get_screen_size",
-        ax::NodeEditor::GetScreenSize);
+        ax::NodeEditor::GetScreenSize, "The size of the editor on screen, in pixels");
 
     m.def("screen_to_canvas",
-        ax::NodeEditor::ScreenToCanvas, nb::arg("pos"));
+        ax::NodeEditor::ScreenToCanvas,
+        nb::arg("pos"),
+        "Converts a position from screen to canvas coords");
 
     m.def("canvas_to_screen",
-        ax::NodeEditor::CanvasToScreen, nb::arg("pos"));
+        ax::NodeEditor::CanvasToScreen,
+        nb::arg("pos"),
+        "Converts a position from canvas to screen coords");
 
     m.def("get_mouse_pos_on_canvas",
         ax::NodeEditor::GetMousePosOnCanvas, " The mouse position in CANVAS coords, anywhere between Begin() and End(). ImGui::GetMousePos() gives the same, except\n where the editor is suspended (after Suspend(), and in the create action once QueryNewLink() or QueryNewNode()\n returned True): it then gives SCREEN coords.");
