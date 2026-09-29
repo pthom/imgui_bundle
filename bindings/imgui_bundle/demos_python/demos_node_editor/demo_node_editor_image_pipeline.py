@@ -523,7 +523,6 @@ def can_link(pin: Pin, node_class: type[Node]) -> bool:
 
 class MenuState:
     def __init__(self) -> None:
-        self.open_add_menu = False  # set when the add menu shall open, at the next call of handle_menus()
         self.dropped_pin: Pin | None = None  # the pin of a link dropped in empty space: the new node is linked to it
         self.position = ImVec2(0, 0)  # where the add menu opened, in the editor's coordinates
         self.node_id = ed.NodeId()  # the node whose menu is open
@@ -552,7 +551,7 @@ def handle_creations(graph: Graph, menu: MenuState) -> None:
         if ed.query_new_node(pin_id):
             imgui.set_tooltip("Release to add a node linked to this pin")
             if ed.accept_new_item():
-                menu.dropped_pin, menu.open_add_menu = graph.find_pin(pin_id), True
+                open_add_menu(menu, graph.find_pin(pin_id))
         ed.end_create()
 
 
@@ -570,15 +569,17 @@ def handle_deletions(graph: Graph) -> None:
         ed.end_delete()
 
 
+def open_add_menu(menu: MenuState, dropped_pin: Pin | None) -> None:
+    imgui.open_popup("Add a node")
+    menu.dropped_pin = dropped_pin
+    # The mouse in the editor's coordinates, those of the node positions. imgui.get_mouse_pos() gives them too, but not
+    # in handle_creations(): once a query returned True, the editor is suspended, and it gives screen coordinates.
+    menu.position = ed.get_mouse_pos_on_canvas()
+
+
 def handle_menus(graph: Graph, menu: MenuState) -> None:
     if ed.show_background_context_menu():
-        menu.dropped_pin, menu.open_add_menu = None, True
-    if menu.open_add_menu:
-        menu.open_add_menu = False
-        imgui.open_popup("Add a node")
-        # Here, the mouse position is in the editor's coordinates, as the positions of the nodes. Not so between
-        # ed.begin_create() and ed.end_create(): this is why the menu opens here, and not in handle_creations().
-        menu.position = imgui.get_mouse_pos()
+        open_add_menu(menu, None)
     if imgui.begin_popup("Add a node"):
         pin = menu.dropped_pin
         for node_class in NODE_CLASSES:

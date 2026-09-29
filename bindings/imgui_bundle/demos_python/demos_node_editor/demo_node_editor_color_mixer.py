@@ -265,8 +265,7 @@ class MenuState:
 def handle_menus(graph: Graph, menu: MenuState) -> None:
     if ed.show_background_context_menu():
         imgui.open_popup("Add a node")
-        # Inside ed.begin() / ed.end(), the mouse position is in the editor's coordinates, as the node positions
-        menu.new_node_position = imgui.get_mouse_pos()
+        menu.new_node_position = ed.get_mouse_pos_on_canvas()  # in the editor's coordinates, as the node positions
     if imgui.begin_popup("Add a node"):
         for kind in NODE_KINDS:
             if imgui.menu_item_simple(kind):
