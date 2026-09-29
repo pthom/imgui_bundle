@@ -155,6 +155,9 @@ SHOTS: dict[str, Shot] = {
     "demo_immvision_inspector.py": Shot(crop=(0.0, 0.06, 1.0, 0.84)),
     "demo_immvision_link.py": Shot(crop=(0.0, 0.03, 1.0, 0.81)),
     "demo_immvision_process.py": Shot(crop=(0.0, 0.08, 0.75, 0.549)),
+    # the node editor's demos: 200 frames, so that the flow animation along the links has ended (about 2 seconds)
+    "demo_node_editor_color_mixer.py": Shot(frames=200, crop=(0.04, 0.1, 0.77, 0.94)),
+    "demo_node_editor_image_pipeline.py": Shot(frames=200, crop=(0.05, 0.075, 0.955, 1.0)),
     "demo_node_editor_basic.py": Shot(crop=(0.0, 0.0, 0.65, 0.542)),
     "demo_romeo_and_juliet.py": Shot(crop=(0.0, 0.0, 0.6, 0.469)),
     "demo_gizmo.py": Shot(crop=(0.0, 0.0, 1.0, 0.938)),
