@@ -78,33 +78,36 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     nb::class_<EditorContext>(m, "EditorContext");
 
-    nb::class_<NodeId>(m, "NodeId")
+    nb::class_<NodeId>(m, "NodeId", "The id of a node. The id 0 means no node: bool(NodeId()) is False")
         .def(nb::init<>())
         .def(nb::init<uintptr_t>())
         .def("create", []() { return NodeId(get_next_id()); })
         .def("id", [](const NodeId& self) { return self.Get(); })
+        .def("__bool__", [](const NodeId& self) { return static_cast<bool>(self); })
         .def("__eq__", [](const NodeId& self, const NodeId& other) {
             return self.Get() == other.Get();
         })
         .def("__str__", [](const NodeId& self) { return std::to_string(self.Get()); })
         .def("__repr__", [](const NodeId& self) { return std::to_string(self.Get()); })
         ;
-    nb::class_<LinkId>(m, "LinkId")
+    nb::class_<LinkId>(m, "LinkId", "The id of a link. The id 0 means no link: bool(LinkId()) is False")
         .def(nb::init<>())
         .def(nb::init<uintptr_t>())
         .def("create", []() { return LinkId(get_next_id()); })
         .def("id", [](const LinkId& self) { return self.Get(); })
+        .def("__bool__", [](const LinkId& self) { return static_cast<bool>(self); })
         .def("__eq__", [](const LinkId& self, const LinkId& other) {
             return self.Get() == other.Get();
         })
         .def("__str__", [](const LinkId& self) { return std::to_string(self.Get()); })
         .def("__repr__", [](const LinkId& self) { return std::to_string(self.Get()); })
         ;
-    nb::class_<PinId>(m, "PinId")
+    nb::class_<PinId>(m, "PinId", "The id of a pin. The id 0 means no pin: bool(PinId()) is False")
         .def(nb::init<>())
         .def(nb::init<uintptr_t>())
         .def("create", []() { return PinId(get_next_id()); })
         .def("id", [](const PinId& self) { return self.Get(); })
+        .def("__bool__", [](const PinId& self) { return static_cast<bool>(self); })
         .def("__eq__", [](const PinId& self, const PinId& other) {
             return self.Get() == other.Get();
         })
@@ -127,26 +130,26 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
 
     auto pyEnumPinKind =
-        nb::enum_<ax::NodeEditor::PinKind>(m, "PinKind", nb::is_arithmetic(), "------------------------------------------------------------------------------")
+        nb::enum_<ax::NodeEditor::PinKind>(m, "PinKind", nb::is_arithmetic(), "The kind of a pin, given to BeginPin(): an input or an output")
             .value("input", ax::NodeEditor::PinKind::Input, "")
             .value("output", ax::NodeEditor::PinKind::Output, "");
 
 
     auto pyEnumFlowDirection =
-        nb::enum_<ax::NodeEditor::FlowDirection>(m, "FlowDirection", nb::is_arithmetic(), "")
+        nb::enum_<ax::NodeEditor::FlowDirection>(m, "FlowDirection", nb::is_arithmetic(), "The direction of the flow animation along a link, given to Flow()")
             .value("forward", ax::NodeEditor::FlowDirection::Forward, "")
             .value("backward", ax::NodeEditor::FlowDirection::Backward, "");
 
 
     auto pyEnumCanvasSizeMode =
-        nb::enum_<ax::NodeEditor::CanvasSizeMode>(m, "CanvasSizeMode", nb::is_arithmetic(), "")
+        nb::enum_<ax::NodeEditor::CanvasSizeMode>(m, "CanvasSizeMode", nb::is_arithmetic(), "How the view adapts when the editor's window is resized (Config::CanvasSizeMode)")
             .value("fit_vertical_view", ax::NodeEditor::CanvasSizeMode::FitVerticalView, "Previous view will be scaled to fit new view on Y axis")
             .value("fit_horizontal_view", ax::NodeEditor::CanvasSizeMode::FitHorizontalView, "Previous view will be scaled to fit new view on X axis")
             .value("center_only", ax::NodeEditor::CanvasSizeMode::CenterOnly, "Previous view will be centered on new view");
 
 
     auto pyEnumSaveReasonFlags =
-        nb::enum_<ax::NodeEditor::SaveReasonFlags>(m, "SaveReasonFlags", nb::is_arithmetic(), "------------------------------------------------------------------------------")
+        nb::enum_<ax::NodeEditor::SaveReasonFlags>(m, "SaveReasonFlags", nb::is_arithmetic(), "Why the editor saves its settings: given to the callbacks Config::SaveSettings and SaveNodeSettings")
             .value("none", ax::NodeEditor::SaveReasonFlags::None, "")
             .value("navigation", ax::NodeEditor::SaveReasonFlags::Navigation, "")
             .value("position", ax::NodeEditor::SaveReasonFlags::Position, "")
@@ -159,15 +162,15 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     auto pyClassConfig =
         nb::class_<ax::NodeEditor::Config>
-            (m, "Config", "")
-        .def_rw("user_pointer", &ax::NodeEditor::Config::UserPointer, "")
-        .def_rw("canvas_size_mode", &ax::NodeEditor::Config::CanvasSizeMode, "")
+            (m, "Config", "The configuration of an editor, given to CreateEditor(): settings file, callbacks, mouse buttons, zoom")
+        .def_rw("user_pointer", &ax::NodeEditor::Config::UserPointer, "Passed to the callbacks above")
+        .def_rw("canvas_size_mode", &ax::NodeEditor::Config::CanvasSizeMode, "How the view adapts when the editor's window is resized")
         .def_rw("drag_button_index", &ax::NodeEditor::Config::DragButtonIndex, "Mouse button index drag action will react to (0-left, 1-right, 2-middle)")
         .def_rw("select_button_index", &ax::NodeEditor::Config::SelectButtonIndex, "Mouse button index select action will react to (0-left, 1-right, 2-middle)")
         .def_rw("navigate_button_index", &ax::NodeEditor::Config::NavigateButtonIndex, "Mouse button index navigate action will react to (0-left, 1-right, 2-middle)")
         .def_rw("context_menu_button_index", &ax::NodeEditor::Config::ContextMenuButtonIndex, "Mouse button index context menu action will react to (0-left, 1-right, 2-middle)")
-        .def_rw("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "")
-        .def_rw("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "")
+        .def_rw("enable_smooth_zoom", &ax::NodeEditor::Config::EnableSmoothZoom, "Smooth zoom with the wheel (False: steps through the zoom levels)")
+        .def_rw("smooth_zoom_power", &ax::NodeEditor::Config::SmoothZoomPower, "With smooth zoom, the zoom factor of one wheel step")
         .def_rw("force_window_content_width_to_node_width", &ax::NodeEditor::Config::ForceWindowContentWidthToNodeWidth, " Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:\n Separator(), SeparatorText(), CollapsingHeader() and TextWrapped() go far beyond the node, and sliders / input fields\n get a default width derived from the window.\n Set ForceWindowContentWidthToNodeWidth to True so that they use the width of the node (False by default).\n - All the text then wraps at the width of the node, so text does not give a width to the node: a node needs at least one\n   item with a fixed width (Dummy, a widget preceded by SetNextItemWidth()...), otherwise it collapses (this is\n   detected, and reported with an IM_ASSERT).\n - The default item width leaves room for a label of 4 wide characters. With a longer label, call SetNextItemWidth(),\n   otherwise the node grows at each frame (this is detected, and reported with an IM_ASSERT).")
         .def(nb::init<>())
         ;
@@ -192,7 +195,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
 
     auto pyEnumStyleColor =
-        nb::enum_<ax::NodeEditor::StyleColor>(m, "StyleColor", nb::is_arithmetic(), "------------------------------------------------------------------------------")
+        nb::enum_<ax::NodeEditor::StyleColor>(m, "StyleColor", nb::is_arithmetic(), "The colors of an editor: the indices of Style::Colors (see PushStyleColor())")
             .value("bg", ax::NodeEditor::StyleColor_Bg, "")
             .value("grid", ax::NodeEditor::StyleColor_Grid, "")
             .value("node_bg", ax::NodeEditor::StyleColor_NodeBg, "")
@@ -216,7 +219,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
 
     auto pyEnumStyleVar =
-        nb::enum_<ax::NodeEditor::StyleVar>(m, "StyleVar", nb::is_arithmetic(), "")
+        nb::enum_<ax::NodeEditor::StyleVar>(m, "StyleVar", nb::is_arithmetic(), "The style variables that PushStyleVar() changes: the fields of Style")
             .value("node_padding", ax::NodeEditor::StyleVar_NodePadding, "")
             .value("node_rounding", ax::NodeEditor::StyleVar_NodeRounding, "")
             .value("node_border_width", ax::NodeEditor::StyleVar_NodeBorderWidth, "")
@@ -250,7 +253,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     auto pyClassStyle =
         nb::class_<ax::NodeEditor::Style>
-            (m, "Style", "")
+            (m, "Style", "The style of an editor (GetStyle()): sizes, roundings, the links, the flow animation, the colors")
         .def_rw("node_padding", &ax::NodeEditor::Style::NodePadding, "")
         .def_rw("node_rounding", &ax::NodeEditor::Style::NodeRounding, "")
         .def_rw("node_border_width", &ax::NodeEditor::Style::NodeBorderWidth, "")

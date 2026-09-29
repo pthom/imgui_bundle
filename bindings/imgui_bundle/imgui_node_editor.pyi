@@ -20,10 +20,16 @@ EditorContext = Any
 NodeEditorContext = Any
 
 class NodeId:
+    """The id of a node. The id 0 means no node: bool(NodeId()) is False"""
+
     def __init__(self, id: int = 0):
         pass
 
     def id(self) -> int:
+        pass
+
+    def __bool__(self) -> bool:
+        """False for the id 0, e.g. get_hovered_node() when no node is hovered"""
         pass
 
     @staticmethod
@@ -35,32 +41,44 @@ class NodeId:
         pass
 
 class LinkId:
+    """The id of a link. The id 0 means no link: bool(LinkId()) is False"""
+
     def __init__(self, id: int = 0):
         pass
 
     def id(self) -> int:
+        pass
+
+    def __bool__(self) -> bool:
+        """False for the id 0, e.g. get_hovered_link() when no link is hovered"""
         pass
 
     @staticmethod
     def create() -> LinkId:
         """Creates a new LinkId with a unique id
 
-        Create your node once per session, not at each frame!
+        Create your link once per session, not at each frame!
         """
         pass
 
 class PinId:
+    """The id of a pin. The id 0 means no pin: bool(PinId()) is False"""
+
     def __init__(self, id: int = 0):
         pass
 
     def id(self) -> int:
         pass
 
+    def __bool__(self) -> bool:
+        """False for the id 0, e.g. get_hovered_pin() when no pin is hovered"""
+        pass
+
     @staticmethod
     def create() -> PinId:
-        """Creates a new NodeId with a unique id
+        """Creates a new PinId with a unique id
 
-        Create your node once per session, not at each frame!
+        Create your pin once per session, not at each frame!
         """
         pass
 
@@ -100,8 +118,12 @@ def resume_editor_canvas() -> None:
 
 # ------------------------------------------------------------------------------
 
+# ------------------------------------------------------------------------------
+#    Enums
+# ------------------------------------------------------------------------------
+
 class PinKind(enum.IntEnum):
-    """------------------------------------------------------------------------------"""
+    """The kind of a pin, given to BeginPin(): an input or an output"""
 
     # Input,    /* original C++ signature */
     input = enum.auto()  # (= 0)
@@ -110,6 +132,8 @@ class PinKind(enum.IntEnum):
     output = enum.auto()  # (= 1)
 
 class FlowDirection(enum.IntEnum):
+    """The direction of the flow animation along a link, given to Flow()"""
+
     # Forward,    /* original C++ signature */
     forward = enum.auto()  # (= 0)
     # Backward    /* original C++ signature */
@@ -117,6 +141,8 @@ class FlowDirection(enum.IntEnum):
     backward = enum.auto()  # (= 1)
 
 class CanvasSizeMode(enum.IntEnum):
+    """How the view adapts when the editor's window is resized (Config::CanvasSizeMode)"""
+
     # FitVerticalView,            /* original C++ signature */
     fit_vertical_view = (
         enum.auto()
@@ -128,8 +154,12 @@ class CanvasSizeMode(enum.IntEnum):
     # CenterOnly,                 /* original C++ signature */
     center_only = enum.auto()  # (= 2)  # Previous view will be centered on new view
 
+# ------------------------------------------------------------------------------
+#    Config
+# ------------------------------------------------------------------------------
+
 class SaveReasonFlags(enum.IntEnum):
-    """------------------------------------------------------------------------------"""
+    """Why the editor saves its settings: given to the callbacks Config::SaveSettings and SaveNodeSettings"""
 
     # None       = 0x00000000,    /* original C++ signature */
     none = enum.auto()  # (= 0x00000000)
@@ -150,11 +180,14 @@ class SaveReasonFlags(enum.IntEnum):
     user = enum.auto()  # (= 0x00000040)
 
 class Config:
+    """The configuration of an editor, given to CreateEditor(): settings file, callbacks, mouse buttons, zoom"""
 
     # void*                   UserPointer;    /* original C++ signature */
-    user_pointer: Any
+    user_pointer: Any  # Passed to the callbacks above
     # CanvasSizeModeAlias     CanvasSizeMode;    /* original C++ signature */
-    canvas_size_mode: CanvasSizeMode
+    canvas_size_mode: (
+        CanvasSizeMode  # How the view adapts when the editor's window is resized
+    )
     # int                     DragButtonIndex;    /* original C++ signature */
     drag_button_index: (
         int  # Mouse button index drag action will react to (0-left, 1-right, 2-middle)
@@ -166,9 +199,11 @@ class Config:
     # int                     ContextMenuButtonIndex;    /* original C++ signature */
     context_menu_button_index: int  # Mouse button index context menu action will react to (0-left, 1-right, 2-middle)
     # bool                    EnableSmoothZoom;    /* original C++ signature */
-    enable_smooth_zoom: bool
+    enable_smooth_zoom: (
+        bool  # Smooth zoom with the wheel (False: steps through the zoom levels)
+    )
     # float                   SmoothZoomPower;    /* original C++ signature */
-    smooth_zoom_power: float
+    smooth_zoom_power: float  # With smooth zoom, the zoom factor of one wheel step
 
     # bool                    ForceWindowContentWidthToNodeWidth;    /* original C++ signature */
     # Inside a node, Dear ImGui believes that the available width is the width of the window that hosts the editor:
@@ -198,19 +233,23 @@ class Config:
     #         , NavigateButtonIndex(1)
     #         , ContextMenuButtonIndex(1)
     #         , EnableSmoothZoom(true)
-    #                               # ifdef __APPLE__
+    #                                 # ifdef __APPLE__
     #         , SmoothZoomPower(1.1f)
-    #                               # else
+    #                                 # else
     #         , SmoothZoomPower(1.3f)
-    #                               # endif
+    #                                 # endif
     #         , ForceWindowContentWidthToNodeWidth(false);
     def __init__(self) -> None:
         pass
     # File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file
     settings_file: Optional[str]
 
+# ------------------------------------------------------------------------------
+#    Style
+# ------------------------------------------------------------------------------
+
 class StyleColor(enum.IntEnum):
-    """------------------------------------------------------------------------------"""
+    """The colors of an editor: the indices of Style::Colors (see PushStyleColor())"""
 
     # StyleColor_Bg,    /* original C++ signature */
     bg = enum.auto()  # (= 0)
@@ -256,6 +295,8 @@ class StyleColor(enum.IntEnum):
     count = enum.auto()  # (= 19)
 
 class StyleVar(enum.IntEnum):
+    """The style variables that PushStyleVar() changes: the fields of Style"""
+
     # StyleVar_NodePadding,    /* original C++ signature */
     node_padding = enum.auto()  # (= 0)
     # StyleVar_NodeRounding,    /* original C++ signature */
@@ -318,6 +359,8 @@ class StyleVar(enum.IntEnum):
     count = enum.auto()  # (= 28)
 
 class Style:
+    """The style of an editor (GetStyle()): sizes, roundings, the links, the flow animation, the colors"""
+
     # ImVec4  NodePadding;    /* original C++ signature */
     node_padding: ImVec4
     # float   NodeRounding;    /* original C++ signature */
@@ -394,6 +437,9 @@ class Style:
         ...
 
 # ------------------------------------------------------------------------------
+#    Functions
+# ------------------------------------------------------------------------------
+
 # --- Editor context lifecycle --------------------------------------------
 # You may keep multiple editors and switch between them with SetCurrentEditor.
 # Pass a Config to CreateEditor to set e.g. SettingsFile (where node positions
