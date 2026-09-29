@@ -752,8 +752,10 @@ def write_module_pages(library: Library, module: str, stubs: list[Path], folder:
     title = f"{short} (C++)" if cpp else short
     intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
              else _intro_sentence(library, module, stubs, functions, classes, enums))
-    # the theme reads outline_maxdepth from the page's frontmatter (site:) over the site's option (myst.yml, 2)
-    frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if module not in OUTLINE_WITHOUT_ENTRIES else []
+    # The page's outline depth, in its frontmatter (the theme counts H2 as depth 1): 3 lists the entries (H4), 2 stops at
+    # the sections. The book's other pages keep the theme's default
+    depth = 2 if module in OUTLINE_WITHOUT_ENTRIES else 3
+    frontmatter = ["---", "site:", f"  outline_maxdepth: {depth}", "---"]
     cards = _demo_cards(manifest, docs, index, [], MODULE_DEMOS.get(module, []))
     doc = _module_doc(stubs)
     if cpp:
