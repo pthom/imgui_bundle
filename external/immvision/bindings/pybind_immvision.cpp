@@ -70,13 +70,9 @@ void py_init_module_immvision(nb::module_& m)
             },
             "")
         .def("__getitem__",
-            nb::overload_cast<int>(&ImmVision::Color4d::operator[]),
-            nb::arg("i"),
-            "(private API)")
+            nb::overload_cast<int>(&ImmVision::Color4d::operator[]), nb::arg("i"))
         .def("__getitem__",
-            nb::overload_cast<int>(&ImmVision::Color4d::operator[], nb::const_),
-            nb::arg("i"),
-            "(private API)")
+            nb::overload_cast<int>(&ImmVision::Color4d::operator[], nb::const_), nb::arg("i"))
         .def(nb::init<>())
         .def(nb::init<double, double, double, double>(),
             nb::arg("v0"), nb::arg("v1"), nb::arg("v2"), nb::arg("v3"))
@@ -99,15 +95,13 @@ void py_init_module_immvision(nb::module_& m)
             nb::arg("pt1"), nb::arg("pt2"),
             "Construct from two corner points (top-left and bottom-right)")
         .def("empty",
-            &ImmVision::Rect::empty, "(private API)")
+            &ImmVision::Rect::empty)
         .def("area",
-            &ImmVision::Rect::area, "(private API)")
+            &ImmVision::Rect::area)
         .def("contains",
-            &ImmVision::Rect::contains,
-            nb::arg("pt"),
-            "(private API)")
+            &ImmVision::Rect::contains, nb::arg("pt"))
         .def("size",
-            &ImmVision::Rect::size, "(private API)")
+            &ImmVision::Rect::size)
         ;
     ////////////////////    </generated_from:immvision_types.h>    ////////////////////
 
@@ -153,7 +147,7 @@ void py_init_module_immvision(nb::module_& m)
 
     auto pyClassColormapScaleFromStatsData =
         nb::class_<ImmVision::ColormapScaleFromStatsData>
-            (m, "ColormapScaleFromStatsData", " Scale the Colormap according to the Image  stats\n\nIMMVISION_API_STRUCT")
+            (m, "ColormapScaleFromStatsData", "Scale the Colormap according to the Image  stats")
         .def("__init__", [](ImmVision::ColormapScaleFromStatsData * self, ImmVision::ColorMapStatsTypeId ColorMapStatsType = ImmVision::ColorMapStatsTypeId::FromFullImage, double NbSigmas = 1.5, bool UseStatsMin = false, bool UseStatsMax = false)
         {
             new (self) ImmVision::ColormapScaleFromStatsData();  // placement new
@@ -174,7 +168,7 @@ void py_init_module_immvision(nb::module_& m)
 
     auto pyClassColormapSettingsData =
         nb::class_<ImmVision::ColormapSettingsData>
-            (m, "ColormapSettingsData", " Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)\n\nIMMVISION_API_STRUCT")
+            (m, "ColormapSettingsData", "Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)")
         .def("__init__", [](ImmVision::ColormapSettingsData * self, std::string Colormap = "None", double ColormapScaleMin = 0., double ColormapScaleMax = 1., const std::optional<const ImmVision::ColormapScaleFromStatsData> & ColormapScaleFromStats = std::nullopt, std::string internal_ColormapHovered = "")
         {
             new (self) ImmVision::ColormapSettingsData();  // placement new
@@ -200,7 +194,7 @@ void py_init_module_immvision(nb::module_& m)
 
     auto pyClassMouseInformation =
         nb::class_<ImmVision::MouseInformation>
-            (m, "MouseInformation", " Contains information about the mouse inside an image\n\nIMMVISION_API_STRUCT")
+            (m, "MouseInformation", "Contains information about the mouse inside an image")
         .def("__init__", [](ImmVision::MouseInformation * self, bool IsMouseHovering = false, const std::optional<const Point2d> & MousePosition = std::nullopt, const std::optional<const Point> & MousePosition_Displayed = std::nullopt)
         {
             new (self) ImmVision::MouseInformation();  // placement new
@@ -225,7 +219,7 @@ void py_init_module_immvision(nb::module_& m)
 
     auto pyClassImageParams =
         nb::class_<ImmVision::ImageParams>
-            (m, "ImageParams", " Set of display parameters and options for an Image\n\nIMMVISION_API_STRUCT")
+            (m, "ImageParams", "Set of display parameters and options for an Image")
         .def("__init__", [](ImmVision::ImageParams * self, bool RefreshImage = false, const std::optional<const Size> & ImageDisplaySize = std::nullopt, const std::optional<const Matrix33d> & ZoomPanMatrix = std::nullopt, std::string ZoomKey = "", ImmVision::ImageInterpolationMode InterpolationMode = ImmVision::ImageInterpolationMode::Adaptive, const std::optional<const ImmVision::ColormapSettingsData> & ColormapSettings = std::nullopt, std::string ColormapKey = "", bool PanWithMouse = true, bool ZoomWithMouseWheel = true, bool CanResize = true, bool ResizeKeepAspectRatio = true, int SelectedChannel = -1, bool ShowSchoolPaperBackground = true, bool ShowAlphaChannelCheckerboard = true, bool ShowGrid = true, bool DrawValuesOnZoomedPixels = true, bool ShowImageInfo = true, bool ShowPixelInfo = true, bool ShowZoomButtons = true, bool ShowOptionsPanel = false, bool ShowOptionsInTooltip = false, bool ShowOptionsButton = true, const std::optional<const std::vector<Point>> & WatchedPixels = std::nullopt, bool AddWatchedPixelOnDoubleClick = true, bool HighlightWatchedPixels = true, const std::optional<const ImmVision::MouseInformation> & MouseInfo = std::nullopt, const std::optional<const ImVec2> & ImageScreenTopLeft = std::nullopt)
         {
             new (self) ImmVision::ImageParams();  // placement new
@@ -341,7 +335,7 @@ void py_init_module_immvision(nb::module_& m)
     m.def("image",
         ImmVision::Image,
         nb::arg("label"), nb::arg("image"), nb::arg("params"),
-        " Display an image, with full user control: zoom, pan, watch pixels, etc.\n\n :param label\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets *must* have a unique Ids.\n           For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           (you can use ImGui::PushID / ImGui::PopID to circumvent this, or add suffixes with ##)\n\n           If they do, they might not refresh correctly!\n           To circumvent this, you can:\n              - Call `ImGui::PushID(\"some_unique_string\")` at the start of your function,\n                and `ImGui::PopID()` at the end.\n              - Or modify your label like this:\n                  \"MyLabel##some_unique_id\"\n                  (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n\n :param image\n     The image to display. All dense image types are supported (uint8, int16, float32, etc.).\n     C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).\n     Python: pass a numpy.ndarray.\n\n :param params\n     Complete options (as modifiable inputs), and outputs (mouse position, watched pixels, etc)\n     @see ImageParams structure.\n     The ImageParams may be modified by this function: you can extract from them\n     the mouse position, watched pixels, etc.\n     Important note:\n         ImageParams is an input-output parameter, passed as a pointer.\n         Its scope should be wide enough so that it is preserved from frame to frame.\n         !! If you cannot zoom/pan in a displayed image, extend the scope of the ImageParams !!\n\n - This function requires that both imgui and OpenGL were initialized.\n   (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
+        " Display an image, with full user control: zoom, pan, watch pixels, etc.\n\n - `label`: the legend, displayed above the image. It is also the widget's id: two images cannot share it\n   (if they do, they might not refresh correctly). To keep a legend and make the id unique, append a suffix:\n   `\"MyLabel##some_unique_id\"` (the part after `##` is not displayed); to display no legend, use\n   `\"##some_unique_id\"`; or wrap the call in `ImGui::PushID(\"some_unique_string\")` / `ImGui::PopID()`.\n - `image`: the image to display. All dense image types are supported (uint8, int16, float32, etc.).\n   C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy). Python: a `numpy.ndarray`.\n - `params`: the options (zoom, colormap, ...) as inputs, and the outputs (mouse position, watched pixels, ...):\n   see `ImageParams`. It is an input-output parameter, passed as a pointer: keep it alive from frame to frame\n   (if you cannot zoom or pan in a displayed image, extend the scope of its `ImageParams`).\n\n This function requires that both imgui and OpenGL were initialized (for example, run the app with\n `immapp.run` in Python, or `HelloImGui::Run` in C++).");
 
     m.def("image_display",
         [](const std::string & label_id, const ImageBuffer & image, const std::optional<const Size> & imageDisplaySize = std::nullopt, bool refreshImage = false, bool showOptionsButton = false) -> Point2d
@@ -363,12 +357,12 @@ void py_init_module_immvision(nb::module_& m)
             return ImageDisplay_adapt_mutable_param_with_default_value(label_id, image, imageDisplaySize, refreshImage, showOptionsButton);
         },
         nb::arg("label_id"), nb::arg("image"), nb::arg("image_display_size").none() = nb::none(), nb::arg("refresh_image") = false, nb::arg("show_options_button") = false,
-        " ImageDisplay: Only, display the image, with no user interaction (by default)\n\n Parameters:\n :param label_id\n     A legend that will be displayed.\n     Important notes:\n         - With ImGui and ImmVision, widgets must have a unique Ids. For this widget, the id is given by this label.\n           Two widgets (for example) two images *cannot* have the same label or the same id!\n           If they do, they might not refresh correctly!\n           To circumvent this, you can modify your label like this:\n              \"MyLabel##some_unique_id\"    (the part after \"##\" will not be displayed but will be part of the id)\n        - To display an empty legend, use \"##_some_unique_id\"\n        - if your legend is displayed (i.e. it does not start with \"##\"),\n          then the total size of the widget will be larger than the imageDisplaySize.\n\n :param image:\n     The image to display. All dense image types are supported.\n     C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).\n     Python: pass a numpy.ndarray.\n\n :param imageDisplaySize:\n     Size of the displayed image (can be different from the image size)\n     If you specify only the width or height (e.g (300, 0), then the other dimension\n     will be calculated automatically, respecting the original image w/h ratio.\n\n :param refreshImage:\n     images textures are cached. Set to True if your image has changed\n     (for example, for live video images)\n\n :param showOptionsButton:\n     If True, show an option button that opens the option panel.\n     In that case, it also becomes possible to zoom & pan, add watched pixel by double-clicking, etc.\n\n :return:\n      The mouse position in the original image coordinates, as double values.\n      (i.e. it does not matter if imageDisplaySize is different from the image size)\n      It will return (-1., -1.) if the mouse is not hovering the image.\n\n      Note: use ImGui::IsMouseDown(mouse_button) (C++) or imgui.is_mouse_down(mouse_button) (Python)\n            to query more information about the mouse.\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)\n\n\nPython bindings defaults:\n    If imageDisplaySize is None, then its default value will be: Size()");
+        " Display an image, with no user interaction by default: a simpler and faster alternative to `Image()`.\n\n - `label_id`: the legend, and the widget's id (unique: see `Image()`). To display no legend, use\n   `\"##some_unique_id\"`. A displayed legend makes the widget taller than `imageDisplaySize`.\n - `image`: the image to display. C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy).\n   Python: a `numpy.ndarray`.\n - `imageDisplaySize`: the size of the displayed image, which may differ from the image's. With only the\n   width or the height given (e.g. `(300, 0)`), the other dimension follows the image's aspect ratio.\n - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).\n - `showOptionsButton`: shows a button that opens the options panel; zoom, pan and watched pixels\n   (double-click) then become possible.\n\n Returns the mouse position in the original image's coordinates, as doubles, whatever `imageDisplaySize`:\n `(-1, -1)` when the mouse is not over the image. For the buttons, see `ImGui::IsMouseDown` (C++) or\n `imgui.is_mouse_down` (Python).\n\n This function requires that both imgui and OpenGL were initialized (see `Image()`).\n\nPython bindings defaults:\n    If imageDisplaySize is None, then its default value will be: Size()");
 
     m.def("image_display_resizable",
         ImmVision::ImageDisplayResizable,
         nb::arg("label_id"), nb::arg("image"), nb::arg("size") = nb::none(), nb::arg("refresh_image") = false, nb::arg("resizable") = true, nb::arg("show_options_button") = false,
-        " ImageDisplayResizable: display the image, with no user interaction (by default)\n The image can be resized by the user (and the new size will be stored in the size parameter, if provided)\n The label will not be displayed (but it will be used as an id, and must be unique)\n\n :param image:\n     The image to display.\n     C++: accepts ImageBuffer directly, or cv::Mat (implicit conversion, zero-copy).\n     Python: pass a numpy.ndarray.");
+        " Display an image, with no user interaction by default, in a widget the user can resize.\n The label is not displayed, but it is the widget's id (unique: see `Image()`).\n\n - `image`: the image to display. C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy).\n   Python: a `numpy.ndarray`.\n - `size`: the displayed size, in and out: the size chosen by the user is stored in it, when given.\n - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).\n - `resizable`: whether the user can resize the widget.\n - `showOptionsButton`: shows a button that opens the options panel.\n\n Returns the mouse position in the original image's coordinates, as `ImageDisplay()` does.");
 
     m.def("available_colormaps",
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
@@ -435,9 +429,9 @@ void py_init_module_immvision(nb::module_& m)
         .def("update_from_image",
             &ImmVision::GlTexture::UpdateFromImage,
             nb::arg("image"), nb::arg("is_color_order_bgr") = false,
-            " Update the texture from a new image (ImageBuffer in C++, numpy array in Python).\n(private API)")
+            "Update the texture from a new image (ImageBuffer in C++, numpy array in Python).")
         .def("size_im_vec2",
-            &ImmVision::GlTexture::SizeImVec2, " Returns the size as ImVec2\n(private API)")
+            &ImmVision::GlTexture::SizeImVec2, "Returns the size as ImVec2")
         .def_rw("texture_id", &ImmVision::GlTexture::TextureId, "OpenGL texture ID on the GPU")
         .def_rw("image_size", &ImmVision::GlTexture::ImageSize, "Image size in pixels")
         ;

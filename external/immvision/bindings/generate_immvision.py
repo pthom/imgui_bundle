@@ -26,6 +26,7 @@ def main() -> None:
     options.srcmlcpp_options.header_filter_acceptable__regex = r"IMMVISION_SERIALIZE_JSON"
     options.python_run_black_formatter = True
     options.fn_exclude_non_api = False
+    options.fn_non_api_comment = ""  # the structs' methods carry no IMMVISION_API: they are API all the same
 
     # GlTexture has a move-assignment operator, which has no Python equivalent: silence the warning.
     options.srcmlcpp_options.ignored_warning_parts += ["GlTexture& operator="]
