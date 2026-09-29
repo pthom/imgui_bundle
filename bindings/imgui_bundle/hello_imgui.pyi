@@ -839,9 +839,12 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 
 # Font loading
 #
-# To load a font, use HelloImGui::LoadFont() or HelloImGui::LoadDpiResponsiveFont(),
-# instead of ImGui::GetIO().Fonts->AddFontFromFileTTF(): they adjust the font size
-# to the screen's DPI, and give a consistent font size across OSes.
+# HelloImGui::LoadFont() loads a font from the assets folder, which exists on every platform
+# (desktop, mobile, browser), where ImGui::GetIO().Fonts->AddFontFromFileTTF() needs a file path.
+# Its parameters can also merge the font into the previous one, or load its color glyphs.
+#
+# Fonts are loaded at their nominal size: the scaling to the screen's DPI is applied at display
+# time by ImGui (ImGui::GetStyle().FontScaleDpi, set by the runner).
 
 class FontLoadingParams:
     """
@@ -899,8 +902,10 @@ def load_font(
 def load_font_ttf(
     font_filename: str, font_size: float, config: Optional[ImFontConfig] = None
 ) -> ImFont:
-    """Python bindings defaults:
-    If config is None, then its default value will be: ImFontConfig()
+    """Loads a font from the assets, with an ImGui font config
+
+    Python bindings defaults:
+        If config is None, then its default value will be: ImFontConfig()
     """
     pass
 
@@ -912,8 +917,11 @@ def load_font_ttf(
 def load_font_ttf_with_font_awesome_icons(
     font_filename: str, font_size: float, config_font: Optional[ImFontConfig] = None
 ) -> ImFont:
-    """Python bindings defaults:
-    If configFont is None, then its default value will be: ImFontConfig()
+    """Loads a font from the assets and merges the icons of Font Awesome into it
+     (Font Awesome 4 or 6, as set by RunnerParams.callbacks.defaultIconFont)
+
+    Python bindings defaults:
+        If configFont is None, then its default value will be: ImFontConfig()
     """
     pass
 

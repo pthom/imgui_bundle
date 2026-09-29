@@ -686,7 +686,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             return LoadFontTTF_adapt_mutable_param_with_default_value(fontFilename, fontSize, config);
         },
         nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config").none() = nb::none(),
-        "Python bindings defaults:\n    If config is None, then its default value will be: ImFontConfig()",
+        " Loads a font from the assets, with an ImGui font config\n\nPython bindings defaults:\n    If config is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
 
     m.def("load_font_ttf_with_font_awesome_icons",
@@ -709,7 +709,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             return LoadFontTTF_WithFontAwesomeIcons_adapt_mutable_param_with_default_value(fontFilename, fontSize, configFont);
         },
         nb::arg("font_filename"), nb::arg("font_size"), nb::arg("config_font").none() = nb::none(),
-        "Python bindings defaults:\n    If configFont is None, then its default value will be: ImFontConfig()",
+        " Loads a font from the assets and merges the icons of Font Awesome into it\n (Font Awesome 4 or 6, as set by RunnerParams.callbacks.defaultIconFont)\n\nPython bindings defaults:\n    If configFont is None, then its default value will be: ImFontConfig()",
         nb::rv_policy::reference);
 
 

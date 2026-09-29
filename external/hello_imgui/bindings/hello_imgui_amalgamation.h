@@ -745,9 +745,12 @@ namespace HelloImGui
 
     // Font loading
     //
-    // To load a font, use HelloImGui::LoadFont() or HelloImGui::LoadDpiResponsiveFont(),
-    // instead of ImGui::GetIO().Fonts->AddFontFromFileTTF(): they adjust the font size
-    // to the screen's DPI, and give a consistent font size across OSes.
+    // HelloImGui::LoadFont() loads a font from the assets folder, which exists on every platform
+    // (desktop, mobile, browser), where ImGui::GetIO().Fonts->AddFontFromFileTTF() needs a file path.
+    // Its parameters can also merge the font into the previous one, or load its color glyphs.
+    //
+    // Fonts are loaded at their nominal size: the scaling to the screen's DPI is applied at display
+    // time by ImGui (ImGui::GetStyle().FontScaleDpi, set by the runner).
 
     //
     // Font loading parameters: several options are available (color, merging, range, ...)
@@ -769,17 +772,20 @@ namespace HelloImGui
     };
 
 
-    // Loads a font with the specified parameters
+    // Loads a font (from the assets by default), with the loading parameters above
     ImFont* LoadFont(
         const std::string & fontFilename, float fontSize,
         const FontLoadingParams & params = {});
 
+    // Loads a font from the assets, with an ImGui font config
     ImFont* LoadFontTTF(
         const std::string & fontFilename,
         float fontSize,
         ImFontConfig config = ImFontConfig()
     );
 
+    // Loads a font from the assets and merges the icons of Font Awesome into it
+    // (Font Awesome 4 or 6, as set by RunnerParams.callbacks.defaultIconFont)
     ImFont* LoadFontTTF_WithFontAwesomeIcons(
         const std::string & fontFilename,
         float fontSize,
