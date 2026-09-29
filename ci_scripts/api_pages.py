@@ -460,7 +460,8 @@ def _label(module: str, name: str) -> str:
 
 
 def _code(language: str, text: str) -> list[str]:
-    return [f"```{language}", text, "```", ""]
+    """A signature as a code block; custom.css wraps its long lines (.signature)"""
+    return [f"::::::{{code-block}} {language}", ":class: signature", text, "::::::", ""]
 
 
 OUTLINE_WITHOUT_ENTRIES = {"imgui_bundle.imgui", "imgui_bundle.imgui.internal"}  # the modules whose outline (the
