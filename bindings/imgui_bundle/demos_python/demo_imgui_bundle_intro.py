@@ -769,23 +769,6 @@ def _notebook_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
-# Slide 6: Node Editor — static screenshot
-# ============================================================================
-
-def _node_editor_slide_gui(content_size: ImVec2):
-    img_aspect = 800.0 / 516.0
-    link_h = imgui.get_frame_height()
-    w = content_size.x
-    h = w / img_aspect
-    if h > content_size.y - link_h:
-        h = content_size.y - link_h
-        w = h * img_aspect
-    hello_imgui.image_from_asset("images/node_editor_fiat.jpg", ImVec2(w, h))
-
-    rich_md.render("Built with [fiatlight](https://pthom.github.io/fiatlight/)")
-
-
-# ============================================================================
 # Slide 7: Markdown — side-by-side source and rendered
 # ============================================================================
 
@@ -1677,10 +1660,6 @@ def _intro_mini_demos():
             "Feature-Rich Widgets",
             "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
             _table_slide_gui),
-        CarouselSlide(
-            "Explore Ideas in a Node Editor",
-            "With imgui-node-editor, you can build complex applications such as blueprint editors. Here is an example of an image editing pipeline.",
-            _node_editor_slide_gui),
         CarouselSlide(
             "Rich Documentation, Built In",
             "Render markdown directly in your UI - headers, code blocks, tables, links, and images, all from a simple string.",
