@@ -1706,7 +1706,8 @@ def _intro_mini_demos():
     if carousel_offset_x < 0.0:
         carousel_offset_x = 0.0
 
-    imgui.indent(carousel_offset_x)
+    if carousel_offset_x > 0.0:  # indent(0) indents by the style's default: the carousel would overflow
+        imgui.indent(carousel_offset_x)
 
     # --- Auto-advance ---
     if not _auto_stopped:
@@ -1825,7 +1826,8 @@ def _intro_mini_demos():
                 _current_slide = 0
             static._time_last_trigger = now
 
-    imgui.unindent(carousel_offset_x)
+    if carousel_offset_x > 0.0:
+        imgui.unindent(carousel_offset_x)
 
 
 # ============================================================================

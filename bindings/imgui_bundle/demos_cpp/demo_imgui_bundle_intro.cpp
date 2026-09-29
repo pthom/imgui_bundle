@@ -1890,7 +1890,8 @@ void IntroMiniDemos()
     float carouselOffsetX = (availWidth - carouselWidth) * 0.5f;
     if (carouselOffsetX < 0.f) carouselOffsetX = 0.f;
 
-    ImGui::Indent(carouselOffsetX);
+    if (carouselOffsetX > 0.f)  // Indent(0) indents by the style's default: the carousel would overflow
+        ImGui::Indent(carouselOffsetX);
 
     // --- Auto-advance (pauses while user interacts, stops permanently on manual navigation) ---
     if (!autoStopped)
@@ -2049,7 +2050,8 @@ void IntroMiniDemos()
     }
 
 
-    ImGui::Unindent(carouselOffsetX);
+    if (carouselOffsetX > 0.f)
+        ImGui::Unindent(carouselOffsetX);
 }
 
 
