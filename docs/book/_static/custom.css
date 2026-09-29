@@ -79,8 +79,8 @@ h4:has(> .heading-text > code:first-child) {
   border-top: 1px solid rgba(128, 128, 128, 0.25);
 }
 h4 > .heading-text > code:first-child {
-  font-size: 1.2rem;
-  font-weight: 700;
+  font-size: 1.05rem;  /* under the sections' H3 */
+  font-weight: 600;
   background: none;
   padding: 0;
 }
