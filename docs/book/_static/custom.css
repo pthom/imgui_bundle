@@ -71,3 +71,16 @@
   white-space: pre-wrap !important;  /* the theme sets white-space: pre inline on the code element */
   overflow-wrap: anywhere;
 }
+
+/* The API pages: an entry's heading (H4, a code span) stands out from the signatures and the doc around it */
+h4:has(> .heading-text > code:first-child) {
+  margin-top: 2.5rem;
+  padding-top: 0.6rem;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+}
+h4 > .heading-text > code:first-child {
+  font-size: 1.2rem;
+  font-weight: 700;
+  background: none;
+  padding: 0;
+}
