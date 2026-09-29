@@ -34,6 +34,15 @@ The last rule drops the docstring of a function documented on the line above, wh
 
 Details and examples: the section "Comments and docstrings" of the litgen book's [Generated code layout](https://github.com/pthom/litgen/blob/main/docs/book/03_05_00_code_layout.ipynb) chapter.
 
+## The API pages
+
+The book's API reference and its plain-text version for AI assistants (`llms/api/`) are generated from the stubs by `ci_scripts/api_pages.py` (`just api_pages`; `doc_serve` and `doc_build_cf` run it). What it reads, and how to write for it:
+- A module's docstring, at the top of its stub (before `<litgen_stub>`, so that a regeneration keeps it), opens its page. Its first paragraph says what the module is for: the C++ view shows it too. The next paragraphs say how to start, and what to know in Python.
+- The headers' standalone comments become the page's structure. A part is a `[SECTION]` mark (imgui.h, implot.h) or a banner: a rule, a one-line title, a rule (the node editor). A section is a one-line title, or `--- Title ---`. A title is short and is not a sentence: a longer comment reads as a note.
+- A header's preamble (its comments before the first title) is left out.
+- A doc may use markdown (lists, code spans): the lines laid out as code or as a table are shown as text blocks.
+- The libraries' table (title, tagline, modules, demos) and the per-module tables (the C++ namespaces, the "Start with" entries) are at the top of the script.
+
 ## Folders structure
 
 In order to work on bindings, it is essential to understand the folders structure inside Dear ImGui Bundle.
