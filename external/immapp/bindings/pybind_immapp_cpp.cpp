@@ -58,61 +58,6 @@ void py_init_module_immapp_cpp(nb::module_& m)
     ////////////////////    </generated_from:immapp.h>    ////////////////////
 
 
-    ////////////////////    <generated_from:immapp_widgets.h>    ////////////////////
-    // #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
-    //
-
-    m.def("begin_plot_in_node_editor",
-        [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
-        {
-            auto BeginPlotInNodeEditor_adapt_mutable_param_with_default_value = [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
-            {
-
-                const ImVec2& size_or_default = [&]() -> const ImVec2 {
-                    if (size.has_value())
-                        return size.value();
-                    else
-                        return ImVec2(-1,0);
-                }();
-
-                auto lambda_result = ImmApp::BeginPlotInNodeEditor(title_id, size_or_default, flags);
-                return lambda_result;
-            };
-
-            return BeginPlotInNodeEditor_adapt_mutable_param_with_default_value(title_id, size, flags);
-        },
-        nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
-        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
-
-    m.def("end_plot_in_node_editor",
-        ImmApp::EndPlotInNodeEditor);
-
-    m.def("show_resizable_plot_in_node_editor",
-        ImmApp::ShowResizablePlotInNodeEditor,
-        nb::arg("title_id"), nb::arg("size_pixels"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
-        " ShowResizablePlotInNodeEditor: shows a resizable plot inside a node\n Returns the new size of the plot");
-
-    m.def("show_resizable_plot_in_node_editor_em",
-        ImmApp::ShowResizablePlotInNodeEditor_Em,
-        nb::arg("title_id"), nb::arg("size_em"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
-        " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
-    // #endif
-    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
-    //
-
-    m.def("widget_with_resize_handle_in_node_editor",
-        ImmApp::WidgetWithResizeHandle_InNodeEditor,
-        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
-        " WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node\n Returns the new size of the widget.");
-
-    m.def("widget_with_resize_handle_in_node_editor_em",
-        ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
-        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
-        " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
-    // #endif
-    ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
-
-
     ////////////////////    <generated_from:runner.h>    ////////////////////
     // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
     //
@@ -368,6 +313,61 @@ void py_init_module_immapp_cpp(nb::module_& m)
             ImmApp::ManualRender::TearDown, " Tears down the renderer and releases all associated resources.\n This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).\n After calling `TearDown()`, the InitFromXXX can be called with new parameters.");
     } // </namespace ManualRender>
     ////////////////////    </generated_from:runner.h>    ////////////////////
+
+
+    ////////////////////    <generated_from:immapp_widgets.h>    ////////////////////
+    // #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
+    //
+
+    m.def("begin_plot_in_node_editor",
+        [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
+        {
+            auto BeginPlotInNodeEditor_adapt_mutable_param_with_default_value = [](const char * title_id, const std::optional<const ImVec2> & size = std::nullopt, ImPlotFlags flags = 0) -> bool
+            {
+
+                const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                    if (size.has_value())
+                        return size.value();
+                    else
+                        return ImVec2(-1,0);
+                }();
+
+                auto lambda_result = ImmApp::BeginPlotInNodeEditor(title_id, size_or_default, flags);
+                return lambda_result;
+            };
+
+            return BeginPlotInNodeEditor_adapt_mutable_param_with_default_value(title_id, size, flags);
+        },
+        nb::arg("title_id"), nb::arg("size").none() = nb::none(), nb::arg("flags") = 0,
+        "Python bindings defaults:\n    If size is None, then its default value will be: ImVec2(-1,0)");
+
+    m.def("end_plot_in_node_editor",
+        ImmApp::EndPlotInNodeEditor);
+
+    m.def("show_resizable_plot_in_node_editor",
+        ImmApp::ShowResizablePlotInNodeEditor,
+        nb::arg("title_id"), nb::arg("size_pixels"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
+        " ShowResizablePlotInNodeEditor: shows a resizable plot inside a node\n Returns the new size of the plot");
+
+    m.def("show_resizable_plot_in_node_editor_em",
+        ImmApp::ShowResizablePlotInNodeEditor_Em,
+        nb::arg("title_id"), nb::arg("size_em"), nb::arg("plot_function"), nb::arg("flags") = 0, nb::arg("resize_handle_size_em") = 1.0f,
+        " ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node\n Returns the new size of the plot. Units are in em.");
+    // #endif
+    // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+    //
+
+    m.def("widget_with_resize_handle_in_node_editor",
+        ImmApp::WidgetWithResizeHandle_InNodeEditor,
+        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
+        " WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node\n Returns the new size of the widget.");
+
+    m.def("widget_with_resize_handle_in_node_editor_em",
+        ImmApp::WidgetWithResizeHandle_InNodeEditor_Em,
+        nb::arg("id"), nb::arg("gui_function"), nb::arg("resize_handle_size_em") = 1.0f,
+        " WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node\n Returns the new size of the widget. Size is in em.");
+    // #endif
+    ////////////////////    </generated_from:immapp_widgets.h>    ////////////////////
 
 
     ////////////////////    <generated_from:clock.h>    ////////////////////

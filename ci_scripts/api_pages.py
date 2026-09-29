@@ -43,7 +43,8 @@ class Library:
     tagline: str  # one line: what it does
     upstream: str  # its repository
     book_page: str  # the book's page that presents it (relative to docs/book, without .md), or ""
-    modules: list[tuple[str, str]]  # (the import name, the stub relative to bindings/imgui_bundle)
+    modules: list[tuple[str, str]]  # (the import name, its stub relative to bindings/imgui_bundle; several stubs
+    # joined by " + " when the module re-exports them: immapp)
     uses: list[str] = field(default_factory=list)  # its names in examples_docs.json's "uses": the demos to show
     demos: list[str] = field(default_factory=list)  # the demos to show, by file name: for the core libraries, whose
     # use is not tagged (every demo imports them)
@@ -74,8 +75,8 @@ LIBRARIES = [
             "Runs an app in one call, with the add-ons set up (ImPlot, markdown, the node editor...); helpers for "
             "demos, tests and notebooks.",
             "https://github.com/pthom/imgui_bundle/tree/main/external/immapp", "core_libs/hello_imgui_immapp",
-            [("imgui_bundle.immapp", "immapp/__init__.pyi"),
-             ("imgui_bundle.immapp.immapp_cpp", "immapp/immapp_cpp.pyi"), ("imgui_bundle.immapp.nb", "immapp/nb.pyi")],
+            [("imgui_bundle.immapp", "immapp/immapp_cpp.pyi + immapp/__init__.pyi"),
+             ("imgui_bundle.immapp.nb", "immapp/nb.pyi")],
             demos=["demo_hello_world.py", "welcome_imm_mode.py", "demo_parametric_curve.py", "demo_assets_addons.py",
                    "demo_python_context_manager.py", "demo_run_async.py", "demo_widgets.py", "demo_testapp.py"]),
     Library("implot", "ImPlot",
@@ -612,9 +613,11 @@ class ModulePages:
     enums: int
 
 
-def _intro_sentence(library: Library, module: str, stub: Path, functions: int, classes: int, enums: int) -> str:
+def _intro_sentence(library: Library, module: str, stubs: list[Path], functions: int, classes: int,
+                    enums: int) -> str:
+    names = " and ".join(f"`bindings/imgui_bundle/{stub.relative_to(STUBS).as_posix()}`" for stub in stubs)
     return (f"The module `{module}`, the Python API of [{library.title}](index.md), from "
-            f"`bindings/imgui_bundle/{stub.relative_to(STUBS).as_posix()}`: {functions} functions, {classes} classes, "
+            f"{names}: {functions} functions, {classes} classes, "
             f"{enums} enums. Each entry gives the Python signature, then the C++ one, then the doc of the C++ header. "
             "The sections are the header's.")
 
@@ -671,11 +674,13 @@ def _cpp_intro(library: Library, module: str, python_index: str) -> str:
             "From the stubs: the functions excluded from the bindings, the typedefs and the macros are absent.")
 
 
-def write_module_pages(library: Library, module: str, stub: Path, folder: Path, stem: str,
+def write_module_pages(library: Library, module: str, stubs: list[Path], folder: Path, stem: str,
                        manifest: dict[str, Any], docs: dict[str, dict[str, Any]], cpp: bool = False) -> ModulePages:
     """The reference of one module, one page (Ctrl-F finds everything; the outline stops at the sections). With
     `cpp`: the C++ view of the module, the same page with a `_cpp` suffix"""
-    entries = read_stub(stub, REPO / library.headers if library.headers else None)
+    entries: list[Entry] = []
+    for stub in stubs:
+        entries += read_stub(stub, REPO / library.headers if library.headers else None)
     functions = sum(1 for e in entries if e.kind == "function")
     classes = sum(1 for e in entries if e.kind == "class")
     enums = sum(1 for e in entries if e.kind == "enum")
@@ -685,7 +690,7 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     short = module.removeprefix("imgui_bundle.")  # the titles, in the navigation: the intro names the module
     title = f"{short} (C++)" if cpp else short
     intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
-             else _intro_sentence(library, module, stub, functions, classes, enums))
+             else _intro_sentence(library, module, stubs, functions, classes, enums))
     # the theme reads outline_maxdepth from the page's frontmatter (site:) over the site's option (myst.yml, 2)
     frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if module not in OUTLINE_WITHOUT_ENTRIES else []
     cards = _demo_cards(manifest, docs, index, [], MODULE_DEMOS.get(module, []))
@@ -698,7 +703,7 @@ CPP_NAMESPACES = {  # the C++ namespace of each module's functions, for the C++ 
     # their own prefix, as nvgBeginPath, or when the module is Python-only: no C++ page)
     "imgui_bundle.imgui": "ImGui", "imgui_bundle.imgui.internal": "ImGui", "imgui_bundle.imgui.test_engine": "",
     "imgui_bundle.imgui.backends": "", "imgui_bundle.hello_imgui": "HelloImGui",
-    "imgui_bundle.immapp.immapp_cpp": "ImmApp", "imgui_bundle.implot": "ImPlot",
+    "imgui_bundle.immapp": "ImmApp", "imgui_bundle.implot": "ImPlot",
     "imgui_bundle.implot.internal": "ImPlot", "imgui_bundle.implot3d": "ImPlot3D",
     "imgui_bundle.implot3d.internal": "ImPlot3D", "imgui_bundle.immvision": "ImmVision",
     "imgui_bundle.imgui_node_editor": "ax::NodeEditor", "imgui_bundle.imguizmo": "ImGuizmo",
@@ -809,14 +814,14 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     modules: list[ModulePages] = []
     cpp_pages: list[ModulePages] = []  # the C++ view of each module, when it has one
     for module, stub in library.modules:
-        stub_path = STUBS / stub
-        if not stub_path.is_file():
-            print(f"warning: {stub_path} not found")
+        stub_paths = [STUBS / name.strip() for name in stub.split("+")]
+        if not all(path.is_file() for path in stub_paths):
+            print(f"warning: {stub_paths} not found")
             continue
         stem = re.sub(r"[^a-z0-9_]+", "_", module.removeprefix("imgui_bundle.").lower()).strip("_") or "module"
-        modules.append(write_module_pages(library, module, stub_path, folder, stem, manifest, docs))
+        modules.append(write_module_pages(library, module, stub_paths, folder, stem, manifest, docs))
         if module in CPP_NAMESPACES:
-            cpp_pages.append(write_module_pages(library, module, stub_path, folder, stem, manifest, docs, cpp=True))
+            cpp_pages.append(write_module_pages(library, module, stub_paths, folder, stem, manifest, docs, cpp=True))
     index = folder / "index.md"
     out = [GENERATED, "", f"# {library.title}", "", library.tagline, ""]
     links = [f"[Upstream repository]({library.upstream})"]

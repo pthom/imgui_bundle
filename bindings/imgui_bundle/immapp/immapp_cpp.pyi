@@ -30,96 +30,6 @@ DefaultScreenSize = (800, 600)
 ####################    <generated_from:immapp.h>    ####################
 ####################    </generated_from:immapp.h>    ####################
 
-####################    <generated_from:immapp_widgets.h>    ####################
-
-# #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
-#
-# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
-# but they enable to make the plot content draggable inside a node
-# bool BeginPlotInNodeEditor(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
-def begin_plot_in_node_editor(
-    title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
-) -> bool:
-    """Python bindings defaults:
-    If size is None, then its default value will be: ImVec2(-1,0)
-    """
-    pass
-
-# void EndPlotInNodeEditor();    /* original C++ signature */
-def end_plot_in_node_editor() -> None:
-    pass
-
-# ImVec2 ShowResizablePlotInNodeEditor(    /* original C++ signature */
-#         const char* title_id,        // plot title
-#         const ImVec2& size_pixels,   // plot size (will be updated if resized by the user)
-#         VoidFunction plotFunction,   // your function to draw the plot
-#         ImPlotFlags flags=0,
-#         float resizeHandleSizeEm=1.0f
-#     );
-def show_resizable_plot_in_node_editor(
-    title_id: str,
-    size_pixels: ImVec2Like,
-    plot_function: VoidFunction,
-    flags: ImPlotFlags = 0,
-    resize_handle_size_em: float = 1.0,
-) -> ImVec2:
-    """ShowResizablePlotInNodeEditor: shows a resizable plot inside a node
-    Returns the new size of the plot
-    """
-    pass
-
-# ImVec2 ShowResizablePlotInNodeEditor_Em(    /* original C++ signature */
-#         const char* title_id,        // plot title
-#         const ImVec2& size_em,       // plot size (will be updated if resized by the user)
-#         VoidFunction plotFunction,   // your function to draw the plot
-#         ImPlotFlags flags=0,
-#         float resizeHandleSizeEm=1.0f
-#     );
-def show_resizable_plot_in_node_editor_em(
-    title_id: str,
-    size_em: ImVec2Like,
-    plot_function: VoidFunction,
-    flags: ImPlotFlags = 0,
-    resize_handle_size_em: float = 1.0,
-) -> ImVec2:
-    """ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node
-    Returns the new size of the plot. Units are in em.
-    """
-    pass
-
-# #endif
-
-# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
-#
-# ImVec2 WidgetWithResizeHandle_InNodeEditor(    /* original C++ signature */
-#         const char* id,
-#         VoidFunction guiFunction,    // your function to draw the widget
-#         float resizeHandleSizeEm=1.0f
-#     );
-def widget_with_resize_handle_in_node_editor(
-    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
-) -> ImVec2:
-    """WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node
-    Returns the new size of the widget.
-    """
-    pass
-
-# ImVec2 WidgetWithResizeHandle_InNodeEditor_Em(    /* original C++ signature */
-#         const char* id,
-#         VoidFunction guiFunction,    // your function to draw the widget
-#         float resizeHandleSizeEm=1.0f
-#     );
-def widget_with_resize_handle_in_node_editor_em(
-    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
-) -> ImVec2:
-    """WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node
-    Returns the new size of the widget. Size is in em.
-    """
-    pass
-
-# #endif
-####################    </generated_from:immapp_widgets.h>    ####################
-
 ####################    <generated_from:runner.h>    ####################
 # #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #
@@ -540,6 +450,96 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
 
 # </submodule manual_render>
 ####################    </generated_from:runner.h>    ####################
+
+####################    <generated_from:immapp_widgets.h>    ####################
+
+# #ifdef IMGUI_BUNDLE_WITH_IMPLOT_AND_IMGUI_NODE_EDITOR
+#
+# These functions wrap ImPlot::BeginPlot and ImPlot::EndPlot,
+# but they enable to make the plot content draggable inside a node
+# bool BeginPlotInNodeEditor(const char* title_id, const ImVec2& size=ImVec2(-1,0), ImPlotFlags flags=0);    /* original C++ signature */
+def begin_plot_in_node_editor(
+    title_id: str, size: Optional[ImVec2Like] = None, flags: ImPlotFlags = 0
+) -> bool:
+    """Python bindings defaults:
+    If size is None, then its default value will be: ImVec2(-1,0)
+    """
+    pass
+
+# void EndPlotInNodeEditor();    /* original C++ signature */
+def end_plot_in_node_editor() -> None:
+    pass
+
+# ImVec2 ShowResizablePlotInNodeEditor(    /* original C++ signature */
+#         const char* title_id,        // plot title
+#         const ImVec2& size_pixels,   // plot size (will be updated if resized by the user)
+#         VoidFunction plotFunction,   // your function to draw the plot
+#         ImPlotFlags flags=0,
+#         float resizeHandleSizeEm=1.0f
+#     );
+def show_resizable_plot_in_node_editor(
+    title_id: str,
+    size_pixels: ImVec2Like,
+    plot_function: VoidFunction,
+    flags: ImPlotFlags = 0,
+    resize_handle_size_em: float = 1.0,
+) -> ImVec2:
+    """ShowResizablePlotInNodeEditor: shows a resizable plot inside a node
+    Returns the new size of the plot
+    """
+    pass
+
+# ImVec2 ShowResizablePlotInNodeEditor_Em(    /* original C++ signature */
+#         const char* title_id,        // plot title
+#         const ImVec2& size_em,       // plot size (will be updated if resized by the user)
+#         VoidFunction plotFunction,   // your function to draw the plot
+#         ImPlotFlags flags=0,
+#         float resizeHandleSizeEm=1.0f
+#     );
+def show_resizable_plot_in_node_editor_em(
+    title_id: str,
+    size_em: ImVec2Like,
+    plot_function: VoidFunction,
+    flags: ImPlotFlags = 0,
+    resize_handle_size_em: float = 1.0,
+) -> ImVec2:
+    """ShowResizablePlotInNodeEditor_Em: shows a resizable plot inside a node
+    Returns the new size of the plot. Units are in em.
+    """
+    pass
+
+# #endif
+
+# #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
+#
+# ImVec2 WidgetWithResizeHandle_InNodeEditor(    /* original C++ signature */
+#         const char* id,
+#         VoidFunction guiFunction,    // your function to draw the widget
+#         float resizeHandleSizeEm=1.0f
+#     );
+def widget_with_resize_handle_in_node_editor(
+    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
+) -> ImVec2:
+    """WidgetWithResizeHandle_InNodeEditor: shows a resizable widget inside a node
+    Returns the new size of the widget.
+    """
+    pass
+
+# ImVec2 WidgetWithResizeHandle_InNodeEditor_Em(    /* original C++ signature */
+#         const char* id,
+#         VoidFunction guiFunction,    // your function to draw the widget
+#         float resizeHandleSizeEm=1.0f
+#     );
+def widget_with_resize_handle_in_node_editor_em(
+    id: str, gui_function: VoidFunction, resize_handle_size_em: float = 1.0
+) -> ImVec2:
+    """WidgetWithResizeHandle_InNodeEditor_Em: shows a resizable widget inside a node
+    Returns the new size of the widget. Size is in em.
+    """
+    pass
+
+# #endif
+####################    </generated_from:immapp_widgets.h>    ####################
 
 ####################    <generated_from:clock.h>    ####################
 

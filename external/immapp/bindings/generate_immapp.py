@@ -38,8 +38,8 @@ def main() -> None:
 
     generator = litgen.LitgenGenerator(options)
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp.h")
+    generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")  # the main API first: the stub's order is the API pages'
     generator.process_cpp_file(CPP_HEADERS_DIR + "/immapp_widgets.h")
-    generator.process_cpp_file(CPP_HEADERS_DIR + "/runner.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/clock.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/code_utils.h")
     generator.process_cpp_file(CPP_HEADERS_DIR + "/../../imgui_rich_md/imgui_rich_md/imgui_rich_md/backends/code_editor/snippets.h")
