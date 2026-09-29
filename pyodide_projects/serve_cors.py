@@ -16,6 +16,7 @@ Example:
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
+from typing import Any
 import argparse
 import sys
 
@@ -26,7 +27,7 @@ FAVICON = Path(__file__).resolve().parent.parent / "logo" / "favicons" / "favico
 class CORSRequestHandler(SimpleHTTPRequestHandler):
     """HTTP request handler with CORS headers for Pyodide compatibility."""
 
-    def end_headers(self):
+    def end_headers(self) -> None:
         # Required for SharedArrayBuffer support (used by Pyodide threading)
         # See: https://pyodide.org/en/stable/usage/quickstart.html#serving-pyodide
         self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
@@ -54,7 +55,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
-    def do_OPTIONS(self):
+    def do_OPTIONS(self) -> None:
         """Handle CORS preflight requests."""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
@@ -62,7 +63,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Access-Control-Allow-Headers', '*')
         self.end_headers()
 
-    def log_message(self, format, *args):
+    def log_message(self, format: str, *args: Any) -> None:
         """Override to add color and better formatting."""
         # Color codes
         GREEN = '\033[92m'
@@ -81,7 +82,7 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         sys.stderr.write(f"{color}[{self.log_date_time_string()}] {format % args}{RESET}\n")
 
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(
         description='HTTP server with CORS headers for Pyodide testing',
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -115,6 +116,7 @@ Test Pages:
     except KeyboardInterrupt:
         print("\n\n✓ Server stopped.")
         return 0
+    return 0
 
 
 if __name__ == '__main__':

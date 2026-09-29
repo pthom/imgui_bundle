@@ -13,6 +13,7 @@ Then open:
 """
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
+from typing import Any
 import argparse
 import json
 import os
@@ -27,11 +28,11 @@ FAVICON = os.path.join(THIS_DIR, "..", "..", "logo", "favicons", "favicon.ico")
 class PyodideRunnerHandler(SimpleHTTPRequestHandler):
     """HTTP handler with CORS headers and a /list_demos endpoint."""
 
-    def __init__(self, *args, cors=True, **kwargs):
+    def __init__(self, *args: Any, cors: bool = True, **kwargs: Any) -> None:
         self._cors = cors
         super().__init__(*args, **kwargs)
 
-    def end_headers(self):
+    def end_headers(self) -> None:
         if self._cors:
             self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
             self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
@@ -41,11 +42,11 @@ class PyodideRunnerHandler(SimpleHTTPRequestHandler):
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         SimpleHTTPRequestHandler.end_headers(self)
 
-    def do_OPTIONS(self):
+    def do_OPTIONS(self) -> None:
         self.send_response(200)
         self.end_headers()
 
-    def do_GET(self):
+    def do_GET(self) -> None:
         if self.path == '/list_demos':
             self._serve_demo_listing()
         elif self.path == '/favicon.ico' and os.path.isfile(FAVICON):
@@ -59,9 +60,9 @@ class PyodideRunnerHandler(SimpleHTTPRequestHandler):
         else:
             super().do_GET()
 
-    def _serve_demo_listing(self):
+    def _serve_demo_listing(self) -> None:
         """Return JSON listing of .py files under demos/."""
-        demos = []
+        demos: list[str] = []
         for root, dirs, files in os.walk(DEMOS_DIR):
             # Skip __pycache__ and hidden dirs
             dirs[:] = [d for d in dirs if not d.startswith(('.', '__'))]
@@ -75,15 +76,15 @@ class PyodideRunnerHandler(SimpleHTTPRequestHandler):
         self.wfile.write(json.dumps(demos).encode())
 
 
-def make_handler_class(cors):
+def make_handler_class(cors: bool) -> type[PyodideRunnerHandler]:
     """Create a handler class with the cors flag baked in."""
     class Handler(PyodideRunnerHandler):
-        def __init__(self, *args, **kwargs):
+        def __init__(self, *args: Any, **kwargs: Any) -> None:
             super().__init__(*args, cors=cors, **kwargs)
     return Handler
 
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Pyodide demo runner server')
     parser.add_argument('-p', '--port', default=6789, type=int, help='Port (default: 6789)')
     parser.add_argument('--no-cors', action='store_true', help='Disable CORS headers')
