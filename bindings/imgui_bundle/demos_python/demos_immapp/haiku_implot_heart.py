@@ -44,4 +44,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(350, 450), with_implot=True, fps_idle=0)
+    immapp.run(gui, window_size=(380, 470), with_implot=True, fps_idle=0)

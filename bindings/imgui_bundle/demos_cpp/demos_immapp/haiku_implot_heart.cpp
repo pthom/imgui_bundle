@@ -26,6 +26,7 @@ int main(int , char *[]) {
     // Heart pulse rate and time tracking
     double phase = 0., t0 = ImmApp::ClockSeconds() + 0.2;
     float heart_pulse_rate = 80.;
+    float heart_thickness = 0.15;
 
     auto gui = [&]() {
         // Make sure that the animation is smooth
@@ -37,18 +38,24 @@ int main(int , char *[]) {
         t0 = t;
 
         ImGui::Text("Bloat free code");
-        auto xk = VectorTimesK(x, k), yk = VectorTimesK(y, k);
+
         ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21));
-        ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
+        for (double k2 = 1 - (double)heart_thickness; k2 <= 1. + (double)heart_thickness; k2 += 0.01)
+        {
+            auto xk = VectorTimesK(x, k * k2), yk = VectorTimesK(y, k * k2);
+            ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
+        }
         ImPlot::EndPlot();
 
         ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
+        ImGui::SameLine();
+        ImGuiKnobs::Knob("Line Thickness", &heart_thickness, 0.01, 0.3);
     };
 
     HelloImGui::SimpleRunnerParams runnerParams;
     runnerParams.guiFunction = gui;
     runnerParams.windowTitle = "Hello!";
-    runnerParams.windowSize = {300, 450};
+    runnerParams.windowSize = {380, 470};
     runnerParams.fpsIdle = 25.f;
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withImplot = true;
