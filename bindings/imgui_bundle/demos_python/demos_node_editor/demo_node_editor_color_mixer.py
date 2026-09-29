@@ -29,15 +29,15 @@ HELP = (
 
 class NodeKind(NamedTuple):
     inputs: list[str]  # the names of its input pins
-    doc: str  # what it does, shown under its title (markdown)
+    doc: str  # what it does, shown under its title (markdown, with math between $ signs)
 
 
 # Every kind of node has one output, except the swatch, which shows its input
 NODE_KINDS = {
     "Color": NodeKind([], "Pick a color"),
-    "Mix": NodeKind(["a", "b"], "Blend *a* and *b*"),
-    "Invert": NodeKind(["in"], "1 - each channel"),
-    "Grayscale": NodeKind(["in"], "Keep the luminance"),
+    "Mix": NodeKind(["a", "b"], r"$(1-t)\,a + t\,b$"),
+    "Invert": NodeKind(["in"], r"$1 - c$, per channel"),
+    "Grayscale": NodeKind(["in"], r"$0.3\,r + 0.59\,g + 0.11\,b$"),
     "Swatch": NodeKind(["in"], "Show the color"),
 }
 
@@ -63,7 +63,7 @@ class Node:
         self.inputs = [Pin(name, ed.PinKind.input, self) for name in NODE_KINDS[kind].inputs]
         self.output = Pin("out", ed.PinKind.output, self) if kind != "Swatch" else None
         self.color = color  # what a Color node gives
-        self.mix = 0.5  # a Mix node's share of b
+        self.mix = 0.5  # t: a Mix node's share of b
 
 
 @dataclass(eq=False)
@@ -187,7 +187,7 @@ def draw_node(graph: Graph, node: Node) -> None:
         _, node.color = imgui.color_edit4("##color", node.color, imgui.ColorEditFlags_.no_alpha.value)
     elif node.kind == "Mix":
         imgui.set_next_item_width(width)
-        _, node.mix = imgui.slider_float("##mix", node.mix, 0.0, 1.0, "a  %.2f  b")
+        _, node.mix = imgui.slider_float("##mix", node.mix, 0.0, 1.0, "t = %.2f")
     elif node.kind == "Swatch":
         swatch_size = em_size(SWATCH_SIZE_EM)
         imgui.color_button("##swatch", node_color(graph, node), 0, ImVec2(swatch_size, swatch_size))
@@ -314,7 +314,7 @@ def demo_gui() -> None:
 
 def main() -> None:
     immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
-               with_markdown=True)
+               with_markdown=True, with_latex=True)
 
 
 if __name__ == "__main__":
