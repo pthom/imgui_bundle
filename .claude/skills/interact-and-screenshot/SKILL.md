@@ -56,7 +56,9 @@ Read /tmp/01_after_click.png
   — runs the GUI, drives it with `test_fn(ctx)`, exits when `test_fn`
   returns. Accepts the same `with_markdown` / `with_latex` / `with_implot`
   / etc. addon flags as `immapp.run`. Set `exit_after_test=False` to keep
-  the window open after the test (useful for manual inspection).
+  the window open after the test (useful for manual inspection). An app
+  with its own params (e.g. the explorer's `make_params()`):
+  `testing.run(test_function=test_fn, runner_params=rp, add_ons_params=addons)`.
 - `testing.capture(ctx, path, *, window=None, flags=0)` — write a PNG.
   Default captures the full framebuffer; pass `window="My Window"` for a
   single window (bare labels are auto-prefixed with `//`).

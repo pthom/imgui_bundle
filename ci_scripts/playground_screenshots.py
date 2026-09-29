@@ -284,9 +284,8 @@ def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
                     ctx.yield_(shot.frames)
                 immapp.run = immapp_run  # testing.run calls immapp.run itself
                 if args and isinstance(args[0], hello_imgui.RunnerParams):
-                    # with runner_params, testing.run ignores its gui_function (the params have their own)
                     add_ons = args[1] if len(args) > 1 else kwargs.get("add_ons_params")
-                    testing.run(args[0].callbacks.show_gui, test_fn, runner_params=args[0], add_ons_params=add_ons)
+                    testing.run(test_function=test_fn, runner_params=args[0], add_ons_params=add_ons)
                 else:
                     gui = args[0] if args else kwargs.pop("gui_function")
                     testing.run(gui, test_fn, **kwargs)

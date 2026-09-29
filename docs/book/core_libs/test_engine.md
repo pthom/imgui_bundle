@@ -172,7 +172,8 @@ with screenshot capture. Use it when you want to script an interaction
 
 - `immapp.testing.run(gui, test_fn, ...)` — Python: runs the GUI and drives
   it with `test_fn(ctx)`; exits once the test finishes (override with
-  `exit_after_test=False`).
+  `exit_after_test=False`). An app with its own params:
+  `run(test_function=test_fn, runner_params=params, add_ons_params=add_ons)`.
 - `immapp.testing.capture(ctx, path, window=None, flags=0)` — Python: write
   a PNG from inside a test. Captures the full framebuffer, or a single
   window if `window="My Window"`.

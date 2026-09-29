@@ -64,8 +64,8 @@ def capture(
 
 
 def run(
-    gui_function: Callable[[], None],
-    test_function: TestFunction,
+    gui_function: Optional[Callable[[], None]] = None,
+    test_function: Optional[TestFunction] = None,
     *,
     exit_after_test: bool = True,
     run_speed: TestRunSpeed = TestRunSpeed.fast,
@@ -95,7 +95,9 @@ def run(
     to grab screenshots at chosen moments.
 
     Args:
-        gui_function: the GUI to drive (called each frame).
+        gui_function: the GUI to drive (called each frame). Not needed when
+            runner_params is given (its callbacks.show_gui is the GUI):
+            ``run(test_function=my_test, runner_params=params)``.
         test_function: the test body, called once by the engine. When it
             returns, the app exits (unless exit_after_test=False).
         exit_after_test: if True (default), set app_shall_exit once the test
@@ -111,7 +113,11 @@ def run(
             on top of it).
         add_ons_params: immapp addons. If None, built from the with_* flags.
     """
+    if test_function is None:
+        raise TypeError("immapp.testing.run() needs a test_function")
     if runner_params is None:
+        if gui_function is None:
+            raise TypeError("immapp.testing.run() needs a gui_function, or runner_params")
         simple = hello_imgui.SimpleRunnerParams()
         simple.gui_function = gui_function
         simple.window_title = window_title
