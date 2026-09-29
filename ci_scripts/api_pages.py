@@ -545,6 +545,13 @@ def _safe_markdown(text: str) -> str:
     return "\n".join(out).strip("\n")
 
 
+def _split_bindings_notes(doc: str) -> tuple[str, str]:
+    """A docstring, and litgen's notes for Python users apart (the "Python bindings defaults" paragraphs)"""
+    paragraphs = doc.split("\n\n")
+    notes = [p for p in paragraphs if p.lstrip().startswith("Python bindings defaults:")]
+    return "\n\n".join(p for p in paragraphs if p not in notes), "\n\n".join(notes)
+
+
 def _doc_lines(text: str) -> list[str]:
     return [_safe_markdown(text), ""] if text else []
 
@@ -559,13 +566,17 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
     hashes = "#" * level
     out = [f"({_label(module, qualified)})=", f"{hashes} `{qualified}`", ""]  # a code span: __init__ is not emphasis
     if entry.kind in ("function", "method"):
-        for python, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
-            out += _code("python", python)
-            if cpp:
-                out += _code("cpp", cpp)
-        out += _doc_lines(entry.doc)
+        signatures = [(entry.signature, entry.cpp), *entry.overloads]
+        out += _code("python", "\n\n".join(python for python, _ in signatures))
+        if any(cpp for _, cpp in signatures):  # the C++ signatures, muted (custom.css: .cpp-signature)
+            out += ["::::::{code-block} cpp", ":class: cpp-signature", *[cpp for _, cpp in signatures if cpp],
+                    "::::::", ""]
+        doc, notes = _split_bindings_notes(entry.doc)
+        out += _doc_lines(doc)
         if entry.note:
             out += [_safe_markdown(entry.note), ""]
+        if notes:  # litgen's "Python bindings defaults", which restates the signature: last, small
+            out += ["::::::{div}", ":class: bindings-note", _safe_markdown(notes), "::::::", ""]
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
