@@ -921,6 +921,7 @@ struct WindowGeometry
     // used if fullScreenMode==NoFullScreen and sizeAuto==false. Default=(800, 600)
     // The size will be handled as if it was specified for a 96PPI screen
     // (i.e. a given size will correspond to the same physical size on different screens, whatever their DPI)
+    // In a browser, a popup window (opened by window.open) is resized to this size; a tab is not.
     ScreenSize size = DefaultWindowSize;
 
     // If sizeAuto=true, adapt the app window size to the presented widgets.
