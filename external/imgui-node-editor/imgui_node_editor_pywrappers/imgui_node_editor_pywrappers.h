@@ -12,11 +12,12 @@ namespace NodeEditor
     // The C++ API fills an array provided by the caller (`int GetSelectedNodes(NodeId* nodes, int size)`).
     // The Python API returns a list.
 
-    IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes();
-    IMGUI_NODE_EDITOR_API std::vector<LinkId> GetSelectedLinks();
+    IMGUI_NODE_EDITOR_API std::vector<NodeId> GetSelectedNodes(); // The selected nodes
+    IMGUI_NODE_EDITOR_API std::vector<LinkId> GetSelectedLinks(); // The selected links
 
+    // The nodes the shortcut applies to (between BeginShortcut() and EndShortcut())
     IMGUI_NODE_EDITOR_API std::vector<NodeId> GetActionContextNodes();
-    IMGUI_NODE_EDITOR_API std::vector<LinkId> GetActionContextLinks();
+    IMGUI_NODE_EDITOR_API std::vector<LinkId> GetActionContextLinks(); // The links the shortcut applies to
 
     // Returns the node ids, in the order they are drawn
     IMGUI_NODE_EDITOR_API std::vector<NodeId> GetOrderedNodeIds();
