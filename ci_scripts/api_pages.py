@@ -49,8 +49,6 @@ class Library:
     # use is not tagged (every demo imports them)
     headers: str = ""  # the folder of the C++ headers, when the stub comes from an amalgamation: the entries are then
     # classified by the header that declares them (the amalgamation's markers only mark the include points)
-    outline_entries: bool = True  # the entries in the page's outline (the contents panel): off for a module with
-    # hundreds of them (imgui), where the outline would list the parts and sections only
     comments: str = "markdown"  # how the comments render: "markdown", or "pre" for a header laid out in ASCII (imgui.h:
     # aligned columns, one idea per line): a multi-line comment is then a preformatted block, a one-liner a paragraph
 
@@ -63,8 +61,7 @@ LIBRARIES = [
              ("imgui_bundle.imgui.test_engine", "imgui/test_engine.pyi"),
              ("imgui_bundle.imgui.backends", "imgui/backends.pyi")],
             demos=["demo_widgets.py", "layout_child.py", "demo_drag_and_drop.py", "manual_imgui.py",
-                   "demo_hello_world.py"],
-            outline_entries=False),
+                   "demo_hello_world.py"]),
     Library("hello_imgui", "Hello ImGui",
             "The app runner: the window and its backends, docking layouts, fonts, assets, DPI, idling.",
             "https://github.com/pthom/hello_imgui", "core_libs/hello_imgui_immapp",
@@ -465,6 +462,9 @@ def _code(language: str, text: str) -> list[str]:
     return [f"```{language}", text, "```", ""]
 
 
+OUTLINE_WITHOUT_ENTRIES = {"imgui_bundle.imgui", "imgui_bundle.imgui.internal"}  # the modules whose outline (the
+# contents panel) stops at the sections: hundreds of entries would make it heavy; the others list their entries
+
 COMMENT_STYLE = "markdown"  # the current library's Library.comments, while its pages are written
 
 
@@ -687,7 +687,7 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
              else _intro_sentence(library, module, stub, functions, classes, enums))
     # the theme reads outline_maxdepth from the page's frontmatter (site:) over the site's option (myst.yml, 2)
-    frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if library.outline_entries else []
+    frontmatter = ["---", "site:", "  outline_maxdepth: 3", "---"] if module not in OUTLINE_WITHOUT_ENTRIES else []
     index.write_text("\n".join([*frontmatter, GENERATED, "", f"# {title}", "", intro, "",
                                 *_render_entries(entries, module, namespace)]))
     return ModulePages(module, index, functions, classes, enums)
