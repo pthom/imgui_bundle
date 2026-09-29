@@ -250,6 +250,9 @@ def _split_comments(block: list[str]) -> tuple[str, list[str], list[str]]:
         cpp = re.sub(r"\s+", " ", _clean_comment(block[k]).replace(CPP_MARK, "")).strip()
         before = [_clean_comment(b) for b in block[:k]]
         after = [_clean_comment(b) for b in block[k + 1:]]
+        if cpp.endswith("(") or (cpp.endswith(",") and after):  # a signature written on several lines
+            cpp = re.sub(r"\s+", " ", " ".join([cpp, *after])).strip()
+            after = []
     else:
         before = [_clean_comment(b) for b in block]
     return cpp, before, after
