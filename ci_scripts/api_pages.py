@@ -559,8 +559,7 @@ def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[s
 
 def _cpp_intro(library: Library, module: str, python_index: str) -> str:
     return (f"The C++ API of [{library.title}](index.md) as it is bound to Python: the entries of the module "
-            f"[`{module}`]({python_index}), in the same order, with the C++ name and signature first and the Python "
-            "name beside. "
+            f"[`{module}`]({python_index}), in the same order, with their C++ signatures and the headers' comments. "
             "From the stubs: the functions excluded from the bindings, the typedefs and the macros are absent.")
 
 
@@ -615,42 +614,43 @@ def _cpp_name(entry: Entry, namespace: str, owner: str = "") -> str:
     return f"{namespace}::{name}" if namespace and entry.kind == "function" else name
 
 
+def _cpp_doc(doc: str) -> str:
+    """A docstring without litgen's notes for Python users (the "Python bindings defaults" paragraph)"""
+    paragraphs = doc.split("\n\n")
+    return "\n\n".join(p for p in paragraphs if not p.lstrip().startswith("Python bindings defaults:"))
+
+
 def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, owner: str = "") -> list[str]:
-    """An entry as markdown, the C++ way: the C++ name and signature first, the Python name and signature after"""
+    """An entry as markdown, the C++ way: the C++ name, the C++ signature(s), the header's doc; nothing of Python"""
     name = _cpp_name(entry, namespace, owner)
-    short = module.removeprefix("imgui_bundle.")  # the Python names as one writes them: implot.begin_plot
-    python = entry.name if owner else f"{short}.{entry.name}"
     hashes = "#" * level
     out = [f"({_label('cpp.' + module, name)})=", f"{hashes} `{name}`", ""]
     if entry.kind in ("function", "method"):
-        for py_signature, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
+        for _, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
             if cpp:
                 out += _code("cpp", cpp)
-            out += [f"Python: `{python}`", ""] + _code("python", py_signature)
-        out += _doc_lines(entry.doc)
+        out += _doc_lines(_cpp_doc(entry.doc))
         if entry.note:
             out += [_safe_markdown(entry.note), ""]
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{name}` (enum)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
-        out += [f"Python: `{python}`", ""]
-        out += _doc_lines(entry.doc)
-        out += ["| Member | Value | Python | |", "|---|---|---|---|"]
+        out += _doc_lines(_cpp_doc(entry.doc))
+        out += ["| Member | Value | |", "|---|---|---|"]
         for m in entry.children:
-            out.append(f"| `{_cell(m.cpp)}` | {_cell(m.value)} | `{m.name}` | {_cell(m.note)} |")
+            out.append(f"| `{_cell(m.cpp)}` | {_cell(m.value)} | {_cell(m.note)} |")
         out.append("")
     elif entry.kind == "class":
         out[1] = f"{hashes} `{name}` (struct)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
-        out += [f"Python: `{python}`", ""]
-        out += _doc_lines(entry.doc)
+        out += _doc_lines(_cpp_doc(entry.doc))
         attributes = [c for c in entry.children if c.kind == "attribute"]
         if attributes:
-            out += ["| Member | Python | |", "|---|---|---|"]
+            out += ["| Member | |", "|---|---|"]
             for a in attributes:
-                out.append(f"| `{_cell(a.cpp)}` | `{_cell(a.signature)}` | {_cell(a.note)} |")
+                out.append(f"| `{_cell(a.cpp)}` | {_cell(a.note)} |")
             out.append("")
         for c in entry.children:
             if c.kind != "attribute":
