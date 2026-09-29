@@ -135,14 +135,14 @@ Both are demonstrated in the explorer's demos (Python specifics):
 ### Full Demo
 
 ::::{card}
-:link: https://imgui-bundle.pages.dev/explorer/demo_implot.html
+:link: https://pthom.github.io/imgui_explorer/?lib=implot
 ```{figure} ../images/implot_demo.webp
 :width: 350
 ImPlot demo showcasing various plot types and features.
 ```
 ::::
 
-- [Try online](https://imgui-bundle.pages.dev/explorer/demo_implot.html):
+- [Try online](https://pthom.github.io/imgui_explorer/?lib=implot):
   the explorer shows each demo running side by side with its code (Python or C++),
   so it can be used as a reference when writing your own plots.
 
@@ -243,9 +243,9 @@ In C++, enable ImPlot3D by setting `withImplot3d = true` in `ImmApp::AddOnsParam
 
 ### Full Demo
 
-The full demo for ImPlot3D is available online together with ImPlot's full demo.
+The full demo for ImPlot3D is available online.
 
-[Try online](https://imgui-bundle.pages.dev/explorer/demo_implot.html)
+[Try online](https://pthom.github.io/imgui_explorer/?lib=implot3d)
 
 - Python demo code: [implot3d_demo.py](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py)
 - C++ demo code: [implot3d_demo.cpp](https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp)

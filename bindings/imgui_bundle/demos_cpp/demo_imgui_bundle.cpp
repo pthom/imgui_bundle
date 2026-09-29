@@ -12,6 +12,9 @@
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "imgui_rich_md/rich_md.h"
 #include "demo_utils/api_demos.h"
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+#include "imgui_explorer.h"
+#endif
 
 #include <cmath>
 #include <optional>
@@ -32,8 +35,6 @@ void demo_logger();
 void demo_node_editor_color_mixer();
 void demo_node_editor_image_pipeline();
 void demo_imgui_show_demo_window();
-void manual_implot();
-void manual_implot3d();
 void demo_im_anim();
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 void demo_immvision_display();
@@ -45,6 +46,25 @@ void demo_immvision_process();
 
 namespace
 {
+    // The ImPlot manual and the ImPlot3D manual, each alone (as in Python)
+    void manual_implot()
+    {
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot, false);
+#else
+        ImGui::Text("Demo unavailable, because Dear ImGui Manual library is not included in this build.");
+#endif
+    }
+
+    void manual_implot3d()
+    {
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D, false);
+#else
+        ImGui::Text("Demo unavailable, because Dear ImGui Manual library is not included in this build.");
+#endif
+    }
+
 #ifdef __EMSCRIPTEN__
     // The route in the browser's address: its hash, without the '#'
     std::string BrowserRoute()
