@@ -73,7 +73,7 @@ LIBRARIES = [
             "demos, tests and notebooks.",
             "https://github.com/pthom/imgui_bundle/tree/main/external/immapp", "core_libs/hello_imgui_immapp",
             [("imgui_bundle.immapp", "immapp/__init__.pyi"),
-             ("imgui_bundle.immapp (C++ part)", "immapp/immapp_cpp.pyi"), ("imgui_bundle.immapp.nb", "immapp/nb.pyi")],
+             ("imgui_bundle.immapp.immapp_cpp", "immapp/immapp_cpp.pyi"), ("imgui_bundle.immapp.nb", "immapp/nb.pyi")],
             demos=["demo_hello_world.py", "welcome_imm_mode.py", "demo_parametric_curve.py", "demo_assets_addons.py",
                    "demo_python_context_manager.py", "demo_run_async.py", "demo_widgets.py", "demo_testapp.py"]),
     Library("implot", "ImPlot",
@@ -447,7 +447,6 @@ def _read_node(lines: list[str], node: ast.AST, in_class: bool = False) -> Optio
 # Writing the pages
 # ---------------------------------------------------------------------------------------------------------------------
 def _label(module: str, name: str) -> str:
-    module = module.split(" ")[0]  # "imgui_bundle.immapp (C++ part)": the import name
     return re.sub(r"[^a-zA-Z0-9_.-]", "-", f"{module}.{name}")
 
 
@@ -534,8 +533,8 @@ class ModulePages:
     enums: int
 
 
-def _intro_sentence(library: Library, stub: Path, functions: int, classes: int, enums: int) -> str:
-    return (f"The Python API of [{library.title}](index.md), from "
+def _intro_sentence(library: Library, module: str, stub: Path, functions: int, classes: int, enums: int) -> str:
+    return (f"The module `{module}`, the Python API of [{library.title}](index.md), from "
             f"`bindings/imgui_bundle/{stub.relative_to(STUBS).as_posix()}`: {functions} functions, {classes} classes, "
             f"{enums} enums. Each entry gives the Python signature, then the C++ one, then the doc of the C++ header. "
             "The sections are the header's.")
@@ -590,8 +589,9 @@ def _pack(parts: list[tuple[Optional[str], list[Entry]]]) -> list[tuple[list[str
 
 
 def _cpp_intro(library: Library, module: str, python_index: str) -> str:
-    return (f"The C++ API of [{library.title}](index.md) as it is bound to Python: the entries of [`{module}`]"
-            f"({python_index}), in the same order, with the C++ name and signature first and the Python name beside. "
+    return (f"The C++ API of [{library.title}](index.md) as it is bound to Python: the entries of the module "
+            f"[`{module}`]({python_index}), in the same order, with the C++ name and signature first and the Python "
+            "name beside. "
             "From the stubs: the functions excluded from the bindings, the typedefs and the macros are absent.")
 
 
@@ -607,9 +607,10 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     folder.mkdir(parents=True, exist_ok=True)
     index = folder / (f"{stem}_cpp.md" if cpp else f"{stem}.md")
     namespace = CPP_NAMESPACES.get(module) if cpp else None
-    title = f"{module} (C++)" if cpp else module
+    short = module.removeprefix("imgui_bundle.")  # the titles, in the navigation: the intro names the module
+    title = f"{short} (C++)" if cpp else short
     intro = (_cpp_intro(library, module, f"{stem}.md") if cpp
-             else _intro_sentence(library, stub, functions, classes, enums))
+             else _intro_sentence(library, module, stub, functions, classes, enums))
     packed = _pack(_parts(entries)) if len(entries) > SPLIT_ABOVE else []
     if len(packed) <= 1:
         index.write_text("\n".join([GENERATED, "", f"# {title}", "", intro, "",
@@ -618,7 +619,7 @@ def write_module_pages(library: Library, module: str, stub: Path, folder: Path, 
     pages: list[tuple[str, Path]] = []
     for n, (titles, page_entries) in enumerate(packed, 1):
         page_title = ", ".join(titles[:3]) + (f", ... ({len(titles)} parts)" if len(titles) > 4 else "")
-        page_title = (page_title or page_entries[0].header or module) + (" (C++)" if cpp else "")
+        page_title = (page_title or page_entries[0].header or short) + (" (C++)" if cpp else "")
         page = folder / (f"{stem}_cpp_{n}.md" if cpp else f"{stem}_{n}.md")
         header = page_entries[0].header
         lines = [GENERATED, "", f"# {page_title}", "",
@@ -641,7 +642,7 @@ CPP_NAMESPACES = {  # the C++ namespace of each module's functions, for the C++ 
     # their own prefix, as nvgBeginPath, or when the module is Python-only: no C++ page)
     "imgui_bundle.imgui": "ImGui", "imgui_bundle.imgui.internal": "ImGui", "imgui_bundle.imgui.test_engine": "",
     "imgui_bundle.imgui.backends": "", "imgui_bundle.hello_imgui": "HelloImGui",
-    "imgui_bundle.immapp (C++ part)": "ImmApp", "imgui_bundle.implot": "ImPlot",
+    "imgui_bundle.immapp.immapp_cpp": "ImmApp", "imgui_bundle.implot": "ImPlot",
     "imgui_bundle.implot.internal": "ImPlot", "imgui_bundle.implot3d": "ImPlot3D",
     "imgui_bundle.implot3d.internal": "ImPlot3D", "imgui_bundle.immvision": "ImmVision",
     "imgui_bundle.imgui_node_editor": "ax::NodeEditor", "imgui_bundle.imguizmo": "ImGuizmo",
@@ -757,13 +758,13 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     if library.book_page:
         links.append(f"[The book's page]({os.path.relpath(BOOK / (library.book_page + '.md'), folder)})")
     out += [" · ".join(links), ""]
-    out += ["## Modules", ""]
+    out += ["## Modules", "", "In `imgui_bundle` (`from imgui_bundle import imgui`):", ""]
     for m in modules:
         pages = f" (in {len(m.pages)} pages)" if m.pages else ""
         cpp = next((c for c in cpp_pages if c.module == m.module), None)
         view = f" · [the C++ view]({cpp.index.name})" if cpp else ""
-        out.append(f"- [`{m.module}`]({m.index.name}): {m.functions} functions, {m.classes} classes, "
-                   f"{m.enums} enums{pages}{view}")
+        out.append(f"- [`{m.module.removeprefix('imgui_bundle.')}`]({m.index.name}): {m.functions} functions, "
+                   f"{m.classes} classes, {m.enums} enums{pages}{view}")
     out.append("")
     out += _demo_cards(library, manifest, docs, index)
     index.write_text("\n".join(out))
