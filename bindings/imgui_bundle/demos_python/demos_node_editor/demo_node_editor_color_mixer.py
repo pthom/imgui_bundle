@@ -7,8 +7,9 @@ nodes, pins and links that the app owns, and how the user edits them.
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from typing import NamedTuple
 
-from imgui_bundle import imgui, immapp, imgui_node_editor as ed, ImVec2, ImVec4, em_size
+from imgui_bundle import imgui, immapp, imgui_node_editor as ed, rich_md, ImVec2, ImVec4, em_size
 
 NODE_WIDTH_EM = 9.0  # the width of a node's content
 SWATCH_SIZE_EM = 5.0  # the side of a swatch's square
@@ -17,18 +18,27 @@ LINK_THICKNESS = 3.0  # the thickness of the links (they follow the zoom)
 UNLINKED = ImVec4(0.3, 0.3, 0.3, 1.0)  # the color an input receives when no link reaches it
 WHITE = ImVec4(1.0, 1.0, 1.0, 1.0)
 
+# The gestures, in markdown ("  \n" ends a line)
 HELP = (
-    "Drag from a pin to another: a link.   Select a node or a link, then press Delete.\n"
-    "Right-click the background: add a node.   Right-drag: pan.   Wheel: zoom.   F: see the whole graph."
+    "**Link** two pins: drag from one to the other  ·  "
+    "**Delete** a node or a link: select it, then <kbd>Delete</kbd>  \n"
+    "**Add a node**: right-click the background  ·  **Pan**: right-drag  ·  **Zoom**: the wheel  ·  "
+    "**See the whole graph**: <kbd>F</kbd>"
 )
 
-# The kinds of node, and the names of their inputs. Every kind has one output, except the swatch, which shows its input.
+
+class NodeKind(NamedTuple):
+    inputs: list[str]  # the names of its input pins
+    doc: str  # what it does, shown under its title (markdown)
+
+
+# Every kind of node has one output, except the swatch, which shows its input
 NODE_KINDS = {
-    "Color": [],
-    "Mix": ["a", "b"],
-    "Invert": ["in"],
-    "Grayscale": ["in"],
-    "Swatch": ["in"],
+    "Color": NodeKind([], "Pick a color"),
+    "Mix": NodeKind(["a", "b"], "Blend *a* and *b*"),
+    "Invert": NodeKind(["in"], "1 - each channel"),
+    "Grayscale": NodeKind(["in"], "Keep the luminance"),
+    "Swatch": NodeKind(["in"], "Show the color"),
 }
 
 
@@ -50,7 +60,7 @@ class Node:
     def __init__(self, kind: str, color: ImVec4 = WHITE) -> None:
         self.kind = kind
         self.id = ed.NodeId.create()
-        self.inputs = [Pin(name, ed.PinKind.input, self) for name in NODE_KINDS[kind]]
+        self.inputs = [Pin(name, ed.PinKind.input, self) for name in NODE_KINDS[kind].inputs]
         self.output = Pin("out", ed.PinKind.output, self) if kind != "Swatch" else None
         self.color = color  # what a Color node gives
         self.mix = 0.5  # a Mix node's share of b
@@ -164,7 +174,7 @@ def draw_node(graph: Graph, node: Node) -> None:
     width = em_size(NODE_WIDTH_EM)
     ed.begin_node(node.id)
     imgui.push_id(node.id.id())  # the widgets of two nodes of the same kind need different ids
-    imgui.text(node.kind)
+    rich_md.render(f"**{node.kind}**  \n{NODE_KINDS[node.kind].doc}")  # the title, and on the next line the doc
 
     for pin in node.inputs:  # the inputs, on the left
         draw_pin(pin, input_color(graph, pin))
@@ -283,7 +293,7 @@ state = AppState()
 
 
 def demo_gui() -> None:
-    imgui.text_disabled(HELP)
+    rich_md.render(HELP)
     ed.begin("Color mixer")
     if state.graph is None:
         state.graph = initial_graph()
@@ -303,7 +313,8 @@ def demo_gui() -> None:
 
 
 def main() -> None:
-    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True)
+    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_node_editor=True,
+               with_markdown=True)
 
 
 if __name__ == "__main__":
