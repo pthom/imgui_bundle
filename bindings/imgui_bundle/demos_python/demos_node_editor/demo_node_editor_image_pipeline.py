@@ -283,7 +283,7 @@ CHANNEL_COLORS = [ImVec4(1.0, 0.3, 0.3, 1.0), ImVec4(0.3, 1.0, 0.3, 1.0), ImVec4
 
 class Blend(Node):
     title = "Blend"
-    doc = r"Mix: $(1-t)\,a + t\,b$  " "\n" r"Add: $a + t\,b$ (the edges glow)"
+    doc = r"Mix: $(1-t)\,a + t\,b$  " "\n" r"Add: $a + t\,b$"
     input_types = [("a", PinType.COLOR), ("b", PinType.COLOR)]
     MODES = ["Mix", "Add"]
 
