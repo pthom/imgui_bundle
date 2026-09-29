@@ -644,6 +644,36 @@ The original and the filtered image share a zoom key, so they pan and zoom toget
 ::::
 
 ::::{card}
+### Node editor: a color mixer
+
+Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches.
+
+:::{dropdown} More
+Each link is drawn in the color it carries. A first graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): the nodes, pins and links that the app owns, and how the user edits them.
+:::
+
+*Uses: node editor*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_color_mixer.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py)
+
+::::
+
+::::{card}
+### Node editor: an image pipeline
+
+An image flows through a graph of filters, and each node shows its result.
+
+:::{dropdown} More
+Change a parameter, and the nodes downstream follow at once. The patterns of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) for a real app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.
+:::
+
+*Uses: ImPlot, ImmVision, node editor, OpenCV*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_node_editor_basic.jpg
 :alt: Node editor: nodes, pins and links
 :::

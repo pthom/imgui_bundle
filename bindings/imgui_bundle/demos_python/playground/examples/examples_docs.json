@@ -310,6 +310,27 @@
     ],
     "cpp": true
   },
+  "demo_node_editor_color_mixer.py": {
+    "title": "Node editor: a color mixer",
+    "text": "Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches. Each link is drawn\nin the color it carries. A first graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): the\nnodes, pins and links that the app owns, and how the user edits them.",
+    "summary": "Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches.",
+    "uses": [
+      "node editor"
+    ],
+    "cpp": false
+  },
+  "demo_node_editor_image_pipeline.py": {
+    "title": "Node editor: an image pipeline",
+    "text": "An image flows through a graph of filters, and each node shows its result. Change a parameter, and the nodes\ndownstream follow at once. The patterns of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) for a\nreal app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.",
+    "summary": "An image flows through a graph of filters, and each node shows its result.",
+    "uses": [
+      "ImPlot",
+      "ImmVision",
+      "node editor",
+      "OpenCV"
+    ],
+    "cpp": false
+  },
   "demo_node_editor_basic.py": {
     "title": "Node editor: nodes, pins and links",
     "text": "Two nodes with pins: drag from a pin to another to create a link, select a link and press Delete to remove it. The\ninteractions of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor), step by step: a port of its basic\ninteraction example.",

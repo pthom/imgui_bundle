@@ -529,6 +529,30 @@ filtered image applies colormaps. A button downloads a random photo. The process
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immvision_process.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_immvision_process.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_process.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_process.cpp)
 
+### Node editor: a color mixer
+
+Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches. Each link is drawn
+in the color it carries. A first graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): the
+nodes, pins and links that the app owns, and how the user edits them.
+
+*Python*
+
+*Uses: node editor*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_color_mixer.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py)
+
+### Node editor: an image pipeline
+
+An image flows through a graph of filters, and each node shows its result. Change a parameter, and the nodes
+downstream follow at once. The patterns of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) for a
+real app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.
+
+*Python*
+
+*Uses: ImPlot, ImmVision, node editor, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py)
+
 ### Node editor: nodes, pins and links
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_node_editor_basic.jpg

@@ -510,6 +510,41 @@
           "variants": []
         },
         {
+          "label": "Node editor: a color mixer",
+          "filename": "demo_node_editor_color_mixer.py",
+          "stem": "demo_node_editor_color_mixer",
+          "where": "both",
+          "text": "Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches. Each link is drawn\nin the color it carries. A first graph with [imgui-node-editor](https://github.com/thedmd/imgui-node-editor): the\nnodes, pins and links that the app owns, and how the user edits them.",
+          "summary": "Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches.",
+          "uses": [
+            "node editor"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_node_editor_color_mixer.html",
+          "in_place": false,
+          "variants": []
+        },
+        {
+          "label": "Node editor: an image pipeline",
+          "filename": "demo_node_editor_image_pipeline.py",
+          "stem": "demo_node_editor_image_pipeline",
+          "where": "both",
+          "text": "An image flows through a graph of filters, and each node shows its result. Change a parameter, and the nodes\ndownstream follow at once. The patterns of [imgui-node-editor](https://github.com/thedmd/imgui-node-editor) for a\nreal app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.",
+          "summary": "An image flows through a graph of filters, and each node shows its result.",
+          "uses": [
+            "ImPlot",
+            "ImmVision",
+            "node editor",
+            "OpenCV"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_node_editor_image_pipeline.html",
+          "in_place": false,
+          "variants": []
+        },
+        {
           "label": "Node editor: nodes, pins and links",
           "filename": "demo_node_editor_basic.py",
           "stem": "demo_node_editor_basic",
