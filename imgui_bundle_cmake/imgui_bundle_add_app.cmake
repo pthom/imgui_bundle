@@ -27,12 +27,16 @@ include(${himgui_cmake_path}/msvc/msvc_target_group.cmake)
 #     * It will automatically link the target to the required libraries (imgui_bundle, OpenGl, glad, etc)
 #     * It will embed the assets (for desktop, mobile, and emscripten apps)
 #     * It will perform additional customization (app icon and name on mobile platforms, etc)
+#     * With MSVC, it reads the sources as UTF-8 (/utf-8), as GCC, Clang and Emscripten do by default
 function(imgui_bundle_add_app)
     set(args ${ARGN})
     list(GET args 0 app_name)
 
     hello_imgui_add_app(${args})
     target_link_libraries(${app_name} PRIVATE imgui_bundle::imgui_bundle)
+    # Dear ImGui's text is UTF-8. Without /utf-8, MSVC reads the sources in the local code page, and garbles the
+    # string literals that contain non-ASCII text.
+    target_compile_options(${app_name} PRIVATE $<$<CXX_COMPILER_ID:MSVC>:/utf-8>)
 
 	# if (MSVC)
 	# 	hello_imgui_msvc_target_group_sources(${app_name})
