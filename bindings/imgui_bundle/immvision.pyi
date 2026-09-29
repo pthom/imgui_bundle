@@ -158,6 +158,8 @@ class Rect:
 # IMMVISION_API is a marker for public API functions. IMMVISION_STRUCT_API is a marker for public API structs (in comment lines)
 # Usage of ImmVision as a shared library is not recommended. No guaranty of ABI stability is provided
 
+# Color order
+
 # The color order of displayed images: RGB by default.
 # For images in BGR order (OpenCV), call once at the start of your program:
 #     ImmVision::UseBgrColorOrder() (C++)
@@ -197,6 +199,8 @@ def push_color_order_bgr() -> None:
 # IMMVISION_API void PopColorOrder();    /* original C++ signature */
 def pop_color_order() -> None:
     pass
+
+# Display parameters
 
 class ColorMapStatsTypeId(enum.IntEnum):
     """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
@@ -571,6 +575,8 @@ def make_zoom_pan_matrix_full_view(
 ) -> Matrix33d:
     pass
 
+# Display an image
+
 # IMMVISION_API void Image(const std::string& label, const ImageBuffer& image, ImageParams* params);    /* original C++ signature */
 def image(label: str, image: ImageBuffer, params: ImageParams) -> None:
     """Display an image, with full user control: zoom, pan, watch pixels, etc.
@@ -702,6 +708,8 @@ def image_display_resizable(
         Python: pass a numpy.ndarray.
     """
     pass
+
+# Utilities
 
 # IMMVISION_API std::vector<std::string> AvailableColormaps();    /* original C++ signature */
 def available_colormaps() -> List[str]:
