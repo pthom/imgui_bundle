@@ -467,8 +467,8 @@ def _safe_markdown(text: str) -> str:
     keep their breaks (a trailing backslash), since the headers lay out one idea per line; a [SECTION] mark left in
     a text (a part without bound entries) becomes a bold line"""
     text = text.replace("\x00", "\\0")
-    if COMMENT_STYLE == "pre" and "\n" in text.strip():
-        return "````text\n" + text.rstrip() + "\n````"
+    if COMMENT_STYLE == "pre" and "\n" in text.strip():  # a text block; custom.css wraps its long lines (pre-wrap)
+        return "::::::{code-block} text\n:class: header-comment\n" + text.rstrip() + "\n::::::"
     out = []
     in_fence = False
     for line in text.splitlines():

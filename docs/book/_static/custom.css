@@ -64,3 +64,10 @@
 .myst-card .link-icon {
   display: none !important;
 }
+
+/* The API pages: a header's comment laid out in ASCII (imgui.h) is a text block, whose long lines wrap */
+.header-comment pre,
+.header-comment pre code {
+  white-space: pre-wrap !important;  /* the theme sets white-space: pre inline on the code element */
+  overflow-wrap: anywhere;
+}
