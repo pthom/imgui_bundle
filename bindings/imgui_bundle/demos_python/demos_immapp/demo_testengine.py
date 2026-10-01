@@ -1,9 +1,9 @@
 """
 Automate and test your app with ImGui Test Engine.
 
-Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a
-few buttons that run tests. Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types
-text, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard:
+it opens clicks buttons, types text, etc.,  and checks the results.
+See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
 ## What it shows
 
