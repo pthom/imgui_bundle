@@ -205,9 +205,10 @@ function makeCard(example, category) {
     if (example.where === 'browser') tags.appendChild(element('span', 'gallery-tag browser', 'Browser only'));
     if (unmet.length) tags.appendChild(element('span', 'gallery-tag unavailable', 'Not in this browser'));
     picture.append(img, tags);
-    card.append(picture, element('div', 'gallery-title', example.label),
-                element('div', 'gallery-summary', plainText(doc.summary || '')));
-    if (unmet.length) return card;  // greyed, not clickable: its tooltip says what it needs
+    // A card this browser cannot run says what it needs in place of its summary (a tooltip would not show on a phone)
+    const summary = unmet.length ? 'Needs ' + unmet.map((need) => need.text).join('; ') : plainText(doc.summary || '');
+    card.append(picture, element('div', 'gallery-title', example.label), element('div', 'gallery-summary', summary));
+    if (unmet.length) return card;  // greyed, not clickable
     card.addEventListener('click', async () => {
         closeGallery();
         await loadDemoByFilename(example.filename);
