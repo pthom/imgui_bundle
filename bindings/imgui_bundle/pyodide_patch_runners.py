@@ -137,6 +137,28 @@ def _wants_latex(args: Any, kwargs: Any) -> bool:
     return False
 
 
+def _runner_params_in_args(args: Any, kwargs: Any) -> hello_imgui.RunnerParams | None:
+    """The RunnerParams of a run() call, if it has one (the only form that can turn the test engine on)."""
+    if len(args) >= 1 and isinstance(args[0], hello_imgui.RunnerParams):
+        return args[0]
+    runner_params = kwargs.get("runner_params")
+    return runner_params if isinstance(runner_params, hello_imgui.RunnerParams) else None
+
+
+def _disable_test_engine_without_jspi(runner_params: hello_imgui.RunnerParams | None) -> None:
+    """In Pyodide, the test engine's coroutine needs JSPI stack switching. Without it (Pyodide's own test:
+    WebAssembly.Suspending), the app runs without the engine, and says so in the console."""
+    if runner_params is None or not runner_params.use_imgui_test_engine:
+        return
+    if hasattr(js.WebAssembly, "Suspending"):
+        return
+    js.console.warn(
+        "imgui_bundle: this browser has no JSPI (WebAssembly.Suspending), which the test engine needs in Pyodide. "
+        "The app runs without the engine: get_runner_params().use_imgui_test_engine is False, "
+        "get_imgui_test_engine() is None.")
+    runner_params.use_imgui_test_engine = False
+
+
 def _arg_to_render_lifecycle_functions(himgui_or_immapp: _HelloImGuiOrImmApp, *args: Any, **kwargs: Any) -> _RenderLifeCycleFunctions:
     """Converts the arguments to the correct render lifecycle functions,
     depending on the type of arguments passed and whether it is a hello_imgui or immapp application."""
@@ -214,6 +236,7 @@ class _ManualRenderJs:
             self._stop()
         self.is_running = True
 
+        _disable_test_engine_without_jspi(_runner_params_in_args(args, kwargs))
         self.render_lifecycle_functions = _arg_to_render_lifecycle_functions(himgui_or_immapp, *args, **kwargs)
         try:
             self.render_lifecycle_functions.setup()
