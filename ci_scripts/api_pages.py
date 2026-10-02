@@ -11,6 +11,8 @@ This script reads them with `ast` and their source lines, and writes, for each l
 - `api/<lib>/<module>.md`: the reference of a module: per source header, its sections (the headers' comments), and
   per entry the Python signature, the C++ signature, the doc;
 and `api/index.md` (all the libraries), and the part of `_toc.yml` between `# <api pages>` and `# </api pages>`.
+Also the API in plain text, for AI assistants (`api/llms/`, published under llms/api/): one file per module, with
+the demos that use it at the top, and an index.
 Run by `just api_pages` and by the doc recipes. The same design in three readers' minds: a Python user looks up a
 name, a C++ user reads the C++ signature next to it, an AI assistant reads the whole page.
 """
@@ -24,7 +26,7 @@ from pathlib import Path
 from typing import Any, Optional
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from playground_examples_docs import EXAMPLES_DIR, demo_card  # noqa: E402  # the demos' cards, as on the demos page
+from playground_examples_docs import EXAMPLES_DIR, demo_card, demo_code_links, plain  # noqa: E402  # the demos, as on the demos page
 
 REPO = Path(__file__).resolve().parent.parent
 STUBS = REPO / "bindings/imgui_bundle"
@@ -947,6 +949,7 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
 # The plain-text version, for AI assistants (published at LLMS_URL by `just cf_stage`, linked from llms.txt)
 # ---------------------------------------------------------------------------------------------------------------------
 LLMS_URL = "https://imgui-bundle.pages.dev/llms/api"
+LLMS_DEMOS_URL = "https://imgui-bundle.pages.dev/llms/demos.txt"  # written by playground_examples_docs.py
 LLMS_DOC_CHARS = 300  # an entry's doc: its first paragraph, cut at this length (the full docs are on the pages)
 
 
@@ -1018,9 +1021,29 @@ def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
     return chunks
 
 
-def write_llms_module(library: Library, module: str, stubs: list[Path]) -> list[tuple[Path, list[str]]]:
+def _llms_demos(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], uses: list[str],
+                demos: list[str]) -> list[str]:
+    """The demos tagged with one of `uses`, or named in `demos` (as the cards of the HTML page): a line per demo,
+    with its summary and the links to its code"""
+    out: list[str] = []
+    for e in manifest["examples"]:
+        if e.get("hidden") or not e.get("launcher", True):
+            continue
+        doc = docs.get(e["filename"], {})
+        if not (set(doc.get("uses", [])) & set(uses)) and Path(e["filename"]).name not in demos:
+            continue
+        links = ", ".join(f"{language}: {url}" for language, url in demo_code_links(manifest, e))
+        out.append(f"- {e['label']}: {' '.join(plain(doc.get('summary', '')).split())} {links}")
+    if not out:
+        return []
+    return [f"Demos using it (all the demos: {LLMS_DEMOS_URL}):", *out, ""]
+
+
+def write_llms_module(library: Library, module: str, stubs: list[Path], manifest: dict[str, Any],
+                      docs: dict[str, dict[str, Any]]) -> list[tuple[Path, list[str]]]:
     """The plain-text API of a module: one file, or several cut at its parts when it is large; returns each file with
-    the titles of its parts"""
+    the titles of its parts. The first file starts with the demos that use the module (the library's for its main
+    module, and MODULE_DEMOS)."""
     entries: list[Entry] = []
     for path in stubs:
         entries += read_stub(path, REPO / library.headers if library.headers else None)
@@ -1036,6 +1059,9 @@ def write_llms_module(library: Library, module: str, stubs: list[Path]) -> list[
         packed[-1][1].extend(lines)
     short = module.removeprefix("imgui_bundle.")
     doc = _module_doc(stubs)
+    main_module = module == library.modules[0][0]
+    demos = _llms_demos(manifest, docs, library.uses if main_module else [],
+                        (library.demos if main_module else []) + MODULE_DEMOS.get(module, []))
     about = ("Generated from the Python stubs of Dear ImGui Bundle. Each entry gives its Python signature, its C++ "
              "declaration (\"C++:\"), and the first paragraph of its doc. The Python names follow the C++ ones "
              "(`ImGui::Button` is `imgui.button`, `ImPlotFlags_` is `implot.Flags_`). The full docs: "
@@ -1047,6 +1073,8 @@ def write_llms_module(library: Library, module: str, stubs: list[Path]) -> list[
         if n == 1 and doc:
             head += [doc, ""]
         head += [about, ""]
+        if n == 1:
+            head += demos
         path = API / "llms" / f"{name}.txt"
         path.parent.mkdir(parents=True, exist_ok=True)
         path.write_text("\n".join(head + lines))
@@ -1058,7 +1086,7 @@ def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]
     out = ["# Dear ImGui Bundle: the API, in plain text", "",
            "One file per module (a large module is cut into several files, by part): every function, class and enum, "
            "with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a "
-           "question needs.", ""]
+           f"question needs. The demos, with their code: {LLMS_DEMOS_URL}", ""]
     library_key = ""
     for library, module, module_files in files:
         if library.key != library_key:
@@ -1110,7 +1138,7 @@ def main() -> None:
         for module, stub in library.modules:
             stubs = [STUBS / name.strip() for name in stub.split("+")]
             if all(path.is_file() for path in stubs):
-                llms.append((library, module, write_llms_module(library, module, stubs)))
+                llms.append((library, module, write_llms_module(library, module, stubs, manifest, docs)))
     write_llms_index(llms)
     texts = [path for _, _, module_files in llms for path, _ in module_files]
     pages = sorted(API.rglob("*.md"))

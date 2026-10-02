@@ -763,6 +763,10 @@ Type, scroll the history, select and copy, and open more terminals with the "+" 
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_ssh.jpg
+:alt: Terminal over SSH
+:::
+
 ### Terminal over SSH
 
 The same terminal widget, fed by an SSH channel instead of a local shell.
@@ -780,6 +784,10 @@ With [paramiko](https://www.paramiko.org): the shape of a shell on a server or a
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_websocket.jpg
+:alt: Terminal over a websocket
+:::
+
 ### Terminal over a websocket
 
 The same terminal widget, its bytes carried by a websocket to a pty bridge server.

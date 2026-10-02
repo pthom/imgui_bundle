@@ -1,0 +1,238 @@
+# Dear ImGui Bundle: the demos
+
+The demos of the catalog, by category: what each one shows, the libraries it uses, and its code on GitHub (Python, and C++ when it exists). Read the code of a demo close to what you write. Most demos run in the browser: https://imgui-bundle.pages.dev/playground/?demo=<file name> (not those marked desktop only). The guide for AI assistants: https://imgui-bundle.pages.dev/llms.txt; the API in plain text: https://imgui-bundle.pages.dev/llms/api/index.txt.
+
+
+## Start here
+
+The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.
+Read the code of a few of them: it gives the feel of the framework.
+
+- What is an Immediate GUI: With Dear ImGui, your GUI code is simple and direct: no widget trees, no callbacks, no state synchronization. You call functions to create widgets, and they return the current value. That's it.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/welcome_imm_mode.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/welcome_imm_mode.cpp
+- Hello world, in two lines: ImmApp opens the window, runs the loop, and calls your GUI function at every frame: immapp.run(gui) is all it takes. Add widgets to that function, and you have an app. The C++ version is three lines.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp
+- A parametric curve: Turn the knobs, or click Random: the curve follows at once. At every frame, the GUI function draws the plot with ImPlot and the knobs with imgui-knobs, and reads their values right there. No callbacks, no widget objects: that is the immediate mode.
+  Uses: ImPlot, knobs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_parametric_curve.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_parametric_curve.cpp
+- A plot and markdown, in a few lines: A cosine wave moves in an ImPlot plot, under a text written in markdown. Both are add-ons, activated in one call: immapp.run(gui, with_implot=True, with_markdown=True). A good start for a small app.
+  Uses: ImPlot
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_implot_markdown.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_implot_markdown.cpp
+- Assets and add-ons: Load images and icons from your assets folder, and use two add-ons: markdown and ImPlot. A markdown editor with a live preview, and a pie chart whose values you can drag. Tick More info under each part to see how it is done. The add-ons are activated with immapp.AddOnsParams.
+  Uses: ImPlot
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_assets_addons.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_assets_addons.cpp
+- A beating heart: A heart curve drawn with ImPlot beats at the rate set by a knob from imgui-knobs. A few lines of Python: a parametric curve, scaled by a pulse at each frame. Turn the knobs to change the heart rate, or its thickness.
+  Uses: ImPlot, knobs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp
+- Butterfly effect, in a few lines: Two trajectories of the Lorenz system start almost at the same point, then drift apart: chaos in action. Drawn in 3D with ImPlot3D. Sliders change the system's parameters and the gap between the two starting points; Reset starts them over.
+  Uses: ImPlot3D
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp
+
+## Interactive manuals
+
+Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside.
+
+- Dear ImGui: the interactive manual: Every widget and feature of Dear ImGui, section by section, with the Python and C++ code of each beside it. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+  Uses: ImGui
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_demo.cpp
+- ImPlot: the interactive manual: Every kind of plot of ImPlot, section by section, with the code of each beside it. Lines, scatter, bars, heatmaps, histograms, real-time plots and more, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+  Uses: ImPlot
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_implot.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot_demo.cpp
+- ImPlot3D: the interactive manual: The 3D plots of ImPlot3D, section by section, with the code of each beside it. Lines, scatter, surfaces, meshes and more, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+  Uses: ImPlot3D
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_implot3d.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/implot3d_demo.cpp
+- ImAnim: the interactive manual: The animations of ImAnim, section by section, with the code of each beside it. Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+  Uses: ImAnim
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp
+
+## Build an app
+
+Layouts, docking, backgrounds, fonts, testing: what a real application needs.
+
+- Resizable panels with child windows: Learn how to create resizable adjacent panels, using child windows.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_child.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_child.cpp
+- Dockable windows: Hello ImGui provides a docking system: define named dock spaces, then assign windows to them. Windows can be dragged, tabbed, and rearranged by the user.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/layout_docking.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/layout_docking.cpp
+- A full app: docking, fonts, logs: A template for a real application, built with Hello ImGui: copy it and start from there. Dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your settings are saved, and restored at the next start. The code is heavily commented.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
+- Custom 3D background (OpenGL) (desktop only): Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The Seascape shader is by Alexander Alekseev (TDM, 2014). Hello ImGui calls runner_params.callbacks.custom_background at each frame, before the GUI: that is where it draws, with OpenGL (PyOpenGL in Python).
+  Uses: OpenGL
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
+- Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: watch the FPS and the spinner slow down. Move the mouse, and they speed up again. The slider sets fps_idle (0 means full speed), and the checkbox turns idling off, for example during an animation.
+  Uses: spinners
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp
+- Chinese and other non-Latin fonts (desktop only): The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as ???. The fix: load a font that has the glyphs you need, first, so that it becomes the default font. This demo shows how, with Noto Sans SC: download it, and the demo's sample lines come alive.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp
+- Drag and drop: Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode. Each button is both a drag source and a drop target. Adapted from the drag and drop section of the Dear ImGui demo.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_drag_and_drop.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_drag_and_drop.cpp
+- Command palette: A searchable list of commands, as in VS Code: press Ctrl+Shift+P (Cmd+Shift+P on macOS). Type a few letters to filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register commands and their callbacks with imgui-command-palette.
+  Uses: command palette
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp
+- Test engine: Watch a ImGui Test Engine drive the mouse and the keyboard: it clicks buttons, types text, etc., and checks the results. For scripted runs on top of it (automated tests, pictures, an AI agent at the mouse), see the immapp.testing demo. See the test engine doc.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp
+- immapp.testing: scripted runs (desktop only): Easy automated tests with immapp.testing, a thin layer on the test engine: a script drives the app, then exits. The test engine demo shows the engine itself. Here, a test function drives the GUI (it clicks, moves a slider, opens a header) and captures a picture at each step; immapp.testing.run() starts the app, runs the test, then exits. The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at the mouse (the bundle's screenshot skills are built on it). See the test engine doc.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp
+
+## Library tours
+
+The libraries in the bundle: full demos, widget tours, showcases.
+
+- Themes and theme tweaking: Pick a complete look for your app, then fine-tune its colors, rounding and spacing. The complete looks come from Hello ImGui.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/themes.py
+- Knobs, toggles, spinners and more: Knobs, toggle switches, spinners, a command palette, a dock-like cool bar: widgets beyond Dear ImGui's own. They come from the libraries in the bundle: imgui-knobs, imgui_toggle, imspinner, imgui-command-palette and ImCoolBar. Also file dialogs: the native ones (portable-file-dialogs), and ImFileDialog, drawn with ImGui.
+  Uses: knobs, toggles, spinners, cool bar, command palette, file dialogs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp
+- Markdown tour: Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows its source, ready to copy. rich_md draws it directly, with no browser and no HTML engine.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp
+- Code editor: A code editor widget, with syntax highlighting, multiple cursors, a diff view, filters, annotations and context menus. Each tab shows one feature, and a checkbox shows its source. The editor is ImGuiColorTextEdit, by Johan A. Goossens.
+  Uses: code editor
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp
+- Log window: A log window for your app, with four levels: debug, info, warning and error. Call hello_imgui.log() anywhere, and show the window with hello_imgui.log_gui(). Its colors follow the theme. Adapted from ImGuiAl.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_logger.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_logger.cpp
+- Terminal (desktop only): A real shell in an ImGui widget: type commands, scroll back through the history, select and copy. The shell runs behind a pseudo-terminal (macOS and Linux), pyte parses its VT100 output, and imgui_bundle.imgui_terminal.TerminalView draws it. A standalone version, with more comments: demos_terminal/demo_terminal_pyte.py.
+  Uses: terminal
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_terminal.py
+- ImmVision: display and inspect: Two ways to show an image (a NumPy array in Python, a cv::Mat in C++). immvision.image_display_resizable() draws it, and you drag its corner to resize it. immvision.image() adds the inspection tools: zoom with the mouse wheel until the pixel values show, pan by dragging, and a button at the bottom right corner opens the settings (colormaps, channels, values).
+  Uses: ImmVision, OpenCV
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_display.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_display.cpp
+- ImmVision: the inspector: Call immvision.inspector_add_image() anywhere, for example at each step of an image processing algorithm. Then immvision.inspector_show() shows all the collected images, with the zoom, the pan and the pixel inspection of immvision.image(). Here, two photos at startup; on the desktop, a button adds images of every depth and channel count.
+  Uses: ImmVision, OpenCV
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_inspector.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_inspector.cpp
+- ImmVision: images that zoom together: Image params that share a zoom_key follow each other: pan or zoom one image, and the others move with it. Here, a photo and its three color channels. Pan by dragging, zoom with the mouse wheel. The image is read with OpenCV (pip install imgui-bundle[imgproc]).
+  Uses: ImmVision, OpenCV
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_link.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_link.cpp
+- ImmVision: image processing, tuned live: A Sobel filter on a photo: change the blur, the derivative's order and its orientation, and the result updates at once. The original and the filtered image share a zoom key, so they pan and zoom together; the options panel of the filtered image applies colormaps. A button downloads a random photo. The processing is OpenCV's (pip install imgui-bundle[imgproc]), the display ImmVision's.
+  Uses: ImmVision, OpenCV
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immvision/demo_immvision_process.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immvision/demo_immvision_process.cpp
+- Node editor: a color mixer: Colors flow through a small graph: pick two colors, mix them, and see the result in the swatches. Each link is drawn in the color it carries. A first graph with imgui-node-editor: the nodes, pins and links that the app owns, and how the user edits them.
+  Uses: node editor
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_color_mixer.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_color_mixer.cpp
+- Node editor: an image pipeline: An image flows through a graph of filters, and each node shows its result. Change a parameter, and the nodes downstream follow at once. The patterns of imgui-node-editor for a real app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.
+  Uses: ImPlot, ImmVision, node editor, OpenCV
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_image_pipeline.cpp
+- ImGuizmo: a 3D gizmo: Move, rotate and scale cubes with a gizmo, as in a 3D editor. Pick the operation and the mode (local or world) in the editor panel, drag the gizmo's handles, and turn the view with the cube at the top right corner. The gizmo is ImGuizmo; the camera matrices are a few lines of plain Python.
+  Uses: ImGuizmo
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp
+- NanoVG: the full demo: The demo of NanoVG, a vector drawing library: shapes, gradients, text, images. Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a checkbox blows it up.
+  Uses: NanoVG
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp
+- NanoVG: a beating heart: A heart drawn with NanoVG beats in an ImGui image. NanoVG is a vector drawing library; the drawing goes into a framebuffer that the image shows, and a color picker changes the heart's color. The pattern for any NanoVG drawing inside a GUI: nvg_imgui.render_nvg_to_frame_buffer().
+  Uses: NanoVG
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_heart.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_heart.cpp
+- Terminal: several shells in tabs (desktop only): Real shells in a tab bar, each behind a pseudo-terminal. Type, scroll the history, select and copy, and open more terminals with the "+" tab. This file is the application only: the widget is imgui_bundle.imgui_terminal's TerminalView, fed by a LocalShellTransport. Needs pip install "imgui-bundle[terminal]" (pyte), on macOS or Linux.
+  Uses: terminal
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_pyte.py
+- Terminal over SSH (desktop only): The same terminal widget, fed by an SSH channel instead of a local shell. With paramiko: the shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through the SSH agent; edit the host and the user in the file. Needs pip install "imgui-bundle[terminal]" paramiko.
+  Uses: terminal
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_ssh.py
+- Terminal over a websocket (desktop only): The same terminal widget, its bytes carried by a websocket to a pty bridge server. The demo starts the bridge (pty_bridge_server.py); replace it by a shell on a robot, a server or a container, and the GUI stays the same. Needs pip install "imgui-bundle[terminal]" websockets.
+  Uses: terminal
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_websocket.py
+
+## Python specifics
+
+Async, Matplotlib, Pydantic, context managers, and pure Python backends.
+
+- Context managers (imgui_ctx): In Python, with imgui_ctx.begin("Window"): replaces a begin() / end() pair, and the end() can no longer be forgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with implot_ctx. Open a section to try it and read its code. See the Python tips.
+  Uses: ImPlot
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py
+- Run code alongside the GUI (async) (desktop only): The GUI runs as an asyncio task, while a Python loop keeps computing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop yields with await asyncio.sleep(0) to share the event loop. See async support.
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py
+- Control the GLFW window (desktop only): glfw_utils.glfw_window_hello_imgui() returns the GLFW window that Hello ImGui created. With it, any function of pyGLFW works on your app's window. Here, buttons maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in the taskbar.
+  Uses: GLFW
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py
+- Matplotlib figures: imgui_fig.fig() shows a Matplotlib figure as an image in the GUI. On the left, an animated sine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to reuse existing Matplotlib code; for fast interactive plots, prefer ImPlot.
+  Uses: Matplotlib
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py
+- Pydantic models: Save and load your app's settings with Pydantic, ImVec2 and colors included. ImVec2_Pydantic, ImVec4_Pydantic and ImColor_Pydantic are the usual ImVec2, ImVec4 and ImColor, usable as fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that nothing was lost.
+  Uses: Pydantic
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py
+- Python backends: GLFW, SDL, pyglet, pygame, wgpu (desktop only): With a pure Python backend, you drive the full app loop. See Pure Python backends. Unlike immapp.run(), there is no Hello ImGui here: no DPI handling, themes or assets.
+  Uses: OpenGL, GLFW, SDL, pyglet, pygame, wgpu
+  Python (GLFW): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py
+  Python (SDL2): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py
+  Python (SDL3): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py
+  Python (pyglet): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py
+  Python (pygame): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py
+  Python (wgpu): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py
+
+## In the browser
+
+Deploy to the web, and use the browser's WebGL and WebAudio from Python.
+
+- Minimal HTML page: Dear ImGui Bundle apps can run entirely in the browser using Pyodide. The HTML file below is a complete, self-contained app in about 80 lines - no server, no build step.
+  Uses: code editor
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py
+- WebGL shader as background (browser only): The Mandelbrot set, drawn by a fragment shader behind the GUI. Pyodide only: this demo calls the browser's WebGL2 API directly, through Python's js interop. On desktop, you would use PyOpenGL instead.
+  Uses: browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py
+- WebGL / OpenGL custom background: One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The shader is the famous "Seascape" from Shadertoy, by Alexander Alekseev. In the browser, the app runs with Pyodide.
+  Uses: OpenGL, browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py
+- WebGL 3D cube rendered to a texture (browser only): A 3D cube drawn with WebGL2 into a texture, and shown in the GUI by imgui.image(). No copy between the GPU and the CPU at each frame.
+  Uses: browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py
+- WebAudio synthesizer (browser only): A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add some echo, and watch the scope. Pyodide only: it plays through the browser's WebAudio API, via Pyodide's js interop.
+  Uses: knobs, browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webaudio_synth.py
+
+## Interactive science
+
+Explorable lessons in physics, chaos and machine learning, built with the bundle.
+Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per second or more, even under load. These demos show it.
+
+- Interactive exploration of the Mandelbrot set: Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures: near each point, the two sets look alike.
+  Uses: ImmVision
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py
+- A tiny neural network learns two spirals: Can 16 neurons tell two spirals apart? Watch a tiny neural network) learn, live, as in the TensorFlow Playground. Then read how it works, formula by formula, next to its numpy code.
+  Uses: ImPlot
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py
+- Simple harmonic motion: A mass on a spring, a pendulum, a vibrating string: they all follow the same equation. It is the equation of simple harmonic motion (for the pendulum, at small angles). Adjust the mass and the spring stiffness, and watch how the motion changes.
+  Uses: ImPlot, knobs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/lesson_harmonic_motion.py
+- Double pendulum: A double pendulum is a chaotic system: tiny changes in its initial conditions lead to wildly different trajectories. Drag the angles to set initial positions, then release and watch chaos unfold.
+  Uses: ImPlot, knobs, toggles
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/double_pendulum.py
+- Fourier epicycles: Any closed curve can be approximated by a sum of rotating circles (a Fourier series). Adjust the number of circles to see how the approximation improves.
+  Uses: ImPlot, knobs, toggles
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/fourier_epicycles.py
+- Boids (flocks): A flock of birds emerges from three simple local rules, with no leader and no plan. Each bird stays apart from its neighbors (separation), flies their way (alignment), and stays with them (cohesion). This is the boids model of Craig Reynolds (1986).
+  Uses: ImPlot, knobs, toggles
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/boids.py
+- Logistic map: A very simple equation, and yet it can lead to wildly different behaviors, up to chaos. The logistic map, x(n+1) = r * x(n) * (1 - x(n)), models for example the growth of a population with limited resources. Depending on r, it is stable, periodic (in 2-cycles, 4-cycles, etc), or chaotic. Let's explore this.
+  Uses: ImPlot, toggles
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py

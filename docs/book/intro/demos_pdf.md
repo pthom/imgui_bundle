@@ -637,6 +637,11 @@ terminals with the "+" tab. This file is the application only: the widget is `im
 
 ### Terminal over SSH
 
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_ssh.jpg
+:alt: Terminal over SSH
+:width: 400px
+:::
+
 The same terminal widget, fed by an SSH channel instead of a local shell. With [paramiko](https://www.paramiko.org):
 the shape of a shell on a server or a robot, from a desktop GUI. By default it connects to localhost as you, through
 the SSH agent; edit the host and the user in the file. Needs `pip install "imgui-bundle[terminal]" paramiko`.
@@ -648,6 +653,11 @@ the SSH agent; edit the host and the user in the file. Needs `pip install "imgui
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_terminal/demo_terminal_ssh.py)
 
 ### Terminal over a websocket
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_terminal_websocket.jpg
+:alt: Terminal over a websocket
+:width: 400px
+:::
 
 The same terminal widget, its bytes carried by a websocket to a pty bridge server. The demo starts the bridge
 (`pty_bridge_server.py`); replace it by a shell on a robot, a server or a container, and the GUI stays the same.

@@ -9,8 +9,10 @@ Also writes the book's page of the demos (docs/book/intro/demos.md): what the de
 and AIs can read. The PDF export drops its grids of cards: the PDF gets a copy without them (intro/demos_pdf.md),
 listed by a copy of the table of contents (_toc_pdf.yml). Also writes the catalog of the C++ launcher, an asset of
 the explorer (demos_assets/demos_catalog.json): the categories and their demos, with what the Python launcher derives
-at load time (the files, relative to the repository; whether a C++ version exists). Run by
-`just playground_examples_docs`, by the doc recipes, and by `just cf_stage` (the deploy).
+at load time (the files, relative to the repository; whether a C++ version exists). Also writes the demos in plain
+text for AI assistants (docs/book/intro/demos.txt, published as llms/demos.txt next to llms.txt): the categories,
+what each demo shows, and the links to its code. Run by `just playground_examples_docs`, by the doc recipes, and
+by `just cf_stage` (the deploy).
 
 The "sources" of examples.json are the folders the playground serves (playground/<name>), with their place in the
 repository (relative to the examples folder). An example's file is in the folder of its "source" (examples by default,
@@ -46,6 +48,7 @@ DEMOS_CPP_DIR = REPO / "bindings/imgui_bundle/demos_cpp"  # its folders mirror t
 BOOK = REPO / "docs/book"
 BOOK_PAGE = BOOK / "intro/demos.md"
 BOOK_PAGE_PDF = BOOK / "intro/demos_pdf.md"
+LLMS_DEMOS = BOOK / "intro/demos.txt"  # the demos in plain text, for AI assistants (published as llms/demos.txt)
 CPP_CATALOG = REPO / "bindings/imgui_bundle/demos_assets/demos_catalog.json"
 PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
 SITE = "https://imgui-bundle.pages.dev"
@@ -254,6 +257,47 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
     return lines + [text, "", f"*{', '.join(tags)}*", ""] + uses_line + [" · ".join(links), ""]
 
 
+def demo_code_links(manifest: dict[str, Any], e: dict[str, Any]) -> list[tuple[str, str]]:
+    """The code of a demo on GitHub: (language, url), Python first (one per variant when it has some), then C++"""
+    path = disk_path(manifest["sources"], f"{e.get('source', 'examples')}/{e['filename']}")
+    links = [(f"Python ({v['label']})", f"{GITHUB}{(path.parent / v['filename']).relative_to(REPO).as_posix()}")
+             for v in e.get("variants", [])] or [("Python", f"{GITHUB}{path.relative_to(REPO).as_posix()}")]
+    cpp = cpp_file(e, path)
+    if cpp is not None:
+        links.append(("C++", f"{GITHUB}{cpp.relative_to(REPO).as_posix()}"))
+    return links
+
+
+def write_llms_demos(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> None:
+    """The demos in plain text, for AI assistants: by category, what each demo shows (its first paragraph), the
+    libraries it uses, and the links to its code. An assistant reads it to find a demo close to what it writes."""
+    out = ["# Dear ImGui Bundle: the demos", "",
+           "The demos of the catalog, by category: what each one shows, the libraries it uses, and its code on GitHub "
+           "(Python, and C++ when it exists). Read the code of a demo close to what you write. Most demos run in the "
+           f"browser: {SITE}/playground/?demo=<file name> (not those marked desktop only). "
+           f"The guide for AI assistants: {SITE}/llms.txt; the API in plain text: {SITE}/llms/api/index.txt.", ""]
+    count = 0
+    for category in manifest["categories"]:
+        demos = [e for e in manifest["examples"] if e["category"] == category["name"]
+                 and not e.get("hidden") and e.get("launcher", True)]
+        if not demos:
+            continue
+        out += ["", f"## {category['name']}", "", plain(category["about"])]
+        if category.get("tip"):
+            out.append(plain(category["tip"]))
+        out.append("")
+        for e in demos:
+            doc = docs.get(e["filename"], {})
+            where = {"desktop": " (desktop only)", "browser": " (browser only)"}.get(e.get("where", "both"), "")
+            out.append(f"- {e['label']}{where}: {' '.join(plain(doc.get('text', '')).split())}")  # one line
+            if doc.get("uses"):
+                out.append(f"  Uses: {', '.join(doc['uses'])}")
+            out += [f"  {language}: {url}" for language, url in demo_code_links(manifest, e)]
+            count += 1
+    LLMS_DEMOS.write_text("\n".join(out) + "\n")
+    print(f"wrote {LLMS_DEMOS} ({count} demos)")
+
+
 def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> None:
     """The book's page of the demos: the demo launcher's content (the same demos, categories and descriptions), in
     grids of cards. The PDF export drops the grids (mystmd's typst exporter does not handle them): the PDF gets a copy
@@ -334,6 +378,7 @@ def main() -> None:
     print(f"wrote {EXAMPLES_DIR / 'examples_docs.json'} ({len(docs)} examples)")
     write_book_pages(manifest, docs)
     write_cpp_catalog(manifest, docs)
+    write_llms_demos(manifest, docs)
 
 
 if __name__ == "__main__":
