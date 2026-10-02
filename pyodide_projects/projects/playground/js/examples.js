@@ -42,6 +42,7 @@ async function fetchExampleMetadata() {
         const response = await fetch('examples/examples.json');
         const data = await response.json();
         examplesCategories = data.categories || [];
+        examplesSources = data.sources || {};
         return data.examples;
     } catch (error) {
         console.error('Error fetching example metadata:', error);
@@ -144,6 +145,7 @@ async function loadExample(filename, packages, label, bundleFolders, source) {
 // Store example metadata so we can look up packages later
 let examplesMetadata = [];
 let examplesCategories = [];  // [{name, about}], in the order of the menu
+let examplesSources = {};  // {source: its folder, relative to the examples folder}: where a demo's file is in the repository
 let examplesDocs = {};  // {filename: {title, text}}: examples_docs.json, see ci_scripts/playground_examples_docs.py
 
 // The example loaded in the editor (null for the landing page): runEditorPythonCode() runs it at its own path
@@ -203,6 +205,7 @@ function makeCard(example, category) {
     tags.appendChild(element('span', 'gallery-tag python', 'Python'));
     if (doc.cpp) tags.appendChild(element('span', 'gallery-tag cpp', 'C++'));
     if (example.where === 'browser') tags.appendChild(element('span', 'gallery-tag browser', 'Browser only'));
+    if (example.where === 'desktop') tags.appendChild(element('span', 'gallery-tag desktop', 'Desktop only'));
     if (unmet.length) tags.appendChild(element('span', 'gallery-tag unavailable', 'Not in this browser'));
     picture.append(img, tags);
     // A card this browser cannot run says what it needs in place of its summary (a tooltip would not show on a phone)
@@ -230,9 +233,11 @@ async function buildGallery() {
     chips.innerHTML = '';
     let count = 0;
     for (const category of examplesCategories) {
-        // The gallery shows the demos that run in the browser, except the hidden ones
-        const shown = examplesMetadata.filter(
-            (e) => !e.hidden && e.where !== 'desktop' && e.category === category.name);
+        // The gallery shows the demos of the category, except the hidden ones: those that run in the browser, then
+        // the desktop-only ones (a card shows their code, with a notice)
+        const ofCategory = examplesMetadata.filter((e) => !e.hidden && e.category === category.name);
+        const shown = [...ofCategory.filter((e) => e.where !== 'desktop'),
+                       ...ofCategory.filter((e) => e.where === 'desktop')];
         if (!shown.length) continue;
         const section = element('section', 'gallery-category');
         section.dataset.category = category.name;
@@ -374,7 +379,22 @@ async function loadDemoByFilename(filename, updateHistory = true) {
         url.searchParams.set('demo', filename);
         history.pushState({demo: filename}, '', url);
     }
+    if (example && example.where === 'desktop') {  // its code is shown, with a notice: it does not run here
+        showDesktopNotice(githubUrl(example));
+        return;
+    }
     await runEditorPythonCode();
+}
+
+// The GitHub page of a demo's file (its folder in the repository comes from "sources" in examples.json)
+function githubUrl(example) {
+    const parts = [];
+    const path = 'bindings/imgui_bundle/demos_python/playground/examples/'
+        + (examplesSources[example.source || 'examples'] || '.') + '/' + example.filename;
+    for (const part of path.split('/')) {
+        if (part === '..') parts.pop(); else if (part && part !== '.') parts.push(part);
+    }
+    return 'https://github.com/pthom/imgui_bundle/blob/main/' + parts.join('/');
 }
 
 // Check ?demo= URL parameter and load the specified demo after Pyodide is ready

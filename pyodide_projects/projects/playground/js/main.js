@@ -102,6 +102,7 @@ let _lastLoadedCode = '';
 let _lastRunCode = '';
 
 function setLoadedCode(code) {
+    hideDesktopNotice();
     _lastLoadedCode = code;
     _lastRunCode = code;
     document.getElementById('editor-modified').classList.remove('visible');
@@ -111,6 +112,7 @@ function setLoadedCode(code) {
 editor.on('change', () => {
     const currentCode = editor.getValue();
     const modifiedFromFile = currentCode !== _lastLoadedCode;
+    if (modifiedFromFile) hideDesktopNotice();  // an edit may make a desktop-only demo run here: let the user try
     const needsRun = currentCode !== _lastRunCode;
     document.getElementById('editor-modified').classList.toggle('visible', modifiedFromFile);
     runButton.classList.toggle('needs-run', needsRun);
@@ -127,6 +129,22 @@ runEditorPythonCode = async function() {
 // Update the editor toolbar label
 function setEditorLabel(label) {
     document.getElementById('editor-label').textContent = label;
+}
+
+// The notice under the toolbar for a desktop-only demo (its code is shown, it does not run here): the Run button is
+// off until the code is edited, or another demo is loaded
+function showDesktopNotice(url) {
+    const notice = document.getElementById('editor-notice');
+    notice.querySelector('a').href = url;
+    notice.hidden = false;
+    runButton.disabled = true;
+}
+
+function hideDesktopNotice() {
+    const notice = document.getElementById('editor-notice');
+    if (notice.hidden) return;
+    notice.hidden = true;
+    runButton.disabled = false;
 }
 
 

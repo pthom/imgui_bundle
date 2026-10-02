@@ -275,6 +275,9 @@ html, body {
 .gallery-tag.unavailable {
     background-color: rgba(110, 110, 120, 0.92);
 }
+.gallery-tag.desktop {
+    background-color: rgba(40, 130, 120, 0.92);
+}
 /* An example this browser cannot run ("needs" in examples.json): greyed, not clickable, its tooltip says why */
 .gallery-card.unavailable {
     opacity: 0.55;
@@ -490,6 +493,22 @@ body {
 #editor {
     flex-grow: 1;
     overflow: auto;
+}
+
+/* The notice for a desktop-only demo, under the toolbar */
+#editor-notice {
+    padding: 6px 10px;
+    background-color: #3a3320;
+    color: #e8dcb8;
+    font-family: system-ui, sans-serif;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+#editor-notice code {
+    color: #fff;
+}
+#editor-notice a {
+    color: #9ecbff;
 }
 
 /* The error window: an overlay across the bottom of the page (the editor column is too narrow for a traceback) */

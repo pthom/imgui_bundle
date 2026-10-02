@@ -2,7 +2,7 @@
 
 The examples of the [Dear ImGui Bundle playground](https://imgui-bundle.pages.dev/playground/).
 
-- `examples.json` lists them: label, category, and what they need (`packages`, `bundle_folders`, `hidden`; `needs`: browser features, e.g. `["jspi"]` for the test engine, whose cards are greyed in a browser without them). It also gives the order and the description of the categories.
+- `examples.json` lists them: label, category, and what they need (`packages`, `bundle_folders`, `hidden`; `needs`: browser features, e.g. `["jspi"]` for the test engine, whose cards are greyed in a browser without them; `where`: `"desktop"` for a demo that cannot run in the browser, whose card comes last in its category and shows its code with a notice, and `"browser"` for one that runs only there). It also gives the order and the description of the categories, and `sources`: the folders the playground serves, as symlinks next to its page.
 - The playground's menu shows the **title and first paragraph** of each example's docstring. They should tell anyone what the example shows: a visitor in the menu, a reader of the file, a user of the app (many examples display their docstring). Notes for developers come after.
 - The menu renders their markdown, but not math: write formulas in ASCII, e.g. `x(n+1) = r * x(n) * (1 - x(n))`.
 - After changing a docstring, `examples.json` or a bundle folder, run `just playground_examples_docs`. It regenerates `examples_docs.json` (and warns when a first paragraph is missing or too long), and the `manifest.json` of each bundle folder: the files the playground downloads with the example, i.e. the folder's files that the repository ships. The deploy runs it too.
