@@ -272,6 +272,20 @@ html, body {
 .gallery-tag.browser {
     background-color: rgba(190, 105, 30, 0.92);
 }
+.gallery-tag.unavailable {
+    background-color: rgba(110, 110, 120, 0.92);
+}
+/* An example this browser cannot run ("needs" in examples.json): greyed, not clickable, its tooltip says why */
+.gallery-card.unavailable {
+    opacity: 0.55;
+    cursor: default;
+}
+.gallery-card.unavailable:hover, .gallery-card.unavailable:focus {
+    background-color: #292e3d;
+    border-color: #40404d;
+    box-shadow: none;
+    transform: none;
+}
 .gallery-title {
     padding: 8px 10px 0;
     font-size: 1.05em;
@@ -452,7 +466,6 @@ body {
 }
 .code-hidden #editor-toolbar,
 .code-hidden #editor,
-.code-hidden #error-output,
 .code-hidden .gutter {
     display: none;
 }
@@ -479,15 +492,28 @@ body {
     overflow: auto;
 }
 
+/* The error window: an overlay across the bottom of the page (the editor column is too narrow for a traceback) */
 #error-output {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
     background-color: #f8d7da; /* Light red background */
     color: #721c24; /* Dark red text */
-    border: 1px solid #f5c6cb; /* Border similar to background */
-    padding: 10px;
+    border-top: 1px solid #f5c6cb;
+    box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.3);
+    padding: 10px 28px 10px 14px; /* room for the close button */
     font-family: Consolas, monospace;
-    font-size: 0.9em;
-    max-height: 150px;
+    font-size: 0.95em;
+    line-height: 1.45;
+    max-height: 45vh; /* a traceback at a glance; the demo keeps the rest */
     overflow-y: auto;
+}
+#error-output pre {
+    margin: 0;
+    white-space: pre-wrap; /* long lines wrap (a pre does not, by default) */
+    word-break: break-word;
     /* Remove the display property to let the .hidden class control visibility */
     /* display: none; */
     white-space: pre-wrap; /* Preserve formatting */

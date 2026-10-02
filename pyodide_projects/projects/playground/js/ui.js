@@ -40,11 +40,18 @@ function hideLoadingModal() {
 }
 
 // Function to display errors in the error window
+// Each message is appended (Python's stderr arrives line by line: a traceback is many messages),
+// the window keeps the last lines, and scrolls to the newest.
+const ERROR_OUTPUT_MAX_LINES = 400;
 function displayError(message) {
     console.log('Displaying error:', message); // Debug log
-    const errorOutput = document.getElementById('error-output').querySelector('pre');
-    errorOutput.textContent = message; // Use textContent for plain text
-    document.getElementById('error-output').classList.remove('hidden');
+    const container = document.getElementById('error-output');
+    const errorOutput = container.querySelector('pre');
+    const lines = (errorOutput.textContent ? errorOutput.textContent + '\n' + message : message).split('\n');
+    while (lines.length && !lines[0].trim()) lines.shift();  // no blank lines at the top
+    errorOutput.textContent = lines.slice(-ERROR_OUTPUT_MAX_LINES).join('\n'); // Use textContent for plain text
+    container.classList.remove('hidden');
+    container.scrollTop = container.scrollHeight;
 }
 
 // Function to clear the error window
