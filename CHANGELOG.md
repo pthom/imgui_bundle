@@ -32,6 +32,10 @@ What else rich_md brings:
   indent of quotes and lists; long code blocks can be scrolled.
 - **Browser (Emscripten, Pyodide)**: on a Mac, Cmd acts as Ctrl (Cmd+C copies), in every widget (hello_imgui).
 
+## Test engine in the browser (Pyodide):
+
+The ImGui Test Engine now runs in Pyodide, with the same Python API as on the desktop: the engine's coroutine is a WebAssembly stack switch (JSPI) instead of a thread. It needs Chrome 137, Firefox 153 or Safari 27; in an older browser the app runs without the engine and says so. `immapp.testing.run()` in the browser returns at once, keeps the app open after the test, and prints the result. The playground lists the test engine demos (greyed in a browser without JSPI), and its error window now shows whole tracebacks, across the bottom of the page.
+
 ## ImmVision:
 - RGB is the default color order. Calling `immvision.use_rgb_color_order()` (C++: `ImmVision::UseRgbColorOrder()`) at startup is not required anymore. Images in BGR order (OpenCV) still need `immvision.use_bgr_color_order()`.
 
