@@ -36,6 +36,7 @@ void py_init_module_imanim(nb::module_& m);
 void py_init_module_imgui_explorer(nb::module_& m);
 void py_init_module_imgui_microtex(nb::module_& m);
 void py_init_module_webgl(nb::module_& m);
+void py_init_test_engine_pyodide_coroutine();
 void py_init_module_imgui_bundle(nb::module_& m);
 
 
@@ -90,6 +91,9 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("imgui.test_engine");
     auto module_imgui_test_engine =  module_imgui.def_submodule("test_engine");
     py_init_module_imgui_test_engine(module_imgui_test_engine);
+    #ifdef IMGUI_BUNDLE_BUILD_PYODIDE
+    py_init_test_engine_pyodide_coroutine();
+    #endif
 #else
     _register_submodule("imgui.test_engine", false);
 #endif

@@ -196,8 +196,10 @@ async function runEditorPythonCode() {
         // the new demo, producing AttributeErrors and a cascading teardown
         // failure. See pyodide_patch_runners.stop_active_renderer for the
         // full story.
+        // runPythonAsync: with the test engine, the teardown runs the engine's
+        // coroutine to its end, which switches stacks (pyodide.ffi.run_sync).
         try {
-            pyodide.runPython(
+            await pyodide.runPythonAsync(
                 "from imgui_bundle.pyodide_patch_runners import stop_active_renderer\n" +
                 "stop_active_renderer()"
             );

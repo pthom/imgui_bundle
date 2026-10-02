@@ -6,10 +6,12 @@ from dataclasses import dataclass
 from typing import Any, Callable
 from imgui_bundle import hello_imgui, immapp
 from enum import Enum
-from pyodide.ffi import create_proxy  # type: ignore
+from pyodide.code import run_js  # type: ignore
+import asyncio
 import js  # type: ignore
 import gc
 import logging
+import traceback
 
 logger = logging.getLogger("pyodide_imgui_render")
 logger.setLevel(logging.WARNING)  # Avoid noise in Fiatlight's log window
@@ -18,56 +20,89 @@ def _log(msg: str) -> None:
     logger.info(msg)
 
 
+# Returns a JS promise, resolved at the next animation frame
+_next_animation_frame = run_js("() => new Promise(resolve => requestAnimationFrame(resolve))")
+
+
 class _JsAnimationRenderer:
-    """Make it possible to call a python function to do rendering at each javascript frame."""
+    """Make it possible to call a python function to do rendering at each javascript frame.
+
+    The frames are rendered from one asyncio task, which awaits each animation frame: inside a task,
+    a frame can block with pyodide.ffi.run_sync (the test engine's coroutine does).
+    """
     render_fn: Callable[[], None]  # A python function that performs rendering
     stop_requested: bool  # A flag to request the animation loop to stop
-    main_loop_proxy: js.Proxy  # A JavaScript proxy to the main_loop method that is called at each frame
     stop_callback: Callable[[], None] | None  # Callback to call when stopping (to trigger teardown)
+    frame_in_flight: Any  # A JS promise while a frame renders (a frame may be suspended in run_sync), else None
 
     def __init__(self, render_fn: Callable[[], None], stop_callback: Callable[[], None] | None = None):
         self.render_fn = render_fn
         self.stop_requested = False
         self.stop_callback = stop_callback
-        self.main_loop_proxy = create_proxy(self.main_loop)
+        self.frame_in_flight = None
 
-    def main_loop(self, _timestamp: Any) -> None:
-        if self.stop_requested:
-            if self.main_loop_proxy:
-                _log("_JsAnimationRenderer: received stop_requested => destroying main_loop_proxy")
-                self.main_loop_proxy.destroy()
-                self.main_loop_proxy = None
-            return
-
-        try:
-            if not self.stop_requested:
+    async def main_loop(self) -> None:
+        while not self.stop_requested:
+            await _next_animation_frame()
+            if self.stop_requested:
+                break
+            self.frame_in_flight = js.Promise.withResolvers()
+            try:
                 self.render_fn()
+            except Exception:
+                self.request_stop()
+                traceback.print_exc()
+                return
+            finally:
+                self.frame_in_flight.resolve()
+                self.frame_in_flight = None
 
-                # Check if the application requested exit (like AbstractRunner::Run does)
-                # This happens when user clicks close button or calls app_shall_exit = True
-                if hello_imgui.get_runner_params().app_shall_exit:
-                    _log("_JsAnimationRenderer: app_shall_exit detected, calling stop_callback")
-                    self.request_stop()
-                    # Trigger teardown via callback
-                    if self.stop_callback:
-                        self.stop_callback()
-                    return
-        except Exception as e:
-            self.request_stop()
-            raise e
-
-        # Only schedule the next frame if not stopping/tearing down
-        if not self.stop_requested:
-            js.requestAnimationFrame(self.main_loop_proxy)
+            # Check if the application requested exit (like AbstractRunner::Run does)
+            # This happens when user clicks close button or calls app_shall_exit = True
+            if hello_imgui.get_runner_params().app_shall_exit:
+                _log("_JsAnimationRenderer: app_shall_exit detected, calling stop_callback")
+                self.request_stop()
+                # Trigger teardown via callback
+                if self.stop_callback:
+                    self.stop_callback()
+                return
+        _log("_JsAnimationRenderer: received stop_requested => leaving main_loop")
 
     def start(self) -> None:
         _log("_JsAnimationRenderer.start()")
         self.stop_requested = False
-        js.requestAnimationFrame(self.main_loop_proxy)
+        asyncio.ensure_future(self.main_loop())
 
     def request_stop(self) -> None:
         _log("_JsAnimationRenderer:stop() => set stop_requested=True")
         self.stop_requested = True
+
+
+class _GcWithoutIncrements:
+    """Disables Python's automatic GC, and collects at each frame with the kinds of collection that are safe.
+
+    Pyodide 314.0.x crashes when an increment of Python's GC walks the frames of a suspended task (pyodide#6464,
+    fixed by pyodide#6466, not in a release yet), and the test engine's coroutine is such a task. Automatic
+    collections are increments: while the engine runs, the frame loop runs instead the two kinds that do not walk
+    the frames: a young collection at each frame, and a full one from time to time.
+    """
+    FULL_COLLECTION_EVERY_N_FRAMES = 600
+
+    def __init__(self) -> None:
+        self.was_enabled = gc.isenabled()
+        self.nb_frames = 0
+        gc.disable()
+
+    def collect(self) -> None:
+        self.nb_frames += 1
+        if self.nb_frames % self.FULL_COLLECTION_EVERY_N_FRAMES == 0:
+            gc.collect()
+        else:
+            gc.collect(0)
+
+    def restore(self) -> None:
+        if self.was_enabled:
+            gc.enable()
 
 
 @dataclass
@@ -143,6 +178,7 @@ class _ManualRenderJs:
     js_animation_renderer: _JsAnimationRenderer | None = None
     is_running: bool = False
     render_lifecycle_functions: _RenderLifeCycleFunctions | None = None
+    gc_without_increments: _GcWithoutIncrements | None = None  # while the test engine runs
 
     def _stop(self) -> None:
         """Stops the current rendering loop and tears down the renderer."""
@@ -165,6 +201,9 @@ class _ManualRenderJs:
             js.console.error(f"_ManualRenderJs._stop() -> _ManualRenderJs: Error during Renderer teardown: {e}\n{traceback.format_exc()}")
         finally:
             self.is_running = False
+            if self.gc_without_increments is not None:
+                self.gc_without_increments.restore()
+                self.gc_without_increments = None
             # Force garbage collection to free resources
             gc.collect()
 
@@ -183,11 +222,17 @@ class _ManualRenderJs:
             self.is_running = False
             self.render_lifecycle_functions = None
             raise
+        render_frame = self.render_lifecycle_functions.render
+        render = render_frame
+        if hello_imgui.get_runner_params().use_imgui_test_engine:
+            gc_without_increments = self.gc_without_increments = _GcWithoutIncrements()
+
+            def render_and_collect() -> None:
+                render_frame()
+                gc_without_increments.collect()
+            render = render_and_collect
         # Pass _stop as callback so animation renderer can trigger teardown when app_shall_exit
-        self.js_animation_renderer = _JsAnimationRenderer(
-            self.render_lifecycle_functions.render,
-            stop_callback=self._stop
-        )
+        self.js_animation_renderer = _JsAnimationRenderer(render, stop_callback=self._stop)
         self.js_animation_renderer.start()
         _log("_ManualRenderJs._run() -> Animation started (non-blocking)")
 
@@ -312,6 +357,15 @@ def stop_active_renderer() -> None:
         return
     if not _MANUAL_RENDER_JS.is_running:
         return
+    renderer = _MANUAL_RENDER_JS.js_animation_renderer
+    if renderer is not None and renderer.frame_in_flight is not None:
+        # A frame is suspended (the test engine's coroutine, or a test function that blocks in run_sync): tear down
+        # after it, not in the middle of it. The stop is requested first: a run_sync resumes through the event loop,
+        # and the loop would otherwise start another frame before we wake up. Needs a promising call stack, as the
+        # teardown does anyway (the playground calls through runPythonAsync).
+        from pyodide.ffi import run_sync  # type: ignore
+        renderer.request_stop()
+        run_sync(renderer.frame_in_flight.promise)
     _MANUAL_RENDER_JS._stop()
 
 

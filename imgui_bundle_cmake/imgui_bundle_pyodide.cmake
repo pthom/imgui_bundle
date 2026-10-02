@@ -143,10 +143,9 @@ function(_ibd_pyodide_set_build_options)
     set(HELLOIMGUI_HAS_OPENGL3 ON CACHE BOOL "" FORCE)
     set(HELLOIMGUI_USE_GLFW3 OFF CACHE BOOL "" FORCE)
 
-    # No test engine for pyodide
-    # (We cannot afford to have test engines, because severe headaches would happen
-    #  since we would need to handle threads in between javascript, python and C++...)
-    set(HELLOIMGUI_WITH_TEST_ENGINE OFF CACHE BOOL "" FORCE)
+    # Test engine: Pyodide has no threads, so its coroutine is a Pyodide task instead of a std::thread
+    # (see external/bindings_generation/cpp/pybind_test_engine_pyodide.cpp)
+    set(HELLOIMGUI_WITH_TEST_ENGINE ON CACHE BOOL "" FORCE)
 
     # We need to keep the pthreads enabled, for compatibility with precompiled emscripten OpenCV
     set(HELLOIMGUI_EMSCRIPTEN_PTHREAD ON CACHE BOOL "" FORCE)
