@@ -127,6 +127,10 @@ def my_register_tests():
 # Our application GUI: shows that we can trigger the test manually
 def my_gui():
     global g_show_stack_tool_window
+    if not hello_imgui.get_runner_params().use_imgui_test_engine:
+        # In the browser, the engine needs JSPI (Chrome 137, Firefox 153, Safari 27): without it, the app runs alone
+        imgui.text_wrapped("The test engine is off: this browser has no JSPI (WebAssembly stack switching).")
+        return
     _, g_show_stack_tool_window = imgui.checkbox("Show ID Stack Tool Window", g_show_stack_tool_window)
     if imgui.is_item_hovered():
         imgui.set_tooltip("This tool window can help to identify the ID of the widgets (use \"Copy path to clipboard\")")
@@ -225,6 +229,8 @@ def create_dockable_windows() -> List[hello_imgui.DockableWindow]:
     test_engine_window.dock_space_name = "TestEngineSpace"
 
     def show_test_engine_windows():
+        if not hello_imgui.get_runner_params().use_imgui_test_engine:
+            return
         imgui.test_engine.show_test_engine_windows(
             hello_imgui.get_imgui_test_engine(), True
         )

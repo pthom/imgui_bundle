@@ -334,13 +334,13 @@ commands and their callbacks with [imgui-command-palette](https://github.com/hnO
 :width: 400px
 :::
 
-Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a
-few buttons that run tests. Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types
-text, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard:
+it opens clicks buttons, types text, etc.,  and checks the results.
+See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
-*Python, C++, Desktop only*
+*Python, C++*
 
-[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_testengine.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_testengine.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_testengine.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp)
 
 ### Drive an app, capture screenshots
 
@@ -353,9 +353,9 @@ A test function drives the app: it clicks, moves a slider, opens a header, and t
 `immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for
 documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
-*Python, C++, Desktop only*
+*Python, C++*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_testapp.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
 
 ## Library tours
 

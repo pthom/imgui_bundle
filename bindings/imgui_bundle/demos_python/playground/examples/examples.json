@@ -196,14 +196,14 @@
             "filename": "demo_testengine.py",
             "category": "Build an app",
             "source": "demos_immapp",
-            "where": "desktop"
+            "needs": ["jspi"]
         },
         {
             "label": "Drive an app, capture screenshots",
             "filename": "demo_testapp.py",
             "category": "Build an app",
             "source": "demos_immapp",
-            "where": "desktop",
+            "needs": ["jspi"],
             "cpp_url": ""
         },
         {

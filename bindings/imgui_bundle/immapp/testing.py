@@ -4,15 +4,22 @@
 Run a GUI together with a single test function; the test can click, type,
 capture screenshots, etc. The window exits automatically once the test
 finishes (unless exit_after_test=False).
+
+In the browser (Pyodide), run() returns at once, the app stays open after the
+test, and the result is printed when the test ends (stderr on failure).
 """
 from __future__ import annotations
 
+import sys
+import traceback
 from pathlib import Path
 from typing import Callable, Optional, Tuple, Union
 
 from imgui_bundle import imgui, hello_imgui, immapp
 
 PathLike = Union[str, Path]
+
+_IN_PYODIDE = sys.platform == "emscripten"
 
 
 TestFunction = Callable[["imgui.test_engine.TestContext"], None]
@@ -191,12 +198,23 @@ def run(
         assert registered_test is not None
         final_status = registered_test.output.status
         final_log = registered_test.output.log.get_text()
-        if exit_after_test:
+        if _IN_PYODIDE:
+            # run() has returned long ago: the result can only be printed
+            if test_error is not None:
+                traceback.print_exception(test_error)
+            elif final_status != imgui.test_engine.TestStatus.success:
+                print(f"immapp.testing.run: the test failed (status: {final_status.name}). "
+                      f"Test engine log:\n{final_log}", file=sys.stderr)
+            else:
+                print("immapp.testing.run: the test passed.")
+        elif exit_after_test:
             runner_params.app_shall_exit = True
 
     runner_params.callbacks.before_imgui_render = _on_test_done
 
     immapp.run(runner_params, add_ons_params)
+    if _IN_PYODIDE:
+        return  # the browser cannot block: the test runs in the frames to come, _on_test_done reports it
 
     if test_error is not None:
         raise test_error

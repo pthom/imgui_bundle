@@ -3,8 +3,9 @@
 Drive an app from a script, and capture screenshots.
 
 A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.
-`immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for
-documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+`immapp.testing.run()` starts the app, runs the test function, then exits (in the browser, the app stays open).
+Handy for automated checks and for documentation pictures.
+See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
 Customization: edit `EXIT_AFTER_TESTS` and `SCREENSHOTS_FOLDER`. The five screenshots go to the current folder.
 """
@@ -14,6 +15,7 @@ from __future__ import annotations
 from imgui_bundle import imgui
 from imgui_bundle.immapp import testing
 import os
+import sys
 
 SCREENSHOTS_FOLDER = "."  # folder where screenshots are saved
 EXIT_AFTER_TESTS = True
@@ -85,7 +87,8 @@ def main() -> None:
         run_speed=testing.TestRunSpeed.normal,
         exit_after_test=EXIT_AFTER_TESTS
     )
-    print(f"Wrote 5 PNGs to {SCREENSHOTS_FOLDER}")
+    if sys.platform != "emscripten":  # in the browser, run() returns before the test
+        print(f"Wrote 5 PNGs to {SCREENSHOTS_FOLDER}")
 
 
 if __name__ == "__main__":

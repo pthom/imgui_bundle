@@ -205,8 +205,8 @@
   },
   "demo_testengine.py": {
     "title": "Automate and test your app with ImGui Test Engine.",
-    "text": "Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a\nfew buttons that run tests. Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types\ntext, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
-    "summary": "Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a few buttons that run tests.",
+    "text": "Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard:\nit opens clicks buttons, types text, etc.,  and checks the results.\nSee the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
+    "summary": "Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard: it opens clicks buttons, types text, etc., and checks the results.",
     "uses": [],
     "cpp": true
   },

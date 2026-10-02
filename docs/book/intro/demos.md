@@ -407,15 +407,13 @@ Type a few letters to filter it. One command changes the theme in two steps, ano
 
 ### Test engine
 
-Three windows: the Dear ImGui demo, the [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) panel, and a few buttons that run tests.
+Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard: it opens clicks buttons, types text, etc., and checks the results.
 
 :::{dropdown} More
-Watch a test drive the mouse and the keyboard: it opens tree nodes, clicks buttons, types text, and checks the results. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 :::
 
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py)\
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_testengine.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_testengine.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp)
 
 ::::
@@ -434,9 +432,7 @@ A test function drives the app: it clicks, moves a slider, opens a header, and t
 `immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 :::
 
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py)\
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_testapp.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py)\
 {span .demo-lang}`C++:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
 
 ::::

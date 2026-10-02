@@ -135,6 +135,10 @@ immapp.run(gui, window_title="My App")
 
 *Note: In Pyodide, `run()` returns immediately. Use `run_async()` if you need to wait for the GUI to exit.*
 
+The frames are rendered by an asyncio task, which waits for each animation frame. An asyncio loop of your own that never waits (`await asyncio.sleep(0)` in a tight loop) competes with the frames and halves the frame rate: wait on a timer or on I/O instead.
+
+The [test engine](../core_libs/test_engine.md) runs in the browser too (it needs JSPI: Chrome 137, Firefox 153, Safari 27).
+
 
 ### Pattern 2: Async Control with run_async()
 

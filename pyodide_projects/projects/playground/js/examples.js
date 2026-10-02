@@ -165,9 +165,22 @@ function element(tag, className, text) {
     return e;
 }
 
+// What an example may need from the browser ("needs" in examples.json), and whether this browser has it
+const BROWSER_NEEDS = {
+    jspi: {
+        has: 'Suspending' in WebAssembly,
+        text: 'WebAssembly stack switching (JSPI): Chrome 137, Firefox 153, Safari 27',
+    },
+};
+
+function unmetNeeds(example) {
+    return (example.needs || []).map((n) => BROWSER_NEEDS[n]).filter((need) => need && !need.has);
+}
+
 function makeCard(example, category) {
     const doc = examplesDocs[example.filename] || {};
-    const card = element('div', 'gallery-card');
+    const unmet = unmetNeeds(example);
+    const card = element('div', 'gallery-card' + (unmet.length ? ' unavailable' : ''));
     card.dataset.filename = example.filename;
     card.dataset.category = category.name;
     // What the search looks into: the label, the description, the category, the libraries
@@ -175,8 +188,10 @@ function makeCard(example, category) {
         .join(' ').toLowerCase();
     card.dataset.uses = JSON.stringify(doc.uses || []);
     card.title = plainText(doc.text || '');
-    card.tabIndex = 0;
+    if (unmet.length) card.title = 'Not in this browser. Needs ' + unmet.map((need) => need.text).join('; ');
+    card.tabIndex = unmet.length ? -1 : 0;
     card.setAttribute('role', 'button');
+    if (unmet.length) card.setAttribute('aria-disabled', 'true');
     // Its picture, from the website resources (made by ci_scripts/playground_screenshots.py)
     const picture = element('div', 'gallery-picture');
     const img = document.createElement('img');
@@ -188,9 +203,11 @@ function makeCard(example, category) {
     tags.appendChild(element('span', 'gallery-tag python', 'Python'));
     if (doc.cpp) tags.appendChild(element('span', 'gallery-tag cpp', 'C++'));
     if (example.where === 'browser') tags.appendChild(element('span', 'gallery-tag browser', 'Browser only'));
+    if (unmet.length) tags.appendChild(element('span', 'gallery-tag unavailable', 'Not in this browser'));
     picture.append(img, tags);
     card.append(picture, element('div', 'gallery-title', example.label),
                 element('div', 'gallery-summary', plainText(doc.summary || '')));
+    if (unmet.length) return card;  // greyed, not clickable: its tooltip says what it needs
     card.addEventListener('click', async () => {
         closeGallery();
         await loadDemoByFilename(example.filename);

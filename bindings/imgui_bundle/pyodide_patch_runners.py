@@ -11,6 +11,7 @@ import asyncio
 import js  # type: ignore
 import gc
 import logging
+import sys
 import traceback
 
 logger = logging.getLogger("pyodide_imgui_render")
@@ -152,10 +153,12 @@ def _disable_test_engine_without_jspi(runner_params: hello_imgui.RunnerParams | 
         return
     if hasattr(js.WebAssembly, "Suspending"):
         return
-    js.console.warn(
-        "imgui_bundle: this browser has no JSPI (WebAssembly.Suspending), which the test engine needs in Pyodide. "
-        "The app runs without the engine: get_runner_params().use_imgui_test_engine is False, "
-        "get_imgui_test_engine() is None.")
+    # stderr: the playground shows it on the page (and in the console)
+    print(
+        "imgui_bundle: this browser has no JSPI (WebAssembly.Suspending), which the test engine needs in Pyodide "
+        "(Chrome 137, Firefox 153, Safari 27). The app runs without the engine: "
+        "get_runner_params().use_imgui_test_engine is False, get_imgui_test_engine() is None.",
+        file=sys.stderr)
     runner_params.use_imgui_test_engine = False
 
 
