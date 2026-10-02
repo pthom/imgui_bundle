@@ -102,7 +102,7 @@ let _lastLoadedCode = '';
 let _lastRunCode = '';
 
 function setLoadedCode(code) {
-    hideDesktopNotice();
+    hideDesktopPanel();
     _lastLoadedCode = code;
     _lastRunCode = code;
     document.getElementById('editor-modified').classList.remove('visible');
@@ -112,7 +112,7 @@ function setLoadedCode(code) {
 editor.on('change', () => {
     const currentCode = editor.getValue();
     const modifiedFromFile = currentCode !== _lastLoadedCode;
-    if (modifiedFromFile) hideDesktopNotice();  // an edit may make a desktop-only demo run here: let the user try
+    if (modifiedFromFile) hideDesktopPanel();  // an edit may make a desktop-only demo run here: let the user try
     const needsRun = currentCode !== _lastRunCode;
     document.getElementById('editor-modified').classList.toggle('visible', modifiedFromFile);
     runButton.classList.toggle('needs-run', needsRun);
@@ -131,19 +131,34 @@ function setEditorLabel(label) {
     document.getElementById('editor-label').textContent = label;
 }
 
-// The notice under the toolbar for a desktop-only demo (its code is shown, it does not run here): the Run button is
-// off until the code is edited, or another demo is loaded
-function showDesktopNotice(url) {
-    const notice = document.getElementById('editor-notice');
-    notice.querySelector('a').href = url;
-    notice.hidden = false;
+// The panel over the canvas for a desktop-only demo (its code is in the editor, it does not run here): its picture,
+// the notice, and a chip per variant when it has some (the Python backends: each chip loads its file). The Run
+// button is off until the code is edited, or another demo is loaded.
+function showDesktopPanel(example, filename = example.filename) {
+    const panel = document.getElementById('desktop-panel');
+    const picture = document.getElementById('desktop-panel-picture');
+    picture.hidden = false;
+    picture.onerror = () => { picture.hidden = true; };  // no picture for this demo
+    picture.src = '../resources/playground/' + example.filename.split('/').pop().replace(/\.py$/, '.jpg');
+    panel.querySelector('a').href = githubUrl(example.source, filename);
+    const variants = document.getElementById('desktop-panel-variants');
+    variants.innerHTML = '';
+    for (const variant of example.variants || []) {
+        const chip = element('button', 'gallery-chip' + (variant.filename === filename ? ' current' : ''), variant.label);
+        chip.addEventListener('click', async () => {
+            await loadExample(variant.filename, example.packages, example.label, example.bundle_folders, example.source);
+            showDesktopPanel(example, variant.filename);  // loadExample hid it
+        });
+        variants.appendChild(chip);
+    }
+    panel.hidden = false;
     runButton.disabled = true;
 }
 
-function hideDesktopNotice() {
-    const notice = document.getElementById('editor-notice');
-    if (notice.hidden) return;
-    notice.hidden = true;
+function hideDesktopPanel() {
+    const panel = document.getElementById('desktop-panel');
+    if (panel.hidden) return;
+    panel.hidden = true;
     runButton.disabled = false;
 }
 

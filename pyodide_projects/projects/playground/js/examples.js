@@ -234,7 +234,7 @@ async function buildGallery() {
     let count = 0;
     for (const category of examplesCategories) {
         // The gallery shows the demos of the category, except the hidden ones: those that run in the browser, then
-        // the desktop-only ones (a card shows their code, with a notice)
+        // the desktop-only ones (a card shows their code, their picture and a notice)
         const ofCategory = examplesMetadata.filter((e) => !e.hidden && e.category === category.name);
         const shown = [...ofCategory.filter((e) => e.where !== 'desktop'),
                        ...ofCategory.filter((e) => e.where === 'desktop')];
@@ -379,18 +379,19 @@ async function loadDemoByFilename(filename, updateHistory = true) {
         url.searchParams.set('demo', filename);
         history.pushState({demo: filename}, '', url);
     }
-    if (example && example.where === 'desktop') {  // its code is shown, with a notice: it does not run here
-        showDesktopNotice(githubUrl(example));
+    if (example && example.where === 'desktop') {  // its code is shown, its picture and a notice: it does not run here
+        await stopRunningDemo();
+        showDesktopPanel(example);
         return;
     }
     await runEditorPythonCode();
 }
 
 // The GitHub page of a demo's file (its folder in the repository comes from "sources" in examples.json)
-function githubUrl(example) {
+function githubUrl(source, filename) {
     const parts = [];
     const path = 'bindings/imgui_bundle/demos_python/playground/examples/'
-        + (examplesSources[example.source || 'examples'] || '.') + '/' + example.filename;
+        + (examplesSources[source || 'examples'] || '.') + '/' + filename;
     for (const part of path.split('/')) {
         if (part === '..') parts.pop(); else if (part && part !== '.') parts.push(part);
     }

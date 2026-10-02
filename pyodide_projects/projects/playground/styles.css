@@ -495,22 +495,6 @@ body {
     overflow: auto;
 }
 
-/* The notice for a desktop-only demo, under the toolbar */
-#editor-notice {
-    padding: 6px 10px;
-    background-color: #3a3320;
-    color: #e8dcb8;
-    font-family: system-ui, sans-serif;
-    font-size: 0.85rem;
-    line-height: 1.4;
-}
-#editor-notice code {
-    color: #fff;
-}
-#editor-notice a {
-    color: #9ecbff;
-}
-
 /* The error window: an overlay across the bottom of the page (the editor column is too narrow for a traceback) */
 #error-output {
     position: fixed;
@@ -644,6 +628,54 @@ body {
     position: relative;
     height: 100%;
     width: 100%;
+}
+
+/* A desktop-only demo, over the canvas: its picture, the notice, its variants (js/main.js) */
+#desktop-panel {
+    position: absolute;
+    inset: 0;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    padding: 20px;
+    background-color: #262626;
+    color: #e8e8e8;
+    font-family: system-ui, sans-serif;
+    z-index: 5;
+}
+#desktop-panel[hidden] {
+    display: none;
+}
+#desktop-panel-picture {
+    max-width: min(640px, 100%);
+    border-radius: 6px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+#desktop-panel p {
+    margin: 0;
+    max-width: 40em;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    text-align: center;
+}
+#desktop-panel code {
+    color: #fff;
+}
+#desktop-panel a {
+    color: #9ecbff;
+}
+#desktop-panel-variants {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 8px;
+}
+#desktop-panel-variants .gallery-chip.current {
+    background-color: #3b5a8a;
+    border-color: #73a6ff;
 }
 
 #canvas {

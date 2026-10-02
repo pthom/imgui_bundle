@@ -131,10 +131,6 @@
                         <span id="run-shortcut"></span>
                     </div>
                 </div>
-                <!-- A desktop-only demo: its code is shown, it does not run here (js/main.js) -->
-                <div id="editor-notice" hidden>Desktop only: this demo does not run in the browser. On your machine,
-                    <code>pip install imgui-bundle</code>, then open it in the demo launcher (<code>demo_imgui_bundle</code>)
-                    or run <a href="#" target="_blank" rel="noopener">its file</a>.</div>
                 <div id="editor"></div>
                 <!-- Error Output Window -->
                 <div id="error-output" class="hidden">
@@ -144,6 +140,14 @@
             </div>
             <div id="canvas-container">
                 <canvas class="emscripten" id="canvas" tabindex="0" oncontextmenu="event.preventDefault()"></canvas>
+                <!-- A desktop-only demo: its picture and a notice, in place of a run (js/main.js) -->
+                <div id="desktop-panel" hidden>
+                    <img id="desktop-panel-picture" alt="">
+                    <p>Desktop only: this demo does not run in the browser. On your machine,
+                        <code>pip install imgui-bundle</code>, then open it in the demo launcher
+                        (<code>demo_imgui_bundle</code>) or run <a href="#" target="_blank" rel="noopener">its file</a>.</p>
+                    <div id="desktop-panel-variants"></div>
+                </div>
                 <!-- Non-blocking loading banner overlays the canvas region only.
                      Editor stays usable to the left so users can read code while waiting. -->
                 <div id="loading-banner">

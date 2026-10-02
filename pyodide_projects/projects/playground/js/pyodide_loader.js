@@ -188,26 +188,7 @@ async function runEditorPythonCode() {
             },
         });
 
-        // Stop any previous renderer *before* exec'ing the new demo's code.
-        // Without this, the previous demo's animation lambda continues to
-        // tick during the new module's exec (and during any awaits the new
-        // demo does before calling immapp.run). It would then resolve names
-        // like `gui` and `AppState` against the freshly-rebound globals from
-        // the new demo, producing AttributeErrors and a cascading teardown
-        // failure. See pyodide_patch_runners.stop_active_renderer for the
-        // full story.
-        // runPythonAsync: with the test engine, the teardown runs the engine's
-        // coroutine to its end, which switches stacks (pyodide.ffi.run_sync).
-        try {
-            await pyodide.runPythonAsync(
-                "from imgui_bundle.pyodide_patch_runners import stop_active_renderer\n" +
-                "stop_active_renderer()"
-            );
-        } catch (e) {
-            // First-load case: imgui_bundle isn't imported yet, that's fine.
-            // Anything else: log and continue, the demo may still work.
-            console.warn("stop_active_renderer skipped:", e);
-        }
+        await stopRunningDemo();
 
         // Run the editor code from a real file in Pyodide's VFS, so that
         // compiled-function co_filename points at a real path. Without this,
@@ -218,5 +199,30 @@ async function runEditorPythonCode() {
     } catch (err) {
         console.error('Caught PythonError:', err);
         displayError(err.toString());
+    }
+}
+
+// Stops the running demo, if any: before a new demo runs, or when a desktop-only demo is shown
+async function stopRunningDemo() {
+    if (!pyodide) return;
+    // Stop any previous renderer *before* exec'ing the new demo's code.
+    // Without this, the previous demo's animation lambda continues to
+    // tick during the new module's exec (and during any awaits the new
+    // demo does before calling immapp.run). It would then resolve names
+    // like `gui` and `AppState` against the freshly-rebound globals from
+    // the new demo, producing AttributeErrors and a cascading teardown
+    // failure. See pyodide_patch_runners.stop_active_renderer for the
+    // full story.
+    // runPythonAsync: with the test engine, the teardown runs the engine's
+    // coroutine to its end, which switches stacks (pyodide.ffi.run_sync).
+    try {
+        await pyodide.runPythonAsync(
+            "from imgui_bundle.pyodide_patch_runners import stop_active_renderer\n" +
+            "stop_active_renderer()"
+        );
+    } catch (e) {
+        // First-load case: imgui_bundle isn't imported yet, that's fine.
+        // Anything else: log and continue, the demo may still work.
+        console.warn("stop_active_renderer skipped:", e);
     }
 }
