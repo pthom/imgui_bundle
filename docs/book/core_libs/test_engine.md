@@ -168,7 +168,9 @@ my_test.gui_func = test_gui_func
 
 ImGui Bundle ships a small testing module that combines the test engine
 with screenshot capture. Use it when you want to script an interaction
-(click, type, expand a header) and grab a PNG at chosen moments.
+(click, type, expand a header) and grab a PNG at chosen moments: automated tests,
+documentation pictures. It is also how an AI agent sees and drives the app it writes, with
+nobody at the mouse: the bundle's screenshot skills (`.claude/skills/`) are built on it.
 
 - `immapp.testing.run(gui, test_fn, ...)` — Python: runs the GUI and drives
   it with `test_fn(ctx)`; exits once the test finishes (override with
@@ -201,9 +203,9 @@ testing.run(gui, my_test, window_size=(600, 400))
 ```
 
 See the full demo in
-[`demo_testapp.py`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py)
+[`demo_immapp_testing.py`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py)
 and
-[`demo_testapp.cpp`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp).
+[`demo_immapp_testing.cpp`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp).
 
 ## Running Tests
 

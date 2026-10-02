@@ -407,10 +407,10 @@ Type a few letters to filter it. One command changes the theme in two steps, ano
 
 ### Test engine
 
-Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard: it opens clicks buttons, types text, etc., and checks the results.
+Watch a [ImGui Test Engine](https://github.com/ocornut/imgui_test_engine) drive the mouse and the keyboard: it clicks buttons, types text, etc., and checks the results.
 
 :::{dropdown} More
-See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+For scripted runs on top of it (automated tests, pictures, an AI agent at the mouse), see the `immapp.testing` demo. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 :::
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_testengine.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testengine.py)\
@@ -419,21 +419,23 @@ See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engi
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_testapp.jpg
-:alt: Drive an app, capture screenshots
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_immapp_testing.jpg
+:alt: immapp.testing: scripted runs
 :class: demo-fit
 :::
 
-### Drive an app, capture screenshots
+### immapp.testing: scripted runs
 
-A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.
+Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.
 
 :::{dropdown} More
-`immapp.testing.run()` starts the app, runs the test function, then exits. Handy for automated checks and for documentation pictures. See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
+The test engine demo shows the engine itself. Here, a test function drives the GUI (it clicks, moves a slider, opens a header) and captures a picture at each step; `immapp.testing.run()` starts the app, runs the test, then exits. The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at the mouse (the bundle's screenshot skills are built on it). See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_testapp.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py)\
-{span .demo-lang}`C++:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp)
+*Desktop only*
+
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py)\
+{span .demo-lang}`C++:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp)
 
 ::::
 

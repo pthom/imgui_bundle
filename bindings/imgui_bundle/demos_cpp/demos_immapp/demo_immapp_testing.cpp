@@ -1,7 +1,9 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-// demo_testapp: use `ImmApp::Testing` to drive an app and capture screenshots, then exit
+// demo_immapp_testing: easy automated tests with `ImmApp::Testing`, a thin layer on the test engine:
+// a test function drives the app and captures screenshots, then the app exits.
+// The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes.
 
-// Customization: edit EXIT_AFTER_TESTS and SCREENSHOTS_FOLDER.
+// Customization: edit EXIT_AFTER_TESTS. The screenshots go to a temporary folder, printed at the end of the test.
 #ifdef HELLOIMGUI_WITH_TEST_ENGINE
 
 #include "imgui.h"
@@ -11,9 +13,11 @@
 #include "immapp/testing.h"
 
 #include <cstdio>
+#include <filesystem>
 #include <string>
 
-static const std::string SCREENSHOTS_FOLDER = ".";  // folder where screenshots are saved
+static const std::string SCREENSHOTS_FOLDER =  // where the screenshots go
+    (std::filesystem::temp_directory_path() / "demo_immapp_testing").string();
 static const bool        EXIT_AFTER_TESTS   = true;
 
 
@@ -28,7 +32,7 @@ static State gState;
 
 static void Gui()
 {
-    ImGui::Text("demo_testapp: exercise these widgets under the test engine");
+    ImGui::Text("demo_immapp_testing: exercise these widgets under the test engine");
     ImGui::Separator();
 
     if (ImGui::Button("Click me"))
@@ -53,6 +57,7 @@ static bool gTestDone = false;
 
 static void ScreenshotTest(ImGuiTestContext* ctx)
 {
+    std::filesystem::create_directories(SCREENSHOTS_FOLDER);
     ImmApp::Testing::Capture(ctx, SCREENSHOTS_FOLDER + "/00_initial.png");
 
     ctx->ItemClick("//**/Click me");
@@ -67,6 +72,7 @@ static void ScreenshotTest(ImGuiTestContext* ctx)
 
     ctx->ItemOpen("//**/Details");
     ImmApp::Testing::Capture(ctx, SCREENSHOTS_FOLDER + "/04_details.png");
+    std::printf("Wrote 5 PNGs to %s\n", SCREENSHOTS_FOLDER.c_str());
 
     gTestDone = true;
 }
@@ -77,7 +83,7 @@ int main(int, char**)
     gState = State();  // reset so repeated runs stay deterministic
 
     HelloImGui::RunnerParams params;
-    params.appWindowParams.windowTitle       = "demo_testapp";
+    params.appWindowParams.windowTitle       = "demo_immapp_testing";
     params.appWindowParams.windowGeometry.size = {600, 400};
     params.iniDisable                        = true;
     params.useImGuiTestEngine                = true;
@@ -88,7 +94,7 @@ int main(int, char**)
         ImGuiTestEngine* engine = HelloImGui::GetImGuiTestEngine();
         ImGuiTestEngine_GetIO(engine).ConfigRunSpeed = ImGuiTestRunSpeed_Normal;
 
-        ImGuiTest* test = IM_REGISTER_TEST(engine, "demo_testapp", "screenshots");
+        ImGuiTest* test = IM_REGISTER_TEST(engine, "demo_immapp_testing", "screenshots");
         test->TestFunc = ScreenshotTest;
         ImGuiTestEngine_QueueTest(engine, test);
     };
@@ -106,7 +112,6 @@ int main(int, char**)
     }
 
     HelloImGui::Run(params);
-    std::printf("Wrote 5 PNGs to %s\n", SCREENSHOTS_FOLDER.c_str());
     return 0;
 }
 

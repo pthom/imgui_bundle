@@ -63,7 +63,7 @@ Read /tmp/01_after_click.png
   Default captures the full framebuffer; pass `window="My Window"` for a
   single window (bare labels are auto-prefixed with `//`).
 - `testing.TestRunSpeed.fast | normal | cinematic` — speed enum.
-- Full demo: `bindings/imgui_bundle/demos_python/demos_immapp/demo_testapp.py`.
+- Full demo: `bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py`.
 
 ### Common interactions inside `test_fn`
 
@@ -130,7 +130,7 @@ int main() {
 }
 ```
 
-Full demo: `bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testapp.cpp`.
+Full demo: `bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp`.
 
 ## Caveats
 

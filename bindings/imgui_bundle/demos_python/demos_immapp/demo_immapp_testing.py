@@ -1,13 +1,15 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 """
-Drive an app from a script, and capture screenshots.
+immapp.testing: a script drives the app, captures screenshots, then exits.
 
-A test function drives the app: it clicks, moves a slider, opens a header, and takes a screenshot at each step.
-`immapp.testing.run()` starts the app, runs the test function, then exits (in the browser, the app stays open).
-Handy for automated checks and for documentation pictures.
+Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.
+The test engine demo shows the engine itself. Here, a test function drives the GUI (it clicks, moves a slider, opens
+a header) and captures a picture at each step; `immapp.testing.run()` starts the app, runs the test, then exits.
+The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at
+the mouse (the bundle's screenshot skills are built on it).
 See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
-Customization: edit `EXIT_AFTER_TESTS` and `SCREENSHOTS_FOLDER`. The five screenshots go to the current folder.
+Customization: edit `EXIT_AFTER_TESTS`. The five screenshots go to a temporary folder, printed at the end of the test.
 """
 
 from __future__ import annotations
@@ -15,9 +17,9 @@ from __future__ import annotations
 from imgui_bundle import imgui
 from imgui_bundle.immapp import testing
 import os
-import sys
+import tempfile
 
-SCREENSHOTS_FOLDER = "."  # folder where screenshots are saved
+SCREENSHOTS_FOLDER = tempfile.mkdtemp(prefix="demo_immapp_testing_")  # where the screenshots go
 EXIT_AFTER_TESTS = True
 
 
@@ -31,7 +33,7 @@ state = State()
 
 
 def gui() -> None:
-    imgui.text("demo_testapp: exercise these widgets under the test engine")
+    imgui.text("demo_immapp_testing: exercise these widgets under the test engine")
     imgui.separator()
 
     if imgui.button("Click me"):
@@ -71,6 +73,8 @@ def screenshot_test(ctx: imgui.test_engine.TestContext) -> None:
     ctx.item_open("//**/Details")
     testing.capture(ctx, os.path.join(SCREENSHOTS_FOLDER, "04_details.png"))
 
+    print(f"Wrote 5 PNGs to {SCREENSHOTS_FOLDER}")
+
 
 def main() -> None:
 
@@ -82,13 +86,11 @@ def main() -> None:
     testing.run(
         gui_function=gui,
         test_function=screenshot_test,
-        window_title="demo_testapp",
+        window_title="demo_immapp_testing",
         window_size=(600, 400),
         run_speed=testing.TestRunSpeed.normal,
         exit_after_test=EXIT_AFTER_TESTS
     )
-    if sys.platform != "emscripten":  # in the browser, run() returns before the test
-        print(f"Wrote 5 PNGs to {SCREENSHOTS_FOLDER}")
 
 
 if __name__ == "__main__":

@@ -190,7 +190,7 @@ SHOTS: dict[str, Shot] = {
     "demo_drag_and_drop.py": Shot(crop=(0.0, 0.0, 0.36, 0.44)),
     "demo_command_palette.py": Shot(test=_command_palette, frames=30, crop=(0.0, 0.0, 0.8, 0.3)),
     "demo_testengine.py": Shot(frames=90, crop=(0.0, 0.0, 1.0, 0.8)),
-    "demo_testapp.py": Shot(frames=0, crop=(0.0, 0.0, 1.0, 0.36)),  # its test drives it, then it exits
+    "demo_immapp_testing.py": Shot(frames=0, crop=(0.0, 0.0, 0.78, 0.48)),  # its test drives it, then it exits
     "demo_python_context_manager.py": Shot(test=_open(MAIN_WINDOW, "ImPlot: Begin\\/End Plot"),  # \/: a "/" in a label
                                            frames=30, crop=(0.0, 0.0, 1.0, 0.8)),
     "demo_run_async.py": Shot(frames=120),

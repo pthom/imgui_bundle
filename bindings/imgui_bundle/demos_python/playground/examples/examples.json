@@ -199,11 +199,11 @@
             "needs": ["jspi"]
         },
         {
-            "label": "Drive an app, capture screenshots",
-            "filename": "demo_testapp.py",
+            "label": "immapp.testing: scripted runs",
+            "filename": "demo_immapp_testing.py",
             "category": "Build an app",
             "source": "demos_immapp",
-            "needs": ["jspi"],
+            "where": "desktop",
             "cpp_url": ""
         },
         {

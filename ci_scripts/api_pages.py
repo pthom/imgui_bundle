@@ -79,7 +79,7 @@ LIBRARIES = [
             [("imgui_bundle.immapp", "immapp/immapp_cpp.pyi + immapp/__init__.pyi"),
              ("imgui_bundle.immapp.nb", "immapp/nb.pyi")],
             demos=["demo_hello_world.py", "welcome_imm_mode.py", "demo_parametric_curve.py", "demo_assets_addons.py",
-                   "demo_python_context_manager.py", "demo_run_async.py", "demo_widgets.py", "demo_testapp.py"]),
+                   "demo_python_context_manager.py", "demo_run_async.py", "demo_widgets.py", "demo_immapp_testing.py"]),
     Library("implot", "ImPlot",
             "2D plots: lines, scatter, bars, heatmaps, histograms, pies, real-time data.",
             "https://github.com/epezent/implot", "addons/plotting",
@@ -871,7 +871,7 @@ def _start_line(entries: list[Entry], module: str, cpp_namespace: Optional[str])
 
 
 MODULE_DEMOS = {  # the demos shown at the top of a module's page, by file name (a module used by a few demos only)
-    "imgui_bundle.imgui.test_engine": ["demo_testengine.py", "demo_testapp.py"],
+    "imgui_bundle.imgui.test_engine": ["demo_testengine.py", "demo_immapp_testing.py"],
 }
 
 
