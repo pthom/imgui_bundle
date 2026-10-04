@@ -34,6 +34,7 @@ class Context:
 # TODO support std::string_view
 # TODO support function pointer callback in addition to std::function
 
+# enum ImCmdTextType    /* original C++ signature */
 class ImCmdTextType(enum.IntEnum):
     # ImCmdTextType_Regular,    /* original C++ signature */
     regular = enum.auto()   # (= 0)
@@ -43,6 +44,7 @@ class ImCmdTextType(enum.IntEnum):
     # }
     count = enum.auto()     # (= 2)
 
+# enum ImCmdTextFlag    /* original C++ signature */
 class ImCmdTextFlag(enum.IntEnum):
     #/ Whether the text is underlined. Default False.
     # ImCmdTextFlag_Underline,    /* original C++ signature */
@@ -51,6 +53,7 @@ class ImCmdTextFlag(enum.IntEnum):
     # }
     count = enum.auto()     # (= 1)
 
+# struct Command    /* original C++ signature */
 class Command:
     # std::string Name;    /* original C++ signature */
     name: str
@@ -145,6 +148,7 @@ def prompt(options: List[str]) -> None:
 # ImCmd::Context is perfectly encapsulated, since it is only defined privately in a C++ file, and not in a header.
 # See https://github.com/pybind/pybind11/issues/2770
 
+# struct ContextWrapper    /* original C++ signature */
 class ContextWrapper:
     # inline ContextWrapper();    /* original C++ signature */
     def __init__(self) -> None:

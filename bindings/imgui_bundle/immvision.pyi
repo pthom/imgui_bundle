@@ -76,6 +76,7 @@ ImTextureID: TypeAlias = int
 #     You never need to create these types explicitly in Python.
 #
 
+# struct Size2d    /* original C++ signature */
 class Size2d:
     """2D double-precision size. Used for drawing operations (ellipse, rectangle_size)."""
 
@@ -96,6 +97,7 @@ class Size2d:
     def __init__(self, s: Size) -> None:
         pass
 
+# struct Color4d    /* original C++ signature */
 class Color4d:
     """4-channel double color value (e.g. RGBA or BGRA)."""
 
@@ -113,6 +115,7 @@ class Color4d:
     def __init__(self, v0: float, v1: float, v2: float, v3: float) -> None:
         pass
 
+# struct Rect    /* original C++ signature */
 class Rect:
     """Integer rectangle (x, y, width, height)."""
 
@@ -207,6 +210,7 @@ def pop_color_order() -> None:
 
 # Display parameters
 
+# enum class ColorMapStatsTypeId    /* original C++ signature */
 class ColorMapStatsTypeId(enum.IntEnum):
     """Are we using the stats on the full image, on the Visible ROI, or are we using Min/Max values"""
 
@@ -216,6 +220,7 @@ class ColorMapStatsTypeId(enum.IntEnum):
     #     }
     from_visible_roi = enum.auto()  # (= 1)
 
+# enum class ImageInterpolationMode    /* original C++ signature */
 class ImageInterpolationMode(enum.IntEnum):
     """Texture interpolation used when displaying an image"""
 
@@ -230,6 +235,7 @@ class ImageInterpolationMode(enum.IntEnum):
     # Use linear sampling at every zoom level
     linear = enum.auto()  # (= 2)
 
+# struct ColormapScaleFromStatsData    /* original C++ signature */
 class ColormapScaleFromStatsData:
     """Scale the Colormap according to the Image  stats"""
 
@@ -257,6 +263,7 @@ class ColormapScaleFromStatsData:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ColormapSettingsData    /* original C++ signature */
 class ColormapSettingsData:
     """Colormap Settings (useful for matrices with one channel, in order to see colors mapping float values)"""
 
@@ -299,6 +306,7 @@ class ColormapSettingsData:
         """
         pass
 
+# struct MouseInformation    /* original C++ signature */
 class MouseInformation:
     """Contains information about the mouse inside an image"""
 
@@ -334,6 +342,7 @@ class MouseInformation:
         """
         pass
 
+# struct ImageParams    /* original C++ signature */
 class ImageParams:
     """Set of display parameters and options for an Image"""
 
@@ -742,6 +751,7 @@ def inspector_clear_images() -> None:
 
 ####################    <generated_from:gl_texture.h>    ####################
 
+# struct GlTexture    /* original C++ signature */
 class GlTexture:
     """GlTexture contains an OpenGL texture which can be created or updated from an ImageBuffer (C++), or numpy array (Python)"""
 

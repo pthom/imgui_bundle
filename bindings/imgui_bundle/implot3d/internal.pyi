@@ -146,6 +146,7 @@ def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
 # [SECTION] Internal Enumerations
 #-----------------------------------------------------------------------------
 
+# enum ImPlot3DMarkerInternal_    /* original C++ signature */
 class MarkerInternal_(enum.IntFlag):
     # ImPlot3DMarker_Invalid = -3,    /* original C++ signature */
     # }
@@ -166,6 +167,7 @@ class MarkerInternal_(enum.IntFlag):
 #-----------------------------------------------------------------------------
 
 
+# struct ImPlot3DNextItemData    /* original C++ signature */
 class NextItemData:
     # ImPlot3DSpec Spec;    /* original C++ signature */
     spec: Spec
@@ -193,6 +195,7 @@ class NextItemData:
         """(private API)"""
         pass
 
+# struct ImPlot3DColormapData    /* original C++ signature */
 class ColormapData:
     """ Colormap data storage"""
     # int Count;    /* original C++ signature */
@@ -265,6 +268,7 @@ class ColormapData:
         """(private API)"""
         pass
 
+# struct ImPlot3DItem    /* original C++ signature */
 class Item:
     """ State information for plot items"""
     # ImGuiID ID;    /* original C++ signature */
@@ -286,6 +290,7 @@ class Item:
     def __init__(self) -> None:
         pass
 
+# struct ImPlot3DLegend    /* original C++ signature */
 class Legend:
     """ Holds legend state"""
     # ImPlot3DLegendFlags Flags;    /* original C++ signature */
@@ -316,6 +321,7 @@ class Legend:
         """(private API)"""
         pass
 
+# struct ImPlot3DItemGroup    /* original C++ signature */
 class ItemGroup:
     """ Holds items"""
     # ImGuiID ID;    /* original C++ signature */
@@ -378,6 +384,7 @@ class ItemGroup:
         """(private API)"""
         pass
 
+# struct ImPlot3DTick    /* original C++ signature */
 class Tick:
     """ Tick mark info"""
     # double PlotPos;    /* original C++ signature */
@@ -397,6 +404,7 @@ class Tick:
     def __init__(self, value: float, major: bool, show_label: bool) -> None:
         pass
 
+# struct ImPlot3DTicker    /* original C++ signature */
 class Ticker:
     """ Collection of ticks"""
 
@@ -439,6 +447,7 @@ class Ticker:
         """(private API)"""
         pass
 
+# struct ImPlot3DAxis    /* original C++ signature */
 class Axis:
     """ Holds axis information"""
     # Flags
@@ -623,6 +632,7 @@ class Axis:
         """(private API)"""
         pass
 
+# struct ImPlot3DPlot    /* original C++ signature */
 class Plot:
     """ Holds plot state information that must persist after EndPlot"""
     # ImGuiID ID;    /* original C++ signature */
@@ -757,6 +767,7 @@ class Plot:
         """
         pass
 
+# struct ImPlot3DContext    /* original C++ signature */
 class Context:
     # ImPlot3DPlot* CurrentPlot;    /* original C++ signature */
     current_plot: Plot

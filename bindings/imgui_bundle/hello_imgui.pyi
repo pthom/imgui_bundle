@@ -110,6 +110,7 @@ def set_load_asset_file_data_function(fn: Callable[[str], bytes]) -> None:
 #                       hello_imgui.h                                                                          //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# struct DpiAwareParams    /* original C++ signature */
 class DpiAwareParams:
     """
     Hello ImGui will try its best to automatically handle DPI scaling for you.
@@ -330,6 +331,7 @@ def dpi_window_size_factor() -> float:
 #
 # Then you can load the asset "fonts/my_font.ttf", on all platforms.
 
+# struct AssetFileData    /* original C++ signature */
 class AssetFileData:
     # void * data = nullptr;    /* original C++ signature */
     data: Optional[Any] = None
@@ -444,6 +446,7 @@ def override_assets_folder(folder: str) -> None:
 # ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 #                       hello_imgui/hello_imgui_logger.h included by hello_imgui.h                             //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
+# enum class LogLevel    /* original C++ signature */
 class LogLevel(enum.IntEnum):
     # Debug,    /* original C++ signature */
     debug = enum.auto()  # (= 0)
@@ -579,6 +582,7 @@ def image_size_from_asset(asset_path: str) -> ImVec2:
     """
     pass
 
+# struct ImageAndSize    /* original C++ signature */
 class ImageAndSize:
     """`HelloImGui::ImageAndSize HelloImGui::ImageAndSizeFromAsset(assetPath)`:
     will return the texture ID and the size of an image loaded from the assets.
@@ -648,6 +652,7 @@ def free_image_cache() -> None:
 # Some themes were adapted by themes posted by ImGui users at https://github.com/ocornut/imgui/issues/707
 #
 
+# enum ImGuiTheme_    /* original C++ signature */
 class ImGuiTheme_(enum.IntEnum):
     # ImGuiTheme_ImGuiColorsClassic = 0,    /* original C++ signature */
     imgui_colors_classic = enum.auto()  # (= 0)
@@ -703,6 +708,7 @@ def theme_to_style(theme: ImGuiTheme_) -> ImGuiStyle:
 def apply_theme(theme: ImGuiTheme_) -> None:
     pass
 
+# struct ImGuiThemeTweaks    /* original C++ signature */
 class ImGuiThemeTweaks:
     # float Rounding = -1.f;    /* original C++ signature */
     # Common rounding for widgets. If < 0, this is ignored.
@@ -741,6 +747,7 @@ class ImGuiThemeTweaks:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTweakedTheme    /* original C++ signature */
 class ImGuiTweakedTheme:
     # ImGuiTheme_ Theme = ImGuiTheme_DarculaDarker;    /* original C++ signature */
     theme: ImGuiTheme_ = ImGuiTheme_.darcula_darker
@@ -850,6 +857,7 @@ def show_theme_tweak_gui_window(p_open: Optional[bool] = None) -> Optional[bool]
 # Fonts are loaded at their nominal size: the scaling to the screen's DPI is applied at display
 # time by ImGui (ImGui::GetStyle().FontScaleDpi, set by the runner).
 
+# struct FontLoadingParams    /* original C++ signature */
 class FontLoadingParams:
     """
     Font loading parameters: several options are available (color, merging, range, ...)
@@ -947,6 +955,7 @@ def load_font_ttf_with_font_awesome_icons(
 # - For example, on apple a retina screenpixel size 3456x2052 might be seen as 1728x1026 in screen coordinates
 # - Under windows, ScreenCoordinates correspond to pixels, even on high density screens
 
+# struct ScreenBounds    /* original C++ signature */
 class ScreenBounds:
     # ScreenPosition position = DefaultScreenPosition;    /* original C++ signature */
     position: ScreenPosition = DefaultScreenPosition
@@ -998,6 +1007,7 @@ class ScreenBounds:
 #                       hello_imgui/app_window_params.h continued                                              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# enum class FullScreenMode    /* original C++ signature */
 class FullScreenMode(enum.IntEnum):
     # NoFullScreen,    /* original C++ signature */
     no_full_screen = enum.auto()  # (= 0)
@@ -1012,6 +1022,7 @@ class FullScreenMode(enum.IntEnum):
         enum.auto()
     )  # (= 3)  # Fake full screen, maximized window on the selected monitor
 
+# enum class WindowSizeState    /* original C++ signature */
 class WindowSizeState(enum.IntEnum):
     # Standard,    /* original C++ signature */
     standard = enum.auto()  # (= 0)
@@ -1021,6 +1032,7 @@ class WindowSizeState(enum.IntEnum):
     # }
     maximized = enum.auto()  # (= 2)
 
+# enum class WindowPositionMode    /* original C++ signature */
 class WindowPositionMode(enum.IntEnum):
     # OsDefault,    /* original C++ signature */
     os_default = enum.auto()  # (= 0)
@@ -1030,6 +1042,7 @@ class WindowPositionMode(enum.IntEnum):
     # }
     from_coords = enum.auto()  # (= 2)
 
+# enum class EmscriptenKeyboardElement    /* original C++ signature */
 class EmscriptenKeyboardElement(enum.IntEnum):
     # Window,    /* original C++ signature */
     window = enum.auto()  # (= 0)
@@ -1043,6 +1056,7 @@ class EmscriptenKeyboardElement(enum.IntEnum):
     # }
     default = enum.auto()  # (= 4)
 
+# enum class WindowSizeMeasureMode    /* original C++ signature */
 class WindowSizeMeasureMode(enum.IntEnum):
     # ScreenCoords,    /* original C++ signature */
     # ScreenCoords: measure window size in screen coords.
@@ -1061,6 +1075,7 @@ class WindowSizeMeasureMode(enum.IntEnum):
     #    1600x120 (in screen coords) if the monitor dpi is 192
     relative_to96_ppi = enum.auto()  # (= 1)
 
+# struct WindowGeometry    /* original C++ signature */
 class WindowGeometry:
     """WindowGeometry is a struct that defines the window geometry."""
 
@@ -1169,6 +1184,7 @@ class WindowGeometry:
         """
         pass
 
+# struct EdgeInsets    /* original C++ signature */
 class EdgeInsets:
     """If there is a notch on the iPhone, you should not display inside these insets"""
 
@@ -1190,6 +1206,7 @@ class EdgeInsets:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct AppWindowParams    /* original C++ signature */
 class AppWindowParams:
     """AppWindowParams is a struct that defines the application window display params.
     See https://raw.githubusercontent.com/pthom/hello_imgui/master/src/hello_imgui/doc_src/hello_imgui_diagram.jpg
@@ -1335,6 +1352,7 @@ class AppWindowParams:
 #                       hello_imgui/imgui_window_params.h included by hello_imgui/runner_params.h              //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# enum class DefaultImGuiWindowType    /* original C++ signature */
 class DefaultImGuiWindowType(enum.IntEnum):
     """`DefaultImGuiWindowType` is an enum class that defines whether a full screen background
     window is provided or not
@@ -1352,6 +1370,7 @@ class DefaultImGuiWindowType(enum.IntEnum):
     # (except for ImGui's default "debug" window)
     no_default_window = enum.auto()  # (= 2)
 
+# struct ImGuiWindowParams    /* original C++ signature */
 class ImGuiWindowParams:
     """`ImGuiWindowParams` is a struct that defines the ImGui inner windows params
     These settings affect the imgui inner windows inside the application window.
@@ -1550,6 +1569,7 @@ def empty_confirm_exit_callback() -> ConfirmExitCallback:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# struct MobileCallbacks    /* original C++ signature */
 class MobileCallbacks:
     """MobileCallbacks is a struct that contains callbacks that are called by the application
     when running under "Android, iOS and WinRT".
@@ -1600,6 +1620,7 @@ class MobileCallbacks:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class EdgeToolbarType    /* original C++ signature */
 class EdgeToolbarType(enum.IntEnum):
     """EdgeToolbarType: location of an Edge Toolbar"""
 
@@ -1613,6 +1634,7 @@ class EdgeToolbarType(enum.IntEnum):
     # }
     right = enum.auto()  # (= 3)
 
+# struct EdgeToolbarOptions    /* original C++ signature */
 class EdgeToolbarOptions:
     # float sizeEm = 2.5f;    /* original C++ signature */
     # height or width the top toolbar, in em units
@@ -1641,6 +1663,7 @@ class EdgeToolbarOptions:
         """
         pass
 
+# struct EdgeToolbar    /* original C++ signature */
 class EdgeToolbar:
     """EdgeToolbar :a toolbar that can be placed on the edges of the App window
     It will be placed in a non-dockable window
@@ -1674,6 +1697,7 @@ def edge_toolbar_type_name(e: EdgeToolbarType) -> str:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class DefaultIconFont    /* original C++ signature */
 class DefaultIconFont(enum.IntEnum):
     """HelloImGui can optionally merge an icon font (FontAwesome 4 or 6) to the default font
     - you need to include manually icons_font_awesome_4.h or icons_font_awesome_6.h:
@@ -1690,6 +1714,7 @@ class DefaultIconFont(enum.IntEnum):
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# struct RunnerCallbacks    /* original C++ signature */
 class RunnerCallbacks:
     """RunnerCallbacks is a struct that contains the callbacks
     that are called by the application
@@ -2111,6 +2136,7 @@ def append_callback(
 
 # ***************************************************************************
 
+# struct DockingSplit    /* original C++ signature */
 class DockingSplit:
     """DockingSplit is a struct that defines the way the docking splits should
     be applied on the screen in order to create new Dock Spaces.
@@ -2169,6 +2195,7 @@ class DockingSplit:
         """
         pass
 
+# struct DockableWindow    /* original C++ signature */
 class DockableWindow:
     """DockableWindow is a struct that represents a window that can be docked."""
 
@@ -2278,6 +2305,7 @@ class DockableWindow:
         """
         pass
 
+# enum class DockingLayoutCondition    /* original C++ signature */
 class DockingLayoutCondition(enum.IntEnum):
     # FirstUseEver,    /* original C++ signature */
     first_use_ever = enum.auto()  # (= 0)
@@ -2287,6 +2315,7 @@ class DockingLayoutCondition(enum.IntEnum):
     # }
     never = enum.auto()  # (= 2)
 
+# struct DockingParams    /* original C++ signature */
 class DockingParams:
     """DockingParams contains all the settings concerning the docking:
     - list of splits
@@ -2385,6 +2414,7 @@ class DockingParams:
 #                       hello_imgui/backend_pointers.h included by hello_imgui/runner_params.h                 //
 # //////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+# struct BackendPointers    /* original C++ signature */
 class BackendPointers:
     """BackendPointers is a struct that contains optional pointers to the
     backend implementations (for SDL and GLFW).
@@ -2418,6 +2448,7 @@ class BackendPointers:
         """Auto-generated default constructor"""
         pass
 
+# struct RemoteParams    /* original C++ signature */
 class RemoteParams:
     """RemoteParams is a struct that contains the settings for displaying the application on a remote device.
     using https://github.com/sammyfreg/netImgui
@@ -2480,6 +2511,7 @@ class RemoteParams:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# struct OpenGlOptions    /* original C++ signature */
 class OpenGlOptions:
     """OpenGlOptions contains advanced options used at the startup of OpenGL.
     These parameters are reserved for advanced users.
@@ -2565,6 +2597,7 @@ def has_edr_support() -> bool:
     """
     pass
 
+# struct RendererBackendOptions    /* original C++ signature */
 class RendererBackendOptions:
     """RendererBackendOptions is a struct that contains options for the renderer backend
     (Metal, Vulkan, DirectX, OpenGL)
@@ -2607,6 +2640,7 @@ class RendererBackendOptions:
 #     src/hello_imgui/internal/backend_impls/rendering_dx11.h
 #     src/hello_imgui/internal/backend_impls/rendering_dx12.h
 
+# struct OpenGlOptionsFilled_    /* original C++ signature */
 class OpenGlOptionsFilled_:
     """(Private structure, not part of the public API)
     OpenGlOptions after selecting the default platform-dependent values + after applying the user settings
@@ -2645,6 +2679,7 @@ class OpenGlOptionsFilled_:
 # You can select the platform backend type (SDL, GLFW) and the rendering backend type
 # via RunnerParams.platformBackendType and RunnerParams.renderingBackendType.
 
+# enum class PlatformBackendType    /* original C++ signature */
 class PlatformBackendType(enum.IntEnum):
     """Platform backend type (SDL, GLFW)
     They are listed in the order of preference when FirstAvailable is selected.
@@ -2660,6 +2695,7 @@ class PlatformBackendType(enum.IntEnum):
     # }
     null = enum.auto()  # (= 3)
 
+# enum class RendererBackendType    /* original C++ signature */
 class RendererBackendType(enum.IntEnum):
     """Rendering backend type (OpenGL3, Metal, Vulkan, DirectX11, DirectX12)
     They are listed in the order of preference when FirstAvailable is selected.
@@ -2691,6 +2727,7 @@ def renderer_backend_type_to_string(renderer_backend_type: RendererBackendType) 
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class IniFolderType    /* original C++ signature */
 class IniFolderType(enum.IntEnum):
     """IniFolderType is an enum which describes where is the base path to store
     the ini file for the application settings.
@@ -2755,6 +2792,7 @@ def ini_folder_location(ini_folder_type: IniFolderType) -> str:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class FpsIdlingMode    /* original C++ signature */
 class FpsIdlingMode(enum.IntEnum):
     """FpsIdlingMode is an enum that describes the different modes of idling
     when rendering the GUI.
@@ -2786,6 +2824,7 @@ class FpsIdlingMode(enum.IntEnum):
     # }
     auto = enum.auto()  # (= 2)
 
+# struct FpsIdling    /* original C++ signature */
 class FpsIdling:
     """FpsIdling is a struct that contains parameters controlling the application's
     frame pacing, idling behavior, and performance.
@@ -2895,6 +2934,7 @@ class FpsIdling:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# struct RunnerParams    /* original C++ signature */
 class RunnerParams:
     """RunnerParams contains the settings and callbacks needed to run an application."""
 
@@ -3095,6 +3135,7 @@ def delete_ini_settings(runner_params: RunnerParams) -> None:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# struct SimpleRunnerParams    /* original C++ signature */
 class SimpleRunnerParams:
     """SimpleRunnerParams is a struct that contains simpler params adapted for simple use cases.
     For example, this is sufficient to run an application:
@@ -3231,6 +3272,7 @@ def widget_with_resize_handle(
 
 # --------------------------------------------------------------------------------------------
 
+# struct InputTextData    /* original C++ signature */
 class InputTextData:
     """`InputTextResizable`: displays a resizable text input widget
 

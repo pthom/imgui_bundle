@@ -60,6 +60,7 @@ def shutdown() -> None:
 # [SECTION] BASIC USAGE
 #-------------------------------------------------------------------------
 
+# enum InspectorAlphaMode    /* original C++ signature */
 class InspectorAlphaMode(enum.IntEnum):
     # InspectorAlphaMode_ImGui,          /* original C++ signature */
     im_gui = enum.auto()       # (= 0)  # Alpha is transparency so you see the ImGui panel background behind image
@@ -70,6 +71,7 @@ class InspectorAlphaMode(enum.IntEnum):
     # InspectorAlphaMode_CustomColor     /* original C++ signature */
     custom_color = enum.auto() # (= 3)  # Alpha is used to blend over a custom colour.
 
+# enum InspectorFlags_    /* original C++ signature */
 class InspectorFlags_(enum.IntEnum):
     # InspectorFlags_ShowWrap             = 1 << 0,      /* original C++ signature */
     show_wrap = enum.auto()               # (= 1 << 0)  # Draw beyong the [0,1] uv range. What you see will depend on API
@@ -98,12 +100,14 @@ class InspectorFlags_(enum.IntEnum):
 # *
 # * BeginInspectorPanel("MyPanel", texture_1K, ImVec2(1024,1024));
 #
+# struct SizeIncludingBorder    /* original C++ signature */
 class SizeIncludingBorder:
     # ImVec2 Size;    /* original C++ signature */
     size: ImVec2
     # SizeIncludingBorder(ImVec2 size):Size(size);    /* original C++ signature */
     def __init__(self, size: ImVec2Like) -> None:
         pass
+# struct SizeExcludingBorder    /* original C++ signature */
 class SizeExcludingBorder:
     # ImVec2 size;    /* original C++ signature */
     size: ImVec2
@@ -276,12 +280,14 @@ def draw_annotation_line(
 #-------------------------------------------------------------------------
 
 
+# class ValueText    /* original C++ signature */
 class ValueText:
     """ ValueText
      * An annoation class that draws text inside each texel when zoom level is high enough for it to fit.
      * The text shows the value of the texel. E.g. "R:255, G: 128, B:0, A:255"
 
     """
+    # enum Format    /* original C++ signature */
     class Format(enum.IntEnum):
         # HexString,     /* original C++ signature */
         hex_string = enum.auto() # (= 0)  # E.g.  #EF97B9FF
@@ -304,6 +310,7 @@ class ValueText:
         ) -> None:
         pass
 
+# class Arrow    /* original C++ signature */
 class Arrow:
     """ Arrow
      * An annotation class that draws an arrow inside each texel when zoom level is
@@ -333,6 +340,7 @@ class Arrow:
     # ImVec2 ZeroPoint = {0, 0};    /* original C++ signature */
     zero_point: ImVec2 = ImVec2(0, 0)
 
+    # enum Preset    /* original C++ signature */
     class Preset(enum.IntEnum):
         # NormalMap,          /* original C++ signature */
         normal_map = enum.auto()       # (= 0)  # For normal maps. I.e. Arrow is in (R,G) channels.  128, 128 is zero point
@@ -367,6 +375,7 @@ class Arrow:
 # [SECTION] INTERNAL
 #-------------------------------------------------------------------------
 
+# struct Transform2D    /* original C++ signature */
 class Transform2D:
     # ImVec2 Scale;    /* original C++ signature */
     scale: ImVec2
@@ -411,6 +420,7 @@ class Transform2D:
 # ImGuiTexInspect, a texture inspector widget for dear imgui
 
 
+# struct Texture    /* original C++ signature */
 class Texture:
     # ImTextureID texture;    /* original C++ signature */
     texture: ImTextureID

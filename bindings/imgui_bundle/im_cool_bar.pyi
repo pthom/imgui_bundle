@@ -56,6 +56,7 @@ ImGuiWindowFlags_None = WindowFlags_.none
 
 
 
+# enum ImCoolBarFlags_    /* original C++ signature */
 class ImCoolBarFlags_(enum.IntEnum):
     # ImCoolBarFlags_None = 0,                   /* original C++ signature */
     none = enum.auto()       # (= 0)
@@ -72,6 +73,7 @@ class ImCoolBarFlags_(enum.IntEnum):
 # #define ENABLE_IMCOOLBAR_DEBUG
 
 
+# struct ImCoolBarSettings    /* original C++ signature */
 class ImCoolBarSettings:
     # ImVec2 anchor{0.5f, 0.5f};    /* original C++ signature */
     anchor: ImVec2 = ImVec2(0.5, 0.5)

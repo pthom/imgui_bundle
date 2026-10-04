@@ -50,6 +50,7 @@ DefaultScreenSize = (800, 600)
 # #endif
 #
 
+# struct AddOnsParams    /* original C++ signature */
 class AddOnsParams:
     """///////////////////////////////////////////////////////////////////////////////////////
 
@@ -596,6 +597,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     # =================================================================================================================
     #    A snippet: its code, its language, its look.
 
+    # enum class SnippetLanguage    /* original C++ signature */
     class SnippetLanguage(enum.IntEnum):
         # Cpp,    /* original C++ signature */
         cpp = enum.auto()  # (= 0)
@@ -615,6 +617,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         #     }
         python = enum.auto()  # (= 7)
 
+    # enum class SnippetTheme    /* original C++ signature */
     class SnippetTheme(enum.IntEnum):
         # Auto,       /* original C++ signature */
         auto = enum.auto()  # (= 0)  # Automatic based on bg color
@@ -632,6 +635,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         """
         pass
 
+    # struct SnippetData    /* original C++ signature */
     class SnippetData:
         # std::string Code = "";    /* original C++ signature */
         code: str = ""

@@ -140,6 +140,7 @@ ImVector_Window = ImVector_Window_ptr
 # Types
 # -------------------------------------------------------------------------
 
+# enum ImGuiTestEngineExportFormat    /* original C++ signature */
 class TestEngineExportFormat(enum.IntFlag):
     # ImGuiTestEngineExportFormat_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -197,6 +198,7 @@ def export_ex(engine: TestEngine, format: TestEngineExportFormat, filename: str)
 # Types
 # -------------------------------------------------------------------------
 
+# enum ImGuiTestActiveFunc    /* original C++ signature */
 class TestActiveFunc(enum.IntFlag):
     """Stored in ImGuiTestContext: where we are currently running GuiFunc or TestFunc"""
 
@@ -209,6 +211,7 @@ class TestActiveFunc(enum.IntFlag):
     # ImGuiTestActiveFunc_TeardownFunc,           /* original C++ signature */
     teardown_func = enum.auto()  # (= 3)  # == TeardownFunc() handler
 
+# enum ImGuiTestRunSpeed    /* original C++ signature */
 class TestRunSpeed(enum.IntFlag):
     # ImGuiTestRunSpeed_Fast          = 0,        /* original C++ signature */
     fast = enum.auto()  # (= 0)  # Run tests as fast as possible (teleport mouse, skip delays, etc.)
@@ -220,6 +223,7 @@ class TestRunSpeed(enum.IntFlag):
     # }
     count = enum.auto()  # (= 3)
 
+# enum ImGuiTestVerboseLevel    /* original C++ signature */
 class TestVerboseLevel(enum.IntFlag):
     # ImGuiTestVerboseLevel_Silent    = 0,        /* original C++ signature */
     silent = enum.auto()  # (= 0)  # -v0
@@ -237,6 +241,7 @@ class TestVerboseLevel(enum.IntFlag):
     # }
     count = enum.auto()  # (= 6)
 
+# enum ImGuiTestStatus    /* original C++ signature */
 class TestStatus(enum.IntFlag):
     """Test status (stored in ImGuiTest)"""
 
@@ -256,6 +261,7 @@ class TestStatus(enum.IntFlag):
     # }
     count = enum.auto()  # (= 6)
 
+# enum ImGuiTestGroup    /* original C++ signature */
 class TestGroup(enum.IntFlag):
     """Test group: this is mostly used to categorize tests in our testing UI. (Stored in ImGuiTest)"""
 
@@ -269,6 +275,7 @@ class TestGroup(enum.IntFlag):
     # }
     count = enum.auto()  # (= 2)
 
+# enum ImGuiTestFlags_    /* original C++ signature */
 class TestFlags_(enum.IntFlag):
     """Flags (stored in ImGuiTest)"""
 
@@ -288,6 +295,7 @@ class TestFlags_(enum.IntFlag):
     )  # (= 1 << 2)  # Error/recovery warnings (missing End/Pop calls etc.) will be displayed as normal debug entries, for tests which may rely on those.
     # ImGuiTestFlags_RequireViewports   = 1 << 10
 
+# enum ImGuiTestCheckFlags_    /* original C++ signature */
 class TestCheckFlags_(enum.IntFlag):
     """Flags for IM_CHECK* macros."""
 
@@ -297,6 +305,7 @@ class TestCheckFlags_(enum.IntFlag):
     # }
     silent_success = enum.auto()  # (= 1 << 0)
 
+# enum ImGuiTestLogFlags_    /* original C++ signature */
 class TestLogFlags_(enum.IntFlag):
     """Flags for ImGuiTestContext::Log* functions."""
 
@@ -305,6 +314,7 @@ class TestLogFlags_(enum.IntFlag):
     # ImGuiTestLogFlags_NoHeader          = 1 << 0        /* original C++ signature */
     no_header = enum.auto()  # (= 1 << 0)  # Do not display frame count and depth padding
 
+# enum ImGuiTestRunFlags_    /* original C++ signature */
 class TestRunFlags_(enum.IntFlag):
     # ImGuiTestRunFlags_None              = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -338,6 +348,7 @@ class TestRunFlags_(enum.IntFlag):
     )  # (= 1 << 12)  # Share ImGuiTestContext instead of creating a new one (unsure what purpose this may be useful for yet)
     # TODO: Add GuiFunc options
 
+# struct ImGuiTestEngineResultSummary    /* original C++ signature */
 class TestEngineResultSummary:
     # int     CountTested = 0;    /* original C++ signature */
     count_tested: int = 0  # Number of tests executed
@@ -519,6 +530,7 @@ def crash_handler() -> None:
 # IO structure to configure the test engine
 # -----------------------------------------------------------------------------
 
+# struct ImGuiTestEngineIO    /* original C++ signature */
 class TestEngineIO:
     # -------------------------------------------------------------------------
     # Functions
@@ -673,6 +685,7 @@ class TestEngineIO:
 # ImGuiTestItemInfo
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestItemInfo    /* original C++ signature */
 class TestItemInfo:
     """Information about a given item or window, result of an ItemInfo() or WindowInfo() query"""
 
@@ -702,6 +715,7 @@ class TestItemInfo:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTestItemList    /* original C++ signature */
 class TestItemList:
     """Result of an GatherItems() query"""
 
@@ -751,6 +765,7 @@ class TestItemList:
 # ImGuiTestLog: store textual output of one given Test.
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestLogLineInfo    /* original C++ signature */
 class TestLogLineInfo:
     # ImGuiTestVerboseLevel           Level;    /* original C++ signature */
     level: TestVerboseLevel
@@ -760,6 +775,7 @@ class TestLogLineInfo:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiTestLog    /* original C++ signature */
 class TestLog:
     # ImGuiTextBuffer                 Buffer;    /* original C++ signature */
     buffer: TextBuffer
@@ -813,6 +829,7 @@ class TestLog:
 
 # Wraps a placement new of a given type (where 'buffer' is the allocated memory)
 
+# struct ImGuiTestOutput    /* original C++ signature */
 class TestOutput:
     """Storage for the output of a test run"""
 
@@ -838,6 +855,7 @@ class TestOutput:
         """
         pass
 
+# struct ImGuiTest    /* original C++ signature */
 class Test:
     """Storage for one test"""
 
@@ -902,6 +920,7 @@ class Test:
         """
         pass
 
+# struct ImGuiTestRunTask    /* original C++ signature */
 class TestRunTask:
     """Stored in test queue"""
 
@@ -960,6 +979,7 @@ class TestRunTask:
 # [SECTION] ImGuiTestRef
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestRef    /* original C++ signature */
 class TestRef:
     """Weak reference to an Item/Window given an hashed ID _or_ a string path ID.
     This is most often passed as argument to function and generally has a very short lifetime.
@@ -987,6 +1007,7 @@ class TestRef:
         """(private API)"""
         pass
 
+# struct ImGuiTestRefDesc    /* original C++ signature */
 class TestRefDesc:
     """Debug helper to output a string showing the Path, ID or Debug Label based on what is available (some items only have ID as we couldn't find/store a Path)
     (The size is arbitrary, this is only used for logging info the user/debugger)
@@ -1009,6 +1030,7 @@ class TestRefDesc:
 # [SECTION] ImGuiTestContext related Flags/Enumerations
 # -------------------------------------------------------------------------
 
+# enum ImGuiTestAction    /* original C++ signature */
 class TestAction(enum.IntFlag):
     """Named actions. Generally you will call the named helpers e.g. ItemClick(). This is used by shared/low-level functions such as ItemAction()."""
 
@@ -1042,6 +1064,7 @@ class TestAction(enum.IntFlag):
     # }
     count = enum.auto()  # (= 10)
 
+# enum ImGuiTestOpFlags_    /* original C++ signature */
 class TestOpFlags_(enum.IntFlag):
     """Generic flags for many ImGuiTestContext functions
     Some flags are only supported by a handful of functions. Check function headers for list of supported flags.
@@ -1090,6 +1113,7 @@ class TestOpFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 13)  # Avoid waiting for item to be stable, lock current position and aim.
 
+# struct ImGuiTestActionFilter    /* original C++ signature */
 class TestActionFilter:
     """Advanced filtering for ItemActionAll()"""
 
@@ -1112,6 +1136,7 @@ class TestActionFilter:
 # [SECTION] ImGuiTestGenericVars, ImGuiTestGenericItemStatus
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestGenericItemStatus    /* original C++ signature */
 class TestGenericItemStatus:
     """Helper struct to store various query-able state of an item.
     This facilitate interactions between GuiFunc and TestFunc, since those state are frequently used.
@@ -1160,6 +1185,7 @@ class TestGenericItemStatus:
         """(private API)"""
         pass
 
+# struct ImGuiTestGenericVars    /* original C++ signature */
 class TestGenericVars:
     """Generic structure with various storage fields.
     This is useful for tests to quickly share data between GuiFunc and TestFunc without creating custom data structure.
@@ -1248,6 +1274,7 @@ class TestGenericVars:
 # This is the interface that most tests will interact with.
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestContext    /* original C++ signature */
 class TestContext:
     # User variables
     # ImGuiTestGenericVars    GenericVars;    /* original C++ signature */
@@ -2270,6 +2297,7 @@ class TestContext:
 # DATA STRUCTURES
 # -------------------------------------------------------------------------
 
+# struct ImGuiTestInfoTask    /* original C++ signature */
 class TestInfoTask:
     """Query item position/window/state given ID."""
 
@@ -2290,6 +2318,7 @@ class TestInfoTask:
         """
         pass
 
+# struct ImGuiTestGatherTask    /* original C++ signature */
 class TestGatherTask:
     """Gather item list in given parent ID."""
 
@@ -2316,6 +2345,7 @@ class TestGatherTask:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiTestFindByLabelTask    /* original C++ signature */
 class TestFindByLabelTask:
     """Find item ID given a label and a parent id
     Usually used by queries with wildcards such as ItemInfo("hello/**/foo/bar")
@@ -2355,6 +2385,7 @@ class TestFindByLabelTask:
         """Auto-generated default constructor with named params"""
         pass
 
+# enum ImGuiTestInputType    /* original C++ signature */
 class TestInputType(enum.IntFlag):
     # ImGuiTestInputType_None,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2372,6 +2403,7 @@ class TestInputType(enum.IntFlag):
     # }
     viewport_close = enum.auto()  # (= 6)
 
+# struct ImGuiTestInput    /* original C++ signature */
 class TestInput:
     """FIXME: May want to strip further now that core imgui is using its own input queue"""
 
@@ -2437,6 +2469,7 @@ class TestInput:
         """
         pass
 
+# struct ImGuiTestInputs    /* original C++ signature */
 class TestInputs:
     # ImVec2                      MousePosValue;    /* original C++ signature */
     mouse_pos_value: ImVec2  # Own non-rounded copy of MousePos in order facilitate simulating mouse movement very slow speed and high-framerate
@@ -2472,6 +2505,7 @@ class TestInputs:
         """
         pass
 
+# struct ImGuiTestEnginePerfRecord    /* original C++ signature */
 class TestEnginePerfRecord:
     # double                      RawValueMs;    /* original C++ signature */
     raw_value_ms: float  # For current frame
@@ -2484,6 +2518,7 @@ class TestEnginePerfRecord:
         """(private API)"""
         pass
 
+# struct ImGuiTestEngine    /* original C++ signature */
 class TestEngine:
     """[Internal] Test Engine Context"""
 
@@ -2706,6 +2741,7 @@ def open_source_file(engine: TestEngine, source_filename: str, source_line_no: i
 
 # -----------------------------------------------------------------------------
 
+# enum ImGuiCaptureFlags_    /* original C++ signature */
 class CaptureFlags_(enum.IntFlag):
     # ImGuiCaptureFlags_None                      = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2730,6 +2766,7 @@ class CaptureFlags_(enum.IntFlag):
     # ImGuiCaptureFlags_NoSave                    = 1 << 5        /* original C++ signature */
     no_save = enum.auto()  # (= 1 << 5)  # Do not save output image.
 
+# struct ImGuiCaptureArgs    /* original C++ signature */
 class CaptureArgs:
     """Defines input and output arguments for capture process.
     When capturing from tests you can usually use the ImGuiTestContext::CaptureXXX() helpers functions.
@@ -2776,6 +2813,7 @@ class CaptureArgs:
         """
         pass
 
+# enum ImGuiCaptureStatus    /* original C++ signature */
 class CaptureStatus(enum.IntFlag):
     # ImGuiCaptureStatus_InProgress,    /* original C++ signature */
     in_progress = enum.auto()  # (= 0)
@@ -2785,6 +2823,7 @@ class CaptureStatus(enum.IntFlag):
     # }
     error = enum.auto()  # (= 2)
 
+# struct ImGuiCaptureWindowData    /* original C++ signature */
 class CaptureWindowData:
     # ImGuiWindow*            Window;    /* original C++ signature */
     window: Window

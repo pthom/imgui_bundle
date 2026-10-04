@@ -197,6 +197,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
 
     # Render a cube with face color corresponding to face normal. Usefull for debug/tests
 
+    # enum OPERATION    /* original C++ signature */
     class OPERATION(enum.IntEnum):
         """ call it when you want a gizmo
          Needs view and projection matrices.
@@ -245,6 +246,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         universal = enum.auto()     # (= OPERATION.translate | OPERATION.rotate | OPERATION.scaleu)
 
 
+    # enum MODE    /* original C++ signature */
     class MODE(enum.IntEnum):
         # LOCAL,    /* original C++ signature */
         local = enum.auto() # (= 0)
@@ -322,6 +324,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def set_gizmo_size_clip_space(value: float) -> None:
         pass
 
+    # enum MOVETYPE    /* original C++ signature */
     class MOVETYPE(enum.IntEnum):
         """ Handle type used by the translate/rotate/scale gizmos."""
         # MT_NONE,    /* original C++ signature */
@@ -404,6 +407,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         pass
 
 
+    # enum COLOR    /* original C++ signature */
     class COLOR(enum.IntEnum):
         # DIRECTION_X,          /* original C++ signature */
         direction_x = enum.auto()           # (= 0)  # directionColor[0]
@@ -439,6 +443,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         #    }
         count = enum.auto()                 # (= 15)
 
+    # struct Style    /* original C++ signature */
     class Style:
         # IMGUI_API Style();    /* original C++ signature */
         def __init__(self) -> None:
@@ -467,6 +472,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     @staticmethod
     def get_style() -> Style:
         pass
+    # struct Matrix16    /* original C++ signature */
     class Matrix16:
         # float values[16]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=16] default:float()
@@ -478,6 +484,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
+    # struct Matrix6    /* original C++ signature */
     class Matrix6:
         # float values[6]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=6] default:float()
@@ -489,6 +496,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         @overload
         def __init__(self, v: List[float]) -> None:
             pass
+    # struct Matrix3    /* original C++ signature */
     class Matrix3:
         # float values[3]{};    /* original C++ signature */
         values: np.ndarray  # ndarray[type=float, size=3] default:float()
@@ -501,6 +509,7 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
         def __init__(self, v: List[float]) -> None:
             pass
 
+    # struct MatrixComponents    /* original C++ signature */
     class MatrixComponents:
         # Matrix3 Translation;    /* original C++ signature */
         translation: im_guizmo.Matrix3

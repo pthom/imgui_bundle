@@ -126,6 +126,7 @@ def resume_editor_canvas() -> None:
 #    Enums
 # ------------------------------------------------------------------------------
 
+# enum class PinKind    /* original C++ signature */
 class PinKind(enum.IntEnum):
     """The kind of a pin, given to BeginPin(): an input or an output"""
 
@@ -135,6 +136,7 @@ class PinKind(enum.IntEnum):
     # }
     output = enum.auto()  # (= 1)
 
+# enum class FlowDirection    /* original C++ signature */
 class FlowDirection(enum.IntEnum):
     """The direction of the flow animation along a link, given to Flow()"""
 
@@ -144,6 +146,7 @@ class FlowDirection(enum.IntEnum):
     # }
     backward = enum.auto()  # (= 1)
 
+# enum class CanvasSizeMode    /* original C++ signature */
 class CanvasSizeMode(enum.IntEnum):
     """How the view adapts when the editor's window is resized (Config::CanvasSizeMode)"""
 
@@ -162,6 +165,7 @@ class CanvasSizeMode(enum.IntEnum):
 #    Config
 # ------------------------------------------------------------------------------
 
+# enum class SaveReasonFlags    /* original C++ signature */
 class SaveReasonFlags(enum.IntEnum):
     """Why the editor saves its settings: given to the callbacks Config::SaveSettings and SaveNodeSettings"""
 
@@ -183,6 +187,7 @@ class SaveReasonFlags(enum.IntEnum):
     # }
     user = enum.auto()  # (= 0x00000040)
 
+# struct Config    /* original C++ signature */
 class Config:
     """The configuration of an editor, given to CreateEditor(): settings file, callbacks, mouse buttons, zoom"""
 
@@ -252,6 +257,7 @@ class Config:
 #    Style
 # ------------------------------------------------------------------------------
 
+# enum StyleColor    /* original C++ signature */
 class StyleColor(enum.IntEnum):
     """The colors of an editor: the indices of Style::Colors (see PushStyleColor())"""
 
@@ -298,6 +304,7 @@ class StyleColor(enum.IntEnum):
     # }
     count = enum.auto()  # (= 19)
 
+# enum StyleVar    /* original C++ signature */
 class StyleVar(enum.IntEnum):
     """The style variables that PushStyleVar() changes: the fields of Style"""
 
@@ -362,6 +369,7 @@ class StyleVar(enum.IntEnum):
     # }
     count = enum.auto()  # (= 28)
 
+# struct Style    /* original C++ signature */
 class Style:
     """The style of an editor (GetStyle()): sizes, roundings, the links, the flow animation, the colors"""
 

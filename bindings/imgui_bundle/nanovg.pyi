@@ -85,6 +85,7 @@ https://github.com/memononen/nanovg
 
 
 
+# struct NVGpaint    /* original C++ signature */
 class Paint:
     # float xform[6];    /* original C++ signature */
     xform: np.ndarray   # ndarray[type=float, size=6]
@@ -117,18 +118,21 @@ class Paint:
         """
         pass
 
+# enum NVGwinding    /* original C++ signature */
 class Winding(enum.IntEnum):
     # NVG_CCW = 1,			    /* original C++ signature */
     ccw = enum.auto() # (= 1)  # Winding for solid shapes
     # NVG_CW = 2,				    /* original C++ signature */
     cw = enum.auto()  # (= 2)  # Winding for holes
 
+# enum NVGsolidity    /* original C++ signature */
 class Solidity(enum.IntEnum):
     # NVG_SOLID = 1,			    /* original C++ signature */
     solid = enum.auto() # (= 1)  # CCW
     # NVG_HOLE = 2,			    /* original C++ signature */
     hole = enum.auto()  # (= 2)  # CW
 
+# enum NVGlineCap    /* original C++ signature */
 class LineCap(enum.IntEnum):
     # NVG_BUTT,    /* original C++ signature */
     butt = enum.auto()   # (= 0)
@@ -142,6 +146,7 @@ class LineCap(enum.IntEnum):
     # }
     miter = enum.auto()  # (= 4)
 
+# enum NVGalign    /* original C++ signature */
 class Align(enum.IntEnum):
     # Horizontal align
     # NVG_ALIGN_LEFT 		= 1<<0,	    /* original C++ signature */
@@ -160,6 +165,7 @@ class Align(enum.IntEnum):
     # NVG_ALIGN_BASELINE	= 1<<6,     /* original C++ signature */
     align_baseline = enum.auto() # (= 1<<6)  # Default, align text vertically to baseline.
 
+# enum NVGblendFactor    /* original C++ signature */
 class BlendFactor(enum.IntEnum):
     # NVG_ZERO = 1<<0,    /* original C++ signature */
     zero = enum.auto()                # (= 1<<0)
@@ -185,6 +191,7 @@ class BlendFactor(enum.IntEnum):
     # }
     src_alpha_saturate = enum.auto()  # (= 1<<10)
 
+# enum NVGcompositeOperation    /* original C++ signature */
 class CompositeOperation(enum.IntEnum):
     # NVG_SOURCE_OVER,    /* original C++ signature */
     source_over = enum.auto()      # (= 0)
@@ -210,6 +217,7 @@ class CompositeOperation(enum.IntEnum):
     # }
     xor = enum.auto()              # (= 10)
 
+# struct NVGcompositeOperationState    /* original C++ signature */
 class CompositeOperationState:
     # int srcRGB;    /* original C++ signature */
     src_rgb: int
@@ -229,6 +237,7 @@ class CompositeOperationState:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct NVGglyphPosition    /* original C++ signature */
 class GlyphPosition:
     # const char* str;    /* original C++ signature */
     str: str     # Position of the glyph in the input string. # (const)
@@ -247,6 +256,7 @@ class GlyphPosition:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct NVGtextRow    /* original C++ signature */
 class TextRow:
     # const char* start;    /* original C++ signature */
     start: str    # Pointer to the input text where the row starts. # (const)
@@ -269,6 +279,7 @@ class TextRow:
         """Auto-generated default constructor with named params"""
         pass
 
+# enum NVGimageFlags    /* original C++ signature */
 class ImageFlags(enum.IntEnum):
     # NVG_IMAGE_GENERATE_MIPMAPS	= 1<<0,         /* original C++ signature */
     image_generate_mipmaps = enum.auto() # (= 1<<0)  # Generate mipmaps during creation of the image.
@@ -1055,6 +1066,7 @@ def font_face(ctx: Context, font: str) -> None:
 
 
 
+# enum NVGtexture    /* original C++ signature */
 class Texture(enum.IntEnum):
     """
      Internal Render API
@@ -1066,6 +1078,7 @@ class Texture(enum.IntEnum):
     # }
     texture_rgba = enum.auto()  # (= 0x02)
 
+# struct NVGscissor    /* original C++ signature */
 class Scissor:
     # float xform[6];    /* original C++ signature */
     xform: np.ndarray   # ndarray[type=float, size=6]
@@ -1075,6 +1088,7 @@ class Scissor:
         """Auto-generated default constructor"""
         pass
 
+# struct NVGvertex    /* original C++ signature */
 class Vertex:
     # float x,    /* original C++ signature */
     x: float
@@ -1094,6 +1108,7 @@ class Vertex:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct NVGpath    /* original C++ signature */
 class Path:
     # int first;    /* original C++ signature */
     first: int
@@ -1128,6 +1143,7 @@ class Path:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct NVGparams    /* original C++ signature */
 class Params:
     # void* userPtr;    /* original C++ signature */
     user_ptr: Any
@@ -1186,6 +1202,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
     #
     #///////////////////////////////////////////////////////////////////////
 
+    # enum NvgCreateFlags    /* original C++ signature */
     class NvgCreateFlags(enum.IntEnum):
         """ Combination of NVGcreateFlags in nanovg_gl.h + nanovg_mtl.h"""
         # NVG_ANTIALIAS 		= 1<<0,    /* original C++ signature */
@@ -1226,6 +1243,7 @@ class nvg_imgui:  # Proxy class that introduces typings for the *submodule* nvg_
     #
     #///////////////////////////////////////////////////////////////////////
 
+    # class NvgFramebuffer    /* original C++ signature */
     class NvgFramebuffer:
         """ NvgFramebuffer: a framebuffer that can be used by NanoVG + ImGui
          Internally stored inside the renderer backend (e.g. OpenGL)
@@ -1383,6 +1401,7 @@ def text_glyph_positions(
     pass
 
 
+# struct TextMetricsData    /* original C++ signature */
 class TextMetricsData:
     # float ascender;    /* original C++ signature */
     ascender: float
@@ -1407,6 +1426,7 @@ def text_metrics(ctx: Context) -> TextMetricsData:
     pass
 
 
+# struct NVGtextRowSimple    /* original C++ signature */
 class TextRowSimple:
     # std::string row_text;    /* original C++ signature */
     row_text: str

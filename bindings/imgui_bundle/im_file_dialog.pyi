@@ -53,6 +53,7 @@ def ifd_u8path(s: str) -> Path:
 # #endif
 #
 
+# class FileDialog    /* original C++ signature */
 class FileDialog:
     # static inline FileDialog& Instance();    /* original C++ signature */
     @staticmethod
@@ -105,6 +106,7 @@ class FileDialog:
     def get_zoom(self) -> float:
         pass
 
+    # class FileTreeNode    /* original C++ signature */
     class FileTreeNode:
 
         # FileTreeNode(const std::string& path);    /* original C++ signature */
@@ -117,6 +119,7 @@ class FileDialog:
         # std::vector<FileTreeNode*> Children;    /* original C++ signature */
         children: List[FileDialog.FileTreeNode]
 
+    # class FileData    /* original C++ signature */
     class FileData:
         # FileData(const std::filesystem::path& path);    /* original C++ signature */
         def __init__(self, path: Path) -> None:

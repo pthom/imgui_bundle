@@ -4,6 +4,8 @@
 
 [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/) lets you explore all the widgets and features of Dear ImGui, with live examples and the corresponding python or C++ code. It is built using Dear ImGui Bundle.
 
+Its "API" tab documents the code: click a name in the code, then the book button, and you get its Python and C++ signatures, its doc, where the demo uses it, and links to the [API reference](../api/index.md). A tooltip gives the same for the identifier under the mouse.
+
 <img alt="A screenshot of Dear ImGui Explorer, showing how to use a widget together with the related python code" src="../images/imgui_explorer_python.jpg" height="500"/>
 
 ## Dear ImGui Bundle Explorer

@@ -69,6 +69,7 @@ half_white: ImColor  # = ImColor(1., 1., 1., 0.5)
 red: ImColor  # = ImColor(1., 0., 0., 1.)
 
 
+# enum SpinnerTypeT    /* original C++ signature */
 class SpinnerTypeT(enum.IntEnum):
     # e_st_rainbow = 0,    /* original C++ signature */
     e_st_rainbow = enum.auto()      # (= 0)
@@ -107,6 +108,7 @@ PI_2: float  # = IM_PI  2.
 
 
 
+# enum ease_mode    /* original C++ signature */
 class ease_mode(enum.IntEnum):
     # e_ease_none = 0,    /* original C++ signature */
     e_ease_none = enum.auto()      # (= 0)

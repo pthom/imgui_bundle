@@ -86,6 +86,7 @@ marker_callback = Callable[[int, int, float], None]  # inst_id, marker_id, marke
 
 # PI constants
 
+# enum ease_type    /* original C++ signature */
 class ease_type(enum.IntEnum):
     """ ----------------------------------------------------
      Public enums & descriptors (C-style)
@@ -162,6 +163,7 @@ class ease_type(enum.IntEnum):
     # ease_custom             /* original C++ signature */
     ease_custom = enum.auto()         # (= 34)  # User-defined easing function (use ease_custom_fn)
 
+# enum policy    /* original C++ signature */
 class policy(enum.IntEnum):
     # policy_crossfade = 0,	    /* original C++ signature */
     crossfade = enum.auto() # (= 0)  # smooth into new target
@@ -174,6 +176,7 @@ class policy(enum.IntEnum):
     # policy_multiply			    /* original C++ signature */
     multiply = enum.auto()  # (= 4)  # multiply current value by animated factor
 
+# enum color_space    /* original C++ signature */
 class color_space(enum.IntEnum):
     # col_srgb = 0,			    /* original C++ signature */
     col_srgb = enum.auto()        # (= 0)  # blend in sRGB (not physically linear)
@@ -186,6 +189,7 @@ class color_space(enum.IntEnum):
     # col_oklch				    /* original C++ signature */
     col_oklch = enum.auto()       # (= 4)  # sRGB<->OKLCH (cylindrical OKLAB), blend in OKLCH, back to sRGB
 
+# enum anchor_space    /* original C++ signature */
 class anchor_space(enum.IntEnum):
     # anchor_window_content = 0,	    /* original C++ signature */
     anchor_window_content = enum.auto() # (= 0)  # ImGui::GetContentRegionAvail()
@@ -196,6 +200,7 @@ class anchor_space(enum.IntEnum):
     # anchor_last_item			    /* original C++ signature */
     anchor_last_item = enum.auto()      # (= 3)  # ImGui::GetItemRectSize()
 
+# struct ease_desc    /* original C++ signature */
 class ease_desc:
     """ Descriptor for any easing (preset or parametric)"""
     # int		type;    /* original C++ signature */
@@ -327,6 +332,7 @@ def profiler_end() -> None:
     """ End the current profiler section."""
     pass
 
+# struct drag_opts    /* original C++ signature */
 class drag_opts:
     """ Drag Feedback - animated feedback for drag operations"""
     # ImVec2 snap_grid;    /* original C++ signature */
@@ -347,6 +353,7 @@ class drag_opts:
     def __init__(self) -> None:
         pass
 
+# struct drag_feedback    /* original C++ signature */
 class drag_feedback:
     # ImVec2 position;    /* original C++ signature */
     position: ImVec2      # Current animated position
@@ -401,6 +408,7 @@ def drag_cancel(id: int) -> None:
     """ Cancel drag tracking."""
     pass
 
+# enum wave_type    /* original C++ signature */
 class wave_type(enum.IntEnum):
     """ Oscillators - continuous periodic animations"""
     # wave_sine = 0,          /* original C++ signature */
@@ -902,6 +910,7 @@ def scroll_to_bottom(
 # Per-axis easing - different easing per component
 # ----------------------------------------------------
 
+# struct ease_per_axis    /* original C++ signature */
 class ease_per_axis:
     """ Per-axis easing descriptor (for vec2/vec4/color)"""
     # ease_desc x;    /* original C++ signature */
@@ -978,6 +987,7 @@ def tween_color_per_axis(
 # Motion Paths - animate along curves and splines
 # ----------------------------------------------------
 
+# enum path_segment_type    /* original C++ signature */
 class path_segment_type(enum.IntEnum):
     """ Path segment types"""
     # seg_line = 0,                /* original C++ signature */
@@ -1054,6 +1064,7 @@ def catmull_rom_deriv(
     pass
 
 
+# class path    /* original C++ signature */
 class path:
     """ path - fluent API for building multi-segment motion paths"""
     # static path begin(ImGuiID path_id, ImVec2 start);                                               /* original C++ signature */
@@ -1177,6 +1188,7 @@ def path_tangent_at_distance(path_id: int, distance: float) -> ImVec2:
 # Path Morphing - interpolate between two paths
 # ----------------------------------------------------
 
+# struct morph_opts    /* original C++ signature */
 class morph_opts:
     """ Morph options for path interpolation"""
     # int   samples;    /* original C++ signature */
@@ -1270,6 +1282,7 @@ def get_morph_blend(id: int, channel_id: int) -> float:
 # Text along motion paths
 # ----------------------------------------------------
 
+# enum text_path_align    /* original C++ signature */
 class text_path_align(enum.IntEnum):
     """ Text alignment along path"""
     # text_align_start = 0,        /* original C++ signature */
@@ -1279,6 +1292,7 @@ class text_path_align(enum.IntEnum):
     # text_align_end               /* original C++ signature */
     text_align_end = enum.auto()    # (= 2)  # Text ends at path end
 
+# struct text_path_opts    /* original C++ signature */
 class text_path_opts:
     """ Text path options"""
     # ImVec2 origin;    /* original C++ signature */
@@ -1369,6 +1383,7 @@ def make_glyph_quad(
 # Text Stagger - per-character animation effects
 # ----------------------------------------------------
 
+# enum text_stagger_effect    /* original C++ signature */
 class text_stagger_effect(enum.IntEnum):
     """ Text stagger effect types"""
     # text_fx_none = 0,            /* original C++ signature */
@@ -1394,6 +1409,7 @@ class text_stagger_effect(enum.IntEnum):
     # text_fx_typewriter           /* original C++ signature */
     text_fx_typewriter = enum.auto()  # (= 10)  # Typewriter style (instant per char)
 
+# struct text_stagger_opts    /* original C++ signature */
 class text_stagger_opts:
     """ Text stagger options"""
     # ImVec2 pos;    /* original C++ signature */
@@ -1466,6 +1482,7 @@ def text_stagger_duration(
 # Noise Channels - Perlin/Simplex noise for organic movement
 # ----------------------------------------------------
 
+# enum noise_type    /* original C++ signature */
 class noise_type(enum.IntEnum):
     """ Noise types"""
     # noise_perlin = 0,            /* original C++ signature */
@@ -1477,6 +1494,7 @@ class noise_type(enum.IntEnum):
     # noise_worley                 /* original C++ signature */
     noise_worley = enum.auto()  # (= 3)  # Worley/cellular noise
 
+# struct noise_opts    /* original C++ signature */
 class noise_opts:
     """ Noise options"""
     # int   type;    /* original C++ signature */
@@ -1660,6 +1678,7 @@ def style_unregister(style_id: int) -> None:
 # Gradient Interpolation - animate between color gradients
 # ----------------------------------------------------
 
+# struct gradient    /* original C++ signature */
 class gradient:
     """ Color gradient with any number of stops (sorted by position)"""
     # ImVector<float> positions;    /* original C++ signature */
@@ -1733,6 +1752,7 @@ def tween_gradient(
 # Transform Interpolation - animate 2D transforms
 # ----------------------------------------------------
 
+# enum rotation_mode    /* original C++ signature */
 class rotation_mode(enum.IntEnum):
     """ Rotation interpolation modes"""
     # rotation_shortest = 0,       /* original C++ signature */
@@ -1746,6 +1766,7 @@ class rotation_mode(enum.IntEnum):
     # rotation_direct              /* original C++ signature */
     rotation_direct = enum.auto()   # (= 4)  # Direct lerp - no angle unwrapping, can cause spinning for large deltas
 
+# struct transform    /* original C++ signature */
 class transform:
     """ 2D transform (position, rotation, scale)"""
     # ImVec2 position;    /* original C++ signature */
@@ -1835,6 +1856,7 @@ def transform_from_matrix(
 # CLIP-BASED ANIMATION SYSTEM
 # ============================================================
 
+# enum direction    /* original C++ signature */
 class direction(enum.IntEnum):
     """ Direction for looping animations"""
     # dir_normal = 0,		    /* original C++ signature */
@@ -1844,6 +1866,7 @@ class direction(enum.IntEnum):
     # dir_alternate		    /* original C++ signature */
     dir_alternate = enum.auto() # (= 2)  # ping-pong
 
+# enum channel_type    /* original C++ signature */
 class channel_type(enum.IntEnum):
     """ Channel types for keyframes"""
     # chan_float = 0,    /* original C++ signature */
@@ -1865,6 +1888,7 @@ class channel_type(enum.IntEnum):
     # chan_color_rel      /* original C++ signature */
     chan_color_rel = enum.auto() # (= 8)  # Color relative to anchor (for position-based color effects)
 
+# enum result    /* original C++ signature */
 class result(enum.IntEnum):
     """ Result codes"""
     # ok = 0,    /* original C++ signature */
@@ -1877,6 +1901,7 @@ class result(enum.IntEnum):
     # }
     err_no_mem = enum.auto()    # (= 3)
 
+# struct spring_params    /* original C++ signature */
 class spring_params:
     """ Spring parameters for physics-based animation"""
     # float mass;    /* original C++ signature */
@@ -1901,6 +1926,7 @@ class spring_params:
 # Repeat with Variation - per-loop parameter changes
 # ----------------------------------------------------
 
+# enum variation_mode    /* original C++ signature */
 class variation_mode(enum.IntEnum):
     """ Variation modes for repeat animations"""
     # var_none = 0,           /* original C++ signature */
@@ -1928,6 +1954,7 @@ class variation_mode(enum.IntEnum):
 # #endif
 #
 
+# struct variation_float    /* original C++ signature */
 class variation_float:
     """ Float variation"""
     # int                     mode;    /* original C++ signature */
@@ -1959,6 +1986,7 @@ class variation_float:
         """
         pass
 
+# struct variation_int    /* original C++ signature */
 class variation_int:
     """ Int variation"""
     # int                   mode;    /* original C++ signature */
@@ -1990,6 +2018,7 @@ class variation_int:
         """
         pass
 
+# struct variation_vec2    /* original C++ signature */
 class variation_vec2:
     """ Vec2 variation (global mode or per-axis)"""
     # int                    mode;    /* original C++ signature */
@@ -2033,6 +2062,7 @@ class variation_vec2:
         """
         pass
 
+# struct variation_vec4    /* original C++ signature */
 class variation_vec4:
     """ Vec4 variation (global mode or per-axis)"""
     # int                    mode;    /* original C++ signature */
@@ -2084,6 +2114,7 @@ class variation_vec4:
         """
         pass
 
+# struct variation_color    /* original C++ signature */
 class variation_color:
     """ Color variation (global mode or per-channel)"""
     # int                    mode;    /* original C++ signature */
@@ -2311,6 +2342,7 @@ def varc_seed(v: variation_color, s: int) -> variation_color:
 # #endif
 #
 
+# class clip    /* original C++ signature */
 class clip:
     """ ----------------------------------------------------
      clip - fluent API for authoring animations
@@ -2583,6 +2615,7 @@ class clip:
         pass
 
 
+# class instance    /* original C++ signature */
 class instance:
     """ ----------------------------------------------------
      instance - playback control for a clip
@@ -2754,6 +2787,7 @@ def play_stagger(clip_id: int, instance_id: int, index: int) -> instance:
     """ Play with stagger delay applied."""
     pass
 
+# enum stagger_from    /* original C++ signature */
 class stagger_from(enum.IntEnum):
     """ Grid stagger - 2D grid-based delay distribution"""
     # stagger_first  = 0,         /* original C++ signature */
@@ -2765,6 +2799,7 @@ class stagger_from(enum.IntEnum):
     # stagger_index               /* original C++ signature */
     stagger_index = enum.auto()  # (= 3)  # Stagger from a specific index (use from_index)
 
+# enum stagger_axis    /* original C++ signature */
 class stagger_axis(enum.IntEnum):
     # stagger_both = 0,           /* original C++ signature */
     stagger_both = enum.auto() # (= 0)  # Distance on both axes
@@ -2773,6 +2808,7 @@ class stagger_axis(enum.IntEnum):
     # stagger_y                   /* original C++ signature */
     stagger_y = enum.auto()    # (= 2)  # Distance on Y axis only (row)
 
+# struct stagger_grid_opts    /* original C++ signature */
 class stagger_grid_opts:
     # int   cols;    /* original C++ signature */
     cols: int           # Number of columns

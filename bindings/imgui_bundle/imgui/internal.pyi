@@ -455,6 +455,7 @@ def im_text_count_lines(in_text: str, in_text_end: str) -> int:
     """return number of lines taken by text. trailing carriage return doesn't count as an extra line."""
     pass
 
+# enum ImDrawTextFlags_    /* original C++ signature */
 class ImDrawTextFlags_(enum.IntFlag):
     """Helpers: High-level text functions (DO NOT USE!!! THIS IS A MINIMAL SUBSET OF LARGER UPCOMING CHANGES)"""
 
@@ -481,6 +482,7 @@ def im_text_calc_word_wrap_next_line_start(text: str, text_end: str, flags: ImDr
     """trim trailing space and find beginning of next line"""
     pass
 
+# enum ImWcharClass    /* original C++ signature */
 class ImWcharClass(enum.IntFlag):
     """Character classification for word-wrapping logic"""
 
@@ -706,6 +708,7 @@ def im_triangle_is_clockwise(a: ImVec2Like, b: ImVec2Like, c: ImVec2Like) -> boo
     """(private API)"""
     pass
 
+# struct ImVec1    /* original C++ signature */
 class ImVec1:
     # float   x;    /* original C++ signature */
     x: float
@@ -718,6 +721,7 @@ class ImVec1:
     def __init__(self, _x: float) -> None:
         pass
 
+# struct ImVec2i    /* original C++ signature */
 class ImVec2i:
     """Helper: ImVec2i (2D vector, integer)"""
 
@@ -734,6 +738,7 @@ class ImVec2i:
     def __init__(self, _x: int, _y: int) -> None:
         pass
 
+# struct ImVec2ih    /* original C++ signature */
 class ImVec2ih:
     """Helper: ImVec2ih (2D vector, half-size integer, for long-term packed storage)"""
 
@@ -754,6 +759,7 @@ class ImVec2ih:
     def __init__(self, rhs: ImVec2Like) -> None:
         pass
 
+# struct ImRect    /* original C++ signature */
 class ImRect:
     """Helper: ImRect (2D axis aligned bounding-box)
     NB: we can't rely on ImVec2 math operators being available here!
@@ -947,6 +953,7 @@ def im_bit_array_set_bit_range(arr: ImU32, n: int, n2: int) -> None:
     """
     pass
 
+# struct ImBitVector    /* original C++ signature */
 class ImBitVector:
     """Helper: ImBitVector
     Store 1-bit per value.
@@ -983,6 +990,7 @@ class ImBitVector:
         """
         pass
 
+# struct ImGuiTextIndex    /* original C++ signature */
 class TextIndex:
     """Helper: ImGuiTextIndex
     Maintain a line index for a text buffer. This is a strong candidate to be moved into the public API.
@@ -1022,6 +1030,7 @@ class TextIndex:
         """
         pass
 
+# struct ImGuiPackedDate    /* original C++ signature */
 class PackedDate:
     """Helper: ImGuiPackedDate (sizeof() == 2)
     Store a date in a way that is efficient to read/write in text form. If we stored e.g. number of days since Epoch we'd need costlier back and forth.
@@ -1080,6 +1089,7 @@ def im_lower_bound(in_begin: StoragePair, in_end: StoragePair, key: ID) -> Stora
 
 # ImDrawList: Lookup table size for adaptive arc drawing, cover full circle.
 
+# struct ImDrawListSharedData    /* original C++ signature */
 class ImDrawListSharedData:
     """Data shared between all ImDrawList instances
     Conceptually this could have been called e.g. ImDrawListSharedContext
@@ -1130,6 +1140,7 @@ class ImDrawListSharedData:
         """(private API)"""
         pass
 
+# struct ImDrawDataBuilder    /* original C++ signature */
 class ImDrawDataBuilder:
     # ImVector<ImDrawList*>   LayerData1;    /* original C++ signature */
     layer_data1: ImVector_ImDrawList_ptr
@@ -1138,6 +1149,7 @@ class ImDrawDataBuilder:
     def __init__(self) -> None:
         pass
 
+# struct ImFontStackData    /* original C++ signature */
 class ImFontStackData:
     # ImFont*     Font;    /* original C++ signature */
     font: ImFont
@@ -1153,6 +1165,7 @@ class ImFontStackData:
 # [SECTION] Style support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiStyleVarInfo    /* original C++ signature */
 class StyleVarInfo:
     # void* GetVarPtr(void* parent) const;    /* original C++ signature */
     def get_var_ptr(self, parent: Any) -> Any:
@@ -1163,6 +1176,7 @@ class StyleVarInfo:
         """Auto-generated default constructor"""
         pass
 
+# struct ImGuiColorMod    /* original C++ signature */
 class ColorMod:
     """Stacked color modifier, backup of modified data so we can restore it"""
 
@@ -1180,6 +1194,7 @@ class ColorMod:
         """
         pass
 
+# struct ImGuiStyleMod    /* original C++ signature */
 class StyleMod:
     """Stacked style modifier, backup of modified data so we can restore it. Data type inferred from the variable."""
 
@@ -1202,6 +1217,7 @@ class StyleMod:
 # [SECTION] Data types support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiDataTypeStorage    /* original C++ signature */
 class DataTypeStorage:
     # ImU8        Data[8];    /* original C++ signature */
     data: np.ndarray  # ndarray[type=ImU8, size=8]  # Opaque storage to fit any data up to ImGuiDataType_COUNT
@@ -1209,6 +1225,7 @@ class DataTypeStorage:
         """Auto-generated default constructor"""
         pass
 
+# struct ImGuiDataTypeInfo    /* original C++ signature */
 class DataTypeInfo:
     """Type information associated to one ImGuiDataType. Retrieve with DataTypeGetInfo()."""
 
@@ -1224,6 +1241,7 @@ class DataTypeInfo:
         """Auto-generated default constructor with named params"""
         pass
 
+# enum ImGuiDataTypePrivate_    /* original C++ signature */
 class DataTypePrivate_(enum.IntFlag):
     """Extend ImGuiDataType_"""
 
@@ -1237,6 +1255,7 @@ class DataTypePrivate_(enum.IntFlag):
 # [SECTION] Widgets support: flags, enums, data structures
 # -----------------------------------------------------------------------------
 
+# enum ImGuiItemFlagsPrivate_    /* original C++ signature */
 class ItemFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiItemFlags
     - input: PushItemFlag() manipulates g.CurrentItemFlags, g.NextItemData.ItemFlags, ItemAdd() calls may add extra flags too.
@@ -1283,6 +1302,7 @@ class ItemFlagsPrivate_(enum.IntFlag):
     # Obsolete
     # ImGuiItemFlags_SelectableDontClosePopup = !ImGuiItemFlags_AutoClosePopups, // Can't have a redirect as we inverted the behavior
 
+# enum ImGuiItemStatusFlags_    /* original C++ signature */
 class ItemStatusFlags_(enum.IntFlag):
     """Status flags for an already submitted item
     - output: stored in g.LastItemData.StatusFlags
@@ -1332,6 +1352,7 @@ class ItemStatusFlags_(enum.IntFlag):
 
     # Additional status + semantic for ImGuiTestEngine
 
+# enum ImGuiHoveredFlagsPrivate_    /* original C++ signature */
 class HoveredFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiHoveredFlags_"""
 
@@ -1349,6 +1370,7 @@ class HoveredFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= HoveredFlags_AllowWhenBlockedByPopup | HoveredFlags_AllowWhenBlockedByActiveItem | HoveredFlags_AllowWhenOverlapped | HoveredFlags_AllowWhenDisabled | HoveredFlags_NoNavOverride | HoveredFlags_ForTooltip | HoveredFlags_Stationary | HoveredFlags_DelayMask_)
 
+# enum ImGuiInputTextFlagsPrivate_    /* original C++ signature */
 class InputTextFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiInputTextFlags_"""
 
@@ -1362,6 +1384,7 @@ class InputTextFlagsPrivate_(enum.IntFlag):
     # ImGuiInputTextFlags_LocalizeDecimalPoint= 1 << 28,      /* original C++ signature */
     localize_decimal_point = enum.auto()  # (= 1 << 28)  # For internal use by InputScalar() and TempInputScalar()
 
+# enum ImGuiButtonFlagsPrivate_    /* original C++ signature */
 class ButtonFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiButtonFlags_"""
 
@@ -1426,6 +1449,7 @@ class ButtonFlagsPrivate_(enum.IntFlag):
     pressed_on_default_ = enum.auto()  # (= ButtonFlags_PressedOnClickRelease)
     # ImGuiButtonFlags_NoKeyModifiers       = ImGuiButtonFlags_NoKeyModsAllowed, // Renamed in 1.91.4
 
+# enum ImGuiSliderFlagsPrivate_    /* original C++ signature */
 class SliderFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiSliderFlags_"""
 
@@ -1436,6 +1460,7 @@ class SliderFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 21)  # Consider using g.NextItemData.ItemFlags |= ImGuiItemFlags_ReadOnly instead.
 
+# enum ImGuiSelectableFlagsPrivate_    /* original C++ signature */
 class SelectableFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiSelectableFlags_"""
 
@@ -1463,6 +1488,7 @@ class SelectableFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 27)  # Don't set key/input owner on the initial click (note: mouse buttons are keys! often, the key in question will be ImGuiKey_MouseLeft!)
 
+# enum ImGuiTreeNodeFlagsPrivate_    /* original C++ signature */
 class TreeNodeFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTreeNodeFlags_"""
 
@@ -1482,6 +1508,7 @@ class TreeNodeFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= TreeNodeFlags_DrawLinesNone | TreeNodeFlags_DrawLinesFull | TreeNodeFlags_DrawLinesToNodes)
 
+# enum ImGuiSeparatorFlags_    /* original C++ signature */
 class SeparatorFlags_(enum.IntFlag):
     # ImGuiSeparatorFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1494,6 +1521,7 @@ class SeparatorFlags_(enum.IntFlag):
     # ImGuiSeparatorFlags_SpanAllColumns          = 1 << 2,       /* original C++ signature */
     span_all_columns = enum.auto()  # (= 1 << 2)  # Make separator cover all columns of a legacy Columns() set.
 
+# enum ImGuiFocusRequestFlags_    /* original C++ signature */
 class FocusRequestFlags_(enum.IntFlag):
     """Flags for FocusWindow(). This is not called ImGuiFocusFlags to avoid confusion with public-facing ImGuiFocusedFlags.
     FIXME: Once we finishing replacing more uses of GetTopMostPopupModal()+IsWindowWithinBeginStackOf()
@@ -1507,6 +1535,7 @@ class FocusRequestFlags_(enum.IntFlag):
     # ImGuiFocusRequestFlags_UnlessBelowModal     = 1 << 1,       /* original C++ signature */
     unless_below_modal = enum.auto()  # (= 1 << 1)  # Do not set focus if the window is below a modal.
 
+# enum ImGuiTextFlags_    /* original C++ signature */
 class TextFlags_(enum.IntFlag):
     # ImGuiTextFlags_None                         = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1514,12 +1543,14 @@ class TextFlags_(enum.IntFlag):
     # }
     no_width_for_large_clipped_text = enum.auto()  # (= 1 << 0)
 
+# enum ImGuiTooltipFlags_    /* original C++ signature */
 class TooltipFlags_(enum.IntFlag):
     # ImGuiTooltipFlags_None                      = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
     # ImGuiTooltipFlags_OverridePrevious          = 1 << 1,       /* original C++ signature */
     override_previous = enum.auto()  # (= 1 << 1)  # Clear/ignore previously submitted tooltip (defaults to append)
 
+# enum ImGuiLayoutType_    /* original C++ signature */
 class LayoutType_(enum.IntFlag):
     """FIXME: this is in development, not exposed/functional as a generic feature yet.
     Horizontal/Vertical enums are fixed to 0/1 so they may be used to index ImVec2
@@ -1531,6 +1562,7 @@ class LayoutType_(enum.IntFlag):
     # }
     vertical = enum.auto()  # (= 1)
 
+# enum ImGuiLogFlags_    /* original C++ signature */
 class LogFlags_(enum.IntFlag):
     """Flags for LogBegin() text capturing function"""
 
@@ -1551,6 +1583,7 @@ class LogFlags_(enum.IntFlag):
         enum.auto()
     )  # (= LogFlags_OutputTTY | LogFlags_OutputFile | LogFlags_OutputBuffer | LogFlags_OutputClipboard)
 
+# enum ImGuiAxis    /* original C++ signature */
 class Axis(enum.IntFlag):
     """X/Y enums are fixed to 0/1 so they may be used to index ImVec2"""
 
@@ -1562,6 +1595,7 @@ class Axis(enum.IntFlag):
     # }
     y = enum.auto()  # (= 1)
 
+# enum ImGuiPlotType    /* original C++ signature */
 class PlotType(enum.IntFlag):
     # ImGuiPlotType_Lines,    /* original C++ signature */
     lines = enum.auto()  # (= 0)
@@ -1569,6 +1603,7 @@ class PlotType(enum.IntFlag):
     # }
     histogram = enum.auto()  # (= 1)
 
+# struct ImGuiComboPreviewData    /* original C++ signature */
 class ComboPreviewData:
     """Storage data for BeginComboPreview()/EndComboPreview()"""
 
@@ -1591,6 +1626,7 @@ class ComboPreviewData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiGroupData    /* original C++ signature */
 class GroupData:
     """Stacked storage data for BeginGroup()/EndGroup()"""
 
@@ -1652,6 +1688,7 @@ class GroupData:
         """
         pass
 
+# struct ImGuiMenuColumns    /* original C++ signature */
 class MenuColumns:
     """Simple column measurement, currently used for MenuItem() only.. This is very short-sighted/throw-away code and NOT a generic helper."""
 
@@ -1690,6 +1727,7 @@ class MenuColumns:
         """(private API)"""
         pass
 
+# struct ImGuiInputTextDeactivatedState    /* original C++ signature */
 class InputTextDeactivatedState:
     """Internal temporary state for deactivating InputText() instances.
     Store as part of ImGuiDeactivatedItemData?
@@ -1712,6 +1750,7 @@ class InputTextDeactivatedState:
 
 # Forward declare imstb_textedit.h structure + make its main configuration define accessible
 
+# struct ImGuiInputTextState    /* original C++ signature */
 class InputTextState:
     """Internal state of the currently focused/edited text input box
     For a given item ID, access with ImGui::GetInputTextState()
@@ -1858,6 +1897,7 @@ class InputTextState:
         """(private API)"""
         pass
 
+# enum ImGuiWindowRefreshFlags_    /* original C++ signature */
 class WindowRefreshFlags_(enum.IntFlag):
     # ImGuiWindowRefreshFlags_None                = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1871,6 +1911,7 @@ class WindowRefreshFlags_(enum.IntFlag):
     refresh_on_focus = enum.auto()  # (= 1 << 2)  # [EXPERIMENTAL] Always refresh on focus
     # Refresh policy/frequency, Load Balancing etc.
 
+# enum ImGuiWindowBgClickFlags_    /* original C++ signature */
 class WindowBgClickFlags_(enum.IntFlag):
     # ImGuiWindowBgClickFlags_None                = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1879,6 +1920,7 @@ class WindowBgClickFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 0)  # Click on bg/None + drag to move window. Cleared by default when using io.ConfigWindowsMoveFromTitleBarOnly.
 
+# enum ImGuiNextWindowDataFlags_    /* original C++ signature */
 class NextWindowDataFlags_(enum.IntFlag):
     # ImGuiNextWindowDataFlags_None               = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1912,6 +1954,7 @@ class NextWindowDataFlags_(enum.IntFlag):
     # }
     has_window_class = enum.auto()  # (= 1 << 13)
 
+# struct ImGuiNextWindowData    /* original C++ signature */
 class NextWindowData:
     """Storage for SetNexWindow** functions"""
 
@@ -1976,6 +2019,7 @@ class NextWindowData:
         """(private API)"""
         pass
 
+# enum ImGuiNextItemDataFlags_    /* original C++ signature */
 class NextItemDataFlags_(enum.IntFlag):
     # ImGuiNextItemDataFlags_None             = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -1993,6 +2037,7 @@ class NextItemDataFlags_(enum.IntFlag):
     # }
     has_color_marker = enum.auto()  # (= 1 << 5)
 
+# struct ImGuiNextItemData    /* original C++ signature */
 class NextItemData:
     # ImGuiNextItemDataFlags      HasFlags;    /* original C++ signature */
     has_flags: NextItemDataFlags  # Called HasFlags instead of Flags to avoid mistaking this
@@ -2034,6 +2079,7 @@ class NextItemData:
         """
         pass
 
+# struct ImGuiLastItemData    /* original C++ signature */
 class LastItemData:
     """Status storage for the last submitted item"""
 
@@ -2059,6 +2105,7 @@ class LastItemData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTreeNodeStackData    /* original C++ signature */
 class TreeNodeStackData:
     """Store data emitted by TreeNode() for usage by TreePop()
     - To implement ImGuiTreeNodeFlags_NavLeftJumpsToParent: store the minimum amount of data
@@ -2099,6 +2146,7 @@ class TreeNodeStackData:
         """
         pass
 
+# struct ImGuiErrorRecoveryState    /* original C++ signature */
 class ErrorRecoveryState:
     """sizeof() = 20"""
 
@@ -2129,6 +2177,7 @@ class ErrorRecoveryState:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiWindowStackData    /* original C++ signature */
 class WindowStackData:
     """Storage for each window pushed into the stack."""
 
@@ -2162,6 +2211,7 @@ class WindowStackData:
         """
         pass
 
+# struct ImGuiShrinkWidthItem    /* original C++ signature */
 class ShrinkWidthItem:
     # int         Index;    /* original C++ signature */
     index: int
@@ -2173,6 +2223,7 @@ class ShrinkWidthItem:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiPtrOrIndex    /* original C++ signature */
 class PtrOrIndex:
     # void*       Ptr;    /* original C++ signature */
     ptr: Any  # Either field can be set, not both. e.g. Dock node tab bars are loose while BeginTabBar() ones are in a pool.
@@ -2188,6 +2239,7 @@ class PtrOrIndex:
     def __init__(self, index: int) -> None:
         pass
 
+# struct ImGuiDeactivatedItemData    /* original C++ signature */
 class DeactivatedItemData:
     """Data used by IsItemDeactivated()/IsItemDeactivatedAfterEdit() functions
     Also see ImGuiInputTextDeactivatedState which is an extension for this for InputText()
@@ -2211,6 +2263,7 @@ class DeactivatedItemData:
 # [SECTION] Popup support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiPopupPositionPolicy    /* original C++ signature */
 class PopupPositionPolicy(enum.IntFlag):
     # ImGuiPopupPositionPolicy_Default,    /* original C++ signature */
     default = enum.auto()  # (= 0)
@@ -2220,6 +2273,7 @@ class PopupPositionPolicy(enum.IntFlag):
     # }
     tooltip = enum.auto()  # (= 2)
 
+# struct ImGuiPopupData    /* original C++ signature */
 class PopupData:
     """Storage for popup stacks (g.OpenPopupStack and g.BeginPopupStack)"""
 
@@ -2252,6 +2306,7 @@ class PopupData:
 
 # [Internal] Named shortcuts for Navigation
 
+# enum ImGuiInputEventType    /* original C++ signature */
 class InputEventType(enum.IntFlag):
     # ImGuiInputEventType_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2273,6 +2328,7 @@ class InputEventType(enum.IntFlag):
     # }
     count = enum.auto()  # (= 8)
 
+# enum ImGuiInputSource    /* original C++ signature */
 class InputSource(enum.IntFlag):
     # ImGuiInputSource_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2288,6 +2344,7 @@ class InputSource(enum.IntFlag):
 
 # FIXME: Structures in the union below need to be declared as anonymous unions appears to be an extension?
 # Using ImVec2() would fail on Clang 'union member 'MousePos' has a non-trivial default constructor'
+# struct ImGuiInputEventMousePos    /* original C++ signature */
 class InputEventMousePos:
     # float PosX,     /* original C++ signature */
     pos_x: float
@@ -2305,6 +2362,7 @@ class InputEventMousePos:
         """
         pass
 
+# struct ImGuiInputEventMouseWheel    /* original C++ signature */
 class InputEventMouseWheel:
     # float WheelX,     /* original C++ signature */
     wheel_x: float
@@ -2322,6 +2380,7 @@ class InputEventMouseWheel:
         """
         pass
 
+# struct ImGuiInputEventMouseButton    /* original C++ signature */
 class InputEventMouseButton:
     # int Button;    /* original C++ signature */
     button: int
@@ -2337,6 +2396,7 @@ class InputEventMouseButton:
         """
         pass
 
+# struct ImGuiInputEventMouseViewport    /* original C++ signature */
 class InputEventMouseViewport:
     # ImGuiID HoveredViewportID;    /* original C++ signature */
     hovered_viewport_id: ID
@@ -2344,6 +2404,7 @@ class InputEventMouseViewport:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiInputEventKey    /* original C++ signature */
 class InputEventKey:
     # ImGuiKey Key;    /* original C++ signature */
     key: Key
@@ -2355,6 +2416,7 @@ class InputEventKey:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiInputEventText    /* original C++ signature */
 class InputEventText:
     # unsigned int Char;    /* original C++ signature */
     char: int
@@ -2362,6 +2424,7 @@ class InputEventText:
         """Auto-generated default constructor"""
         pass
 
+# struct ImGuiInputEventAppFocused    /* original C++ signature */
 class InputEventAppFocused:
     # bool Focused;    /* original C++ signature */
     focused: bool
@@ -2369,6 +2432,7 @@ class InputEventAppFocused:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiInputEvent    /* original C++ signature */
 class InputEvent:
     # ImGuiInputEventType             Type;    /* original C++ signature */
     type: InputEventType
@@ -2386,6 +2450,7 @@ class InputEvent:
 # Input function taking an 'ImGuiID owner_id' argument defaults to (ImGuiKeyOwner_Any == 0) aka don't test ownership, which matches legacy behavior.
 ##define ImGuiKeyOwner_None ImGuiKeyOwner_NoOwner  // We previously called this 'ImGuiKeyOwner_None' but it was inconsistent with our pattern that _None values == 0 and quite dangerous. Also using _NoOwner makes the IsKeyPressed() calls more explicit.
 
+# struct ImGuiKeyRoutingData    /* original C++ signature */
 class KeyRoutingData:
     """Routing table entry (sizeof() == 16 bytes)"""
 
@@ -2406,6 +2471,7 @@ class KeyRoutingData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiKeyRoutingTable    /* original C++ signature */
 class KeyRoutingTable:
     """Routing table: maintain a desired owner for each possible key-chord (key + mods), and setup owner in NewFrame() when mods are matching.
     Stored in main context (1 instance)
@@ -2424,6 +2490,7 @@ class KeyRoutingTable:
         """(private API)"""
         pass
 
+# struct ImGuiKeyOwnerData    /* original C++ signature */
 class KeyOwnerData:
     """This extends ImGuiKeyData but only for named keys (legacy keys don't support the new features)
     Stored in main context (1 per named key). In the future it might be merged into ImGuiKeyData.
@@ -2444,6 +2511,7 @@ class KeyOwnerData:
     def __init__(self) -> None:
         pass
 
+# enum ImGuiInputFlagsPrivate_    /* original C++ signature */
 class InputFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiInputFlags_
     Flags for extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner()
@@ -2539,6 +2607,7 @@ class InputFlagsPrivate_(enum.IntFlag):
 # [SECTION] Clipper support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiListClipperRange    /* original C++ signature */
 class ListClipperRange:
     """Note that Max is exclusive, so perhaps should be using a Begin/End convention."""
 
@@ -2575,6 +2644,7 @@ class ListClipperRange:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiListClipperData    /* original C++ signature */
 class ListClipperData:
     """Temporary clipper data, buffers shared/reused between instances"""
 
@@ -2601,6 +2671,7 @@ class ListClipperData:
 # [SECTION] Navigation support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiActivateFlags_    /* original C++ signature */
 class ActivateFlags_(enum.IntFlag):
     # ImGuiActivateFlags_None                 = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2625,6 +2696,7 @@ class ActivateFlags_(enum.IntFlag):
     # ImGuiActivateFlags_FromFocusApi         = 1 << 5,           /* original C++ signature */
     from_focus_api = enum.auto()  # (= 1 << 5)  # Activation requested by an api request (ImGuiNavMoveFlags_FocusApi)
 
+# enum ImGuiScrollFlags_    /* original C++ signature */
 class ScrollFlags_(enum.IntFlag):
     """Early work-in-progress API for ScrollToItem()
     FIXME: Missing flags to request making both edges visible when possible.
@@ -2668,6 +2740,7 @@ class ScrollFlags_(enum.IntFlag):
         enum.auto()
     )  # (= ScrollFlags_KeepVisibleEdgeY | ScrollFlags_KeepVisibleCenterY | ScrollFlags_AlwaysCenterY)
 
+# enum ImGuiNavRenderCursorFlags_    /* original C++ signature */
 class NavRenderCursorFlags_(enum.IntFlag):
     # ImGuiNavRenderCursorFlags_None          = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2678,6 +2751,7 @@ class NavRenderCursorFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 2)  # Draw rectangular highlight if (g.NavId == id) even when g.NavCursorVisible == False, aka even when using the mouse.
 
+# enum ImGuiNavMoveFlags_    /* original C++ signature */
 class NavMoveFlags_(enum.IntFlag):
     # ImGuiNavMoveFlags_None                  = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -2726,6 +2800,7 @@ class NavMoveFlags_(enum.IntFlag):
     # ImGuiNavMoveFlags_NoClearActiveId       = 1 << 15,      /* original C++ signature */
     no_clear_active_id = enum.auto()  # (= 1 << 15)  # (Experimental) Do not clear active id when applying move result
 
+# enum ImGuiNavLayer    /* original C++ signature */
 class NavLayer(enum.IntFlag):
     # ImGuiNavLayer_Main  = 0,        /* original C++ signature */
     main = enum.auto()  # (= 0)  # Main scrolling layer
@@ -2735,6 +2810,7 @@ class NavLayer(enum.IntFlag):
     # }
     count = enum.auto()  # (= 2)
 
+# struct ImGuiNavItemData    /* original C++ signature */
 class NavItemData:
     """Storage for navigation query/results"""
 
@@ -2765,6 +2841,7 @@ class NavItemData:
         """(private API)"""
         pass
 
+# struct ImGuiFocusScopeData    /* original C++ signature */
 class FocusScopeData:
     """Storage for PushFocusScope(), g.FocusScopeStack[], g.NavFocusRoute[]"""
 
@@ -2780,6 +2857,7 @@ class FocusScopeData:
 # [SECTION] Typing-select support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiTypingSelectFlags_    /* original C++ signature */
 class TypingSelectFlags_(enum.IntFlag):
     """Flags for GetTypingSelectRequest()"""
 
@@ -2794,6 +2872,7 @@ class TypingSelectFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 1)  # Allow "single char" search mode which is activated when pressing the same character multiple times.
 
+# struct ImGuiTypingSelectRequest    /* original C++ signature */
 class TypingSelectRequest:
     """Returned by GetTypingSelectRequest(), designed to eventually be public."""
 
@@ -2820,6 +2899,7 @@ class TypingSelectRequest:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiTypingSelectState    /* original C++ signature */
 class TypingSelectState:
     """Storage for GetTypingSelectRequest()"""
 
@@ -2851,6 +2931,7 @@ class TypingSelectState:
 # [SECTION] Columns support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiOldColumnFlags_    /* original C++ signature */
 class OldColumnFlags_(enum.IntFlag):
     """Flags for internal's BeginColumns(). This is an obsolete API. Prefer using BeginTable() nowadays!"""
 
@@ -2871,6 +2952,7 @@ class OldColumnFlags_(enum.IntFlag):
 
     # Obsolete names (will be removed)
 
+# struct ImGuiOldColumnData    /* original C++ signature */
 class OldColumnData:
     # float               OffsetNorm;    /* original C++ signature */
     offset_norm: float  # Column start offset, normalized 0.0 (far left) -> 1.0 (far right)
@@ -2885,6 +2967,7 @@ class OldColumnData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiOldColumns    /* original C++ signature */
 class OldColumns:
     # ImGuiID             ID;    /* original C++ signature */
     id_: ID
@@ -2929,6 +3012,7 @@ class OldColumns:
 # [SECTION] Box-select support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiBoxSelectState    /* original C++ signature */
 class BoxSelectState:
     # Active box-selection data (persistent, 1 active at a time)
     # ImGuiID                 ID;    /* original C++ signature */
@@ -2970,6 +3054,7 @@ class BoxSelectState:
 # [SECTION] Multi-select support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiMultiSelectTempData    /* original C++ signature */
 class MultiSelectTempData:
     """Temporary storage for multi-select"""
 
@@ -3023,6 +3108,7 @@ class MultiSelectTempData:
         """(private API)"""
         pass
 
+# struct ImGuiMultiSelectState    /* original C++ signature */
 class MultiSelectState:
     """Persistent storage for multi-select (as long as selection is alive)"""
 
@@ -3054,6 +3140,7 @@ class MultiSelectState:
 # #ifdef IMGUI_HAS_DOCK
 #
 
+# enum ImGuiDockNodeFlagsPrivate_    /* original C++ signature */
 class DockNodeFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiDockNodeFlags_"""
 
@@ -3132,6 +3219,7 @@ class DockNodeFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= DockNodeFlags_NoResizeFlagsMask_ | DockNodeFlags_DockSpace | DockNodeFlags_CentralNode | DockNodeFlags_NoTabBar | DockNodeFlags_HiddenTabBar | DockNodeFlags_NoWindowMenuButton | DockNodeFlags_NoCloseButton)
 
+# enum ImGuiDataAuthority_    /* original C++ signature */
 class DataAuthority_(enum.IntFlag):
     """Store the source authority (dock node vs window) of a field"""
 
@@ -3143,6 +3231,7 @@ class DataAuthority_(enum.IntFlag):
     # }
     window = enum.auto()  # (= 2)
 
+# enum ImGuiDockNodeState    /* original C++ signature */
 class DockNodeState(enum.IntFlag):
     # ImGuiDockNodeState_Unknown,    /* original C++ signature */
     unknown = enum.auto()  # (= 0)
@@ -3154,6 +3243,7 @@ class DockNodeState(enum.IntFlag):
     # }
     host_window_visible = enum.auto()  # (= 3)
 
+# struct ImGuiDockNode    /* original C++ signature */
 class DockNode:
     """sizeof() 176~216"""
 
@@ -3275,6 +3365,7 @@ class DockNode:
         """(private API)"""
         pass
 
+# enum ImGuiWindowDockStyleCol    /* original C++ signature */
 class WindowDockStyleCol(enum.IntFlag):
     """List of colors that are stored at the time of Begin() into Docked Windows.
     We currently store the packed colors in a simple array window->DockStyle.Colors[].
@@ -3304,6 +3395,7 @@ class WindowDockStyleCol(enum.IntFlag):
     # }
     count = enum.auto()  # (= 9)
 
+# struct ImGuiWindowDockStyle    /* original C++ signature */
 class WindowDockStyle:
     """We don't store style.Alpha: dock_node->LastBgColor embeds it and otherwise it would only affect the docking tab, which intuitively I would say we don't want to."""
 
@@ -3311,6 +3403,7 @@ class WindowDockStyle:
         """Auto-generated default constructor"""
         pass
 
+# struct ImGuiDockContext    /* original C++ signature */
 class DockContext:
     # ImGuiStorage                    Nodes;    /* original C++ signature */
     nodes: Storage  # Map ID -> ImGuiDockNode*: Active nodes
@@ -3326,6 +3419,7 @@ class DockContext:
 # [SECTION] Viewport support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiViewportP    /* original C++ signature */
 class ViewportP:
     """ImGuiViewport Private/Internals fields (cardinal sin: we are using inheritance!)
     Every instance of ImGuiViewport is in fact a ImGuiViewportP.
@@ -3424,6 +3518,7 @@ class ViewportP:
 # [SECTION] Settings support
 # -----------------------------------------------------------------------------
 
+# struct ImGuiWindowSettings    /* original C++ signature */
 class WindowSettings:
     """Windows data saved in imgui.ini file
     Because we never destroy or rename ImGuiWindowSettings, we can store the names in a separate buffer easily.
@@ -3456,6 +3551,7 @@ class WindowSettings:
     def get_name_str(self) -> str:
         pass
 
+# struct ImGuiSettingsCleanupArgs    /* original C++ signature */
 class SettingsCleanupArgs:
     # ImGuiID         TypeHashFilter = 0;    /* original C++ signature */
     type_hash_filter: ID = (
@@ -3492,6 +3588,7 @@ class SettingsCleanupArgs:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiSettingsHandler    /* original C++ signature */
 class SettingsHandler:
     # const char* TypeName;    /* original C++ signature */
     type_name: str  # Short description stored in .ini file. Disallowed characters: '[' ']' # (const)
@@ -3508,6 +3605,7 @@ class SettingsHandler:
 # [SECTION] Localization support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiLocKey    /* original C++ signature */
 class LocKey(enum.IntFlag):
     """This is experimental and not officially supported, it'll probably fall short of features, if/when it does we may backtrack."""
 
@@ -3546,6 +3644,7 @@ class LocKey(enum.IntFlag):
     # }
     count = enum.auto()  # (= 15)
 
+# struct ImGuiLocEntry    /* original C++ signature */
 class LocEntry:
     # ImGuiLocKey     Key;    /* original C++ signature */
     key: LocKey
@@ -3571,6 +3670,7 @@ class LocEntry:
 # [SECTION] Metrics, Debug Tools
 # -----------------------------------------------------------------------------
 
+# enum ImGuiDebugLogFlags_    /* original C++ signature */
 class DebugLogFlags_(enum.IntFlag):
     """See IMGUI_DEBUG_LOG() and IMGUI_DEBUG_LOG_XXX() macros."""
 
@@ -3615,6 +3715,7 @@ class DebugLogFlags_(enum.IntFlag):
     # ImGuiDebugLogFlags_OutputToTestEngine   = 1 << 22,      /* original C++ signature */
     output_to_test_engine = enum.auto()  # (= 1 << 22)  # Also send output to Dear ImGui Test Engine
 
+# struct ImGuiDebugAllocEntry    /* original C++ signature */
 class DebugAllocEntry:
     # int         FrameCount;    /* original C++ signature */
     frame_count: int
@@ -3626,6 +3727,7 @@ class DebugAllocEntry:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiDebugAllocInfo    /* original C++ signature */
 class DebugAllocInfo:
     # int         TotalAllocCount;    /* original C++ signature */
     total_alloc_count: int  # Number of call to MemAlloc().
@@ -3638,6 +3740,7 @@ class DebugAllocInfo:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiMetricsConfig    /* original C++ signature */
 class MetricsConfig:
     # bool        ShowDebugLog = false;    /* original C++ signature */
     show_debug_log: bool = False
@@ -3696,6 +3799,7 @@ class MetricsConfig:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiStackLevelInfo    /* original C++ signature */
 class StackLevelInfo:
     # ImGuiID                 ID;    /* original C++ signature */
     id_: ID
@@ -3712,6 +3816,7 @@ class StackLevelInfo:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiDebugItemPathQuery    /* original C++ signature */
 class DebugItemPathQuery:
     # ImGuiID                 MainID;    /* original C++ signature */
     main_id: ID  # ID to query details for.
@@ -3732,6 +3837,7 @@ class DebugItemPathQuery:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiIDStackTool    /* original C++ signature */
 class IDStackTool:
     """State for ID Stack tool queries"""
 
@@ -3752,6 +3858,7 @@ class IDStackTool:
 # [SECTION] Generic context hooks
 # -----------------------------------------------------------------------------
 
+# enum ImGuiContextHookType    /* original C++ signature */
 class ContextHookType(enum.IntFlag):
     """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow (called at the start of Begin() and at the end of End())
     They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is begun from inside it.
@@ -3779,6 +3886,7 @@ class ContextHookType(enum.IntFlag):
     # ImGuiContextHookType_EndWindow }    /* original C++ signature */
     end_window = enum.auto()  # (= 9)
 
+# struct ImGuiContextHook    /* original C++ signature */
 class ContextHook:
     # ImGuiID                     HookId;    /* original C++ signature */
     hook_id: ID  # A unique ID assigned by AddContextHook()
@@ -3797,6 +3905,7 @@ class ContextHook:
 # [SECTION] ImGuiContext (main Dear ImGui context)
 # -----------------------------------------------------------------------------
 
+# struct ImGuiContext    /* original C++ signature */
 class Context:
     # bool                    Initialized;    /* original C++ signature */
     initialized: bool
@@ -4585,6 +4694,7 @@ class Context:
 # [SECTION] ImGuiWindowTempData, ImGuiWindow
 # -----------------------------------------------------------------------------
 
+# struct ImGuiWindowTempData    /* original C++ signature */
 class WindowTempData:
     """Transient per-window data, reset at the beginning of the frame. This used to be called ImGuiDrawContext, hence the DC variable name in ImGuiWindow.
     (That's theory, in practice the delimitation between ImGuiWindow and ImGuiWindowTempData is quite tenuous and could be reconsidered..)
@@ -4757,6 +4867,7 @@ class WindowTempData:
         """
         pass
 
+# struct ImGuiWindow    /* original C++ signature */
 class Window:
     """Storage for one window"""
 
@@ -5069,6 +5180,7 @@ class Window:
 # [SECTION] Tab bar, Tab item support
 # -----------------------------------------------------------------------------
 
+# enum ImGuiTabBarFlagsPrivate_    /* original C++ signature */
 class TabBarFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTabBarFlags_"""
 
@@ -5083,6 +5195,7 @@ class TabBarFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 22)  # FIXME: Settings are handled by the docking system, this only request the tab bar to mark settings dirty when reordering tabs
 
+# enum ImGuiTabItemFlagsPrivate_    /* original C++ signature */
 class TabItemFlagsPrivate_(enum.IntFlag):
     """Extend ImGuiTabItemFlags_"""
 
@@ -5101,6 +5214,7 @@ class TabItemFlagsPrivate_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 23)  # [Docking] Trailing tabs with the _Unsorted flag will be sorted based on the DockOrder of their Window.
 
+# struct ImGuiTabItem    /* original C++ signature */
 class TabItem:
     """Storage for one active tab item (sizeof() 48 bytes)"""
 
@@ -5137,6 +5251,7 @@ class TabItem:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTabBar    /* original C++ signature */
 class TabBar:
     """Storage for a tab bar (sizeof() 160 bytes)"""
 
@@ -5225,6 +5340,7 @@ class TabBar:
 # [SECTION] Table support + internal API
 # -----------------------------------------------------------------------------
 
+# struct ImGuiTableColumn    /* original C++ signature */
 class TableColumn:
     """[Internal] sizeof() ~ 120
     We use the terminology "Enabled" to refer to a column that is not Hidden by user/api.
@@ -5321,6 +5437,7 @@ class TableColumn:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTableReconcileColumnData    /* original C++ signature */
 class TableReconcileColumnData:
     """Passed to TableSetupColumn()
     sizeof() ~ 24+120 bytes
@@ -5366,6 +5483,7 @@ class TableReconcileColumnData:
         """
         pass
 
+# struct ImGuiTableCellData    /* original C++ signature */
 class TableCellData:
     """Transient cell data stored per row.
     sizeof() ~ 6 bytes
@@ -5383,6 +5501,7 @@ class TableCellData:
         """
         pass
 
+# struct ImGuiTableHeaderData    /* original C++ signature */
 class TableHeaderData:
     """Parameters for TableAngledHeadersRowEx()
     This may end up being refactored for more general purpose.
@@ -5411,6 +5530,7 @@ class TableHeaderData:
         """
         pass
 
+# struct ImGuiTableInstanceData    /* original C++ signature */
 class TableInstanceData:
     """Per-instance data that needs preserving across frames (seemingly most others do not need to be preserved aside from debug needs. Does that means they could be moved to ImGuiTableTempData?)
     sizeof() ~ 24 bytes
@@ -5433,6 +5553,7 @@ class TableInstanceData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTable    /* original C++ signature */
 class Table:
     """sizeof() ~ 592 bytes + heap allocs described in TableBeginInitMemory()"""
 
@@ -5679,6 +5800,7 @@ class Table:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTableTempData    /* original C++ signature */
 class TableTempData:
     """Transient data that are only needed between BeginTable() and EndTable(), those buffers are shared (1 per level of stacked table).
     - Accessing those requires chasing an extra pointer so for very frequently used data we leave them in the main table structure.
@@ -5730,6 +5852,7 @@ class TableTempData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTableColumnSettings    /* original C++ signature */
 class TableColumnSettings:
     """sizeof() ~ 16"""
 
@@ -5748,6 +5871,7 @@ class TableColumnSettings:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiTableSettings    /* original C++ signature */
 class TableSettings:
     """This is designed to be stored in a single ImChunkStream (1 header followed by N ImGuiTableColumnSettings, etc.)"""
 
@@ -8074,6 +8198,7 @@ def debug_render_viewport_thumbnail(draw_list: ImDrawList, viewport: ViewportP, 
 # [SECTION] ImFontLoader
 # -----------------------------------------------------------------------------
 
+# struct ImFontLoader    /* original C++ signature */
 class ImFontLoader:
     """Hooks and storage for a given font backend.
     This structure is likely to evolve as we add support for incremental atlas updates.
@@ -8115,6 +8240,7 @@ def im_font_atlas_rect_id_make(index_idx: int, gen_idx: int) -> ImFontAtlasRectI
     """(private API)"""
     pass
 
+# struct ImFontAtlasRectEntry    /* original C++ signature */
 class ImFontAtlasRectEntry:
     """Packed rectangle lookup entry (we need an indirection to allow removing/reordering rectangles)
     User are returned ImFontAtlasRectId values which are meant to be persistent.
@@ -8127,6 +8253,7 @@ class ImFontAtlasRectEntry:
         """Auto-generated default constructor"""
         pass
 
+# struct ImFontAtlasPostProcessData    /* original C++ signature */
 class ImFontAtlasPostProcessData:
     """Data available to potential texture post-processing functions"""
 
@@ -8163,11 +8290,13 @@ class ImFontAtlasPostProcessData:
         pass
 
 # We avoid dragging imstb_rectpack.h into public header (partly because binding generators are having issues with it)
+# struct stbrp_context_opaque    /* original C++ signature */
 class stbrp_context_opaque:
     def __init__(self) -> None:
         """Auto-generated default constructor"""
         pass
 
+# struct ImFontAtlasBuilder    /* original C++ signature */
 class ImFontAtlasBuilder:
     """Internal storage for incrementally packing and building a ImFontAtlas"""
 
@@ -8455,6 +8584,7 @@ def im_font_atlas_get_mouse_cursor_tex_data(
 # - ImGuiDockContext
 # -----------------------------------------------------------------------------
 
+# enum ImGuiDockRequestType    /* original C++ signature */
 class DockRequestType(enum.IntFlag):
     # ImGuiDockRequestType_None = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
@@ -8465,6 +8595,7 @@ class DockRequestType(enum.IntFlag):
     # ImGuiDockRequestType_Split                      /* original C++ signature */
     split = enum.auto()  # (= 3)  # Split is the same as Dock but without a DockPayload
 
+# struct ImGuiDockRequest    /* original C++ signature */
 class DockRequest:
     # ImGuiDockRequestType    Type;    /* original C++ signature */
     type: DockRequestType
@@ -8489,6 +8620,7 @@ class DockRequest:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiDockPreviewData    /* original C++ signature */
 class DockPreviewData:
     # ImGuiDockNode   FutureNode;    /* original C++ signature */
     future_node: DockNode
@@ -8511,6 +8643,7 @@ class DockPreviewData:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiDockNodeSettings    /* original C++ signature */
 class DockNodeSettings:
     """Persistent Settings data, stored contiguously in SettingsNodes (sizeof() ~32 bytes)"""
 
@@ -8562,6 +8695,7 @@ def dock_builder_split_node_py(node_id: ID, split_dir: Dir, size_ratio_for_node_
     """
     pass
 
+# struct DockBuilderSplitNodeResult    /* original C++ signature */
 class DockBuilderSplitNodeResult:
     """Result of DockBuilderSplitNode() (python version)"""
 

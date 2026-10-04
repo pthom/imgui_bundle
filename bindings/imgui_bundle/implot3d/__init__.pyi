@@ -173,6 +173,7 @@ ItemFlags_None = ItemFlags_.none
 # [SECTION] Flags & Enumerations
 # -----------------------------------------------------------------------------
 
+# enum ImPlot3DProp_    /* original C++ signature */
 class Prop_(enum.IntFlag):
     """Plotting properties. These provide syntactic sugar for creating ImPlot3DSpec from (ImPlot3DProp,value) pairs"""
 
@@ -221,6 +222,7 @@ class Prop_(enum.IntFlag):
         enum.auto()
     )  # (= 15)  # Optional item flags; can be composed from common ImPlot3DItemFlags and/or specialized ImPlot3DXFlags
 
+# enum ImPlot3DFlags_    /* original C++ signature */
 class Flags_(enum.IntFlag):
     """Flags for ImPlot3D::BeginPlot()"""
 
@@ -250,6 +252,7 @@ class Flags_(enum.IntFlag):
     # }
     canvas_only = enum.auto()  # (= Flags_NoTitle | Flags_NoLegend | Flags_NoMouseText)
 
+# enum ImPlot3DCond_    /* original C++ signature */
 class Cond_(enum.IntFlag):
     """Represents a condition for SetupAxisLimits etc. (same as ImGuiCond, but we only support a subset of those enums)"""
 
@@ -260,6 +263,7 @@ class Cond_(enum.IntFlag):
     # ImPlot3DCond_Once = ImGuiCond_Once,         /* original C++ signature */
     once = enum.auto()  # (= Cond_Once)  # Set the variable once per runtime session (only the first call will succeed)
 
+# enum ImPlot3DCol_    /* original C++ signature */
 class Col_(enum.IntFlag):
     # Plot colors
     # ImPlot3DCol_TitleText,      /* original C++ signature */
@@ -296,6 +300,7 @@ class Col_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 14)
 
+# enum ImPlot3DStyleVar_    /* original C++ signature */
 class StyleVar_(enum.IntFlag):
     """Plot styling variables"""
 
@@ -334,6 +339,7 @@ class StyleVar_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 12)
 
+# enum ImPlot3DMarker_    /* original C++ signature */
 class Marker_(enum.IntFlag):
     # ImPlot3DMarker_None = -2,     /* original C++ signature */
     none = enum.auto()  # (= -2)  # No marker
@@ -363,6 +369,7 @@ class Marker_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 10)
 
+# enum ImPlot3DItemFlags_    /* original C++ signature */
 class ItemFlags_(enum.IntFlag):
     """Flags for items"""
 
@@ -373,6 +380,7 @@ class ItemFlags_(enum.IntFlag):
     # ImPlot3DItemFlags_NoFit = 1 << 1,        /* original C++ signature */
     no_fit = enum.auto()  # (= 1 << 1)  # The item won't be considered for plot fits
 
+# enum ImPlot3DScatterFlags_    /* original C++ signature */
 class ScatterFlags_(enum.IntFlag):
     """Flags for PlotScatter"""
 
@@ -384,6 +392,7 @@ class ScatterFlags_(enum.IntFlag):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
+# enum ImPlot3DLineFlags_    /* original C++ signature */
 class LineFlags_(enum.IntFlag):
     """Flags for PlotLine"""
 
@@ -400,6 +409,7 @@ class LineFlags_(enum.IntFlag):
     # ImPlot3DLineFlags_SkipNaN = 1 << 12,      /* original C++ signature */
     skip_nan = enum.auto()  # (= 1 << 12)  # NaNs values will be skipped instead of rendered as missing data
 
+# enum ImPlot3DTriangleFlags_    /* original C++ signature */
 class TriangleFlags_(enum.IntFlag):
     """Flags for PlotTriangle"""
 
@@ -416,6 +426,7 @@ class TriangleFlags_(enum.IntFlag):
     # ImPlot3DTriangleFlags_NoMarkers = 1 << 12,     /* original C++ signature */
     no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
+# enum ImPlot3DQuadFlags_    /* original C++ signature */
 class QuadFlags_(enum.IntFlag):
     """Flags for PlotQuad"""
 
@@ -432,6 +443,7 @@ class QuadFlags_(enum.IntFlag):
     # ImPlot3DQuadFlags_NoMarkers = 1 << 12,     /* original C++ signature */
     no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
+# enum ImPlot3DSurfaceFlags_    /* original C++ signature */
 class SurfaceFlags_(enum.IntFlag):
     """Flags for PlotSurface"""
 
@@ -448,6 +460,7 @@ class SurfaceFlags_(enum.IntFlag):
     # ImPlot3DSurfaceFlags_NoMarkers = 1 << 12,     /* original C++ signature */
     no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
+# enum ImPlot3DMeshFlags_    /* original C++ signature */
 class MeshFlags_(enum.IntFlag):
     """Flags for PlotMesh"""
 
@@ -464,6 +477,7 @@ class MeshFlags_(enum.IntFlag):
     # ImPlot3DMeshFlags_NoMarkers = 1 << 12,     /* original C++ signature */
     no_markers = enum.auto()  # (= 1 << 12)  # No markers will be rendered
 
+# enum ImPlot3DImageFlags_    /* original C++ signature */
 class ImageFlags_(enum.IntFlag):
     """Flags for PlotImage"""
 
@@ -475,12 +489,14 @@ class ImageFlags_(enum.IntFlag):
     # }
     no_fit = enum.auto()  # (= ItemFlags_NoFit)
 
+# enum ImPlot3DDummyFlags_    /* original C++ signature */
 class DummyFlags_(enum.IntFlag):
     """Flags for PlotDummy"""
 
     # ImPlot3DDummyFlags_None = 0     /* original C++ signature */
     none = enum.auto()  # (= 0)  # Default
 
+# enum ImPlot3DLegendFlags_    /* original C++ signature */
 class LegendFlags_(enum.IntFlag):
     """Flags for legends"""
 
@@ -495,6 +511,7 @@ class LegendFlags_(enum.IntFlag):
     # ImPlot3DLegendFlags_Horizontal = 1 << 2,          /* original C++ signature */
     horizontal = enum.auto()  # (= 1 << 2)  # Legend entries will be displayed horizontally
 
+# enum ImPlot3DLocation_    /* original C++ signature */
 class Location_(enum.IntFlag):
     """Used to position legend on a plot"""
 
@@ -517,6 +534,7 @@ class Location_(enum.IntFlag):
     # ImPlot3DLocation_SouthEast = ImPlot3DLocation_South | ImPlot3DLocation_East      /* original C++ signature */
     south_east = enum.auto()  # (= Location_South | Location_East)  # Bottom-right
 
+# enum ImPlot3DAxisFlags_    /* original C++ signature */
 class AxisFlags_(enum.IntFlag):
     """Flags for axis"""
 
@@ -548,6 +566,7 @@ class AxisFlags_(enum.IntFlag):
     # }
     no_decorations = enum.auto()  # (= AxisFlags_NoLabel | AxisFlags_NoGridLines | AxisFlags_NoTickLabels)
 
+# enum ImAxis3D_    /* original C++ signature */
 class ImAxis3D_(enum.IntFlag):
     """Axis indices"""
 
@@ -561,6 +580,7 @@ class ImAxis3D_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 3)
 
+# enum ImPlane3D_    /* original C++ signature */
 class ImPlane3D_(enum.IntFlag):
     """Plane indices"""
 
@@ -574,6 +594,7 @@ class ImPlane3D_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 3)
 
+# enum ImPlot3DScale_    /* original C++ signature */
 class Scale_(enum.IntFlag):
     """Axis scale"""
 
@@ -584,6 +605,7 @@ class Scale_(enum.IntFlag):
     # ImPlot3DScale_SymLog,         /* original C++ signature */
     sym_log = enum.auto()  # (= 2)  # Symmetric base 10 log scale
 
+# enum ImPlot3DColormap_    /* original C++ signature */
 class Colormap_(enum.IntFlag):
     """Colormaps"""
 
@@ -624,6 +646,7 @@ class Colormap_(enum.IntFlag):
 # [SECTION] Specs API
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DSpec    /* original C++ signature */
 class Spec:
     """Plot item styling specification. Provide these to PlotX functions to override styling, specify
     offsetting or stride, or set optional flags. This struct can be used in the following ways:
@@ -1021,6 +1044,7 @@ def plot_surface(
 # [ADAPT_IMGUI_BUNDLE]
 # #ifdef IMGUI_BUNDLE_PYTHON_API
 #
+# struct Mesh    /* original C++ signature */
 class Mesh:
     # std::vector<ImPlot3DPoint> Points;    /* original C++ signature */
     points: List[Point]
@@ -1436,6 +1460,7 @@ def show_about_window(p_open: Optional[bool] = None) -> Optional[bool]:
 # [SECTION] ImPlot3DPoint
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DPoint    /* original C++ signature */
 class Point:
     """ImPlot3DPoint: 3D vector to store points in 3D space"""
 
@@ -1548,6 +1573,7 @@ class Point:
 # [SECTION] ImPlot3DRay
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DRay    /* original C++ signature */
 class Ray:
     """ImPlot3DRay: Represents a ray in 3D space with an origin and direction"""
 
@@ -1569,6 +1595,7 @@ class Ray:
 # [SECTION] ImPlot3DPlane
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DPlane    /* original C++ signature */
 class Plane:
     """ImPlot3DPlane: Represents a plane in 3D space defined by a point and normal vector"""
 
@@ -1590,6 +1617,7 @@ class Plane:
 # [SECTION] ImPlot3DBox
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DBox    /* original C++ signature */
 class Box:
     """ImPlot3DBox: Axis-aligned bounding box in 3D space"""
 
@@ -1625,6 +1653,7 @@ class Box:
 # [SECTION] ImPlot3DRange
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DRange    /* original C++ signature */
 class Range:
     """ImPlot3DRange: Represents a 1D range with min and max values"""
 
@@ -1661,6 +1690,7 @@ class Range:
 # [SECTION] ImPlot3DQuat
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DQuat    /* original C++ signature */
 class Quat:
     """ImPlot3DQuat: Quaternion for representing 3D rotations"""
 
@@ -1749,6 +1779,7 @@ class Quat:
 # [SECTION] ImPlot3DStyle
 # -----------------------------------------------------------------------------
 
+# struct ImPlot3DStyle    /* original C++ signature */
 class Style:
     """
     (has support for copy.copy)

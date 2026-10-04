@@ -499,6 +499,7 @@ class Vec4Protocol(Protocol):
 # #endif
 #
 
+# struct ImVec2    /* original C++ signature */
 class ImVec2(Vec2Protocol):
     # float x,     /* original C++ signature */
     x: float
@@ -530,6 +531,7 @@ class ImVec2(Vec2Protocol):
         """Create from a dict with keys x, y"""
         pass
 
+# struct ImVec4    /* original C++ signature */
 class ImVec4(Vec4Protocol):
     """ImVec4: 4D vector used to store clipping rectangles, colors etc. [Compile-time configurable type]"""
 
@@ -592,6 +594,7 @@ class ImVec4(Vec4Protocol):
 # - If your backend is using ImTextureID to store an index/offset and you need 0 to be valid, You can add '#define ImTextureID_Invalid ((ImTextureID)-1)' in your imconfig.h file.
 # - From 2026/03/12 to 2026/03/19 we experimented with changing to default to -1, but I worried it would cause too many issues in third-party code so it was reverted.
 
+# struct ImTextureRef    /* original C++ signature */
 class ImTextureRef:
     # ImTextureRef();    /* original C++ signature */
     @overload
@@ -3051,6 +3054,7 @@ def find_viewport_by_platform_handle(platform_handle: Any) -> Viewport:
 # [SECTION] Flags & Enumerations
 # -----------------------------------------------------------------------------
 
+# enum ImGuiWindowFlags_    /* original C++ signature */
 class WindowFlags_(enum.IntFlag):
     """Flags for ImGui::Begin()
     (Those are per-window flags. There are shared flags in ImGuiIO: io.ConfigWindowsResizeFromEdges and io.ConfigWindowsMoveFromTitleBarOnly)
@@ -3145,6 +3149,7 @@ class WindowFlags_(enum.IntFlag):
 
     # Obsolete names
 
+# enum ImGuiChildFlags_    /* original C++ signature */
 class ChildFlags_(enum.IntFlag):
     """Flags for ImGui::BeginChild()
     (Legacy: bit 0 must always correspond to ImGuiChildFlags_Borders to be backward compatible with old API using 'bool border = False'.)
@@ -3196,6 +3201,7 @@ class ChildFlags_(enum.IntFlag):
 
     # Obsolete names
 
+# enum ImGuiItemFlags_    /* original C++ signature */
 class ItemFlags_(enum.IntFlag):
     """Flags for ImGui::PushItemFlag()
     (Those are shared by all submitted items)
@@ -3266,6 +3272,7 @@ class ItemFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 9)  # False    // [BETA] Represent a mixed/indeterminate value. Replace value label with "-" and apply edits on validation.
 
+# enum ImGuiInputTextFlags_    /* original C++ signature */
 class InputTextFlags_(enum.IntFlag):
     """Flags for ImGui::InputText()
     (Those are per-item flags. There are shared flags in ImGuiIO: io.ConfigInputTextCursorBlink and io.ConfigInputTextEnterKeepActive)
@@ -3367,6 +3374,7 @@ class InputTextFlags_(enum.IntFlag):
     # Obsolete names
     # ImGuiInputTextFlags_AlwaysInsertMode  = ImGuiInputTextFlags_AlwaysOverwrite   // [renamed in 1.82] name was not matching behavior
 
+# enum ImGuiTreeNodeFlags_    /* original C++ signature */
 class TreeNodeFlags_(enum.IntFlag):
     """Flags for ImGui::TreeNodeEx(), ImGui::CollapsingHeader*()"""
 
@@ -3451,6 +3459,7 @@ class TreeNodeFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 20)  # Horizontal lines to child nodes. Vertical line drawn down to bottom-most child node. Slower (for large trees).
 
+# enum ImGuiPopupFlags_    /* original C++ signature */
 class PopupFlags_(enum.IntFlag):
     """Flags for OpenPopup*(), BeginPopupContext*(), IsPopupOpen() functions.
     - IMPORTANT: If you ever used the left mouse button with BeginPopupContextXXX() helpers before 1.92.6: Read "API BREAKING CHANGES" 2026/01/07 (1.92.6) entry in imgui.cpp or GitHub topic #9157.
@@ -3501,6 +3510,7 @@ class PopupFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 0x03)  # [Internal] Reserve legacy bits 0-1 to detect incorrectly passing 1 or 2 to the function.
 
+# enum ImGuiSelectableFlags_    /* original C++ signature */
 class SelectableFlags_(enum.IntFlag):
     """Flags for ImGui::Selectable()"""
 
@@ -3529,6 +3539,7 @@ class SelectableFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 6)  # Auto-select when moved into, unless Ctrl is held. Automatic when in a BeginMultiSelect() block.
 
+# enum ImGuiComboFlags_    /* original C++ signature */
 class ComboFlags_(enum.IntFlag):
     """Flags for ImGui::BeginCombo()"""
 
@@ -3558,6 +3569,7 @@ class ComboFlags_(enum.IntFlag):
         enum.auto()
     )  # (= ComboFlags_HeightSmall | ComboFlags_HeightRegular | ComboFlags_HeightLarge | ComboFlags_HeightLargest)
 
+# enum ImGuiTabBarFlags_    /* original C++ signature */
 class TabBarFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabBar()"""
 
@@ -3600,6 +3612,7 @@ class TabBarFlags_(enum.IntFlag):
     # ImGuiTabBarFlags_FittingPolicyDefault_          = ImGuiTabBarFlags_FittingPolicyMixed,    /* original C++ signature */
     fitting_policy_default_ = enum.auto()  # (= TabBarFlags_FittingPolicyMixed)
 
+# enum ImGuiTabItemFlags_    /* original C++ signature */
 class TabItemFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTabItem()"""
 
@@ -3636,6 +3649,7 @@ class TabItemFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 8)  # Tab is selected when trying to close + closure is not immediately assumed (will wait for user to stop submitting the tab). Otherwise closure is assumed when pressing the X, so if you keep submitting the tab may reappear at end of tab bar.
 
+# enum ImGuiFocusedFlags_    /* original C++ signature */
 class FocusedFlags_(enum.IntFlag):
     """Flags for ImGui::IsWindowFocused()"""
 
@@ -3661,6 +3675,7 @@ class FocusedFlags_(enum.IntFlag):
     # }
     root_and_child_windows = enum.auto()  # (= FocusedFlags_RootWindow | FocusedFlags_ChildWindows)
 
+# enum ImGuiHoveredFlags_    /* original C++ signature */
 class HoveredFlags_(enum.IntFlag):
     """Flags for ImGui::IsItemHovered(), ImGui::IsWindowHovered()
     Note: if you are trying to check whether your mouse should be dispatched to Dear ImGui or to your app, you should use 'io.WantCaptureMouse' instead! Please read the FAQ!
@@ -3758,6 +3773,7 @@ class HoveredFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 17)  # IsItemHovered() only: Disable shared delay system where moving from one item to the next keeps the previous timer for a short time (standard for tooltips with long delays)
 
+# enum ImGuiDockNodeFlags_    /* original C++ signature */
 class DockNodeFlags_(enum.IntFlag):
     """Flags for ImGui::DockSpace(), shared/inherited by child nodes.
     (Some flags can be applied to individual nodes directly)
@@ -3792,6 +3808,7 @@ class DockNodeFlags_(enum.IntFlag):
     # ImGuiDockNodeFlags_NoUndocking                  = 1 << 7,       /* original C++ signature */
     no_undocking = enum.auto()  # (= 1 << 7)  #       // Disable undocking this node.
 
+# enum ImGuiDragDropFlags_    /* original C++ signature */
 class DragDropFlags_(enum.IntFlag):
     """Flags for ImGui::BeginDragDropSource(), ImGui::AcceptDragDropPayload()"""
 
@@ -3854,6 +3871,7 @@ class DragDropFlags_(enum.IntFlag):
 
 # Standard Drag and Drop payload types. You can define you own payload types using short strings. Types starting with '_' are defined by Dear ImGui.
 
+# enum ImGuiDataType_    /* original C++ signature */
 class DataType_(enum.IntFlag):
     """A primary data type"""
 
@@ -3885,6 +3903,7 @@ class DataType_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 12)
 
+# enum ImGuiDir    /* original C++ signature */
 class Dir(enum.IntFlag):
     """A cardinal direction"""
 
@@ -3902,6 +3921,7 @@ class Dir(enum.IntFlag):
     # }
     count = enum.auto()  # (= 4)
 
+# enum ImGuiSortDirection    /* original C++ signature */
 class SortDirection(enum.IntFlag):
     """A sorting direction"""
 
@@ -3912,6 +3932,7 @@ class SortDirection(enum.IntFlag):
     # ImGuiSortDirection_Descending   = 2         /* original C++ signature */
     descending = enum.auto()  # (= 2)  # Descending = 9->0, Z->A etc.
 
+# enum ImGuiKey    /* original C++ signature */
 class Key(enum.IntFlag):
     """A key identifier (ImGuiKey_XXX or ImGuiMod_XXX value): can represent Keyboard, Mouse and Gamepad values.
     All our named keys are >= 512. Keys value 0 to 511 are left unused and were legacy native/opaque key values (< 1.87).
@@ -4301,6 +4322,7 @@ class Key(enum.IntFlag):
     # ImGuiMod_Mask_                  = 0xF000,      /* original C++ signature */
     mod_mask_ = enum.auto()  # (= 0xF000)  # 4-bits
 
+# enum ImGuiInputFlags_    /* original C++ signature */
 class InputFlags_(enum.IntFlag):
     """Flags for Shortcut(), SetNextItemShortcut(),
     (and for upcoming extended versions of IsKeyPressed(), IsMouseClicked(), Shortcut(), SetKeyOwner(), SetItemKeyOwner() that are still in imgui_internal.h)
@@ -4353,6 +4375,7 @@ class InputFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 18)  # Automatically display a tooltip when hovering item [BETA] Unsure of right api (opt-in/opt-out)
 
+# enum ImGuiConfigFlags_    /* original C++ signature */
 class ConfigFlags_(enum.IntFlag):
     """Configuration flags stored in io.ConfigFlags. Set by user/application.
     Note that nowadays most of our configuration options are in other ImGuiIO fields, e.g. io.ConfigWindowsMoveFromTitleBarOnly.
@@ -4396,6 +4419,7 @@ class ConfigFlags_(enum.IntFlag):
     # ImGuiConfigFlags_IsTouchScreen          = 1 << 21,      /* original C++ signature */
     is_touch_screen = enum.auto()  # (= 1 << 21)  # Application is using a touch screen instead of a mouse.
 
+# enum ImGuiBackendFlags_    /* original C++ signature */
 class BackendFlags_(enum.IntFlag):
     """Backend capabilities flags stored in io.BackendFlags. Set by imgui_impl_xxx or custom backend."""
 
@@ -4434,6 +4458,7 @@ class BackendFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 13)  # Backend Platform supports honoring viewport->ParentViewport/ParentViewportId value, by applying the corresponding parent/child relationship at the Platform level. Child windows always appear in front of their parent window.
 
+# enum ImGuiCol_    /* original C++ signature */
 class Col_(enum.IntFlag):
     """Enumeration for PushStyleColor() / PopStyleColor()"""
 
@@ -4574,6 +4599,7 @@ class Col_(enum.IntFlag):
     # ImGuiCol_COUNT,    /* original C++ signature */
     count = enum.auto()  # (= 63)
 
+# enum ImGuiStyleVar_    /* original C++ signature */
 class StyleVar_(enum.IntFlag):
     """Enumeration for PushStyleVar() / PopStyleVar() to temporarily modify the ImGuiStyle structure.
     - The enum only refers to fields of ImGuiStyle which makes sense to be pushed/popped inside UI code.
@@ -4682,6 +4708,7 @@ class StyleVar_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 46)
 
+# enum ImGuiButtonFlags_    /* original C++ signature */
 class ButtonFlags_(enum.IntFlag):
     """Flags for InvisibleButton() [extended in imgui_internal.h]"""
 
@@ -4706,6 +4733,7 @@ class ButtonFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 12)  # Hit testing will allow subsequent widgets to overlap this one. Require previous frame HoveredId to match before being usable. Shortcut to calling SetNextItemAllowOverlap().
 
+# enum ImGuiColorEditFlags_    /* original C++ signature */
 class ColorEditFlags_(enum.IntFlag):
     """Flags for ColorEdit3() / ColorEdit4() / ColorPicker3() / ColorPicker4() / ColorButton()"""
 
@@ -4836,6 +4864,7 @@ class ColorEditFlags_(enum.IntFlag):
 
     # Obsolete names
 
+# enum ImGuiSliderFlags_    /* original C++ signature */
 class SliderFlags_(enum.IntFlag):
     """Flags for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
     We use the same sets of flags for DragXXX() and SliderXXX() functions as the features are the same and it makes it easier to swap them.
@@ -4885,6 +4914,7 @@ class SliderFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 0x7000000F)  # [Internal] We treat using those bits as being potentially a 'float power' argument from legacy API (obsoleted 2020-08) that has got miscast to this enum, and will trigger an assert if needed.
 
+# enum ImGuiMouseButton_    /* original C++ signature */
 class MouseButton_(enum.IntFlag):
     """Identify a mouse button.
     Those values are guaranteed to be stable and we frequently use 0/1 directly. Named enums provided for convenience.
@@ -4900,6 +4930,7 @@ class MouseButton_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 5)
 
+# enum ImGuiMouseCursor_    /* original C++ signature */
 class MouseCursor_(enum.IntFlag):
     """Enumeration for GetMouseCursor()
     User code may request backend to display given cursor by calling SetMouseCursor(), which is why we have some cursors that are marked unused here
@@ -4935,6 +4966,7 @@ class MouseCursor_(enum.IntFlag):
     # }
     count = enum.auto()  # (= 11)
 
+# enum ImGuiMouseSource    /* original C++ signature */
 class MouseSource(enum.IntFlag):
     """Enumeration for AddMouseSourceEvent() actual source of Mouse Input data.
     Historically we use "Mouse" terminology everywhere to indicate pointer data, e.g. MousePos, IsMousePressed(), io.AddMousePosEvent()
@@ -4956,6 +4988,7 @@ class MouseSource(enum.IntFlag):
     # }
     count = enum.auto()  # (= 3)
 
+# enum ImGuiCond_    /* original C++ signature */
 class Cond_(enum.IntFlag):
     """Enumeration for ImGui::SetNextWindow***(), SetWindow***(), SetNextItem***() functions
     Represent a condition.
@@ -4981,6 +5014,7 @@ class Cond_(enum.IntFlag):
 # [SECTION] Tables API flags and structures (ImGuiTableFlags, ImGuiTableColumnFlags, ImGuiTableRowFlags, ImGuiTableBgTarget, ImGuiTableSortSpecs, ImGuiTableColumnSortSpecs)
 # -----------------------------------------------------------------------------
 
+# enum ImGuiTableFlags_    /* original C++ signature */
 class TableFlags_(enum.IntFlag):
     """Flags for ImGui::BeginTable()
     - Important! Sizing policies have complex and subtle side effects, much more so than you would expect.
@@ -5141,6 +5175,7 @@ class TableFlags_(enum.IntFlag):
         enum.auto()
     )  # (= TableFlags_SizingFixedFit | TableFlags_SizingFixedSame | TableFlags_SizingStretchProp | TableFlags_SizingStretchSame)
 
+# enum ImGuiTableColumnFlags_    /* original C++ signature */
 class TableColumnFlags_(enum.IntFlag):
     """Flags for ImGui::TableSetupColumn()"""
 
@@ -5234,6 +5269,7 @@ class TableColumnFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 30)  # [Internal] Disable user resizing this column directly (it may however we resized indirectly from its left edge)
 
+# enum ImGuiTableRowFlags_    /* original C++ signature */
 class TableRowFlags_(enum.IntFlag):
     """Flags for ImGui::TableNextRow()"""
 
@@ -5244,6 +5280,7 @@ class TableRowFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 0)  # Identify header row (set default background color + width of its contents accounted differently for auto column width)
 
+# enum ImGuiTableBgTarget_    /* original C++ signature */
 class TableBgTarget_(enum.IntFlag):
     """Enum for ImGui::TableSetBgColor()
     Background colors are rendering in 3 layers:
@@ -5267,6 +5304,7 @@ class TableBgTarget_(enum.IntFlag):
     # ImGuiTableBgTarget_CellBg                   = 3,            /* original C++ signature */
     cell_bg = enum.auto()  # (= 3)  # Set cell background color (top-most color)
 
+# struct ImGuiTableSortSpecs    /* original C++ signature */
 class TableSortSpecs:
     """Sorting specifications for a table (often handling sort specs for a single column, occasionally more)
     Obtained by calling TableGetSortSpecs().
@@ -5290,6 +5328,7 @@ class TableSortSpecs:
     def get_specs(self, idx: int) -> TableColumnSortSpecs:
         pass
 
+# struct ImGuiTableColumnSortSpecs    /* original C++ signature */
 class TableColumnSortSpecs:
     """Sorting specification for one column of a table (sizeof == 12 bytes)"""
 
@@ -5326,6 +5365,7 @@ class TableColumnSortSpecs:
 # Defining a custom placement new() with a custom parameter allows us to bypass including <new> which on some platforms complains when user has disabled exceptions.
 # -----------------------------------------------------------------------------
 
+# struct ImNewWrapper    /* original C++ signature */
 class ImNewWrapper:
     def __init__(self) -> None:
         """Auto-generated default constructor"""
@@ -5344,6 +5384,7 @@ class ImNewWrapper:
 
 #  ------------------------------------------------------------------------
 #      <template specializations for class ImVector>
+# struct ImVector<int>    /* original C++ signature */
 class ImVector_int:  # Python specialization for ImVector<int>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5407,6 +5448,7 @@ class ImVector_int:  # Python specialization for ImVector<int>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<uint>    /* original C++ signature */
 class ImVector_uint:  # Python specialization for ImVector<uint>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5470,6 +5512,7 @@ class ImVector_uint:  # Python specialization for ImVector<uint>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<float>    /* original C++ signature */
 class ImVector_float:  # Python specialization for ImVector<float>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5533,6 +5576,7 @@ class ImVector_float:  # Python specialization for ImVector<float>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<char>    /* original C++ signature */
 class ImVector_char:  # Python specialization for ImVector<char>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5596,6 +5640,7 @@ class ImVector_char:  # Python specialization for ImVector<char>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<uchar>    /* original C++ signature */
 class ImVector_uchar:  # Python specialization for ImVector<uchar>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5659,6 +5704,7 @@ class ImVector_uchar:  # Python specialization for ImVector<uchar>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImDrawCmd>    /* original C++ signature */
 class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5722,6 +5768,7 @@ class ImVector_ImDrawCmd:  # Python specialization for ImVector<ImDrawCmd>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImDrawChannel>    /* original C++ signature */
 class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChannel>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5785,6 +5832,7 @@ class ImVector_ImDrawChannel:  # Python specialization for ImVector<ImDrawChanne
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImDrawVert>    /* original C++ signature */
 class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5848,6 +5896,7 @@ class ImVector_ImDrawVert:  # Python specialization for ImVector<ImDrawVert>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImVec4>    /* original C++ signature */
 class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5911,6 +5960,7 @@ class ImVector_ImVec4:  # Python specialization for ImVector<ImVec4>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImVec2>    /* original C++ signature */
 class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -5974,6 +6024,7 @@ class ImVector_ImVec2:  # Python specialization for ImVector<ImVec2>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImDrawList *>    /* original C++ signature */
 class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6037,6 +6088,7 @@ class ImVector_ImDrawList_ptr:  # Python specialization for ImVector<ImDrawList 
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImFont *>    /* original C++ signature */
 class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6100,6 +6152,7 @@ class ImVector_ImFont_ptr:  # Python specialization for ImVector<ImFont *>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImFontAtlas *>    /* original C++ signature */
 class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtlas *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6163,6 +6216,7 @@ class ImVector_ImFontAtlas_ptr:  # Python specialization for ImVector<ImFontAtla
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImFontGlyph>    /* original C++ signature */
 class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6226,6 +6280,7 @@ class ImVector_ImFontGlyph:  # Python specialization for ImVector<ImFontGlyph>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiPlatformMonitor>    /* original C++ signature */
 class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatformMonitor>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6289,6 +6344,7 @@ class ImVector_PlatformMonitor:  # Python specialization for ImVector<ImGuiPlatf
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiViewport *>    /* original C++ signature */
 class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6352,6 +6408,7 @@ class ImVector_Viewport_ptr:  # Python specialization for ImVector<ImGuiViewport
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiWindow *>    /* original C++ signature */
 class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6415,6 +6472,7 @@ class ImVector_Window_ptr:  # Python specialization for ImVector<ImGuiWindow *>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImFontConfig>    /* original C++ signature */
 class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6478,6 +6536,7 @@ class ImVector_ImFontConfig:  # Python specialization for ImVector<ImFontConfig>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImFontConfig *>    /* original C++ signature */
 class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontConfig *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6541,6 +6600,7 @@ class ImVector_ImFontConfig_ptr:  # Python specialization for ImVector<ImFontCon
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiFocusScopeData>    /* original C++ signature */
 class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusScopeData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6604,6 +6664,7 @@ class ImVector_FocusScopeData:  # Python specialization for ImVector<ImGuiFocusS
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiSelectionRequest>    /* original C++ signature */
 class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSelectionRequest>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6667,6 +6728,7 @@ class ImVector_SelectionRequest:  # Python specialization for ImVector<ImGuiSele
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImRect>    /* original C++ signature */
 class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6730,6 +6792,7 @@ class ImVector_ImRect:  # Python specialization for ImVector<ImRect>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiColorMod>    /* original C++ signature */
 class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6793,6 +6856,7 @@ class ImVector_ColorMod:  # Python specialization for ImVector<ImGuiColorMod>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiGroupData>    /* original C++ signature */
 class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6856,6 +6920,7 @@ class ImVector_GroupData:  # Python specialization for ImVector<ImGuiGroupData>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiPopupData>    /* original C++ signature */
 class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6919,6 +6984,7 @@ class ImVector_PopupData:  # Python specialization for ImVector<ImGuiPopupData>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiViewportP *>    /* original C++ signature */
 class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewportP *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -6982,6 +7048,7 @@ class ImVector_ViewportP_ptr:  # Python specialization for ImVector<ImGuiViewpor
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiInputEvent>    /* original C++ signature */
 class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7045,6 +7112,7 @@ class ImVector_InputEvent:  # Python specialization for ImVector<ImGuiInputEvent
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiWindowStackData>    /* original C++ signature */
 class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindowStackData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7108,6 +7176,7 @@ class ImVector_WindowStackData:  # Python specialization for ImVector<ImGuiWindo
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTableColumnSortSpecs>    /* original C++ signature */
 class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGuiTableColumnSortSpecs>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7171,6 +7240,7 @@ class ImVector_TableColumnSortSpecs:  # Python specialization for ImVector<ImGui
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTableInstanceData>    /* original C++ signature */
 class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTableInstanceData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7234,6 +7304,7 @@ class ImVector_TableInstanceData:  # Python specialization for ImVector<ImGuiTab
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTableTempData>    /* original C++ signature */
 class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTempData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7297,6 +7368,7 @@ class ImVector_TableTempData:  # Python specialization for ImVector<ImGuiTableTe
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiPtrOrIndex>    /* original C++ signature */
 class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7360,6 +7432,7 @@ class ImVector_PtrOrIndex:  # Python specialization for ImVector<ImGuiPtrOrIndex
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiSettingsHandler>    /* original C++ signature */
 class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSettingsHandler>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7423,6 +7496,7 @@ class ImVector_SettingsHandler:  # Python specialization for ImVector<ImGuiSetti
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiShrinkWidthItem>    /* original C++ signature */
 class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrinkWidthItem>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7486,6 +7560,7 @@ class ImVector_ShrinkWidthItem:  # Python specialization for ImVector<ImGuiShrin
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiStackLevelInfo>    /* original C++ signature */
 class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackLevelInfo>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7549,6 +7624,7 @@ class ImVector_StackLevelInfo:  # Python specialization for ImVector<ImGuiStackL
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTabItem>    /* original C++ signature */
 class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7612,6 +7688,7 @@ class ImVector_TabItem:  # Python specialization for ImVector<ImGuiTabItem>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiKeyRoutingData>    /* original C++ signature */
 class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRoutingData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7675,6 +7752,7 @@ class ImVector_KeyRoutingData:  # Python specialization for ImVector<ImGuiKeyRou
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiListClipperData>    /* original C++ signature */
 class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListClipperData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7738,6 +7816,7 @@ class ImVector_ListClipperData:  # Python specialization for ImVector<ImGuiListC
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiListClipperRange>    /* original C++ signature */
 class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiListClipperRange>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7801,6 +7880,7 @@ class ImVector_ListClipperRange:  # Python specialization for ImVector<ImGuiList
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiOldColumnData>    /* original C++ signature */
 class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColumnData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7864,6 +7944,7 @@ class ImVector_OldColumnData:  # Python specialization for ImVector<ImGuiOldColu
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiOldColumns>    /* original C++ signature */
 class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7927,6 +8008,7 @@ class ImVector_OldColumns:  # Python specialization for ImVector<ImGuiOldColumns
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiStyleMod>    /* original C++ signature */
 class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -7990,6 +8072,7 @@ class ImVector_StyleMod:  # Python specialization for ImVector<ImGuiStyleMod>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTableHeaderData>    /* original C++ signature */
 class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTableHeaderData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8053,6 +8136,7 @@ class ImVector_TableHeaderData:  # Python specialization for ImVector<ImGuiTable
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiTreeNodeStackData>    /* original C++ signature */
 class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTreeNodeStackData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8116,6 +8200,7 @@ class ImVector_TreeNodeStackData:  # Python specialization for ImVector<ImGuiTre
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImGuiMultiSelectTempData>    /* original C++ signature */
 class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiMultiSelectTempData>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8179,6 +8264,7 @@ class ImVector_MultiSelectTempData:  # Python specialization for ImVector<ImGuiM
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImTextureData *>    /* original C++ signature */
 class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextureData *>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8242,6 +8328,7 @@ class ImVector_ImTextureData_ptr:  # Python specialization for ImVector<ImTextur
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImTextureRef>    /* original C++ signature */
 class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8305,6 +8392,7 @@ class ImVector_ImTextureRef:  # Python specialization for ImVector<ImTextureRef>
         """Address of the underlying array (e.g. to create a numpy view of it)"""
         pass
 
+# struct ImVector<ImTextureRect>    /* original C++ signature */
 class ImVector_ImTextureRect:  # Python specialization for ImVector<ImTextureRect>
 
     # Provide standard typedefs but we don't use them ourselves.
@@ -8397,6 +8485,7 @@ ImVector_ImU8 = ImVector_uchar
 # and ImGui::PushStyleColor(ImGuiCol_XXX)/PopStyleColor() for colors.
 # -----------------------------------------------------------------------------
 
+# struct ImGuiStyle    /* original C++ signature */
 class Style:
     # Font scaling
     # - recap: ImGui::GetFontSize() == FontSizeBase * (FontScaleMain * FontScaleDpi * other_scaling_factors)
@@ -8621,6 +8710,7 @@ class Style:
 # Also see ImGui::GetPlatformIO() and ImGuiPlatformIO struct for OS/platform related functions: clipboard, IME etc.
 # -----------------------------------------------------------------------------
 
+# struct ImGuiKeyData    /* original C++ signature */
 class KeyData:
     """[Internal] Storage used by IsKeyDown(), IsKeyPressed() etc functions.
     If prior to 1.87 you used io.KeysDownDuration[] (which was marked as internal), you should use GetKeyData(key)->DownDuration and *NOT* io.KeysData[key]->DownDuration.
@@ -8644,6 +8734,7 @@ class KeyData:
         """Auto-generated default constructor with named params"""
         pass
 
+# struct ImGuiIO    /* original C++ signature */
 class IO:
     # ------------------------------------------------------------------
     # Configuration                            // Default value
@@ -9101,6 +9192,7 @@ class IO:
 # [SECTION] Misc data structures (ImGuiInputTextCallbackData, ImGuiSizeCallbackData, ImGuiPayload)
 # -----------------------------------------------------------------------------
 
+# struct ImGuiInputTextCallbackData    /* original C++ signature */
 class InputTextCallbackData:
     """Shared state of InputText(), passed as an argument to your callback when a ImGuiInputTextFlags_Callback* flag is used.
     The callback function should return 0 by default.
@@ -9178,6 +9270,7 @@ class InputTextCallbackData:
         """(private API)"""
         pass
 
+# struct ImGuiSizeCallbackData    /* original C++ signature */
 class SizeCallbackData:
     """Resizing callback data to apply custom constraint. As enabled by SetNextWindowSizeConstraints(). Callback is called during the next Begin().
     NB: For basic min/max size constraint on each axis you don't need to use the callback! The SetNextWindowSizeConstraints() parameters are enough.
@@ -9209,6 +9302,7 @@ class SizeCallbackData:
         """
         pass
 
+# struct ImGuiWindowClass    /* original C++ signature */
 class WindowClass:
     """[ALPHA] Rarely used / very advanced uses only. Use with SetNextWindowClass() and DockSpace() functions.
     Important: the content of this class is still highly WIP and likely to change and be refactored
@@ -9246,6 +9340,7 @@ class WindowClass:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiPayload    /* original C++ signature */
 class Payload:
     """Data payload for Drag and Drop operations: AcceptDragDropPayload(), GetDragDropPayload()"""
 
@@ -9293,6 +9388,7 @@ class Payload:
 
 # Helper: Unicode defines
 
+# struct ImGuiOnceUponAFrame    /* original C++ signature */
 class OnceUponAFrame:
     """Helper: Execute a block of code at maximum once a frame. Convenient if you want to quickly create a UI within deep-nested code that runs multiple times every frame.
     Usage: static ImGuiOnceUponAFrame oaf; if (oaf) ImGui::Text("This will be called only once per frame");
@@ -9307,6 +9403,7 @@ class OnceUponAFrame:
     def __bool__(self) -> bool:
         pass
 
+# struct ImGuiTextFilter    /* original C++ signature */
 class TextFilter:
     """Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """
 
@@ -9332,6 +9429,7 @@ class TextFilter:
         """(private API)"""
         pass
 
+    # struct ImGuiTextRange    /* original C++ signature */
     class TextRange:
         """[Internal]"""
 
@@ -9364,6 +9462,7 @@ class TextFilter:
     @input_buf.setter
     def input_buf(self, value: str) -> None: ...
 
+# struct ImGuiTextBuffer    /* original C++ signature */
 class TextBuffer:
     """Helper: Growable text buffer for logging/accumulating text
     (this could be called 'ImGuiTextBuilder' / 'ImGuiStringBuilder')
@@ -9424,6 +9523,7 @@ class TextBuffer:
     def appendf(self, fmt: str) -> None:
         pass
 
+# struct ImGuiStoragePair    /* original C++ signature */
 class StoragePair:
     """[Internal] Key+Value for ImGuiStorage"""
 
@@ -9442,6 +9542,7 @@ class StoragePair:
     def __init__(self, _key: ID, _val: Any) -> None:
         pass
 
+# struct ImGuiStorage    /* original C++ signature */
 class Storage:
     """Helper: Key->Value storage
     Typically you don't have to worry about this since a storage is held within each Window.
@@ -9512,6 +9613,7 @@ class Storage:
         """Auto-generated default constructor"""
         pass
 
+# enum ImGuiListClipperFlags_    /* original C++ signature */
 class ListClipperFlags_(enum.IntFlag):
     """Flags for ImGuiListClipper (currently not fully exposed in function calls: a future refactor will likely add this to ImGuiListClipper::Begin function equivalent)"""
 
@@ -9522,6 +9624,7 @@ class ListClipperFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 0)  # [Internal] Disabled modifying table row counters. Avoid assumption that 1 clipper item == 1 table row.
 
+# struct ImGuiListClipper    /* original C++ signature */
 class ListClipper:
     """Helper: Manually clip large list of items.
     If you have lots evenly spaced items and you have random access to the list, you can perform coarse
@@ -9613,6 +9716,7 @@ class ListClipper:
 # - User can declare their own format by #defining the 5 _SHIFT/_MASK macros in their imconfig file.
 # - Any setting other than the default will need custom backend support. The only standard backend that supports anything else than the default is DirectX9.
 
+# struct ImColor    /* original C++ signature */
 class ImColor:
     """Helper: ImColor() implicitly converts colors to either ImU32 (packed 4x1 byte) or ImVec4 (4x1 float)
     Prefer using IM_COL32() macros if you want a guaranteed compile-time ImU32 for usage with ImDrawList API.
@@ -9703,6 +9807,7 @@ class ImColor:
 # - As most users will want to store an index, for convenience and to reduce confusion we use ImS64 instead of None*,
 #   being syntactically easier to downcast. Feel free to reinterpret_cast and store a pointer inside.
 
+# enum ImGuiMultiSelectFlags_    /* original C++ signature */
 class MultiSelectFlags_(enum.IntFlag):
     """Flags for BeginMultiSelect()"""
 
@@ -9784,6 +9889,7 @@ class MultiSelectFlags_(enum.IntFlag):
 
     # Obsolete names
 
+# struct ImGuiMultiSelectIO    /* original C++ signature */
 class MultiSelectIO:
     """Main IO structure returned by BeginMultiSelect()/EndMultiSelect().
     This mainly contains a list of selection requests.
@@ -9826,6 +9932,7 @@ class MultiSelectIO:
         """
         pass
 
+# enum ImGuiSelectionRequestType    /* original C++ signature */
 class SelectionRequestType(enum.IntFlag):
     """Selection request type"""
 
@@ -9840,6 +9947,7 @@ class SelectionRequestType(enum.IntFlag):
         enum.auto()
     )  # (= 2)  # Request app to select/unselect [RangeFirstItem..RangeLastItem] items (inclusive) based on value of Selected. Only EndMultiSelect() request this, app code can read after BeginMultiSelect() and it will always be False.
 
+# struct ImGuiSelectionRequest    /* original C++ signature */
 class SelectionRequest:
     """Selection request item"""
 
@@ -9871,6 +9979,7 @@ class SelectionRequest:
         """
         pass
 
+# struct ImGuiSelectionBasicStorage    /* original C++ signature */
 class SelectionBasicStorage:
     """Optional helper to store multi-selection state + apply multi-selection requests.
     - Used by our demos and provided as a convenience to easily implement basic multi-selection.
@@ -9936,6 +10045,7 @@ class SelectionBasicStorage:
         """
         pass
 
+# struct ImGuiSelectionExternalStorage    /* original C++ signature */
 class SelectionExternalStorage:
     """Optional helper to apply multi-selection requests to existing randomly accessible storage.
     Convenient if you want to quickly wire multi-select API on e.g. an array of bool or items storing their own selection state.
@@ -9973,6 +10083,7 @@ class SelectionExternalStorage:
 # The expected behavior from your rendering function is 'if (cmd.UserCallback != None) { cmd.UserCallback(parent_list, cmd); } else { RenderTriangles() }'
 # If you want to override the signature of ImDrawCallback, you can simply use e.g. '#define ImDrawCallback MyDrawCallback' (in imconfig.h) + update rendering backend accordingly.
 
+# struct ImDrawCmd    /* original C++ signature */
 class ImDrawCmd:
     """Typically, 1 command = 1 GPU draw call (unless command is a callback)
     - VtxOffset: When 'io.BackendFlags & ImGuiBackendFlags_RendererHasVtxOffset' is enabled,
@@ -10015,6 +10126,7 @@ class ImDrawCmd:
 # Vertex layout
 # #ifndef IMGUI_OVERRIDE_DRAWVERT_STRUCT_LAYOUT
 #
+# struct ImDrawVert    /* original C++ signature */
 class ImDrawVert:
     # ImVec2  pos;    /* original C++ signature */
     pos: ImVec2
@@ -10037,6 +10149,7 @@ class ImDrawVert:
 # #endif
 #
 
+# struct ImDrawCmdHeader    /* original C++ signature */
 class ImDrawCmdHeader:
     """[Internal] For use by ImDrawList"""
 
@@ -10056,6 +10169,7 @@ class ImDrawCmdHeader:
         """
         pass
 
+# struct ImDrawChannel    /* original C++ signature */
 class ImDrawChannel:
     """[Internal] For use by ImDrawListSplitter"""
 
@@ -10075,6 +10189,7 @@ class ImDrawChannel:
         """
         pass
 
+# struct ImDrawListSplitter    /* original C++ signature */
 class ImDrawListSplitter:
     """Split/Merge functions are used to split the draw list into different layers which can be drawn into out of order.
     This is used by the Columns/Tables API, so items of each column can be batched together in a same draw call.
@@ -10110,6 +10225,7 @@ class ImDrawListSplitter:
     def set_current_channel(self, draw_list: ImDrawList, channel_idx: int) -> None:
         pass
 
+# enum ImDrawFlags_    /* original C++ signature */
 class ImDrawFlags_(enum.IntFlag):
     """Flags for ImDrawList functions"""
 
@@ -10169,6 +10285,7 @@ class ImDrawFlags_(enum.IntFlag):
     # ImDrawFlags_InvalidMask_                = ~0x7FFFFFF0,     /* original C++ signature */
     invalid_mask_ = enum.auto()  # (= ~0x7FFFFFF0)  # == 0x8000000F,
 
+# enum ImDrawListFlags_    /* original C++ signature */
 class ImDrawListFlags_(enum.IntFlag):
     """Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.
     It is however possible to temporarily alter flags between calls to ImDrawList:: functions.
@@ -10197,6 +10314,7 @@ class ImDrawListFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 4)  # Disable automatically snapping AddText() calls to pixel boundaries.
 
+# struct ImDrawList    /* original C++ signature */
 class ImDrawList:
     """Draw command list
     This is the low-level list of polygons that ImGui:: functions are filling. At the end of the frame,
@@ -10651,6 +10769,7 @@ class ImDrawList:
     def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
 
+# struct ImDrawData    /* original C++ signature */
 class ImDrawData:
     """All draw data to render a Dear ImGui frame
     (NB: the style and the naming convention here is a little inconsistent, we currently preserve them for backward compatibility purpose,
@@ -10713,6 +10832,7 @@ class ImDrawData:
 # FOR ALL OTHER ImTextureXXXX TYPES: ONLY CORE LIBRARY AND RENDERER BACKENDS NEED TO KNOW AND CARE ABOUT THEM.
 # -----------------------------------------------------------------------------
 
+# enum ImTextureFormat    /* original C++ signature */
 class ImTextureFormat(enum.IntFlag):
     """We intentionally support a limited amount of texture formats to limit burden on CPU-side code and extension.
     Most standard backends only support RGBA32 but we provide a single channel option for low-resource/embedded systems.
@@ -10725,6 +10845,7 @@ class ImTextureFormat(enum.IntFlag):
     # ImTextureFormat_Alpha8,             /* original C++ signature */
     alpha8 = enum.auto()  # (= 1)  # 1 component per pixel, each is unsigned 8-bit. Total size = TexWidth * TexHeight
 
+# enum ImTextureStatus    /* original C++ signature */
 class ImTextureStatus(enum.IntFlag):
     """Status of a texture to communicate with Renderer Backend."""
 
@@ -10741,6 +10862,7 @@ class ImTextureStatus(enum.IntFlag):
     # ImTextureStatus_WantDestroy,        /* original C++ signature */
     want_destroy = enum.auto()  # (= 4)  # Requesting backend to destroy the texture. Set status to Destroyed when done.
 
+# struct ImTextureRect    /* original C++ signature */
 class ImTextureRect:
     """Coordinates of a rectangle within a texture.
     When a texture is in ImTextureStatus_WantUpdates state, we provide a list of individual rectangles to copy to the graphics system.
@@ -10759,6 +10881,7 @@ class ImTextureRect:
         """Auto-generated default constructor"""
         pass
 
+# struct ImTextureData    /* original C++ signature */
 class ImTextureData:
     """Specs and pixel storage for a texture used by Dear ImGui.
     This is only useful for (1) core library and (2) backends. End-user/applications do not need to care about this.
@@ -10859,6 +10982,7 @@ class ImTextureData:
 # [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontAtlasFlags, ImFontAtlas, ImFontGlyphRangesBuilder, ImFont)
 # -----------------------------------------------------------------------------
 
+# struct ImFontConfig    /* original C++ signature */
 class ImFontConfig:
     """A font input/source (we may rename this to ImFontSource in the future)"""
 
@@ -10918,6 +11042,7 @@ class ImFontConfig:
     def __init__(self) -> None:
         pass
 
+# struct ImFontGlyph    /* original C++ signature */
 class ImFontGlyph:
     """Hold rendering data for one glyph.
     (Note: some language parsers may fail to convert the bitfield members, in this case maybe drop store a single u32 or we can rework this)
@@ -10960,6 +11085,7 @@ class ImFontGlyph:
         """0x0000..0x10FFFF (bitfield accessor)"""
         pass
 
+# struct ImFontGlyphRangesBuilder    /* original C++ signature */
 class ImFontGlyphRangesBuilder:
     """Helper to build glyph ranges from text/string data. Feed your application strings/characters to it then call BuildRanges().
     This is essentially a tightly packed of vector of 64k booleans = 8KB storage.
@@ -11005,6 +11131,7 @@ class ImFontGlyphRangesBuilder:
         """Output new ranges"""
         pass
 
+# struct ImFontAtlasRect    /* original C++ signature */
 class ImFontAtlasRect:
     """Output of ImFontAtlas::GetCustomRect() when using custom rectangles.
     Those values may not be cached/stored as they are only valid for the current value of atlas->TexRef
@@ -11028,6 +11155,7 @@ class ImFontAtlasRect:
     def __init__(self) -> None:
         pass
 
+# enum ImFontAtlasFlags_    /* original C++ signature */
 class ImFontAtlasFlags_(enum.IntFlag):
     """Flags for ImFontAtlas build"""
 
@@ -11044,6 +11172,7 @@ class ImFontAtlasFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 2)  # Don't build thick line textures into the atlas (save a little texture memory, allow support for point/nearest filtering). The AntiAliasedLinesUseTex features uses them, otherwise they will be rendered using polygons (more expensive for CPU/GPU).
 
+# struct ImFontAtlas    /* original C++ signature */
 class ImFontAtlas:
     """Load and rasterize multiple TTF/OTF fonts into a same texture. The font atlas will build a single texture holding:
      - One or more fonts.
@@ -11243,6 +11372,7 @@ class ImFontAtlas:
         """Get the font texture id (for older backends which do not implement ImGuiBackendFlags_RendererHasTextures)"""
         pass
 
+# struct ImFontBaked    /* original C++ signature */
 class ImFontBaked:
     """Font runtime data for a given size
     Important: pointers to ImFontBaked are only valid for the current frame.
@@ -11302,6 +11432,7 @@ class ImFontBaked:
     def is_glyph_loaded(self, c: ImWchar) -> bool:
         pass
 
+# enum ImFontFlags_    /* original C++ signature */
 class ImFontFlags_(enum.IntFlag):
     """Font flags
     (in future versions as we redesign font loading API, this will become more important and better documented. for now please consider this as internal/advanced use)
@@ -11322,6 +11453,7 @@ class ImFontFlags_(enum.IntFlag):
     # ImFontFlags_ImplicitRefSize         = 1 << 4,       /* original C++ signature */
     implicit_ref_size = enum.auto()  # (= 1 << 4)  # [Internal] Reference size was not set explicitly.
 
+# struct ImFont    /* original C++ signature */
 class ImFont:
     """Font runtime data and rendering
     - ImFontAtlas automatically loads a default embedded font for you if you didn't load one manually.
@@ -11427,6 +11559,7 @@ class ImFont:
 # [SECTION] Viewports
 # -----------------------------------------------------------------------------
 
+# enum ImGuiViewportFlags_    /* original C++ signature */
 class ViewportFlags_(enum.IntFlag):
     """Flags stored in ImGuiViewport::Flags, giving indications to the platform backends."""
 
@@ -11481,6 +11614,7 @@ class ViewportFlags_(enum.IntFlag):
         enum.auto()
     )  # (= 1 << 13)  # Platform Window: Window is focused (last call to Platform_GetWindowFocus() returned True)
 
+# struct ImGuiViewport    /* original C++ signature */
 class Viewport:
     """- Currently represents the Platform Window created by the application which is hosting our Dear ImGui windows.
     - With multi-viewport enabled, we extend this concept to have multiple active viewports.
@@ -11608,6 +11742,7 @@ class Viewport:
 #   or you may decide to never setup those pointers and call your code directly. They are a convenience, not an obligatory interface.
 # -----------------------------------------------------------------------------
 
+# struct ImGuiPlatformIO    /* original C++ signature */
 class PlatformIO:
     """Access via ImGui::GetPlatformIO()"""
 
@@ -11718,6 +11853,7 @@ class PlatformIO:
     platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
     platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]
 
+# struct ImGuiPlatformMonitor    /* original C++ signature */
 class PlatformMonitor:
     """(Optional) This is required when enabling multi-viewport. Represent the bounds of each connected monitor/display and their DPI.
     We use this information for multiple DPI support + clamping the position of popups and tooltips so they don't straddle multiple monitors.
@@ -11739,6 +11875,7 @@ class PlatformMonitor:
     def __init__(self) -> None:
         pass
 
+# struct ImGuiPlatformImeData    /* original C++ signature */
 class PlatformImeData:
     """(Optional) Support for IME (Input Method Editor) via the platform_io.Platform_SetImeDataFn() function. Handler is called during EndFrame()."""
 
@@ -12078,6 +12215,7 @@ def input_text_with_hint(
 
 ####################    <generated_from:imgui_pywrappers.h>    ####################
 
+# struct ImGuiPayload_PyId    /* original C++ signature */
 class Payload_PyId:
     # ImGuiPayloadId DataId;    /* original C++ signature */
     # Stores an id that represents the payload. For example, this could be given by python `id(object)`

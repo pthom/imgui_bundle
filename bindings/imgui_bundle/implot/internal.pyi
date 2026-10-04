@@ -226,6 +226,7 @@ def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
 #-----------------------------------------------------------------------------
 
 
+# enum ImPlotTimeUnit_    /* original C++ signature */
 class TimeUnit_(enum.IntFlag):
     # ImPlotTimeUnit_Us,      /* original C++ signature */
     us = enum.auto()    # (= 0)  # microsecond
@@ -247,6 +248,7 @@ class TimeUnit_(enum.IntFlag):
     # }
     count = enum.auto() # (= 8)
 
+# enum ImPlotDateFmt_    /* original C++ signature */
 class DateFmt_(enum.IntFlag):
     # default        [ ISO 8601     ]
     # ImPlotDateFmt_None = 0,    /* original C++ signature */
@@ -262,6 +264,7 @@ class DateFmt_(enum.IntFlag):
     # ImPlotDateFmt_Yr                   /* original C++ signature */
     yr = enum.auto()        # (= 5)  # 1991           [ 1991         ]
 
+# enum ImPlotTimeFmt_    /* original C++ signature */
 class TimeFmt_(enum.IntFlag):
     # default        [ 24 Hour Clock ]
     # ImPlotTimeFmt_None = 0,    /* original C++ signature */
@@ -285,6 +288,7 @@ class TimeFmt_(enum.IntFlag):
     # ImPlotTimeFmt_Hr                   /* original C++ signature */
     hr = enum.auto()          # (= 9)  # 7pm            [ 19:00        ]
 
+# enum ImPlotMarkerInternal_    /* original C++ signature */
 class MarkerInternal_(enum.IntFlag):
     # ImPlotMarker_Invalid = -3    /* original C++ signature */
     # }
@@ -299,6 +303,7 @@ class MarkerInternal_(enum.IntFlag):
 # [SECTION] Structs
 #-----------------------------------------------------------------------------
 
+# struct ImPlotDateTimeSpec    /* original C++ signature */
 class DateTimeSpec:
     """ Combined date/time format spec"""
     # ImPlotDateTimeSpec();    /* original C++ signature */
@@ -318,6 +323,7 @@ class DateTimeSpec:
     # bool Use24HourClock;    /* original C++ signature */
     use24_hour_clock: bool
 
+# struct ImPlotTime    /* original C++ signature */
 class Time:
     """ Two part timestamp struct."""
     # time_t S;    /* original C++ signature */
@@ -347,6 +353,7 @@ class Time:
         pass
 
 
+# struct ImPlotColormapData    /* original C++ signature */
 class ColormapData:
     """ Colormap data storage"""
     # ImVector<ImU32> Keys;    /* original C++ signature */
@@ -437,6 +444,7 @@ class ColormapData:
         """(private API)"""
         pass
 
+# struct ImPlotPointError    /* original C++ signature */
 class PointError:
     """ ImPlotPoint with positive/negative error values"""
     # double X,     /* original C++ signature */
@@ -456,6 +464,7 @@ class PointError:
     def __init__(self, x: float, y: float, neg: float, pos: float) -> None:
         pass
 
+# struct ImPlotAnnotation    /* original C++ signature */
 class Annotation:
     """ Interior plot label/annotation"""
     # ImVec2 Pos;    /* original C++ signature */
@@ -474,6 +483,7 @@ class Annotation:
     def __init__(self) -> None:
         pass
 
+# struct ImPlotAnnotationCollection    /* original C++ signature */
 class AnnotationCollection:
     """ Collection of plot labels"""
 
@@ -502,6 +512,7 @@ class AnnotationCollection:
         """(private API)"""
         pass
 
+# struct ImPlotTag    /* original C++ signature */
 class Tag:
     # ImAxis Axis;    /* original C++ signature */
     axis: ImAxis
@@ -518,6 +529,7 @@ class Tag:
     def __init__(self) -> None:
         pass
 
+# struct ImPlotTagCollection    /* original C++ signature */
 class TagCollection:
 
     # ImGuiTextBuffer     TextBuffer;    /* original C++ signature */
@@ -545,6 +557,7 @@ class TagCollection:
         """(private API)"""
         pass
 
+# struct ImPlotTick    /* original C++ signature */
 class Tick:
     """ Tick mark info"""
     # double PlotPos;    /* original C++ signature */
@@ -574,6 +587,7 @@ class Tick:
         pass
 
 
+# struct ImPlotTicker    /* original C++ signature */
 class Ticker:
     """ Collection of ticks"""
     # ImGuiTextBuffer      TextBuffer;    /* original C++ signature */
@@ -629,6 +643,7 @@ class Ticker:
         """(private API)"""
         pass
 
+# struct ImPlotAxis    /* original C++ signature */
 class Axis:
     """ Axis state information that must persist after EndPlot"""
     # ImGuiID              ID;    /* original C++ signature */
@@ -894,6 +909,7 @@ class Axis:
         """(private API)"""
         pass
 
+# struct ImPlotAlignmentData    /* original C++ signature */
 class AlignmentData:
     """ Align plots group data"""
     # bool  Vertical;    /* original C++ signature */
@@ -926,6 +942,7 @@ class AlignmentData:
         """(private API)"""
         pass
 
+# struct ImPlotItem    /* original C++ signature */
 class Item:
     """ State information for Plot items"""
     # ImGuiID      ID;    /* original C++ signature */
@@ -950,6 +967,7 @@ class Item:
         pass
 
 
+# struct ImPlotLegend    /* original C++ signature */
 class Legend:
     """ Holds Legend state"""
     # ImPlotLegendFlags Flags;    /* original C++ signature */
@@ -986,6 +1004,7 @@ class Legend:
         """(private API)"""
         pass
 
+# struct ImPlotItemGroup    /* original C++ signature */
 class ItemGroup:
     """ Holds Items and Legend data"""
     # ImGuiID            ID;    /* original C++ signature */
@@ -1048,6 +1067,7 @@ class ItemGroup:
         """(private API)"""
         pass
 
+# struct ImPlotPlot    /* original C++ signature */
 class Plot:
     """ Holds Plot state information that must persist after EndPlot"""
     # ImGuiID              ID;    /* original C++ signature */
@@ -1157,6 +1177,7 @@ class Plot:
         """(private API)"""
         pass
 
+# struct ImPlotSubplot    /* original C++ signature */
 class Subplot:
     """ Holds subplot data that must persist after EndSubplot"""
     # ImGuiID                       ID;    /* original C++ signature */
@@ -1194,6 +1215,7 @@ class Subplot:
     def __init__(self) -> None:
         pass
 
+# struct ImPlotNextPlotData    /* original C++ signature */
 class NextPlotData:
     """ Temporary data storage for upcoming plot"""
 
@@ -1207,6 +1229,7 @@ class NextPlotData:
         pass
 
 
+# struct ImPlotNextItemData    /* original C++ signature */
 class NextItemData:
     """ Temporary data storage for upcoming item"""
     # ImPlotSpec      Spec;    /* original C++ signature */
@@ -1235,6 +1258,7 @@ class NextItemData:
         """(private API)"""
         pass
 
+# struct ImPlotContext    /* original C++ signature */
 class Context:
     """ Holds state information that must persist between calls to BeginPlot()/EndPlot()"""
     # Plot States
@@ -1830,6 +1854,7 @@ def transform_inverse_logit(v: float, param_1: Any) -> float:
 
 
 
+# struct Formatter_Time_Data    /* original C++ signature */
 class Formatter_Time_Data:
     # ImPlotTime Time;    /* original C++ signature */
     time: Time

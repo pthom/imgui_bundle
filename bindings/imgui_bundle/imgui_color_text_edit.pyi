@@ -74,6 +74,7 @@ Char = int
 #	TextEditor
 #
 
+# class TextEditor    /* original C++ signature */
 class TextEditor:
     # TextEditor();    /* original C++ signature */
     def __init__(self) -> None:
@@ -85,6 +86,7 @@ class TextEditor:
     # Public member functions start with an uppercase character to be consistent with Dear ImGui
     #
 
+    # struct DocPos    /* original C++ signature */
     class DocPos:
         # DocPos() = default;    /* original C++ signature */
         @overload
@@ -127,6 +129,7 @@ class TextEditor:
         # size_t index = 0;    /* original C++ signature */
         index: int = 0
 
+    # struct DocSelection    /* original C++ signature */
     class DocSelection:
         # DocSelection() = default;    /* original C++ signature */
         @overload
@@ -142,6 +145,7 @@ class TextEditor:
         # DocPos end;    /* original C++ signature */
         end: TextEditor.DocPos
 
+    # struct VisPos    /* original C++ signature */
     class VisPos:
         # VisPos() = default;    /* original C++ signature */
         @overload
@@ -542,6 +546,7 @@ class TextEditor:
     def get_word_at_mouse_pos(self, mouse_pos: ImVec2Like) -> str:
         pass
 
+    # enum class Scroll    /* original C++ signature */
     class Scroll(enum.IntEnum):
         """ scrolling support"""
         # alignTop,    /* original C++ signature */
@@ -765,6 +770,7 @@ class TextEditor:
     def has_change_callback(self) -> bool:
         pass
 
+    # struct Change    /* original C++ signature */
     class Change:
         """ detailed change report passed to callback below
          this callback is different from the one above as it reports every change (not just a summary) and is very detailed
@@ -828,6 +834,7 @@ class TextEditor:
     # if a line with user data is removed, it won't come back on a redo
     # the deletor callback (if specified) is called when a line is deleted (see above)
 
+    # struct Decorator    /* original C++ signature */
     class Decorator:
         """ line-based decoration"""
         # size_t line;    /* original C++ signature */
@@ -868,6 +875,7 @@ class TextEditor:
     def has_line_decorator(self) -> bool:
         pass
 
+    # struct CustomCaret    /* original C++ signature */
     class CustomCaret:
         """ custom text cursor (caret) rendering"""
         # ImDrawList* drawList;    /* original C++ signature */
@@ -927,6 +935,7 @@ class TextEditor:
     def has_custom_caret_renderer(self) -> bool:
         pass
 
+    # struct CustomLineNumber    /* original C++ signature */
     class CustomLineNumber:
         """ custom line number renderer"""
         # ImDrawList* drawList;    /* original C++ signature */
@@ -991,6 +1000,7 @@ class TextEditor:
     def has_custom_line_number_renderer(self) -> bool:
         pass
 
+    # struct PopupData    /* original C++ signature */
     class PopupData:
         """ setup right click or hover callbacks
          the editor sets up a popup menu in the right location
@@ -1115,6 +1125,7 @@ class TextEditor:
     def spaces_to_tabs(self) -> None:
         pass
 
+    # enum class Color    /* original C++ signature */
     class Color(enum.IntEnum):
         """ color palette support"""
         # text,    /* original C++ signature */
@@ -1162,6 +1173,7 @@ class TextEditor:
         # currentLineNumber,    /* original C++ signature */
         current_line_number = enum.auto()         # (= 21)
 
+    # struct Palette    /* original C++ signature */
     class Palette:
         # inline ImU32 get(Color color) const;    /* original C++ signature */
         def get(self, color: TextEditor.Color) -> ImU32:
@@ -1197,6 +1209,7 @@ class TextEditor:
 
 
 
+    # struct Language    /* original C++ signature */
     class Language:
         """ language support"""
         # predefined language definitions
@@ -1274,6 +1287,7 @@ class TextEditor:
 
 
 
+    # struct LineBreakConfig    /* original C++ signature */
     class LineBreakConfig:
         """ configuration for line break algorithm used when word wrap is active"""
         # bool useUnicodeAnnex14 = false;    /* original C++ signature */
@@ -1454,6 +1468,7 @@ class TextEditor:
 #	TextDiff
 #
 
+# class TextDiff    /* original C++ signature */
 class TextDiff:
     # TextDiff();    /* original C++ signature */
     def __init__(self) -> None:

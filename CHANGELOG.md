@@ -2,6 +2,15 @@
 
 # Ongoing changes
 
+## ImGui Explorer: an API tab
+
+The code viewer of the [ImGui Explorer](https://imgui-bundle.pages.dev/explorer/) (the interactive manuals of ImGui, ImPlot, ImPlot3D and ImAnim) gets an "API" tab, built from the same index as the book's API pages:
+- click an identifier in the code, then the book button (or Ctrl+Shift+F, or the right-click menu): the card of the entry, with its Python and C++ names and signatures, its doc, the members of a struct or the values of an enum, "Go to declaration" (the line in the header or in the stub), links to its online pages, and "In the demo": the lines of the demo that use it, one click away;
+- a tooltip with the API of the identifier under the mouse ("API tooltips" in the toolbar);
+- the list of all the entries by section, with a filter on the Python and C++ names.
+
+The index (`just api_pages`) must be generated before the explorer is configured; otherwise the tab links to the online pages.
+
 ## Markdown renderer:
 
 Fully rewritten imgui_md, which is now imgui_rich_md

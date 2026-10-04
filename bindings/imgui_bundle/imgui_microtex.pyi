@@ -32,6 +32,7 @@ ImTextureID = int
 # =====================================================================================================================
 #The layout style of a formula: `Display` for `$$...$$`, `Text` for `$...$`.
 
+# enum class TexStyle    /* original C++ signature */
 class TexStyle(enum.IntEnum):
     """ Selects the layout style used when rendering a formula. This maps directly
      to MicroTeX's TexStyle and corresponds to the four TeX styles defined by
@@ -107,6 +108,7 @@ def add_release_callback(callback: Callable[[], None]) -> None:
 # =====================================================================================================================
 #`Render()` draws a formula into an RGBA buffer, with its baseline, to align it with the text.
 
+# struct RenderedFormula    /* original C++ signature */
 class RenderedFormula:
     # int Width = 0;    /* original C++ signature */
     width: int = 0
@@ -178,6 +180,7 @@ def render(
 # Level 2: LaTeX -> HelloImGui::TextureGpuPtr (with caching)
 # ============================================================================
 
+# struct FormulaTexture    /* original C++ signature */
 class FormulaTexture:
     """ FormulaTexture owns its GPU texture via a HelloImGui::TextureGpuPtr.
      The texture is freed when the last shared reference drops; this happens

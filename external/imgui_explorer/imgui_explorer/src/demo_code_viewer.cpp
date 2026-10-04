@@ -11,6 +11,7 @@
 #include <vector>
 #include <algorithm>
 #include <cctype>
+#include <cstring>
 #include <fstream>
 #include <optional>
 #include "immapp/browse_to_url.h"
@@ -66,6 +67,8 @@ namespace
     char g_apiFilter[128] = "";
     bool g_pendingScrollPython = false;  // the pending scroll targets a line of the Python file itself
     bool g_apiTooltips = true;  // a tooltip with the API of the identifier under the mouse
+    ApiRef g_pendingDeclRef;    // a "Go to declaration" waiting for its file (the web loads them asynchronously)
+    bool g_pendingDeclPython = false;
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
@@ -700,6 +703,228 @@ namespace
         ImGui::PopStyleColor();
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // "Go to declaration": the line of an entry in the header (C++) or in the stub (Python)
+    // -----------------------------------------------------------------------------------------------------------------
+
+    std::vector<std::string> SplitLines(const std::string& content)
+    {
+        std::vector<std::string> lines;
+        size_t pos = 0;
+        while (pos <= content.size())
+        {
+            size_t eol = content.find('\n', pos);
+            if (eol == std::string::npos)
+                eol = content.size();
+            lines.push_back(content.substr(pos, eol - pos));
+            pos = eol + 1;
+        }
+        return lines;
+    }
+
+    std::string NormalizeSpaces(const std::string& text)
+    {
+        std::string out;
+        bool pendingSpace = false;
+        for (char c : text)
+        {
+            if (std::isspace((unsigned char)c))
+            {
+                pendingSpace = true;
+                continue;
+            }
+            if (pendingSpace && !out.empty())
+                out += ' ';
+            pendingSpace = false;
+            out += c;
+        }
+        return out;
+    }
+
+    bool IsWordAt(const std::string& line, size_t pos, size_t len)
+    {
+        auto ident = [](char c) { return std::isalnum((unsigned char)c) || c == '_'; };
+        bool start = pos == 0 || !ident(line[pos - 1]);
+        bool end = pos + len >= line.size() || !ident(line[pos + len]);
+        return start && end;
+    }
+
+    std::string Trimmed(const std::string& line)
+    {
+        size_t first = line.find_first_not_of(" \t");
+        return first == std::string::npos ? "" : line.substr(first);
+    }
+
+    // The 1-based line of a declaration in a header: a function by its signature (spaces collapsed), else by a
+    // call-like "Name("; a struct or an enum by its head ("struct Name", not a forward declaration "struct Name;");
+    // a member or an attribute by its name, inside its owner. -1 when not found
+    int FindCppDeclaration(const std::vector<std::string>& lines, const ApiRef& ref)
+    {
+        const ApiEntry& e = *ref.entry;
+        std::string bare = BareCppName(ref.CppName());
+        size_t from = 0;
+        if (ref.owner)
+        {
+            int ownerLine = FindCppDeclaration(lines, ApiRef{ref.module, ref.owner, nullptr});
+            if (ownerLine > 0)
+                from = (size_t)ownerLine;
+        }
+        auto isComment = [](const std::string& trimmed) { return trimmed.rfind("//", 0) == 0; };
+        if (e.kind == "function" || e.kind == "method")
+        {
+            std::string signature = NormalizeSpaces(e.cpp.substr(0, e.cpp.find('\n')));
+            if (!signature.empty())
+                for (size_t i = from; i < lines.size(); ++i)
+                    if (NormalizeSpaces(lines[i]).find(signature) != std::string::npos)
+                        return (int)i + 1;
+            for (size_t i = from; i < lines.size(); ++i)
+            {
+                const std::string& line = lines[i];
+                if (isComment(Trimmed(line)))
+                    continue;
+                size_t pos = 0;
+                while ((pos = line.find(bare, pos)) != std::string::npos)
+                {
+                    size_t k = pos + bare.size();
+                    while (k < line.size() && line[k] == ' ')
+                        ++k;
+                    if (IsWordAt(line, pos, bare.size()) && k < line.size() && line[k] == '(')
+                        return (int)i + 1;
+                    pos += bare.size();
+                }
+            }
+        }
+        else if (e.kind == "class" || e.kind == "enum")
+        {
+            for (size_t i = from; i < lines.size(); ++i)
+            {
+                std::string trimmed = Trimmed(lines[i]);
+                for (const char* prefix : {"struct ", "class ", "enum class ", "enum "})
+                {
+                    std::string head = std::string(prefix) + bare;
+                    if (trimmed.rfind(head, 0) != 0 || !IsWordAt(trimmed, strlen(prefix), bare.size()))
+                        continue;
+                    std::string rest = Trimmed(trimmed.substr(head.size()));
+                    if (rest.empty() || rest[0] != ';')  // not a forward declaration
+                        return (int)i + 1;
+                }
+            }
+        }
+        else
+        {
+            for (size_t i = from; i < lines.size(); ++i)
+            {
+                const std::string& line = lines[i];
+                if (isComment(Trimmed(line)))
+                    continue;
+                size_t pos = 0;
+                while ((pos = line.find(bare, pos)) != std::string::npos)
+                {
+                    if (IsWordAt(line, pos, bare.size()))
+                        return (int)i + 1;
+                    pos += bare.size();
+                }
+            }
+        }
+        return -1;
+    }
+
+    // The 1-based line of a declaration in a stub: "def name(" or "class Name" at the top level, or inside the owner's
+    // class for a method, an attribute ("name:") or a member ("name ="). -1 when not found
+    int FindPyDeclaration(const std::vector<std::string>& lines, const ApiRef& ref)
+    {
+        const ApiEntry& e = *ref.entry;
+        bool nested = ref.owner != nullptr;
+        size_t from = 0;
+        if (nested)
+        {
+            int ownerLine = FindPyDeclaration(lines, ApiRef{ref.module, ref.owner, nullptr});
+            if (ownerLine > 0)
+                from = (size_t)ownerLine;
+        }
+        for (size_t i = from; i < lines.size(); ++i)
+        {
+            const std::string& line = lines[i];
+            size_t indent = line.find_first_not_of(' ');
+            if (indent == std::string::npos || line[indent] == '#')
+                continue;
+            if (nested && indent == 0)
+                break;  // the owner's block ended
+            if (!nested && indent != 0)
+                continue;
+            std::string trimmed = line.substr(indent);
+            bool found = false;
+            if (e.kind == "function" || e.kind == "method")
+                found = trimmed.rfind("def " + e.name + "(", 0) == 0;
+            else if (e.kind == "class" || e.kind == "enum")
+                found = trimmed.rfind("class " + e.name, 0) == 0 && IsWordAt(trimmed, 6, e.name.size());
+            else
+                found = trimmed.rfind(e.name + ":", 0) == 0 || trimmed.rfind(e.name + " =", 0) == 0
+                        || trimmed.rfind(e.name + " :", 0) == 0;
+            if (found)
+                return (int)i + 1;
+        }
+        return -1;
+    }
+
+    // Shows the declaration of an entry in the header's tab (C++) or the stub's (Python). Returns false when the
+    // file is not loaded yet: the request waits (the web loads the files asynchronously)
+    bool GoToDeclaration(const ApiRef& ref, bool python)
+    {
+        const ApiEntry& located = ref.owner ? *ref.owner : *ref.entry;
+        auto files = GetCurrentLibraryFiles();
+        int index = -1;
+        for (size_t i = 0; i < files.size(); ++i)
+            if (files[i].isApiReference && files[i].cppDisplayName() == located.header)
+                index = (int)i;
+        if (index < 0)
+            for (size_t i = 0; i < files.size() && index < 0; ++i)
+                if (files[i].isApiReference)
+                    index = (int)i;
+        if (index < 0)
+            return true;
+        const DemoFileInfo& file = files[index];
+        if (python && !file.hasPython)
+            python = false;
+#ifdef __EMSCRIPTEN__
+        RequestFileLoad(file);
+#else
+        LoadFile(file);
+#endif
+        CodeFile& cf = g_codeFiles[file.baseName];
+        LoadState state = python ? cf.pyState : cf.cppState;
+        if (state == LoadState::NotLoaded || state == LoadState::Loading)
+            return false;
+        const std::string& content = python ? cf.pyContent : cf.cppContent;
+        if (content.empty())
+            return true;
+        auto lines = SplitLines(content);
+        int line = python ? FindPyDeclaration(lines, ref) : FindCppDeclaration(lines, ref);
+        if (line < 0)
+        {
+            SearchInApi(python ? ref.entry->name : BareCppName(ref.CppName()));  // the text search, as a fallback
+            return true;
+        }
+        g_pendingScrollFile = file.cppDisplayName();
+        g_pendingScrollLine = line;
+        g_pendingScrollSection.clear();
+        g_pendingScrollPython = python;
+        g_currentFileIndex = index;
+        return true;
+    }
+
+    void RequestGoToDeclaration(const ApiRef& ref, bool python)
+    {
+        g_pendingDeclRef = GoToDeclaration(ref, python) ? ApiRef() : ref;
+        g_pendingDeclPython = python;
+    }
+
+    void ResolvePendingDeclaration()
+    {
+        if (g_pendingDeclRef.entry != nullptr && GoToDeclaration(g_pendingDeclRef, g_pendingDeclPython))
+            g_pendingDeclRef = ApiRef();
+    }
+
     // The card of an entry: its names, its signatures in both languages, its doc, its members, the links to its pages
     void ShowApiCard(const ApiRef& ref, bool python)
     {
@@ -752,6 +977,10 @@ namespace
         std::string apiFile = located.header;  // the header, or its stub ("imgui.h" -> "imgui.pyi")
         if (python && apiFile.size() > 2 && apiFile.compare(apiFile.size() - 2, 2, ".h") == 0)
             apiFile = apiFile.substr(0, apiFile.size() - 2) + ".pyi";
+        if (ImGui::Button("Go to declaration"))
+            RequestGoToDeclaration(ref, python);
+        ImGui::SetItemTooltip("The line that declares it, in %s", (apiFile.empty() ? FirstApiFileName(python) : apiFile).c_str());
+        ImGui::SameLine();
         if (ImGui::Button(("Find in " + (apiFile.empty() ? FirstApiFileName(python) : apiFile)).c_str()))
             SearchInApi(python ? e.name : BareCppName(ref.CppName()));
         ImGui::SetItemTooltip("The text search in the declarations");
@@ -1109,6 +1338,7 @@ void DemoCodeViewer_Show()
     // The index loads once per library (asynchronously on the web); the lookups below need it
     const std::vector<std::string>& apiModules = GetCurrentLibrary().apiModules;
     ApiIndex_Load(GetDemoCodeDir(), apiModules);
+    ResolvePendingDeclaration();
 
     if (g_currentFileIndex == (int)files.size())
     {
@@ -1363,6 +1593,11 @@ void DemoCodeViewer_Show()
         auto pos = editor.GetDocPosAtMousePos(ImGui::GetMousePos());
         std::string identifier = ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
         std::vector<ApiRef> hits = identifier.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, identifier);
+        // A bare name is not an attribute: "size", "flags" or "min_x" in the code name a variable, not a struct's field
+        bool qualified = identifier.find('.') != std::string::npos || identifier.find("::") != std::string::npos;
+        if (!qualified)
+            hits.erase(std::remove_if(hits.begin(), hits.end(),
+                                      [](const ApiRef& r) { return r.entry->kind == "attribute"; }), hits.end());
         if (!hits.empty())
         {
             if (codeFont.font)

@@ -635,7 +635,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
-            out += _code("cpp", entry.cpp)
+            out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
         out += _doc_lines(entry.doc)
         out += ["| Member | Value | C++ | |", "|---|---|---|---|"]
         for m in entry.children:
@@ -644,7 +644,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
     elif entry.kind == "class":
         out[1] = f"{hashes} `{qualified}` (class)"
         if entry.cpp:
-            out += _code("cpp", entry.cpp)
+            out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
         out += _doc_lines(entry.doc)
         attributes = [c for c in entry.children if c.kind == "attribute"]
         if attributes:
@@ -795,7 +795,8 @@ def _cpp_name(entry: Entry, namespace: str, owner: str = "") -> str:
         m = re.search(r"([A-Za-z_]\w*)\s*\(", entry.cpp)
         name = m.group(1) if m else entry.name
     else:
-        m = re.match(r"^(?:struct|class|enum class|enum)\s+([A-Za-z_]\w*)", entry.cpp)
+        m = re.match(r"^(?:struct|class|enum class|enum)\s+([A-Za-z_]\w*(?:<[^>]*>)?)", entry.cpp)  # a specialization
+        # keeps its arguments: ImVector<ImDrawCmd>
         name = m.group(1) if m else entry.name
     if owner:
         return f"{owner}::{name}"
