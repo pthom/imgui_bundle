@@ -964,17 +964,32 @@ namespace
         // Online doc (the module's page, its C++ view), find in the header or the stub (the text search), copy
         ImGui::AlignTextToFramePadding();
         ImGui::TextDisabled("Online doc:");
-        ImGui::SameLine();
-        if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " Python"))
-            ImmApp::BrowseToUrl(ref.Url().c_str());
-        ImGui::SetItemTooltip("%s", ref.Url().c_str());
         std::string cppUrl = ref.CppUrl();
-        if (!cppUrl.empty())
+        auto pythonDocButton = [&]()
         {
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " Python"))
+                ImmApp::BrowseToUrl(ref.Url().c_str());
+            ImGui::SetItemTooltip("%s", ref.Url().c_str());
+        };
+        auto cppDocButton = [&]()
+        {
+            if (cppUrl.empty())
+                return;
             ImGui::SameLine();
             if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " C++"))
                 ImmApp::BrowseToUrl(cppUrl.c_str());
             ImGui::SetItemTooltip("%s", cppUrl.c_str());
+        };
+        if (python)  // the shown language first
+        {
+            pythonDocButton();
+            cppDocButton();
+        }
+        else
+        {
+            cppDocButton();
+            pythonDocButton();
         }
         ImGui::SameLine(0.f, em * 1.5f);
         std::string apiFile = located.header;  // the header, or its stub ("imgui.h" -> "imgui.pyi")
@@ -995,13 +1010,13 @@ namespace
                 ImGui::SetClipboardText(signature.c_str());
         }
 
-        // The signatures: the shown language first, the other muted
+        // The signatures: in Python, the Python one, then the C++ one muted (the C++ docs and snippets are what a Python
+        // user reads on the web); in C++, the C++ one only (the Python name on the title's second line is enough)
         ImGui::Separator();
-        const std::string& other = python ? e.cpp : e.py;
         if (!signature.empty())
             ShowCode(signature, false);
-        if (!other.empty())
-            ShowCode(other, true);
+        if (python && !e.cpp.empty())
+            ShowCode(e.cpp, true);
         if (!e.value.empty())
             ImGui::Text("= %s", e.value.c_str());
 
