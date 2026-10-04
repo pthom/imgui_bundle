@@ -116,7 +116,7 @@ LIBRARIES = [
             [("imgui_bundle.nanovg", "nanovg.pyi")],
             uses=["NanoVG"]),
     Library("im_anim", "ImAnim",
-            "Animation for Dear ImGui: tweens, easings, springs, timelines.",
+            "Animate values with easings: floats, vectors, colors. Also springs, motion paths and timelines.",
             "https://github.com/soufianekhiat/ImAnim", "addons/tools",
             [("imgui_bundle.im_anim", "im_anim.pyi")],
             uses=["ImAnim"]),
