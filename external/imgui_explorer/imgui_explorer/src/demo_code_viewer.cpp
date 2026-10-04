@@ -1041,15 +1041,26 @@ namespace
             std::string intro = SectionText(*ref.module, located);
             if (!intro.empty())
             {
+                // The section's intro: a tooltip on hover, a popup on click (for touch screens)
                 ImGui::SameLine();
-                ImGui::TextDisabled("(?)");
-                if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                ImGui::PushStyleColor(ImGuiCol_Text, RichMd::LinkColor());
+                if (ImGui::SmallButton(ICON_FA_INFO_CIRCLE " about this section"))
+                    ImGui::OpenPopup("section_intro");
+                ImGui::PopStyleColor();
+                if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort) && !ImGui::IsPopupOpen("section_intro"))
                 {
                     ImGui::BeginTooltip();
                     ImGui::PushTextWrapPos(ImGui::GetFontSize() * 45.f);
                     ImGui::TextUnformatted(intro.c_str());
                     ImGui::PopTextWrapPos();
                     ImGui::EndTooltip();
+                }
+                if (ImGui::BeginPopup("section_intro"))
+                {
+                    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 45.f);
+                    ImGui::TextUnformatted(intro.c_str());
+                    ImGui::PopTextWrapPos();
+                    ImGui::EndPopup();
                 }
             }
         }
