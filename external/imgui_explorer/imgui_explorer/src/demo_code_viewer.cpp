@@ -71,6 +71,8 @@ namespace
     ApiRef g_pendingDeclRef;    // a "Go to declaration" waiting for its file (the web loads them asynchronously)
     bool g_pendingDeclPython = false;
     bool g_apiRevealPending = false;  // the tree opens and scrolls to the current entry (selected outside the tree)
+    std::vector<ApiRef> g_apiHistory;  // the cards read, for back and forward; g_apiHistoryPos is the current one
+    int g_apiHistoryPos = -1;
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
@@ -503,6 +505,31 @@ namespace
         return ref.owner ? ref.owner->name + "." + ref.entry->name : ref.entry->name;
     }
 
+    // The card to show: the entry, revealed in the tree, and a step of the history (the forward steps dropped)
+    void SelectEntry(const ApiRef& ref)
+    {
+        g_apiCurrent = ref;
+        g_apiRevealPending = true;
+        if (g_apiHistoryPos >= 0 && g_apiHistory[g_apiHistoryPos] == ref)
+            return;
+        g_apiHistory.resize(g_apiHistoryPos + 1);
+        g_apiHistory.push_back(ref);
+        g_apiHistoryPos = (int)g_apiHistory.size() - 1;
+    }
+
+    // Back or forward in the history (step: -1 or +1)
+    void StepHistory(int step)
+    {
+        int pos = g_apiHistoryPos + step;
+        if (pos < 0 || pos >= (int)g_apiHistory.size())
+            return;
+        g_apiHistoryPos = pos;
+        g_apiCurrent = g_apiHistory[pos];
+        g_apiCandidates.clear();
+        g_apiFilter[0] = '\0';
+        g_apiRevealPending = true;
+    }
+
     // Shows the hits of a lookup in the API tab: the entry when there is one, a choice otherwise
     void OpenApi(const std::vector<ApiRef>& hits)
     {
@@ -510,9 +537,8 @@ namespace
             return;
         if (hits.size() == 1)
         {
-            g_apiCurrent = hits[0];
+            SelectEntry(hits[0]);
             g_apiCandidates.clear();
-            g_apiRevealPending = true;
         }
         else
         {
@@ -1075,8 +1101,7 @@ namespace
             ImGui::SameLine();
             if (ImGui::SmallButton(ListLabel(ApiRef{ref.module, ref.owner, nullptr}, python).c_str()))
             {
-                g_apiCurrent = ApiRef{ref.module, ref.owner, nullptr};
-                g_apiRevealPending = true;
+                SelectEntry(ApiRef{ref.module, ref.owner, nullptr});
                 return;
             }
         }
@@ -1235,8 +1260,7 @@ namespace
                         ImGui::PopFont();
                     if (clicked)
                     {
-                        g_apiCurrent = ApiRef{ref.module, &c, &e};
-                        g_apiRevealPending = true;
+                        SelectEntry(ApiRef{ref.module, &c, &e});
                         return;
                     }
                     std::string hint = ApiIndex_FirstSentence(c.doc.empty() ? c.note : c.doc);
@@ -1291,10 +1315,9 @@ namespace
                 std::string label = ListLabel(ref, python) + "##hit" + std::to_string(shown++);
                 if (ImGui::Selectable(label.c_str()))
                 {
-                    g_apiCurrent = ref;
+                    SelectEntry(ref);
                     g_apiCandidates.clear();
                     g_apiFilter[0] = '\0';
-                    g_apiRevealPending = true;
                 }
                 ImGui::SameLine();
                 ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
@@ -1405,7 +1428,8 @@ namespace
                     bool isCurrent = &e == current;
                     if (ImGui::Selectable(label.c_str(), isCurrent))
                     {
-                        g_apiCurrent = ref;
+                        SelectEntry(ref);
+                        g_apiRevealPending = false;  // it is in view: the user clicked it
                         g_apiCandidates.clear();
                     }
                     if (isCurrent && reveal)
@@ -1437,6 +1461,8 @@ namespace
             g_apiCurrent = ApiRef();
             g_apiCandidates.clear();
             g_apiFilter[0] = '\0';
+            g_apiHistory.clear();  // the entries belong to the library's modules
+            g_apiHistoryPos = -1;
         }
         const std::vector<std::string>& moduleNames = GetCurrentLibrary().apiModules;
         ApiIndexState state = ApiIndex_Load(GetDemoCodeDir(), moduleNames);
@@ -1454,8 +1480,24 @@ namespace
         }
         bool python = g_showPython;
 
-        // The toolbar: the filter, the whole list, the pages
+        // The toolbar: back and forward in the cards read, the filter, the whole list, the pages
         float em = ImGui::GetFontSize();
+        ImGui::BeginDisabled(g_apiHistoryPos <= 0);
+        ImGui::SetNextItemShortcut(ImGuiMod_Alt | ImGuiKey_LeftArrow, ImGuiInputFlags_RouteGlobal);
+        if (ImGui::SmallButton(ICON_FA_ARROW_LEFT "##back") || ImGui::IsMouseClicked(3))
+            StepHistory(-1);
+        ImGui::EndDisabled();
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+            ImGui::SetTooltip("Back (Alt+Left, or the mouse's back button)");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(g_apiHistoryPos < 0 || g_apiHistoryPos >= (int)g_apiHistory.size() - 1);
+        ImGui::SetNextItemShortcut(ImGuiMod_Alt | ImGuiKey_RightArrow, ImGuiInputFlags_RouteGlobal);
+        if (ImGui::SmallButton(ICON_FA_ARROW_RIGHT "##forward") || ImGui::IsMouseClicked(4))
+            StepHistory(1);
+        ImGui::EndDisabled();
+        if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
+            ImGui::SetTooltip("Forward (Alt+Right, or the mouse's forward button)");
+        ImGui::SameLine();
         ImGui::SetNextItemWidth(18.f * em);
         ImGui::InputTextWithHint("##apifilter", ICON_FA_SEARCH " a name, Python or C++", g_apiFilter, sizeof(g_apiFilter));
         ImGui::SameLine();
@@ -1494,9 +1536,8 @@ namespace
                 const ApiRef& ref = g_apiCandidates[i];
                 if (ImGui::Selectable((ListLabel(ref, python) + "##cand" + std::to_string(i)).c_str()))
                 {
-                    g_apiCurrent = ref;
+                    SelectEntry(ref);
                     g_apiCandidates.clear();
-                    g_apiRevealPending = true;
                     break;
                 }
                 ImGui::SameLine();
