@@ -6,6 +6,7 @@
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "imgui_rich_md/rich_md.h"
+#include "imgui_rich_md/backends/code_editor/snippets.h"
 #include <string>
 #include <map>
 #include <vector>
@@ -541,6 +542,66 @@ namespace
             ImGui::PopFont();
     }
 
+    // A signature wrapped at the card's width: a break after a comma, the continuation indented (the snippet's editor
+    // does not wrap)
+    std::string WrapSignature(const std::string& text, size_t maxChars)
+    {
+        std::string out, line;
+        std::vector<std::string> lines;
+        for (size_t pos = 0; pos < text.size(); ++pos)
+        {
+            char c = text[pos];
+            if (c == '\n')
+            {
+                lines.push_back(line);
+                line.clear();
+                continue;
+            }
+            line += c;
+            if (c == ',' && pos + 1 < text.size() && text[pos + 1] == ' ' && line.size() >= maxChars - 20)
+            {
+                // the rest of the signature, if it does not fit, continues on an indented line
+                size_t end = text.find('\n', pos);
+                size_t restLen = (end == std::string::npos ? text.size() : end) - pos;
+                if (restLen > maxChars - line.size())
+                {
+                    lines.push_back(line);
+                    line = "    ";
+                    ++pos;  // the space after the comma
+                }
+            }
+        }
+        lines.push_back(line);
+        for (size_t i = 0; i < lines.size(); ++i)
+            out += (i ? "\n" : "") + lines[i];
+        return out;
+    }
+
+    // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height
+    void ShowSnippet(const std::string& code, bool python)
+    {
+        Snippets::SnippetData data;
+        data.Code = code;
+        data.Language = python ? Snippets::SnippetLanguage::Python : Snippets::SnippetLanguage::Cpp;
+        data.ShowCursorPosition = false;
+        data.MaxHeightInLines = 0;
+        data.DeIndentCode = false;
+        Snippets::ShowCodeSnippet(data);
+    }
+
+    // The characters that fit on a line of code at the current width
+    size_t CodeCharsPerLine()
+    {
+        auto codeFont = RichMd::GetCodeFont();
+        if (codeFont.font)
+            ImGui::PushFont(codeFont.font, codeFont.size);
+        float glyph = ImGui::CalcTextSize("M").x;
+        if (codeFont.font)
+            ImGui::PopFont();
+        float width = ImGui::GetContentRegionAvail().x - ImGui::GetFontSize() * 6.f;  // the line numbers, the copy button
+        return glyph > 0.f ? (size_t)(width / glyph) : 80;
+    }
+
     // The hover tooltip: the signature in the shown language, the name in the other, the first sentence of the doc
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount)
     {
@@ -1003,20 +1064,19 @@ namespace
             SearchInApi(python ? e.name : BareCppName(ref.CppName()));
         ImGui::SetItemTooltip("The text search in the declarations");
         const std::string& signature = python ? e.py : e.cpp;
-        if (!signature.empty())
-        {
-            ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_COPY " Copy signature"))
-                ImGui::SetClipboardText(signature.c_str());
-        }
 
-        // The signatures: in Python, the Python one, then the C++ one muted (the C++ docs and snippets are what a Python
-        // user reads on the web); in C++, the C++ one only (the Python name on the title's second line is enough)
+        // The signatures, as code blocks (highlighted, selectable, with a copy button): in Python, the Python one,
+        // then the C++ one (the C++ docs and snippets are what a Python user reads on the web); in C++, the C++ one
+        // only (the Python name on the title's second line is enough)
         ImGui::Separator();
+        size_t maxChars = CodeCharsPerLine();
         if (!signature.empty())
-            ShowCode(signature, false);
+            ShowSnippet(WrapSignature(signature, maxChars), python);
         if (python && !e.cpp.empty())
-            ShowCode(e.cpp, true);
+        {
+            ImGui::TextDisabled("C++");
+            ShowSnippet(WrapSignature(e.cpp, maxChars), false);
+        }
         if (!e.value.empty())
             ImGui::Text("= %s", e.value.c_str());
 
@@ -1039,36 +1099,59 @@ namespace
             ImGui::PopTextWrapPos();
         }
 
-        // The members of a class or an enum
+        // The attributes of a struct (or the values of an enum) as one block of code, their comments inline, as the
+        // header reads; the methods as a list, since a method has a card worth opening
         if (!e.children.empty())
         {
-            ImGui::SeparatorText(e.kind == "enum" ? "Values" : "Members");
-            auto codeFont = RichMd::GetCodeFont();
-            for (size_t i = 0; i < e.children.size(); ++i)
+            std::string block;
+            std::vector<const ApiEntry*> methods;
+            for (const ApiEntry& c : e.children)
             {
-                const ApiEntry& c = e.children[i];
-                ApiRef childRef{ref.module, &c, &e};
-                std::string label = python ? c.name : (c.cppName.empty() ? c.name : BareCppName(c.cppName));
-                if (c.kind == "member" && !c.value.empty())
-                    label += " = " + c.value;
-                else if (c.kind == "attribute")
-                    label = python ? c.py : c.cpp;
-                if (codeFont.font)
-                    ImGui::PushFont(codeFont.font, codeFont.size);
-                bool clicked = ImGui::Selectable((label + "##child" + std::to_string(i)).c_str());
-                if (codeFont.font)
-                    ImGui::PopFont();
-                if (clicked)
+                if (c.kind == "method")
                 {
-                    g_apiCurrent = childRef;
-                    g_apiRevealPending = true;
-                    return;
+                    methods.push_back(&c);
+                    continue;
                 }
-                std::string hint = ApiIndex_FirstSentence(c.doc.empty() ? c.note : c.doc);
-                if (!hint.empty())
+                std::string line;
+                if (python)
+                    line = c.kind == "member" ? c.name + (c.value.empty() ? "" : " = " + c.value) : c.py;
+                else
+                    line = c.cpp.empty() ? c.name : c.cpp;
+                std::string note = NormalizeSpaces(c.note);
+                if (!note.empty())
+                    line += "  " + std::string(python ? "# " : (note.rfind("//", 0) == 0 ? "" : "// ")) + note;
+                block += line + "\n";
+            }
+            if (!block.empty())
+            {
+                ImGui::SeparatorText(e.kind == "enum" ? "Values" : "Members");
+                ShowSnippet(block, python);
+            }
+            if (!methods.empty())
+            {
+                ImGui::SeparatorText("Methods");
+                auto codeFont = RichMd::GetCodeFont();
+                for (size_t i = 0; i < methods.size(); ++i)
                 {
-                    ImGui::SameLine();
-                    ImGui::TextDisabled("%s", hint.c_str());
+                    const ApiEntry& c = *methods[i];
+                    std::string label = python ? c.name : (c.cppName.empty() ? c.name : BareCppName(c.cppName));
+                    if (codeFont.font)
+                        ImGui::PushFont(codeFont.font, codeFont.size);
+                    bool clicked = ImGui::Selectable((label + "##method" + std::to_string(i)).c_str());
+                    if (codeFont.font)
+                        ImGui::PopFont();
+                    if (clicked)
+                    {
+                        g_apiCurrent = ApiRef{ref.module, &c, &e};
+                        g_apiRevealPending = true;
+                        return;
+                    }
+                    std::string hint = ApiIndex_FirstSentence(c.doc.empty() ? c.note : c.doc);
+                    if (!hint.empty())
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextDisabled("%s", hint.c_str());
+                    }
                 }
             }
         }
