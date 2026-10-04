@@ -1030,36 +1030,6 @@ namespace
             g_pendingDeclRef = ApiRef();
     }
 
-    // The structs and enums named in a signature (its identifiers that the index knows as a class or an enum), in
-    // their order, once each; the entry itself excluded
-    std::vector<ApiRef> TypesInSignature(const std::string& signature, const ApiRef& self)
-    {
-        const std::vector<std::string>& modules = GetCurrentLibrary().apiModules;
-        std::vector<ApiRef> types;
-        size_t i = 0;
-        while (i < signature.size())
-        {
-            if (!(std::isalpha((unsigned char)signature[i]) || signature[i] == '_'))
-            {
-                ++i;
-                continue;
-            }
-            size_t start = i;
-            while (i < signature.size() && (std::isalnum((unsigned char)signature[i]) || signature[i] == '_'))
-                ++i;
-            std::string word = signature.substr(start, i - start);
-            for (const ApiRef& hit : ApiIndex_Lookup(modules, word))
-            {
-                if (hit.owner != nullptr || (hit.entry->kind != "class" && hit.entry->kind != "enum") || hit == self)
-                    continue;
-                if (std::find(types.begin(), types.end(), hit) == types.end())
-                    types.push_back(hit);
-                break;
-            }
-        }
-        return types;
-    }
-
     // The intro of the section an entry belongs to (carried by the section's first entry), or of its part when the
     // entry sits directly under the part
     std::string SectionText(const ApiModule& module, const ApiEntry& entry)
@@ -1199,31 +1169,6 @@ namespace
         {
             ImGui::TextDisabled("C++");
             ShowSnippet(WrapSignature(e.cpp, maxChars), false);
-        }
-        if (e.kind == "function" || e.kind == "method")
-        {
-            // The types of the signature: a button each, to their card
-            std::vector<ApiRef> types = TypesInSignature(signature, ref);
-            if (!types.empty())
-            {
-                ImGui::AlignTextToFramePadding();
-                ImGui::TextDisabled("Types:");
-                for (size_t i = 0; i < types.size() && i < 8; ++i)
-                {
-                    ImGui::SameLine();
-                    std::string label = ListLabel(types[i], python) + "##type" + std::to_string(i);
-                    if (ImGui::SmallButton(label.c_str()))
-                    {
-                        g_apiCurrent = types[i];
-                        g_apiCandidates.clear();
-                        g_apiRevealPending = true;
-                        return;
-                    }
-                    std::string hint = ApiIndex_FirstSentence(types[i].entry->doc);
-                    if (!hint.empty())
-                        ImGui::SetItemTooltip("%s", hint.c_str());
-                }
-            }
         }
         if (!e.value.empty())
             ImGui::Text("= %s", e.value.c_str());
