@@ -132,6 +132,16 @@ int main() {
 
 Full demo: `bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp`.
 
+## Beyond the happy path
+
+After the sequence that shows the change working, add a few steps that try to break it. Each item below found a real bug that a happy-path sequence missed:
+- **Every click target inside the new UI**, not only the ways in: a click inside a panel can change the state the panel is still drawing from.
+- **The same feature in another context**: another library, another document, the other language. IDs that collide, or data shaped differently, show up there.
+- **The transitions**: switch away and back (another tab, another mode, another library), and the first display. State reset or restored at the wrong time shows up there.
+- **One ugly input on purpose**, for code that reads data (a parser, a generator): the oddest case the data holds.
+
+Two or three extra steps per sequence are enough.
+
 ## Caveats
 
 - **Engine failures raise.** `testing.run` raises `RuntimeError` (with the
