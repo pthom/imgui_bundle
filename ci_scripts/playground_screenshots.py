@@ -92,6 +92,30 @@ def _open(window: str, *labels: str) -> Callable[[Any], None]:
     return test
 
 
+MANUAL_CROP = (0.0, 0.0, 0.79, 0.68)  # the demo and a part of its code, 16:10 (the galleries' proportions)
+
+
+def _manual_section(window: str, *labels: str) -> Callable[[Any], None]:
+    """A test engine script for an interactive manual: opens these headers of its demo window, scrolls the last one to
+    the top, and rests the mouse just inside it, so that the code beside follows (the explorer's "Follow source"; the
+    code keeps its place once the script ends and the real mouse takes over)"""
+    def test(ctx: Any) -> None:
+        from imgui_bundle import imgui
+        from imgui_bundle.imgui import test_engine
+        ctx.set_ref(window)
+        for label in labels:
+            ctx.item_open("**/" + label)
+        ref = "**/" + labels[-1]
+        info = ctx.item_info(ref)
+        win = info.window
+        ctx.scroll_to_y(test_engine.TestRef(win.id_), win.scroll.y + info.rect_full.min.y - win.inner_rect.min.y - 4)
+        ctx.yield_(3)
+        info = ctx.item_info(ref)
+        ctx.mouse_move_to_pos(imgui.ImVec2(info.rect_full.max.x - 20, info.rect_full.max.y + 12))
+        ctx.sleep_no_skip(1.0, 0.1)
+    return test
+
+
 def _cjk_font() -> None:
     """The Chinese font demo: a CJK font, downloaded once to a folder the demo finds as an asset (the font is not
     shipped: 16 MB). The picture shows the sample text instead of the "font not found" fallback."""
@@ -162,11 +186,13 @@ SHOTS: dict[str, Shot] = {
     "demo_nanovg_full.py": Shot(crop=(0.0, 0.05, 1.0, 0.883)),
     "demo_nanovg_heart.py": Shot(crop=(0.0, 0.02, 1.0, 0.853)),
     "demo_terminal_pyte.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.603)),
-    # The interactive manuals (source: manuals)
-    "manual_imgui.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
-    "manual_implot.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
-    "manual_implot3d.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
-    "manual_im_anim.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    # The interactive manuals (source: manuals): a section opened and scrolled to the top, its code beside
+    "manual_imgui.py": Shot(test=_manual_section("Dear ImGui Demo", "Widgets", "Basic"), crop=MANUAL_CROP),
+    "manual_implot.py": Shot(test=_manual_section("ImPlot Demo", "Per-Index Colors"), crop=MANUAL_CROP),
+    "manual_implot3d.py": Shot(test=_manual_section("ImPlot3D Demo", "Per-Index Colors"), crop=MANUAL_CROP),
+    "manual_im_anim.py": Shot(test=_manual_section("ImAnimDemos", "Basic Animations", "Oscillator", "Easing Showcase",
+                                                   "Color Tween (OKLAB)"),  # the last one at the top, followed
+                              crop=MANUAL_CROP),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),
