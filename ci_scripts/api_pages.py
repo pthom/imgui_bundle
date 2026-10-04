@@ -202,6 +202,7 @@ class Entry:
     section: Optional[tuple[str, list[str]]] = None  # a section of the header that starts here: its title, its lines
     part: Optional[str] = None  # a part of the header that starts here: a [SECTION] mark (imgui, implot); the parts
     # hold the sections
+    part_text: list[str] = field(default_factory=list)  # the part's intro: the banner's lines under its mark
     header: str = ""  # the C++ header it comes from
     children: list["Entry"] = field(default_factory=list)
     overloads: list[tuple[str, str]] = field(default_factory=list)  # the other signatures (Python, C++) of an overload
@@ -305,45 +306,59 @@ def _drop_preamble(before: list[str]) -> list[str]:
             if not any(re.match(r"^[/=-]{4,}$", line) or line.startswith("[SECTION]") for line in above):
                 blocks = blocks[i:]
             break
-    return [line for b in blocks for line in b]
+    out: list[str] = []
+    for b in blocks:  # the blocks stay apart by "": a part's intro ends at the first blank line
+        out += ([""] if out else []) + b
+    return out
 
 
-def _section_or_note(before: list[str]) -> tuple[Optional[str], Optional[tuple[str, list[str]]], str]:
-    """The lines above a C++ signature: a part of the header (a [SECTION] mark), a section (a title, then its lines),
-    or a mere note. Not a section: a sentence, a bullet, a marker of the bundle's patches ([ADAPT_IMGUI_BUNDLE]),
-    a preprocessor line"""
+def _section_or_note(before: list[str],
+                     nested: bool = False) -> tuple[Optional[str], list[str], Optional[tuple[str, list[str]]], str]:
+    """The lines above a C++ signature: a part of the header (a [SECTION] mark, with its intro: the banner's lines
+    under the mark, up to a blank line), a section (a title, then its lines), or a mere note. Not a section: a
+    sentence, a bullet, a marker of the bundle's patches ([ADAPT_IMGUI_BUNDLE]), a preprocessor line"""
     marks = [i for i, line in enumerate(before) if line.startswith("[SECTION]")]
     if len(marks) > 1:  # parts without bound entries above (imgui.h's Header mess): the entry's part is the last
         before = before[marks[-1]:]
-    before = _drop_preamble(before)
+    if not nested:  # the preamble is judged once, on the whole: not again on the lines after a part's mark
+        before = _drop_preamble(before)
     is_rule = [bool(re.match(r"^[/=-]{4,}$", b)) for b in before]
     before = [b for i, b in enumerate(before) if not (is_rule[i] and i > 0 and is_rule[i - 1])]  # one rule per run
     is_rule = [bool(re.match(r"^[/=-]{4,}$", b)) for b in before]
     if len(before) >= 3 and is_rule[0] and is_rule[2] and _is_title(before[1]):  # a banner: a part (the node editor's)
-        nearer, section, note = _section_or_note(before[3:])
-        return nearer or _part_title(before[1]), section, note
+        nearer, nearer_text, section, note = _section_or_note(before[3:], nested=True)
+        return nearer or _part_title(before[1]), nearer_text, section, note
     preprocessor = r"^(#\s*(if|else)|#?\s*(ifdef|ifndef|elif|endif|define|include|pragma))\b"
     before = [b for b in before if not re.match(preprocessor, b)
               and not re.match(r"^[/=-]{4,}$", b) and not b.startswith("[ADAPT_") and not b.startswith("</")]
+    while before and before[0] == "":
+        before = before[1:]
     if not before:
-        return None, None, ""
+        return None, [], None, ""
     title = before[0]
     if (m := re.match(r"^-{3,}\s*(.+?)\s*-{3,}$", title)):  # `--- Title ---`: the node editor's sections
         title = m.group(1)
     if title.startswith("[SECTION]"):  # imgui's and implot's marks: a part
-        nearer, section, note = _section_or_note(before[1:])  # a part without bound entries: the next one counts
-        return nearer or _part_title(title), section, note
+        rest = before[1:]
+        intro: list[str] = []
+        if "" in rest:  # the banner's own lines, up to the blank line: the part's intro (imgui's "(Note that ImGui::
+            # being a namespace...)"); what follows may title a section
+            cut = rest.index("")
+            intro, rest = rest[:cut], rest[cut + 1:]
+        nearer, nearer_text, section, note = _section_or_note(rest, nested=True)  # a part without bound entries:
+        # the next one counts
+        return nearer or _part_title(title), nearer_text if nearer else intro, section, note
     if (m := re.match(r"^<submodule (\w+)>$", title)):  # litgen's marker of a nested namespace
         title = f"Submodule {m.group(1)}"
     if not _is_title(title):
-        return None, None, "\n".join(before)
-    return None, (title, before[1:]), ""
+        return None, [], None, "\n".join(before)
+    return None, [], (title, before[1:]), ""
 
 
 def _is_title(title: str) -> bool:
     """A comment line that can title a section: not a sentence, a marker, a line of code"""
     title = title.strip()
-    return not (title.startswith(("-", "<", "[/")) or len(title) > 60 or title.endswith((".", ",", ";", ":"))
+    return bool(title) and not (title.startswith(("-", "<", "[/")) or len(title) > 60 or title.endswith((".", ",", ";", ":"))
                 or re.search(r'[;"]', title) or ("," in title and ":" not in title and len(title.split()) > 3))
 
 
@@ -472,17 +487,17 @@ def _read_node(lines: list[str], node: ast.AST, in_class: bool = False) -> Optio
         if node.name.startswith("_") and node.name != "__init__":
             return None
         cpp, before, after = _split_comments(_leading_comments(lines, _first_line(node)))
-        part, section, note = _section_or_note(before)
+        part, part_text, section, note = _section_or_note(before)
         entry = Entry("method" if in_class else "function", node.name, _signature(node), cpp,
                       ast.get_docstring(node) or "", "\n".join(x for x in [note, *after] if x), section=section)
-        entry.part = part
+        entry.part, entry.part_text = part, part_text
         return entry
     if isinstance(node, ast.ClassDef):
         cpp, before, after = _split_comments(_leading_comments(lines, _first_line(node)))
-        part, section, note = _section_or_note(before)
+        part, part_text, section, note = _section_or_note(before)
         entry = Entry("enum" if _is_enum(node) else "class", node.name, "", cpp, ast.get_docstring(node) or "",
                       "\n".join(x for x in [note, *after] if x), section=section)
-        entry.part = part
+        entry.part, entry.part_text = part, part_text
         for child in node.body:
             if isinstance(child, (ast.FunctionDef, ast.ClassDef)):
                 sub = _read_node(lines, child, in_class=True)
@@ -710,6 +725,8 @@ def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[s
             out += [f"## {header}", ""] if header else []
         if entry.part is not None:
             out += [f"## {entry.part}", ""]
+            if entry.part_text:
+                out += [_safe_markdown("\n".join(entry.part_text)), ""]
         if entry.section is not None:
             title, text = entry.section
             out += [f"### {title}", ""]
@@ -1012,6 +1029,8 @@ def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
             lines += [f"### {header}", ""] if header else []
         if entry.part is not None:
             lines += [f"### {entry.part}", ""]
+            if entry.part_text:
+                lines += [*entry.part_text, ""]
         if entry.section is not None:
             lines += [f"#### {entry.section[0]}", ""]
         if entry.kind == "class" and entry.name.startswith("ImVector_"):  # imgui's ImVector specializations
@@ -1213,6 +1232,8 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
         if entry.section is not None and entry.section[1]:  # the section's intro (the header's comments under its
             # title), on its first entry
             item["section_text"] = "\n".join(entry.section[1]).replace("\x00", "\\0")
+        if entry.part_text:  # the part's intro, on its first entry
+            item["part_text"] = "\n".join(entry.part_text).replace("\x00", "\\0")
         if part:
             item["part"] = part
         out.append(item)

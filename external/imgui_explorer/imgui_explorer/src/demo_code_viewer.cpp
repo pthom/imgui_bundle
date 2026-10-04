@@ -989,18 +989,23 @@ namespace
             g_pendingDeclRef = ApiRef();
     }
 
-    // The intro of the section an entry belongs to (carried by the section's first entry)
+    // The intro of the section an entry belongs to (carried by the section's first entry), or of its part when the
+    // entry sits directly under the part
     std::string SectionText(const ApiModule& module, const ApiEntry& entry)
     {
-        std::string text;
+        std::string text, partText;
         for (const auto& e : module.entries)
         {
+            if (!e.partText.empty())
+                partText = e.partText;
             if (!e.sectionText.empty())
                 text = e.sectionText;
             if (&e == &entry)
-                return e.section.empty() ? "" : text;
+                return e.section.empty() ? partText : text;
             if (e.section != entry.section)
                 text.clear();
+            if (e.part != entry.part)
+                partText.clear();
         }
         return "";
     }
@@ -1045,7 +1050,8 @@ namespace
                 // The section's intro: a tooltip on hover, a popup on click (for touch screens)
                 ImGui::SameLine();
                 ImGui::PushStyleColor(ImGuiCol_Text, RichMd::LinkColor());
-                if (ImGui::SmallButton(ICON_FA_INFO_CIRCLE " about this section"))
+                if (ImGui::SmallButton(located.section.empty() ? ICON_FA_INFO_CIRCLE " about this part"
+                                                               : ICON_FA_INFO_CIRCLE " about this section"))
                     ImGui::OpenPopup("section_intro");
                 ImGui::PopStyleColor();
                 if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort) && !ImGui::IsPopupOpen("section_intro"))
@@ -1317,6 +1323,14 @@ namespace
                     ImGui::SetNextItemOpen(true);
                 if (!ImGui::TreeNodeEx(partTitle.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth))
                     continue;
+                if (!part->entries.empty() && !part->entries.front()->partText.empty())
+                {
+                    // The part's intro: the banner's lines under its mark
+                    ImGui::PushTextWrapPos(0.f);
+                    ImGui::TextDisabled("%s", part->entries.front()->partText.c_str());
+                    ImGui::PopTextWrapPos();
+                    ImGui::Spacing();
+                }
                 std::string section;
                 bool sectionOpen = true;
                 for (size_t i = 0; i < part->entries.size(); ++i)

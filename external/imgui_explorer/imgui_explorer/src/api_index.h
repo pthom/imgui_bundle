@@ -18,6 +18,7 @@ struct ApiEntry
     std::string value;         // an enum member's value
     std::string section, part, header;
     std::string sectionText;   // the section's intro (the header's comments under its title), on its first entry
+    std::string partText;      // the part's intro (the banner's lines under its mark), on its first entry
     std::string anchor, cppAnchor;  // the ids on the module's page and on its C++ view
     std::vector<ApiEntry> children;
 };
