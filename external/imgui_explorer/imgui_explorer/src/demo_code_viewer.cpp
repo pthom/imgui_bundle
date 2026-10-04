@@ -69,6 +69,7 @@ namespace
     bool g_apiTooltips = true;  // a tooltip with the API of the identifier under the mouse
     ApiRef g_pendingDeclRef;    // a "Go to declaration" waiting for its file (the web loads them asynchronously)
     bool g_pendingDeclPython = false;
+    bool g_apiRevealPending = false;  // the tree opens and scrolls to the current entry (selected outside the tree)
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
@@ -510,6 +511,7 @@ namespace
         {
             g_apiCurrent = hits[0];
             g_apiCandidates.clear();
+            g_apiRevealPending = true;
         }
         else
         {
@@ -948,6 +950,7 @@ namespace
             if (ImGui::SmallButton(ListLabel(ApiRef{ref.module, ref.owner, nullptr}, python).c_str()))
             {
                 g_apiCurrent = ApiRef{ref.module, ref.owner, nullptr};
+                g_apiRevealPending = true;
                 return;
             }
         }
@@ -1043,6 +1046,7 @@ namespace
                 if (clicked)
                 {
                     g_apiCurrent = childRef;
+                    g_apiRevealPending = true;
                     return;
                 }
                 std::string hint = ApiIndex_FirstSentence(c.doc.empty() ? c.note : c.doc);
@@ -1099,6 +1103,7 @@ namespace
                     g_apiCurrent = ref;
                     g_apiCandidates.clear();
                     g_apiFilter[0] = '\0';
+                    g_apiRevealPending = true;
                 }
                 ImGui::SameLine();
                 ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
@@ -1158,9 +1163,16 @@ namespace
             ordered.insert(ordered.end(), before.begin(), before.end());
             ordered.insert(ordered.end(), additions.begin(), additions.end());
 
+            // The current entry (its owner for a member): revealed when it was selected outside the tree
+            const ApiEntry* current = g_apiCurrent.owner ? g_apiCurrent.owner : g_apiCurrent.entry;
+            bool reveal = g_apiRevealPending && current != nullptr;
             for (const Part* part : ordered)
             {
                 std::string partTitle = part->title.empty() ? "Python additions" : part->title;
+                bool partHasCurrent = reveal
+                    && std::find(part->entries.begin(), part->entries.end(), current) != part->entries.end();
+                if (partHasCurrent)
+                    ImGui::SetNextItemOpen(true);
                 if (!ImGui::TreeNodeEx(partTitle.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth))
                     continue;
                 std::string section;
@@ -1173,17 +1185,24 @@ namespace
                         if (sectionOpen && !section.empty())
                             ImGui::TreePop();
                         section = e.section;
+                        if (partHasCurrent && !section.empty())  // the section's entries are contiguous
+                            for (size_t j = i; j < part->entries.size() && part->entries[j]->section == section; ++j)
+                                if (part->entries[j] == current)
+                                    ImGui::SetNextItemOpen(true);
                         sectionOpen = section.empty() || ImGui::TreeNodeEx(section.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
                     }
                     if (!sectionOpen)
                         continue;
                     ApiRef ref{m, &e, nullptr};
                     std::string label = ListLabel(ref, python) + "##entry" + std::to_string(i);
-                    if (ImGui::Selectable(label.c_str()))
+                    bool isCurrent = &e == current;
+                    if (ImGui::Selectable(label.c_str(), isCurrent))
                     {
                         g_apiCurrent = ref;
                         g_apiCandidates.clear();
                     }
+                    if (isCurrent && reveal)
+                        ImGui::SetScrollHereY(0.3f);
                     std::string hint = ApiIndex_FirstSentence(e.doc);
                     if (!hint.empty())
                     {
@@ -1197,12 +1216,14 @@ namespace
             }
             ImGui::PopID();
         }
+        g_apiRevealPending = false;
     }
 
     void ShowApiTab()
     {
-        // The entry, the candidates and the filter belong to a library: a switch starts from the list
-        static int lastLibrary = -1;
+        // The entry, the candidates and the filter belong to a library: a switch starts from the list (the first
+        // display is not a switch: the entry may have been selected from the code)
+        static int lastLibrary = GetCurrentLibraryIndex();
         if (GetCurrentLibraryIndex() != lastLibrary)
         {
             lastLibrary = GetCurrentLibraryIndex();
@@ -1226,27 +1247,36 @@ namespace
         }
         bool python = g_showPython;
 
-        // The toolbar: the filter, back to the list, the pages
+        // The toolbar: the filter, the whole list, the pages
         float em = ImGui::GetFontSize();
         ImGui::SetNextItemWidth(18.f * em);
         ImGui::InputTextWithHint("##apifilter", ICON_FA_SEARCH " a name, Python or C++", g_apiFilter, sizeof(g_apiFilter));
         ImGui::SameLine();
-        bool listing = g_apiFilter[0] == '\0' && g_apiCurrent.entry == nullptr && g_apiCandidates.empty();
+        bool listing = g_apiFilter[0] == '\0' && g_apiCandidates.empty();
         ImGui::BeginDisabled(listing);
         if (ImGui::SmallButton(ICON_FA_LIST " All"))
         {
-            g_apiCurrent = ApiRef();
             g_apiCandidates.clear();
             g_apiFilter[0] = '\0';
+            g_apiRevealPending = true;
         }
         ImGui::EndDisabled();
+        ImGui::SetItemTooltip("The whole list");
         ImGui::SameLine();
         ImGui::TextDisabled("|");
         ImGui::SameLine();
         RichMd::RenderTextAsLink("API pages", modules[0]->url.c_str());
         ImGui::SetItemTooltip("The reference of the module, on the web (every entry, searchable)");
 
-        ImGui::BeginChild("api_body", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        // Two zones, with a splitter: the list (the tree, the filter's results, the candidates), then the card
+        float listHeight = ImGui::GetContentRegionAvail().y * 0.45f;
+        ImGui::BeginChild("api_list", ImVec2(0.f, listHeight), ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeY);
+        static std::string lastFilter;  // the results replace the tree: back to the top when the filter changes
+        if (lastFilter != g_apiFilter)
+        {
+            lastFilter = g_apiFilter;
+            ImGui::SetScrollY(0.f);
+        }
         if (g_apiFilter[0] != '\0')
             ShowApiFilterResults(modules, python);
         else if (!g_apiCandidates.empty())
@@ -1259,16 +1289,22 @@ namespace
                 {
                     g_apiCurrent = ref;
                     g_apiCandidates.clear();
+                    g_apiRevealPending = true;
                     break;
                 }
                 ImGui::SameLine();
                 ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
             }
         }
-        else if (g_apiCurrent.entry != nullptr)
-            ShowApiCard(g_apiCurrent, python);
         else
             ShowApiBrowser(modules, python);
+        ImGui::EndChild();
+
+        ImGui::BeginChild("api_card", ImVec2(0.f, 0.f), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        if (g_apiCurrent.entry != nullptr)
+            ShowApiCard(g_apiCurrent, python);
+        else
+            ImGui::TextDisabled("Select an entry above, or click a name in the code and press the book button.");
         ImGui::EndChild();
     }
 }
