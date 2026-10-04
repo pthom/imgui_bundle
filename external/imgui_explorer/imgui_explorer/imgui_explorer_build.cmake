@@ -153,8 +153,9 @@ endfunction()
 # Standalone exe (optional)
 # ---------------------------------------------------------------------------
 function(iex_add_imgui_explorer_app)
+    # The output folder, set before the target is created: hello_imgui places the web favicon there at configure time
+    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     imgui_bundle_add_app(imgui_explorer ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/imgui_explorer.main.cpp)
-    set_target_properties(imgui_explorer PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
     if(EMSCRIPTEN)
         set_target_properties(imgui_explorer PROPERTIES OUTPUT_NAME index)
     endif()
