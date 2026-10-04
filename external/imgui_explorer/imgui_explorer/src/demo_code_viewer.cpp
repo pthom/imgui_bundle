@@ -1081,8 +1081,10 @@ namespace
         return "";
     }
 
-    // The card of an entry: its names, its signatures in both languages, its doc, its members, the links to its pages
-    void ShowApiCard(const ApiRef& ref, bool python)
+    // The card of an entry: its names, its signatures in both languages, its doc, its members, the links to its pages.
+    // `ref` is a copy: a click inside the card (a type, a member, a snippet's menu) changes g_apiCurrent while the
+    // card is still drawing
+    void ShowApiCard(ApiRef ref, bool python)
     {
         const ApiEntry& e = *ref.entry;
         float em = ImGui::GetFontSize();

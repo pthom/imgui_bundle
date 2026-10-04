@@ -292,6 +292,11 @@ std::vector<ApiRef> ApiIndex_Lookup(const std::vector<std::string>& modules, con
             for (const auto& h : Hits(scoped, loaded))
                 if (std::find(hits.begin(), hits.end(), h) == hits.end())
                     hits.push_back(h);
+        // A struct and its constructor share a name: the struct is the answer
+        hits.erase(std::remove_if(hits.begin(), hits.end(), [&](const ApiRef& h) {
+            return h.owner != nullptr && std::any_of(hits.begin(), hits.end(),
+                                                     [&](const ApiRef& o) { return o.entry == h.owner; });
+        }), hits.end());
         if (!hits.empty())
             return hits;
     }
