@@ -71,6 +71,7 @@ namespace
     ApiRef g_pendingDeclRef;    // a "Go to declaration" waiting for its file (the web loads them asynchronously)
     bool g_pendingDeclPython = false;
     bool g_apiRevealPending = false;  // the tree opens and scrolls to the current entry (selected outside the tree)
+    bool g_apiCardHasLongLines = false;  // a code block of the card is wider than the card: the Wrap checkbox shows
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
@@ -577,15 +578,24 @@ namespace
         return out;
     }
 
-    // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height
-    void ShowSnippet(const std::string& code, bool python)
+    // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height.
+    // Its long lines wrap with the viewer's Wrap setting; it reports them, so that the card shows the checkbox
+    void ShowSnippet(const std::string& code, bool python, size_t maxChars)
     {
+        size_t lineStart = 0;
+        for (size_t i = 0; i <= code.size() && !g_apiCardHasLongLines; ++i)
+            if (i == code.size() || code[i] == '\n')
+            {
+                g_apiCardHasLongLines = i - lineStart > maxChars;
+                lineStart = i + 1;
+            }
         Snippets::SnippetData data;
         data.Code = code;
         data.Language = python ? Snippets::SnippetLanguage::Python : Snippets::SnippetLanguage::Cpp;
         data.ShowCursorPosition = false;
         data.MaxHeightInLines = 0;
         data.DeIndentCode = false;
+        data.WordWrap = g_wordWrap;
         Snippets::ShowCodeSnippet(data);
     }
 
@@ -1095,6 +1105,13 @@ namespace
             cppDocButton();
             pythonDocButton();
         }
+        if (g_apiCardHasLongLines)  // seen on the previous frame (the blocks come after this row)
+        {
+            ImGui::SameLine(0.f, em * 1.5f);
+            ImGui::Checkbox("Wrap", &g_wordWrap);
+            ImGui::SetItemTooltip("Wrap the long lines of the code blocks (the same setting as the code's)");
+        }
+        g_apiCardHasLongLines = false;
         ImGui::SameLine(0.f, em * 1.5f);
         std::string apiFile = located.header;  // the header, or its stub ("imgui.h" -> "imgui.pyi")
         if (python && apiFile.size() > 2 && apiFile.compare(apiFile.size() - 2, 2, ".h") == 0)
@@ -1114,11 +1131,11 @@ namespace
         ImGui::Separator();
         size_t maxChars = CodeCharsPerLine();
         if (!signature.empty())
-            ShowSnippet(WrapSignature(signature, maxChars), python);
+            ShowSnippet(WrapSignature(signature, maxChars), python, maxChars);
         if (python && !e.cpp.empty())
         {
             ImGui::TextDisabled("C++");
-            ShowSnippet(WrapSignature(e.cpp, maxChars), false);
+            ShowSnippet(WrapSignature(e.cpp, maxChars), false, maxChars);
         }
         if (!e.value.empty())
             ImGui::Text("= %s", e.value.c_str());
@@ -1168,7 +1185,7 @@ namespace
             if (!block.empty())
             {
                 ImGui::SeparatorText(e.kind == "enum" ? "Values" : "Members");
-                ShowSnippet(block, python);
+                ShowSnippet(block, python, maxChars);
             }
             if (!methods.empty())
             {
