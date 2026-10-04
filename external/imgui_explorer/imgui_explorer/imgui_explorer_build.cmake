@@ -78,6 +78,22 @@ function(iex_setup_demo_code_dir)
     _iex_copy_as(${stubs}/implot3d/__init__.pyi  implot3d.pyi          ${dest})
     _iex_copy_as(${stubs}/implot3d/internal.pyi  implot3d_internal.pyi ${dest})
     _iex_copy_as(${stubs}/im_anim.pyi            im_anim.pyi           ${dest})
+
+    # The API index (one JSON per module, read by the code viewer's API tab), written by `just api_pages`
+    # into docs/book/api/json/ (ignored by git): copied when present
+    set(api_json ${b}/docs/book/api/json)
+    set(api_modules imgui imgui.internal implot implot.internal implot3d implot3d.internal im_anim)
+    set(api_missing "")
+    foreach(module ${api_modules})
+        if(EXISTS ${api_json}/${module}.json)
+            _iex_copy(${api_json}/${module}.json ${dest}/api_index)
+        else()
+            list(APPEND api_missing ${module})
+        endif()
+    endforeach()
+    if(api_missing)
+        message(STATUS "imgui_explorer: no API index for ${api_missing} (run `just api_pages`, then configure again)")
+    endif()
 endfunction()
 
 
@@ -93,6 +109,8 @@ function(iex_add_imgui_explorer_lib)
         ${src}/src/library_config.h
         ${src}/src/demo_code_viewer.cpp
         ${src}/src/demo_code_viewer.h
+        ${src}/src/api_index.cpp
+        ${src}/src/api_index.h
         ${src}/imgui_explorer.h
     )
     target_link_libraries(imgui_explorer_lib PUBLIC

@@ -11814,6 +11814,7 @@ def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
     """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
     pass
 
+# IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 @overload
 def slider_float2(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
@@ -11826,6 +11827,7 @@ def slider_float2(
 ) -> Tuple[bool, ImVec2]:
     pass
 
+# IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
 @overload
 def slider_float4(
     label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
@@ -11838,6 +11840,7 @@ def slider_float4(
 ) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 @overload
 def input_float2(
     label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
@@ -11848,6 +11851,7 @@ def input_float2(
 def input_float2(label: str, v: ImVec2Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
     pass
 
+# IMGUI_API bool          InputFloat4(const char* label, float v[4], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
 @overload
 def input_float4(
     label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
@@ -11858,6 +11862,7 @@ def input_float4(
 def input_float4(label: str, v: ImVec4Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
 @overload
 def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
@@ -11866,6 +11871,7 @@ def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tupl
 def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
 @overload
 def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
@@ -11874,6 +11880,7 @@ def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tupl
 def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
 @overload
 def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
     pass
@@ -11882,6 +11889,7 @@ def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tu
 def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
     pass
 
+# IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
 @overload
 def color_picker4(
     label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[List[float]] = None

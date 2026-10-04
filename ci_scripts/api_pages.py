@@ -12,7 +12,8 @@ This script reads them with `ast` and their source lines, and writes, for each l
   per entry the Python signature, the C++ signature, the doc;
 and `api/index.md` (all the libraries), and the part of `_toc.yml` between `# <api pages>` and `# </api pages>`.
 Also the API in plain text, for AI assistants (`api/llms/`, published under llms/api/): one file per module, with
-the demos that use it at the top, and an index.
+the demos that use it at the top, and an index. And the API as JSON (`api/json/`), for the explorers and the
+playground: one file per module, the entries with their names in both languages and the URLs of their anchors.
 Run by `just api_pages` and by the doc recipes. The same design in three readers' minds: a Python user looks up a
 name, a C++ user reads the C++ signature next to it, an AI assistant reads the whole page.
 """
@@ -1124,6 +1125,108 @@ def write_toc(toc_lines: list[str]) -> None:
     path.write_text(text[:i] + new + text[j:])
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# The JSON index, for the explorers and the playground (api/json/<module>.json): the same entries, with their names in
+# both languages and the URLs of their anchors on the pages. A front end shows the card of an identifier from it.
+# ---------------------------------------------------------------------------------------------------------------------
+PAGES_URL = "https://imgui-bundle.pages.dev/doc/api"
+
+
+def _html_id(label: str) -> str:
+    """The HTML id that the book's theme gives a MyST label: lower case, runs of other characters as one dash"""
+    return re.sub(r"[^a-z0-9]+", "-", label.lower()).strip("-")
+
+
+def _module_stem(module: str) -> str:
+    return re.sub(r"[^a-z0-9_]+", "_", module.removeprefix("imgui_bundle.").lower()).strip("_") or "module"
+
+
+def _page_url(library: Library, stem: str) -> str:
+    return f"{PAGES_URL}/{library.key.replace('_', '-')}/{stem.replace('_', '-')}/"
+
+
+def _cpp_member_name(entry: Entry, owner: str) -> str:
+    """The C++ name of an attribute or an enum member: the identifier of its declaration that matches the Python
+    name (litgen writes `frame_padding` for `FramePadding`), else the first identifier, else the Python name"""
+    identifiers = re.findall(r"[A-Za-z_]\w*", entry.cpp)
+    wanted = entry.name.replace("_", "").lower()
+    name = next((i for i in identifiers if i.replace("_", "").lower() == wanted),
+                next((i for i in identifiers if i.replace("_", "").lower().endswith(wanted)),
+                     identifiers[0] if identifiers else entry.name))
+    return f"{owner}::{name}" if owner and entry.kind == "attribute" else name
+
+
+def _json_entry(entry: Entry, module: str, namespace: Optional[str], owner: str = "",
+                page_owner: str = "") -> dict[str, Any]:
+    """An entry as a dict: `anchor` is its id on the module's page, `cpp_anchor` its id on the C++ view (the same
+    name rules as the pages), `cpp_name` the name a C++ reader knows (a real enum name, where the C++ page shows the
+    Python one)"""
+    qualified = f"{owner}.{entry.name}" if owner else entry.name
+    bound = (namespace is not None and entry.generated and "pywrappers" not in entry.header
+             and (entry.kind in ("class", "enum") or bool(entry.cpp)))
+    page_name = _cpp_name(entry, namespace or "", page_owner) if bound else ""  # the C++ page's name of the entry
+    cpp_name = page_name
+    if entry.kind in ("attribute", "member"):
+        cpp_name = _cpp_member_name(entry, page_owner) if entry.cpp else ""
+    elif entry.kind == "enum" and entry.children:
+        prefix = os.path.commonprefix([c.cpp.split("=")[0].strip() for c in entry.children if c.cpp])
+        cpp_name = prefix if prefix.endswith("_") and len(prefix) > 1 else cpp_name
+    doc, notes = _split_bindings_notes(entry.doc)
+    signatures = [(entry.signature, entry.cpp), *entry.overloads]
+    out: dict[str, Any] = {
+        "kind": entry.kind, "name": entry.name, "cpp_name": cpp_name,
+        "py": "\n".join(py for py, _ in signatures if py), "cpp": "\n".join(cpp for _, cpp in signatures if cpp),
+        "doc": doc.replace("\x00", "\\0"), "note": entry.note, "bindings_note": notes, "value": entry.value,
+        "header": entry.header,
+    }
+    if entry.kind not in ("attribute", "member"):  # the tables' rows have no anchor of their own
+        out["anchor"] = _html_id(_label(module, qualified))
+        if page_name:
+            out["cpp_anchor"] = _html_id(_label("cpp." + module, page_name))
+    if entry.children:
+        out["children"] = [_json_entry(c, module, namespace, qualified, page_name) for c in entry.children]
+    return {k: v for k, v in out.items() if v}
+
+
+def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
+    """The index of one module: its entries with the section and part each belongs to, and the pages' URLs"""
+    entries: list[Entry] = []
+    for path in stubs:
+        entries += read_stub(path, REPO / library.headers if library.headers else None)
+    stem = _module_stem(module)
+    namespace = CPP_NAMESPACES.get(module)
+    url = _page_url(library, stem)
+    cpp_url = _page_url(library, stem + "_cpp") if namespace is not None else ""
+    out: list[dict[str, Any]] = []
+    part: Optional[str] = None
+    section = ""
+    for entry in entries:
+        part = entry.part or part
+        if entry.part is not None:
+            section = ""
+        if entry.section is not None:
+            section = entry.section[0]
+        item = _json_entry(entry, module, namespace)
+        if section:
+            item["section"] = section
+        if part:
+            item["part"] = part
+        out.append(item)
+    folder = API / "json"
+    folder.mkdir(parents=True, exist_ok=True)
+    path = folder / f"{module.removeprefix('imgui_bundle.')}.json"
+    data = {"module": module, "library": library.title, "py_alias": module.removeprefix("imgui_bundle."),
+            "cpp_namespace": namespace or "", "url": url, "cpp_url": cpp_url, "entries": out}
+    path.write_text(json.dumps(data, ensure_ascii=False, separators=(",", ":")))
+    return path
+
+
+def write_api_json_index(files: list[tuple[Library, str, Path]]) -> None:
+    modules = {module: {"file": path.name, "library": library.title, "py_alias": module.removeprefix("imgui_bundle."),
+                        "cpp_namespace": CPP_NAMESPACES.get(module, "")} for library, module, path in files}
+    (API / "json" / "index.json").write_text(json.dumps({"modules": modules}, ensure_ascii=False, indent=1))
+
+
 def main() -> None:
     manifest = json.loads((EXAMPLES_DIR / "examples.json").read_text())
     docs = json.loads((EXAMPLES_DIR / "examples_docs.json").read_text())
@@ -1134,16 +1237,20 @@ def main() -> None:
     write_index()
     write_toc(toc)
     llms: list[tuple[Library, str, list[tuple[Path, list[str]]]]] = []
+    jsons: list[tuple[Library, str, Path]] = []
     for library in LIBRARIES:
         for module, stub in library.modules:
             stubs = [STUBS / name.strip() for name in stub.split("+")]
             if all(path.is_file() for path in stubs):
                 llms.append((library, module, write_llms_module(library, module, stubs, manifest, docs)))
+                jsons.append((library, module, write_api_json(library, module, stubs)))
     write_llms_index(llms)
+    write_api_json_index(jsons)
     texts = [path for _, _, module_files in llms for path, _ in module_files]
     pages = sorted(API.rglob("*.md"))
     print(f"wrote {len(pages)} pages in {API} ({sum(p.stat().st_size for p in pages) // 1024} KB), "
-          f"and {len(texts)} plain-text files in {API / 'llms'} ({sum(p.stat().st_size for p in texts) // 1024} KB)")
+          f"{len(texts)} plain-text files in {API / 'llms'} ({sum(p.stat().st_size for p in texts) // 1024} KB), "
+          f"and {len(jsons)} JSON files in {API / 'json'} ({sum(p.stat().st_size for _, _, p in jsons) // 1024} KB)")
 
 
 if __name__ == "__main__":

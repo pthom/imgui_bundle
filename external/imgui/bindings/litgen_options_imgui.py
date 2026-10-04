@@ -754,12 +754,14 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     # SliderFloat2/4, InputFloat2/4, ColorEdit3/4, ColorPicker3/4: two overloads each, accepting
     # a list of floats (returned as a list) or an ImVec2 / ImVec4 (returned as such).
     # Both overloads are written here, since Python overloads must be consecutive in the stub.
+    # The C++ signature comment (as litgen writes it) names the C++ function for the API pages and the explorer.
     # The ImVec versions are registered first: an ImVec2/ImVec4 argument then returns an ImVec2/ImVec4 (as the stubs say),
     # while lists and tuples still reach the list version (implicit conversions to ImVec only happen in nanobind's second pass).
     # The list versions take doubles: nanobind's first pass accepts a Python float for a C++ float only when it is exactly
     # representable in single precision (0.5 is, 0.3 is not), which would otherwise send [0.3, ...] to the ImVec version.
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
+        # IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
         @overload
         def slider_float2(
             label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
@@ -770,6 +772,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             label: str, v: ImVec2Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, ImVec2]:
             pass
+        # IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */
         @overload
         def slider_float4(
             label: str, v: List[float], v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
@@ -780,6 +783,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             label: str, v: ImVec4Like, v_min: float, v_max: float, format: str = "%.3f", flags: SliderFlags = 0
         ) -> Tuple[bool, ImVec4]:
             pass
+        # IMGUI_API bool          InputFloat2(const char* label, float v[2], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
         @overload
         def input_float2(
             label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
@@ -788,6 +792,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         @overload
         def input_float2(label: str, v: ImVec2Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec2]:
             pass
+        # IMGUI_API bool          InputFloat4(const char* label, float v[4], const char* format = "%.3f", ImGuiInputTextFlags flags = 0);    /* original C++ signature */
         @overload
         def input_float4(
             label: str, v: List[float], format: str = "%.3f", flags: InputTextFlags = 0
@@ -796,24 +801,28 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         @overload
         def input_float4(label: str, v: ImVec4Like, format: str = "%.3f", flags: InputTextFlags = 0) -> Tuple[bool, ImVec4]:
             pass
+        # IMGUI_API bool          ColorEdit3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
         @overload
         def color_edit3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
             pass
         @overload
         def color_edit3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
             pass
+        # IMGUI_API bool          ColorEdit4(const char* label, float col[4], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
         @overload
         def color_edit4(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
             pass
         @overload
         def color_edit4(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
             pass
+        # IMGUI_API bool          ColorPicker3(const char* label, float col[3], ImGuiColorEditFlags flags = 0);    /* original C++ signature */
         @overload
         def color_picker3(label: str, col: List[float], flags: ColorEditFlags = 0) -> Tuple[bool, List[float]]:
             pass
         @overload
         def color_picker3(label: str, col: ImVec4Like, flags: ColorEditFlags = 0) -> Tuple[bool, ImVec4]:
             pass
+        # IMGUI_API bool          ColorPicker4(const char* label, float col[4], ImGuiColorEditFlags flags = 0, const float* ref_col = NULL);    /* original C++ signature */
         @overload
         def color_picker4(
             label: str, col: List[float], flags: ColorEditFlags = 0, ref_col: Optional[List[float]] = None

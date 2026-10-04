@@ -110,6 +110,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = ShowImGuiDemoWindow_AutoReopen;
         cfg.introText = "Dear ImGui";
+        cfg.apiModules = {"imgui", "imgui.internal"};
         cfg.links = {
             {"Repository", "https://github.com/ocornut/imgui"},
             {"FAQ", "https://github.com/ocornut/imgui/blob/master/docs/FAQ.md"},
@@ -142,6 +143,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
         cfg.introText = "ImPlot - Immediate Mode Plotting for Dear ImGui";
+        cfg.apiModules = {"implot", "implot.internal"};
         cfg.links = {
             {"Repository", "https://github.com/epezent/implot"},
         };
@@ -171,6 +173,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
         cfg.introText = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui";
+        cfg.apiModules = {"implot3d", "implot3d.internal"};
         cfg.links = {
             {"Repository", "https://github.com/brenocq/implot3d/"},
         };
@@ -205,6 +208,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.showDemoWindow = ShowImAnimDemos;
         cfg.introText = "ImAnim - Animation Engine for Dear ImGui";
+        cfg.apiModules = {"im_anim"};
         cfg.links = {
             {"Repository", "https://github.com/soufianekhiat/ImAnim"},
             {"Docs", "https://github.com/soufianekhiat/ImAnim/tree/main/docs"},

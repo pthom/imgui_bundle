@@ -1,5 +1,6 @@
 #include "demo_code_viewer.h"
 #include "library_config.h"
+#include "api_index.h"
 #include "imgui.h"
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
@@ -57,6 +58,14 @@ namespace
     // Editor display preferences (apply to whichever editor is currently shown)
     bool g_wordWrap = false;
     bool g_showMinimap = true;
+
+    // The API tab (after the files' tabs): the entry shown, or the candidates of an ambiguous lookup
+    ApiRef g_apiCurrent;
+    std::vector<ApiRef> g_apiCandidates;
+    bool g_pendingApiTabSelect = false;  // select the API tab on the next tab bar
+    char g_apiFilter[128] = "";
+    bool g_pendingScrollPython = false;  // the pending scroll targets a line of the Python file itself
+    bool g_apiTooltips = true;  // a tooltip with the API of the identifier under the mouse
 
     // Python-only mode state
     bool g_pythonOnlyMode = false;
@@ -257,6 +266,18 @@ namespace
         return markers;
     }
 
+    // Shows a line: the cursor on it, scrolled near the top, highlighted by a line marker (not a selection: a selection
+    // would feed the copy button and the search)
+    void ShowLine(CodeFile& cf, bool python, int line)
+    {
+        TextEditor& editor = python ? cf.pyEditor : cf.cppEditor;
+        cf.cppEditor.ClearMarkers();
+        cf.pyEditor.ClearMarkers();
+        editor.AddMarker((size_t)line, IM_COL32(255, 220, 100, 110), IM_COL32(255, 220, 100, 36), "", "");
+        editor.SetCursor(TextEditor::DocPos(line, 0));
+        editor.ScrollToLine(line - 2, TextEditor::Scroll::alignTop);
+    }
+
     void PopulateEditor(CodeFile& cf, const std::string& content, bool isPython)
     {
         TextEditor& editor = isPython ? cf.pyEditor : cf.cppEditor;
@@ -442,6 +463,560 @@ namespace
         g_pendingApiTabIndex = apiIdx;
         g_pendingApiSearch = true;
     }
+
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // The API tab: the card of an entry of the index (api_index.h), the list of all the entries, a filter
+    // -----------------------------------------------------------------------------------------------------------------
+
+    std::string IdentifierAtCursor(const TextEditor& editor)
+    {
+        auto pos = editor.GetMainCursorPosition();
+        return ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
+    }
+
+    std::string BareCppName(const std::string& cppName)
+    {
+        size_t pos = cppName.rfind("::");
+        return pos == std::string::npos ? cppName : cppName.substr(pos + 2);
+    }
+
+    // The first declarations file of the library, in the shown language: "imgui.h", or "imgui.pyi"
+    std::string FirstApiFileName(bool python)
+    {
+        for (const auto& file : GetCurrentLibraryFiles())
+            if (file.isApiReference)
+                return python ? file.pyDisplayName() : file.cppDisplayName();
+        return "the declarations";
+    }
+
+    // The name of an entry in a list: without the module in Python (button, ImDrawList.add_line), as typed in C++
+    std::string ListLabel(const ApiRef& ref, bool python)
+    {
+        if (!python)
+            return ref.CppName();
+        return ref.owner ? ref.owner->name + "." + ref.entry->name : ref.entry->name;
+    }
+
+    // Shows the hits of a lookup in the API tab: the entry when there is one, a choice otherwise
+    void OpenApi(const std::vector<ApiRef>& hits)
+    {
+        if (hits.empty())
+            return;
+        if (hits.size() == 1)
+        {
+            g_apiCurrent = hits[0];
+            g_apiCandidates.clear();
+        }
+        else
+        {
+            g_apiCurrent = ApiRef();
+            g_apiCandidates = hits;
+        }
+        g_apiFilter[0] = '\0';
+        g_currentFileIndex = (int)GetCurrentLibraryFiles().size();
+        g_pendingApiTabSelect = true;
+    }
+
+    void ShowCode(const std::string& text, bool muted, float wrapWidth = 0.f)
+    {
+        auto codeFont = RichMd::GetCodeFont();
+        if (codeFont.font)
+            ImGui::PushFont(codeFont.font, codeFont.size);
+        if (muted)
+            ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+        if (wrapWidth > 0.f)
+            ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrapWidth);
+        ImGui::TextWrapped("%s", text.c_str());
+        if (wrapWidth > 0.f)
+            ImGui::PopTextWrapPos();
+        if (muted)
+            ImGui::PopStyleColor();
+        if (codeFont.font)
+            ImGui::PopFont();
+    }
+
+    // The hover tooltip: the signature in the shown language, the name in the other, the first sentence of the doc
+    void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount)
+    {
+        const ApiEntry& e = *ref.entry;
+        float wrap = ImGui::GetFontSize() * 45.f;
+        const std::string& signature = python ? e.py : e.cpp;
+        ShowCode(signature.empty() ? (python ? ref.PyName() : ref.CppName()) : signature, false, wrap);
+        ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrap);
+        ImGui::TextDisabled("%s: %s", python ? "C++" : "Python", python ? ref.CppName().c_str() : ref.PyName().c_str());
+        std::string sentence = ApiIndex_FirstSentence(e.doc.empty() ? e.note : e.doc);
+        if (!sentence.empty())
+            ImGui::TextUnformatted(sentence.c_str());
+        if (hitCount > 1)
+            ImGui::TextDisabled("%zu entries have this name: the API button lists them", hitCount);
+        ImGui::PopTextWrapPos();
+    }
+
+    struct DemoUse
+    {
+        int line;             // 1-based
+        std::string section;  // the IMGUI_DEMO_MARKER section above it
+        std::string text;     // the line, trimmed
+    };
+
+    // The lines of a demo file that use an entry (a call for a function, the name for the others), each with the demo
+    // section it belongs to. Comment lines are skipped
+    std::vector<DemoUse> FindDemoUses(const std::string& content, const ApiRef& ref, bool python)
+    {
+        auto isIdent = [](char c) { return std::isalnum((unsigned char)c) || c == '_'; };
+        std::string name = python ? ref.entry->name : BareCppName(ref.CppName());
+        bool isCall = ref.entry->kind == "function" || ref.entry->kind == "method";
+        const std::string markerPattern = "IMGUI_DEMO_MARKER(\"";
+        std::vector<DemoUse> uses;
+        std::string section;
+        int lineNum = 1;
+        size_t pos = 0;
+        while (pos < content.size() && uses.size() < 60)
+        {
+            size_t eol = content.find('\n', pos);
+            if (eol == std::string::npos)
+                eol = content.size();
+            std::string line = content.substr(pos, eol - pos);
+            pos = eol + 1;
+            size_t first = line.find_first_not_of(" \t");
+            std::string trimmed = first == std::string::npos ? "" : line.substr(first);
+            int thisLine = lineNum++;
+            if (trimmed.empty() || trimmed.rfind("//", 0) == 0 || trimmed.rfind("#", 0) == 0)
+                continue;
+            size_t m = line.find(markerPattern);
+            if (m != std::string::npos)
+            {
+                size_t s = m + markerPattern.size();
+                size_t e = line.find('"', s);
+                if (e != std::string::npos)
+                    section = line.substr(s, e - s);
+                continue;
+            }
+            size_t f = 0;
+            while ((f = line.find(name, f)) != std::string::npos)
+            {
+                size_t after = f + name.size();
+                bool wordStart = f == 0 || !isIdent(line[f - 1]);
+                bool wordEnd = after >= line.size() || !isIdent(line[after]);
+                if (wordStart && wordEnd)
+                {
+                    bool ok = true;
+                    if (isCall)
+                    {
+                        size_t k = after;
+                        while (k < line.size() && line[k] == ' ')
+                            ++k;
+                        ok = k < line.size() && line[k] == '(';
+                    }
+                    if (ok)
+                    {
+                        uses.push_back({thisLine, section, trimmed});
+                        break;
+                    }
+                }
+                f = after;
+            }
+        }
+        return uses;
+    }
+
+    // "In the demo": a framed block with the lines of the library's demo file that use the entry, counted; a click
+    // scrolls the code there
+    void ShowDemoUses(const ApiRef& ref, bool python)
+    {
+        auto files = GetCurrentLibraryFiles();
+        int demoIndex = -1;
+        for (size_t i = 0; i < files.size(); ++i)
+            if (!files[i].isApiReference && (!python || files[i].hasPython))
+            {
+                demoIndex = (int)i;
+                break;
+            }
+        if (demoIndex < 0)
+            return;
+        const DemoFileInfo& file = files[demoIndex];
+#ifdef __EMSCRIPTEN__
+        RequestFileLoad(file);
+#else
+        LoadFile(file);
+#endif
+        CodeFile& cf = g_codeFiles[file.baseName];
+        const std::string& content = python ? cf.pyContent : cf.cppContent;
+        std::string displayName = python ? file.pyDisplayName() : file.cppDisplayName();
+
+        // The uses, found once per entry, file and language
+        static const ApiEntry* cachedEntry = nullptr;
+        static std::string cachedFile;
+        static std::vector<DemoUse> cachedUses;
+        if (!content.empty() && (cachedEntry != ref.entry || cachedFile != displayName))
+        {
+            cachedEntry = ref.entry;
+            cachedFile = displayName;
+            cachedUses = FindDemoUses(content, ref, python);
+        }
+
+        ImGui::Dummy(ImVec2(0.f, ImGui::GetFontSize() * 0.8f));
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(0.5f, 0.5f, 0.5f, 0.10f));
+        ImGui::BeginChild("api_uses", ImVec2(0.f, 0.f),
+                          ImGuiChildFlags_Borders | ImGuiChildFlags_AutoResizeY | ImGuiChildFlags_AlwaysUseWindowPadding);
+        std::string name = python ? ref.PyName() : ref.CppName();
+        if (content.empty())
+            ImGui::TextDisabled(ICON_FA_SPINNER " In the demo: loading %s ...", displayName.c_str());
+        else if (cachedUses.empty())
+            ImGui::TextDisabled("In the demo: %s is not used in %s", name.c_str(), displayName.c_str());
+        else
+        {
+            ImGui::Text("In the demo: %zu use%s of %s", cachedUses.size(), cachedUses.size() > 1 ? "s" : "", name.c_str());
+            ImGui::SameLine();
+            ImGui::TextDisabled("(%s, a click shows the line)", displayName.c_str());
+            ImGui::Spacing();
+            auto codeFont = RichMd::GetCodeFont();
+            for (size_t i = 0; i < cachedUses.size() && i < 40; ++i)
+            {
+                const DemoUse& use = cachedUses[i];
+                std::string label = (use.section.empty() ? std::string("(top of file)") : use.section)
+                                    + "  line " + std::to_string(use.line) + "##use" + std::to_string(i);
+                if (ImGui::Selectable(label.c_str()))
+                {
+                    g_pendingScrollFile = file.cppDisplayName();
+                    g_pendingScrollLine = use.line;
+                    g_pendingScrollSection.clear();
+                    g_pendingScrollPython = python;
+                    g_currentFileIndex = demoIndex;
+                }
+                ImGui::Indent();
+                if (codeFont.font)
+                    ImGui::PushFont(codeFont.font, codeFont.size * 0.9f);
+                ImGui::TextDisabled("%s", use.text.substr(0, 110).c_str());
+                if (codeFont.font)
+                    ImGui::PopFont();
+                ImGui::Unindent();
+            }
+            if (cachedUses.size() > 40)
+                ImGui::TextDisabled("... and %zu more", cachedUses.size() - 40);
+        }
+        ImGui::EndChild();
+        ImGui::PopStyleColor();
+    }
+
+    // The card of an entry: its names, its signatures in both languages, its doc, its members, the links to its pages
+    void ShowApiCard(const ApiRef& ref, bool python)
+    {
+        const ApiEntry& e = *ref.entry;
+        float em = ImGui::GetFontSize();
+
+        // The title: the name in the shown language, the kind; the name in the other language under it
+        ImGui::PushFont(nullptr, em * 1.35f);
+        ImGui::TextUnformatted(python ? ref.PyName().c_str() : ref.CppName().c_str());
+        ImGui::PopFont();
+        ImGui::SameLine();
+        ImGui::TextDisabled("%s", e.kind.c_str());
+        ImGui::TextDisabled("%s: %s", python ? "C++" : "Python", python ? ref.CppName().c_str() : ref.PyName().c_str());
+
+        // Where it is declared: the owner, the header, the section
+        const ApiEntry& located = ref.owner ? *ref.owner : e;
+        if (ref.owner)
+        {
+            ImGui::TextDisabled("Member of");
+            ImGui::SameLine();
+            if (ImGui::SmallButton(ListLabel(ApiRef{ref.module, ref.owner, nullptr}, python).c_str()))
+            {
+                g_apiCurrent = ApiRef{ref.module, ref.owner, nullptr};
+                return;
+            }
+        }
+        std::string where = located.header;
+        const std::string& place = located.section.empty() ? located.part : located.section;
+        if (!place.empty())
+            where += (where.empty() ? "" : ", ") + place;
+        if (!where.empty())
+            ImGui::TextDisabled("%s", where.c_str());
+
+        // Online doc (the module's page, its C++ view), find in the header or the stub (the text search), copy
+        ImGui::AlignTextToFramePadding();
+        ImGui::TextDisabled("Online doc:");
+        ImGui::SameLine();
+        if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " Python"))
+            ImmApp::BrowseToUrl(ref.Url().c_str());
+        ImGui::SetItemTooltip("%s", ref.Url().c_str());
+        std::string cppUrl = ref.CppUrl();
+        if (!cppUrl.empty())
+        {
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " C++"))
+                ImmApp::BrowseToUrl(cppUrl.c_str());
+            ImGui::SetItemTooltip("%s", cppUrl.c_str());
+        }
+        ImGui::SameLine(0.f, em * 1.5f);
+        std::string apiFile = located.header;  // the header, or its stub ("imgui.h" -> "imgui.pyi")
+        if (python && apiFile.size() > 2 && apiFile.compare(apiFile.size() - 2, 2, ".h") == 0)
+            apiFile = apiFile.substr(0, apiFile.size() - 2) + ".pyi";
+        if (ImGui::Button(("Find in " + (apiFile.empty() ? FirstApiFileName(python) : apiFile)).c_str()))
+            SearchInApi(python ? e.name : BareCppName(ref.CppName()));
+        ImGui::SetItemTooltip("The text search in the declarations");
+        const std::string& signature = python ? e.py : e.cpp;
+        if (!signature.empty())
+        {
+            ImGui::SameLine();
+            if (ImGui::Button(ICON_FA_COPY " Copy signature"))
+                ImGui::SetClipboardText(signature.c_str());
+        }
+
+        // The signatures: the shown language first, the other muted
+        ImGui::Separator();
+        const std::string& other = python ? e.cpp : e.py;
+        if (!signature.empty())
+            ShowCode(signature, false);
+        if (!other.empty())
+            ShowCode(other, true);
+        if (!e.value.empty())
+            ImGui::Text("= %s", e.value.c_str());
+
+        // The doc: the header's lines, as they are
+        if (!e.doc.empty() || !e.note.empty())
+        {
+            ImGui::Spacing();
+            ImGui::PushTextWrapPos(0.f);
+            if (!e.doc.empty())
+                ImGui::TextUnformatted(e.doc.c_str());
+            if (!e.note.empty())
+                ImGui::TextUnformatted(e.note.c_str());
+            ImGui::PopTextWrapPos();
+        }
+        if (python && !e.bindingsNote.empty())
+        {
+            ImGui::Spacing();
+            ImGui::PushTextWrapPos(0.f);
+            ImGui::TextDisabled("%s", e.bindingsNote.c_str());
+            ImGui::PopTextWrapPos();
+        }
+
+        // The members of a class or an enum
+        if (!e.children.empty())
+        {
+            ImGui::SeparatorText(e.kind == "enum" ? "Values" : "Members");
+            auto codeFont = RichMd::GetCodeFont();
+            for (size_t i = 0; i < e.children.size(); ++i)
+            {
+                const ApiEntry& c = e.children[i];
+                ApiRef childRef{ref.module, &c, &e};
+                std::string label = python ? c.name : (c.cppName.empty() ? c.name : BareCppName(c.cppName));
+                if (c.kind == "member" && !c.value.empty())
+                    label += " = " + c.value;
+                else if (c.kind == "attribute")
+                    label = python ? c.py : c.cpp;
+                if (codeFont.font)
+                    ImGui::PushFont(codeFont.font, codeFont.size);
+                bool clicked = ImGui::Selectable((label + "##child" + std::to_string(i)).c_str());
+                if (codeFont.font)
+                    ImGui::PopFont();
+                if (clicked)
+                {
+                    g_apiCurrent = childRef;
+                    return;
+                }
+                std::string hint = ApiIndex_FirstSentence(c.doc.empty() ? c.note : c.doc);
+                if (!hint.empty())
+                {
+                    ImGui::SameLine();
+                    ImGui::TextDisabled("%s", hint.c_str());
+                }
+            }
+        }
+
+        ShowDemoUses(ref, python);
+    }
+
+    // The entries matching the filter, in both languages (a substring, case insensitive)
+    void ShowApiFilterResults(const std::vector<const ApiModule*>& modules, bool python)
+    {
+        std::string needle = g_apiFilter;
+        std::transform(needle.begin(), needle.end(), needle.begin(), [](unsigned char c) { return std::tolower(c); });
+        auto matches = [&](const std::string& text)
+        {
+            std::string lower = text;
+            std::transform(lower.begin(), lower.end(), lower.begin(), [](unsigned char c) { return std::tolower(c); });
+            return lower.find(needle) != std::string::npos;
+        };
+        // The entries whose name is the filter first, then the others that contain it
+        std::vector<ApiRef> exact, partial;
+        auto collect = [&](const ApiRef& ref)
+        {
+            if (partial.size() >= 200)
+                return;
+            std::string py = ref.PyName(), cpp = ref.CppName();
+            if (!matches(py) && !matches(cpp))
+                return;
+            std::string name = ref.entry->name, bare = BareCppName(cpp);
+            std::transform(name.begin(), name.end(), name.begin(), [](unsigned char c) { return std::tolower(c); });
+            std::transform(bare.begin(), bare.end(), bare.begin(), [](unsigned char c) { return std::tolower(c); });
+            (name == needle || bare == needle ? exact : partial).push_back(ref);
+        };
+        for (const ApiModule* m : modules)
+            for (const auto& entry : m->entries)
+            {
+                collect(ApiRef{m, &entry, nullptr});
+                for (const auto& child : entry.children)
+                    collect(ApiRef{m, &child, &entry});
+            }
+        int shown = 0;
+        for (const auto* hits : {&exact, &partial})
+            for (const ApiRef& ref : *hits)
+            {
+                std::string label = ListLabel(ref, python) + "##hit" + std::to_string(shown++);
+                if (ImGui::Selectable(label.c_str()))
+                {
+                    g_apiCurrent = ref;
+                    g_apiCandidates.clear();
+                    g_apiFilter[0] = '\0';
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
+            }
+        if (shown == 0)
+            ImGui::TextDisabled("No entry matches");
+        else if (partial.size() >= 200)
+            ImGui::TextDisabled("(the first 200)");
+    }
+
+    // All the entries, under their parts and sections (the headers' own)
+    void ShowApiBrowser(const std::vector<const ApiModule*>& modules, bool python)
+    {
+        for (const ApiModule* m : modules)
+        {
+            ImGui::PushID(m->module.c_str());  // two modules may share a part's name (implot and implot.internal)
+            // The module's title: its name in Python, its first header in C++
+            std::string title = m->module;
+            if (!python)
+                for (const auto& e : m->entries)
+                    if (!e.header.empty())
+                    {
+                        title = e.header;
+                        break;
+                    }
+            ImGui::SeparatorText(title.c_str());
+            std::string part, section;
+            bool partOpen = true, sectionOpen = true;
+            for (size_t i = 0; i < m->entries.size(); ++i)
+            {
+                const ApiEntry& e = m->entries[i];
+                if (e.part != part)
+                {
+                    if (sectionOpen && !section.empty())
+                        ImGui::TreePop();
+                    if (partOpen && !part.empty())
+                        ImGui::TreePop();
+                    part = e.part;
+                    section.clear();
+                    sectionOpen = true;
+                    partOpen = part.empty() || ImGui::TreeNodeEx(part.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
+                }
+                if (!partOpen)
+                    continue;
+                if (e.section != section)
+                {
+                    if (sectionOpen && !section.empty())
+                        ImGui::TreePop();
+                    section = e.section;
+                    sectionOpen = section.empty() || ImGui::TreeNodeEx(section.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
+                }
+                if (!sectionOpen)
+                    continue;
+                ApiRef ref{m, &e, nullptr};
+                std::string label = ListLabel(ref, python) + "##entry" + std::to_string(i);
+                if (ImGui::Selectable(label.c_str()))
+                {
+                    g_apiCurrent = ref;
+                    g_apiCandidates.clear();
+                }
+                std::string hint = ApiIndex_FirstSentence(e.doc);
+                if (!hint.empty())
+                {
+                    ImGui::SameLine();
+                    ImGui::TextDisabled("%s", hint.c_str());
+                }
+            }
+            if (sectionOpen && !section.empty())
+                ImGui::TreePop();
+            if (partOpen && !part.empty())
+                ImGui::TreePop();
+            ImGui::PopID();
+        }
+    }
+
+    void ShowApiTab()
+    {
+        // The entry, the candidates and the filter belong to a library: a switch starts from the list
+        static int lastLibrary = -1;
+        if (GetCurrentLibraryIndex() != lastLibrary)
+        {
+            lastLibrary = GetCurrentLibraryIndex();
+            g_apiCurrent = ApiRef();
+            g_apiCandidates.clear();
+            g_apiFilter[0] = '\0';
+        }
+        const std::vector<std::string>& moduleNames = GetCurrentLibrary().apiModules;
+        ApiIndexState state = ApiIndex_Load(GetDemoCodeDir(), moduleNames);
+        auto modules = ApiIndex_Modules(moduleNames);
+        if (modules.empty())
+        {
+            if (state == ApiIndexState::Loading)
+                ImGui::Text(ICON_FA_SPINNER " Loading the API index ...");
+            else
+            {
+                ImGui::TextWrapped("The API index is not available here. The API pages are online:");
+                RichMd::RenderTextAsLink("imgui-bundle.pages.dev/doc/api", "https://imgui-bundle.pages.dev/doc/api/");
+            }
+            return;
+        }
+        bool python = g_showPython;
+
+        // The toolbar: the filter, back to the list, the pages
+        float em = ImGui::GetFontSize();
+        ImGui::SetNextItemWidth(18.f * em);
+        ImGui::InputTextWithHint("##apifilter", ICON_FA_SEARCH " a name, Python or C++", g_apiFilter, sizeof(g_apiFilter));
+        ImGui::SameLine();
+        bool listing = g_apiFilter[0] == '\0' && g_apiCurrent.entry == nullptr && g_apiCandidates.empty();
+        ImGui::BeginDisabled(listing);
+        if (ImGui::SmallButton(ICON_FA_LIST " All"))
+        {
+            g_apiCurrent = ApiRef();
+            g_apiCandidates.clear();
+            g_apiFilter[0] = '\0';
+        }
+        ImGui::EndDisabled();
+        ImGui::SameLine();
+        ImGui::TextDisabled("|");
+        ImGui::SameLine();
+        RichMd::RenderTextAsLink("API pages", modules[0]->url.c_str());
+        ImGui::SetItemTooltip("The reference of the module, on the web (every entry, searchable)");
+
+        ImGui::BeginChild("api_body", ImVec2(0, 0), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        if (g_apiFilter[0] != '\0')
+            ShowApiFilterResults(modules, python);
+        else if (!g_apiCandidates.empty())
+        {
+            ImGui::TextWrapped("Several entries have this name:");
+            for (size_t i = 0; i < g_apiCandidates.size(); ++i)
+            {
+                const ApiRef& ref = g_apiCandidates[i];
+                if (ImGui::Selectable((ListLabel(ref, python) + "##cand" + std::to_string(i)).c_str()))
+                {
+                    g_apiCurrent = ref;
+                    g_apiCandidates.clear();
+                    break;
+                }
+                ImGui::SameLine();
+                ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
+            }
+        }
+        else if (g_apiCurrent.entry != nullptr)
+            ShowApiCard(g_apiCurrent, python);
+        else
+            ShowApiBrowser(modules, python);
+        ImGui::EndChild();
+    }
 }
 
 int DemoCodeViewer_GetCurrentFileIndex() { return g_currentFileIndex; }
@@ -463,7 +1038,8 @@ void DemoCodeViewer_Show()
     auto files = GetCurrentLibraryFiles();
 
     // Tabs for file selection
-    if (ImGui::BeginTabBar("CodeViewerTabs"))
+    std::string tabBarId = "CodeViewerTabs_" + GetCurrentLibrary().name;
+    if (ImGui::BeginTabBar(tabBarId.c_str()))
     {
         for (size_t i = 0; i < files.size(); ++i)
         {
@@ -502,6 +1078,21 @@ void DemoCodeViewer_Show()
             if (colorsPushed > 0)
                 ImGui::PopStyleColor(colorsPushed);
         }
+
+        // The API tab: the index of the library's modules (the card of an entry, the list of all)
+        {
+            ImGuiTabItemFlags flags = g_pendingApiTabSelect ? ImGuiTabItemFlags_SetSelected : 0;
+            ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.15f, 0.35f, 0.25f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.25f, 0.50f, 0.38f, 1.0f));
+            ImGui::PushStyleColor(ImGuiCol_TabSelected, ImVec4(0.20f, 0.45f, 0.32f, 1.0f));
+            if (ImGui::BeginTabItem(ICON_FA_BOOK " API", nullptr, flags))
+            {
+                g_currentFileIndex = (int)files.size();
+                ImGui::EndTabItem();
+            }
+            ImGui::PopStyleColor(3);
+            g_pendingApiTabSelect = false;
+        }
         ImGui::EndTabBar();
     }
 
@@ -511,9 +1102,19 @@ void DemoCodeViewer_Show()
         return;
     }
 
-    // Clamp file index to valid range (may change when switching libraries)
-    if (g_currentFileIndex >= (int)files.size())
+    // Clamp file index to valid range (may change when switching libraries); the API tab is files.size()
+    if (g_currentFileIndex > (int)files.size())
         g_currentFileIndex = 0;
+
+    // The index loads once per library (asynchronously on the web); the lookups below need it
+    const std::vector<std::string>& apiModules = GetCurrentLibrary().apiModules;
+    ApiIndex_Load(GetDemoCodeDir(), apiModules);
+
+    if (g_currentFileIndex == (int)files.size())
+    {
+        ShowApiTab();
+        return;
+    }
 
     // Display the current file's editor — load lazily on first access
     const auto& currentFile = files[g_currentFileIndex];
@@ -528,30 +1129,31 @@ void DemoCodeViewer_Show()
     if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
     {
         bool scrolledPython = false;
-        if (g_userPrefPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
+        if (g_pendingScrollPython && cf.pyState == LoadState::Loaded)
+        {
+            ShowLine(cf, true, g_pendingScrollLine - 1);
+            scrolledPython = true;
+        }
+        else if (g_userPrefPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
         {
             auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
             if (it2 != cf.pyMarkers.end())
             {
-                int pyLine = it2->second;
-                cf.pyEditor.SetCursor(TextEditor::DocPos(pyLine - 1, 0));
-                cf.pyEditor.SelectLine(pyLine - 1);
-                cf.pyEditor.ScrollToLine(pyLine - 3, TextEditor::Scroll::alignTop);
+                ShowLine(cf, true, it2->second - 1);
                 scrolledPython = true;
             }
         }
         if (!scrolledPython)
         {
-            cf.cppEditor.SetCursor(TextEditor::DocPos(g_pendingScrollLine - 1, 0));
-            cf.cppEditor.SelectLine(g_pendingScrollLine - 1);
-            cf.cppEditor.ScrollToLine(g_pendingScrollLine - 3, TextEditor::Scroll::alignTop);
+            ShowLine(cf, false, g_pendingScrollLine - 1);
         }
         // Auto-switch displayed language to match what we scrolled
-        if (g_userPrefPython)
+        if (g_userPrefPython || g_pendingScrollPython)
             g_showPython = scrolledPython;
         g_pendingScrollLine = -1;
         g_pendingScrollFile.clear();
         g_pendingScrollSection.clear();
+        g_pendingScrollPython = false;
     }
 
     bool showingPython = g_showPython && cf.pyState == LoadState::Loaded;
@@ -592,6 +1194,11 @@ void DemoCodeViewer_Show()
         g_pendingMatch.reset();
     }
 
+    // The identifier at the text cursor and its entries, for the API button and Ctrl+Shift+F. Never the selection:
+    // the explorer selects the demo's marker line when the demo is hovered
+    std::string apiWord = IdentifierAtCursor(editor);
+    std::vector<ApiRef> apiHits = apiWord.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, apiWord);
+
     // Top bar with line info and copy button
     {
         // Copy button
@@ -628,16 +1235,17 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        // Search in API button
-        ImGui::BeginDisabled(!editor.AnyCursorHasSelection());
-        if (ImGui::SmallButton(ICON_FA_BOOK "##searchapi"))
-        {
-            std::string sel = editor.GetCursorText(0);
-            if (!sel.empty())
-                SearchInApi(sel);
-        }
+        // The API button: the entry of the identifier at the cursor, in the API tab; its label names the entry, so
+        // that the user knows what a click will open
+        std::string apiLabel = ICON_FA_BOOK;
+        if (!apiHits.empty())
+            apiLabel += " " + (showingPython ? apiHits[0].PyName() : apiHits[0].CppName()) + (apiHits.size() > 1 ? " ..." : "");
+        ImGui::BeginDisabled(apiHits.empty());
+        if (ImGui::SmallButton((apiLabel + "###searchapi").c_str()))
+            OpenApi(apiHits);
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-            ImGui::SetTooltip("Search selected text in API declarations (Ctrl+Shift+F)");
+            ImGui::SetTooltip("The API of the identifier at the cursor (Ctrl+Shift+F): click a name in the code, "
+                              "then here.\nIts signatures in Python and C++, its doc, where the demo uses it.");
         ImGui::EndDisabled();
 
         ImGui::SameLine();
@@ -651,6 +1259,9 @@ void DemoCodeViewer_Show()
         ImGui::SameLine();
         ImGui::Checkbox("Minimap", &g_showMinimap);
         ImGui::SetItemTooltip("Show minimap on the right side of the editor");
+        ImGui::SameLine();
+        ImGui::Checkbox("API tooltips", &g_apiTooltips);
+        ImGui::SetItemTooltip("A tooltip with the API of the identifier under the mouse");
     }
 
     // Content string for search operations
@@ -727,13 +1338,9 @@ void DemoCodeViewer_Show()
             snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
     }
 
-    // Ctrl+Shift+F shortcut to search in API declarations
-    if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F))
-    {
-        std::string sel = editor.GetCursorText(0);
-        if (!sel.empty())
-            SearchInApi(sel);
-    }
+    // Ctrl+Shift+F shortcut: the API of the identifier at the cursor (as the book button)
+    if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F) && !apiHits.empty())
+        OpenApi(apiHits);
 
     // Use code font if available
     auto codeFont = RichMd::GetCodeFont();
@@ -749,18 +1356,37 @@ void DemoCodeViewer_Show()
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
     editor.Render(editorId.c_str(), editorSize, false);
 
+    // Hover: a tooltip with the API of the identifier under the mouse (the desktop's complement of the API button)
+    if (g_apiTooltips && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_Stationary)
+        && !ImGui::IsPopupOpen("CodeEditorContext") && editor.IsMousePosOverGlyph(ImGui::GetMousePos()))
+    {
+        auto pos = editor.GetDocPosAtMousePos(ImGui::GetMousePos());
+        std::string identifier = ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
+        std::vector<ApiRef> hits = identifier.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, identifier);
+        if (!hits.empty())
+        {
+            if (codeFont.font)
+                ImGui::PopFont();
+            ImGui::BeginTooltip();
+            ShowApiTooltip(hits[0], showingPython, hits.size());
+            ImGui::EndTooltip();
+            if (codeFont.font)
+                ImGui::PushFont(codeFont.font, codeFont.size);
+        }
+    }
+
     // Right-click context menu on the editor
     static std::string rightClickWord;
+    static std::vector<ApiRef> rightClickHits;
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
     {
+        // The API item: the identifier under the mouse (never the selection). The find items: the selection, else the word
         std::string sel = editor.GetCursorText(0);
-        if (!sel.empty())
-            rightClickWord = sel;
-        else
-        {
-            rightClickWord = editor.GetWordAtMousePos(ImGui::GetMousePos());
-        }
-        if (!rightClickWord.empty())
+        rightClickWord = !sel.empty() ? sel : editor.GetWordAtMousePos(ImGui::GetMousePos());
+        auto pos = editor.GetDocPosAtMousePos(ImGui::GetMousePos());
+        std::string identifier = ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
+        rightClickHits = identifier.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, identifier);
+        if (!rightClickWord.empty() || !rightClickHits.empty())
             ImGui::OpenPopup("CodeEditorContext");
     }
     if (ImGui::BeginPopup("CodeEditorContext"))
@@ -770,17 +1396,29 @@ void DemoCodeViewer_Show()
 
         std::string truncSel = rightClickWord.substr(0, 30) + (rightClickWord.size() > 30 ? "..." : "");
 
-        std::string menuLabel = "Search \"" + truncSel + "\" in this file";
-        if (ImGui::MenuItem(menuLabel.c_str()))
+        if (!rightClickHits.empty())
         {
-            snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", rightClickWord.c_str());
-            g_searchBarOpen = true;
-            g_lastMatchOffset = CursorToOffset(editor, content);  // Next/Prev start from here
+            std::string name = showingPython ? rightClickHits[0].PyName() : rightClickHits[0].CppName();
+            std::string label = std::string(ICON_FA_BOOK " API: ") + name + (rightClickHits.size() > 1 ? " ..." : "");
+            if (ImGui::MenuItem(label.c_str()))
+                OpenApi(rightClickHits);
+            ImGui::Separator();
         }
 
-        std::string apiLabel = "Search \"" + truncSel + "\" in API";
-        if (ImGui::MenuItem(apiLabel.c_str()))
-            SearchInApi(rightClickWord);
+        if (!rightClickWord.empty())
+        {
+            std::string menuLabel = "Find \"" + truncSel + "\" in this file";
+            if (ImGui::MenuItem(menuLabel.c_str()))
+            {
+                snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", rightClickWord.c_str());
+                g_searchBarOpen = true;
+                g_lastMatchOffset = CursorToOffset(editor, content);  // Next/Prev start from here
+            }
+
+            std::string findLabel = "Find \"" + truncSel + "\" in " + FirstApiFileName(showingPython);
+            if (ImGui::MenuItem(findLabel.c_str()))
+                SearchInApi(rightClickWord);
+        }
 
         if (codeFont.font)
             ImGui::PushFont(codeFont.font, codeFont.size);
