@@ -110,3 +110,7 @@ h4 > .heading-text > code:first-child {
   font-size: 0.85em;
   opacity: 0.7;
 }
+/* A heading reached by its anchor clears the fixed top bar (the theme sets no scroll margin) */
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
+  scroll-margin-top: 4.5rem;
+}

@@ -227,6 +227,7 @@ doc_build_cf: playground_examples_docs api_pages
     set -euo pipefail
     PDF=docs/book/_build/exports/imgui_bundle_book.pdf
     (cd docs/book && BASE_URL=/doc jupyter-book build --html)
+    python ci_scripts/book_postprocess.py  # a script in each page: the URL's hash re-applied after hydration (Firefox)
     # jupyter-book exits 0 even when the typst compilation fails, so remove the
     # previous export and check that a new one was really produced: otherwise a
     # months-old PDF would be silently copied to the site.

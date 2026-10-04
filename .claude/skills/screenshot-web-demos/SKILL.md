@@ -72,6 +72,12 @@ last *released* version.
 A runner for the whole checklist (servers, screenshots, version checks, contact sheet) was not built, on purpose: the
 maintainer chose this skill alone. Revisit at a release if the checks feel repetitive.
 
+## Firefox (a browser-specific check)
+
+`--browser firefox` opens Playwright's own Firefox instead of Chrome (a one-time `uv run --no-project --with playwright
+playwright install firefox`, about 100 MB in `~/Library/Caches/ms-playwright`). For what differs between browsers only
+(the API pages' anchors in Firefox, 2026-10-04); the clipboard checks work in Chrome only.
+
 ## Gotchas
 
 - **Never use plain `chrome --headless --screenshot`** on these pages: it writes the image but never exits (the render loop

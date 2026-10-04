@@ -14,7 +14,8 @@ Actions, executed in order:
     js:EXPRESSION    evaluate a JavaScript expression, print the result (a promise is awaited,
                      e.g. js:navigator.clipboard.readText() after clicking a copy button)
 
-The window is VISIBLE unless --headless is given. It uses the installed Chrome with a throwaway profile.
+The window is VISIBLE unless --headless is given. It uses the installed Chrome with a throwaway profile (or
+Playwright's Firefox with --browser firefox, after `playwright install firefox`: a browser-specific check).
 The viewport is 1400 x 900 unless --viewport WIDTHxHEIGHT is given (a phone: 480x800).
 """
 import argparse
@@ -46,6 +47,8 @@ def main() -> None:
     parser.add_argument("--allow-remote", action="store_true", help="allow a page which is not served from this machine")
     parser.add_argument("--timeout", type=float, default=150.0, help="hard limit for the whole run, in seconds")
     parser.add_argument("--viewport", default="1400x900", help="the page's size, WIDTHxHEIGHT (a phone: 480x800)")
+    parser.add_argument("--browser", choices=["chrome", "firefox"], default="chrome",
+                        help="chrome (installed, default) or Playwright's firefox (a browser-specific check)")
     args = parser.parse_args()
 
     host = urlparse(args.url).hostname
@@ -59,11 +62,16 @@ def main() -> None:
 
     visible = not args.headless
     with sync_playwright() as p:
-        browser = p.chromium.launch(channel="chrome", headless=args.headless)
+        if args.browser == "firefox":
+            browser = p.firefox.launch(headless=args.headless)
+        else:
+            browser = p.chromium.launch(channel="chrome", headless=args.headless)
         # clipboard permissions: `js:navigator.clipboard.readText()` checks what an ImGui copy button wrote
+        # (Chrome only: Firefox does not grant them through Playwright)
         width, height = (int(v) for v in args.viewport.split("x"))
         viewport = {"width": width, "height": height}
-        context = browser.new_context(viewport=viewport, permissions=["clipboard-read", "clipboard-write"])  # type: ignore[arg-type]
+        permissions = ["clipboard-read", "clipboard-write"] if args.browser == "chrome" else []
+        context = browser.new_context(viewport=viewport, permissions=permissions)  # type: ignore[arg-type]
         page = context.new_page()
         page.on("pageerror", lambda e: print("PAGE ERROR:", str(e)[:200], "\n" + "\n".join((e.stack or "").splitlines()[:25])))
         if args.console:
