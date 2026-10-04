@@ -296,8 +296,14 @@ std::vector<ApiRef> ApiIndex_Lookup(const std::vector<std::string>& modules, con
             return hits;
     }
 
-    // A C++ class or enum whose Python name lost the library's prefix (ImGuiIO -> IO, ImGuiWindowFlags -> WindowFlags_)
+    // A Python alias of an enum (SliderFlags for SliderFlags_)
     const std::string& last = parts.back();
+    {
+        auto hits = Hits(last + "_", loaded);
+        if (!hits.empty())
+            return hits;
+    }
+    // A C++ class or enum whose Python name lost the library's prefix (ImGuiIO -> IO, ImGuiWindowFlags -> WindowFlags_)
     for (const ApiModule* m : loaded)
     {
         const std::string& ns = m->cppNamespace;
