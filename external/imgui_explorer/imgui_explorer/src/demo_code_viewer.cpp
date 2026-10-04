@@ -1109,7 +1109,9 @@ namespace
             ImGui::TextDisabled("(the first 200)");
     }
 
-    // All the entries, under their parts and sections (the headers' own)
+    // All the entries, under their parts and sections (the headers' own). The parts that precede the first part with
+    // functions (the forward declarations, the basic types) come after the functions: a reader starts with the API.
+    // The stubs' Python-only additions (no C++ name: IM_COL32, Vec2Protocol) go last in Python, and are hidden in C++
     void ShowApiBrowser(const std::vector<const ApiModule*>& modules, bool python)
     {
         for (const ApiModule* m : modules)
@@ -1125,51 +1127,74 @@ namespace
                         break;
                     }
             ImGui::SeparatorText(title.c_str());
-            std::string part, section;
-            bool partOpen = true, sectionOpen = true;
-            for (size_t i = 0; i < m->entries.size(); ++i)
+
+            // The parts, as runs of entries
+            struct Part { std::string title; std::vector<const ApiEntry*> entries; bool hasFunction = false; };
+            std::vector<Part> parts;
+            for (const auto& e : m->entries)
             {
-                const ApiEntry& e = m->entries[i];
-                if (e.part != part)
-                {
-                    if (sectionOpen && !section.empty())
-                        ImGui::TreePop();
-                    if (partOpen && !part.empty())
-                        ImGui::TreePop();
-                    part = e.part;
-                    section.clear();
-                    sectionOpen = true;
-                    partOpen = part.empty() || ImGui::TreeNodeEx(part.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
-                }
-                if (!partOpen)
+                if (!python && e.cppName.empty())
                     continue;
-                if (e.section != section)
-                {
-                    if (sectionOpen && !section.empty())
-                        ImGui::TreePop();
-                    section = e.section;
-                    sectionOpen = section.empty() || ImGui::TreeNodeEx(section.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
-                }
-                if (!sectionOpen)
-                    continue;
-                ApiRef ref{m, &e, nullptr};
-                std::string label = ListLabel(ref, python) + "##entry" + std::to_string(i);
-                if (ImGui::Selectable(label.c_str()))
-                {
-                    g_apiCurrent = ref;
-                    g_apiCandidates.clear();
-                }
-                std::string hint = ApiIndex_FirstSentence(e.doc);
-                if (!hint.empty())
-                {
-                    ImGui::SameLine();
-                    ImGui::TextDisabled("%s", hint.c_str());
-                }
+                if (parts.empty() || parts.back().title != e.part)
+                    parts.push_back({e.part, {}, false});
+                parts.back().entries.push_back(&e);
+                if (e.kind == "function")
+                    parts.back().hasFunction = true;
             }
-            if (sectionOpen && !section.empty())
+            std::vector<const Part*> ordered, before, additions;
+            bool functionsSeen = false;
+            for (const Part& part : parts)
+            {
+                if (part.title.empty())
+                    additions.push_back(&part);
+                else if (functionsSeen || part.hasFunction)
+                {
+                    functionsSeen = true;
+                    ordered.push_back(&part);
+                }
+                else
+                    before.push_back(&part);
+            }
+            ordered.insert(ordered.end(), before.begin(), before.end());
+            ordered.insert(ordered.end(), additions.begin(), additions.end());
+
+            for (const Part* part : ordered)
+            {
+                std::string partTitle = part->title.empty() ? "Python additions" : part->title;
+                if (!ImGui::TreeNodeEx(partTitle.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth))
+                    continue;
+                std::string section;
+                bool sectionOpen = true;
+                for (size_t i = 0; i < part->entries.size(); ++i)
+                {
+                    const ApiEntry& e = *part->entries[i];
+                    if (e.section != section)
+                    {
+                        if (sectionOpen && !section.empty())
+                            ImGui::TreePop();
+                        section = e.section;
+                        sectionOpen = section.empty() || ImGui::TreeNodeEx(section.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
+                    }
+                    if (!sectionOpen)
+                        continue;
+                    ApiRef ref{m, &e, nullptr};
+                    std::string label = ListLabel(ref, python) + "##entry" + std::to_string(i);
+                    if (ImGui::Selectable(label.c_str()))
+                    {
+                        g_apiCurrent = ref;
+                        g_apiCandidates.clear();
+                    }
+                    std::string hint = ApiIndex_FirstSentence(e.doc);
+                    if (!hint.empty())
+                    {
+                        ImGui::SameLine();
+                        ImGui::TextDisabled("%s", hint.c_str());
+                    }
+                }
+                if (sectionOpen && !section.empty())
+                    ImGui::TreePop();
                 ImGui::TreePop();
-            if (partOpen && !part.empty())
-                ImGui::TreePop();
+            }
             ImGui::PopID();
         }
     }
