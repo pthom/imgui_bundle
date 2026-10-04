@@ -1300,12 +1300,15 @@ namespace
             ShowApiBrowser(modules, python);
         ImGui::EndChild();
 
-        ImGui::BeginChild("api_card", ImVec2(0.f, 0.f), ImGuiChildFlags_None, ImGuiWindowFlags_None);
+        // The card, on a slightly lighter background than the list
+        ImGui::PushStyleColor(ImGuiCol_ChildBg, ImVec4(1.f, 1.f, 1.f, 0.035f));
+        ImGui::BeginChild("api_card", ImVec2(0.f, 0.f), ImGuiChildFlags_AlwaysUseWindowPadding, ImGuiWindowFlags_None);
         if (g_apiCurrent.entry != nullptr)
             ShowApiCard(g_apiCurrent, python);
         else
             ImGui::TextDisabled("Select an entry above, or click a name in the code and press the book button.");
         ImGui::EndChild();
+        ImGui::PopStyleColor();
     }
 }
 
