@@ -988,6 +988,22 @@ namespace
             g_pendingDeclRef = ApiRef();
     }
 
+    // The intro of the section an entry belongs to (carried by the section's first entry)
+    std::string SectionText(const ApiModule& module, const ApiEntry& entry)
+    {
+        std::string text;
+        for (const auto& e : module.entries)
+        {
+            if (!e.sectionText.empty())
+                text = e.sectionText;
+            if (&e == &entry)
+                return e.section.empty() ? "" : text;
+            if (e.section != entry.section)
+                text.clear();
+        }
+        return "";
+    }
+
     // The card of an entry: its names, its signatures in both languages, its doc, its members, the links to its pages
     void ShowApiCard(const ApiRef& ref, bool python)
     {
@@ -1020,7 +1036,23 @@ namespace
         if (!place.empty())
             where += (where.empty() ? "" : ", ") + place;
         if (!where.empty())
+        {
             ImGui::TextDisabled("%s", where.c_str());
+            std::string intro = SectionText(*ref.module, located);
+            if (!intro.empty())
+            {
+                ImGui::SameLine();
+                ImGui::TextDisabled("(?)");
+                if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayShort))
+                {
+                    ImGui::BeginTooltip();
+                    ImGui::PushTextWrapPos(ImGui::GetFontSize() * 45.f);
+                    ImGui::TextUnformatted(intro.c_str());
+                    ImGui::PopTextWrapPos();
+                    ImGui::EndTooltip();
+                }
+            }
+        }
 
         // Online doc (the module's page, its C++ view), find in the header or the stub (the text search), copy
         ImGui::AlignTextToFramePadding();
@@ -1288,6 +1320,14 @@ namespace
                                 if (part->entries[j] == current)
                                     ImGui::SetNextItemOpen(true);
                         sectionOpen = section.empty() || ImGui::TreeNodeEx(section.c_str(), ImGuiTreeNodeFlags_SpanAvailWidth);
+                        if (sectionOpen && !section.empty() && !e.sectionText.empty())
+                        {
+                            // The section's intro: the header's comments under its title
+                            ImGui::PushTextWrapPos(0.f);
+                            ImGui::TextDisabled("%s", e.sectionText.c_str());
+                            ImGui::PopTextWrapPos();
+                            ImGui::Spacing();
+                        }
                     }
                     if (!sectionOpen)
                         continue;

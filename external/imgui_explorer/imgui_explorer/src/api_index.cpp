@@ -74,6 +74,7 @@ namespace
         e.bindingsNote = j.value("bindings_note", "");
         e.value = j.value("value", "");
         e.section = j.value("section", "");
+        e.sectionText = j.value("section_text", "");
         e.part = j.value("part", "");
         e.header = j.value("header", "");
         e.anchor = j.value("anchor", "");

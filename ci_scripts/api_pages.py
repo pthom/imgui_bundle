@@ -1210,6 +1210,9 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
         item = _json_entry(entry, module, namespace)
         if section:
             item["section"] = section
+        if entry.section is not None and entry.section[1]:  # the section's intro (the header's comments under its
+            # title), on its first entry
+            item["section_text"] = "\n".join(entry.section[1]).replace("\x00", "\\0")
         if part:
             item["part"] = part
         out.append(item)
