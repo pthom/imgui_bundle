@@ -577,6 +577,9 @@ namespace
         return out;
     }
 
+    std::vector<ApiRef> HitsAt(const std::string& line, size_t column);
+    void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount);
+
     // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height;
     // the snippet shows a wrap button when a line overflows
     void ShowSnippet(const std::string& code, bool python)
@@ -587,6 +590,29 @@ namespace
         data.ShowCursorPosition = false;
         data.MaxHeightInLines = 0;
         data.DeIndentCode = false;
+        // The API of the identifier under the mouse, as in the code editors: a tooltip, and "API: ..." on a right-click
+        data.OnHover = [python](const std::string& line, size_t column)
+        {
+            if (!g_apiTooltips)
+                return false;
+            auto hits = HitsAt(line, column);
+            if (hits.empty())
+                return false;
+            ImGui::BeginTooltip();
+            ShowApiTooltip(hits[0], python, hits.size());
+            ImGui::EndTooltip();
+            return true;
+        };
+        data.OnContextMenu = [python](const std::string& line, size_t column)
+        {
+            auto hits = HitsAt(line, column);
+            if (hits.empty())
+                return false;
+            std::string name = python ? hits[0].PyName() : hits[0].CppName();
+            if (ImGui::MenuItem((std::string(ICON_FA_BOOK " API: ") + name + (hits.size() > 1 ? " ..." : "")).c_str()))
+                OpenApi(hits);
+            return true;
+        };
         Snippets::ShowCodeSnippet(data);
     }
 
@@ -601,6 +627,21 @@ namespace
             ImGui::PopFont();
         float width = ImGui::GetContentRegionAvail().x - ImGui::GetFontSize() * 6.f;  // the line numbers, the copy button
         return glyph > 0.f ? (size_t)(width / glyph) : 80;
+    }
+
+    // The entries for the identifier at a column of a line of code, for a hover or a menu: a bare name is not an
+    // attribute ("size", "flags" or "min_x" in the code name a variable, not a struct's field)
+    std::vector<ApiRef> HitsAt(const std::string& line, size_t column)
+    {
+        std::string identifier = ApiIndex_IdentifierAt(line, column);
+        if (identifier.empty())
+            return {};
+        std::vector<ApiRef> hits = ApiIndex_Lookup(GetCurrentLibrary().apiModules, identifier);
+        bool qualified = identifier.find('.') != std::string::npos || identifier.find("::") != std::string::npos;
+        if (!qualified)
+            hits.erase(std::remove_if(hits.begin(), hits.end(),
+                                      [](const ApiRef& r) { return r.entry->kind == "attribute"; }), hits.end());
+        return hits;
     }
 
     // The hover tooltip: the signature in the shown language, the name in the other, the first sentence of the doc
@@ -1874,13 +1915,7 @@ void DemoCodeViewer_Show()
         && !ImGui::IsPopupOpen("CodeEditorContext") && editor.IsMousePosOverGlyph(ImGui::GetMousePos()))
     {
         auto pos = editor.GetDocPosAtMousePos(ImGui::GetMousePos());
-        std::string identifier = ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
-        std::vector<ApiRef> hits = identifier.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, identifier);
-        // A bare name is not an attribute: "size", "flags" or "min_x" in the code name a variable, not a struct's field
-        bool qualified = identifier.find('.') != std::string::npos || identifier.find("::") != std::string::npos;
-        if (!qualified)
-            hits.erase(std::remove_if(hits.begin(), hits.end(),
-                                      [](const ApiRef& r) { return r.entry->kind == "attribute"; }), hits.end());
+        std::vector<ApiRef> hits = HitsAt(editor.GetLineText(pos.line), pos.index);
         if (!hits.empty())
         {
             if (codeFont.font)
