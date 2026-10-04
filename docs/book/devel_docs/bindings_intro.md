@@ -44,6 +44,7 @@ The book's API reference and its plain-text version for AI assistants (`llms/api
 - The libraries' table (title, tagline, modules, demos) and the per-module tables (the C++ namespaces, the "Start with" entries) are at the top of the script.
 - The script also writes a JSON index of the API (`docs/book/api/json/<module>.json`: each entry with its Python and C++ names, signatures, doc, section, and the anchors of its pages). The ImGui Explorer reads it for its "API" tab: its CMake copies the modules it shows into `bin/demo_code/api_index/` at configure time, so run `just api_pages` before configuring a build of the explorer (desktop or web). Without it, the tab says that the index is not available and links to the pages.
 - The C++ names come from the `/* original C++ signature */` comments of the stubs (litgen writes them for the functions, the members, and the head of each struct and enum). A function bound by hand (a custom binding with its own stub) needs this comment in its stub to appear with its C++ name.
+- The typedefs are hand-written aliases in a stub's preamble (`ID = int  # A unique ID...`). An alias appears in the API when the line above it gives its C++ typedef the same way: `# typedef unsigned int ImGuiID;    /* original C++ signature */`. An alias that gives the type of an enum's values (`-> enum X` in its comment, or an enum named after it with a trailing `_`) is shown with that enum; the others form a "Typedefs" part at the end of the module's page.
 
 ## Folders structure
 

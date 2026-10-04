@@ -91,6 +91,7 @@ Window = internal.Window
 uint = int
 uchar = int
 char = int
+# typedef int ImFontAtlasRectId;    /* original C++ signature */
 ImFontAtlasRectId = int
 
 NpBuffer: TypeAlias = NDArray[np.uint8]
@@ -175,44 +176,80 @@ typedef int ImGuiTreeNodeFlags;     // -> enum ImGuiTreeNodeFlags_   // Flags: f
 typedef int ImGuiViewportFlags;     // -> enum ImGuiViewportFlags_   // Flags: for ImGuiViewport
 typedef int ImGuiWindowFlags;       // -> enum ImGuiWindowFlags_     // Flags: for Begin(), BeginChild()
 """
+# typedef int ImGuiCol;    /* original C++ signature */
 Col = int  # -> enum Col_             # Enum: A color identifier for styling
+# typedef int ImGuiCond;    /* original C++ signature */
 Cond = int  # -> enum Cond_            # Enum: A condition for many Set*() functions
+# typedef int ImGuiDataType;    /* original C++ signature */
 DataType = int  # -> enum DataType_        # Enum: A primary data type
 NavInput = int  # -> enum NavInput_        # Enum: An input identifier for navigation
+# typedef int ImGuiMouseButton;    /* original C++ signature */
 MouseButton = int  # -> enum MouseButton_     # Enum: A mouse button identifier (0=left, 1=right, 2=middle)
+# typedef int ImGuiMouseCursor;    /* original C++ signature */
 MouseCursor = int  # -> enum MouseCursor_     # Enum: A mouse cursor identifier
+# typedef int ImGuiStyleVar;    /* original C++ signature */
 StyleVar = int  # -> enum StyleVar_        # Enum: A variable identifier for styling
+# typedef int ImGuiTableBgTarget;    /* original C++ signature */
 TableBgTarget = int  # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
+# typedef int ImDrawFlags;    /* original C++ signature */
 ImDrawFlags = int  # -> enum ImDrawFlags_          # Flags: for ImDrawList functions
+# typedef int ImDrawListFlags;    /* original C++ signature */
 ImDrawListFlags = int  # -> enum ImDrawListFlags_      # Flags: for ImDrawList instance
+# typedef int ImFontAtlasFlags;    /* original C++ signature */
 ImFontAtlasFlags = int  # -> enum ImFontAtlasFlags_     # Flags: for ImFontAtlas build
+# typedef int ImGuiBackendFlags;    /* original C++ signature */
 BackendFlags = int  # -> enum BackendFlags_    # Flags: for io.BackendFlags
+# typedef int ImGuiButtonFlags;    /* original C++ signature */
 ButtonFlags = int  # -> enum ButtonFlags_     # Flags: for InvisibleButton()
+# typedef int ImGuiColorEditFlags;    /* original C++ signature */
 ColorEditFlags = int  # -> enum ColorEditFlags_  # Flags: for ColorEdit4(), ColorPicker4() etc.
+# typedef int ImGuiConfigFlags;    /* original C++ signature */
 ConfigFlags = int  # -> enum ConfigFlags_     # Flags: for io.ConfigFlags
+# typedef int ImGuiComboFlags;    /* original C++ signature */
 ComboFlags = int  # -> enum ComboFlags_      # Flags: for BeginCombo()
+# typedef int ImGuiDockNodeFlags;    /* original C++ signature */
 DockNodeFlags = int  # -> enum DockNodeFlags_   // Flags: for DockSpace()
+# typedef int ImGuiDragDropFlags;    /* original C++ signature */
 DragDropFlags = int  # -> enum DragDropFlags_   # Flags: for BeginDragDropSource(), AcceptDragDropPayload()
+# typedef int ImGuiFocusedFlags;    /* original C++ signature */
 FocusedFlags = int  # -> enum FocusedFlags_    # Flags: for IsWindowFocused()
+# typedef int ImGuiHoveredFlags;    /* original C++ signature */
 HoveredFlags = int  # -> enum HoveredFlags_    # Flags: for IsItemHovered(), IsWindowHovered() etc.
+# typedef int ImGuiInputTextFlags;    /* original C++ signature */
 InputTextFlags = int  # -> enum InputTextFlags_  # Flags: for InputText(), InputTextMultiline()
 ModFlags = int  # -> enum ModFlags_        # Flags: for io.KeyMods (Ctrl/Shift/Alt/Super)
+# typedef int ImGuiPopupFlags;    /* original C++ signature */
 PopupFlags = int  # -> enum PopupFlags_      # Flags: for OpenPopup*(), BeginPopupContext*(), IsPopupOpen()
+# typedef int ImGuiSelectableFlags;    /* original C++ signature */
 SelectableFlags = int  # -> enum SelectableFlags_ # Flags: for Selectable()
+# typedef int ImGuiSliderFlags;    /* original C++ signature */
 SliderFlags = int  # -> enum SliderFlags_     # Flags: for DragFloat(), DragInt(), SliderFloat(), SliderInt() etc.
+# typedef int ImGuiTabBarFlags;    /* original C++ signature */
 TabBarFlags = int  # -> enum TabBarFlags_     # Flags: for BeginTabBar()
+# typedef int ImGuiTabItemFlags;    /* original C++ signature */
 TabItemFlags = int  # -> enum TabItemFlags_    # Flags: for BeginTabItem()
+# typedef int ImGuiTableFlags;    /* original C++ signature */
 TableFlags = int  # -> enum TableFlags_      # Flags: For BeginTable()
+# typedef int ImGuiTableColumnFlags;    /* original C++ signature */
 TableColumnFlags = int  # -> enum TableColumnFlags_# Flags: For TableSetupColumn()
+# typedef int ImGuiTableRowFlags;    /* original C++ signature */
 TableRowFlags = int  # -> enum TableRowFlags_   # Flags: For TableNextRow()
+# typedef int ImGuiTreeNodeFlags;    /* original C++ signature */
 TreeNodeFlags = int  # -> enum TreeNodeFlags_   # Flags: for TreeNode(), TreeNodeEx(), CollapsingHeader()
+# typedef int ImGuiViewportFlags;    /* original C++ signature */
 ViewportFlags = int  # -> enum ViewportFlags_   # Flags: for ImGuiViewport
+# typedef int ImGuiWindowFlags;    /* original C++ signature */
 WindowFlags = int  # -> enum WindowFlags_     # Flags: for Begin(), BeginChild()
 ToggleFlags = int  # -> enum ToggleFlags_
+# typedef int ImGuiChildFlags;    /* original C++ signature */
 ChildFlags = int  # -> enum ChildFlags_
+# typedef int ImGuiInputFlags;    /* original C++ signature */
 InputFlags = int  # -> enum ImGuiInputFlags_      // Flags: for Shortcut(), SetNextItemShortcut()
+# typedef int ImGuiKeyChord;    /* original C++ signature */
 KeyChord = ModFlags  # == int. We generally use ImGuiKeyChord to mean "a ImGuiKey or-ed with any number of ImGuiMod_XXX value", but you may store only mods in there.
+# typedef int ImFontFlags;    /* original C++ signature */
 ImFontFlags = int  # -> enum ImFontFlags_          // Flags: for ImFont
+# typedef int ImGuiListClipperFlags;    /* original C++ signature */
 ListClipperFlags = int
 
 """
@@ -223,6 +260,7 @@ ListClipperFlags = int
 typedef void* ImTextureID;          // Default: store a pointer or an integer fitting in a pointer (most renderer backends are ok with that)
 #endif
 """
+# typedef ImU64 ImTextureID;    /* original C++ signature */
 ImTextureID = int
 
 """
@@ -233,6 +271,7 @@ ImTextureID = int
 typedef unsigned short ImDrawIdx;   // Default: 16-bit (for maximum compatibility with renderer backends)
 #endif
 """
+# typedef unsigned short ImDrawIdx;    /* original C++ signature */
 ImDrawIdx = int
 
 """
@@ -248,14 +287,23 @@ typedef signed   long long  ImS64;  // 64-bit signed integer
 typedef unsigned long long  ImU64;  // 64-bit unsigned integer
 """
 # Scalar data types
+# typedef unsigned int ImGuiID;    /* original C++ signature */
 ID = int  # A unique ID used by widgets (typically the result of hashing a stack of string)
+# typedef signed char ImS8;    /* original C++ signature */
 ImS8 = int  # 8-bit integer
+# typedef unsigned char ImU8;    /* original C++ signature */
 ImU8 = int  # 8-bit integer
+# typedef signed short ImS16;    /* original C++ signature */
 ImS16 = int  # 16-bit integer
+# typedef unsigned short ImU16;    /* original C++ signature */
 ImU16 = int  # 16-bit integer
+# typedef signed int ImS32;    /* original C++ signature */
 ImS32 = int  # 32-bit integer == int
+# typedef unsigned int ImU32;    /* original C++ signature */
 ImU32 = int  # 32-bit integer (often used to store packed colors)
+# typedef signed long long ImS64;    /* original C++ signature */
 ImS64 = int  # 64-bit integer
+# typedef unsigned long long ImU64;    /* original C++ signature */
 ImU64 = int  # 64-bit integer
 
 """
@@ -269,8 +317,11 @@ typedef ImWchar32 ImWchar;
 typedef ImWchar16 ImWchar;
 #endif
 """
+# typedef ImWchar32 ImWchar;    /* original C++ signature */
 ImWchar = int
+# typedef unsigned short ImWchar16;    /* original C++ signature */
 ImWchar16 = int
+# typedef unsigned int ImWchar32;    /* original C++ signature */
 ImWchar32 = int
 
 """
@@ -285,13 +336,18 @@ typedef void    (*ImGuiMemFreeFunc)(void* ptr, void* user_data);                
     typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);
 #endif
 """
+# typedef void* (*ImGuiMemAllocFunc)(size_t sz, void* user_data);    /* original C++ signature */
 MemAllocFunc = Any
+# typedef void (*ImGuiMemFreeFunc)(void* ptr, void* user_data);    /* original C++ signature */
 MemFreeFunc = Any
+# typedef void (*ImDrawCallback)(const ImDrawList* parent_list, const ImDrawCmd* cmd);    /* original C++ signature */
 ImDrawCallback = Any
 
 # using ImGuiInputTextCallback = std::function<int(ImGuiInputTextCallbackData*)>;  // Callback function for ImGui::InputText()
 # using ImGuiSizeCallback = std::function<void(ImGuiSizeCallbackData*)>;           // Callback function for ImGui::SetNextWindowSizeConstraints()
+# typedef int (*ImGuiInputTextCallback)(ImGuiInputTextCallbackData* data);    /* original C++ signature */
 InputTextCallback = Callable[[InputTextCallbackData], int] | None
+# typedef void (*ImGuiSizeCallback)(ImGuiSizeCallbackData* data);    /* original C++ signature */
 SizeCallback = Callable[[SizeCallbackData], None] | None
 
 """

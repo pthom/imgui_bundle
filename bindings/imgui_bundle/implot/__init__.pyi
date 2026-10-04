@@ -96,40 +96,73 @@ typedef int ImPlotColormap;           // -> enum ImPlotColormap_
 typedef int ImPlotLocation;           // -> enum ImPlotLocation_
 typedef int ImPlotBin;                // -> enum ImPlotBin_
 """
+# typedef int ImAxis;    /* original C++ signature */
 ImAxis = int  # -> enum ImAxis_
+# typedef int ImPlotFlags;    /* original C++ signature */
 Flags = int  # -> enum Flags_
+# typedef int ImPlotAxisFlags;    /* original C++ signature */
 AxisFlags = int  # -> enum AxisFlags_
+# typedef int ImPlotSubplotFlags;    /* original C++ signature */
 SubplotFlags = int  # -> enum SubplotFlags_
+# typedef int ImPlotLegendFlags;    /* original C++ signature */
 LegendFlags = int  # -> enum LegendFlags_
+# typedef int ImPlotMouseTextFlags;    /* original C++ signature */
 MouseTextFlags = int  # -> enum MouseTextFlags_
+# typedef int ImPlotDragToolFlags;    /* original C++ signature */
 DragToolFlags = int  # -> DragToolFlags_
+# typedef int ImPlotColormapScaleFlags;    /* original C++ signature */
 ColormapScaleFlags = int  # -> ColormapScaleFlags_
 
+# typedef int ImPlotItemFlags;    /* original C++ signature */
 ItemFlags = int  # -> ItemFlags_
+# typedef int ImPlotLineFlags;    /* original C++ signature */
 LineFlags = int  # -> LineFlags_
+# typedef int ImPlotScatterFlags;    /* original C++ signature */
 ScatterFlags = int  # -> ScatterFlags
+# typedef int ImPlotStairsFlags;    /* original C++ signature */
 StairsFlags = int  # -> StairsFlags_
+# typedef int ImPlotShadedFlags;    /* original C++ signature */
 ShadedFlags = int  # -> ShadedFlags_
+# typedef int ImPlotBarsFlags;    /* original C++ signature */
 BarsFlags = int  # -> BarsFlags_
+# typedef int ImPlotBarGroupsFlags;    /* original C++ signature */
 BarGroupsFlags = int  # -> BarGroupsFlags_
+# typedef int ImPlotErrorBarsFlags;    /* original C++ signature */
 ErrorBarsFlags = int  # -> ErrorBarsFlags_
+# typedef int ImPlotStemsFlags;    /* original C++ signature */
 StemsFlags = int  # -> StemsFlags_
+# typedef int ImPlotInfLinesFlags;    /* original C++ signature */
 InfLinesFlags = int  # -> InfLinesFlags_
+# typedef int ImPlotPieChartFlags;    /* original C++ signature */
 PieChartFlags = int  # -> PieChartFlags_
+# typedef int ImPlotHeatmapFlags;    /* original C++ signature */
 HeatmapFlags = int  # -> HeatmapFlags_
+# typedef int ImPlotHistogramFlags;    /* original C++ signature */
 HistogramFlags = int  # -> HistogramFlags_
+# typedef int ImPlotDigitalFlags;    /* original C++ signature */
 DigitalFlags = int  # -> DigitalFlags_
+# typedef int ImPlotImageFlags;    /* original C++ signature */
 ImageFlags = int  # -> ImageFlags_
+# typedef int ImPlotTextFlags;    /* original C++ signature */
 TextFlags = int  # -> TextFlags_
+# typedef int ImPlotDummyFlags;    /* original C++ signature */
 DummyFlags = int  # -> DummyFlags_
 
+# typedef int ImPlotCond;    /* original C++ signature */
 Cond = int  # -> enum Cond_
+# typedef int ImPlotCol;    /* original C++ signature */
 Col = int  # -> enum Col_
+# typedef int ImPlotStyleVar;    /* original C++ signature */
 StyleVar = int  # -> enum StyleVar_
+# typedef int ImPlotScale;    /* original C++ signature */
 Scale = int  # -> enum Scale_
+# typedef int ImPlotMarker;    /* original C++ signature */
 Marker = int  # -> enum Marker_
+# typedef int ImPlotColormap;    /* original C++ signature */
 Colormap = int  # -> enum Colormap_
+# typedef int ImPlotLocation;    /* original C++ signature */
 Location = int  # -> enum Location_
+# typedef int ImPlotBin;    /* original C++ signature */
 Bin = int  # -> enum Bin_
 
 # ImPlotContext is an opaque structure

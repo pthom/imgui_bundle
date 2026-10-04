@@ -143,6 +143,7 @@ from imgui_bundle.imgui import (
 )
 
 ImVector_Window = ImVector_Window_ptr
+# typedef int ImDrawTextFlags;    /* original C++ signature */
 ImDrawTextFlags = int
 uchar = int
 char = str
@@ -174,45 +175,67 @@ typedef int ImGuiSeparatorFlags;        // -> enum ImGuiSeparatorFlags_     // F
 typedef int ImGuiTextFlags;             // -> enum ImGuiTextFlags_          // Flags: for TextEx()
 typedef int ImGuiTooltipFlags;          // -> enum ImGuiTooltipFlags_       // Flags: for BeginTooltipEx()
 """
+# typedef unsigned int ImGuiDataAuthority;    /* original C++ signature */
 DataAuthority = int  #         // -> enum DataAuthority_      // Enum: for storing the source authority (dock node vs window) of a field
+# typedef int ImGuiLayoutType;    /* original C++ signature */
 LayoutType = int  #            // -> enum LayoutType_         // Enum: Horizontal or vertical
+# typedef int ImGuiActivateFlags;    /* original C++ signature */
 ActivateFlags = int  #         // -> enum ActivateFlags_      // Flags: for navigation/focus function (will be for ActivateItem() later)
+# typedef int ImGuiDebugLogFlags;    /* original C++ signature */
 DebugLogFlags = int  #         // -> enum DebugLogFlags_      // Flags: for ShowDebugLogWindow(), g.DebugLogFlags
 InputFlags = int  #            // -> enum ImGuiInputFlags_         // Flags: for IsKeyPressed(), IsMouseClicked(), SetKeyOwner(), SetItemKeyOwner() etc.
 ItemFlags = int  #             // -> enum ItemFlags_          // Flags: for PushItemFlag()
+# typedef int ImGuiItemStatusFlags;    /* original C++ signature */
 ItemStatusFlags = int  #       // -> enum ItemStatusFlags_    // Flags: for DC.LastItemStatusFlags
+# typedef int ImGuiOldColumnFlags;    /* original C++ signature */
 OldColumnFlags = int  #        // -> enum OldColumnFlags_     // Flags: for BeginColumns()
 NavHighlightFlags = int  #     // -> enum NavHighlightFlags_  // Flags: for RenderNavHighlight()
 NavDirSourceFlags = int  #     // -> enum NavDirSourceFlags_  // Flags: for GetNavInputAmount2d()
+# typedef int ImGuiNavMoveFlags;    /* original C++ signature */
 NavMoveFlags = int  #          // -> enum NavMoveFlags_       // Flags: for navigation requests
+# typedef int ImGuiNextItemDataFlags;    /* original C++ signature */
 NextItemDataFlags = int  #     // -> enum NextItemDataFlags_  // Flags: for SetNextItemXXX() functions
+# typedef int ImGuiNextWindowDataFlags;    /* original C++ signature */
 NextWindowDataFlags = int  #   // -> enum NextWindowDataFlags_// Flags: for SetNextWindowXXX() functions
+# typedef int ImGuiScrollFlags;    /* original C++ signature */
 ScrollFlags = int  #           // -> enum ScrollFlags_        // Flags: for ScrollToItem() and navigation requests
+# typedef int ImGuiSeparatorFlags;    /* original C++ signature */
 SeparatorFlags = int  #        // -> enum SeparatorFlags_     // Flags: for SeparatorEx()
+# typedef int ImGuiTextFlags;    /* original C++ signature */
 TextFlags = int  #             // -> enum TextFlags_          // Flags: for TextEx()
+# typedef int ImGuiTooltipFlags;    /* original C++ signature */
 TooltipFlags = int  #          // -> enum TooltipFlags_       // Flags: for BeginTooltipEx()
+# typedef int ImGuiTypingSelectFlags;    /* original C++ signature */
 TypingSelectFlags = int
+# typedef int ImGuiFocusRequestFlags;    /* original C++ signature */
 FocusRequestFlags = int
+# typedef int ImGuiWindowRefreshFlags;    /* original C++ signature */
 WindowRefreshFlags = int
 MultiSelectFlags = int
+# typedef int ImGuiLogFlags;    /* original C++ signature */
 LogFlags = int
+# typedef int ImGuiNavRenderCursorFlags;    /* original C++ signature */
 NavRenderCursorFlags = int
 ImFontAtlasRectId = int  # An identifier to a rectangle in the atlas. -1 when invalid. The rectangle may move, use GetCustomRect() to retrieve it.
 
 TypingSelectFlags_None = 0
 NavHighlightFlags_None = 0
 NavRenderCursorFlags_None = 0
+# typedef void* ImFileHandle;    /* original C++ signature */
 ImFileHandle = Any
 
 # // Our current column maximum is 64 but we may raise that in the future.
 # typedef ImS8 ImGuiTableColumnIdx;
 # typedef ImU8 ImGuiTableDrawChannelIdx;
+# typedef ImS16 ImGuiTableColumnIdx;    /* original C++ signature */
 TableColumnIdx = int
+# typedef ImU16 ImGuiTableDrawChannelIdx;    /* original C++ signature */
 TableDrawChannelIdx = int
 SelectionUserData = int
 
 PopupFlags_None = PopupFlags_.none
 
+# typedef ImS16 ImGuiKeyRoutingIndex;    /* original C++ signature */
 KeyRoutingIndex = int
 
 # Disable black formatter

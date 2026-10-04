@@ -7,7 +7,7 @@
 
 struct ApiEntry
 {
-    std::string kind;          // function, method, class, enum, attribute, member
+    std::string kind;          // function, method, class, enum, attribute, member, typedef
     std::string name;          // the Python name: button, ImDrawList, add_line, no_title_bar
     std::string cppName;       // the C++ name: ImGui::Button, ImDrawList::AddLine, ImGuiWindowFlags_NoTitleBar
     std::string py;            // the Python signature(s)
@@ -20,6 +20,8 @@ struct ApiEntry
     std::string sectionText;   // the section's intro (the header's comments under its title), on its first entry
     std::string partText;      // the part's intro (the banner's lines under its mark), on its first entry
     std::string anchor, cppAnchor;  // the ids on the module's page and on its C++ view
+    std::string typedefPy, typedefCpp;  // an enum's typedef: the type of its values in the API (ImGuiWindowFlags)
+    std::vector<std::string> aliases;   // other names that lead to the entry (an enum's typedef, in both languages)
     std::vector<ApiEntry> children;
 };
 

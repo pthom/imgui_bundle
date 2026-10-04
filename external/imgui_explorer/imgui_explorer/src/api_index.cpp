@@ -40,6 +40,8 @@ namespace
             keys.push_back(e.cppName);
             keys.push_back(BareCpp(e.cppName));
         }
+        for (const auto& alias : e.aliases)  // an enum's typedef: ImGuiWindowFlags leads to ImGuiWindowFlags_
+            keys.push_back(alias);
         for (const auto& key : keys)
         {
             // one key per entry
@@ -80,6 +82,11 @@ namespace
         e.header = j.value("header", "");
         e.anchor = j.value("anchor", "");
         e.cppAnchor = j.value("cpp_anchor", "");
+        e.typedefPy = j.value("typedef_py", "");
+        e.typedefCpp = j.value("typedef_cpp", "");
+        if (j.contains("aliases"))
+            for (const auto& a : j["aliases"])
+                e.aliases.push_back(a.get<std::string>());
         if (j.contains("children"))
             for (const auto& c : j["children"])
                 e.children.push_back(ParseEntry(c));

@@ -32,6 +32,7 @@ from . import internal as internal
 from imgui_bundle import imgui
 from imgui_bundle.imgui import ImVec2, ImVec2Like, ImVec4, ImVec4Like, ImU32, ImDrawList, ImTextureRef, WindowFlags
 
+# typedef int ImPlot3DImageFlags;    /* original C++ signature */
 ImageFlags = int  # enum ImageFlags_
 
 ImGui_Context = imgui.internal.Context
@@ -48,50 +49,69 @@ VERSION: str
 
 UInt = int
 Context = Any
+# typedef int ImAxis3D;    /* original C++ signature */
 ImAxis3D = int  # enum ImAxis3D_
 
 # // Flags
 # typedef int ImPlot3DFlags;         // -> ImPlot3DFlags_         // Flags: for BeginPlot()
+# typedef int ImPlot3DFlags;    /* original C++ signature */
 Flags = int  # enum Flags_ (ImPlot3DFlags)
 #     typedef int ImPlot3DItemFlags;     // -> ImPlot3DItemFlags_     // Flags: Item flags
+# typedef int ImPlot3DItemFlags;    /* original C++ signature */
 ItemFlags = int  # enum ItemFlags_
 # typedef int ImPlot3DScatterFlags;  // -> ImPlot3DScatterFlags_  // Flags: Scatter plot flags
+# typedef int ImPlot3DScatterFlags;    /* original C++ signature */
 ScatterFlags = int  # enum ScatterFlags_
 # typedef int ImPlot3DLineFlags;     // -> ImPlot3DLineFlags_     // Flags: Line plot flags
+# typedef int ImPlot3DLineFlags;    /* original C++ signature */
 LineFlags = int  # enum LineFlags_
 # typedef int ImPlot3DTriangleFlags; // -> ImPlot3DTriangleFlags_ // Flags: Triangle plot flags
+# typedef int ImPlot3DTriangleFlags;    /* original C++ signature */
 TriangleFlags = int  # enum TriangleFlags_
 # typedef int ImPlot3DQuadFlags;     // -> ImPlot3DQuadFlags_     // Flags: QuadFplot flags
+# typedef int ImPlot3DQuadFlags;    /* original C++ signature */
 QuadFlags = int  # enum QuadFlags_
 # typedef int ImPlot3DSurfaceFlags;  // -> ImPlot3DSurfaceFlags_  // Flags: Surface plot flags
+# typedef int ImPlot3DSurfaceFlags;    /* original C++ signature */
 SurfaceFlags = int  # enum SurfaceFlags_
 # typedef int ImPlot3DMeshFlags;     // -> ImPlot3DMeshFlags_     // Flags: Mesh plot flags
+# typedef int ImPlot3DMeshFlags;    /* original C++ signature */
 MeshFlags = int  # enum MeshFlags_
 # typedef int ImPlot3DLegendFlags;   // -> ImPlot3DLegendFlags_   // Flags: Legend flags
+# typedef int ImPlot3DLegendFlags;    /* original C++ signature */
 LegendFlags = int  # enum LegendFlags_
 # typedef int ImPlot3DAxisFlags;     // -> ImPlot3DAxisFlags_     // Flags: Axis flags
 
+# typedef int ImPlot3DAxisFlags;    /* original C++ signature */
 AxisFlags = int  # enum AxisFlags_
 
 # typedef int ImPlot3DColormap; // -> ImPlot3DColormap_          // Enum: Colormaps
+# typedef int ImPlot3DColormap;    /* original C++ signature */
 Colormap = int  # enum Colormap_
 
 # // Enums
 # typedef int ImPlot3DCond;     // -> ImPlot3DCond_              // Enum: Condition for flags
+# typedef int ImPlot3DCond;    /* original C++ signature */
 Cond = int  # enum Cond_
 # typedef int ImPlot3DCol;      // -> ImPlot3DCol_               // Enum: Styling colors
+# typedef int ImPlot3DCol;    /* original C++ signature */
 Col = int  # enum Col_
 # typedef int ImPlot3DStyleVar; // -> ImPlot3DStyleVar_          // Enum: Style variables
+# typedef int ImPlot3DStyleVar;    /* original C++ signature */
 StyleVar = int  # enum StyleVar_
 # typedef int ImPlot3DMarker;   // -> ImPlot3DMarker_            // Enum: Marker styles
+# typedef int ImPlot3DMarker;    /* original C++ signature */
 Marker = int  # enum Marker_
 # typedef int ImPlot3DLocation; // -> ImPlot3DLocation_          // Enum: Locations
+# typedef int ImPlot3DLocation;    /* original C++ signature */
 Location = int  # enum Location_
 # typedef int ImAxis3D;         // -> ImAxis3D_                  // Enum: Axis indices
 # typedef int ImPlane3D;        // -> ImPlane3D_                  // Enum: Plane indices
+# typedef int ImPlane3D;    /* original C++ signature */
 ImPlane3D = int  # enum ImPlane3D_
 # typedef int ImPlot3DColormap; // -> ImPlot3DColormap_          // Enum: Colormaps
 
+# typedef int ImPlot3DScale;    /* original C++ signature */
 Scale = int  # enum Scale_
 
 Marker_Auto = Marker_.auto

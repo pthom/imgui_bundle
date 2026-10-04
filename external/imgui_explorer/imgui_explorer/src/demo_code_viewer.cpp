@@ -675,7 +675,9 @@ namespace
     {
         const ApiEntry& e = *ref.entry;
         float wrap = ImGui::GetFontSize() * 45.f;
-        const std::string& signature = python ? e.py : e.cpp;
+        std::string signature = python ? e.py : e.cpp;
+        if (!e.typedefCpp.empty())  // an enum: the type of its values in the API, as on its card
+            signature = python ? e.typedefPy : e.cpp + "\n" + e.typedefCpp;
         ShowCode(signature.empty() ? (python ? ref.PyName() : ref.CppName()) : signature, false, wrap);
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrap);
         ImGui::TextDisabled("%s: %s", python ? "C++" : "Python", python ? ref.CppName().c_str() : ref.PyName().c_str());
@@ -920,6 +922,22 @@ namespace
                     while (k < line.size() && line[k] == ' ')
                         ++k;
                     if (IsWordAt(line, pos, bare.size()) && k < line.size() && line[k] == '(')
+                        return (int)i + 1;
+                    pos += bare.size();
+                }
+            }
+        }
+        else if (e.kind == "typedef")
+        {
+            for (size_t i = from; i < lines.size(); ++i)
+            {
+                std::string trimmed = Trimmed(lines[i]);
+                if (trimmed.rfind("typedef ", 0) != 0)
+                    continue;
+                size_t pos = 0;
+                while ((pos = trimmed.find(bare, pos)) != std::string::npos)
+                {
+                    if (IsWordAt(trimmed, pos, bare.size()))
                         return (int)i + 1;
                     pos += bare.size();
                 }
@@ -1181,7 +1199,13 @@ namespace
         if (ImGui::Button(("Find in " + (apiFile.empty() ? FirstApiFileName(python) : apiFile)).c_str()))
             SearchInApi(python ? e.name : BareCppName(ref.CppName()));
         ImGui::SetItemTooltip("The text search in the declarations");
-        const std::string& signature = python ? e.py : e.cpp;
+        std::string signature = python ? e.py : e.cpp;
+        std::string cppSignature = e.cpp;
+        if (!e.typedefCpp.empty())  // an enum: the type of its values in the API, under its declaration
+        {
+            cppSignature += "\n" + e.typedefCpp;
+            signature = python ? e.typedefPy : cppSignature;
+        }
 
         // The signatures, as code blocks (highlighted, selectable, with a copy button): in Python, the Python one,
         // then the C++ one (the C++ docs and snippets are what a Python user reads on the web); in C++, the C++ one
@@ -1190,10 +1214,10 @@ namespace
         size_t maxChars = CodeCharsPerLine();
         if (!signature.empty())
             ShowSnippet(WrapSignature(signature, maxChars), python);
-        if (python && !e.cpp.empty())
+        if (python && !cppSignature.empty())
         {
             ImGui::TextDisabled("C++");
-            ShowSnippet(WrapSignature(e.cpp, maxChars), false);
+            ShowSnippet(WrapSignature(cppSignature, maxChars), false);
         }
         if (!e.value.empty())
             ImGui::Text("= %s", e.value.c_str());

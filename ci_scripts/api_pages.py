@@ -192,7 +192,7 @@ LIBRARIES = [
 # ---------------------------------------------------------------------------------------------------------------------
 @dataclass
 class Entry:
-    kind: str  # function, method, class, enum, attribute, member
+    kind: str  # function, method, class, enum, attribute, member, typedef
     name: str
     signature: str = ""  # Python: "def name(args) -> ret"
     cpp: str = ""  # the original C++ signature
@@ -207,6 +207,8 @@ class Entry:
     children: list["Entry"] = field(default_factory=list)
     overloads: list[tuple[str, str]] = field(default_factory=list)  # the other signatures (Python, C++) of an overload
     generated: bool = True  # written by litgen (between its markers), as opposed to the stub's hand-written parts
+    typedefs: list["Entry"] = field(default_factory=list)  # an enum's typedefs: the type of its values in the API
+    # (ImGuiWindowFlags for ImGuiWindowFlags_)
 
 
 def _clean_comment(line: str) -> str:
@@ -440,7 +442,7 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
     generated_end = next((i + 1 for i, line in enumerate(lines) if "</litgen_stub>" in line), len(lines) + 1)
     entries: list[Entry] = []
     for node in tree.body:
-        if not isinstance(node, (ast.FunctionDef, ast.ClassDef)):
+        if not isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign)):
             continue
         entry = _read_node(lines, node)
         if entry is None:
@@ -463,7 +465,30 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         order = {h: i + 1 for i, (_, h) in enumerate(headers)}  # the amalgamation's order; the others after
         order[f"{headers_dir.name}/{headers_dir.name}.h"] = 0  # the umbrella header (Run, GetRunnerParams...) first
         entries.sort(key=lambda e: order.get(e.header, len(order) + 1))  # stable: the stub's order within a header
-    return entries
+    return _place_typedefs(entries, headers[0][1] if headers else "")
+
+
+def _place_typedefs(entries: list[Entry], header: str) -> list[Entry]:
+    """The typedefs of a stub's preamble: one that gives an enum's type in the API (ImGuiWindowFlags for
+    ImGuiWindowFlags_: "-> enum X" in its comment, or an enum named after it) goes to that enum; the others form a
+    "Typedefs" part at the end, under the stub's first header"""
+    typedefs = [e for e in entries if e.kind == "typedef"]
+    if not typedefs:
+        return entries
+    kept = [e for e in entries if e.kind != "typedef"]
+    enums = {e.name: e for e in kept if e.kind == "enum"}
+    enums.update({_cpp_name(e, ""): e for e in kept if e.kind == "enum" and e.cpp})  # also by their C++ name
+    standalone: list[Entry] = []
+    for td in typedefs:
+        m = re.search(r"->\s*enum\s+(\w+)", td.note)
+        enum = (enums.get(m.group(1)) if m else None) or enums.get(td.name + "_")
+        if enum is not None:
+            enum.typedefs.append(td)
+        else:
+            standalone.append(td)
+    for i, td in enumerate(standalone):
+        td.header, td.section, td.part, td.part_text = header, None, ("Typedefs" if i == 0 else None), []
+    return kept + standalone
 
 
 def _merge_overloads(entries: list[Entry]) -> list[Entry]:
@@ -483,6 +508,14 @@ def _merge_overloads(entries: list[Entry]) -> list[Entry]:
 
 
 def _read_node(lines: list[str], node: ast.AST, in_class: bool = False) -> Optional[Entry]:
+    if (isinstance(node, ast.Assign) and not in_class and len(node.targets) == 1
+            and isinstance(node.targets[0], ast.Name)):
+        # An alias of a stub's preamble, with its C++ typedef as the signature comment above it
+        cpp, _, _ = _split_comments(_leading_comments(lines, _first_line(node)))
+        if not cpp.startswith("typedef "):
+            return None
+        name = node.targets[0].id
+        return Entry("typedef", name, f"{name} = {ast.unparse(node.value)}", cpp, "", _trailing_comment(lines, node))
     if isinstance(node, ast.FunctionDef):
         if node.name.startswith("_") and node.name != "__init__":
             return None
@@ -647,10 +680,18 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
             out += [_safe_markdown(entry.note), ""]
         if notes:  # litgen's "Python bindings defaults", which restates the signature: last, small
             out += ["::::::{div}", ":class: bindings-note", _safe_markdown(notes), "::::::", ""]
+    elif entry.kind == "typedef":
+        out[1] = f"{hashes} `{qualified}` (typedef)"
+        out += _code("python", entry.signature)
+        out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
+        if entry.note:
+            out += [_safe_markdown(entry.note), ""]
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
             out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
+        for td in entry.typedefs:
+            out += [f"The type of its values in the API: `{td.signature}` (C++ `{td.cpp}`)", ""]
         out += _doc_lines(entry.doc)
         out += ["| Member | Value | C++ | |", "|---|---|---|---|"]
         for m in entry.children:
@@ -701,7 +742,7 @@ def _bound_entries(entries: list[Entry]) -> list[Entry]:
     for entry in entries:
         part = entry.part or part
         section = entry.section or section
-        if not entry.generated or "pywrappers" in entry.header:
+        if not (entry.generated or entry.kind == "typedef") or "pywrappers" in entry.header:
             continue
         if part is not None and entry.part is None:
             entry.part = part
@@ -719,10 +760,13 @@ def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[s
         entries = _bound_entries(entries)
     out: list[str] = []
     header: Optional[str] = None
+    shown: set[str] = set()  # a header's heading, once: the typedefs come back to the first header at the end
     for entry in entries:
         if entry.header != header:
             header = entry.header
-            out += [f"## {header}", ""] if header else []
+            if header and header not in shown:
+                out += [f"## {header}", ""]
+                shown.add(header)
         if entry.part is not None:
             out += [f"## {entry.part}", ""]
             if entry.part_text:
@@ -807,7 +851,11 @@ CPP_NAMESPACES = {  # the C++ namespace of each module's functions, for the C++ 
 
 
 def _cpp_name(entry: Entry, namespace: str, owner: str = "") -> str:
-    """The C++ name of an entry: from its signature (a function), its declaration (a class, an enum), or its name"""
+    """The C++ name of an entry: from its signature (a function), its declaration (a class, an enum, a typedef), or
+    its name"""
+    if entry.kind == "typedef":  # a function pointer's name (*Name), else the last word before ";"
+        m = re.search(r"\(\s*\*\s*(\w+)\s*\)", entry.cpp) or re.search(r"(\w+)\s*;\s*$", entry.cpp)
+        return m.group(1) if m else entry.name
     if entry.kind in ("function", "method"):
         m = re.search(r"([A-Za-z_]\w*)\s*\(", entry.cpp)
         name = m.group(1) if m else entry.name
@@ -838,10 +886,17 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         out += _doc_lines(_cpp_doc(entry.doc))
         if entry.note:
             out += [_safe_markdown(entry.note), ""]
+    elif entry.kind == "typedef":
+        out[1] = f"{hashes} `{name}` (typedef)"
+        out += _code("cpp", entry.cpp)
+        if entry.note:
+            out += [_safe_markdown(entry.note), ""]
     elif entry.kind == "enum":
         out[1] = f"{hashes} `{name}` (enum)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
+        for td in entry.typedefs:
+            out += [f"The type of its values in the API: `{td.cpp}`", ""]
         out += _doc_lines(_cpp_doc(entry.doc))
         out += ["| Member | Value | |", "|---|---|---|"]
         for m in entry.children:
@@ -994,9 +1049,13 @@ def _llms_entry(entry: Entry, indent: str = "") -> list[str]:
             out += [indent + line for line in python.splitlines() if line.strip() != "@overload"]
             if cpp:
                 out.append(f"{sub}C++: {cpp}")
+    elif entry.kind == "typedef":
+        note = f"  # {_one_line(entry.note, 160)}" if entry.note else ""
+        return [f"{indent}{entry.signature}{note}", f"{sub}C++: {entry.cpp}"]
     else:
         kind = "enum" if entry.kind == "enum" else "class"
         out.append(f"{indent}{kind} {entry.name}" + (f"    C++: {entry.cpp}" if entry.cpp else ""))
+        out += [f"{sub}type of its values: {td.signature}    C++: {td.cpp}" for td in entry.typedefs]
     doc = _first_paragraph(entry.doc)
     if doc:
         out.append(sub + doc)
@@ -1018,6 +1077,7 @@ def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
     """A module's entries in plain text, by chunk: a header or a part starts one (its title, its lines)"""
     chunks: list[tuple[str, list[str]]] = []
     header: Optional[str] = None
+    shown: set[str] = set()  # a header's title, once (the typedefs come back to the first header at the end)
     first_vector = ""
     for entry in entries:
         if entry.header != header or entry.part is not None or not chunks:
@@ -1026,7 +1086,9 @@ def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
         lines = chunks[-1][1]
         if entry.header != header:
             header = entry.header
-            lines += [f"### {header}", ""] if header else []
+            if header and header not in shown:
+                lines += [f"### {header}", ""]
+                shown.add(header)
         if entry.part is not None:
             lines += [f"### {entry.part}", ""]
             if entry.part_text:
@@ -1182,8 +1244,8 @@ def _json_entry(entry: Entry, module: str, namespace: Optional[str], owner: str 
     name rules as the pages), `cpp_name` the name a C++ reader knows (a real enum name, where the C++ page shows the
     Python one)"""
     qualified = f"{owner}.{entry.name}" if owner else entry.name
-    bound = (namespace is not None and entry.generated and "pywrappers" not in entry.header
-             and (entry.kind in ("class", "enum") or bool(entry.cpp)))
+    bound = (namespace is not None and (entry.generated or entry.kind == "typedef")
+             and "pywrappers" not in entry.header and (entry.kind in ("class", "enum") or bool(entry.cpp)))
     page_name = _cpp_name(entry, namespace or "", page_owner) if bound else ""  # the C++ page's name of the entry
     cpp_name = page_name
     if entry.kind in ("attribute", "member"):
@@ -1203,6 +1265,10 @@ def _json_entry(entry: Entry, module: str, namespace: Optional[str], owner: str 
         out["anchor"] = _html_id(_label(module, qualified))
         if page_name:
             out["cpp_anchor"] = _html_id(_label("cpp." + module, page_name))
+    if entry.typedefs:  # the type of the enum's values in the API: shown on its card, and its names lead to it
+        out["typedef_py"] = "\n".join(td.signature for td in entry.typedefs)
+        out["typedef_cpp"] = "\n".join(td.cpp for td in entry.typedefs)
+        out["aliases"] = [n for td in entry.typedefs for n in (td.name, _cpp_name(td, ""))]
     if entry.children:
         out["children"] = [_json_entry(c, module, namespace, qualified, page_name) for c in entry.children]
     return {k: v for k, v in out.items() if v}
