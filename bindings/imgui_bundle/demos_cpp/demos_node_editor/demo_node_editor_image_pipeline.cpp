@@ -27,7 +27,6 @@
 
 namespace ed = ax::NodeEditor;
 
-// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
 namespace
 {
 

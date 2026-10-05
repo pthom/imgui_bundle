@@ -8,7 +8,6 @@
 #include "imgui_rich_md/rich_md.h"
 #include <vector>
 
-// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
 namespace
 {
 

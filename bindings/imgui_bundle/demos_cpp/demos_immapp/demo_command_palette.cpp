@@ -6,7 +6,6 @@
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "demo_utils/api_demos.h"
 
-// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
 namespace
 {
 
