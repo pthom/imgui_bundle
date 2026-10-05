@@ -627,7 +627,7 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
         assert _immvision_image is not None
         gray = cv2.cvtColor(_immvision_image, cv2.COLOR_RGB2GRAY)
         img_float = gray.astype(np.float32) / 255.0
-        blurred = cv2.GaussianBlur(img_float, (0, 0), _immvision_blur_size, _immvision_blur_size)
+        blurred = cv2.GaussianBlur(img_float, (0, 0), sigmaX=_immvision_blur_size, sigmaY=_immvision_blur_size)
         good_scale = 1.0 / (2.0 ** (_immvision_k_size - 2 * _immvision_deriv_order - 2))
         r = cv2.Sobel(blurred, cv2.CV_64F, _immvision_deriv_order, 0, ksize=_immvision_k_size, scale=good_scale)
         return r
