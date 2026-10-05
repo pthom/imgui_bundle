@@ -108,6 +108,10 @@ namespace
         bool forward = true;  // the change goes deeper (Welcome, Demos, a demo: the pages slide up), or back
         DemoLauncher launcher;
         std::string demoInPlace;  // the stem of the demo shown by the Demo state
+        // What a demo in place may change, saved when it is first drawn and restored when the page shows something
+        // else, so that no demo has to clean up
+        struct AppState { std::string stem; ImGuiStyle style; bool idling; };
+        std::optional<AppState> savedAppState;
 #ifdef __EMSCRIPTEN__
         std::string browserRoute;  // the route of the browser's current history entry
 #endif
@@ -162,6 +166,25 @@ namespace
 #ifdef __EMSCRIPTEN__
             FollowBrowserHistory();
 #endif
+        }
+
+        void SaveAppState(const std::string& stem)
+        {
+            savedAppState = AppState{stem, ImGui::GetStyle(), HelloImGui::GetRunnerParams()->fpsIdling.enableIdling};
+        }
+
+        // The font sizes stay as they are: the reader may have changed them meanwhile (the status bar's font scale)
+        void RestoreAppState()
+        {
+            ImGuiStyle& style = ImGui::GetStyle();
+            float fontSizeBase = style.FontSizeBase, fontScaleMain = style.FontScaleMain;
+            float fontScaleDpi = style.FontScaleDpi;
+            style = savedAppState->style;
+            style.FontSizeBase = fontSizeBase;
+            style.FontScaleMain = fontScaleMain;
+            style.FontScaleDpi = fontScaleDpi;
+            HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = savedAppState->idling;
+            savedAppState.reset();
         }
 
         // The place shown, as a route: "" (Welcome), "demos" (and the launcher's level: "demos/code/<stem>"), or
@@ -265,6 +288,9 @@ namespace
                               ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::SetCursorPos(ImVec2(0.f, drift));
             ImGui::BeginChild("page", avail);
+            // Before the next page draws: the launcher saves the idling to restore it after its animation
+            if (shown != State::Demo && savedAppState.has_value())
+                RestoreAppState();
             if (shown == State::Welcome)
                 Welcome();
             else if (shown == State::Demos)
@@ -401,6 +427,10 @@ namespace
                 ImGui::SetItemTooltip("Runs it in a window of its own");
             }
             ImGui::Separator();
+            if (savedAppState.has_value() && savedAppState->stem != demo->stem)  // another demo, without a frame between
+                RestoreAppState();
+            if (!savedAppState.has_value())
+                SaveAppState(demo->stem);
             ImGui::BeginChild("demo in place");
             launcher.inPlaceFunctions.at(demo->stem)();
             ImGui::EndChild();
