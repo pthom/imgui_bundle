@@ -443,11 +443,20 @@ namespace
             if (ownWindow)
             {
                 ImGui::SameLine();
-                // On a touch screen, the demo's page replaces this one (a new window needs a gesture the tap has no more)
+#ifdef __EMSCRIPTEN__
+                // On a touch screen, the page opens the tab from the touch itself (a tap seen by ImGui is too late
+                // for the browser): the button then does nothing more
                 bool touch = ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
-                if (ImGui::SmallButton(touch ? ICON_FA_EXTERNAL_LINK_ALT "  Open alone" : ICON_FA_EXTERNAL_LINK_ALT "  New window"))
+                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  Run (in a new tab)") && !touch)
+                    SpawnDemo(demo->stem);
+                if (touch)
+                    HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), demo->stem + ".html");
+                ImGui::SetItemTooltip("Runs it in a tab of its own");
+#else
+                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  Run (in a new window)"))
                     SpawnDemo(demo->stem);
                 ImGui::SetItemTooltip("Runs it in a window of its own");
+#endif
             }
             ImGui::Separator();
             if (savedAppState.has_value() && savedAppState->stem != demo->stem)  // another demo, without a frame between

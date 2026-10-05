@@ -2952,6 +2952,20 @@ class TouchScrollMode(enum.IntEnum):
     # }
     disabled = enum.auto()  # (= 2)
 
+# enum class TouchPinchMode    /* original C++ signature */
+class TouchPinchMode(enum.IntEnum):
+    """TouchPinchMode: what two fingers that pinch do (in the browser; a desktop touch screen reports no second finger).
+    See RunnerParams::touchPinchMode.
+    """
+
+    # FontScale,      /* original C++ signature */
+    font_scale = (
+        enum.auto()
+    )  # (= 0)  # the pinch scales the font (ImGui's style.FontScaleMain), as on a phone
+    # Disabled    /* original C++ signature */
+    # }
+    disabled = enum.auto()  # (= 1)
+
 # struct RunnerParams    /* original C++ signature */
 class RunnerParams:
     """RunnerParams contains the settings and callbacks needed to run an application."""
@@ -3105,6 +3119,24 @@ class RunnerParams:
     # Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.
     touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto
 
+    # bool touchLongPressIsRightClick = true;    /* original C++ signature */
+    # `touchLongPressIsRightClick`: _bool, default = true_.
+    # On a touch screen (never with a mouse): a finger still for half a second is a right click (the context
+    # menus), as on a phone. The widget under it loses the press it got at the hold (a release outside it), so
+    # that a long press on a button is not a click.
+    touch_long_press_is_right_click: bool = True
+
+    # TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;    /* original C++ signature */
+    # `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
+    # Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen.
+    touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale
+
+    # bool touchPinchInterruptsWidgets = false;    /* original C++ signature */
+    # `touchPinchInterruptsWidgets`: _bool, default = false_.
+    # When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text
+    # selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True).
+    touch_pinch_interrupts_widgets: bool = False
+
     def __init__(
         self,
         callbacks: Optional[RunnerCallbacks] = None,
@@ -3128,6 +3160,9 @@ class RunnerParams:
         use_imgui_test_engine: bool = False,
         emscripten_fps: int = 0,
         touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto,
+        touch_long_press_is_right_click: bool = True,
+        touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale,
+        touch_pinch_interrupts_widgets: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
 
@@ -3479,6 +3514,16 @@ def init_gl_loader() -> bool:
     Note: only the OpenGL3 standalone path is supported. Metal, Vulkan and
     DirectX11/12 require device handles that HelloImGui's runner would
     normally create — they are not usable outside `Run()`.
+    """
+    pass
+
+# void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);    /* original C++ signature */
+def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> None:
+    """`SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap that ends inside this rectangle
+    (screen coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown.
+    A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes
+    two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing
+    more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
     """
     pass
 
