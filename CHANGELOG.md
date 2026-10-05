@@ -2,9 +2,25 @@
 
 # Ongoing changes
 
-## Touch screens: scroll with a swipe
+## Touch screens: the gestures of a phone
 
-On a touch screen (a phone running the explorer or the playground, a tablet), a finger that drags the content of a window scrolls it, with inertia, even when the drag starts on a button or on a markdown text: a tap still clicks (when the finger lifts), and a short hold then a drag goes to the widget under the finger (a slider, a text selection). `hello_imgui.RunnerParams.touch_scroll_mode` (`auto`: when the input is a touch screen; `always`: also with the mouse, to try it on a desktop; `disabled`). In the browser with GLFW (the explorers), ImGui now knows whether the pointer is a mouse, a finger or a pen.
+On a touch screen (a phone running the explorer or the playground, a tablet), Hello ImGui turns a finger into what its user expects, with nothing to write in the app:
+- a swipe scrolls the content of a window, with inertia and a bounce at the end, even when the drag starts on a button or on a markdown text; a tap still clicks (when the finger lifts), two taps are a double click, and a short hold then a drag goes to the widget under the finger (a slider, a text selection; a ring around the finger shows when the hold took effect);
+- a finger still for half a second is a right click (the context menus), except on a widget that acted on the press already (a button that repeats while held);
+- two fingers that pinch scale the app (its font); two fingers that move together are a right drag (the pan of a node editor, the box selection of a plot);
+- a text widget that is active shows a keyboard button next to it: a tap opens the phone's keyboard, and what is typed goes to the widget.
+
+`hello_imgui.RunnerParams.touch_scroll_mode` (`auto`: when the input is a touch screen; `always`: also with the mouse, to try it on a desktop; `disabled`), `touch_long_press_is_right_click`, `touch_pinch_mode`. In the browser with GLFW (the explorers), ImGui now knows whether the pointer is a mouse, a finger or a pen. ImPlot's drag tools (the guide lines, the boxes) get finger-sized grabs on a touch screen.
+
+The demo "Touch screens (phones, tablets)" (`demo_touch_screen`, in "In the browser") shows every gesture on a phone-shaped page; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse. The playground has a phone layout: one pane at a time, Demo or Code, from a switch in its toolbar.
+
+## Mouse wheel: a wheel that started on the page keeps scrolling it
+
+On a desktop, a wheel that started on the content of a window keeps scrolling it when the mouse travels over a plot or an image that zooms with the wheel: the item sees no wheel until the session ends (0.7 s without an event, ImGui's own lock of the scrolled window, applied to items). A wheel that starts on the item is the item's.
+
+## ImmVision: a negative display size is the remaining width
+
+`ImageParams.image_display_size`, the size of `image_display()` and the in/out size of `image_display_resizable()` accept a negative width or height: the window's remaining space minus its absolute value, as ImGui's item widths (`(-1, 0)`: the width of the window, the height from the aspect ratio).
 
 ## ImGui Explorer: an API tab
 

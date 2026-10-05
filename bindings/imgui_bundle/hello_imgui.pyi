@@ -2936,8 +2936,8 @@ class FpsIdling:
 
 # enum class TouchScrollMode    /* original C++ signature */
 class TouchScrollMode(enum.IntEnum):
-    """TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia),
-    as on a phone. See RunnerParams::touchScrollMode.
+    """TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia and a
+    bounce at the end), as on a phone. See RunnerParams::touchScrollMode.
     """
 
     # Auto,          /* original C++ signature */
@@ -2954,17 +2954,17 @@ class TouchScrollMode(enum.IntEnum):
 
 # enum class TouchPinchMode    /* original C++ signature */
 class TouchPinchMode(enum.IntEnum):
-    """TouchPinchMode: what two fingers that pinch do (in the browser; a desktop touch screen reports no second finger).
-    See RunnerParams::touchPinchMode.
+    """TouchPinchMode: what two fingers do (in the browser; a desktop touch screen reports no second finger).
+    Two fingers that spread or close are a pinch; two fingers that move together are a right drag (the pan of a node
+    editor, the box of a plot). See RunnerParams::touchPinchMode.
     """
 
     # FontScale,      /* original C++ signature */
     font_scale = (
         enum.auto()
-    )  # (= 0)  # the pinch scales the font (ImGui's style.FontScaleMain), as on a phone
-    # Disabled    /* original C++ signature */
-    # }
-    disabled = enum.auto()  # (= 1)
+    )  # (= 0)  # the pinch scales the font (ImGui's style.FontScaleMain), as on a phone; the two-finger drag is a right drag
+    # Disabled        /* original C++ signature */
+    disabled = enum.auto()  # (= 1)  # neither
 
 # struct RunnerParams    /* original C++ signature */
 class RunnerParams:
@@ -3128,7 +3128,8 @@ class RunnerParams:
 
     # TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;    /* original C++ signature */
     # `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
-    # Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen.
+    # Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers
+    # that move together are a right drag.
     touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale
 
     # bool touchPinchInterruptsWidgets = false;    /* original C++ signature */

@@ -370,6 +370,9 @@ class ImageParams:
     # Size of the displayed image (can be different from the matrix size)
     # If you specify only the width or height (e.g (300, 0), then the other dimension
     # will be calculated automatically, respecting the original image w/h ratio.
+    # A negative width or height is the remaining width (or height) of the window minus its absolute value,
+    # as ImGui's item widths (e.g. (-1, 0): the width of the window, the height from the aspect ratio).
+    # It is resolved once, at the first display: the concrete size is stored here.
     image_display_size: Size = (0, 0)
 
     #
@@ -617,6 +620,8 @@ def image_display(
        Python: a `numpy.ndarray`.
      - `imageDisplaySize`: the size of the displayed image, which may differ from the image's. With only the
        width or the height given (e.g. `(300, 0)`), the other dimension follows the image's aspect ratio.
+       A negative value is the remaining width (or height) of the window minus its absolute value, as ImGui's
+       item widths: `(-1, 0)` fills the width of the window.
      - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).
      - `showOptionsButton`: shows a button that opens the options panel; zoom, pan and watched pixels
        (double-click) then become possible.
@@ -654,6 +659,8 @@ def image_display_resizable(
     - `image`: the image to display. C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy).
       Python: a `numpy.ndarray`.
     - `size`: the displayed size, in and out: the size chosen by the user is stored in it, when given.
+      A negative value is the remaining width (or height) of the window (`(-1, 0)`: the width of the window),
+      resolved once: the concrete size is stored back.
     - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).
     - `resizable`: whether the user can resize the widget.
     - `showOptionsButton`: shows a button that opens the options panel.

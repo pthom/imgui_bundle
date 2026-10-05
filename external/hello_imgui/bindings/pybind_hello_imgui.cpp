@@ -1582,16 +1582,16 @@ void py_init_module_hello_imgui(nb::module_& m)
 
 
     auto pyEnumTouchScrollMode =
-        nb::enum_<HelloImGui::TouchScrollMode>(m, "TouchScrollMode", nb::is_arithmetic(), " TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia),\n as on a phone. See RunnerParams::touchScrollMode.")
+        nb::enum_<HelloImGui::TouchScrollMode>(m, "TouchScrollMode", nb::is_arithmetic(), " TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia and a\n bounce at the end), as on a phone. See RunnerParams::touchScrollMode.")
             .value("auto", HelloImGui::TouchScrollMode::Auto, "only when the input is a touch screen (io.MouseSource)")
             .value("always", HelloImGui::TouchScrollMode::Always, "also with the mouse (left button), e.g. to test on a desktop")
             .value("disabled", HelloImGui::TouchScrollMode::Disabled, "");
 
 
     auto pyEnumTouchPinchMode =
-        nb::enum_<HelloImGui::TouchPinchMode>(m, "TouchPinchMode", nb::is_arithmetic(), " TouchPinchMode: what two fingers that pinch do (in the browser; a desktop touch screen reports no second finger).\n See RunnerParams::touchPinchMode.")
-            .value("font_scale", HelloImGui::TouchPinchMode::FontScale, "the pinch scales the font (ImGui's style.FontScaleMain), as on a phone")
-            .value("disabled", HelloImGui::TouchPinchMode::Disabled, "");
+        nb::enum_<HelloImGui::TouchPinchMode>(m, "TouchPinchMode", nb::is_arithmetic(), " TouchPinchMode: what two fingers do (in the browser; a desktop touch screen reports no second finger).\n Two fingers that spread or close are a pinch; two fingers that move together are a right drag (the pan of a node\n editor, the box of a plot). See RunnerParams::touchPinchMode.")
+            .value("font_scale", HelloImGui::TouchPinchMode::FontScale, "the pinch scales the font (ImGui's style.FontScaleMain), as on a phone; the two-finger drag is a right drag")
+            .value("disabled", HelloImGui::TouchPinchMode::Disabled, "neither");
 
 
     auto pyClassRunnerParams =
@@ -1677,7 +1677,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("emscripten_fps", &HelloImGui::RunnerParams::emscripten_fps, " `emscripten_fps`: _int, default = 0_.\n Set the application refresh rate\n (only used on emscripten: 0 stands for \"let the app or the browser decide\")")
         .def_rw("touch_scroll_mode", &HelloImGui::RunnerParams::touchScrollMode, " `touchScrollMode`: _TouchScrollMode, default = TouchScrollMode::Auto_.\n Scroll a window by dragging its content with a finger (a swipe, with inertia), as on a phone, even from a\n button: a tap still clicks it (when the finger lifts), and a short hold then a drag goes to the widget\n (a slider, a text selection). Auto: only when the input is a touch screen (io.MouseSource);\n Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.")
         .def_rw("touch_long_press_is_right_click", &HelloImGui::RunnerParams::touchLongPressIsRightClick, " `touchLongPressIsRightClick`: _bool, default = true_.\n On a touch screen (never with a mouse): a finger still for half a second is a right click (the context\n menus), as on a phone. The widget under it loses the press it got at the hold (a release outside it), so\n that a long press on a button is not a click.")
-        .def_rw("touch_pinch_mode", &HelloImGui::RunnerParams::touchPinchMode, " `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.\n Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen.")
+        .def_rw("touch_pinch_mode", &HelloImGui::RunnerParams::touchPinchMode, " `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.\n Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers\n that move together are a right drag.")
         .def_rw("touch_pinch_interrupts_widgets", &HelloImGui::RunnerParams::touchPinchInterruptsWidgets, " `touchPinchInterruptsWidgets`: _bool, default = false_.\n When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text\n selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True).")
         ;
 
