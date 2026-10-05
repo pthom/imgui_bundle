@@ -2,6 +2,10 @@
 
 # Ongoing changes
 
+## Touch screens: scroll with a swipe
+
+On a touch screen (a phone running the explorer or the playground, a tablet), a finger that drags the content of a window scrolls it, with inertia, even when the drag starts on a button or on a markdown text: a tap still clicks (when the finger lifts), and a short hold then a drag goes to the widget under the finger (a slider, a text selection). `hello_imgui.RunnerParams.touch_scroll_mode` (`auto`: when the input is a touch screen; `always`: also with the mouse, to try it on a desktop; `disabled`). In the browser with GLFW (the explorers), ImGui now knows whether the pointer is a mouse, a finger or a pen.
+
 ## ImGui Explorer: an API tab
 
 The code viewer of the [ImGui Explorer](https://imgui-bundle.pages.dev/explorer/) (the interactive manuals of ImGui, ImPlot, ImPlot3D and ImAnim) gets an "API" tab, built from the same index as the book's API pages:

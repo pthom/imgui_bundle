@@ -2934,6 +2934,24 @@ class FpsIdling:
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class TouchScrollMode    /* original C++ signature */
+class TouchScrollMode(enum.IntEnum):
+    """TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia),
+    as on a phone. See RunnerParams::touchScrollMode.
+    """
+
+    # Auto,          /* original C++ signature */
+    auto = (
+        enum.auto()
+    )  # (= 0)  # only when the input is a touch screen (io.MouseSource)
+    # Always,        /* original C++ signature */
+    always = (
+        enum.auto()
+    )  # (= 1)  # also with the mouse (left button), e.g. to test on a desktop
+    # Disabled    /* original C++ signature */
+    # }
+    disabled = enum.auto()  # (= 2)
+
 # struct RunnerParams    /* original C++ signature */
 class RunnerParams:
     """RunnerParams contains the settings and callbacks needed to run an application."""
@@ -3079,6 +3097,14 @@ class RunnerParams:
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
 
+    # TouchScrollMode touchScrollMode = TouchScrollMode::Auto;    /* original C++ signature */
+    # `touchScrollMode`: _TouchScrollMode, default = TouchScrollMode::Auto_.
+    # Scroll a window by dragging its content with a finger (a swipe, with inertia), as on a phone, even from a
+    # button: a tap still clicks it (when the finger lifts), and a short hold then a drag goes to the widget
+    # (a slider, a text selection). Auto: only when the input is a touch screen (io.MouseSource);
+    # Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.
+    touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto
+
     def __init__(
         self,
         callbacks: Optional[RunnerCallbacks] = None,
@@ -3101,6 +3127,7 @@ class RunnerParams:
         dpi_aware_params: Optional[DpiAwareParams] = None,
         use_imgui_test_engine: bool = False,
         emscripten_fps: int = 0,
+        touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto,
     ) -> None:
         """Auto-generated default constructor with named params
 

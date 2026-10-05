@@ -2413,6 +2413,19 @@ struct FpsIdling
 
 // --------------------------------------------------------------------------------------------------------------------
 
+// ::code TouchScrollMode
+
+// TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia),
+// as on a phone. See RunnerParams::touchScrollMode.
+enum class TouchScrollMode
+{
+    Auto,      // only when the input is a touch screen (io.MouseSource)
+    Always,    // also with the mouse (left button), e.g. to test on a desktop
+    Disabled
+};
+// ::endcode
+
+
 // ::code RunnerParams
 
 // RunnerParams contains the settings and callbacks needed to run an application.
@@ -2543,6 +2556,13 @@ struct RunnerParams
     // Set the application refresh rate
     // (only used on emscripten: 0 stands for "let the app or the browser decide")
     int emscripten_fps = 0;
+
+    // `touchScrollMode`: _TouchScrollMode, default = TouchScrollMode::Auto_.
+    // Scroll a window by dragging its content with a finger (a swipe, with inertia), as on a phone, even from a
+    // button: a tap still clicks it (when the finger lifts), and a short hold then a drag goes to the widget
+    // (a slider, a text selection). Auto: only when the input is a touch screen (io.MouseSource);
+    // Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.
+    TouchScrollMode touchScrollMode = TouchScrollMode::Auto;
 
     #ifdef HELLOIMGUI_WITH_REMOTE_DISPLAY
     RemoteParams remoteParams; // Parameters for Remote display (experimental, unsupported)
