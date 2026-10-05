@@ -587,8 +587,7 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     ImVec2 topLeft = ImGui::GetCursorScreenPos();
     ImVec2 bottomRight(topLeft.x + width, topLeft.y + height);
     _cardRects[demo.filename] = {topLeft, bottomRight};
-    bool hovered = ImGui::IsMouseHoveringRect(topLeft, bottomRight)
-                   && ImGui::IsWindowHovered(ImGuiHoveredFlags_ChildWindows);
+    bool hovered = _cardHovered.count(demo.filename) ? _cardHovered[demo.filename] : false;  // the item's, last frame
     float hover = Tween(("hover " + demo.filename).c_str(), hovered ? 1.f : 0.f, 0.15f);
     bool isSelected = &demo == _selected;
 
@@ -609,6 +608,11 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     // Rounded more than the card: the border is stroked inside the card's rect with the card's radius, so a
     // picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
     ImVec2 pictureTopLeft = ImGui::GetCursorScreenPos();
+    // The card is one item, under its contents: its hover and click go through ImGui's active id (a touch swipe
+    // that starts on it holds the id, so its release is not a click), and the test engine can find it
+    bool clicked = ImGui::InvisibleButton("##hit", ImGui::GetContentRegionAvail());
+    _cardHovered[demo.filename] = ImGui::IsItemHovered();
+    ImGui::SetCursorScreenPos(pictureTopLeft);
     ImGui::Dummy(ImVec2(width, width / PICTURE_ASPECT));
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.8f),
                 ImDrawFlags_RoundCornersTop);
@@ -622,7 +626,7 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     ImGui::PushTextWrapPos(width - padding);
     std::string shown = Fit(demo.summaryPlain, width - 2 * padding, 2);
     ImGui::TextDisabled("%s", shown.c_str());
-    bool summaryHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip);
+    bool summaryHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_AllowWhenOverlappedByItem);
     ImGui::PopTextWrapPos();
     auto flight = Flight(demo.filename);
     if (flight.has_value() && *flight < 1.f && _dealOrder.has_value())
@@ -649,7 +653,7 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
             ImGui::EndTooltip();
         }
     }
-    if (hovered && ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+    if (clicked)
     {
         _selected = &demo;
         if (SmallScreen())

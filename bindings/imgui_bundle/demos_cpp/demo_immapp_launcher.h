@@ -127,6 +127,7 @@ private:
     std::pair<ImVec2, ImVec2> _galleryRect;  // on screen, this frame: the cards are dealt from below it
     bool _detailOpen = false;  // on a small screen, the detail is a page of its own (a card opens it), not a pane
     std::map<std::string, std::pair<ImVec2, ImVec2>> _cardRects;
+    std::map<std::string, bool> _cardHovered;  // the card's item, last frame (the colors are pushed before it)
 };
 
 

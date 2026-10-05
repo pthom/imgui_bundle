@@ -357,6 +357,7 @@ class Launcher:
         self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
         self.detail_open = False  # on a small screen, the detail is a page of its own (a card opens it) not a pane
         self.card_rects: dict[str, tuple[ImVec2, ImVec2]] = {}  # on screen, this frame (the intro's automations click)
+        self.card_hovered: dict[str, bool] = {}  # the card's item, last frame (the colors are pushed before it)
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -457,8 +458,7 @@ class Launcher:
         top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         self.card_rects[demo.filename] = (top_left, bottom_right)
-        hovered = imgui.is_mouse_hovering_rect(top_left, bottom_right) and imgui.is_window_hovered(
-            imgui.HoveredFlags_.child_windows.value)
+        hovered = self.card_hovered.get(demo.filename, False)
         hover = tween(f"hover {demo.filename}", 1.0 if hovered else 0.0, 0.15)
         is_selected = demo is self.selected
 
@@ -476,6 +476,12 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
         imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
                           imgui.WindowFlags_.no_scrollbar.value | imgui.WindowFlags_.no_scroll_with_mouse.value)
+        # The card is one item, under its contents: its hover and click go through ImGui's active id (a touch swipe
+        # that starts on it holds the id, so its release is not a click), and the test engine can find it
+        picture_top_left = imgui.get_cursor_screen_pos()
+        clicked = imgui.invisible_button("##hit", imgui.get_content_region_avail())
+        self.card_hovered[demo.filename] = imgui.is_item_hovered()
+        imgui.set_cursor_screen_pos(picture_top_left)
         # Rounded more than the card: the border is stroked inside the card's rect with the card's radius, so a
         # picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
         self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_corners_top.value)
@@ -489,7 +495,8 @@ class Launcher:
         imgui.push_text_wrap_pos(width - padding)
         shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.text_disabled(shown)
-        summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value)
+        summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value
+                                                | imgui.HoveredFlags_.allow_when_overlapped_by_item.value)
         imgui.pop_text_wrap_pos()
         if self.deal_order is not None and demo.filename not in self.deal_order and self.dealing():
             gallery_top, gallery_bottom = self.gallery_rect[0].y, self.gallery_rect[1].y
@@ -514,7 +521,7 @@ class Launcher:
             if imgui.begin_tooltip():
                 rich_md.render(demo.text)
                 imgui.end_tooltip()
-        if hovered and imgui.is_mouse_released(imgui.MouseButton_.left.value):
+        if clicked:
             self.selected = demo
             if small_screen():
                 self.detail_open = True
