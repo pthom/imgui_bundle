@@ -22,11 +22,13 @@ namespace ImmApp
     void BrowseToUrl(const char *url)
     {
 #if defined(__EMSCRIPTEN__)
-        // A new tab, when the browser allows it: a popup blocker refuses it when the click did not come from a user
-        // gesture (on a phone, ImGui learns of a tap two frames after the finger lifted). Then the page itself goes
-        // there, and the browser's back button brings the user back.
+        // A new tab, when the browser allows it. On a touch screen (the pointer probe of hello_imgui knows), the page
+        // itself goes there: a popup blocker refuses a new tab when the click did not come from a user gesture, and
+        // on a phone ImGui learns of a tap two frames after the finger lifted. The browser's back button returns.
         char js_command[1024];
-        snprintf(js_command, 1024, "if (!window.open(\"%s\")) window.location.assign(\"%s\");", url, url);
+        snprintf(js_command, 1024,
+                 "if (window.helloImGuiPointerType === 1 || !window.open(\"%s\")) window.location.assign(\"%s\");",
+                 url, url);
         emscripten_run_script(js_command);
 #elif defined(_WIN32)
         ShellExecuteA( NULL, "open", url, NULL, NULL, SW_SHOWNORMAL );

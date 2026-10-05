@@ -443,7 +443,9 @@ namespace
             if (ownWindow)
             {
                 ImGui::SameLine();
-                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  New window"))
+                // On a touch screen, the demo's page replaces this one (a new window needs a gesture the tap has no more)
+                bool touch = ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
+                if (ImGui::SmallButton(touch ? ICON_FA_EXTERNAL_LINK_ALT "  Open alone" : ICON_FA_EXTERNAL_LINK_ALT "  New window"))
                     SpawnDemo(demo->stem);
                 ImGui::SetItemTooltip("Runs it in a window of its own");
             }
