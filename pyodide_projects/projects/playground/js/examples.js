@@ -254,7 +254,10 @@ async function buildGallery() {
         chips.appendChild(chip);
         count += shown.length;
     }
-    document.getElementById('examples-button').textContent = `Demos (${count})`;
+    document.getElementById('examples-button').innerHTML = `Demos<span class="examples-count"> (${count})</span>`;  // the count is hidden on a phone
+    chips.addEventListener('scroll', markChipsOverflow);
+    window.addEventListener('resize', markChipsOverflow);
+    markChipsOverflow();
     const noMatch = element('div', '', 'No demo matches.');
     noMatch.id = 'gallery-no-match';
     noMatch.hidden = true;
@@ -316,8 +319,24 @@ function markCategoryInView() {
         if (section.getBoundingClientRect().top <= top + 3 * parseFloat(getComputedStyle(body).fontSize))
             current = section;
     if (atTheEnd) current = sections[sections.length - 1];
-    for (const chip of document.querySelectorAll('.gallery-chip'))
-        chip.classList.toggle('in-view', chip.dataset.category === current.dataset.category);
+    for (const chip of document.querySelectorAll('.gallery-chip')) {
+        const inView = chip.dataset.category === current.dataset.category;
+        if (inView && !chip.classList.contains('in-view')) {
+            // On a phone the chips are one row that scrolls sideways: the chip in view is brought to the middle
+            const strip = chip.parentElement;
+            if (strip.scrollWidth > strip.clientWidth)
+                strip.scrollTo({left: chip.offsetLeft - (strip.clientWidth - chip.offsetWidth) / 2, behavior: 'smooth'});
+        }
+        chip.classList.toggle('in-view', inView);
+    }
+}
+
+// On a phone the chips are one row that scrolls sideways (styles.css): the bar shows a hint at the end that has more
+function markChipsOverflow() {
+    const chips = document.getElementById('gallery-chips');
+    const bar = document.getElementById('gallery-bar');
+    bar.classList.toggle('chips-more-left', chips.scrollLeft > 1);
+    bar.classList.toggle('chips-more-right', chips.scrollLeft + chips.clientWidth < chips.scrollWidth - 1);
 }
 
 // Highlights the demo loaded in the editor

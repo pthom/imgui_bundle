@@ -414,6 +414,28 @@ body {
     font-size: 0.75rem;
 }
 
+/* The pane switch of a phone: Demo | Code (shown by the phone media query below; js/main.js) */
+#pane-switch {
+    display: none;
+    margin-right: 10px;
+    border: 1px solid #555;
+    border-radius: 4px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+#pane-switch button {
+    padding: 5px 14px;
+    font: inherit;
+    color: #ccc;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+#pane-switch button.active {
+    color: #fff;
+    background-color: #4a6fa5;
+}
+
 /* The code folds into a slim rail at the left, and unfolds from it (js/main.js) */
 #code-fold svg, #code-rail svg {
     fill: none;
@@ -695,21 +717,116 @@ body {
     width: 8px;
 }
 
-/* Responsive adjustments */
+/* A phone (a narrow screen): a one-line header, and one pane at a time, Demo or Code, under the toolbar line.
+   The switch is in the toolbar; the fold, the rail and the splitter's gutter are the desktop's (js/main.js, setPane) */
 @media (max-width: 768px) {
     #header {
-        flex-direction: column;
-        height: auto;
-        padding: 10px;
+        height: 48px;
+        padding: 0 10px;
     }
-    #header-left, #header-right {
-        margin-bottom: 10px;
+    #header-left > a:first-child, .motto-subtitle, #run-shortcut,  /* the ImGui logo, the motto, the keyboard shortcut */
+    .motto-title-long, .examples-count {  /* "Playground" and "Demos": one line each */
+        display: none;
     }
-    #run-button {
-        width: 100%;
+    .logo {
+        height: 32px;
+        margin-right: 8px;
+    }
+    #motto {
+        margin-left: 0.25rem;
+    }
+    .motto-title {
+        font-size: 0.9rem;
+    }
+    #examples-menu {
+        margin-right: 0;
+    }
+    #gallery-bar {
+        padding: 8px 10px;
+    }
+    #gallery-chips {  /* one row that scrolls sideways, as the category strips of mobile apps (js/examples.js centers the chip in view) */
+        flex: 0 0 100%;
+        flex-wrap: nowrap;
+        overflow-x: auto;
+        scrollbar-width: none;
+    }
+    #gallery-chips::-webkit-scrollbar {
+        display: none;
+    }
+    .gallery-chip {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    /* The hint that the row scrolls: a fade and a chevron at the end that has more (js/examples.js sets the classes) */
+    #gallery-bar::before, #gallery-bar::after {
+        position: absolute;
+        top: 8px;
+        width: 2.5em;
+        height: calc(0.85em * 1.3 + 6px);  /* the row of chips */
+        display: none;
+        align-items: center;
+        font-size: 1.3em;
+        color: #fff;
+        pointer-events: none;
+    }
+    #gallery-bar::before {
+        content: '\2039';  /* a single left chevron */
+        left: 10px;
+        justify-content: flex-start;
+        background: linear-gradient(to right, #252526 40%, transparent);
+    }
+    #gallery-bar::after {
+        content: '\203A';  /* a single right chevron */
+        right: 10px;
+        justify-content: flex-end;
+        background: linear-gradient(to left, #252526 40%, transparent);
+    }
+    #gallery-bar.chips-more-left::before, #gallery-bar.chips-more-right::after {
+        display: flex;
+    }
+    #gallery-close {  /* at the end of the second row, no longer over the chips */
+        position: static;
+        margin-left: auto;
+        padding: 0 8px;
+    }
+    #gallery-library {
+        margin-left: 0;
     }
     #gallery-search {
         flex: 1;
         width: auto;
+    }
+    #editor-and-canvas-container {
+        flex-direction: column;
+    }
+    #editor-container {  /* the toolbar line; in the Code state, the editor below it */
+        width: 100% !important;
+        height: auto;
+        flex: 0 0 auto;
+    }
+    #canvas-container {
+        width: 100% !important;
+        height: auto;
+        flex: 1 1 0;
+        min-height: 0;
+    }
+    .gutter, #code-fold, #code-rail {
+        display: none !important;
+    }
+    #editor-toolbar {
+        height: 36px;
+    }
+    #pane-switch {
+        display: inline-flex;
+    }
+    body.pane-demo #editor, body.pane-demo #error-output {
+        display: none;
+    }
+    body.pane-code #editor-container {
+        flex: 1 1 0;
+        min-height: 0;
+    }
+    body.pane-code #canvas-container {
+        display: none;
     }
 }

@@ -52,6 +52,9 @@ function displayError(message) {
     errorOutput.textContent = lines.slice(-ERROR_OUTPUT_MAX_LINES).join('\n'); // Use textContent for plain text
     container.classList.remove('hidden');
     container.scrollTop = container.scrollHeight;
+    // A phone shows one pane at a time (js/main.js): an error is read with the code
+    if (typeof setPane === 'function' && window.matchMedia('(max-width: 768px)').matches)
+        setPane('code');
 }
 
 // Function to clear the error window

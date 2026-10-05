@@ -95,7 +95,7 @@
             </a>
             <!-- Motto -->
             <div id="motto">
-                <h1 class="motto-title"><a href="/playground" class="motto-title-link">Dear ImGui Bundle Playground</a></h1>
+                <h1 class="motto-title"><a href="/playground" class="motto-title-link"><span class="motto-title-long">Dear ImGui Bundle </span>Playground</a></h1>
                 <p class="motto-subtitle">Live code. Instant Web GUI. Pure Python. Fully static. No CSS, no React. No fuss.</p>
                 <p class="motto-subtitle">See also: <a href="../min_pyodide_app/demo_heart.html" target="_blank" class="motto-link">minimal example</a> | <a href="../min_pyodide_app/demo_heart.source.txt" target="_blank" class="motto-link">source</a></p>
             </div>
@@ -126,6 +126,10 @@
                             <path d="M10 3 L5 8 L10 13"/>
                         </svg>
                     </button>
+                    <!-- A phone shows one pane at a time: the switch (js/main.js, setPane) -->
+                    <div id="pane-switch" role="tablist" aria-label="Demo or code">
+                        <button data-pane="demo" class="active">Demo</button><button data-pane="code">Code</button>
+                    </div>
                     <span id="editor-modified">●</span><span id="editor-label">Welcome to Dear ImGui Bundle</span>
                     <div id="editor-toolbar-right">
                         <button id="run-button" disabled>&#9654; Run</button>

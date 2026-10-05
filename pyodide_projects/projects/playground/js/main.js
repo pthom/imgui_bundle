@@ -41,6 +41,28 @@ function setCodeFolded(folded) {
 document.getElementById('code-fold').addEventListener('click', () => setCodeFolded(true));
 document.getElementById('code-rail').addEventListener('click', () => setCodeFolded(false));
 
+// A phone (the narrow media query of styles.css) shows one pane at a time, Demo or Code, from the switch in the
+// toolbar. The fold is the desktop's: a narrow screen unfolds the code, so that the toolbar shows.
+const narrowScreen = window.matchMedia('(max-width: 768px)');
+function setPane(pane) {
+    document.body.classList.toggle('pane-code', pane === 'code');
+    document.body.classList.toggle('pane-demo', pane !== 'code');
+    for (const button of document.querySelectorAll('#pane-switch button'))
+        button.classList.toggle('active', button.dataset.pane === pane);
+    window.dispatchEvent(new Event('resize'));  // the canvas takes the pane's size
+    if (pane === 'code') editor.refresh();  // CodeMirror measures its lines again once visible
+}
+for (const button of document.querySelectorAll('#pane-switch button'))
+    button.addEventListener('click', () => setPane(button.dataset.pane));
+function onNarrowScreenChange() {
+    if (narrowScreen.matches)
+        document.getElementById('editor-and-canvas-container').classList.remove('code-hidden');
+    window.dispatchEvent(new Event('resize'));
+}
+narrowScreen.addEventListener('change', onNarrowScreenChange);
+setPane('demo');
+onNarrowScreenChange();
+
 // Initialize CodeMirror for the code editor
 const editor = CodeMirror(document.getElementById('editor'), {
     mode: 'python',
@@ -79,6 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // =====================================
 const runButton = document.getElementById('run-button');
 runButton.addEventListener('click', async () => {
+    if (narrowScreen.matches) setPane('demo');  // a phone: the result shows
     await runEditorPythonCode();
     _lastRunCode = editor.getValue();
     runButton.classList.remove('needs-run');
@@ -93,6 +116,7 @@ document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
         e.preventDefault();
         if (runButton.disabled) return;  // Pyodide not ready yet
+        if (narrowScreen.matches) setPane('demo');
         runEditorPythonCode();
     }
 });
