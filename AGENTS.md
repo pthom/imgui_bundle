@@ -138,6 +138,7 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
 * Comments:
   * In public headers, say what the function does and how to call it, in one line if possible. The reasons behind it go to the .cpp file.
   * In .cpp files, keep what helps a maintainer: non-obvious invariants, workarounds. No history of how the code was found or discussed.
+  * In demos, comments serve the reader who learns the library. The reason for a structural choice (an anonymous namespace, a guard) goes to the commit message.
   * When sibling call sites pass different values of an enum or flag, pass it explicitly at every site, even where it equals the default.
 
 * Python:
