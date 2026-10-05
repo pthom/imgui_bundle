@@ -74,6 +74,8 @@ int main()
         ImGui::Text("Clicks: %d   Slider: %.2f", nbClicks, slider);
         static char text[64] = "";
         ImGui::InputText("Text (the keyboard of a phone)", text, sizeof(text));
+        static char lines[512] = "";
+        ImGui::InputTextMultiline("##lines", lines, sizeof(lines), HelloImGui::EmToVec2(20.f, 5.f));
         if (ImGui::Button("Click me"))
             ++nbClicks;
         ImGui::SameLine();
