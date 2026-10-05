@@ -16,7 +16,7 @@ from typing import Any, Callable
 from imgui_bundle import imgui, immapp, hello_imgui, em_size, icons_fontawesome_4 as fa, __bundle_pyodide__
 
 # The server. For local tests (just demo_julia_points_dev): http://localhost:8787/julia_points
-POINTS_API = "https://imgui-bundle-api.SUBDOMAIN.workers.dev/julia_points"
+POINTS_API = "https://imgui-bundle-api.pthomet.workers.dev/julia_points"
 TAB_EM = 26.0  # the width of the tab "Found by users", in em
 MAX_NAME, MAX_STORY, MAX_AUTHOR = 40, 300, 40  # the server's limits, in characters
 RED = imgui.ImVec4(1.0, 0.4, 0.4, 1.0)
