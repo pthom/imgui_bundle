@@ -70,7 +70,7 @@
     ],
     "cpp": true
   },
-  "explorables/julia_map.py": {
+  "explorables/julia_map/julia_map.py": {
     "title": "The Mandelbrot set as a map of Julia sets",
     "text": "Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia\nset](https://en.wikipedia.org/wiki/Julia_set). Fly to famous values of c, and zoom into both pictures: near\neach point, the two sets look alike.",
     "summary": "Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia set](https://en.wikipedia.org/wiki/Julia_set).",

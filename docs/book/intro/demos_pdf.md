@@ -899,7 +899,7 @@ each point, the two sets look alike.
 
 *Uses: ImmVision*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map/julia_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py)
 
 ### A tiny neural network learns two spirals
 

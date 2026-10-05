@@ -101,8 +101,11 @@
         },
         {
             "label": "Interactive exploration of the Mandelbrot set",
-            "filename": "explorables/julia_map.py",
-            "category": "Interactive science"
+            "filename": "explorables/julia_map/julia_map.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/julia_map"
+            ]
         },
         {
             "label": "A tiny neural network learns two spirals",

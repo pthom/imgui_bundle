@@ -259,7 +259,7 @@ int main() {
 
 `render_this_file("Intro")` renders the section `Intro` of the calling file, its transclusions resolved. A section written in line comments ends with its code (`::endcode`), or with `::endmd` when it has none; a section in a string or a block comment ends with it.
 
-Example: [the Mandelbrot set as a map of Julia sets](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map.py), an interactive lesson in a single Python file ([source](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py)). The idea: [narrative programming](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming.md); the syntax in full: [specification](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming_spec.md).
+Example: [the Mandelbrot set as a map of Julia sets](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map/julia_map.py), an interactive lesson in a single Python file ([source](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py)). The idea: [narrative programming](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming.md); the syntax in full: [specification](https://github.com/pthom/imgui_rich_md/blob/main/docs/narrative_programming/narrative_programming_spec.md).
 
 ### Full Demo
 

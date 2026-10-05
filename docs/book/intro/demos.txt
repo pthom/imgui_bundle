@@ -221,7 +221,7 @@ Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per se
 
 - Interactive exploration of the Mandelbrot set: Click a point of the Mandelbrot set to see its Julia set. Fly to famous values of c, and zoom into both pictures: near each point, the two sets look alike.
   Uses: ImmVision
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py
 - A tiny neural network learns two spirals: Can 16 neurons tell two spirals apart? Watch a tiny neural network) learn, live, as in the TensorFlow Playground. Then read how it works, formula by formula, next to its numpy code.
   Uses: ImPlot
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py

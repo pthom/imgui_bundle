@@ -25,7 +25,8 @@ Both pictures iterate the same rule, $z \leftarrow z^2 + c$, and color each pixe
 On the left, $c$ is the pixel and $z$ starts at $0$. On the right, $c$ is fixed and $z$ starts at the pixel.
 **Click anywhere on the left picture to choose $c$**: the Julia set on the right is the one for that $c$.
 Or pick a famous value in the list on the right: the map flies there, and the Julia set changes on the way. Hover
-a name to read its story.
+a name to read its story. The tab **Found by users** lists the values that users of this demo shared: vote for the
+ones you like, and share yours.
 
 <!-- A widget: the program draws it with maps_widget() (the two pictures, and the value of c) -->
 ```widget
@@ -73,6 +74,7 @@ from dataclasses import dataclass
 from typing import Callable
 import numpy as np
 from imgui_bundle import imgui, immapp, immvision, rich_md, em_size, hello_imgui, IM_COL32
+import julia_points  # the values of c found by users (shared, listed, voted on): a second file of this folder
 
 
 # Below is an example of a documented function via narrative programming:
@@ -283,6 +285,7 @@ class State:
         self.picture_size_dragged = False  # its slider is being dragged
         self.pasted = ""  # the field where a copied value of c is pasted
         self.paste_error = False  # the pasted text was not understood
+        self.users_tab = False  # the tab "Found by users" is open: the third column is wider
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -354,6 +357,7 @@ class State:
 
 
 state = State()
+community = julia_points.Community()
 
 
 # Well-known values of c: their names, and what they are known for (shown in a tooltip)
@@ -424,20 +428,47 @@ def parse_c(text: str) -> tuple[complex, float | None] | None:
     return c, (float(width) if width and float(width) > 0 else None)
 
 
+def famous_values_list(width: float) -> None:
+    """The famous values of c: a click flies there, a hover tells its story"""
+    height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
+    if imgui.begin_list_box("##famous c", imgui.ImVec2(width, height)):
+        for name, (c, story) in FAMOUS_C.items():
+            if imgui.selectable(name, state.c == c)[0]:
+                state.go_to(c, ARRIVAL_WIDTH[name])
+            if imgui.begin_item_tooltip():
+                imgui.push_text_wrap_pos(em_size(24))
+                imgui.text_unformatted(f"c = {c.real:g} {c.imag:+g} i\n\n{story}")
+                imgui.pop_text_wrap_pos()
+                imgui.end_tooltip()
+        imgui.end_list_box()
+
+
+def visit(point: julia_points.Point) -> None:
+    """A point found by a user: the map flies there, with the iterations it was shared with"""
+    if point.max_iter != state.max_iter:
+        state.set_budget(point.max_iter)
+    state.go_to(point.c, point.view_width)
+
+
 def maps_widget() -> None:
-    """The two pictures side by side, and the famous values: a click on the map chooses c (a drag pans it)"""
-    list_width = em_size(11)
+    """The two pictures side by side, and the values of c (famous, or found by users): a click on the map chooses c (a
+    drag pans it). On a narrow window (a phone), the three columns become rows"""
+    avail = imgui.get_content_region_avail().x
+    famous_width = em_size(11)
+    narrow = (avail - famous_width) / 2 - em_size(1) < em_size(PICTURE_EM * 0.5)  # side by side, the pictures are tiny
+    list_width = min(em_size(julia_points.TAB_EM) if state.users_tab else famous_width, avail)
     if not state.picture_size_dragged:  # resized once the slider is released, or the layout moves under the mouse
-        fit = (imgui.get_content_region_avail().x - list_width) / 2 - em_size(1)  # the widest pictures in the window
+        fit = avail if narrow else (avail - list_width) / 2 - em_size(1)  # the widest pictures in the window
         state.picture_size = min(state.picture_size, fit / em_size(PICTURE_EM))  # the slider shows the size that fits
         size = max(int(em_size(PICTURE_EM * state.picture_size)) // 2 * 2, 64)  # even: half resolution while moving
         state.map.resize(size)
         state.julia.resize(size)
     size = state.map.size
     state.travel()
-    if not imgui.begin_table("##maps", 3, imgui.TableFlags_.sizing_fixed_fit):  # three columns, aligned at the top
+    if not narrow and not imgui.begin_table("##maps", 3, imgui.TableFlags_.sizing_fixed_fit):  # aligned at the top
         return
-    imgui.table_next_column()
+    if not narrow:
+        imgui.table_next_column()
     column_x = imgui.get_cursor_pos_x()
     clicked = state.map.show(marker=state.c)
     if clicked is not None:
@@ -468,34 +499,35 @@ def maps_widget() -> None:
         imgui.text_colored(imgui.ImVec4(1.0, 0.4, 0.4, 1.0), "Expected: c = -1.806 -0.024 i, view width 0.02")
         imgui.pop_text_wrap_pos()
 
-    imgui.table_next_column()
+    if not narrow:
+        imgui.table_next_column()
     if state.julia_follows_map:
         state.follow_map()
     state.julia.show()
     imgui.same_line()
     _, state.julia_follows_map = imgui.checkbox("zoom with the map", state.julia_follows_map)
 
-    imgui.table_next_column()
-    imgui.align_text_to_frame_padding()
-    imgui.text("Famous values of c")
-    height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
-    if imgui.begin_list_box("##famous c", imgui.ImVec2(list_width, height)):
-        for name, (c, story) in FAMOUS_C.items():
-            if imgui.selectable(name, state.c == c)[0]:
-                state.go_to(c, ARRIVAL_WIDTH[name])
-            if imgui.begin_item_tooltip():
-                imgui.push_text_wrap_pos(em_size(24))
-                imgui.text_unformatted(f"c = {c.real:g} {c.imag:+g} i\n\n{story}")
-                imgui.pop_text_wrap_pos()
-                imgui.end_tooltip()
-        imgui.end_list_box()
+    if not narrow:
+        imgui.table_next_column()
+    if imgui.begin_tab_bar("##values of c"):
+        if imgui.begin_tab_item_simple("Famous values of c"):
+            state.users_tab = False
+            famous_values_list(list_width)
+            imgui.end_tab_item()
+        if imgui.begin_tab_item_simple("Found by users"):
+            state.users_tab = True
+            view_width = state.map.window_re[1] - state.map.window_re[0]
+            community.gui(state.c, view_width, state.max_iter, list_width, visit)
+            imgui.end_tab_item()
+        imgui.end_tab_bar()
     imgui.set_next_item_width(list_width)
     _, state.animation_speed = imgui.slider_float("##animation speed", state.animation_speed, 0.2, 5.0,
                                                   "animation speed x%.1f", imgui.SliderFlags_.logarithmic)
     imgui.set_next_item_width(list_width)
     _, state.picture_size = imgui.slider_float("##picture size", state.picture_size, 0.5, 2.0, "picture size x%.1f")
     state.picture_size_dragged = imgui.is_item_active()
-    imgui.end_table()
+    if not narrow:
+        imgui.end_table()
 
 
 def budget_widget() -> None:

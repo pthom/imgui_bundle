@@ -886,7 +886,7 @@
       "demos": [
         {
           "label": "Interactive exploration of the Mandelbrot set",
-          "filename": "explorables/julia_map.py",
+          "filename": "explorables/julia_map/julia_map.py",
           "stem": "julia_map",
           "where": "both",
           "text": "Click a point of the [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set) to see its [Julia\nset](https://en.wikipedia.org/wiki/Julia_set). Fly to famous values of c, and zoom into both pictures: near\neach point, the two sets look alike.",
@@ -894,7 +894,7 @@
           "uses": [
             "ImmVision"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map.py",
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/julia_map.html",
           "in_place": false,
