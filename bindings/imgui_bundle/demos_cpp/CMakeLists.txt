@@ -33,6 +33,9 @@ target_link_libraries(demo_imgui_bundle PRIVATE
     demos_node_editor
     demo_utils
 )
+if(IMGUI_BUNDLE_WITH_NANOVG)
+    target_link_libraries(demo_imgui_bundle PRIVATE demos_nanovg)
+endif()
 if (IMGUI_BUNDLE_WITH_IMMVISION)
     target_link_libraries(demo_immvision_launcher PRIVATE demos_immvision)
     target_link_libraries(demo_imgui_bundle PRIVATE demos_immvision)

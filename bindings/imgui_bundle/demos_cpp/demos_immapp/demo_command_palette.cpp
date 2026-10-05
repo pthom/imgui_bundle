@@ -6,6 +6,10 @@
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "demo_utils/api_demos.h"
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 struct AppState
 {
     bool show_command_palette = false;
@@ -50,33 +54,45 @@ void InitCommandPalette()
 }
 
 
+}  // namespace
+
+
+void gui_demo_command_palette()
+{
+    static AppState appState;  // its palette context, created at the first call
+    static bool commandsAdded = false;
+    if (!commandsAdded)
+    {
+        InitCommandPalette();
+        commandsAdded = true;
+    }
+
+    auto& io = ImGui::GetIO();
+
+    if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_P))
+        appState.show_command_palette = !appState.show_command_palette;
+
+    if (appState.show_command_palette)
+        ImCmd::CommandPaletteWindow("CommandPalette", &appState.show_command_palette);
+
+    ImGui::Text("Press Ctrl+Shift+P to bring up the command palette");
+
+    ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100.f);
+    ImGui::Separator();
+    HelloImGui::LogGui();
+}
+
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main(int , char *[])
 {
     ChdirBesideAssetsFolder();
-    AppState appState;
-
-    auto gui = [&appState]()
-    {
-        auto& io = ImGui::GetIO();
-
-        if (io.KeyCtrl && io.KeyShift && ImGui::IsKeyPressed(ImGuiKey_P))
-            appState.show_command_palette = !appState.show_command_palette;
-
-        if (appState.show_command_palette)
-            ImCmd::CommandPaletteWindow("CommandPalette", &appState.show_command_palette);
-
-        ImGui::Text("Press Ctrl+Shift+P to bring up the command palette");
-
-        ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100.f);
-        ImGui::Separator();
-        HelloImGui::LogGui();
-    };
 
     HelloImGui::RunnerParams params;
-    params.callbacks.ShowGui = gui;
-    params.callbacks.PostInit = InitCommandPalette;
+    params.callbacks.ShowGui = gui_demo_command_palette;
 
     ImmApp::Run(params);
 
     return 0;
 }
+#endif

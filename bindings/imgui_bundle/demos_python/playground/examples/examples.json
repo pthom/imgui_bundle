@@ -89,7 +89,8 @@
             "label": "A beating heart",
             "filename": "haiku_implot_heart.py",
             "category": "Start here",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Butterfly effect, in a few lines",
@@ -195,7 +196,8 @@
             "label": "Command palette",
             "filename": "demo_command_palette.py",
             "category": "Build an app",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Test engine",
@@ -379,7 +381,8 @@
             "label": "NanoVG: a beating heart",
             "filename": "demo_nanovg_heart.py",
             "source": "demos_nanovg",
-            "category": "Library tours"
+            "category": "Library tours",
+            "in_place": true
         },
         {
             "label": "Terminal: several shells in tabs",

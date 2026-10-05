@@ -96,7 +96,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/haiku_implot_heart.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -308,7 +308,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_command_palette.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -589,7 +589,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_heart.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_heart.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_nanovg_heart.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {

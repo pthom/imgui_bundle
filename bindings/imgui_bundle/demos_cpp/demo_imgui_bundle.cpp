@@ -34,6 +34,11 @@ void gui_demo_implot_markdown();
 void gui_haiku_butterfly();
 void gui_layout_child();
 void gui_demo_drag_and_drop();
+void gui_haiku_implot_heart();
+void gui_demo_command_palette();
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
+void gui_demo_nanovg_heart();
+#endif
 void gui_demo_widgets();
 void gui_demo_imgui_md();
 void gui_demo_text_edit();
@@ -129,6 +134,10 @@ namespace
                 {"welcome_imm_mode", gui_welcome_imm_mode}, {"demo_parametric_curve", gui_demo_parametric_curve},
                 {"demo_implot_markdown", gui_demo_implot_markdown}, {"haiku_butterfly", gui_haiku_butterfly},
                 {"layout_child", gui_layout_child}, {"demo_drag_and_drop", gui_demo_drag_and_drop},
+                {"haiku_implot_heart", gui_haiku_implot_heart}, {"demo_command_palette", gui_demo_command_palette},
+#ifdef IMGUI_BUNDLE_WITH_NANOVG
+                {"demo_nanovg_heart", gui_demo_nanovg_heart},
+#endif
                 {"demo_widgets", gui_demo_widgets}, {"demo_imgui_md", gui_demo_imgui_md},
                 {"demo_text_edit", gui_demo_text_edit}, {"demo_logger", gui_demo_logger},
                 {"demo_node_editor_color_mixer", gui_demo_node_editor_color_mixer},
