@@ -65,7 +65,7 @@ def load_voter_id() -> str:
             voter = str(uuid.uuid4())
             js.localStorage.setItem(key, voter)
     else:
-        voter = hello_imgui.load_user_pref(key)
+        voter = hello_imgui.load_user_pref(key).strip()  # it comes back from the ini file with a newline
         if not voter:
             voter = str(uuid.uuid4())
             hello_imgui.save_user_pref(key, voter)
