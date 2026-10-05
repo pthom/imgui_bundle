@@ -7,8 +7,8 @@
     {
       "binding": "DB",
       "database_name": "imgui_bundle_julia_points",
-      // From `wrangler d1 create imgui_bundle_julia_points`. A local database (wrangler dev) needs no real id
-      "database_id": "00000000-0000-0000-0000-000000000000"
+      // The production database, made by `wrangler d1 create imgui_bundle_julia_points` (wrangler dev uses a local one)
+      "database_id": "b186aa08-40be-4aa8-a3f7-205e586aeeaf"
     }
   ]
 }
