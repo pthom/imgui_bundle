@@ -137,19 +137,21 @@ def _http_error_text(status: int, body: bytes) -> str:
     return f"HTTP {status}{phrase}" + (f": {excerpt}" if excerpt else "")
 
 
-def _request_desktop(url: str, method: str, json_body: Any, timeout_s: float) -> tuple[int, bytes, str]:
+def _request_desktop(url: str, method: str, json_body: Any, timeout_s: float,
+                     headers: dict[str, str] | None = None) -> tuple[int, bytes, str]:
     """Makes a request with urllib (blocking), and returns (status, data, error)"""
     import json
     import urllib.error
     import urllib.request
-    headers = {"User-Agent": "imgui_bundle/1.0"}
+    request_headers = {"User-Agent": "imgui_bundle/1.0"}
     body = None
     if json_body is not None:
         body = json.dumps(json_body).encode()
-        headers["Content-Type"] = "application/json"
+        request_headers["Content-Type"] = "application/json"
+    request_headers.update(headers or {})
     timeout_text = f"Timeout after {timeout_s:g} s"
     try:
-        request = urllib.request.Request(url, data=body, headers=headers, method=method)
+        request = urllib.request.Request(url, data=body, headers=request_headers, method=method)
         with urllib.request.urlopen(request, timeout=timeout_s) as response:
             return response.status, response.read(), ""
     except urllib.error.HTTPError as e:  # urllib raises on an error status, with the body
@@ -163,15 +165,20 @@ def _request_desktop(url: str, method: str, json_body: Any, timeout_s: float) ->
         return 0, b"", str(e) or type(e).__name__
 
 
-async def _request_browser(url: str, method: str, json_body: Any, timeout_s: float) -> tuple[int, bytes, str]:
+async def _request_browser(url: str, method: str, json_body: Any, timeout_s: float,
+                           headers: dict[str, str] | None = None) -> tuple[int, bytes, str]:
     """Makes a request with the browser's fetch, and returns (status, data, error)"""
     import asyncio
     import json
     from pyodide.http import pyfetch  # type: ignore
     options: dict[str, Any] = {"method": method}
+    request_headers: dict[str, str] = {}
     if json_body is not None:
         options["body"] = json.dumps(json_body)
-        options["headers"] = {"Content-Type": "application/json"}
+        request_headers["Content-Type"] = "application/json"
+    request_headers.update(headers or {})
+    if request_headers:
+        options["headers"] = request_headers
     try:
         # The time limit is for the answer, as on the desktop, not for reading a long body
         response = await asyncio.wait_for(pyfetch(url, **options), timeout_s)
@@ -302,7 +309,8 @@ class Download:
 __all__.append("Download")
 
 
-def start_download(url: str, method: str = "GET", json_body: Any = None, timeout_s: float = 30.0) -> Download:
+def start_download(url: str, method: str = "GET", json_body: Any = None, timeout_s: float = 30.0,
+                   headers: dict[str, str] | None = None) -> Download:
     """Starts a request that does not block the GUI: a thread on the desktop, a fetch in Pyodide.
     Call it from a GUI function, and look at the result's `done` at each frame.
 
@@ -311,6 +319,7 @@ def start_download(url: str, method: str = "GET", json_body: Any = None, timeout
         method: "GET", "POST", ...
         json_body: if given, sent as JSON (with Content-Type: application/json)
         timeout_s: how long to wait for the server's answer
+        headers: more HTTP headers, e.g. {"Authorization": "Bearer <key>"}
     """
     from imgui_bundle import __bundle_pyodide__
     download = Download(url)
@@ -318,13 +327,13 @@ def start_download(url: str, method: str = "GET", json_body: Any = None, timeout
         import asyncio
 
         async def request_in_browser() -> None:
-            download._result = await _request_browser(url, method, json_body, timeout_s)
+            download._result = await _request_browser(url, method, json_body, timeout_s, headers)
         download._task = asyncio.ensure_future(request_in_browser())
     else:
         import threading
 
         def request_in_thread() -> None:
-            download._result = _request_desktop(url, method, json_body, timeout_s)
+            download._result = _request_desktop(url, method, json_body, timeout_s, headers)
         # A daemon thread: the app can quit while a request runs
         threading.Thread(target=request_in_thread, daemon=True).start()
     return download

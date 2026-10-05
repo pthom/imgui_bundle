@@ -28,6 +28,8 @@ class Handler(BaseHTTPRequestHandler):
         elif self.path == "/slow":
             time.sleep(SLOW_ANSWER_S)
             self.answer(200, IMAGE)
+        elif self.path == "/authorization":  # echoes the header
+            self.answer(200, (self.headers["Authorization"] or "").encode())
         else:
             self.answer(404, b"  no such point\n")
 
@@ -95,6 +97,12 @@ def test_post_json(server_url: str) -> None:
     download = wait(immapp.start_download(server_url + "/points", method="POST", json_body=point))
     assert (download.status, download.error) == (201, "")
     assert json.loads(download.data) == {"content_type": "application/json", "received": point}
+
+
+def test_headers(server_url: str) -> None:
+    headers = {"Authorization": "Bearer a-key"}
+    download = wait(immapp.start_download(server_url + "/authorization", headers=headers))
+    assert (download.status, download.data) == (200, b"Bearer a-key")
 
 
 def test_download_url_bytes(server_url: str) -> None:

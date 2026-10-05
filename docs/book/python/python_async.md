@@ -173,6 +173,7 @@ immapp.run(gui)
 - `error` is empty on success. Otherwise it gives the HTTP status and the start of the body, where web APIs explain their errors (`HTTP 429 Too Many Requests: ...`), or the network failure.
 - `status` gives the HTTP status, and `data` the body, also with an error status.
 - `method="POST"` with `json_body=...` sends JSON. `timeout_s` (30 s by default) limits the wait for the answer.
+- `headers={...}` adds HTTP headers, e.g. an API key: `{"Authorization": "Bearer <key>"}`.
 - `immapp.download_url_bytes()` waits until the data is there: fine in a script, but it freezes a GUI meanwhile.
 
 

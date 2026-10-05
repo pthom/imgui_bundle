@@ -104,7 +104,8 @@ class Download:
         ...
 
 
-def start_download(url: str, method: str = "GET", json_body: object = None, timeout_s: float = 30.0) -> Download:
+def start_download(url: str, method: str = "GET", json_body: object = None, timeout_s: float = 30.0,
+                   headers: dict[str, str] | None = None) -> Download:
     """Starts a request that does not block the GUI: a thread on the desktop, a fetch in Pyodide.
     Call it from a GUI function, and look at the result's `done` at each frame:
 
@@ -122,5 +123,6 @@ def start_download(url: str, method: str = "GET", json_body: object = None, time
         method: "GET", "POST", ...
         json_body: if given, sent as JSON (with Content-Type: application/json)
         timeout_s: how long to wait for the server's answer
+        headers: more HTTP headers, e.g. {"Authorization": "Bearer <key>"}
     """
     ...
