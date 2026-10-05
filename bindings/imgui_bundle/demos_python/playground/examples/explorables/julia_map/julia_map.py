@@ -285,7 +285,6 @@ class State:
         self.picture_size_dragged = False  # its slider is being dragged
         self.pasted = ""  # the field where a copied value of c is pasted
         self.paste_error = False  # the pasted text was not understood
-        self.users_tab = False  # the tab "Found by users" is open: the third column is wider
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -428,10 +427,9 @@ def parse_c(text: str) -> tuple[complex, float | None] | None:
     return c, (float(width) if width and float(width) > 0 else None)
 
 
-def famous_values_list(width: float) -> None:
+def famous_values_list(size: imgui.ImVec2) -> None:
     """The famous values of c: a click flies there, a hover tells its story"""
-    height = (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing()  # every name, no scrolling
-    if imgui.begin_list_box("##famous c", imgui.ImVec2(width, height)):
+    if imgui.begin_list_box("##famous c", size):
         for name, (c, story) in FAMOUS_C.items():
             if imgui.selectable(name, state.c == c)[0]:
                 state.go_to(c, ARRIVAL_WIDTH[name])
@@ -454,9 +452,9 @@ def maps_widget() -> None:
     """The two pictures side by side, and the values of c (famous, or found by users): a click on the map chooses c (a
     drag pans it). On a narrow window (a phone), the three columns become rows"""
     avail = imgui.get_content_region_avail().x
-    famous_width = em_size(11)
-    narrow = (avail - famous_width) / 2 - em_size(1) < em_size(PICTURE_EM * 0.5)  # side by side, the pictures are tiny
-    list_width = min(em_size(julia_points.TAB_EM) if state.users_tab else famous_width, avail)
+    tab_width = em_size(julia_points.TAB_EM)  # both tabs: the width of the users' table
+    narrow = (avail - tab_width) / 2 - em_size(1) < em_size(PICTURE_EM * 0.5)  # side by side, the pictures are tiny
+    list_width = min(tab_width, avail)
     if not state.picture_size_dragged:  # resized once the slider is released, or the layout moves under the mouse
         fit = avail if narrow else (avail - list_width) / 2 - em_size(1)  # the widest pictures in the window
         state.picture_size = min(state.picture_size, fit / em_size(PICTURE_EM))  # the slider shows the size that fits
@@ -509,15 +507,15 @@ def maps_widget() -> None:
 
     if not narrow:
         imgui.table_next_column()
+    # Both tabs have the same size: the famous list, every name without scrolling
+    tab_size = imgui.ImVec2(list_width, (len(FAMOUS_C) + 0.5) * imgui.get_text_line_height_with_spacing())
     if imgui.begin_tab_bar("##values of c"):
-        if imgui.begin_tab_item_simple("Famous"):  # short: both labels fit in the narrow column of this tab
-            state.users_tab = False
-            famous_values_list(list_width)
+        if imgui.begin_tab_item_simple("Famous"):
+            famous_values_list(tab_size)
             imgui.end_tab_item()
         if imgui.begin_tab_item_simple("Found by users"):
-            state.users_tab = True
             view_width = state.map.window_re[1] - state.map.window_re[0]
-            community.gui(state.c, view_width, state.max_iter, list_width, visit)
+            community.gui(state.c, view_width, state.max_iter, tab_size, visit)
             imgui.end_tab_item()
         imgui.end_tab_bar()
     imgui.set_next_item_width(list_width)

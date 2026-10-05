@@ -18,7 +18,7 @@ from imgui_bundle import imgui, immapp, hello_imgui, em_size, icons_fontawesome_
 
 # The server. For local tests (just demo_julia_points_dev): http://localhost:8787/julia_points
 POINTS_API = "https://imgui-bundle-api.pthomet.workers.dev/julia_points"
-TAB_EM = 26.0  # the width of the tab "Found by users", in em
+TAB_EM = 26.0  # the width of the tabs (the room of the users' table), in em
 MAX_NAME, MAX_STORY, MAX_AUTHOR = 40, 300, 40  # the server's limits, in characters
 RED = imgui.ImVec4(1.0, 0.4, 0.4, 1.0)
 
@@ -146,15 +146,23 @@ class Community:
                 self.load()
             self.sending = None
 
-    def gui(self, c: complex, view_width: float, max_iter: int, width: float, go_to: Callable[[Point], None]) -> None:
-        """The tab, width wide. A click on a point calls go_to(point)"""
+    def gui(self, c: complex, view_width: float, max_iter: int, size: imgui.ImVec2,
+            go_to: Callable[[Point], None]) -> None:
+        """The tab, in a box of this size. A click on a point calls go_to(point)"""
         if not self.voter:
             self.voter, self.admin_token = load_voter_id(), load_admin_token()
             self.load()
         self.poll()
+        imgui.begin_child("##found by users", size)
+        width = imgui.get_content_region_avail().x
         if self.sharing:
             self.share_form(c, view_width, max_iter, width)
-            return
+        else:
+            self.list_gui(width, go_to)
+        imgui.end_child()
+
+    def list_gui(self, width: float, go_to: Callable[[Point], None]) -> None:
+        """The buttons, the filter, the table, and the selected point"""
         if imgui.button("Share the current c..."):
             self.sharing, self.send_error = True, ""
         imgui.same_line()
@@ -189,7 +197,7 @@ class Community:
     def table(self, width: float, go_to: Callable[[Point], None]) -> None:
         flags = (imgui.TableFlags_.sortable | imgui.TableFlags_.scroll_y | imgui.TableFlags_.row_bg
                  | imgui.TableFlags_.borders_inner_h)
-        height = 12 * imgui.get_text_line_height_with_spacing()
+        height = -3 * imgui.get_text_line_height_with_spacing()  # the remaining height, but 3 lines for the details
         admin = bool(self.admin_token)
         if not imgui.begin_table("##points found by users", 5 if admin else 4, flags, imgui.ImVec2(width, height)):
             return
