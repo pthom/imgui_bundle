@@ -869,18 +869,28 @@ void DemoLauncher::Detail()
     else if (!demo.cppFile.empty())
     {
 #ifdef __EMSCRIPTEN__
-        // "where" is about the Python version: the C++ one has a page of its own online, or none
-        if (!demo.cppUrl.empty()
-            && Action(ICON_FA_PLAY "  Run (in a new window)", "Runs its C++ version in a new browser window"))
+        // "where" is about the Python version: the C++ one has a page of its own online, or none. On a touch screen,
+        // the page opens a tab from the touch itself (a tap seen by ImGui is too late for the browser), and the
+        // button does nothing more; on a desktop browser, a window of its own
+        if (!demo.cppUrl.empty())
         {
-            if (ExplorerPage(demo))
-                SpawnDemo(demo.stem);
-            else
-                ImmApp::BrowseToUrl(demo.cppUrl.c_str());
+            bool touch = ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
+            bool clicked = Action(touch ? ICON_FA_PLAY "  Run in a new tab" : ICON_FA_PLAY "  Run in a new window",
+                                  "Runs its C++ version in a browser window of its own");
+            std::string url = ExplorerPage(demo) ? demo.stem + ".html" : demo.cppUrl;
+            if (touch)
+                HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+            else if (clicked)
+            {
+                if (ExplorerPage(demo))
+                    SpawnDemo(demo.stem);
+                else
+                    ImmApp::BrowseToUrl(demo.cppUrl.c_str());
+            }
         }
 #else
         if (HasDemoExeFile(demo.stem))
-            if (Action(ICON_FA_PLAY "  Run (in a new window)", "Runs its C++ version on your machine, in a new window"))
+            if (Action(ICON_FA_PLAY "  Run in a new window", "Runs its C++ version on your machine, in a new window"))
                 SpawnDemo(demo.stem);
 #endif
     }

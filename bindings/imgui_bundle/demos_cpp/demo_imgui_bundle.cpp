@@ -426,7 +426,7 @@ namespace
             ImGui::SameLine();
             BigText(demo->label.c_str(), 1.3f);
             if (SmallScreen())
-                ImGui::SetCursorPosX(HelloImGui::EmSize(1.f));  // the buttons on their own line: beside the title, they overflowed (a scroll sideways)
+                ImGui::SetCursorPosX(HelloImGui::EmSize(1.f));  // the button on its own line: beside the title, it overflowed (a scroll sideways)
             else
                 ImGui::SameLine(0, HelloImGui::EmSize(2.f));
             if (ImGui::SmallButton(ICON_FA_CODE "  Code"))
@@ -435,29 +435,6 @@ namespace
                 Go(State::Demos);
             }
             ImGui::SetItemTooltip("Its code: Python, and C++ side by side");
-#ifdef __EMSCRIPTEN__
-            bool ownWindow = ExplorerPage(*demo);
-#else
-            bool ownWindow = HasDemoExeFile(demo->stem);
-#endif
-            if (ownWindow)
-            {
-                ImGui::SameLine();
-#ifdef __EMSCRIPTEN__
-                // On a touch screen, the page opens the tab from the touch itself (a tap seen by ImGui is too late
-                // for the browser): the button then does nothing more
-                bool touch = ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
-                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  Run (in a new tab)") && !touch)
-                    SpawnDemo(demo->stem);
-                if (touch)
-                    HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), demo->stem + ".html");
-                ImGui::SetItemTooltip("Runs it in a tab of its own");
-#else
-                if (ImGui::SmallButton(ICON_FA_EXTERNAL_LINK_ALT "  Run (in a new window)"))
-                    SpawnDemo(demo->stem);
-                ImGui::SetItemTooltip("Runs it in a window of its own");
-#endif
-            }
             ImGui::Separator();
             if (savedAppState.has_value() && savedAppState->stem != demo->stem)  // another demo, without a frame between
                 RestoreAppState();
