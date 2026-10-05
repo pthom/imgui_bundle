@@ -425,7 +425,10 @@ namespace
             }
             ImGui::SameLine();
             BigText(demo->label.c_str(), 1.3f);
-            ImGui::SameLine(0, HelloImGui::EmSize(2.f));
+            if (SmallScreen())
+                ImGui::SetCursorPosX(HelloImGui::EmSize(1.f));  // the buttons on their own line: beside the title, they overflowed (a scroll sideways)
+            else
+                ImGui::SameLine(0, HelloImGui::EmSize(2.f));
             if (ImGui::SmallButton(ICON_FA_CODE "  Code"))
             {
                 launcher.ShowCodeOf(*demo);

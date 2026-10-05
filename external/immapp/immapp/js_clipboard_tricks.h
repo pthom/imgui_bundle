@@ -1,13 +1,14 @@
 #pragma once
 
-// Clipboard support for Emscripten + SDL2.
-// See js_clipboard_tricks.cpp for details.
+// Clipboard support for Emscripten: SDL2 (a bridge to the browser's clipboard), and GLFW (the copy written at once,
+// for iOS). See js_clipboard_tricks.cpp for details.
+
+#if defined(__EMSCRIPTEN__) && (defined(HELLOIMGUI_USE_SDL2) || defined(HELLOIMGUI_USE_GLFW3))
+// Install the clipboard callbacks. Call once after the ImGui context is initialized (e.g. in PostInit).
+void JsClipboard_Install();
+#endif
 
 #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
-
-// Install JS event listeners and override ImGui's clipboard callbacks.
-// Call once after ImGui context is initialized (e.g. in PostInit callback).
-void JsClipboard_Install();
 
 // Inject pasted text as input characters (handles Cmd+V on Mac).
 // Call each frame in PostNewFrame.

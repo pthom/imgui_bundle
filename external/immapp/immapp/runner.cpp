@@ -30,7 +30,7 @@ void UpdateNodeEditorColorsFromImguiColors();
 #include "im_anim.h"
 #endif
 
-#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+#if defined(__EMSCRIPTEN__) && (defined(HELLOIMGUI_USE_SDL2) || defined(HELLOIMGUI_USE_GLFW3))
 #include "immapp/js_clipboard_tricks.h"
 #endif
 
@@ -264,13 +264,15 @@ namespace ImmApp
             ImmVision::ClearTextureCache);
 #endif
 
-#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
-        // SDL2's Emscripten backend doesn't implement clipboard.
-        // Install JS event listeners to bridge browser clipboard with ImGui.
+#if defined(__EMSCRIPTEN__) && (defined(HELLOIMGUI_USE_SDL2) || defined(HELLOIMGUI_USE_GLFW3))
+        // SDL2's Emscripten backend doesn't implement clipboard: JS event listeners bridge the browser's clipboard
+        // with ImGui. GLFW's writes it from a deferred action, which iOS refuses: the copy is written at once.
         runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.PostInit,
             JsClipboard_Install
         );
+#endif
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
         // Process paste events each frame (handles Cmd+V on Mac)
         runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.PostNewFrame,

@@ -107,3 +107,34 @@ void JsClipboard_SetClipboardText(const char* str)
 }
 
 #endif // defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
+
+#if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_GLFW3)
+#include <emscripten.h>
+
+// With GLFW (pongasoft/emscripten-glfw), the clipboard works, but it writes to the browser's clipboard from a
+// deferred action: on iOS, that is outside the user activation of the tap, and the browser refuses it. The copy of
+// a tap (ImGui replays it two frames after the finger lifted) is still inside the activation: write at once, then
+// let GLFW do its part (its own copy of the text, for the paste).
+static void (*gGlfwSetClipboardTextFn)(ImGuiContext*, const char*) = nullptr;
+
+static void JsClipboard_SetClipboardTextNow(ImGuiContext* ctx, const char* text)
+{
+    EM_ASM({
+        var str = UTF8ToString($0);
+        if (navigator.clipboard && navigator.clipboard.writeText)
+            navigator.clipboard.writeText(str).catch(function(e) {});
+    }, text ? text : "");
+    if (gGlfwSetClipboardTextFn)
+        gGlfwSetClipboardTextFn(ctx, text);
+}
+
+void JsClipboard_Install()
+{
+    auto& platformIO = ImGui::GetPlatformIO();
+    if (platformIO.Platform_SetClipboardTextFn != JsClipboard_SetClipboardTextNow)
+    {
+        gGlfwSetClipboardTextFn = platformIO.Platform_SetClipboardTextFn;
+        platformIO.Platform_SetClipboardTextFn = JsClipboard_SetClipboardTextNow;
+    }
+}
+#endif // defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_GLFW3)
