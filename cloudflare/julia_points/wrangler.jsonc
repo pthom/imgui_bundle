@@ -1,0 +1,14 @@
+// The API of the points that users share in the Julia map demo. Recipes: `just --list` (group demos)
+{
+  "name": "imgui-bundle-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-04-15",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "imgui_bundle_julia_points",
+      // From `wrangler d1 create imgui_bundle_julia_points`. A local database (wrangler dev) needs no real id
+      "database_id": "00000000-0000-0000-0000-000000000000"
+    }
+  ]
+}
