@@ -487,6 +487,16 @@
     ],
     "cpp": false
   },
+  "demo_touch_screen.py": {
+    "title": "On a touch screen: the gestures of a phone, in the browser",
+    "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button\nappears next to a text field.",
+    "summary": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.",
+    "uses": [
+      "ImPlot",
+      "ImmVision"
+    ],
+    "cpp": true
+  },
   "webgl_minimal_mandelbrot.py": {
     "title": "Minimal WebGL fragment shader as the application background.",
     "text": "The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.\n**Pyodide only:** this demo calls the browser's\n[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`\ninterop. On desktop, you would use PyOpenGL instead.",

@@ -542,6 +542,16 @@
             "category": "In the browser"
         },
         {
+            "label": "Touch screens (phones, tablets)",
+            "filename": "demo_touch_screen.py",
+            "category": "In the browser",
+            "source": "demos_immapp",
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "in_place": true
+        },
+        {
             "label": "WebGL shader as background",
             "filename": "webgl_minimal_mandelbrot.py",
             "category": "In the browser",

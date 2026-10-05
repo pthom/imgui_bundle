@@ -795,6 +795,23 @@
           "variants": []
         },
         {
+          "label": "Touch screens (phones, tablets)",
+          "filename": "demo_touch_screen.py",
+          "stem": "demo_touch_screen",
+          "where": "both",
+          "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button\nappears next to a text field.",
+          "summary": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.",
+          "uses": [
+            "ImPlot",
+            "ImmVision"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py",
+          "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp",
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html",
+          "in_place": true,
+          "variants": []
+        },
+        {
           "label": "WebGL shader as background",
           "filename": "webgl_minimal_mandelbrot.py",
           "stem": "webgl_minimal_mandelbrot",

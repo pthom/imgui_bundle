@@ -197,6 +197,10 @@ Deploy to the web, and use the browser's WebGL and WebAudio from Python.
 - Minimal HTML page: Dear ImGui Bundle apps can run entirely in the browser using Pyodide. The HTML file below is a complete, self-contained app in about 80 lines - no server, no build step.
   Uses: code editor
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py
+- Touch screens (phones, tablets): The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard. On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button appears next to a text field.
+  Uses: ImPlot, ImmVision
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp
 - WebGL shader as background (browser only): The Mandelbrot set, drawn by a fragment shader behind the GUI. Pyodide only: this demo calls the browser's WebGL2 API directly, through Python's js interop. On desktop, you would use PyOpenGL instead.
   Uses: browser APIs
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py

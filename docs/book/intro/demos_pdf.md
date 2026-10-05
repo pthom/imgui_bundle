@@ -791,6 +791,24 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=minimal_example.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py)
 
+### Touch screens (phones, tablets)
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_touch_screen.jpg
+:alt: Touch screens (phones, tablets)
+:width: 400px
+:::
+
+The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
+On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
+a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button
+appears next to a text field.
+
+*Python, C++*
+
+*Uses: ImPlot, ImmVision*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
+
 ### WebGL shader as background
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_minimal_mandelbrot.jpg

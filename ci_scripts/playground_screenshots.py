@@ -174,6 +174,7 @@ SHOTS: dict[str, Shot] = {
     "demo_text_edit.py": Shot(crop=(0.0, 0.0, 0.85, 0.664)),
     "demo_logger.py": Shot(crop=(0.0, 0.0, 0.8, 0.667)),
     "demo_terminal.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.5625)),
+    "demo_touch_screen.py": Shot(crop=(0.0, 0.0, 1.0, 0.41)),
     # The explorer's sub-demos (sources: demos_immvision, demos_node_editor)
     "demo_immvision_display.py": Shot(crop=(0.0, 0.0, 0.75, 0.586)),
     "demo_immvision_inspector.py": Shot(crop=(0.0, 0.06, 1.0, 0.84)),
