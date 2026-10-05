@@ -510,7 +510,7 @@ def maps_widget() -> None:
     if not narrow:
         imgui.table_next_column()
     if imgui.begin_tab_bar("##values of c"):
-        if imgui.begin_tab_item_simple("Famous values of c"):
+        if imgui.begin_tab_item_simple("Famous"):  # short: both labels fit in the narrow column of this tab
             state.users_tab = False
             famous_values_list(list_width)
             imgui.end_tab_item()
