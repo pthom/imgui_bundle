@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 const std::vector<std::string> AVAILABLE_ITEMS = {"Apple", "Banana", "Cherry", "Date"};
 
 // All the app state in one place: plain variables
@@ -90,11 +94,19 @@ and the state is plain variables.
     }
 }
 
+}  // namespace
+
+void gui_welcome_imm_mode()
+{
+    static AppState state;
+    Gui(state);
+}
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
-    AppState state;
     HelloImGui::SimpleRunnerParams params;
-    params.guiFunction = [&state]() { Gui(state); };
+    params.guiFunction = gui_welcome_imm_mode;
     params.windowTitle = "What is an Immediate GUI";
     params.windowSize = {1000, 700};
     ImmApp::AddOnsParams addOns;
@@ -102,3 +114,4 @@ int main()
     ImmApp::Run(params, addOns);
     return 0;
 }
+#endif

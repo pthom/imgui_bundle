@@ -1,4 +1,7 @@
 ibd_add_this_folder_demos("")
+# The demos that the explorer can show in place (the others need an app of their own)
+ibd_add_this_folder_as_demos_library(welcome_imm_mode.cpp demo_parametric_curve.cpp demo_implot_markdown.cpp
+    layout_child.cpp demo_drag_and_drop.cpp haiku_butterfly.cpp)
 
 # demo_docking needs NotoEmoji, Playbox, entypo fonts from demos_assets
 set(_da ${IMGUI_BUNDLE_PATH}/bindings/imgui_bundle/demos_assets)

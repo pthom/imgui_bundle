@@ -16,7 +16,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/welcome_imm_mode.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/welcome_imm_mode.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/welcome_imm_mode.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -47,7 +47,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_parametric_curve.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_parametric_curve.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_parametric_curve.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -63,7 +63,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_implot_markdown.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_implot_markdown.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_implot_markdown.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -112,7 +112,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         }
       ]
@@ -204,7 +204,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/layout_child.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/layout_child.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/layout_child.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {
@@ -292,7 +292,7 @@
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_drag_and_drop.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_drag_and_drop.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_drag_and_drop.html",
-          "in_place": false,
+          "in_place": true,
           "variants": []
         },
         {

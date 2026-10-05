@@ -103,7 +103,12 @@ endfunction()
 
 
 function(ibd_add_this_folder_as_demos_library)
-    file(GLOB sources *.cpp)
+    # The demos of this folder, compiled together for the explorer: all its cpp files, or only those given
+    if (ARGN)
+        set(sources ${ARGN})
+    else()
+        file(GLOB sources *.cpp)
+    endif()
     get_filename_component(folder_name "${CMAKE_CURRENT_LIST_DIR}" NAME_WE)
     set(demos_library_name ${folder_name})
     add_library(${demos_library_name} ${sources})

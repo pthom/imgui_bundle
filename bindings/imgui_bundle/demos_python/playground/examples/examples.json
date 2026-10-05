@@ -56,7 +56,8 @@
             "label": "What is an Immediate GUI",
             "filename": "welcome_imm_mode.py",
             "category": "Start here",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Hello world, in two lines",
@@ -68,13 +69,15 @@
             "label": "A parametric curve",
             "filename": "demo_parametric_curve.py",
             "category": "Start here",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "A plot and markdown, in a few lines",
             "filename": "demo_implot_markdown.py",
             "category": "Start here",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Assets and add-ons",
@@ -92,7 +95,8 @@
             "label": "Butterfly effect, in a few lines",
             "filename": "haiku_butterfly.py",
             "category": "Start here",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Interactive exploration of the Mandelbrot set",
@@ -142,7 +146,8 @@
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
             "category": "Build an app",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Dockable windows",
@@ -183,7 +188,8 @@
             "label": "Drag and drop",
             "filename": "demo_drag_and_drop.py",
             "category": "Build an app",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Command palette",

@@ -8,6 +8,10 @@
 #include "imgui_rich_md/rich_md.h"
 #include <vector>
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 struct LorenzParams {
     float sigma = 10.0f;
     float rho = 28.0f;
@@ -110,19 +114,27 @@ private:
     std::unique_ptr<AnimatedLorenzTrajectory> traj1, traj2;
 };
 
+}  // namespace
+
+void gui_haiku_butterfly() {
+    HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;  // the trajectories move at each frame
+    static CompareLorenzTrajectories lorenz_comparer;
+    lorenz_comparer.gui();
+}
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main() {
-    CompareLorenzTrajectories lorenz_comparer;
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withImplot3d = true;
     addOnsParams.withMarkdown = true;
 
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.fpsIdling.enableIdling = false;
     runnerParams.appWindowParams.windowGeometry.sizeAuto = true;
     runnerParams.appWindowParams.windowTitle = "Butterfly Effect";
-    runnerParams.callbacks.ShowGui = [&]() { lorenz_comparer.gui(); };
+    runnerParams.callbacks.ShowGui = gui_haiku_butterfly;
 
     ImmApp::Run(runnerParams, addOnsParams);
 
     return 0;
 }
+#endif

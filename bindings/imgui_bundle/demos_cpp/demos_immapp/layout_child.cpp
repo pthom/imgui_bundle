@@ -5,6 +5,10 @@
 #include <string>
 #include <vector>
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 // Sample content for each panel
 void SidebarContent()
 {
@@ -63,7 +67,9 @@ void BottomContent()
         ImGui::TextDisabled("[%s] Log message %d...", levels[i % 3], i + 1);
 }
 
-void Gui()
+}  // namespace
+
+void gui_layout_child()
 {
     RichMd::Render(R"(# Resizable Layouts with BeginChild
 `BeginChild` creates scrollable, nestable sub-regions. With `ImGuiChildFlags_ResizeX` or `ResizeY`, the user can
@@ -97,10 +103,11 @@ bottom panel.
     ImGui::EndChild();
 }
 
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
     HelloImGui::SimpleRunnerParams params;
-    params.guiFunction = Gui;
+    params.guiFunction = gui_layout_child;
     params.windowTitle = "Resizable Layouts";
     params.windowSize = {1000, 700};
     params.iniDisable = true;
@@ -109,3 +116,4 @@ int main()
     ImmApp::Run(params, addOns);
     return 0;
 }
+#endif

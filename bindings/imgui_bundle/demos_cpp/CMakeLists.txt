@@ -27,6 +27,7 @@ target_link_libraries(demo_imguizmo_launcher PRIVATE demos_imguizmo)
 target_link_libraries(demo_tex_inspect_launcher PRIVATE demos_tex_inspect)
 target_link_libraries(demo_imgui_bundle PRIVATE
     demos_cpp
+    demos_immapp
     demos_imguizmo
     demos_tex_inspect
     demos_node_editor

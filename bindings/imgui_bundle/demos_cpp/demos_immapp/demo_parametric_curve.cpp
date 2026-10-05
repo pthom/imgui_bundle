@@ -7,6 +7,10 @@
 #include <utility>
 
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 // Just a parametric curve to demonstrate how to edit its parameters a, b, & c
 class Curve
 {
@@ -32,9 +36,11 @@ public:
 
 Curve curve;
 
+}  // namespace
+
 
 // Our gui function, which will be invoked by the application loop
-void gui()
+void gui_demo_parametric_curve()
 {
     auto [x, y] = curve.getXY();
 
@@ -60,11 +66,12 @@ void gui()
 }
 
 
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main()
 {
     // Just set you application params (gui function, etc)
     HelloImGui::RunnerParams params;
-    params.callbacks.ShowGui = gui;
+    params.callbacks.ShowGui = gui_demo_parametric_curve;
     // Select your addons
     ImmApp::AddOnsParams addOns;
     addOns.withImplot = true;
@@ -72,7 +79,12 @@ int main()
     ImmApp::Run(params, addOns);
     return 0;
 }
+#endif
 #else // #ifdef IMGUI_BUNDLE_WITH_IMPLOT
+#include "imgui.h"
 #include <cstdio>
+void gui_demo_parametric_curve() { ImGui::Text("This demo requires ImPlot"); }
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main(int , char *[]) { printf("This demo requires ImPlot\n"); return 0; }
+#endif
 #endif

@@ -4,6 +4,10 @@
 #include <string>
 
 
+// All the demos of this folder are also compiled together (in the explorer): their own names stay in this file
+namespace
+{
+
 enum class DragMode
 {
     Copy,
@@ -84,9 +88,19 @@ void gui_drag_and_drop(DemoState& state)
 }
 
 
+}  // namespace
+
+
+void gui_demo_drag_and_drop()
+{
+    static DemoState state;
+    gui_drag_and_drop(state);
+}
+
+
+#ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 int main(int, char**)
 {
-    DemoState state;
-    auto gui = [&state]() { gui_drag_and_drop(state); };
-    ImmApp::Run(gui);
+    ImmApp::Run(gui_demo_drag_and_drop);
 }
+#endif
