@@ -2,8 +2,10 @@
 //   GET  /julia_points?voter=<id>  -> the shown points, newest first, with their votes and whether this voter voted
 //   POST /julia_points             {name, c_re, c_im, view_width, max_iter, story, author} -> {id}
 //   POST /julia_points/<id>/vote   {voter, vote: true | false} -> {votes}
-// The admin (header "Authorization: Bearer <ADMIN_TOKEN>") also gets the hidden points, and may hide or show one:
-//   POST /julia_points/<id>/status {status: "shown" | "hidden"} -> {status}
+// The admin (header "Authorization: Bearer <ADMIN_TOKEN>") also gets the hidden points, may hide or show one, and
+// may delete a hidden one (with its votes):
+//   POST   /julia_points/<id>/status {status: "shown" | "hidden"} -> {status}
+//   DELETE /julia_points/<id> -> {deleted: <id>}
 // Errors answer {error: "..."}, with a status of 400, 403, 404 or 429. The tables are in schema.sql.
 
 // ADMIN_TOKEN: a secret (wrangler secret put ADMIN_TOKEN; locally, in .dev.vars). Without it, nobody is admin
@@ -18,7 +20,7 @@ const VOTER_ID = /^[A-Za-z0-9-]{8,64}$/;
 
 const CORS = {
   "Access-Control-Allow-Origin": "*", // the demo runs on the desktop and in the playground; no cookies to protect
-  "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+  "Access-Control-Allow-Methods": "GET, POST, DELETE, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
@@ -91,6 +93,17 @@ async function setStatus(request: Request, env: Env, pointId: number): Promise<R
   return json({ status });
 }
 
+async function deletePoint(env: Env, pointId: number): Promise<Response> {
+  // Only a hidden point: a deletion takes two steps. Its votes go first (they refer to it), in the same transaction
+  const [, deleted] = await env.DB.batch([
+    env.DB.prepare(`DELETE FROM votes WHERE point_id = ?1
+                    AND EXISTS (SELECT 1 FROM points WHERE id = ?1 AND status = 'hidden')`).bind(pointId),
+    env.DB.prepare("DELETE FROM points WHERE id = ?1 AND status = 'hidden'").bind(pointId),
+  ]);
+  if (deleted.meta.changes === 0) return json({ error: "no such hidden point (hide it first)" }, 404);
+  return json({ deleted: pointId });
+}
+
 async function addPoint(request: Request, env: Env): Promise<Response> {
   const body = await readBody(request);
   const name = text(body, "name", MAX_NAME, true);
@@ -150,6 +163,10 @@ export default {
         const admin = await isAdmin(request, env);
         if (request.method === "GET") return await listPoints(env, url.searchParams.get("voter") ?? "", admin);
         if (request.method === "POST") return await addPoint(request, env);
+      }
+      if (path.length === 2 && path[0] === "julia_points" && request.method === "DELETE") {
+        if (!(await isAdmin(request, env))) return json({ error: "for the admin only" }, 403);
+        return await deletePoint(env, Number.parseInt(path[1], 10));
       }
       if (path.length === 3 && path[0] === "julia_points" && request.method === "POST") {
         const pointId = Number.parseInt(path[1], 10);

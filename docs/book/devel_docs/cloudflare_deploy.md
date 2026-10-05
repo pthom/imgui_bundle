@@ -139,7 +139,7 @@ The Worker is deployed on its own, only when it changes: `just demo_julia_points
 
 Local tests: `just demo_julia_points_dev` runs the Worker at <http://localhost:8787/julia_points>, with a local database that holds the seed. Point `POINTS_API` there while testing. The demo on the desktop and the local playground (`pyodide_projects/serve_cors.py`) both reach it.
 
-The admin mode: the Worker's secret `ADMIN_TOKEN` opens the routes that hide or show a point. The demo shows them when it finds the token in `JULIA_POINTS_ADMIN` (an environment variable on the desktop, `localStorage` in the browser). The token is not in this repository.
+The admin mode: the Worker's secret `ADMIN_TOKEN` opens the routes that hide a point, show it again, or delete it once hidden. The demo shows them when it finds the token in `JULIA_POINTS_ADMIN` (an environment variable on the desktop, `localStorage` in the browser). The token is not in this repository.
 
 - Set it: `cd cloudflare/julia_points && wrangler secret put ADMIN_TOKEN`. `ADMIN_TOKEN` is the secret's name: the token goes at the prompt. `wrangler secret list` shows the names.
 - Locally: `cloudflare/julia_points/.dev.vars` (ignored by git), with a line `ADMIN_TOKEN=<any value>`.

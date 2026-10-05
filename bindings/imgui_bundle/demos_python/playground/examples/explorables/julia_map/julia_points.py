@@ -5,7 +5,8 @@ Bundle). Its requests run in the background (immapp.start_download): the GUI loo
 
 The admin mode (the curation): with the server's admin token in JULIA_POINTS_ADMIN (an environment variable on the
 desktop; in the browser, localStorage.setItem("JULIA_POINTS_ADMIN", token) in the console), the list also shows the
-hidden points, and a button hides or shows each point. Users have no token: they see nothing of it.
+hidden points, and buttons hide a point, show it again, or delete it once hidden. Users have no token: they see
+nothing of it.
 """
 import json
 import os
@@ -92,6 +93,7 @@ class Community:
         self.filter = imgui.TextFilter()
         self.voting: dict[int, tuple[immapp.Download, bool]] = {}  # point id -> the request, the vote it sends
         self.curating: dict[int, tuple[immapp.Download, str]] = {}  # point id -> the request, the status it sends
+        self.deleting: dict[int, immapp.Download] = {}  # point id -> the request that deletes it
         self.sharing = False  # the form is shown
         self.name, self.story, self.author = "", "", ""
         self.sending: immapp.Download | None = None
@@ -128,6 +130,13 @@ class Community:
                     self.error = f"Admin: {error_text(download)}"
                 elif point is not None:
                     point.status = status
+        for point_id, download in list(self.deleting.items()):
+            if download.done:
+                del self.deleting[point_id]
+                if download.error:
+                    self.error = f"Admin: {error_text(download)}"
+                else:
+                    self.points = [p for p in self.points if p.id != point_id]
         if self.sending is not None and self.sending.done:
             if self.sending.error:
                 self.send_error = error_text(self.sending)
@@ -219,13 +228,18 @@ class Community:
         imgui.end_table()
 
     def status_button(self, point: Point) -> None:
-        """For the admin: "Hide" a shown point, "Show" a hidden one"""
+        """For the admin: "Hide" a shown point; "Show" or "Delete" a hidden one"""
         new_status = "shown" if point.status == "hidden" else "hidden"
-        imgui.begin_disabled(point.id in self.curating)  # a request is on its way
+        imgui.begin_disabled(point.id in self.curating or point.id in self.deleting)  # a request is on its way
         if imgui.small_button(f"{'Show' if new_status == 'shown' else 'Hide'}###status {point.id}"):
             url = f"{POINTS_API}/{point.id}/status"
             download = immapp.start_download(url, "POST", {"status": new_status}, headers=self.admin_headers())
             self.curating[point.id] = (download, new_status)
+        if point.status == "hidden":
+            imgui.same_line()
+            if imgui.small_button(f"Delete###delete {point.id}"):
+                url = f"{POINTS_API}/{point.id}"
+                self.deleting[point.id] = immapp.start_download(url, "DELETE", headers=self.admin_headers())
         imgui.end_disabled()
 
     def vote_button(self, point: Point) -> None:
