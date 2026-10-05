@@ -467,7 +467,7 @@ cf_serve_imgui_bundle_pages_landing:
 # The points shared by the users of the Julia map demo
 # ==============================================================
 # A Cloudflare Worker (cloudflare/julia_points), deployed on its own: the site's deploy does not touch it.
-# The recipes that take `where` act on the production database by default; `local` for the one of demo_julia_points_dev.
+# The curation is done in the demo, in admin mode (see the top of julia_points.py).
 _JP_DIR := "cloudflare/julia_points"
 _JP_DB := "imgui_bundle_julia_points"
 
@@ -485,21 +485,6 @@ demo_julia_points_dev:
 [group('demos')]
 demo_julia_points_deploy: demo_julia_points_check
     cd {{_JP_DIR}} && wrangler deploy
-
-# The latest points, with their votes
-[group('demos')]
-demo_julia_points_list where="remote":
-    cd {{_JP_DIR}} && wrangler d1 execute {{_JP_DB}} --{{where}} --command "SELECT id, status, name, author, c_re, c_im, view_width, (SELECT COUNT(*) FROM votes WHERE point_id = points.id) AS votes, created FROM points ORDER BY created DESC LIMIT 50"
-
-# Hides a point from the demo (curation)
-[group('demos')]
-demo_julia_points_hide id where="remote":
-    cd {{_JP_DIR}} && wrangler d1 execute {{_JP_DB}} --{{where}} --command "UPDATE points SET status = 'hidden' WHERE id = {{id}}"
-
-# Shows a hidden point again
-[group('demos')]
-demo_julia_points_unhide id where="remote":
-    cd {{_JP_DIR}} && wrangler d1 execute {{_JP_DB}} --{{where}} --command "UPDATE points SET status = 'shown' WHERE id = {{id}}"
 
 
 

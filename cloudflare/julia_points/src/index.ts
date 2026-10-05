@@ -2,7 +2,12 @@
 //   GET  /julia_points?voter=<id>  -> the shown points, newest first, with their votes and whether this voter voted
 //   POST /julia_points             {name, c_re, c_im, view_width, max_iter, story, author} -> {id}
 //   POST /julia_points/<id>/vote   {voter, vote: true | false} -> {votes}
-// Errors answer {error: "..."}, with a status of 400, 404 or 429. The tables are in schema.sql.
+// The admin (header "Authorization: Bearer <ADMIN_TOKEN>") also gets the hidden points, and may hide or show one:
+//   POST /julia_points/<id>/status {status: "shown" | "hidden"} -> {status}
+// Errors answer {error: "..."}, with a status of 400, 403, 404 or 429. The tables are in schema.sql.
+
+// ADMIN_TOKEN: a secret (wrangler secret put ADMIN_TOKEN; locally, in .dev.vars). Without it, nobody is admin
+type AdminEnv = Env & { ADMIN_TOKEN?: string };
 
 const MAX_NAME = 40;
 const MAX_STORY = 300;
@@ -14,7 +19,7 @@ const VOTER_ID = /^[A-Za-z0-9-]{8,64}$/;
 const CORS = {
   "Access-Control-Allow-Origin": "*", // the demo runs on the desktop and in the playground; no cookies to protect
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 
 class BadRequest extends Error {}
@@ -32,7 +37,9 @@ async function readBody(request: Request): Promise<Record<string, unknown>> {
   } catch {
     // reported below
   }
-  if (typeof body !== "object" || body === null || Array.isArray(body)) throw new BadRequest("a JSON object is expected");
+  if (typeof body !== "object" || body === null || Array.isArray(body)) {
+    throw new BadRequest("a JSON object is expected");
+  }
   return body as Record<string, unknown>;
 }
 
@@ -59,14 +66,29 @@ async function sha256(s: string): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
-async function listPoints(env: Env, voter: string): Promise<Response> {
+async function isAdmin(request: Request, env: AdminEnv): Promise<boolean> {
+  if (!env.ADMIN_TOKEN) return false;
+  const sent = new TextEncoder().encode(request.headers.get("Authorization") ?? "");
+  const expected = new TextEncoder().encode(`Bearer ${env.ADMIN_TOKEN}`);
+  return sent.byteLength === expected.byteLength && crypto.subtle.timingSafeEqual(sent, expected);
+}
+
+async function listPoints(env: Env, voter: string, admin: boolean): Promise<Response> {
   const { results } = await env.DB.prepare(
-    `SELECT id, name, c_re, c_im, view_width, max_iter, story, author, created,
+    `SELECT id, name, c_re, c_im, view_width, max_iter, story, author, created, status,
             (SELECT COUNT(*) FROM votes WHERE point_id = points.id) AS votes,
             EXISTS (SELECT 1 FROM votes WHERE point_id = points.id AND voter = ?1) AS voted_by_me
-     FROM points WHERE status = 'shown' ORDER BY created DESC LIMIT 1000`,
-  ).bind(voter).all<{ voted_by_me: number }>();
+     FROM points WHERE status = 'shown' OR ?2 ORDER BY created DESC LIMIT 1000`,
+  ).bind(voter, admin ? 1 : 0).all<{ voted_by_me: number }>();
   return json(results.map((point) => ({ ...point, voted_by_me: point.voted_by_me === 1 })));
+}
+
+async function setStatus(request: Request, env: Env, pointId: number): Promise<Response> {
+  const status = (await readBody(request)).status;
+  if (status !== "shown" && status !== "hidden") throw new BadRequest('status: "shown" or "hidden" is expected');
+  const changed = await env.DB.prepare("UPDATE points SET status = ?1 WHERE id = ?2").bind(status, pointId).run();
+  if (changed.meta.changes === 0) return json({ error: "no such point" }, 404);
+  return json({ status });
 }
 
 async function addPoint(request: Request, env: Env): Promise<Response> {
@@ -125,11 +147,17 @@ export default {
     const path = url.pathname.split("/").filter(Boolean);
     try {
       if (path.length === 1 && path[0] === "julia_points") {
-        if (request.method === "GET") return await listPoints(env, url.searchParams.get("voter") ?? "");
+        const admin = await isAdmin(request, env);
+        if (request.method === "GET") return await listPoints(env, url.searchParams.get("voter") ?? "", admin);
         if (request.method === "POST") return await addPoint(request, env);
       }
-      if (path.length === 3 && path[0] === "julia_points" && path[2] === "vote" && request.method === "POST") {
-        return await vote(request, env, Number.parseInt(path[1], 10));
+      if (path.length === 3 && path[0] === "julia_points" && request.method === "POST") {
+        const pointId = Number.parseInt(path[1], 10);
+        if (path[2] === "vote") return await vote(request, env, pointId);
+        if (path[2] === "status") {
+          if (!(await isAdmin(request, env))) return json({ error: "for the admin only" }, 403);
+          return await setStatus(request, env, pointId);
+        }
       }
       return json({ error: "not found" }, 404);
     } catch (e) {
@@ -137,4 +165,4 @@ export default {
       throw e;
     }
   },
-} satisfies ExportedHandler<Env>;
+} satisfies ExportedHandler<AdminEnv>;
