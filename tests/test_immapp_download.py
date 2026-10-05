@@ -12,7 +12,10 @@ from typing import Iterator
 
 import pytest
 
-from imgui_bundle import immapp
+try:
+    from imgui_bundle import immapp
+except ImportError:  # the minimal wheel has no Hello ImGui, hence no immapp
+    pytest.skip("immapp is not part of this build", allow_module_level=True)
 
 IMAGE = b"\xff\xd8 not quite a jpeg"
 SLOW_ANSWER_S = 1.0  # the delay of /slow, longer than the time limit of the tests that use it
