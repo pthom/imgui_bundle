@@ -14,6 +14,13 @@ and run Python inside a Pyodide page.
 - Builds (the user's job, long): `ibex_build`, `imex_ems_build`, `pyodide_build`. Servers: `ibex_serve`, `imex_ems_serve`, `pyodide_serve_projects`, `pyodide_demo_runner` (the first three depend on the builds: start the servers directly, see "Servers").
 - Docs: `docs/book/devel_docs/pypi_deploy.md` ("Web checks before a release"), `cloudflare_deploy.md` (the deployed site, and how to check it).
 
+## Which change needs which rebuild
+
+- A Python demo or a playground file (HTML, CSS, JS, `examples.json`): no rebuild. The playground serves the demo folders through symlinks (`pyodide_projects/projects/playground/demos_immapp` and the like), so a served page shows the edit on reload.
+- A change in hello_imgui, immapp or a C++ library (the bindings' module included): three builds, independent of each other, so run them in parallel, each in its own background job: the Pyodide wheel (`just pyodide_build`, about 15 minutes; from another folder: `just --justfile <repo>/justfile --working-directory <repo> pyodide_build`), the bundle explorer (`just ibex_build`, incremental in `build_ibex_ems`), and any Emscripten bench of yours (`cmake --build builds/claude_<name>_ems --target <demo>`, with `source ~/emsdk/emsdk_env.sh` first). A new source file in a globbed folder needs a reconfigure (`cmake .` in the build folder) before the build.
+- A C++ demo of the explorer: the explorer only (`just ibex_build`); its page bundles the demos' assets only if its CMake target says so (`hello_imgui_bundle_assets_from_folder`).
+- The desktop Python module: `cmake --build builds/python_bindings` (it copies the module into the venv); a new source file there needs a reconfigure, which collides with CLion's: ask the user to pause CLion first.
+
 ## Rules (do not skip)
 
 1. **Ask before launching the browser**, unless the user's rules allow it: say which pages you will open, and that a
