@@ -82,7 +82,7 @@ int main()
 
         ImGui::Separator();
         ImGui::TextUnformatted("A child window:");
-        ImGui::BeginChild("child", ImVec2(0.f, 150.f), ImGuiChildFlags_Borders);
+        ImGui::BeginChild("child", HelloImGui::EmToVec2(0.f, 9.f), ImGuiChildFlags_Borders);
         for (int j = 0; j < 30; ++j)
             ImGui::Text("Child line %2d: a swipe scrolls the child", j);
         ImGui::EndChild();
