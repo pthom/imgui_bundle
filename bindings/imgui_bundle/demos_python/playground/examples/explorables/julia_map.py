@@ -35,7 +35,8 @@ maps
 ## Navigate in the sets
 Zoom into either picture with the mouse wheel, and drag it to move around: it is computed again for the part you
 see, so new details keep appearing, until a zoom of about 10 000 (the limit of single precision). **Full view**
-brings back the whole picture.
+brings back the whole picture. **Copy** copies $c$ and the zoom of the map: paste it into the field under the map
+to come back there.
 
 ## Iterations
 Set the maximum number of iterations (see `max_iter` in `escape_time` below), and watch the fine details of the
@@ -67,6 +68,7 @@ A Julia set is connected exactly when its $c$ belongs to the Mandelbrot set.
 
 
 # ruff: noqa: E402  # Allow imports to come after the story
+import re
 from dataclasses import dataclass
 from typing import Callable
 import numpy as np
@@ -279,6 +281,8 @@ class State:
         self.animation_speed = 1.0  # divides JOURNEY_SECONDS and GLIDE_SECONDS
         self.picture_size = 1.0  # multiplies PICTURE_EM
         self.picture_size_dragged = False  # its slider is being dragged
+        self.pasted = ""  # the field where a copied value of c is pasted
+        self.paste_error = False  # the pasted text was not understood
         self.map = PlaneView("Mandelbrot", MANDEL_RE, MANDEL_IM,
                              lambda re, im, size: mandelbrot_image(size, self.max_iter, re, im))
         self.julia = PlaneView("Julia", JULIA_RE, JULIA_IM,
@@ -404,6 +408,22 @@ ARRIVAL_WIDTH: dict[str, float | None] = {
 }
 
 
+# A value of c as "Copy" writes it: "c = -1.806 -0.024 i, view width 0.02" ("c =" and the view width are optional)
+NUMBER = r"(?:\d+\.?\d*|\.\d+)(?:e[-+]?\d+)?"
+C_PATTERN = re.compile(rf"(?:c\s*=\s*)?(?<![\d.])([-+]?{NUMBER})\s*([-+])\s*({NUMBER})\s*i"
+                       rf"(?:\s*,\s*view width\s*({NUMBER}))?", re.IGNORECASE)
+
+
+def parse_c(text: str) -> tuple[complex, float | None] | None:
+    """c and the view width (None if absent) from a pasted text, or None when it is not understood"""
+    m = C_PATTERN.search(text)
+    if m is None:
+        return None
+    re_part, sign, im_part, width = m.groups()
+    c = complex(float(re_part), float(sign + im_part))
+    return c, (float(width) if width and float(width) > 0 else None)
+
+
 def maps_widget() -> None:
     """The two pictures side by side, and the famous values: a click on the map chooses c (a drag pans it)"""
     list_width = em_size(11)
@@ -424,10 +444,29 @@ def maps_widget() -> None:
         state.glide_to(clicked)
     pixel = (state.map.window_re[1] - state.map.window_re[0]) / size
     digits = max(3, int(np.ceil(-np.log10(pixel))))  # enough to tell two pixels of the map apart
+    c_text = f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i"
+    imgui.same_line()
+    if imgui.button("Copy"):  # c and the zoom of the map: enough to come back to the same place
+        imgui.set_clipboard_text(f"{c_text}, view width {state.map.window_re[1] - state.map.window_re[0]:.2g}")
     imgui.same_line()
     imgui.push_text_wrap_pos(column_x + size)  # deep in the map, c needs many digits: two lines
-    imgui.text(f"c = {state.c.real:.{digits}f} {state.c.imag:+.{digits}f} i")
+    imgui.text(c_text)
     imgui.pop_text_wrap_pos()
+    # Paste a copied value of c, with Ctrl+V (in a browser, a page reads the clipboard only on a paste)
+    imgui.set_next_item_width(size - em_size(3))
+    entered, state.pasted = imgui.input_text_with_hint("##paste c", "paste a copied c, then Enter", state.pasted,
+                                                       imgui.InputTextFlags_.enter_returns_true)
+    imgui.same_line()
+    if imgui.button("Go") or entered:
+        target = parse_c(state.pasted)
+        state.paste_error = target is None
+        if target is not None:
+            c, width = target
+            state.go_to(c, width if width is not None else state.map.window_re[1] - state.map.window_re[0])
+    if state.paste_error:
+        imgui.push_text_wrap_pos(column_x + size)
+        imgui.text_colored(imgui.ImVec4(1.0, 0.4, 0.4, 1.0), "Expected: c = -1.806 -0.024 i, view width 0.02")
+        imgui.pop_text_wrap_pos()
 
     imgui.table_next_column()
     if state.julia_follows_map:
