@@ -72,6 +72,8 @@ int main()
         params.touchScrollMode = (HelloImGui::TouchScrollMode)mode;
         ImGui::Separator();
         ImGui::Text("Clicks: %d   Slider: %.2f", nbClicks, slider);
+        static char text[64] = "";
+        ImGui::InputText("Text (the keyboard of a phone)", text, sizeof(text));
         if (ImGui::Button("Click me"))
             ++nbClicks;
         ImGui::SameLine();
