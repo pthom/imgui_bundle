@@ -10,7 +10,6 @@ docstrings in `examples_docs.json`). The pictures come from the website (see `ci
 """
 import json
 import math
-import threading
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -142,14 +141,11 @@ class Pictures:
     def __init__(self, stems: list[str]) -> None:
         self._data: dict[str, bytes] = {}  # downloaded, b"" when missing (e.g. offline)
         self._images: dict[str, Optional[hello_imgui.ImageAndSize]] = {}
+        self._to_load = list(stems)  # downloaded one at a time, in this order
+        self._download: Optional[tuple[str, immapp.Download]] = None  # the picture being downloaded, in the background
         self._nb_stems = len(stems)
         self._last_texture_time = 0.0
         self._budget = 0
-        if can_run_subprocess():  # i.e. not in Pyodide
-            threading.Thread(target=self._download_all, args=(stems,), daemon=True).start()
-        else:
-            import asyncio
-            asyncio.ensure_future(self._download_all_async(stems))
 
     @staticmethod
     def _local(stem: str) -> Optional[bytes]:
@@ -161,18 +157,25 @@ class Pictures:
         """The data if it is a JPEG (the site answers a missing file with a web page), else b"""""
         return data if data.startswith(b"\xff\xd8") else b""
 
-    def _download_all(self, stems: list[str]) -> None:
-        for stem in stems:
+    def _load_next(self) -> None:
+        """Takes the picture being downloaded once it is there, then starts the next one (a local file is read at once)"""
+        if self._download is not None:
+            stem, download = self._download
+            if not download.done:
+                return
+            self._data[stem] = self._jpeg(download.data)
+            self._download = None
+        while self._to_load and self._download is None:
+            stem = self._to_load.pop(0)
             local = self._local(stem)
-            data = local if local is not None else immapp.download_url_bytes(PICTURES_URL + stem + ".jpg")
-            self._data[stem] = self._jpeg(data)
-
-    async def _download_all_async(self, stems: list[str]) -> None:
-        for stem in stems:
-            self._data[stem] = self._jpeg(await immapp.download_url_bytes_async(PICTURES_URL + stem + ".jpg"))
+            if local is not None:
+                self._data[stem] = self._jpeg(local)
+            else:
+                self._download = (stem, immapp.start_download(PICTURES_URL + stem + ".jpg"))
 
     def new_frame(self) -> None:
         self._budget = self.TEXTURES_PER_FRAME
+        self._load_next()
 
     def still_loading(self) -> bool:
         """Some pictures are still being downloaded, or fading in"""
