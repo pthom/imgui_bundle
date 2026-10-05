@@ -31,6 +31,22 @@ The code viewer of the [ImGui Explorer](https://imgui-bundle.pages.dev/explorer/
 
 The index (`just api_pages`) must be generated before the explorer is configured; otherwise the tab links to the online pages.
 
+## immapp: downloads that do not block the GUI
+
+`immapp.start_download(url, method, json_body, timeout_s, headers)` starts an HTTP request in the background, from a GUI function: a thread on the desktop, a fetch in the browser (Pyodide). The GUI looks at the result's `done` at each frame, then at its `status`, `data` and `error` (the HTTP status with the start of the body, where web APIs explain their errors).
+- GET, or POST with a JSON body; more headers, e.g. an API key (`{"Authorization": "Bearer <key>"}`); a time limit for the answer.
+- `download_url_bytes()` and `download_url_bytes_async()` gain `timeout_s`.
+- Doc: the book's page on async Python, "Downloads that do not block the GUI". Demos: "An image from a prompt", the Julia map.
+
+## The Julia map: values of c shared by its users
+
+The Julia map explorable (playground: "Interactive exploration of the Mandelbrot set") lets its users share the places they find:
+- "Copy" copies c and the zoom of the map; a field under the map takes a pasted value, and the map flies there.
+- The tab "Found by users" lists the values of c that users shared, with a filter, a sort (name, votes, author, date), a vote per user, and "Share the current c...".
+- On a narrow window (a phone), the three columns become rows.
+
+The points live in a Cloudflare Worker with a database (`cloudflare/julia_points`), deployed apart from the site: see `cloudflare_deploy.md`. The demo is now a folder, `explorables/julia_map/`, and its address in the playground changed.
+
 ## Markdown renderer:
 
 Fully rewritten imgui_md, which is now imgui_rich_md
@@ -174,6 +190,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 
 ## Fixes
 
+- Hello ImGui: `hello_imgui.load_user_pref()` gives back the value as saved by `save_user_pref()`. It came back with a trailing newline from the second run on: each write of the ini file added a newline to its last part.
 - `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had
   disappeared from the bindings in v1.92.900, which broke third party renderers such as wgpu's imgui backend
   (`AttributeError: 'ImDrawData' object has no attribute 'cmd_lists_count'`). New code should use `len(draw_data.cmd_lists)`.
