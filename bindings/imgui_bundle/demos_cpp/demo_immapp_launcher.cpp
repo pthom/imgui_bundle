@@ -866,7 +866,7 @@ void DemoLauncher::Detail()
         if (Action(ICON_FA_PLAY "  Run", "Shows the demo here"))
             demoToShowInPlace = demo.stem;
     }
-    else if (!demo.cppFile.empty())
+    if (!demo.cppFile.empty())  // and, in a tab or a window of its own, when it has one
     {
 #ifdef __EMSCRIPTEN__
         // "where" is about the Python version: the C++ one has a page of its own online, or none. On a touch screen,
