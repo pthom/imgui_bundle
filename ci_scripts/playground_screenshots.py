@@ -196,7 +196,7 @@ SHOTS: dict[str, Shot] = {
                               crop=MANUAL_CROP),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
-    "explorables/julia_map/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),
+    "explorables/julia_map/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.14, 0.51, 0.49)),
     "explorables/neural_spiral/neural_spiral.py": Shot(frames=320, action=_train, crop=(0.0, 0.11, 0.77, 0.49)),
     "explorables/lesson_harmonic_motion.py": Shot(frames=360, crop=(0.0, 0.5, 0.98, 0.94)),
     "explorables/double_pendulum.py": Shot(frames=900, crop=(0.3, 0.0, 0.85, 0.7)),
