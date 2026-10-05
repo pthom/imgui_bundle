@@ -130,7 +130,7 @@ private:
 };
 
 
-void demo_immapp_launcher();  // the launcher alone (a standalone app)
+void gui_demo_immapp_launcher();  // the launcher alone (a standalone app)
 
 // Shared with the explorer's page
 extern const ImVec4 LAUNCHER_ACCENT;  // the selected card, the chip of the category in view, the state's switch

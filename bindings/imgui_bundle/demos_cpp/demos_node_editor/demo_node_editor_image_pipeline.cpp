@@ -900,7 +900,7 @@ ed::EditorContext* Editor()
 }  // namespace
 
 
-void demo_node_editor_image_pipeline()
+void gui_demo_node_editor_image_pipeline()
 {
     AppState& state = State();
     RichMd::Render(HELP);
@@ -942,7 +942,7 @@ void demo_node_editor_image_pipeline()
 int main(int, char**)
 {
     HelloImGui::RunnerParams params;
-    params.callbacks.ShowGui = demo_node_editor_image_pipeline;
+    params.callbacks.ShowGui = gui_demo_node_editor_image_pipeline;
     params.appWindowParams.windowTitle = "Node editor: an image pipeline";
     params.appWindowParams.windowGeometry.size = {1400, 850};
     params.callbacks.BeforeExit = [] { ed::DestroyEditor(Editor()); };
@@ -956,7 +956,7 @@ int main(int, char**)
 
 #else // the node editor, ImPlot and OpenCV are needed
 #include "imgui.h"
-void demo_node_editor_image_pipeline()
+void gui_demo_node_editor_image_pipeline()
 {
     ImGui::TextWrapped("This demo requires imgui-node-editor, ImPlot, and OpenCV (build with -DIMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON)");
 }

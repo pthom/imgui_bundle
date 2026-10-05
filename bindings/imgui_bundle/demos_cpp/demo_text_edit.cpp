@@ -759,7 +759,7 @@ void DemoMultiCursor()
 // ============================================================================
 // Main demo function
 // ============================================================================
-void demo_text_edit()
+void gui_demo_text_edit()
 {
     RichMd::Render(R"(
 # ImGuiColorTextEdit

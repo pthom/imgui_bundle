@@ -3,10 +3,10 @@
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
-void demo_tex_inspect_simple();
+void gui_demo_tex_inspect_simple();
 
 
-void demo_tex_inspect_launcher()
+void gui_demo_tex_inspect_launcher()
 {
 #ifndef IMGUI_BUNDLE_WITH_TEXT_INSPECT
     ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuiTexInspect (this requires OpenGl)");
@@ -28,7 +28,7 @@ void demo_tex_inspect_launcher()
 
     // if (ImGui::CollapsingHeader("Simple Demo"))
     // {
-    //     demo_tex_inspect_simple();
+    //     gui_demo_tex_inspect_simple();
     //     ShowPythonVsCppFile("demos_tex_inspect/demo_tex_inspect_simple");
     // }
     if (ImGui::CollapsingHeader("Full Demo"))

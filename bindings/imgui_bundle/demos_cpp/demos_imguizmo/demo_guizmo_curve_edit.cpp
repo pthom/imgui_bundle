@@ -101,7 +101,7 @@ private:
 };
 
 
-void demo_guizmo_curve_edit()
+void gui_demo_guizmo_curve_edit()
 {
     static bool wasInited = false;
 
@@ -128,5 +128,5 @@ void demo_guizmo_curve_edit()
 
 #else // IMGUI_BUNDLE_WITH_IMGUIZMO
 #include "imgui.h"
-void demo_guizmo_curve_edit() { ImGui::Text("This demo requires ImGuizmo\n"); }
+void gui_demo_guizmo_curve_edit() { ImGui::Text("This demo requires ImGuizmo\n"); }
 #endif

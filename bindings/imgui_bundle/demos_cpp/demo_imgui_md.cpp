@@ -718,7 +718,7 @@ static std::string FillDynamicParts(const std::string& markdown, const std::vect
     return r;
 }
 
-void demo_imgui_md()
+void gui_demo_imgui_md()
 {
     static bool csvRendererRegistered = false;
     if (!csvRendererRegistered)
@@ -742,7 +742,7 @@ void demo_imgui_md()
 int main(int, char**)
 {
     HelloImGui::SimpleRunnerParams runnerParams;
-    runnerParams.guiFunction = demo_imgui_md;
+    runnerParams.guiFunction = gui_demo_imgui_md;
     runnerParams.windowTitle = "Dear ImGui Bundle - Markdown demo";
     runnerParams.windowSize = {800, 800};
 

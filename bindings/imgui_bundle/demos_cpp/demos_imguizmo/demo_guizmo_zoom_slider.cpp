@@ -62,7 +62,7 @@ void DrawZoomableGrid(
 }
 
 
-void demo_guizmo_zoom_slider()
+void gui_demo_guizmo_zoom_slider()
 {
     // Values between 0. and 1. that represent the current viewed portion
     static ImZoomSlider::Range viewHorizontal{0.1f, 0.6f}, viewVertical{0.3f, 0.8f};
@@ -143,5 +143,5 @@ void demo_guizmo_zoom_slider()
 
 #else // IMGUI_BUNDLE_WITH_IMGUIZMO
 #include "imgui.h"
-void demo_guizmo_zoom_slider() { ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuizmo"); }
+void gui_demo_guizmo_zoom_slider() { ImGui::Text("Dear ImGui Bundle was compiled without support for ImGuizmo"); }
 #endif // IMGUI_BUNDLE_WITH_IMGUIZMO

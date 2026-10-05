@@ -5,7 +5,7 @@
 #include "demo_utils/api_demos.h"
 
 
-void demo_nanovg_launcher()
+void gui_demo_nanovg_launcher()
 {
     static bool isFullDemoOpened = false, isSimpleDemoOpened = false;
     RichMd::Render(R"(

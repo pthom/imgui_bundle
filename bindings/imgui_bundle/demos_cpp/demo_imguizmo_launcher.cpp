@@ -4,10 +4,10 @@
 #include "hello_imgui/hello_imgui.h"
 #include "demo_utils/api_demos.h"
 
-void demo_guizmo_curve_edit();
+void gui_demo_guizmo_curve_edit();
 
 
-void demo_imguizmo_launcher()
+void gui_demo_imguizmo_launcher()
 {
     RichMd::Render(R"(
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui.

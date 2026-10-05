@@ -10,7 +10,7 @@
 #include "hello_imgui/hello_imgui.h"
 
 
-void demo_themes()
+void gui_demo_themes()
 {
     RichMd::Render(R"(
         # Theming

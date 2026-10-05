@@ -4,7 +4,7 @@
 #include "hello_imgui/hello_imgui.h"
 #include "imgui.h"
 
-void demo_immvision_display()
+void gui_demo_immvision_display()
 {
     static bool inited = false;
     static ImmVision::ImageBuffer bear, tennis;

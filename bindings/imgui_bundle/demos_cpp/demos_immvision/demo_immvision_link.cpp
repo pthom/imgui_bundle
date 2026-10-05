@@ -24,7 +24,7 @@ static std::vector<ImmVision::ImageBuffer> SplitChannels(const ImmVision::ImageB
 }
 
 
-void demo_immvision_link()
+void gui_demo_immvision_link()
 {
     static bool inited = false;
     static ImmVision::ImageBuffer image;

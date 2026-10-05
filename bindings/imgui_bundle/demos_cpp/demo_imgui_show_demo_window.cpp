@@ -5,7 +5,7 @@
 #include "imgui_explorer.h"
 #endif
 
-void demo_imgui_show_demo_window()
+void gui_demo_imgui_show_demo_window()
 {
     RichMd::Render(R"(
         # Dear ImGui

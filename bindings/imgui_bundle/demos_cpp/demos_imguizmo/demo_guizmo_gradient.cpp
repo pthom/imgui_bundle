@@ -72,7 +72,7 @@ struct MyGradient: public ImGradient::DelegateStl
 };
 
 
- void demo_guizmo_gradient()
+ void gui_demo_guizmo_gradient()
 {
     static MyGradient myGradient;
     ImVec2 size(400.f, 20.f);
@@ -84,5 +84,5 @@ struct MyGradient: public ImGradient::DelegateStl
 
 #else // #ifdef IMGUI_BUNDLE_WITH_IMGUIZMO
 #include "imgui.h"
-void demo_guizmo_gradient() { ImGui::Text("This demo requires ImGuizmo."); }
+void gui_demo_guizmo_gradient() { ImGui::Text("This demo requires ImGuizmo."); }
 #endif // IMGUI_BUNDLE_WITH_IMGUIZMO

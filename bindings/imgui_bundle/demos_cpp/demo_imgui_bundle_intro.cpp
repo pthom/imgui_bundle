@@ -2072,7 +2072,7 @@ void IntroWelcomeGui()
     IntroMiniDemos();
 }
 
-void demo_imgui_bundle_intro()
+void gui_demo_imgui_bundle_intro()
 {
     RichMd::Render("# Dear ImGui Bundle Explorer");
     RenderLinksRow();
@@ -2090,7 +2090,7 @@ int main(int, char**)
     ChdirBesideAssetsFolder();
 
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.ShowGui = demo_imgui_bundle_intro;
+    runnerParams.callbacks.ShowGui = gui_demo_imgui_bundle_intro;
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
     runnerParams.appWindowParams.windowTitle = "ImGui Bundle - Introduction";
 

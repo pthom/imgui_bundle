@@ -429,7 +429,7 @@ ed::EditorContext* Editor()
 
 }  // namespace
 
-void demo_node_editor_color_mixer()
+void gui_demo_node_editor_color_mixer()
 {
     AppState& state = State();
     RichMd::Render(HELP);
@@ -459,7 +459,7 @@ void demo_node_editor_color_mixer()
 int main(int, char**)
 {
     HelloImGui::RunnerParams params;
-    params.callbacks.ShowGui = demo_node_editor_color_mixer;
+    params.callbacks.ShowGui = gui_demo_node_editor_color_mixer;
     params.appWindowParams.windowTitle = "Node editor: a color mixer";
     params.appWindowParams.windowGeometry.size = {1100, 600};
     params.callbacks.BeforeExit = [] { ed::DestroyEditor(Editor()); };
@@ -472,7 +472,7 @@ int main(int, char**)
 
 #else // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
 #include "imgui.h"
-void demo_node_editor_color_mixer() { ImGui::Text("This demo requires imgui-node-editor"); }
+void gui_demo_node_editor_color_mixer() { ImGui::Text("This demo requires imgui-node-editor"); }
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
 #include <cstdio>
 int main(int, char**) { printf("This demo requires imgui-node-editor\n"); return 0; }

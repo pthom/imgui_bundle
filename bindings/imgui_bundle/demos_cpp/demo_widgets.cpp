@@ -526,7 +526,7 @@ void DemoCoolBar()
 }
 
 
-void demo_widgets()
+void gui_demo_widgets()
 {
     DemoCoolBar();
     DemoToggle();

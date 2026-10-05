@@ -1072,7 +1072,7 @@ void DemoLauncher::KeepSmooth(bool animating)
 }
 
 
-void demo_immapp_launcher()
+void gui_demo_immapp_launcher()
 {
     static DemoLauncher launcher;
     launcher.Gui();

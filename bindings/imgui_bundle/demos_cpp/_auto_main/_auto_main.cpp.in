@@ -6,7 +6,7 @@
 #include <filesystem>
 #include <iostream>
 
-void ${demo_name}();
+void gui_${demo_name}();
 
 
 int main(int, char **)
@@ -14,7 +14,7 @@ int main(int, char **)
     ChdirBesideAssetsFolder();
 
     HelloImGui::RunnerParams runnerParams;
-    runnerParams.callbacks.ShowGui = ${demo_name};
+    runnerParams.callbacks.ShowGui = gui_${demo_name};
     runnerParams.appWindowParams.windowGeometry.size = {1000, 800};
     runnerParams.appWindowParams.windowTitle = "${demo_name}";
 

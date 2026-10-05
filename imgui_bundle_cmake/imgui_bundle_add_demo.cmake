@@ -37,7 +37,7 @@ function(ibd_add_auto_demo demo_cpp_file optional_prefix)
     # Creates a demo app, and provides main() automatically
     # Usage:
     #     ibd_add_auto_demo(demo_file.cpp)
-    # (demo_file.cpp should provide a function named according to the containing file, e.g. `void demo_file()`)
+    # (demo_file.cpp should provide a function named after the file, with the prefix gui_: `void gui_demo_file()`)
     get_filename_component(demo_cpp_file "${demo_cpp_file}" NAME)
     get_filename_component(demo_name "${demo_cpp_file}" NAME_WE)
     ibd_add_demo_cpp(${optional_prefix}${demo_name} ${demo_cpp_file})

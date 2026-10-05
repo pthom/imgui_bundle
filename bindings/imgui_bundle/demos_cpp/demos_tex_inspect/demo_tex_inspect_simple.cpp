@@ -5,7 +5,7 @@
 #include "imgui_tex_inspect/imgui_tex_inspect.h"
 
 
-void demo_tex_inspect_simple()
+void gui_demo_tex_inspect_simple()
 {
     static ImTextureID textureId = 0;
     static ImVec2 textureSize(512.f, 512.f);
@@ -38,7 +38,7 @@ int disabled_main()
 
     ImmApp::Run(
         HelloImGui::SimpleRunnerParams {
-            .guiFunction=demo_tex_inspect_simple,
+            .guiFunction=gui_demo_tex_inspect_simple,
             .windowTitle = "demo_tex_inspect_simple",
             .windowSize = {1000, 800}
         },
@@ -50,7 +50,7 @@ int disabled_main()
 }
 
 #else // #ifdef IMGUI_BUNDLE_WITH_TEXT_INSPECT
-void demo_tex_inspect_simple()
+void gui_demo_tex_inspect_simple()
 {
     ImGui::Text("This demo requires IMGUI_BUNDLE_WITH_TEXT_INSPECT to be enabled");
 }

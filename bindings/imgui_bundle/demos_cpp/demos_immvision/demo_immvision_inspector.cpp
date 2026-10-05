@@ -20,7 +20,7 @@ void FillInspector()
 }
 
 
-void demo_immvision_inspector()
+void gui_demo_immvision_inspector()
 {
     static bool inited = false;
     if (!inited)

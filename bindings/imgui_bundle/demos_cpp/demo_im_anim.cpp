@@ -4,7 +4,7 @@
 #include "imgui_explorer.h"
 #endif
 
-void demo_im_anim()
+void gui_demo_im_anim()
 {
     RichMd::Render(R"(
         # ImAnim

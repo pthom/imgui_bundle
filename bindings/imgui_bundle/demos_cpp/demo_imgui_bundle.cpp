@@ -28,19 +28,19 @@
 void IntroWelcomeGui();  // its content without the title and the links
 void RenderLinksRow();
 // The demos whose function can be linked in the explorer (the catalog says which ones may run in place)
-void demo_widgets();
-void demo_imgui_md();
-void demo_text_edit();
-void demo_logger();
-void demo_node_editor_color_mixer();
-void demo_node_editor_image_pipeline();
-void demo_imgui_show_demo_window();
-void demo_im_anim();
+void gui_demo_widgets();
+void gui_demo_imgui_md();
+void gui_demo_text_edit();
+void gui_demo_logger();
+void gui_demo_node_editor_color_mixer();
+void gui_demo_node_editor_image_pipeline();
+void gui_demo_imgui_show_demo_window();
+void gui_demo_im_anim();
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
-void demo_immvision_display();
-void demo_immvision_inspector();
-void demo_immvision_link();
-void demo_immvision_process();
+void gui_demo_immvision_display();
+void gui_demo_immvision_inspector();
+void gui_demo_immvision_link();
+void gui_demo_immvision_process();
 #endif
 
 
@@ -116,15 +116,17 @@ namespace
         Explorer()
         {
             launcher.inPlaceFunctions = {
-                {"demo_widgets", demo_widgets}, {"demo_imgui_md", demo_imgui_md}, {"demo_text_edit", demo_text_edit},
-                {"demo_logger", demo_logger},
-                {"demo_node_editor_color_mixer", demo_node_editor_color_mixer},
-                {"demo_node_editor_image_pipeline", demo_node_editor_image_pipeline},
-                {"manual_imgui", demo_imgui_show_demo_window},
-                {"manual_implot", manual_implot}, {"manual_implot3d", manual_implot3d}, {"manual_im_anim", demo_im_anim},
+                {"demo_widgets", gui_demo_widgets}, {"demo_imgui_md", gui_demo_imgui_md},
+                {"demo_text_edit", gui_demo_text_edit}, {"demo_logger", gui_demo_logger},
+                {"demo_node_editor_color_mixer", gui_demo_node_editor_color_mixer},
+                {"demo_node_editor_image_pipeline", gui_demo_node_editor_image_pipeline},
+                {"manual_imgui", gui_demo_imgui_show_demo_window},
+                {"manual_implot", manual_implot}, {"manual_implot3d", manual_implot3d},
+                {"manual_im_anim", gui_demo_im_anim},
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
-                {"demo_immvision_display", demo_immvision_display}, {"demo_immvision_inspector", demo_immvision_inspector},
-                {"demo_immvision_link", demo_immvision_link}, {"demo_immvision_process", demo_immvision_process},
+                {"demo_immvision_display", gui_demo_immvision_display},
+                {"demo_immvision_inspector", gui_demo_immvision_inspector},
+                {"demo_immvision_link", gui_demo_immvision_link}, {"demo_immvision_process", gui_demo_immvision_process},
 #endif
             };
         }

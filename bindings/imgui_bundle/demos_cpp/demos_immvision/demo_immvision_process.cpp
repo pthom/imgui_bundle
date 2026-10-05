@@ -4,7 +4,7 @@
 
 #ifndef IMMVISION_HAS_OPENCV
 
-void demo_immvision_process()
+void gui_demo_immvision_process()
 {
     ImGui::TextWrapped("This demo requires OpenCV (Sobel filter, Gaussian blur, color conversion). Build with -DIMGUI_BUNDLE_DEMOS_WITH_OPENCV=ON");
 }
@@ -139,7 +139,7 @@ struct AppStateProcess {
 
 // Our GUI function
 //     (which instantiates a static app state at startup)
-void demo_immvision_process()
+void gui_demo_immvision_process()
 {
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
@@ -164,4 +164,4 @@ void demo_immvision_process()
 
 
 // The main function is not present in this file, but it could be written as
-//        ImmApp::RunWithMarkdown(demo_immvision_process, "demo_immvision_process");
+//        ImmApp::RunWithMarkdown(gui_demo_immvision_process, "demo_immvision_process");
