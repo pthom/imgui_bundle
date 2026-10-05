@@ -87,7 +87,7 @@ class Community:
         self.admin_token = ""
         self.points: list[Point] = []
         self.loading: immapp.Download | None = None
-        self.load_error = ""
+        self.error = ""  # the last failure of a request (load, vote, admin), shown above the list
         self.selected_id: int | None = None
         self.filter = imgui.TextFilter()
         self.voting: dict[int, tuple[immapp.Download, bool]] = {}  # point id -> the request, the vote it sends
@@ -102,13 +102,13 @@ class Community:
 
     def load(self) -> None:
         self.loading = immapp.start_download(f"{POINTS_API}?voter={self.voter}", headers=self.admin_headers())
-        self.load_error = ""
+        self.error = ""
 
     def poll(self) -> None:
         """At each frame: the answers that arrived"""
         if self.loading is not None and self.loading.done:
             if self.loading.error:
-                self.load_error = error_text(self.loading)
+                self.error = f"Could not load the points found by users: {error_text(self.loading)}"
             else:
                 self.points = [point_from_json(d) for d in json.loads(self.loading.data)]
             self.loading = None
@@ -116,14 +116,16 @@ class Community:
             if download.done:
                 del self.voting[point_id]
                 point = next((p for p in self.points if p.id == point_id), None)
-                if point is not None and not download.error:  # else the vote did not change: the user may retry
+                if download.error:
+                    self.error = f"The vote failed: {error_text(download)}"
+                elif point is not None:
                     point.votes, point.voted_by_me = json.loads(download.data)["votes"], vote
         for point_id, (download, status) in list(self.curating.items()):
             if download.done:
                 del self.curating[point_id]
                 point = next((p for p in self.points if p.id == point_id), None)
                 if download.error:
-                    self.load_error = f"Admin: {error_text(download)}"
+                    self.error = f"Admin: {error_text(download)}"
                 elif point is not None:
                     point.status = status
         if self.sending is not None and self.sending.done:
@@ -154,9 +156,9 @@ class Community:
         if self.loading is not None:
             imgui.same_line()
             imgui.text("Loading...")
-        if self.load_error:
+        if self.error:
             imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + width)
-            imgui.text_colored(RED, f"Could not load the points found by users: {self.load_error}")
+            imgui.text_colored(RED, self.error)
             imgui.pop_text_wrap_pos()
         if self.admin_token:
             imgui.text_colored(imgui.ImVec4(1.0, 0.7, 0.2, 1.0), "Admin mode: the hidden points are greyed")
