@@ -60,6 +60,7 @@ Below is the folder structure of Dear ImGui Bundle repository.
 │     └── tests_python_gui/                 GUI tests (require display)
 │
 ├── ci_scripts/                             CI/CD scripts (Docker, Pyodide local builds)
+├── cloudflare/                             The demos' API: Cloudflare Workers (julia_points: the Julia map's shared points)
 ├── _plans/                                 Specs, plans, and todos for features
 ├── logo/                                   Project logo files
 └── builds/                                 Build output directories (default, claude_*, etc.)

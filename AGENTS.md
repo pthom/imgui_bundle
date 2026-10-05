@@ -116,6 +116,7 @@ The commands are recipes of the `justfile`: `just --list` shows them by group, e
 | Playground | `playground_examples_docs` (the menu's descriptions, the manifests, the book's demos page), `playground_screenshots [names]` | the docstrings of `ci_scripts/playground_examples_docs.py` and `ci_scripts/playground_screenshots.py` |
 | Book | `doc_serve`, `doc_build_cf`, `api_pages` (the API reference and its plain text, from the stubs) | `getting_started_dev.md` ("Build the docs"), `bindings_intro.md` ("The API pages") |
 | Web site | `cf_deploy_all_in_one` (or `cf_stage_prepare`, `cf_stage`, `cf_deploy`), `cf_serve_local` | `cloudflare_deploy.md` |
+| The demos' API (a Cloudflare Worker, deployed apart) | `demo_julia_points_check`, `demo_julia_points_dev`, `demo_julia_points_deploy` | `cloudflare_deploy.md` ("The demos' API") |
 | PyPI release | (CI) | `pypi_deploy.md` |
 
 Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`: screenshots of a GUI (`screenshot-imgui-bundle`) and driving it with the test engine (`interact-and-screenshot`), the web builds in a browser (`screenshot-web-demos`), the bindings (`regenerate-bindings`, `customize-bindings`), the forks (`fork-maintenance`). An agent that does not load them by itself can read the one a task needs.

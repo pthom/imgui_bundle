@@ -127,6 +127,25 @@ rg "imgui_bundle.*\.whl" --glob '!external' --glob '!builds' --glob '!dist' --gl
 Glob-only references (`*pyemscripten*.whl` in `justfile` and the GitHub
 workflows) do not need updating on a version bump — only on a tag rename.
 
+## The demos' API (a Worker, deployed apart)
+
+Some demos store data on a server. The Julia map (playground: `explorables/julia_map`) lists the values of c that its users share, and their votes. They live in a Cloudflare Worker with a D1 database (Cloudflare's SQLite):
+
+- The Worker: `imgui-bundle-api`, at <https://imgui-bundle-api.pthomet.workers.dev/julia_points>. Its code: `cloudflare/julia_points/` (`src/index.ts`, its routes are listed at the top; `wrangler.jsonc`).
+- The database: `imgui_bundle_julia_points`. Its tables: `schema.sql`; its first points: `seed.sql`.
+- The demo's side: `julia_points.py`, next to `julia_map.py` (`POINTS_API` is the Worker's address).
+
+The Worker is deployed on its own, only when it changes: `just demo_julia_points_deploy` (after a type check, `just demo_julia_points_check`). The site's deploy does not touch it, and it does not touch the site.
+
+Local tests: `just demo_julia_points_dev` runs the Worker at <http://localhost:8787/julia_points>, with a local database that holds the seed. Point `POINTS_API` there while testing. The demo on the desktop and the local playground (`pyodide_projects/serve_cors.py`) both reach it.
+
+The admin mode: the Worker's secret `ADMIN_TOKEN` opens the routes that hide or show a point. The demo shows them when it finds the token in `JULIA_POINTS_ADMIN` (an environment variable on the desktop, `localStorage` in the browser). The token is not in this repository.
+
+- Set it: `cd cloudflare/julia_points && wrangler secret put ADMIN_TOKEN`. `ADMIN_TOKEN` is the secret's name: the token goes at the prompt. `wrangler secret list` shows the names.
+- Locally: `cloudflare/julia_points/.dev.vars` (ignored by git), with a line `ADMIN_TOKEN=<any value>`.
+
+The database in production: `wrangler d1 execute imgui_bundle_julia_points --remote --command "SELECT ..."`, from `cloudflare/julia_points`. The free tier allows 100 000 requests a day.
+
 ## Pitfalls
 
 - Cloudflare Pages refuses a file over 25 MiB. A stray folder can push a packed file over it: a `.mypy_cache/` left in a demo folder gets packed into the explorer's `.data` (run mypy from the repo root, and remove such caches before `just cf_stage`).
