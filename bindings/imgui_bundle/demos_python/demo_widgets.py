@@ -500,7 +500,7 @@ def demo_cool_bar():
     imgui.new_line()
 
 
-def demo_gui():
+def gui():
     demo_cool_bar()
     demo_toggle()
     demo_spinner()
@@ -513,4 +513,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 1000))
+    immapp.run(gui, with_markdown=True, window_size=(1000, 1000))

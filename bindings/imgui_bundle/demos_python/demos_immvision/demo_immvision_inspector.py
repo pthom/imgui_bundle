@@ -24,10 +24,10 @@ def fill_inspector() -> None:
 
 
 @immapp.static(inited=False)
-def demo_gui():
-    if not demo_gui.inited:
+def gui():
+    if not gui.inited:
         fill_inspector()
-        demo_gui.inited = True
+        gui.inited = True
 
     rich_md.render(
         """Call *immvision.inspector_add_image()* anywhere - for example, at different steps inside an image processing algorithm. Later, call *immvision.inspector_show()*, and it will show all the collected images."""
@@ -41,7 +41,7 @@ def demo_gui():
 
 
 def main():
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

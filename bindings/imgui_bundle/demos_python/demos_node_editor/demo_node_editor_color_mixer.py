@@ -304,7 +304,7 @@ def editor() -> ed.EditorContext:
     return state.editor
 
 
-def demo_gui() -> None:
+def gui() -> None:
     rich_md.render(HELP)
     previous_editor = ed.get_current_editor()
     ed.set_current_editor(editor())
@@ -330,7 +330,7 @@ def demo_gui() -> None:
 
 def main() -> None:
     # The demo creates its own node editor: no need for immapp's (with_node_editor)
-    immapp.run(demo_gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_markdown=True,
+    immapp.run(gui, window_title="Node editor: a color mixer", window_size=(1100, 600), with_markdown=True,
                with_latex=True)
 
 

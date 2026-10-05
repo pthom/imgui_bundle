@@ -19,8 +19,8 @@ def read_image(asset: str, with_alpha: bool = False):
 
 
 @immapp.static(inited=False)
-def demo_gui() -> None:
-    statics = demo_gui
+def gui() -> None:
+    statics = gui
     if not statics.inited:
         statics.image_display_size = ImVec2(0, immapp.em_size(15))
         statics.bear = read_image("images/bear_transparent.png", with_alpha=True)
@@ -55,7 +55,7 @@ def demo_gui() -> None:
 
 
 def main():
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

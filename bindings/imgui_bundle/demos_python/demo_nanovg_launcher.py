@@ -13,8 +13,8 @@ def _do_spawn_demo(demo_name: str):
     subprocess.Popen([sys.executable, demo_file])
 
 
-def demo_gui():
-    static = demo_gui
+def gui():
+    static = gui
     if not hasattr(static, "is_full_demo_opened"):
         static.is_full_demo_opened = False
     if not hasattr(static, "is_simple_demo_opened"):
@@ -85,4 +85,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True, with_node_editor=True)
+    immapp.run(gui, window_size=(1000, 800), with_markdown=True, with_node_editor=True)

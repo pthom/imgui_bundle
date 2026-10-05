@@ -665,7 +665,7 @@ def editor() -> ed.EditorContext:
     return state.editor
 
 
-def demo_gui() -> None:
+def gui() -> None:
     rich_md.render(HELP)
     if imgui.button("Reset the graph"):
         state.graph, state.frame = None, 0
@@ -699,7 +699,7 @@ def demo_gui() -> None:
 
 def main() -> None:
     # The demo creates its own node editor (see editor()): no need for immapp's (with_node_editor)
-    immapp.run(demo_gui, window_title="Node editor: an image pipeline", window_size=(1400, 850), with_markdown=True,
+    immapp.run(gui, window_title="Node editor: an image pipeline", window_size=(1400, 850), with_markdown=True,
                with_latex=True, with_implot=True)
 
 

@@ -10,8 +10,8 @@ from imgui_bundle import imgui, hello_imgui, rich_md, immapp
 
 
 @immapp.static(idx_fortune=0, added_logs=False)
-def demo_gui():
-    static = demo_gui
+def gui():
+    static = gui
     fortunes = [
         "If at first you don't succeed, skydiving is not for you.",
         "You will be a winner today. Pick a fight.",
@@ -68,7 +68,7 @@ def demo_gui():
 
 
 def main():
-    immapp.run(demo_gui, "Log", with_markdown=True)
+    immapp.run(gui, "Log", with_markdown=True)
 
 
 if __name__ == "__main__":

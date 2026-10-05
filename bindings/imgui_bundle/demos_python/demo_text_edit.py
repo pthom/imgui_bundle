@@ -695,7 +695,7 @@ def demo_multi_cursor():
 # ============================================================================
 # Main demo function
 # ============================================================================
-def demo_gui():
+def gui():
     rich_md.render(
         """
 # ImGuiColorTextEdit
@@ -731,7 +731,7 @@ def demo_gui():
 def main():
     from imgui_bundle import immapp
 
-    immapp.run(demo_gui, with_markdown=True, window_size=(1000, 800))
+    immapp.run(gui, with_markdown=True, window_size=(1000, 800))
 
 
 if __name__ == "__main__":

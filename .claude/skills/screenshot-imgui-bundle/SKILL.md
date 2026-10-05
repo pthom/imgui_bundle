@@ -49,7 +49,7 @@ from imgui_bundle.immapp import testing
 from imgui_bundle.demos_python import demo_imgui_md
 
 testing.capture_final_frame(
-    demo_imgui_md.demo_gui,
+    demo_imgui_md.gui,
     "/tmp/out.png",
     window_size=(900, 950),     # logical pixels; framebuffer is 2x on retina
     with_latex=True,            # any immapp.run addon works

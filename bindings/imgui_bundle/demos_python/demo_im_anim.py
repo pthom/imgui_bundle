@@ -5,7 +5,7 @@ from imgui_bundle.demos_python.demo_utils.imgui_explorer_setup import get_imgui_
 imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
-def demo_gui():
+def gui():
     rich_md.render(
         """
         # ImAnim
@@ -26,4 +26,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui_function=demo_gui, with_markdown=True, window_size=(1000, 800))
+    immapp.run(gui_function=gui, with_markdown=True, window_size=(1000, 800))

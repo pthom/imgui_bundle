@@ -784,7 +784,7 @@ class Launcher:
 _LAUNCHER: Optional[Launcher] = None
 
 
-def demo_gui() -> None:
+def gui() -> None:
     global _LAUNCHER
     if _LAUNCHER is None:
         _LAUNCHER = Launcher()
@@ -792,7 +792,7 @@ def demo_gui() -> None:
 
 
 def main() -> None:
-    immapp.run(demo_gui, window_title="Dear ImGui Bundle: the demos", window_size=(1500, 950), with_markdown=True,
+    immapp.run(gui, window_title="Dear ImGui Bundle: the demos", window_size=(1500, 950), with_markdown=True,
                with_im_anim=True)
 
 

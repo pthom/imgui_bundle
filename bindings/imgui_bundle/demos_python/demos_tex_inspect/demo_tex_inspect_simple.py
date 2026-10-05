@@ -9,8 +9,8 @@ from imgui_bundle import imgui_tex_inspect, ImVec2, immapp, hello_imgui, registe
 register_demos_assets_folder()
 
 @immapp.static(texture_id=None)
-def demo_gui():
-    static = demo_gui
+def gui():
+    static = gui
 
     if static.texture_id is None:
         static.texture_id = hello_imgui.im_texture_id_from_asset(
@@ -30,7 +30,7 @@ def demo_gui():
 
 def main():
     immapp.run(
-        demo_gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000)
+        gui, with_tex_inspect=True, with_markdown=True, window_size=(1200, 1000)
     )
 
 

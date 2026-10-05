@@ -658,7 +658,7 @@ def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
 _csv_renderer_registered = False
 
 
-def demo_gui():
+def gui():
     global _csv_renderer_registered
     if not _csv_renderer_registered:
         rich_md.register_fenced_block_renderer("csv", _render_csv)
@@ -678,7 +678,7 @@ def main():
     options.callbacks.on_wiki_link = lambda target: print("wikilink clicked:", target)
     options.callbacks.on_heading = lambda level, text: _headings.append("  " * (level - 1) + text)
     _standalone_options = True
-    immapp.run(demo_gui, with_latex=True, with_markdown_options=options, window_size=(800, 800))
+    immapp.run(gui, with_latex=True, with_markdown_options=options, window_size=(800, 800))
 
 
 if __name__ == "__main__":

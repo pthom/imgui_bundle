@@ -38,7 +38,7 @@ def _lazy_init() -> None:
     atexit.register(_transport.stop)
 
 
-def demo_gui() -> None:
+def gui() -> None:
     if not _PYTE_AVAILABLE:
         imgui.text_wrapped(
             "This demo needs the pyte package (VT100 emulator). Install it with:")
@@ -74,7 +74,7 @@ def demo_gui() -> None:
 
 def main() -> None:
     from imgui_bundle import immapp
-    immapp.run(demo_gui, window_title="imgui_terminal demo", window_size=(900, 600),
+    immapp.run(gui, window_title="imgui_terminal demo", window_size=(900, 600),
                fps_idle=0.0)
 
 

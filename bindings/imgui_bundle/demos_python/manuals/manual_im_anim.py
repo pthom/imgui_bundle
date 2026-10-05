@@ -16,9 +16,9 @@ def fallback() -> None:
     imgui.text("The ImAnim manual needs the imgui_explorer library, absent from this build.")
 
 
-def demo_gui() -> None:
+def gui() -> None:
     show_manual("im_anim", fallback=fallback)
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, window_size=(1100, 800), with_markdown=True, with_im_anim=True)
+    immapp.run(gui, window_size=(1100, 800), with_markdown=True, with_im_anim=True)

@@ -9,7 +9,7 @@ In order to apply a theme, you can use:
 from imgui_bundle import immapp, hello_imgui, imgui, rich_md
 
 
-def demo_gui():
+def gui():
     rich_md.render(
         """
         # Theming
@@ -24,4 +24,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1000, 800), with_markdown=True)

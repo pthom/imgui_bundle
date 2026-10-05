@@ -6,7 +6,7 @@ from imgui_bundle import imgui, immapp, rich_md
 from imgui_bundle.demos_python import demo_utils
 
 
-def demo_gui():
+def gui():
     rich_md.render(
         """
         [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo) provides an immediate mode 3D gizmo for scene editing and other controls based on Dear Imgui.
@@ -26,7 +26,7 @@ def demo_gui():
 
 
 def main():
-    immapp.run(demo_gui, window_size=(1000, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1000, 800), with_markdown=True)
 
 
 if __name__ == "__main__":

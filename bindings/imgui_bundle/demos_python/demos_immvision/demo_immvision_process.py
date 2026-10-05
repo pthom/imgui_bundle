@@ -160,8 +160,8 @@ def take_downloaded_photo(state: AppState) -> bool:
 # Our GUI function
 #    (which instantiates a static app state at startup)
 @immapp.static(app_state=None)
-def demo_gui():
-    static = demo_gui
+def gui():
+    static = gui
 
     if static.app_state is None:
         static.app_state = AppState(hello_imgui.asset_file_full_path("images/house.jpg"))
@@ -198,7 +198,7 @@ def demo_gui():
 
 
 def main():
-    immapp.run_with_markdown(demo_gui, window_size=(1000, 1000))
+    immapp.run_with_markdown(gui, window_size=(1000, 1000))
 
 
 # The main entry point will run our GUI function

@@ -7,7 +7,7 @@ register_demos_assets_folder()
 imgui_explorer, _has_imgui_explorer = get_imgui_explorer()
 
 
-def demo_gui():
+def gui():
     rich_md.render(
         """
         # Dear ImGui
@@ -36,4 +36,4 @@ def demo_gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui_function=demo_gui, with_markdown=True, window_size=(800, 600))
+    immapp.run(gui_function=gui, with_markdown=True, window_size=(800, 600))

@@ -12,9 +12,9 @@ except ImportError:  # a script: the module is beside this file
     from manual_common import show_manual  # type: ignore[import-not-found, no-redef]
 
 
-def demo_gui() -> None:
+def gui() -> None:
     show_manual("imgui", fallback=lambda: imgui.show_demo_window())
 
 
 if __name__ == "__main__":
-    immapp.run(demo_gui, window_size=(1100, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1100, 800), with_markdown=True)

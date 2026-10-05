@@ -1846,7 +1846,7 @@ def welcome_gui():
     _intro_mini_demos()
 
 
-def demo_gui():
+def gui():
     rich_md.render("# Dear ImGui Bundle Explorer")
     links_row()
     welcome_gui()
@@ -1855,7 +1855,7 @@ def demo_gui():
 if __name__ == "__main__":
     from imgui_bundle import immapp
     immapp.run(
-        demo_gui,
+        gui,
         window_title="Dear ImGui Bundle - Intro",
         window_size=(1200, 900),
         with_implot=True,
