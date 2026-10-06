@@ -208,7 +208,6 @@ def main() -> None:
     params = hello_imgui.RunnerParams()
     params.app_window_params.window_title = "Grokking"
     params.app_window_params.window_geometry.size = (1000, 1000)
-    params.imgui_window_params.tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
     params.ini_disable = True
     params.callbacks.show_gui = gui
     immapp.run(params, immapp.AddOnsParams(with_implot=True, with_markdown=True, with_latex=True))
