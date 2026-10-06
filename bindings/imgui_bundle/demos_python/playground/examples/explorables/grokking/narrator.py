@@ -601,7 +601,9 @@ class Lesson:
         rich_md.render(" ".join(parts))
 
     def _gui_controls(self, em: float) -> None:
+        """The strip's widgets carry their own IDs, so that the explorable's widgets may use the same labels"""
         assert self.script is not None
+        imgui.push_id("narrator")
         if self.waiting is not None:
             imgui.text_colored(ImVec4(1.0, 0.75, 0.3, 1.0), self.waiting.prompt)
             if self.waiting.kind == "challenge" and self.waiting.hint and \
@@ -634,6 +636,7 @@ class Lesson:
         imgui.same_line()
         if imgui.button("Full text"):
             self.show_full_text = not self.show_full_text
+        imgui.pop_id()
 
     def _gui_full_text(self, em: float) -> None:
         assert self.script is not None
