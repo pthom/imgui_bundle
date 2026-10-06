@@ -24,13 +24,14 @@ set_value("view", "accuracy")
 set_value("step", 1000)
 ```
 
+[[Rename the labels to "Training Set" and "Hidden Set"]]
 When we train a network we use two distinct measures:
 
 [[Highlight the blue line - and make it blink a bit]]
 ```cues
 set_value("accent_line", "seen")
 ```
-- Its accuracy on the examples it was trained on. It rises fast: the network learns them quickly.
+- Its accuracy on the examples it was trained on (the training set). It rises fast: the network learns them quickly.
 
 [[Highlight the green line - and make it blink a bit]]
 ```cues
@@ -66,7 +67,7 @@ highlight("clock", at="a circle")
 ```
 The second picture shows how the network organizes what it knows, inside its weights. During the training, it goes from chaos to a circle. The network has found a structure.
 
-The answer is in that structure. Nobody taught this network a rule: it found one by itself. Let's go back to the beginning, and watch it happen.
+The answer is in that structure. Nobody taught this network a rule: it found one by itself. Let us go back to the beginning, and watch it happen.
 
 ## Adding on a clock
 
