@@ -126,7 +126,7 @@ def clock_axes(embeddings: np.ndarray, k: int) -> np.ndarray:
     """Two unit directions of the embedding space: the plane of frequency k"""
     angles = 2 * np.pi * k * np.arange(P) / P
     axes = np.stack([np.cos(angles) @ embeddings, np.sin(angles) @ embeddings])
-    return axes / np.linalg.norm(axes, axis=1, keepdims=True)
+    return np.asarray(axes / np.linalg.norm(axes, axis=1, keepdims=True))
 # ::endcode
 
 
