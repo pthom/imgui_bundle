@@ -11,12 +11,80 @@ import numpy as np
 from imgui_bundle import hello_imgui, imgui, immapp, implot, rich_md
 from imgui_bundle import ImVec2, ImVec4
 
+import narrator
 from grok_train import P
 
 DATA = np.load(Path(__file__).parent / "grokking_data.npz")  # recorded by grok_train.py
 STEPS: np.ndarray = DATA["steps"]                                  # the training step of each checkpoint
 LAST_STEP = int(STEPS[-1])
 CHECKPOINTS_PER_SECOND = 40                                        # the speed of the play button
+
+r"""::md Lesson
+---
+title: Grokking
+voice: en-US-AndrewMultilingualNeural
+defaults:
+  over: 1
+  delay_after_interaction: 8
+---
+# Grokking
+
+## The end
+
+```cues
+set_value("step", 1000)
+set_value("clock", 0)
+```
+This network learned to add. Nobody told it how.
+
+```cues
+highlight("step", at="hidden half")
+animate("step", 0, over=4, at="Let's go back")
+```
+For a long time, it only knew the sums by heart. Then, in a few hundred steps, it found the rule, and the hidden
+half of the table turned green. Let's go back to the beginning, and watch it happen.
+
+## Learning by heart
+
+```cues
+animate("step", 100, over=8, at="Watch the table")
+```
+The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test.
+Watch the table while it trains. Within a hundred steps, every blue cell is right.
+
+```cues
+highlight("step", at="still red")
+pause("Drag the step slider between 100 and 250: nothing changes on the hidden half. Then press Continue.")
+```
+But the hidden half is still red. The network has learned its half by heart, and has no idea about the rest.
+
+### More: overfitting
+A model that fits its training data, but not new data, is said to overfit. Usually, training stops here.
+
+### Code
+The training step: the loss, its gradient, and AdamW, which also shrinks every weight a little at each step.
+![[grok_train.py#Step#code]]
+
+## Grokking
+
+```cues
+animate("step", 700, over=12, at="Nothing changes")
+```
+Nothing changes in the training: the same steps continue, on the same half. And then, slowly at first, the red
+cells turn green. By step seven hundred, the network answers every sum it has never seen.
+
+```cues
+highlight("clock", at="Look inside")
+animate("step", 1000, over=4, at="a circle")
+```
+Look inside. The 53 numbers, as the network represents them, now sit on a circle: a clock. The network adds by
+turning hands. There are several such clocks, one per frequency: pick another one below the plot.
+
+### More: the clock explanation
+On the plane of frequency $k$, the number $n$ sits at the angle $2 \pi k n / 53$. Adding $a$ and $b$ is adding
+angles: $\cos(a + b) = \cos a \cos b - \sin a \sin b$. The network found this trick by itself, pushed by the weight
+decay: a memorized table costs large weights, a clock costs small ones (Nanda et al., 2023).
+"""
 
 INTRO = """# Grokking
 A network is shown **half** of the 53 x 53 table of sums modulo 53 (the blue cells), and is tested on the other half
@@ -37,8 +105,12 @@ class AppState:
     def step(self) -> int:
         return int(STEPS[self.checkpoint])
 
-    def set_step(self, step: int) -> None:
+    @step.setter
+    def step(self, step: int) -> None:
         self.checkpoint = int(np.clip(np.searchsorted(STEPS, step), 0, len(STEPS) - 1))
+
+    def set_step(self, step: int) -> None:
+        self.step = step
 
     def advance(self) -> None:
         self.play_accumulator += imgui.get_io().delta_time * CHECKPOINTS_PER_SECOND
@@ -51,6 +123,9 @@ class AppState:
 
 
 app_state = AppState()
+lesson = narrator.Lesson(__file__, section="Lesson")
+lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
+lesson.param(name="clock", owner=app_state, range=(0, 3))
 
 
 def table_colormap() -> int:
@@ -108,6 +183,7 @@ def gui_clocks() -> None:
         imgui.same_line()
         if imgui.radio_button(str(int(k)), app_state.clock == i):
             app_state.clock = i
+        lesson.widget("clock", changed=imgui.is_item_clicked())
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
     if implot.begin_plot("##clock", hello_imgui.em_to_vec2(28, 11), flags):
         implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, implot.AxisFlags_.no_tick_labels)
@@ -131,6 +207,7 @@ def gui_controls() -> None:
     imgui.same_line()
     imgui.set_next_item_width(hello_imgui.em_size(30))
     changed, step = imgui.slider_int("Training step", app_state.step, 0, LAST_STEP)
+    lesson.widget("step", changed=changed)
     if changed:
         app_state.set_step(step)
     imgui.same_line()
@@ -150,12 +227,13 @@ def gui() -> None:
     gui_accuracy()
     gui_clocks()
     imgui.end_group()
+    lesson.gui()
 
 
 def main() -> None:
     params = hello_imgui.RunnerParams()
     params.app_window_params.window_title = "Grokking"
-    params.app_window_params.window_geometry.size = (1000, 760)
+    params.app_window_params.window_geometry.size = (1000, 1000)
     params.imgui_window_params.tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
     params.ini_disable = True
     params.callbacks.show_gui = gui
