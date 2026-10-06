@@ -3,7 +3,8 @@
 A lesson is the `::md Lesson` section of a program (see the format in _plans/narrated_explorables/nex_dsl__format.md):
 chapters are `##` headings, the narration is its paragraphs, and `cues` fenced blocks before a paragraph say what
 happens on the stage while it is read. The program declares what the cues may touch (parameters, actions), tags the
-widgets that show the parameters, and calls `lesson.gui()` for the strip (the captions, the controls, the chapters).
+widgets that show the parameters, and calls `lesson.gui(stage)`: the player lays out the window (the stage, the strip
+with the narration and the controls), and `stage` draws the program's figures in the region it gets.
 
 The voice: `python narrator.py build scenario.md` synthesizes one clip per sentence (edge-tts, the voice of the front
 matter) into `scenario_audio/` beside the script, with the words' timings; only new sentences are synthesized. With
@@ -22,13 +23,20 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable, Optional
 
-from imgui_bundle import hello_imgui, imgui, rich_md
+from imgui_bundle import hello_imgui, imgui, rich_md, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4
 
 SECONDS_PER_CHAR = 0.06          # the silent clock: Tangible's estimate of a voice's pace
 SENTENCE_GAP = 0.4               # the silence after a sentence
 CHAPTER_GAP = 0.8                # the silence before a chapter
 HIGHLIGHT_DURATION = 3.0
+COMPACT_WIDTH_EM = 40.0          # a window narrower than this (or a landscape one) gets the phone's layout
+LANDSCAPE_MAX_HEIGHT_EM = 30.0   # a window shorter than this, and wider than tall: the strip becomes a column
+STRIP_MIN_WIDTH_EM = 18.0        # the strip's column, in landscape
+SIDE_PANEL_MIN_WIDTH_EM = 60.0   # a stage wider than this shows an open panel beside it; a narrower one, over it
+TOUCH_BUTTON_EM = 2.4            # the buttons' height in the phone's layout
+PARAGRAPH_ESTIMATE_SCALE = 1.3   # rich_md's paragraphs are taller than imgui's text of the same width
+PROMPT_COLOR = ImVec4(1.0, 0.75, 0.3, 1.0)
 RESERVED_SECTIONS = ("More", "Code", "References")
 IN_BROWSER = sys.platform == "emscripten"
 DEFAULT_VOICE = "en-US-AndrewMultilingualNeural"
@@ -103,7 +111,7 @@ class Script:
     front_matter: dict[str, Any]
     chapters: list[Chapter]
     events: list[Event]
-    markdown: str                # the whole lesson, for the full text view
+    markdown: str                # the whole lesson without its front matter, for the full text view
     duration: float
 
 
@@ -258,8 +266,8 @@ class Parser:
         self._attach_pending_to_chapter_start()
         self._time_everything()
         duration = self.chapters[-1].end if self.chapters else 0.0
-        return Script(front_matter, self.chapters, sorted(self.events, key=lambda e: e.time), "\n".join(self.lines),
-                      duration)
+        return Script(front_matter, self.chapters, sorted(self.events, key=lambda e: e.time),
+                      "\n".join(self.lines[start:]), duration)
 
     def _close_section(self) -> None:
         if self.section is not None and self.chapters:
@@ -544,9 +552,11 @@ class Lesson:
         self.initial: dict[str, Any] = {}
         self.default_over = 1.0
         self.delay_after_interaction = 8.0
+        self.panel = ""                            # "", "section", "full_text", "scenario" or "program"
         self.open_section: Optional[Section] = None
-        self.show_full_text = False
-        self.show_source = ""                      # "", "scenario" or "program": the source shown under the strip
+        self.compact = False                       # the phone's layout (set by gui): large buttons, one figure
+        self._measured_width = 0.0                 # the paragraphs' width when _tallest_drawn was measured
+        self._tallest_drawn = 0.0                  # the tallest paragraph drawn at that width
         self.strict = True                         # False for the build step: the parameters are not declared there
         self.voice = DEFAULT_VOICE
         self.voice_on = True
@@ -766,116 +776,284 @@ class Lesson:
             imgui.get_foreground_draw_list().add_rect(p.rect[0] - ImVec2(4, 4), p.rect[1] + ImVec2(4, 4), color,
                                                       rounding=4.0, thickness=3.0)
 
-    # ---- the strip -----------------------------------------------------------------------------------------------
-    def gui(self) -> None:
-        """The strip: the chapters, the current paragraph, the controls"""
+    # ---- the frame -----------------------------------------------------------------------------------------------
+    def gui(self, stage: Callable[[], None]) -> None:
+        """The whole window: the stage, drawn by `stage` (it sizes its figures from imgui.get_content_region_avail()),
+        and the strip below it, or on its right when the window is short and wide (a phone in landscape)"""
         self.update()
-        if self.error:
-            imgui.text_colored(ImVec4(1.0, 0.4, 0.4, 1.0), f"Lesson error: {self.error}")
-            return
-        assert self.script is not None
         em = hello_imgui.em_size()
+        spacing = imgui.get_style().item_spacing
+        avail = imgui.get_content_region_avail()
+        landscape = avail.y < LANDSCAPE_MAX_HEIGHT_EM * em and avail.x > 1.4 * avail.y
+        self.compact = landscape or avail.x < COMPACT_WIDTH_EM * em
+        if self.error or self.script is None:
+            imgui.push_text_wrap_pos(0.0)
+            imgui.text_colored(ImVec4(1.0, 0.4, 0.4, 1.0), f"Lesson error: {self.error}")
+            imgui.pop_text_wrap_pos()
+            self._gui_stage_child(stage, imgui.get_content_region_avail())
+            return
+        imgui.push_id("narrator")                  # the player's widgets may share labels with the program's
+        if landscape:
+            strip_width = max(STRIP_MIN_WIDTH_EM * em, 0.4 * avail.x)
+            self._gui_stage(stage, ImVec2(avail.x - strip_width - spacing.x, avail.y))
+            imgui.same_line()
+            self._gui_strip(ImVec2(strip_width, avail.y))
+        else:
+            strip_height = min(self._strip_height(avail.x), 0.6 * avail.y)
+            self._gui_stage(stage, ImVec2(avail.x, avail.y - strip_height - spacing.y))
+            self._gui_strip(ImVec2(avail.x, strip_height))
+        imgui.pop_id()
+
+    def _button_height(self) -> float:
+        """Large enough for a finger in the phone's layout"""
+        return TOUCH_BUTTON_EM * hello_imgui.em_size() if self.compact else imgui.get_frame_height()
+
+    # ---- the stage and the panels --------------------------------------------------------------------------------
+    def _gui_stage_child(self, stage: Callable[[], None], size: ImVec2) -> None:
+        imgui.push_id("stage")
+        imgui.begin_child("##stage", ImVec2(max(1.0, size.x), max(1.0, size.y)))
+        stage()
+        imgui.end_child()
+        imgui.pop_id()
+
+    def _gui_stage(self, stage: Callable[[], None], size: ImVec2) -> None:
+        """The stage, and the open panel: beside it on a wide window, over it on a narrow one"""
+        if not self.panel:
+            self._gui_stage_child(stage, size)
+        elif size.x >= SIDE_PANEL_MIN_WIDTH_EM * hello_imgui.em_size():
+            panel_width = 0.4 * size.x
+            self._gui_stage_child(stage, ImVec2(size.x - panel_width - imgui.get_style().item_spacing.x, size.y))
+            imgui.same_line()
+            self._gui_panel(ImVec2(panel_width, size.y))
+        else:
+            self._gui_panel(size)
+
+    def _toggle_panel(self, panel: str, section: Optional[Section] = None) -> None:
+        same = self.panel == panel and self.open_section is section
+        self.panel, self.open_section = ("", None) if same else (panel, section)
+
+    def _gui_panel(self, size: ImVec2) -> None:
+        """A section, the full text, the scenario or the program, with a close button"""
+        assert self.script is not None
+        h = self._button_height()
+        imgui.begin_child("##panel", ImVec2(max(1.0, size.x), max(1.0, size.y)), imgui.ChildFlags_.borders)
+        if self.panel == "section" and self.open_section is not None:
+            title = self.open_section.title
+        else:
+            title = {"full_text": "Full text", "scenario": "Scenario", "program": "Program"}.get(self.panel, "")
+        imgui.align_text_to_frame_padding()
+        imgui.text(title)
+        imgui.same_line(imgui.get_window_width() - h - imgui.get_style().window_padding.x)
+        if imgui.button(fa.ICON_FA_TIMES + "##close", ImVec2(h, h)):
+            self.panel, self.open_section = "", None
         imgui.separator()
-        chapter_now = self.current_chapter()
-        follow = chapter_now if chapter_now != self._last_chapter else None   # the tab follows the clock
-        self._last_chapter = chapter_now
-        if imgui.begin_tab_bar("##chapters"):
-            for i, chapter in enumerate(self.script.chapters):
-                flags = imgui.TabItemFlags_.set_selected if follow == i else 0
-                if imgui.begin_tab_item_simple(chapter.title or f"Chapter {i + 1}", flags):
-                    if i != chapter_now and follow is None:                   # the learner clicked another tab
-                        self.seek(chapter.start)
-                    imgui.end_tab_item()
-            imgui.end_tab_bar()
-        self._gui_paragraph()
-        self._gui_controls(em)
-        if self.open_section is not None:
-            imgui.begin_child("##section", ImVec2(0, em * 10), imgui.ChildFlags_.borders)
+        imgui.begin_child("##panel_content")
+        if self.panel == "section" and self.open_section is not None:
             rich_md.render(self.open_section.markdown)
-            imgui.end_child()
-        if self.show_full_text:
-            self._gui_full_text(em)
-        if self.show_source:
-            self._gui_source(em)
+        elif self.panel == "full_text":
+            rich_md.register_fenced_block_renderer("cues", lambda _code: None)
+            rich_md.render(self.script.markdown)
+        elif self.panel == "scenario":
+            text = Path(self.file).read_text(encoding="utf-8") if os.path.isfile(self.file) else ""
+            rich_md.render_raw("````markdown\n" + text + "\n````")
+        elif self.panel == "program":
+            rich_md.render_file(self.program or self.file, "")
+        imgui.end_child()
+        imgui.end_child()
 
-    _last_chapter = -1
+    # ---- the strip -----------------------------------------------------------------------------------------------
+    def _strip_height(self, width: float) -> float:
+        """The strip's height at a window's width: the same for every paragraph, so that the stage keeps its size"""
+        style = imgui.get_style()
+        inner = width - 2 * style.window_padding.x
+        h, sp = self._button_height(), style.item_spacing.y
+        return (2 * style.window_padding.y + (h + sp) + (self._paragraph_height(inner) + sp)
+                + self._prompt_block_height(inner) + self._chips_block_height(inner) + h)
 
-    def _gui_paragraph(self) -> None:
+    def _paragraph_height(self, width: float) -> float:
+        """The tallest paragraph at this width: estimated with imgui's font, raised by what rich_md really drew"""
+        assert self.script is not None
+        self._note_drawn(width, 0.0)
+        tallest = max((imgui.calc_text_size(_spoken_text(p.text), wrap_width=width).y
+                       for c in self.script.chapters for p in c.paragraphs), default=0.0)
+        return max(tallest * PARAGRAPH_ESTIMATE_SCALE, self._tallest_drawn)
+
+    def _note_drawn(self, width: float, height: float) -> None:
+        if abs(width - self._measured_width) > 0.5:
+            self._measured_width, self._tallest_drawn = width, 0.0
+        self._tallest_drawn = max(self._tallest_drawn, height)
+
+    def _hint_visible(self) -> bool:
+        w = self.waiting
+        return (w is not None and w.kind == "challenge" and bool(w.hint)
+                and time.time() - self.waiting_since > w.hint_after)
+
+    def _prompt_block_height(self, width: float) -> float:
+        """The pause's prompt (wrapped), its hint, and its Continue button"""
+        if self.waiting is None:
+            return 0.0
+        sp = imgui.get_style().item_spacing.y
+        height = imgui.calc_text_size(self.waiting.prompt, wrap_width=width).y + sp
+        if self._hint_visible():
+            height += imgui.calc_text_size(self.waiting.hint, wrap_width=width).y + sp
+        return height + self._button_height() + sp
+
+    @staticmethod
+    def _chip_labels(chapter: Chapter) -> list[str]:
+        icons = {"More": fa.ICON_FA_INFO_CIRCLE, "Code": fa.ICON_FA_CODE, "References": fa.ICON_FA_BOOK}
+        return [f"{icons.get(s.kind, '')} {s.title}" for s in chapter.sections]
+
+    def _chip_rows(self, chapter: Chapter, width: float) -> list[list[int]]:
+        """The chips of a chapter's sections, in rows that fit the width: the indices of each row"""
+        style = imgui.get_style()
+        rows: list[list[int]] = []
+        x = 0.0
+        for i, label in enumerate(self._chip_labels(chapter)):
+            w = imgui.calc_text_size(label).x + 2 * style.frame_padding.x
+            if rows and x + style.item_spacing.x + w <= width:
+                rows[-1].append(i)
+                x += style.item_spacing.x + w
+            else:
+                rows.append([i])
+                x = w
+        return rows
+
+    def _chips_block_height(self, width: float) -> float:
+        """As many rows as the chapter that has the most: the bar stays in place from a chapter to the next"""
+        assert self.script is not None
+        rows = max((len(self._chip_rows(c, width)) for c in self.script.chapters), default=0)
+        return rows * (self._button_height() + imgui.get_style().item_spacing.y)
+
+    def _gui_strip(self, size: ImVec2) -> None:
+        """The chapter's line, the paragraph, the pause's prompt, the sections' chips, and the bar at the bottom"""
+        assert self.script is not None
+        style = imgui.get_style()
+        bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+        imgui.push_style_color(imgui.Col_.child_bg, ImVec4(bg.x + 0.05, bg.y + 0.05, bg.z + 0.06, 1.0))
+        imgui.begin_child("##strip", size, imgui.ChildFlags_.always_use_window_padding,
+                          imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse)
+        imgui.pop_style_color()
+        h, sp = self._button_height(), style.item_spacing.y
+        top = imgui.get_cursor_pos_y()
+        inner = imgui.get_content_region_avail()
+        chapter = self.script.chapters[self.current_chapter()]
+        self._gui_chapter_line(h)
+        paragraph_height = (inner.y - (h + sp) - sp - self._prompt_block_height(inner.x)
+                            - self._chips_block_height(inner.x) - h)
+        imgui.begin_child("##paragraph", ImVec2(0, max(1.0, paragraph_height)))
+        self._gui_paragraph(inner.x)
+        imgui.end_child()
+        if self.waiting is not None:
+            imgui.push_text_wrap_pos(0.0)
+            imgui.text_colored(PROMPT_COLOR, self.waiting.prompt)
+            if self._hint_visible():
+                imgui.text_disabled(self.waiting.hint)
+            imgui.pop_text_wrap_pos()
+            if imgui.button(("Continue" if self.waiting.kind == "pause" else "Skip") + "###waiting", ImVec2(0, h)):
+                self._resume()
+        self._gui_chips(chapter, inner.x, h)
+        imgui.set_cursor_pos_y(top + inner.y - h)
+        self._gui_bar(h)
+        imgui.end_child()
+
+    def _gui_chapter_line(self, h: float) -> None:
+        """The chapter's title: a tap opens the lesson's menu (the chapters, the full text, the sources)"""
+        assert self.script is not None
+        chapters = self.script.chapters
+        now = self.current_chapter()
+        title = chapters[now].title or f"Chapter {now + 1}"
+        if imgui.button(f"{fa.ICON_FA_BARS}  {title}   {now + 1}/{len(chapters)}###menu", ImVec2(0, h)):
+            imgui.open_popup("##lesson_menu")
+        if not imgui.begin_popup("##lesson_menu"):
+            return
+        imgui.push_style_var(imgui.StyleVar_.selectable_text_align, ImVec2(0.0, 0.5))
+        for i, chapter in enumerate(chapters):
+            label = f"{i + 1}. {chapter.title or f'Chapter {i + 1}'}"
+            if i == now:
+                done = (self.t - chapter.start) / max(1e-6, chapter.end - chapter.start)
+                label += f"   ({min(100, int(100 * done))}%)"
+            if imgui.selectable(f"{label}###chapter{i}", i == now, 0, ImVec2(0, h))[0]:
+                self.seek(chapter.start)
+        imgui.separator()
+        for panel, label in (("full_text", f"{fa.ICON_FA_BOOK}  Full text"),
+                             ("scenario", f"{fa.ICON_FA_FILE_ALT}  Scenario"),
+                             ("program", f"{fa.ICON_FA_CODE}  Program")):
+            if imgui.selectable(label, self.panel == panel, 0, ImVec2(0, h))[0]:
+                self._toggle_panel(panel)
+        imgui.pop_style_var()
+        imgui.end_popup()
+
+    def _gui_paragraph(self, width: float) -> None:
+        """The paragraph being read, its spoken sentence in bold"""
         paragraph = self.current_paragraph()
         sentence = self.current_sentence()
         if paragraph is None or sentence is None:
             return
-        parts = []
-        for s in paragraph.sentences:
-            if s is sentence:
-                parts.append(f"**{s.text}**")
-            else:
-                parts.append(s.text)
+        parts = [f"**{s.text}**" if s is sentence else s.text for s in paragraph.sentences]
+        top = imgui.get_cursor_pos_y()
         rich_md.render(" ".join(parts))
+        self._note_drawn(width, imgui.get_cursor_pos_y() - top)
 
-    def _gui_controls(self, em: float) -> None:
-        """The strip's widgets carry their own IDs, so that the explorable's widgets may use the same labels"""
+    def _gui_chips(self, chapter: Chapter, width: float, h: float) -> None:
+        """The chapter's sections (More, Code...): a tap opens or closes one"""
+        labels = self._chip_labels(chapter)
+        for row in self._chip_rows(chapter, width):
+            for n, i in enumerate(row):
+                if n > 0:
+                    imgui.same_line()
+                section = chapter.sections[i]
+                selected = self.panel == "section" and self.open_section is section
+                if selected:
+                    imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
+                if imgui.button(f"{labels[i]}##section{i}", ImVec2(0, h)):
+                    self._toggle_panel("section", section)
+                if selected:
+                    imgui.pop_style_color()
+
+    def _gui_bar(self, h: float) -> None:
+        """Back one sentence, play or pause, forward one sentence, the progress (a tap seeks), the voice"""
         assert self.script is not None
-        imgui.push_id("narrator")
-        if self.waiting is not None:
-            imgui.text_colored(ImVec4(1.0, 0.75, 0.3, 1.0), self.waiting.prompt)
-            if self.waiting.kind == "challenge" and self.waiting.hint and \
-                    time.time() - self.waiting_since > self.waiting.hint_after:
-                imgui.text_disabled(self.waiting.hint)
-            if imgui.button("Continue" if self.waiting.kind == "pause" else "Skip"):
-                self._resume()
-            imgui.same_line()
-        if imgui.button("Pause" if self.playing else "Play", ImVec2(em * 4, 0)):
+        button = ImVec2(1.25 * h, h)
+        if imgui.button(fa.ICON_FA_STEP_BACKWARD + "##back", button):
+            sentence = self.current_sentence()     # back to the start of this sentence, or to the previous one
+            self.sentence_offset(0 if sentence is not None and self.t - sentence.start > 1.5 else -1)
+        imgui.same_line()
+        if imgui.button((fa.ICON_FA_PAUSE if self.playing else fa.ICON_FA_PLAY) + "###play", button):
             self.playing = not self.playing
             if self.playing and self.t >= self.script.duration:
                 self.seek(0.0)
         imgui.same_line()
-        if imgui.button("|<", ImVec2(em * 2, 0)):
-            self.sentence_offset(0)
-        imgui.same_line()
-        if imgui.button("<", ImVec2(em * 2, 0)):
-            self.sentence_offset(-1)
-        imgui.same_line()
-        if imgui.button(">", ImVec2(em * 2, 0)):
+        if imgui.button(fa.ICON_FA_STEP_FORWARD + "##forward", button):
             self.sentence_offset(1)
         imgui.same_line()
-        imgui.set_next_item_width(em * 14)
-        imgui.progress_bar(self.t / max(1e-6, self.script.duration), ImVec2(0, 0),
-                           f"{self.t:.0f} / {self.script.duration:.0f} s")
-        for section in self.script.chapters[self.current_chapter()].sections:
+        voice = self.audio is not None and bool(self.audio_index)
+        voice_width = button.x + imgui.get_style().item_spacing.x if voice else 0.0
+        self._gui_progress(ImVec2(max(1.0, imgui.get_content_region_avail().x - voice_width), h))
+        if voice:
             imgui.same_line()
-            if imgui.button(section.title):
-                self.open_section = None if self.open_section is section else section
-        if self.audio is not None and self.audio_index:
-            imgui.same_line()
-            if imgui.button("Voice: on" if self.voice_on else "Voice: off"):
+            if imgui.button((fa.ICON_FA_VOLUME_UP if self.voice_on else fa.ICON_FA_VOLUME_OFF) + "###voice", button):
                 self.voice_on = not self.voice_on
                 self._stop_audio()
-        imgui.same_line()
-        if imgui.button("Full text"):
-            self.show_full_text = not self.show_full_text
-        for label, which in (("Scenario", "scenario"), ("Program", "program")):
-            imgui.same_line()
-            if imgui.button(label):
-                self.show_source = "" if self.show_source == which else which
-        imgui.pop_id()
 
-    def _gui_source(self, em: float) -> None:
-        """The scenario as written, or the program, as code"""
-        imgui.begin_child("##source", ImVec2(0, em * 24), imgui.ChildFlags_.borders)
-        if self.show_source == "scenario":
-            text = Path(self.file).read_text(encoding="utf-8") if os.path.isfile(self.file) else ""
-            rich_md.render_raw("````markdown\n" + text + "\n````")
-        else:
-            rich_md.render_file(self.program or self.file, "")
-        imgui.end_child()
-
-    def _gui_full_text(self, em: float) -> None:
+    def _gui_progress(self, size: ImVec2) -> None:
+        """The lesson's progress, a tick at each chapter; a tap or a drag seeks (to the start of a sentence)"""
         assert self.script is not None
-        rich_md.register_fenced_block_renderer("cues", lambda _code: None)
-        imgui.begin_child("##full_text", ImVec2(0, em * 20), imgui.ChildFlags_.borders)
-        rich_md.render(self.script.markdown)
-        imgui.end_child()
+        duration = max(1e-6, self.script.duration)
+        pos = imgui.get_cursor_screen_pos()
+        imgui.invisible_button("##seek", size)
+        if imgui.is_item_active():
+            target = max(0.0, min(1.0, (imgui.get_io().mouse_pos.x - pos.x) / size.x)) * duration
+            starts = [s.start for c in self.script.chapters for p in c.paragraphs for s in p.sentences]
+            landing = max((s for s in starts if s <= target + 1e-6), default=0.0)
+            sentence = self.current_sentence()
+            if sentence is None or abs(sentence.start - landing) > 1e-6:   # seek once per sentence, while dragging
+                self.seek(target)
+        imgui.set_cursor_screen_pos(pos)
+        imgui.progress_bar(self.t / duration, size, f"{self.t:.0f} / {self.script.duration:.0f} s")
+        color = imgui.get_color_u32(imgui.Col_.text, 0.45)
+        for chapter in self.script.chapters[1:]:
+            x = pos.x + size.x * chapter.start / duration
+            imgui.get_window_draw_list().add_line(ImVec2(x, pos.y), ImVec2(x, pos.y + size.y), color, 2.0)
 
 
 # =============================================================================

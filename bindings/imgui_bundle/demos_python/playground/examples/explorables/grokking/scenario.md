@@ -61,6 +61,7 @@ How can we explain that the network suddenly *groks* (understands) something abo
 [[Back to the two figures; the second one replays the training from chaos to the circle]]
 ```cues
 set_value("view", "curves")
+set_value("focus", "clock")
 animate("step", 0, over=1, at="The second")
 animate("step", 1000, over=8, at="from chaos")
 highlight("clock", at="a circle")
@@ -73,6 +74,7 @@ The answer is in that structure. Nobody taught this network a rule: it found one
 
 ```cues
 set_value("view", "full")
+set_value("focus", "table")
 set_value("step", 0)
 set_value("table_view", "split")
 ```
@@ -98,6 +100,7 @@ Addition modulo 53 is the arithmetic of a clock with 53 hours: $(a + b) \bmod 53
 
 ```cues
 set_value("table_view", "answers")
+set_value("focus", "table")
 animate("step", 100, over=8, at="Watch the table")
 ```
 The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test. Watch the table while it trains. Within a hundred steps, every blue cell is right.
@@ -118,11 +121,13 @@ The training step: the loss, its gradient, and AdamW, which also shrinks every w
 ## Grokking
 
 ```cues
+set_value("focus", "table")
 animate("step", 700, over=12, at="Nothing changes")
 ```
 Nothing changes in the training: the same steps continue, on the same half. And then, slowly at first, the red cells turn green. By step seven hundred, the network answers every sum it has never seen.
 
 ```cues
+set_value("focus", "clock", at="Look inside")
 highlight("clock", at="Look inside")
 animate("step", 1000, over=4, at="a circle")
 ```

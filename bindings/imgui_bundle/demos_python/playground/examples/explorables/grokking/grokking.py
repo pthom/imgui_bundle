@@ -10,7 +10,7 @@ import time
 from pathlib import Path
 
 import numpy as np
-from imgui_bundle import hello_imgui, imgui, immapp, implot, rich_md
+from imgui_bundle import hello_imgui, imgui, immapp, implot, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4
 
 import narrator
@@ -22,15 +22,8 @@ LAST_STEP = int(STEPS[-1])
 GROK_START = int(STEPS[np.argmax(DATA["test_acc"] > 0.1)])          # where the hidden sums start to be answered
 CHECKPOINTS_PER_SECOND = 40                                        # the speed of the play button
 ACCENT_BLINK_SECONDS = 4.0                                         # an accented curve blinks that long
-
-INTRO = """
-# Grokking
-A network is shown **half** of the 53 x 53 table of sums modulo 53 (the blue cells), and is tested on the other half
-(the red ones).
-Scrub through its training, or press play. First it learns its half by heart: blue, but no green.
-Then, long after, it finds the rule, and the hidden half turns green: it **grokked**. Inside, the 53 numbers have
-arranged themselves on circles: clocks, one per frequency.
-"""
+ONE_FIGURE_BELOW_EM = 36.0                                         # a narrower stage (a phone) shows one figure
+FIGURE_NAMES = {"table": "Table", "accuracy": "Accuracy", "clock": "Clock"}
 
 
 class AppState:
@@ -41,6 +34,7 @@ class AppState:
         self.clock = 0                # which of the recorded clocks is shown
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
         self.view = "full"            # "full", "curves" (accuracy and clock), "accuracy" (that plot alone), "none"
+        self.focus = "accuracy"       # the figure the narration talks about: a narrow stage shows it alone
         self.accent_line = "none"     # the accuracy curve drawn thick: "seen", "hidden" or "none"
         self.accent_since = 0.0       # when the accent last changed: the accented curve blinks for a moment
         self._last_accent = "none"
@@ -56,6 +50,11 @@ class AppState:
 
     def set_step(self, step: int) -> None:
         self.step = step
+
+    def toggle_training(self) -> None:
+        self.playing = not self.playing
+        if self.playing and self.checkpoint == len(STEPS) - 1:
+            self.checkpoint = 0
 
     def advance(self) -> None:
         lesson.touched("step")                       # the learner plays the training: the lesson lets the step be
@@ -74,8 +73,24 @@ lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
 lesson.param(name="clock", owner=app_state, range=(0, 3))
 lesson.param(name="table_view", owner=app_state)
 lesson.param(name="view", owner=app_state)
+lesson.param(name="focus", owner=app_state)
 lesson.param(name="accent_line", owner=app_state)
 lesson.param(name="zone", owner=app_state)
+
+
+def button_height() -> float:
+    """Taller on a phone, for a finger"""
+    return narrator.TOUCH_BUTTON_EM * hello_imgui.em_size() if lesson.compact else imgui.get_frame_height()
+
+
+def chip(label: str, selected: bool) -> bool:
+    """A button that reads as selected or not (the figure shown, the clock's frequency)"""
+    if selected:
+        imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
+    clicked = imgui.button(label, ImVec2(0, button_height()))
+    if selected:
+        imgui.pop_style_color()
+    return clicked
 
 
 def table_colormap() -> int:
@@ -97,10 +112,12 @@ def table_cells(checkpoint: int) -> np.ndarray:
     return np.asarray(2.0 * hidden + right, dtype=np.float32)
 
 
-def gui_table() -> None:
-    """The 53 x 53 table of sums, each cell colored by what the network answers at this step"""
+def gui_table(size: ImVec2) -> None:
+    """The 53 x 53 table of sums, each cell colored by what the network answers at this step (a square, centered)"""
+    side = max(1.0, min(size.x, size.y))
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (size.x - side) / 2)
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
-    if implot.begin_plot("##table", hello_imgui.em_to_vec2(24, 24), flags):
+    if implot.begin_plot("##table", ImVec2(side, side), flags):
         implot.setup_axes("b", "a", implot.AxisFlags_.no_grid_lines, implot.AxisFlags_.no_grid_lines)
         implot.setup_axes_limits(0, P, 0, P, imgui.Cond_.always)
         implot.push_colormap(table_colormap())
@@ -112,12 +129,12 @@ def gui_table() -> None:
 
 
 def gui_accuracy(size: ImVec2) -> None:
-    """The accuracies on the seen and the hidden sums, with a line at the current step (drag it to scrub)"""
+    """The accuracies on the seen and the hidden sums, with a line at the current step (a tap or a drag scrubs)"""
     flags = implot.Flags_.no_menus | implot.Flags_.no_mouse_text
-    if implot.begin_plot("Accuracy", size, flags):
+    if implot.begin_plot("Accuracy", ImVec2(max(1.0, size.x), max(1.0, size.y)), flags):
         implot.setup_axes("training step", "accuracy")
         implot.setup_axes_limits(0, LAST_STEP, -0.02, 1.02, imgui.Cond_.always)
-        implot.setup_legend(implot.Location_.east)
+        implot.setup_legend(implot.Location_.south_east, implot.LegendFlags_.no_buttons)
         if app_state.zone != "none":
             lo, hi = (0, GROK_START) if app_state.zone == "memorizing" else (GROK_START, LAST_STEP)
             implot.plot_shaded("##zone", np.array([lo, hi], np.float64), np.array([1.02, 1.02]), np.array([-0.02, -0.02]),
@@ -139,72 +156,138 @@ def gui_accuracy(size: ImVec2) -> None:
             implot.plot_line(label, STEPS.astype(np.float64), DATA[key].astype(np.float64),
                              spec=implot.Spec(line_color=line_color, line_weight=weight))
         changed, x, *_ = implot.drag_line_x(0, float(app_state.step), ImVec4(1.0, 0.8, 0.3, 1.0), 2.0)
+        if not changed and implot.is_plot_hovered() and imgui.is_mouse_down(imgui.MouseButton_.left):
+            changed, x = True, implot.get_plot_mouse_pos().x       # a finger cannot grab a thin line: the plot scrubs
         if changed:
             app_state.set_step(int(x))
+            lesson.touched("step")
         implot.end_plot()
     lesson.widget("accent_line")
 
 
-def gui_clocks() -> None:
+def gui_clocks(size: ImVec2) -> None:
     """The 53 numbers inside the network: their embeddings on the plane of one frequency (a clock, once it groks)"""
+    em = hello_imgui.em_size()
     frequencies = DATA["clock_frequencies"]
-    imgui.text("The 53 numbers inside the network, on the clock of frequency")
+    h = button_height()
+    imgui.push_style_var(imgui.StyleVar_.frame_padding,                # the label centered on the chips' height
+                         ImVec2(imgui.get_style().frame_padding.x, (h - imgui.get_font_size()) / 2))
+    imgui.align_text_to_frame_padding()
+    label = "The 53 numbers inside the network, on the clock of frequency"
+    if imgui.calc_text_size(label).x + len(frequencies) * 3 * em > size.x:
+        label = "Frequency"
+    imgui.text(label)
     for i, k in enumerate(frequencies):
         imgui.same_line()
-        if imgui.radio_button(str(int(k)), app_state.clock == i):
+        if chip(f"{int(k)}##frequency", app_state.clock == i):
             app_state.clock = i
         lesson.widget("clock", changed=imgui.is_item_clicked())
+    imgui.pop_style_var()
+    height = size.y - h - imgui.get_style().item_spacing.y
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
-    if implot.begin_plot("##clock", hello_imgui.em_to_vec2(28, 11), flags):
+    if implot.begin_plot("##clock", ImVec2(max(1.0, size.x), max(1.0, height)), flags):
         implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, implot.AxisFlags_.no_tick_labels)
         extent = float(np.abs(DATA["clocks"]).max()) * 1.1
         implot.setup_axes_limits(-extent, extent, -extent, extent, imgui.Cond_.always)
         points = DATA["clocks"][app_state.checkpoint, app_state.clock]
+        small = min(size.x, height) < 30 * em                       # a small clock: smaller labels, larger dots
         implot.plot_scatter("##numbers", points[:, 0].astype(np.float64), points[:, 1].astype(np.float64),
-                            spec=implot.Spec(marker=implot.Marker_.circle, marker_size=3,
+                            spec=implot.Spec(marker=implot.Marker_.circle, marker_size=4 if small else 3,
                                              marker_fill_color=ImVec4(0.25, 0.45, 0.85, 1.0)))
+        label_scale = max(0.6, min(1.0, min(size.x, height) / (30 * em)))
+        imgui.push_font(None, imgui.get_style().font_size_base * label_scale)
+        offset = ImVec2(9 * label_scale, -7 * label_scale)
         for n in range(P):
-            implot.plot_text(str(n), float(points[n, 0]), float(points[n, 1]), ImVec2(9, -7))
+            implot.plot_text(str(n), float(points[n, 0]), float(points[n, 1]), offset)
+        imgui.pop_font()
         implot.end_plot()
 
 
 def gui_controls() -> None:
-    """Play, pause, and the slider of the training step"""
-    if imgui.button("Pause" if app_state.playing else "Play the training", hello_imgui.em_to_vec2(9, 0)):
-        app_state.playing = not app_state.playing
-        if app_state.playing and app_state.checkpoint == len(STEPS) - 1:
-            app_state.checkpoint = 0
-    imgui.same_line()
-    imgui.set_next_item_width(hello_imgui.em_size(30))
-    changed, step = imgui.slider_int("Training step", app_state.step, 0, LAST_STEP)
+    """Play, pause, and the slider of the training step; on a phone, the accuracies go into the slider"""
+    seen, hidden = DATA["train_acc"][app_state.checkpoint], DATA["test_acc"][app_state.checkpoint]
+    if lesson.compact:
+        h = button_height()
+        icon = fa.ICON_FA_PAUSE if app_state.playing else fa.ICON_FA_PLAY
+        if imgui.button(icon + "###training", ImVec2(1.25 * h, h)):
+            app_state.toggle_training()
+        imgui.same_line()
+        imgui.set_next_item_width(-1)
+        imgui.push_style_var(imgui.StyleVar_.frame_padding,
+                             ImVec2(imgui.get_style().frame_padding.x, (h - imgui.get_font_size()) / 2))
+        changed, step = imgui.slider_int("##step", app_state.step, 0, LAST_STEP,
+                                         f"step %d   seen {seen * 100:.0f}%%   hidden {hidden * 100:.0f}%%")
+        imgui.pop_style_var()
+    else:
+        if imgui.button("Pause" if app_state.playing else "Play the training", hello_imgui.em_to_vec2(9, 0)):
+            app_state.toggle_training()
+        imgui.same_line()
+        imgui.set_next_item_width(hello_imgui.em_size(30))
+        changed, step = imgui.slider_int("Training step", app_state.step, 0, LAST_STEP)
     lesson.widget("step", changed=changed)
     if changed:
         app_state.set_step(step)
-    imgui.same_line()
-    imgui.text(f"seen: {DATA['train_acc'][app_state.checkpoint]:4.0%}   "
-               f"hidden: {DATA['test_acc'][app_state.checkpoint]:4.0%}")
+    if not lesson.compact:
+        imgui.same_line()
+        imgui.text(f"seen: {seen:4.0%}   hidden: {hidden:4.0%}")
+
+
+def gui_figure_chips(figures: list[str], shown: str) -> None:
+    """On a narrow stage: which figure to look at (the narration chooses one, the learner may choose another)"""
+    for i, figure in enumerate(figures):
+        if i > 0:
+            imgui.same_line()
+        if chip(FIGURE_NAMES[figure], figure == shown):
+            app_state.focus = figure
+        lesson.widget("focus", changed=imgui.is_item_clicked())
+
+
+def gui_figure(figure: str, size: ImVec2) -> None:
+    if figure == "table":
+        gui_table(size)
+    elif figure == "accuracy":
+        gui_accuracy(size)
+    else:
+        gui_clocks(size)
+
+
+def gui_stage() -> None:
+    """The figures, sized from the stage's region: side by side on a wide stage, one at a time on a narrow one"""
+    if app_state.view == "none":                  # an empty stage: the narration alone
+        return
+    if app_state.view == "accuracy":              # the first figure alone, as large as the stage
+        gui_accuracy(imgui.get_content_region_avail())
+        return
+    em = hello_imgui.em_size()
+    spacing = imgui.get_style().item_spacing
+    figures = ["table", "accuracy", "clock"] if app_state.view == "full" else ["accuracy", "clock"]
+    if app_state.view == "full":
+        gui_controls()
+    avail = imgui.get_content_region_avail()
+    if avail.x < ONE_FIGURE_BELOW_EM * em:
+        shown = app_state.focus if app_state.focus in figures else figures[0]
+        gui_figure_chips(figures, shown)
+        gui_figure(shown, imgui.get_content_region_avail())
+    elif app_state.view == "full":                # the table on the left; the accuracy and the clock on its right
+        side = min(avail.y, max((avail.x - spacing.x) * 0.5, avail.x - spacing.x - 26 * em))
+        gui_table(ImVec2(side, side))
+        imgui.same_line()
+        imgui.begin_group()
+        width = avail.x - side - spacing.x
+        gui_accuracy(ImVec2(width, side * 0.48))
+        gui_clocks(ImVec2(width, side * 0.52 - spacing.y))
+        imgui.end_group()
+    else:                                         # the accuracy above the clock
+        width = min(avail.x, 50 * em)
+        gui_accuracy(ImVec2(width, avail.y * 0.45))
+        gui_clocks(ImVec2(width, avail.y * 0.55 - spacing.y))
 
 
 def gui() -> None:
     if app_state.playing:
         app_state.advance()
     hello_imgui.get_runner_params().fps_idling.enable_idling = not (app_state.playing or lesson.playing)
-    if not lesson.started:                        # the explorable's own intro; the lesson has its teaser
-        rich_md.render(INTRO)
-    if app_state.view == "none":                  # an empty stage: the narration alone
-        pass
-    elif app_state.view == "accuracy":            # the first figure alone, as large as the stage
-        gui_accuracy(ImVec2(-1, hello_imgui.em_size(28)))
-    else:
-        if app_state.view == "full":
-            gui_controls()
-            gui_table()
-            imgui.same_line()
-        imgui.begin_group()
-        gui_accuracy(hello_imgui.em_to_vec2(28, 11.5))
-        gui_clocks()
-        imgui.end_group()
-    lesson.gui()
+    lesson.gui(stage=gui_stage)
 
 
 def main() -> None:
