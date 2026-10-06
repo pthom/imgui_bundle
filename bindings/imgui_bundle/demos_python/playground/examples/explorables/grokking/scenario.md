@@ -9,14 +9,13 @@ defaults:
 
 ## Teaser
 
-[[Hide everything]]
-
+[[Hide everything: the narration alone]]
 ```cues
-set_value("view", "curves")
+set_value("view", "none")
 set_value("clock", 0)
 set_value("step", 1000)
 ```
-In this lesson, we will watch a neural network learn a concept. This form of learning is called "Grokking"
+In this lesson, we will watch a neural network learn a concept. This form of learning is called *grokking*.
 
 
 [[Show the first figure: it zooms or fades into view occupying the full stage (animation come with the look)]]
@@ -67,7 +66,7 @@ highlight("clock", at="a circle")
 ```
 The second picture shows how the network organizes what it knows, inside its weights. During the training, it goes from chaos to a circle. The network has found a structure.
 
-That sudden understanding, long after the memorization, is called grokking. Nobody taught this network the rule. Let's go back to the beginning, and watch it happen.
+The answer is in that structure. Nobody taught this network a rule: it found one by itself. Let's go back to the beginning, and watch it happen.
 
 ## Adding on a clock
 

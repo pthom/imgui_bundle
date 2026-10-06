@@ -37,7 +37,7 @@ class AppState:
         self.play_accumulator = 0.0
         self.clock = 0                # which of the recorded clocks is shown
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
-        self.view = "full"            # "full": everything; "curves": the accuracy and the clock; "accuracy": that plot alone
+        self.view = "full"            # "full", "curves" (accuracy and clock), "accuracy" (that plot alone), "none"
         self.accent_line = "none"     # the accuracy curve drawn thick: "seen", "hidden" or "none"
         self.zone = "none"            # a shaded span of the accuracy plot: "memorizing", "grokking" or "none"
 
@@ -177,7 +177,9 @@ def gui() -> None:
     hello_imgui.get_runner_params().fps_idling.enable_idling = not app_state.playing
     if not lesson.started:                        # the explorable's own intro; the lesson has its teaser
         rich_md.render(INTRO)
-    if app_state.view == "accuracy":              # the first figure alone, as large as the stage
+    if app_state.view == "none":                  # an empty stage: the narration alone
+        pass
+    elif app_state.view == "accuracy":            # the first figure alone, as large as the stage
         gui_accuracy(ImVec2(-1, hello_imgui.em_size(28)))
     else:
         if app_state.view == "full":
