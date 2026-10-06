@@ -44,9 +44,39 @@ animate("step", 0, over=4, at="Let's go back")
 For a long time, it only knew the sums by heart. Then, in a few hundred steps, it found the rule, and the hidden
 half of the table turned green. Let's go back to the beginning, and watch it happen.
 
+## Adding on a clock
+
+```cues
+set_value("step", 0)
+set_value("table_view", "split")
+```
+Here is the task. Take two numbers between zero and fifty-two, and add them. When the sum passes fifty-two, wrap
+around, as the hand of a clock does: on a clock with fifty-three hours, forty plus twenty is seven.
+[[a clock widget: the learner picks two hours, the hand turns, the sum appears. To build; until then, the table.]]
+
+```cues
+highlight("table_view", at="The table")
+```
+The table shows every sum: the row is the first number, the column the second. Two thousand eight hundred and nine
+sums in all.
+
+Half of them, chosen at random, are shown to the network during its training: the blue cells. The other half is
+hidden from it: the red cells. That half is the test.
+
+Why fifty-three? It is a prime number, so no shortcut exists: no half table, no simple pattern. The network has to
+find the rule by itself.
+
+### More: modular arithmetic
+Addition modulo 53 is the arithmetic of a clock with 53 hours: $(a + b) \bmod 53$. The same arithmetic, with
+12 hours, tells you that nine hours after five o'clock, it is two o'clock.
+
+### Code
+![[grok_train.py#Data#code]]
+
 ## Learning by heart
 
 ```cues
+set_value("table_view", "answers")
 animate("step", 100, over=8, at="Watch the table")
 ```
 The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test.
@@ -100,6 +130,7 @@ class AppState:
         self.playing = False
         self.play_accumulator = 0.0
         self.clock = 0                # which of the recorded clocks is shown
+        self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
 
     @property
     def step(self) -> int:
@@ -126,6 +157,7 @@ app_state = AppState()
 lesson = narrator.Lesson(__file__, section="Lesson")
 lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
 lesson.param(name="clock", owner=app_state, range=(0, 3))
+lesson.param(name="table_view", owner=app_state)
 
 
 def table_colormap() -> int:
@@ -140,8 +172,10 @@ def table_colormap() -> int:
 
 def table_cells(checkpoint: int) -> np.ndarray:
     """0: seen and wrong, 1: seen and right, 2: hidden and wrong, 3: hidden and right"""
-    right = DATA["correct"][checkpoint].astype(np.float32)
     hidden = (~DATA["train_mask"]).astype(np.float32)
+    if app_state.table_view == "split":
+        return np.asarray(1.0 + hidden, dtype=np.float32)            # seen in blue, hidden in red
+    right = DATA["correct"][checkpoint].astype(np.float32)
     return np.asarray(2.0 * hidden + right, dtype=np.float32)
 
 
@@ -156,6 +190,7 @@ def gui_table() -> None:
                             implot.Point(0, 0), implot.Point(P, P))
         implot.pop_colormap()
         implot.end_plot()
+    lesson.widget("table_view")
 
 
 def gui_accuracy() -> None:
