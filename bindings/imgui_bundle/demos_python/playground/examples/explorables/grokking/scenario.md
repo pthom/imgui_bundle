@@ -19,22 +19,26 @@ In this lesson, we watch a neural network learn a concept. Two figures tell the 
 ```cues
 highlight("step", at="The first")
 ```
+[[Zoom on the first figure: it fills the stage (an animated zoom comes with the look)]]
 ```cues
 set_value("view", "accuracy")
 set_value("step", 1000)
 ```
 The first shows two lines.
 
+[[Highlight the blue line]]
 ```cues
 set_value("accent_line", "seen")
 ```
 The blue one is the network's accuracy on the examples it was trained on. It rises fast: the network learns them quickly.
 
+[[Highlight the green line]]
 ```cues
 set_value("accent_line", "hidden")
 ```
 The green one is its accuracy on examples it has never seen.
 
+[[Shade the zone where no generalization happens, and play the training up to its end]]
 ```cues
 set_value("zone", "memorizing")
 set_value("step", 0)
@@ -42,6 +46,7 @@ animate("step", 300, over=5)
 ```
 For a long time, it stays at zero: the network cannot generalize what it learned.
 
+[[Shade the zone where it generalizes, and play the training to the end; then clear the accents]]
 ```cues
 set_value("zone", "grokking")
 animate("step", 1000, over=6)
@@ -50,6 +55,7 @@ set_value("zone", "none", at="even on examples")
 ```
 Then, suddenly, it starts to generalize. Soon it makes no mistake at all, even on examples it has never seen.
 
+[[Back to the two figures; the second one replays the training from chaos to the circle]]
 ```cues
 set_value("view", "curves")
 animate("step", 0, over=1, at="The second")
