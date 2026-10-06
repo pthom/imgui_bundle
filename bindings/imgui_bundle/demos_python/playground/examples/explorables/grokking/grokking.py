@@ -125,8 +125,8 @@ def gui_accuracy(size: ImVec2) -> None:
         if app_state.accent_line != app_state._last_accent:
             app_state._last_accent, app_state.accent_since = app_state.accent_line, time.time()
         blink = max(0.0, 1.0 - (time.time() - app_state.accent_since) / ACCENT_BLINK_SECONDS)   # 1 at the change, then 0
-        for label, key, color in (("seen sums", "train_acc", ImVec4(0.25, 0.45, 0.85, 1.0)),
-                                  ("hidden sums", "test_acc", ImVec4(0.25, 0.68, 0.38, 1.0))):
+        for label, key, color in (("Training set", "train_acc", ImVec4(0.25, 0.45, 0.85, 1.0)),
+                                  ("Hidden set", "test_acc", ImVec4(0.25, 0.68, 0.38, 1.0))):
             accented = app_state.accent_line == key.split("_")[0].replace("train", "seen").replace("test", "hidden")
             dimmed = app_state.accent_line != "none" and not accented
             line_color = ImVec4(color.x, color.y, color.z, 0.25 if dimmed else 1.0)
