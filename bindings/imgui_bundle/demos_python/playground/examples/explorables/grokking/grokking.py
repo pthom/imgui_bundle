@@ -17,6 +17,7 @@ from grok_train import P
 DATA = np.load(Path(__file__).parent / "grokking_data.npz")  # recorded by grok_train.py
 STEPS: np.ndarray = DATA["steps"]                                  # the training step of each checkpoint
 LAST_STEP = int(STEPS[-1])
+GROK_START = int(STEPS[np.argmax(DATA["test_acc"] > 0.1)])          # where the hidden sums start to be answered
 CHECKPOINTS_PER_SECOND = 40                                        # the speed of the play button
 
 INTRO = """
@@ -36,7 +37,9 @@ class AppState:
         self.play_accumulator = 0.0
         self.clock = 0                # which of the recorded clocks is shown
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
-        self.view = "full"            # "full": everything; "curves": the accuracy and the clock only, no controls
+        self.view = "full"            # "full": everything; "curves": the accuracy and the clock; "accuracy": that plot alone
+        self.accent_line = "none"     # the accuracy curve drawn thick: "seen", "hidden" or "none"
+        self.zone = "none"            # a shaded span of the accuracy plot: "memorizing", "grokking" or "none"
 
     @property
     def step(self) -> int:
@@ -66,6 +69,8 @@ lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
 lesson.param(name="clock", owner=app_state, range=(0, 3))
 lesson.param(name="table_view", owner=app_state)
 lesson.param(name="view", owner=app_state)
+lesson.param(name="accent_line", owner=app_state)
+lesson.param(name="zone", owner=app_state)
 
 
 def table_colormap() -> int:
@@ -101,21 +106,29 @@ def gui_table() -> None:
     lesson.widget("table_view")
 
 
-def gui_accuracy() -> None:
+def gui_accuracy(size: ImVec2) -> None:
     """The accuracies on the seen and the hidden sums, with a line at the current step (drag it to scrub)"""
     flags = implot.Flags_.no_menus | implot.Flags_.no_mouse_text
-    if implot.begin_plot("Accuracy", hello_imgui.em_to_vec2(28, 11.5), flags):
+    if implot.begin_plot("Accuracy", size, flags):
         implot.setup_axes("training step", "accuracy")
         implot.setup_axes_limits(0, LAST_STEP, -0.02, 1.02, imgui.Cond_.always)
         implot.setup_legend(implot.Location_.east)
-        implot.plot_line("seen sums", STEPS.astype(np.float64), DATA["train_acc"].astype(np.float64),
-                         spec=implot.Spec(line_color=ImVec4(0.25, 0.45, 0.85, 1.0), line_weight=2.0))
-        implot.plot_line("hidden sums", STEPS.astype(np.float64), DATA["test_acc"].astype(np.float64),
-                         spec=implot.Spec(line_color=ImVec4(0.25, 0.68, 0.38, 1.0), line_weight=2.0))
+        if app_state.zone != "none":
+            lo, hi = (0, GROK_START) if app_state.zone == "memorizing" else (GROK_START, LAST_STEP)
+            implot.plot_shaded("##zone", np.array([lo, hi], np.float64), np.array([1.02, 1.02]), np.array([-0.02, -0.02]),
+                               spec=implot.Spec(fill_color=ImVec4(1.0, 0.8, 0.3, 0.18)))
+        for label, key, color in (("seen sums", "train_acc", ImVec4(0.25, 0.45, 0.85, 1.0)),
+                                  ("hidden sums", "test_acc", ImVec4(0.25, 0.68, 0.38, 1.0))):
+            accented = app_state.accent_line == key.split("_")[0].replace("train", "seen").replace("test", "hidden")
+            dimmed = app_state.accent_line != "none" and not accented
+            line_color = ImVec4(color.x, color.y, color.z, 0.35 if dimmed else 1.0)
+            implot.plot_line(label, STEPS.astype(np.float64), DATA[key].astype(np.float64),
+                             spec=implot.Spec(line_color=line_color, line_weight=3.5 if accented else 2.0))
         changed, x, *_ = implot.drag_line_x(0, float(app_state.step), ImVec4(1.0, 0.8, 0.3, 1.0), 2.0)
         if changed:
             app_state.set_step(int(x))
         implot.end_plot()
+    lesson.widget("accent_line")
 
 
 def gui_clocks() -> None:
@@ -164,14 +177,17 @@ def gui() -> None:
     hello_imgui.get_runner_params().fps_idling.enable_idling = not app_state.playing
     if not lesson.started:                        # the explorable's own intro; the lesson has its teaser
         rich_md.render(INTRO)
-    if app_state.view == "full":
-        gui_controls()
-        gui_table()
-        imgui.same_line()
-    imgui.begin_group()
-    gui_accuracy()
-    gui_clocks()
-    imgui.end_group()
+    if app_state.view == "accuracy":              # the first figure alone, as large as the stage
+        gui_accuracy(ImVec2(-1, hello_imgui.em_size(28)))
+    else:
+        if app_state.view == "full":
+            gui_controls()
+            gui_table()
+            imgui.same_line()
+        imgui.begin_group()
+        gui_accuracy(hello_imgui.em_to_vec2(28, 11.5))
+        gui_clocks()
+        imgui.end_group()
     lesson.gui()
 
 

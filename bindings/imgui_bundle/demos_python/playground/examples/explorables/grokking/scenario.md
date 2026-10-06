@@ -19,20 +19,39 @@ In this lesson, we watch a neural network learn a concept. Two figures tell the 
 ```cues
 highlight("step", at="The first")
 ```
-[[Animate zoom on the first figure, it occupies the full visible zone]]
+```cues
+set_value("view", "accuracy")
+set_value("step", 1000)
+```
 The first shows two lines.
 
-[[highlight the blue line]]
-The blue one is the network's accuracy on the sums {{I dont want to say "sums" at this time. Things is underwhelming. Suggestions?}} it was trained on. It rises fast: the network learns them quickly.
-
-[[highlight the green line]]
-The green one is its accuracy on sums it has never seen..
-[[Highlight the zone where no generalization is made - play until there]]
-For a long time, it stays at zero: the network cannot generalize what it learned.
-[[Highlight the zone where no generalization is made - play until the end]]
-Then suddenly it becomes able to generalize on data it never saw before, And it soon makes no mistakes, even on cases it never encountered.
+```cues
+set_value("accent_line", "seen")
+```
+The blue one is the network's accuracy on the examples it was trained on. It rises fast: the network learns them quickly.
 
 ```cues
+set_value("accent_line", "hidden")
+```
+The green one is its accuracy on examples it has never seen.
+
+```cues
+set_value("zone", "memorizing")
+set_value("step", 0)
+animate("step", 300, over=5)
+```
+For a long time, it stays at zero: the network cannot generalize what it learned.
+
+```cues
+set_value("zone", "grokking")
+animate("step", 1000, over=6)
+set_value("accent_line", "none", at="even on examples")
+set_value("zone", "none", at="even on examples")
+```
+Then, suddenly, it starts to generalize. Soon it makes no mistake at all, even on examples it has never seen.
+
+```cues
+set_value("view", "curves")
 animate("step", 0, over=1, at="The second")
 animate("step", 1000, over=8, at="from chaos")
 highlight("clock", at="a circle")
