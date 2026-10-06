@@ -372,8 +372,9 @@ class Param:
 class Lesson:
     """The player. `file` is the script: a markdown file, or a program whose ::md section `section` is the script."""
 
-    def __init__(self, file: str, section: str = "Lesson") -> None:
+    def __init__(self, file: str, section: str = "Lesson", program: str = "") -> None:
         self.file, self.section = str(file), section
+        self.program = str(program)                # the program's file, shown on demand (empty: the script's file)
         self.params: dict[str, Param] = {}
         self.derived: dict[str, Callable[[], Any]] = {}
         self.actions: dict[str, Callable[..., Any]] = {}
@@ -392,6 +393,7 @@ class Lesson:
         self.delay_after_interaction = 8.0
         self.open_section: Optional[Section] = None
         self.show_full_text = False
+        self.show_source = ""                      # "", "scenario" or "program": the source shown under the strip
         self._mtime = 0.0
         self._last_check = 0.0
         self._loaded = False
@@ -604,6 +606,8 @@ class Lesson:
             imgui.end_child()
         if self.show_full_text:
             self._gui_full_text(em)
+        if self.show_source:
+            self._gui_source(em)
 
     _last_chapter = -1
 
@@ -656,7 +660,21 @@ class Lesson:
         imgui.same_line()
         if imgui.button("Full text"):
             self.show_full_text = not self.show_full_text
+        for label, which in (("Scenario", "scenario"), ("Program", "program")):
+            imgui.same_line()
+            if imgui.button(label):
+                self.show_source = "" if self.show_source == which else which
         imgui.pop_id()
+
+    def _gui_source(self, em: float) -> None:
+        """The scenario as written, or the program, as code"""
+        imgui.begin_child("##source", ImVec2(0, em * 24), imgui.ChildFlags_.borders)
+        if self.show_source == "scenario":
+            text = Path(self.file).read_text(encoding="utf-8") if os.path.isfile(self.file) else ""
+            rich_md.render_raw("````markdown\n" + text + "\n````")
+        else:
+            rich_md.render_file(self.program or self.file, "")
+        imgui.end_child()
 
     def _gui_full_text(self, em: float) -> None:
         assert self.script is not None

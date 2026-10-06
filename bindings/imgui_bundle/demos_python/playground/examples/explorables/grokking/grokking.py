@@ -69,7 +69,7 @@ class AppState:
 
 
 app_state = AppState()
-lesson = narrator.Lesson(Path(__file__).parent / "scenario.md")   # the script, watched: edit it while this runs
+lesson = narrator.Lesson(Path(__file__).parent / "scenario.md", program=__file__)   # the script, watched: edit it live
 lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
 lesson.param(name="clock", owner=app_state, range=(0, 3))
 lesson.param(name="table_view", owner=app_state)
