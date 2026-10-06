@@ -9,26 +9,6 @@ defaults:
 
 ## Teaser
 
-[[Hide the top control bar "Play the training/slider/etc
-Maybe hide also the square at this moment
-]]
-
-[[Help me reword below - commit first, then place your version below - or let me see both versions]]
-In this lesson we are going to see how a neural network learns concepts.
-You are currently seeing two figures:
-
-The first figures shows two lines:
-- The first show the accuracy of a neural network on things it already knows, aka its "training set" (the blue line): It grows rapidly during the training.
-- The second line shows Its accuracy on things it did not know (aka its "test set"). Originally, it is unable to generalize to things it did not encounter before.
-
-The second picture is a visual representation of how the neural network "classified" its knowledge in its internal data (its weights). From complete chaos at the start, it evolves it into a nice circular pattern, Which shows that the network has learnt something inside its weights.
-
-The fact that neural networks may grasp subtle patterns from training data, and create inner representation That resembles concepts such as the one we form into our mind, is often called "Grokking".
-
-
-
-[[Fable's version, 2026-10-06: the same content, shorter sentences for the voice, the two pictures driven by the cues. Yours above is kept until you choose; both are spoken for now.]]
-
 ```cues
 set_value("view", "curves")
 set_value("clock", 0)
@@ -39,35 +19,16 @@ In this lesson, we watch a neural network learn a concept. Two figures tell the 
 ```cues
 highlight("step", at="The first")
 ```
-The first shows two lines. The blue one is the network's accuracy on the sums it was trained on. It rises fast: the
-network learns them quickly. The green one is its accuracy on sums it has never seen. For a long time, it stays at
-zero: the network cannot generalize what it learned.
+The first shows two lines. The blue one is the network's accuracy on the sums it was trained on. It rises fast: the network learns them quickly. The green one is its accuracy on sums it has never seen. For a long time, it stays at zero: the network cannot generalize what it learned.
 
 ```cues
 animate("step", 0, over=1, at="The second")
 animate("step", 1000, over=8, at="from chaos")
 highlight("clock", at="a circle")
 ```
-The second picture shows how the network organizes what it knows, inside its weights. During the training, it goes
-from chaos to a circle. The network has found a structure.
+The second picture shows how the network organizes what it knows, inside its weights. During the training, it goes from chaos to a circle. The network has found a structure.
 
-That sudden understanding, long after the memorization, is called grokking. Nobody taught this network the rule.
-Let's go back to the beginning, and watch it happen.
-
-```cues
-set_value("view", "full")
-set_value("step", 1000)
-set_value("clock", 0)
-```
-[[The former teaser, two paragraphs, kept for now]]
-This network learned to add. Nobody told it how.
-
-```cues
-highlight("step", at="hidden half")
-animate("step", 0, over=4, at="Let's go back")
-```
-For a long time, it only knew the sums by heart. Then, in a few hundred steps, it found the rule, and the hidden
-half of the table turned green. Let's go back to the beginning, and watch it happen.
+That sudden understanding, long after the memorization, is called grokking. Nobody taught this network the rule. Let's go back to the beginning, and watch it happen.
 
 ## Adding on a clock
 
@@ -76,25 +37,20 @@ set_value("view", "full")
 set_value("step", 0)
 set_value("table_view", "split")
 ```
-Here is the task. Take two numbers between zero and fifty-two, and add them. When the sum passes fifty-two, wrap
-around, as the hand of a clock does: on a clock with fifty-three hours, forty plus twenty is seven.
+Here is the task. Take two numbers between zero and fifty-two, and add them. When the sum passes fifty-two, wrap around, as the hand of a clock does: on a clock with fifty-three hours, forty plus twenty is seven.
 [[a clock widget: the learner picks two hours, the hand turns, the sum appears. To build; until then, the table.]]
 
 ```cues
 highlight("table_view", at="The table")
 ```
-The table shows every sum: the row is the first number, the column the second. Two thousand eight hundred and nine
-sums in all.
+The table shows every sum: the row is the first number, the column the second. Two thousand eight hundred and nine sums in all.
 
-Half of them, chosen at random, are shown to the network during its training: the blue cells. The other half is
-hidden from it: the red cells. That half is the test.
+Half of them, chosen at random, are shown to the network during its training: the blue cells. The other half is hidden from it: the red cells. That half is the test.
 
-Why fifty-three? It is a prime number, so no shortcut exists: no half table, no simple pattern. The network has to
-find the rule by itself.
+Why fifty-three? It is a prime number, so no shortcut exists: no half table, no simple pattern. The network has to find the rule by itself.
 
 ### More: modular arithmetic
-Addition modulo 53 is the arithmetic of a clock with 53 hours: $(a + b) \bmod 53$. The same arithmetic, with
-12 hours, tells you that nine hours after five o'clock, it is two o'clock.
+Addition modulo 53 is the arithmetic of a clock with 53 hours: $(a + b) \bmod 53$. The same arithmetic, with 12 hours, tells you that nine hours after five o'clock, it is two o'clock.
 
 ### Code
 ![[grok_train.py#Data#code]]
@@ -105,8 +61,7 @@ Addition modulo 53 is the arithmetic of a clock with 53 hours: $(a + b) \bmod 53
 set_value("table_view", "answers")
 animate("step", 100, over=8, at="Watch the table")
 ```
-The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test.
-Watch the table while it trains. Within a hundred steps, every blue cell is right.
+The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test. Watch the table while it trains. Within a hundred steps, every blue cell is right.
 
 ```cues
 highlight("step", at="still red")
@@ -126,15 +81,13 @@ The training step: the loss, its gradient, and AdamW, which also shrinks every w
 ```cues
 animate("step", 700, over=12, at="Nothing changes")
 ```
-Nothing changes in the training: the same steps continue, on the same half. And then, slowly at first, the red
-cells turn green. By step seven hundred, the network answers every sum it has never seen.
+Nothing changes in the training: the same steps continue, on the same half. And then, slowly at first, the red cells turn green. By step seven hundred, the network answers every sum it has never seen.
 
 ```cues
 highlight("clock", at="Look inside")
 animate("step", 1000, over=4, at="a circle")
 ```
-Look inside. The 53 numbers, as the network represents them, now sit on a circle: a clock. The network adds by
-turning hands. There are several such clocks, one per frequency: pick another one below the plot.
+Look inside. The 53 numbers, as the network represents them, now sit on a circle: a clock. The network adds by turning hands. There are several such clocks, one per frequency: pick another one below the plot.
 
 ### More: the clock explanation
 On the plane of frequency $k$, the number $n$ sits at the angle $2 \pi k n / 53$. Adding $a$ and $b$ is adding
