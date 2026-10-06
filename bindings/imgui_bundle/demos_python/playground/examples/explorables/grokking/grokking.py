@@ -129,12 +129,15 @@ def gui_accuracy(size: ImVec2) -> None:
                                   ("hidden sums", "test_acc", ImVec4(0.25, 0.68, 0.38, 1.0))):
             accented = app_state.accent_line == key.split("_")[0].replace("train", "seen").replace("test", "hidden")
             dimmed = app_state.accent_line != "none" and not accented
-            alpha = 0.35 if dimmed else 1.0
-            if accented and blink > 0:
-                alpha = 0.55 + 0.45 * abs(math.sin(time.time() * 9.0)) * blink + (1 - blink) * 0.45
-            line_color = ImVec4(color.x, color.y, color.z, alpha)
+            line_color = ImVec4(color.x, color.y, color.z, 0.25 if dimmed else 1.0)
+            weight = 3.5 if accented else 2.0
+            if accented and blink > 0:                 # the blink: the curve flashes white and thick, twice a second
+                k = (0.5 + 0.5 * math.sin(time.time() * 2 * math.pi * 2.0)) * blink
+                line_color = ImVec4(color.x + (1 - color.x) * k, color.y + (1 - color.y) * k,
+                                    color.z + (1 - color.z) * k, 1.0)
+                weight = 3.5 + 3.0 * k
             implot.plot_line(label, STEPS.astype(np.float64), DATA[key].astype(np.float64),
-                             spec=implot.Spec(line_color=line_color, line_weight=3.5 if accented else 2.0))
+                             spec=implot.Spec(line_color=line_color, line_weight=weight))
         changed, x, *_ = implot.drag_line_x(0, float(app_state.step), ImVec4(1.0, 0.8, 0.3, 1.0), 2.0)
         if changed:
             app_state.set_step(int(x))
