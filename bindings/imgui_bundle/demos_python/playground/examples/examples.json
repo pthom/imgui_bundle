@@ -127,6 +127,15 @@
             "hidden": true
         },
         {
+            "label": "Grokking: a network learns by heart, then suddenly understands",
+            "filename": "explorables/grokking/grokking.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/grokking"
+            ],
+            "hidden": true
+        },
+        {
             "label": "Narrated explorables: the idea, in one page",
             "filename": "explorables/nex_pitch/nex_pitch.py",
             "category": "Interactive science",

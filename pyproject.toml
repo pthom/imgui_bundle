@@ -212,10 +212,10 @@ ignore_missing_imports = true
 module = ["paramiko"]
 ignore_missing_imports = true
 
-# tiny_nn, julia_points: sibling modules of the neural_spiral and julia_map explorables (imported from their folder,
-# not on mypy's path)
+# tiny_nn, julia_points, grok_train: sibling modules of the neural_spiral, julia_map and grokking explorables (imported
+# from their folder, not on mypy's path)
 [[tool.mypy.overrides]]
-module = ["tiny_nn", "julia_points"]
+module = ["tiny_nn", "julia_points", "grok_train"]
 ignore_missing_imports = true
 
 #####################################
