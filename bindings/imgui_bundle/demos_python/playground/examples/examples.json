@@ -127,6 +127,15 @@
             "hidden": true
         },
         {
+            "label": "Narrated explorables: the idea, in one page",
+            "filename": "explorables/nex_pitch/nex_pitch.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/nex_pitch"
+            ],
+            "hidden": true
+        },
+        {
             "label": "Double pendulum",
             "filename": "explorables/double_pendulum.py",
             "category": "Interactive science"
