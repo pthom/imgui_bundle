@@ -100,14 +100,19 @@ class _CuesBlock:
         self.source, self.line = source, line
 
 
-def _read_section(file: str, section: str) -> str:
-    """The text of a ::md section of a file, its transclusions resolved"""
+def _read_script(file: str, section: str) -> str:
+    """The script's text, its transclusions resolved: a markdown file as it is, or a ::md section of a program"""
     base = Path(file).parent
 
     def read_file(path: str) -> Optional[str]:
         p = Path(path) if os.path.isabs(path) else base / path
         return p.read_text(encoding="utf-8") if p.is_file() else None
 
+    if file.endswith(".md"):
+        text = read_file(file)
+        if text is None:
+            raise LessonError(f"{file} not found")
+        return rich_md.resolve_transclusions(text, read_file, file)
     return rich_md.resolve_transclusions(f"![[{Path(file).name}#{section}]]", read_file, file)
 
 
@@ -365,8 +370,10 @@ class Param:
 # =============================================================================
 
 class Lesson:
+    """The player. `file` is the script: a markdown file, or a program whose ::md section `section` is the script."""
+
     def __init__(self, file: str, section: str = "Lesson") -> None:
-        self.file, self.section = file, section
+        self.file, self.section = str(file), section
         self.params: dict[str, Param] = {}
         self.derived: dict[str, Callable[[], Any]] = {}
         self.actions: dict[str, Callable[..., Any]] = {}
@@ -411,7 +418,7 @@ class Lesson:
     def load(self) -> None:
         self.initial = {name: p.get() for name, p in self.params.items()}
         try:
-            text = _read_section(self.file, self.section)
+            text = _read_script(self.file, self.section)
             self.script = Parser(self, text).parse()
             fm = self.script.front_matter
             defaults = fm.get("defaults", {}) if isinstance(fm.get("defaults"), dict) else {}

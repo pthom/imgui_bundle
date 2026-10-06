@@ -1,5 +1,6 @@
 [
   "grok_train.py",
   "grokking_data.npz",
-  "narrator.py"
+  "narrator.py",
+  "scenario.md"
 ]
