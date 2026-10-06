@@ -49,6 +49,7 @@ class AppState:
         self.step = step
 
     def advance(self) -> None:
+        lesson.touched("step")                       # the learner plays the training: the lesson lets the step be
         self.play_accumulator += imgui.get_io().delta_time * CHECKPOINTS_PER_SECOND
         while self.play_accumulator >= 1.0:
             self.play_accumulator -= 1.0
@@ -140,7 +141,7 @@ def gui_clocks() -> None:
 
 def gui_controls() -> None:
     """Play, pause, and the slider of the training step"""
-    if imgui.button("Pause" if app_state.playing else "Play", hello_imgui.em_to_vec2(5, 0)):
+    if imgui.button("Pause" if app_state.playing else "Play the training", hello_imgui.em_to_vec2(9, 0)):
         app_state.playing = not app_state.playing
         if app_state.playing and app_state.checkpoint == len(STEPS) - 1:
             app_state.checkpoint = 0

@@ -382,6 +382,7 @@ class Lesson:
         self.error: str = ""
         self.t = 0.0
         self.playing = False
+        self.started = False                       # until the first play or seek, the lesson leaves the parameters alone
         self.waiting: Optional[Event] = None       # the pause or challenge the lesson waits on
         self.waiting_since = 0.0
         self.passed: set[int] = set()              # the pauses passed (by id)
@@ -478,6 +479,7 @@ class Lesson:
     def seek(self, t: float) -> None:
         """Lands on a sentence start; the parameters are evaluated there, the chapter's actions replayed"""
         assert self.script is not None
+        self.started = True
         t = max(0.0, min(t, self.script.duration))
         starts = [s.start for c in self.script.chapters for p in c.paragraphs for s in p.sentences]
         self.t = max((s for s in starts if s <= t + 1e-6), default=0.0)
@@ -498,6 +500,8 @@ class Lesson:
     def _apply(self) -> None:
         """Writes the parameters for the current time, fires what the clock passed"""
         assert self.script is not None
+        if not self.started:
+            return
         for name, p in self.params.items():
             if p.hold_until >= 0 and self.t >= p.hold_until:
                 p.hold_until = -1.0
@@ -519,6 +523,8 @@ class Lesson:
         self._reload_if_changed()
         if self.script is None or self.error:
             return
+        if self.playing:
+            self.started = True
         if self.playing and self.waiting is None:
             t_next = self.t + imgui.get_io().delta_time
             stop = next((e for e in self.script.events if e.kind in ("pause", "challenge")
@@ -548,6 +554,12 @@ class Lesson:
         self.waiting = None
 
     # ---- the widgets ---------------------------------------------------------------------------------------------
+    def touched(self, name: str) -> None:
+        """The learner changed a parameter by other means than its widget: its value holds, as after a drag"""
+        p = self.params.get(name)
+        if p is not None and self.script is not None:
+            p.hold_until = max(self.next_keyframe_time(name, self.t), self.t + self.delay_after_interaction)
+
     def widget(self, name: str, changed: bool = False) -> None:
         """Call it right after the widget that shows a parameter: its rectangle, and the learner's edit"""
         p = self.params.get(name)
@@ -555,7 +567,7 @@ class Lesson:
             return
         p.rect = (imgui.get_item_rect_min(), imgui.get_item_rect_max())
         if changed and imgui.is_item_active():
-            p.hold_until = max(self.next_keyframe_time(name, self.t), self.t + self.delay_after_interaction)
+            self.touched(name)
         if self.t < p.highlight_until:
             k = 0.5 + 0.5 * math.sin(time.time() * 12.0)
             color = imgui.get_color_u32(ImVec4(1.0, 0.6, 0.1, 0.35 + 0.6 * k))
