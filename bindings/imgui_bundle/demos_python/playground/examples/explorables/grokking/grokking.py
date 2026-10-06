@@ -36,6 +36,7 @@ class AppState:
         self.play_accumulator = 0.0
         self.clock = 0                # which of the recorded clocks is shown
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
+        self.view = "full"            # "full": everything; "curves": the accuracy and the clock only, no controls
 
     @property
     def step(self) -> int:
@@ -64,6 +65,7 @@ lesson = narrator.Lesson(Path(__file__).parent / "scenario.md")   # the script, 
 lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
 lesson.param(name="clock", owner=app_state, range=(0, 3))
 lesson.param(name="table_view", owner=app_state)
+lesson.param(name="view", owner=app_state)
 
 
 def table_colormap() -> int:
@@ -162,9 +164,10 @@ def gui() -> None:
     hello_imgui.get_runner_params().fps_idling.enable_idling = not app_state.playing
     if not lesson.started:                        # the explorable's own intro; the lesson has its teaser
         rich_md.render(INTRO)
-    gui_controls()
-    gui_table()
-    imgui.same_line()
+    if app_state.view == "full":
+        gui_controls()
+        gui_table()
+        imgui.same_line()
     imgui.begin_group()
     gui_accuracy()
     gui_clocks()

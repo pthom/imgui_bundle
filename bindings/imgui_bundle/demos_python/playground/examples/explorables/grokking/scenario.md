@@ -27,10 +27,39 @@ The fact that neural networks may grasp subtle patterns from training data, and 
 
 
 
+[[Fable's version, 2026-10-06: the same content, shorter sentences for the voice, the two pictures driven by the cues. Yours above is kept until you choose; both are spoken for now.]]
+
 ```cues
+set_value("view", "curves")
+set_value("clock", 0)
+set_value("step", 1000)
+```
+In this lesson, we watch a neural network learn a concept. Two figures tell the story.
+
+```cues
+highlight("step", at="The first")
+```
+The first shows two lines. The blue one is the network's accuracy on the sums it was trained on. It rises fast: the
+network learns them quickly. The green one is its accuracy on sums it has never seen. For a long time, it stays at
+zero: the network cannot generalize what it learned.
+
+```cues
+animate("step", 0, over=1, at="The second")
+animate("step", 1000, over=8, at="from chaos")
+highlight("clock", at="a circle")
+```
+The second picture shows how the network organizes what it knows, inside its weights. During the training, it goes
+from chaos to a circle. The network has found a structure.
+
+That sudden understanding, long after the memorization, is called grokking. Nobody taught this network the rule.
+Let's go back to the beginning, and watch it happen.
+
+```cues
+set_value("view", "full")
 set_value("step", 1000)
 set_value("clock", 0)
 ```
+[[The former teaser, two paragraphs, kept for now]]
 This network learned to add. Nobody told it how.
 
 ```cues
@@ -43,6 +72,7 @@ half of the table turned green. Let's go back to the beginning, and watch it hap
 ## Adding on a clock
 
 ```cues
+set_value("view", "full")
 set_value("step", 0)
 set_value("table_view", "split")
 ```
