@@ -152,7 +152,7 @@ def _parse_scalar(value: str) -> Any:
 def _is_prose(line: str) -> bool:
     """A line that the voice reads (not a heading, a fence, a picture, a formula, a table, an html tag)"""
     stripped = line.lstrip()
-    return bool(stripped) and not stripped.startswith(("#", "```", "![", "$$", "|", "<", "---"))
+    return bool(stripped) and not stripped.startswith(("#", "```", "![", "$$", "|", "<", "---", "[["))
 
 
 def _spoken_text(markdown: str) -> str:
@@ -307,8 +307,8 @@ class Parser:
 
     def _time_everything(self) -> None:
         t = 0.0
-        for chapter in self.chapters:
-            t += CHAPTER_GAP
+        for i, chapter in enumerate(self.chapters):
+            t += CHAPTER_GAP if i > 0 else 0.0     # the first chapter starts at 0: its cues set the opening state
             chapter.start = t
             for paragraph in chapter.paragraphs:
                 paragraph.start = t
@@ -382,7 +382,7 @@ class Lesson:
         self.error: str = ""
         self.t = 0.0
         self.playing = False
-        self.started = False                       # until the first play or seek, the lesson leaves the parameters alone
+        self.started = False                       # True once a script is loaded: the lesson drives the parameters
         self.waiting: Optional[Event] = None       # the pause or challenge the lesson waits on
         self.waiting_since = 0.0
         self.passed: set[int] = set()              # the pauses passed (by id)
@@ -426,6 +426,7 @@ class Lesson:
             self.default_over = float(defaults.get("over", 1.0))
             self.delay_after_interaction = float(defaults.get("delay_after_interaction", 8.0))
             self.error = ""
+            self.started = True                    # the opening state applies at once, before the first play
         except LessonError as e:
             self.error = str(e)
         self._mtime = os.path.getmtime(self.file) if os.path.isfile(self.file) else 0.0

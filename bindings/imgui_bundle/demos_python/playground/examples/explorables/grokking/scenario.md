@@ -16,9 +16,6 @@ set_value("step", 1000)
 ```
 In this lesson, we watch a neural network learn a concept. Two figures tell the story.
 
-```cues
-highlight("step", at="The first")
-```
 [[Zoom on the first figure: it fills the stage (an animated zoom comes with the look)]]
 ```cues
 set_value("view", "accuracy")
