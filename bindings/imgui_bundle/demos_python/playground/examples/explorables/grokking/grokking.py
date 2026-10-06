@@ -160,7 +160,8 @@ def gui() -> None:
     if app_state.playing:
         app_state.advance()
     hello_imgui.get_runner_params().fps_idling.enable_idling = not app_state.playing
-    rich_md.render(INTRO)
+    if not lesson.started:                        # the explorable's own intro; the lesson has its teaser
+        rich_md.render(INTRO)
     gui_controls()
     gui_table()
     imgui.same_line()
