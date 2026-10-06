@@ -21,7 +21,7 @@ STEPS: np.ndarray = DATA["steps"]                                  # the trainin
 LAST_STEP = int(STEPS[-1])
 GROK_START = int(STEPS[np.argmax(DATA["test_acc"] > 0.1)])          # where the hidden sums start to be answered
 CHECKPOINTS_PER_SECOND = 40                                        # the speed of the play button
-ACCENT_BLINK_SECONDS = 1.5                                         # an accented curve blinks that long
+ACCENT_BLINK_SECONDS = 4.0                                         # an accented curve blinks that long
 
 INTRO = """
 # Grokking

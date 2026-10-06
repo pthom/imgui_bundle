@@ -20,7 +20,7 @@ from imgui_bundle import ImVec2, ImVec4
 SECONDS_PER_CHAR = 0.06          # the silent clock: Tangible's estimate of a voice's pace
 SENTENCE_GAP = 0.4               # the silence after a sentence
 CHAPTER_GAP = 0.8                # the silence before a chapter
-HIGHLIGHT_DURATION = 1.5
+HIGHLIGHT_DURATION = 3.0
 RESERVED_SECTIONS = ("More", "Code", "References")
 _SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
