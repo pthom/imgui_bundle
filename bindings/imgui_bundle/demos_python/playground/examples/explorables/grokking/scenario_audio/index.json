@@ -1,0 +1,1958 @@
+{
+ "61114c6046bcd8cb": {
+  "file": "61114c6046bcd8cb.mp3",
+  "duration": 4.008,
+  "words": [
+   [
+    0.1,
+    "In"
+   ],
+   [
+    0.237,
+    "this"
+   ],
+   [
+    0.438,
+    "lesson"
+   ],
+   [
+    1.288,
+    "we"
+   ],
+   [
+    1.425,
+    "will"
+   ],
+   [
+    1.538,
+    "watch"
+   ],
+   [
+    1.788,
+    "a"
+   ],
+   [
+    1.825,
+    "neural"
+   ],
+   [
+    2.138,
+    "network"
+   ],
+   [
+    2.737,
+    "learn"
+   ],
+   [
+    2.862,
+    "a"
+   ],
+   [
+    2.913,
+    "concept"
+   ]
+  ],
+  "text": "In this lesson, we will watch a neural network learn a concept."
+ },
+ "4ccc97fc5bb9d677": {
+  "file": "4ccc97fc5bb9d677.mp3",
+  "duration": 2.496,
+  "words": [
+   [
+    0.1,
+    "This"
+   ],
+   [
+    0.25,
+    "form"
+   ],
+   [
+    0.463,
+    "of"
+   ],
+   [
+    0.575,
+    "learning"
+   ],
+   [
+    1.25,
+    "is"
+   ],
+   [
+    1.35,
+    "called"
+   ],
+   [
+    1.613,
+    "grokking"
+   ]
+  ],
+  "text": "This form of learning is called *grokking*."
+ },
+ "2d26946323cb09c2": {
+  "file": "2d26946323cb09c2.mp3",
+  "duration": 3.768,
+  "words": [
+   [
+    0.1,
+    "When"
+   ],
+   [
+    0.175,
+    "we"
+   ],
+   [
+    0.263,
+    "train"
+   ],
+   [
+    0.5,
+    "a"
+   ],
+   [
+    0.525,
+    "network"
+   ],
+   [
+    1.225,
+    "we"
+   ],
+   [
+    1.387,
+    "use"
+   ],
+   [
+    1.8,
+    "two"
+   ],
+   [
+    2.188,
+    "distinct"
+   ],
+   [
+    2.775,
+    "measures"
+   ]
+  ],
+  "text": "When we train a network we use two distinct measures:"
+ },
+ "f6bccfc3b7840510": {
+  "file": "f6bccfc3b7840510.mp3",
+  "duration": 4.392,
+  "words": [
+   [
+    0.1,
+    "Its"
+   ],
+   [
+    0.312,
+    "accuracy"
+   ],
+   [
+    0.925,
+    "on"
+   ],
+   [
+    0.988,
+    "the"
+   ],
+   [
+    1.038,
+    "examples"
+   ],
+   [
+    1.712,
+    "it"
+   ],
+   [
+    1.8,
+    "was"
+   ],
+   [
+    1.913,
+    "trained"
+   ],
+   [
+    2.388,
+    "on"
+   ],
+   [
+    3.05,
+    "the"
+   ],
+   [
+    3.112,
+    "training"
+   ],
+   [
+    3.538,
+    "set"
+   ]
+  ],
+  "text": "Its accuracy on the examples it was trained on (the training set)."
+ },
+ "0b0a7390c08c5d64": {
+  "file": "0b0a7390c08c5d64.mp3",
+  "duration": 3.528,
+  "words": [
+   [
+    0.1,
+    "It"
+   ],
+   [
+    0.263,
+    "rises"
+   ],
+   [
+    0.688,
+    "fast"
+   ],
+   [
+    1.587,
+    "the"
+   ],
+   [
+    1.675,
+    "network"
+   ],
+   [
+    2.175,
+    "learns"
+   ],
+   [
+    2.45,
+    "them"
+   ],
+   [
+    2.587,
+    "quickly"
+   ]
+  ],
+  "text": "It rises fast: the network learns them quickly."
+ },
+ "3856d04110eb66bc": {
+  "file": "3856d04110eb66bc.mp3",
+  "duration": 3.336,
+  "words": [
+   [
+    0.1,
+    "Its"
+   ],
+   [
+    0.3,
+    "accuracy"
+   ],
+   [
+    0.912,
+    "on"
+   ],
+   [
+    1.0,
+    "the"
+   ],
+   [
+    1.062,
+    "examples"
+   ],
+   [
+    2.05,
+    "it"
+   ],
+   [
+    2.1,
+    "has"
+   ],
+   [
+    2.275,
+    "never"
+   ],
+   [
+    2.538,
+    "seen"
+   ]
+  ],
+  "text": "Its accuracy on the examples it has never seen."
+ },
+ "217b9ae288b6f123": {
+  "file": "217b9ae288b6f123.mp3",
+  "duration": 5.568,
+  "words": [
+   [
+    0.138,
+    "For"
+   ],
+   [
+    0.225,
+    "a"
+   ],
+   [
+    0.275,
+    "long"
+   ],
+   [
+    0.6,
+    "time"
+   ],
+   [
+    1.462,
+    "it"
+   ],
+   [
+    1.538,
+    "stays"
+   ],
+   [
+    1.9,
+    "at"
+   ],
+   [
+    1.975,
+    "zero"
+   ],
+   [
+    3.013,
+    "the"
+   ],
+   [
+    3.087,
+    "network"
+   ],
+   [
+    3.5,
+    "cannot"
+   ],
+   [
+    3.925,
+    "generalize"
+   ],
+   [
+    4.612,
+    "what"
+   ],
+   [
+    4.725,
+    "it"
+   ],
+   [
+    4.8,
+    "learned"
+   ]
+  ],
+  "text": "For a long time, it stays at zero: the network cannot generalize what it learned."
+ },
+ "3ecd5929c8a0db5c": {
+  "file": "3ecd5929c8a0db5c.mp3",
+  "duration": 2.88,
+  "words": [
+   [
+    0.113,
+    "Then"
+   ],
+   [
+    0.725,
+    "suddenly"
+   ],
+   [
+    1.137,
+    "it"
+   ],
+   [
+    1.212,
+    "starts"
+   ],
+   [
+    1.512,
+    "to"
+   ],
+   [
+    1.587,
+    "generalize"
+   ]
+  ],
+  "text": "Then, suddenly, it starts to generalize."
+ },
+ "6324b29afbd8dee7": {
+  "file": "6324b29afbd8dee7.mp3",
+  "duration": 4.656,
+  "words": [
+   [
+    0.1,
+    "Soon"
+   ],
+   [
+    0.275,
+    "it"
+   ],
+   [
+    0.35,
+    "makes"
+   ],
+   [
+    0.562,
+    "no"
+   ],
+   [
+    0.775,
+    "mistake"
+   ],
+   [
+    1.175,
+    "at"
+   ],
+   [
+    1.25,
+    "all"
+   ],
+   [
+    2.038,
+    "even"
+   ],
+   [
+    2.212,
+    "on"
+   ],
+   [
+    2.337,
+    "examples"
+   ],
+   [
+    3.275,
+    "it"
+   ],
+   [
+    3.325,
+    "has"
+   ],
+   [
+    3.525,
+    "never"
+   ],
+   [
+    3.862,
+    "seen"
+   ]
+  ],
+  "text": "Soon it makes no mistake at all, even on examples it has never seen."
+ },
+ "eef1d90cd213870c": {
+  "file": "eef1d90cd213870c.mp3",
+  "duration": 7.44,
+  "words": [
+   [
+    0.1,
+    "How"
+   ],
+   [
+    0.188,
+    "can"
+   ],
+   [
+    0.287,
+    "we"
+   ],
+   [
+    0.388,
+    "explain"
+   ],
+   [
+    0.975,
+    "that"
+   ],
+   [
+    1.113,
+    "the"
+   ],
+   [
+    1.2,
+    "network"
+   ],
+   [
+    1.95,
+    "suddenly"
+   ],
+   [
+    2.362,
+    "groks"
+   ],
+   [
+    3.337,
+    "understands"
+   ],
+   [
+    4.55,
+    "something"
+   ],
+   [
+    4.9,
+    "about"
+   ],
+   [
+    5.237,
+    "those"
+   ],
+   [
+    5.85,
+    "unknown"
+   ],
+   [
+    6.325,
+    "examples"
+   ]
+  ],
+  "text": "How can we explain that the network suddenly *groks* (understands) something about those unknown examples?"
+ },
+ "8c8a2c46c2accc43": {
+  "file": "8c8a2c46c2accc43.mp3",
+  "duration": 5.856,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.163,
+    "second"
+   ],
+   [
+    0.55,
+    "picture"
+   ],
+   [
+    1.125,
+    "shows"
+   ],
+   [
+    1.512,
+    "how"
+   ],
+   [
+    1.637,
+    "the"
+   ],
+   [
+    1.725,
+    "network"
+   ],
+   [
+    2.5,
+    "organizes"
+   ],
+   [
+    3.225,
+    "what"
+   ],
+   [
+    3.362,
+    "it"
+   ],
+   [
+    3.438,
+    "knows"
+   ],
+   [
+    4.287,
+    "inside"
+   ],
+   [
+    4.8,
+    "its"
+   ],
+   [
+    4.9,
+    "weights"
+   ]
+  ],
+  "text": "The second picture shows how the network organizes what it knows, inside its weights."
+ },
+ "b3745cd3ff1fa6d8": {
+  "file": "b3745cd3ff1fa6d8.mp3",
+  "duration": 4.032,
+  "words": [
+   [
+    0.087,
+    "During"
+   ],
+   [
+    0.3,
+    "the"
+   ],
+   [
+    0.362,
+    "training"
+   ],
+   [
+    1.212,
+    "it"
+   ],
+   [
+    1.325,
+    "goes"
+   ],
+   [
+    1.65,
+    "from"
+   ],
+   [
+    1.863,
+    "chaos"
+   ],
+   [
+    2.862,
+    "to"
+   ],
+   [
+    2.975,
+    "a"
+   ],
+   [
+    3.05,
+    "circle"
+   ]
+  ],
+  "text": "During the training, it goes from chaos to a circle."
+ },
+ "703cd96414224d51": {
+  "file": "703cd96414224d51.mp3",
+  "duration": 1.992,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.15,
+    "network"
+   ],
+   [
+    0.562,
+    "has"
+   ],
+   [
+    0.713,
+    "found"
+   ],
+   [
+    0.95,
+    "a"
+   ],
+   [
+    0.975,
+    "structure"
+   ]
+  ],
+  "text": "The network has found a structure."
+ },
+ "f1da751830eea081": {
+  "file": "f1da751830eea081.mp3",
+  "duration": 1.896,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.188,
+    "answer"
+   ],
+   [
+    0.6,
+    "is"
+   ],
+   [
+    0.738,
+    "in"
+   ],
+   [
+    0.838,
+    "that"
+   ],
+   [
+    1.012,
+    "structure"
+   ]
+  ],
+  "text": "The answer is in that structure."
+ },
+ "d1ac5e26c637beeb": {
+  "file": "d1ac5e26c637beeb.mp3",
+  "duration": 4.344,
+  "words": [
+   [
+    0.087,
+    "Nobody"
+   ],
+   [
+    0.4,
+    "taught"
+   ],
+   [
+    0.787,
+    "this"
+   ],
+   [
+    0.988,
+    "network"
+   ],
+   [
+    1.4,
+    "a"
+   ],
+   [
+    1.438,
+    "rule"
+   ],
+   [
+    2.362,
+    "it"
+   ],
+   [
+    2.425,
+    "found"
+   ],
+   [
+    2.75,
+    "one"
+   ],
+   [
+    3.05,
+    "by"
+   ],
+   [
+    3.263,
+    "itself"
+   ]
+  ],
+  "text": "Nobody taught this network a rule: it found one by itself."
+ },
+ "1321fb9e38007609": {
+  "file": "1321fb9e38007609.mp3",
+  "duration": 2.664,
+  "words": [
+   [
+    0.087,
+    "Let"
+   ],
+   [
+    0.15,
+    "us"
+   ],
+   [
+    0.237,
+    "go"
+   ],
+   [
+    0.375,
+    "back"
+   ],
+   [
+    0.75,
+    "to"
+   ],
+   [
+    0.85,
+    "the"
+   ],
+   [
+    0.95,
+    "beginning"
+   ],
+   [
+    1.462,
+    "and"
+   ],
+   [
+    1.575,
+    "watch"
+   ],
+   [
+    1.863,
+    "it"
+   ],
+   [
+    1.925,
+    "happen"
+   ]
+  ],
+  "text": "Let us go back to the beginning, and watch it happen."
+ },
+ "0bb665c24c71bcc8": {
+  "file": "0bb665c24c71bcc8.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "Here"
+   ],
+   [
+    0.562,
+    "is"
+   ],
+   [
+    0.675,
+    "the"
+   ],
+   [
+    0.762,
+    "task"
+   ]
+  ],
+  "text": "Here is the task."
+ },
+ "58249bc96052625e": {
+  "file": "58249bc96052625e.mp3",
+  "duration": 4.008,
+  "words": [
+   [
+    0.1,
+    "Take"
+   ],
+   [
+    0.275,
+    "two"
+   ],
+   [
+    0.475,
+    "numbers"
+   ],
+   [
+    0.762,
+    "between"
+   ],
+   [
+    1.1,
+    "zero"
+   ],
+   [
+    1.525,
+    "and"
+   ],
+   [
+    1.625,
+    "fifty-two"
+   ],
+   [
+    2.675,
+    "and"
+   ],
+   [
+    3.212,
+    "add"
+   ],
+   [
+    3.438,
+    "them"
+   ]
+  ],
+  "text": "Take two numbers between zero and fifty-two, and add them."
+ },
+ "8b24039010a79b51": {
+  "file": "8b24039010a79b51.mp3",
+  "duration": 9.528,
+  "words": [
+   [
+    0.087,
+    "When"
+   ],
+   [
+    0.163,
+    "the"
+   ],
+   [
+    0.225,
+    "sum"
+   ],
+   [
+    0.525,
+    "passes"
+   ],
+   [
+    1.062,
+    "fifty-two"
+   ],
+   [
+    2.075,
+    "wrap"
+   ],
+   [
+    2.337,
+    "around"
+   ],
+   [
+    3.163,
+    "as"
+   ],
+   [
+    3.275,
+    "the"
+   ],
+   [
+    3.337,
+    "hand"
+   ],
+   [
+    3.638,
+    "of"
+   ],
+   [
+    3.688,
+    "a"
+   ],
+   [
+    3.725,
+    "clock"
+   ],
+   [
+    4.175,
+    "does"
+   ],
+   [
+    5.162,
+    "on"
+   ],
+   [
+    5.275,
+    "a"
+   ],
+   [
+    5.338,
+    "clock"
+   ],
+   [
+    5.7,
+    "with"
+   ],
+   [
+    5.825,
+    "fifty-three"
+   ],
+   [
+    6.45,
+    "hours"
+   ],
+   [
+    7.188,
+    "forty"
+   ],
+   [
+    7.575,
+    "plus"
+   ],
+   [
+    7.888,
+    "twenty"
+   ],
+   [
+    8.537,
+    "is"
+   ],
+   [
+    8.688,
+    "seven"
+   ]
+  ],
+  "text": "When the sum passes fifty-two, wrap around, as the hand of a clock does: on a clock with fifty-three hours, forty plus twenty is seven."
+ },
+ "af3d04d7a303cee3": {
+  "file": "af3d04d7a303cee3.mp3",
+  "duration": 5.448,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "table"
+   ],
+   [
+    0.5,
+    "shows"
+   ],
+   [
+    1.125,
+    "every"
+   ],
+   [
+    1.413,
+    "sum"
+   ],
+   [
+    2.263,
+    "the"
+   ],
+   [
+    2.35,
+    "row"
+   ],
+   [
+    2.888,
+    "is"
+   ],
+   [
+    2.975,
+    "the"
+   ],
+   [
+    3.062,
+    "first"
+   ],
+   [
+    3.425,
+    "number"
+   ],
+   [
+    4.05,
+    "the"
+   ],
+   [
+    4.138,
+    "column"
+   ],
+   [
+    4.537,
+    "the"
+   ],
+   [
+    4.6,
+    "second"
+   ]
+  ],
+  "text": "The table shows every sum: the row is the first number, the column the second."
+ },
+ "e0cc292e9021386c": {
+  "file": "e0cc292e9021386c.mp3",
+  "duration": 3.144,
+  "words": [
+   [
+    0.1,
+    "Two"
+   ],
+   [
+    0.263,
+    "thousand"
+   ],
+   [
+    1.05,
+    "eight"
+   ],
+   [
+    1.188,
+    "hundred"
+   ],
+   [
+    1.45,
+    "and"
+   ],
+   [
+    1.538,
+    "nine"
+   ],
+   [
+    2.087,
+    "sums"
+   ],
+   [
+    2.375,
+    "in"
+   ],
+   [
+    2.462,
+    "all"
+   ]
+  ],
+  "text": "Two thousand eight hundred and nine sums in all."
+ },
+ "e41fa8036b2d1350": {
+  "file": "e41fa8036b2d1350.mp3",
+  "duration": 6.192,
+  "words": [
+   [
+    0.125,
+    "Half"
+   ],
+   [
+    0.4,
+    "of"
+   ],
+   [
+    0.5,
+    "them"
+   ],
+   [
+    1.113,
+    "chosen"
+   ],
+   [
+    1.462,
+    "at"
+   ],
+   [
+    1.587,
+    "random"
+   ],
+   [
+    2.5,
+    "are"
+   ],
+   [
+    2.587,
+    "shown"
+   ],
+   [
+    2.888,
+    "to"
+   ],
+   [
+    2.95,
+    "the"
+   ],
+   [
+    3.025,
+    "network"
+   ],
+   [
+    3.538,
+    "during"
+   ],
+   [
+    3.775,
+    "its"
+   ],
+   [
+    3.875,
+    "training"
+   ],
+   [
+    4.787,
+    "the"
+   ],
+   [
+    4.888,
+    "blue"
+   ],
+   [
+    5.162,
+    "cells"
+   ]
+  ],
+  "text": "Half of them, chosen at random, are shown to the network during its training: the blue cells."
+ },
+ "37477e5c3668e2d7": {
+  "file": "37477e5c3668e2d7.mp3",
+  "duration": 3.72,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.212,
+    "other"
+   ],
+   [
+    0.463,
+    "half"
+   ],
+   [
+    1.125,
+    "is"
+   ],
+   [
+    1.275,
+    "hidden"
+   ],
+   [
+    1.538,
+    "from"
+   ],
+   [
+    1.738,
+    "it"
+   ],
+   [
+    2.275,
+    "the"
+   ],
+   [
+    2.362,
+    "red"
+   ],
+   [
+    2.675,
+    "cells"
+   ]
+  ],
+  "text": "The other half is hidden from it: the red cells."
+ },
+ "c24c399cdfeedf49": {
+  "file": "c24c399cdfeedf49.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "That"
+   ],
+   [
+    0.2,
+    "half"
+   ],
+   [
+    0.575,
+    "is"
+   ],
+   [
+    0.675,
+    "the"
+   ],
+   [
+    0.738,
+    "test"
+   ]
+  ],
+  "text": "That half is the test."
+ },
+ "6139b5f63f3f0cb3": {
+  "file": "6139b5f63f3f0cb3.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "Why"
+   ],
+   [
+    0.312,
+    "fifty-three"
+   ]
+  ],
+  "text": "Why fifty-three?"
+ },
+ "71a9fe1289815244": {
+  "file": "71a9fe1289815244.mp3",
+  "duration": 6.144,
+  "words": [
+   [
+    0.1,
+    "It"
+   ],
+   [
+    0.163,
+    "is"
+   ],
+   [
+    0.25,
+    "a"
+   ],
+   [
+    0.312,
+    "prime"
+   ],
+   [
+    0.688,
+    "number"
+   ],
+   [
+    1.375,
+    "so"
+   ],
+   [
+    1.538,
+    "no"
+   ],
+   [
+    1.8,
+    "shortcut"
+   ],
+   [
+    2.325,
+    "exists"
+   ],
+   [
+    3.4,
+    "no"
+   ],
+   [
+    3.625,
+    "half"
+   ],
+   [
+    3.95,
+    "table"
+   ],
+   [
+    4.812,
+    "no"
+   ],
+   [
+    5.088,
+    "simple"
+   ],
+   [
+    5.425,
+    "pattern"
+   ]
+  ],
+  "text": "It is a prime number, so no shortcut exists: no half table, no simple pattern."
+ },
+ "a41763c171cdade2": {
+  "file": "a41763c171cdade2.mp3",
+  "duration": 2.856,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.163,
+    "network"
+   ],
+   [
+    0.688,
+    "has"
+   ],
+   [
+    0.863,
+    "to"
+   ],
+   [
+    0.95,
+    "find"
+   ],
+   [
+    1.225,
+    "the"
+   ],
+   [
+    1.275,
+    "rule"
+   ],
+   [
+    1.6,
+    "by"
+   ],
+   [
+    1.8,
+    "itself"
+   ]
+  ],
+  "text": "The network has to find the rule by itself."
+ },
+ "57f2052e2fa7af4a": {
+  "file": "57f2052e2fa7af4a.mp3",
+  "duration": 4.056,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.15,
+    "network"
+   ],
+   [
+    0.738,
+    "is"
+   ],
+   [
+    0.838,
+    "shown"
+   ],
+   [
+    1.225,
+    "half"
+   ],
+   [
+    1.663,
+    "of"
+   ],
+   [
+    1.725,
+    "the"
+   ],
+   [
+    1.812,
+    "sums"
+   ],
+   [
+    2.663,
+    "the"
+   ],
+   [
+    2.763,
+    "blue"
+   ],
+   [
+    3.05,
+    "cells"
+   ]
+  ],
+  "text": "The network is shown half of the sums: the blue cells."
+ },
+ "b2ac8a8b79803dd9": {
+  "file": "b2ac8a8b79803dd9.mp3",
+  "duration": 4.512,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.2,
+    "other"
+   ],
+   [
+    0.45,
+    "half"
+   ],
+   [
+    1.188,
+    "in"
+   ],
+   [
+    1.363,
+    "red"
+   ],
+   [
+    2.125,
+    "stays"
+   ],
+   [
+    2.513,
+    "hidden"
+   ],
+   [
+    3.3,
+    "that"
+   ],
+   [
+    3.438,
+    "is"
+   ],
+   [
+    3.538,
+    "the"
+   ],
+   [
+    3.625,
+    "test"
+   ]
+  ],
+  "text": "The other half, in red, stays hidden: that is the test."
+ },
+ "d4339737d597767c": {
+  "file": "d4339737d597767c.mp3",
+  "duration": 2.112,
+  "words": [
+   [
+    0.087,
+    "Watch"
+   ],
+   [
+    0.312,
+    "the"
+   ],
+   [
+    0.4,
+    "table"
+   ],
+   [
+    0.762,
+    "while"
+   ],
+   [
+    0.95,
+    "it"
+   ],
+   [
+    1.025,
+    "trains"
+   ]
+  ],
+  "text": "Watch the table while it trains."
+ },
+ "9712b9f6662cd949": {
+  "file": "9712b9f6662cd949.mp3",
+  "duration": 3.48,
+  "words": [
+   [
+    0.1,
+    "Within"
+   ],
+   [
+    0.312,
+    "a"
+   ],
+   [
+    0.35,
+    "hundred"
+   ],
+   [
+    0.662,
+    "steps"
+   ],
+   [
+    1.55,
+    "every"
+   ],
+   [
+    1.837,
+    "blue"
+   ],
+   [
+    2.212,
+    "cell"
+   ],
+   [
+    2.6,
+    "is"
+   ],
+   [
+    2.7,
+    "right"
+   ]
+  ],
+  "text": "Within a hundred steps, every blue cell is right."
+ },
+ "95ef3574bb325141": {
+  "file": "95ef3574bb325141.mp3",
+  "duration": 2.304,
+  "words": [
+   [
+    0.1,
+    "But"
+   ],
+   [
+    0.188,
+    "the"
+   ],
+   [
+    0.263,
+    "hidden"
+   ],
+   [
+    0.487,
+    "half"
+   ],
+   [
+    1.113,
+    "is"
+   ],
+   [
+    1.225,
+    "still"
+   ],
+   [
+    1.6,
+    "red"
+   ]
+  ],
+  "text": "But the hidden half is still red."
+ },
+ "1d06c471138f6173": {
+  "file": "1d06c471138f6173.mp3",
+  "duration": 4.728,
+  "words": [
+   [
+    0.087,
+    "The"
+   ],
+   [
+    0.15,
+    "network"
+   ],
+   [
+    0.537,
+    "has"
+   ],
+   [
+    0.688,
+    "learned"
+   ],
+   [
+    0.95,
+    "its"
+   ],
+   [
+    1.038,
+    "half"
+   ],
+   [
+    1.45,
+    "by"
+   ],
+   [
+    1.675,
+    "heart"
+   ],
+   [
+    2.575,
+    "and"
+   ],
+   [
+    2.625,
+    "has"
+   ],
+   [
+    2.812,
+    "no"
+   ],
+   [
+    3.013,
+    "idea"
+   ],
+   [
+    3.538,
+    "about"
+   ],
+   [
+    3.775,
+    "the"
+   ],
+   [
+    3.837,
+    "rest"
+   ]
+  ],
+  "text": "The network has learned its half by heart, and has no idea about the rest."
+ },
+ "34f9be1e37e63918": {
+  "file": "34f9be1e37e63918.mp3",
+  "duration": 4.848,
+  "words": [
+   [
+    0.1,
+    "Nothing"
+   ],
+   [
+    0.475,
+    "changes"
+   ],
+   [
+    0.988,
+    "in"
+   ],
+   [
+    1.062,
+    "the"
+   ],
+   [
+    1.125,
+    "training"
+   ],
+   [
+    1.962,
+    "the"
+   ],
+   [
+    2.038,
+    "same"
+   ],
+   [
+    2.375,
+    "steps"
+   ],
+   [
+    2.663,
+    "continue"
+   ],
+   [
+    3.438,
+    "on"
+   ],
+   [
+    3.562,
+    "the"
+   ],
+   [
+    3.638,
+    "same"
+   ],
+   [
+    3.938,
+    "half"
+   ]
+  ],
+  "text": "Nothing changes in the training: the same steps continue, on the same half."
+ },
+ "6df4d0d428e1940a": {
+  "file": "6df4d0d428e1940a.mp3",
+  "duration": 4.128,
+  "words": [
+   [
+    0.1,
+    "And"
+   ],
+   [
+    0.212,
+    "then"
+   ],
+   [
+    0.775,
+    "slowly"
+   ],
+   [
+    1.288,
+    "at"
+   ],
+   [
+    1.363,
+    "first"
+   ],
+   [
+    2.275,
+    "the"
+   ],
+   [
+    2.35,
+    "red"
+   ],
+   [
+    2.638,
+    "cells"
+   ],
+   [
+    3.075,
+    "turn"
+   ],
+   [
+    3.35,
+    "green"
+   ]
+  ],
+  "text": "And then, slowly at first, the red cells turn green."
+ },
+ "78cf9e82e86eaaf4": {
+  "file": "78cf9e82e86eaaf4.mp3",
+  "duration": 4.44,
+  "words": [
+   [
+    0.1,
+    "By"
+   ],
+   [
+    0.2,
+    "step"
+   ],
+   [
+    0.463,
+    "seven"
+   ],
+   [
+    0.762,
+    "hundred"
+   ],
+   [
+    1.613,
+    "the"
+   ],
+   [
+    1.688,
+    "network"
+   ],
+   [
+    2.138,
+    "answers"
+   ],
+   [
+    2.675,
+    "every"
+   ],
+   [
+    2.975,
+    "sum"
+   ],
+   [
+    3.163,
+    "it"
+   ],
+   [
+    3.212,
+    "has"
+   ],
+   [
+    3.388,
+    "never"
+   ],
+   [
+    3.65,
+    "seen"
+   ]
+  ],
+  "text": "By step seven hundred, the network answers every sum it has never seen."
+ },
+ "8c6ce82374e793f5": {
+  "file": "8c6ce82374e793f5.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.087,
+    "Look"
+   ],
+   [
+    0.225,
+    "inside"
+   ]
+  ],
+  "text": "Look inside."
+ },
+ "a7a63fcbdc248033": {
+  "file": "a7a63fcbdc248033.mp3",
+  "duration": 6.576,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "53"
+   ],
+   [
+    0.85,
+    "numbers"
+   ],
+   [
+    1.788,
+    "as"
+   ],
+   [
+    1.925,
+    "the"
+   ],
+   [
+    2.013,
+    "network"
+   ],
+   [
+    2.612,
+    "represents"
+   ],
+   [
+    3.112,
+    "them"
+   ],
+   [
+    3.788,
+    "now"
+   ],
+   [
+    4.05,
+    "sit"
+   ],
+   [
+    4.375,
+    "on"
+   ],
+   [
+    4.487,
+    "a"
+   ],
+   [
+    4.525,
+    "circle"
+   ],
+   [
+    5.6,
+    "a"
+   ],
+   [
+    5.662,
+    "clock"
+   ]
+  ],
+  "text": "The 53 numbers, as the network represents them, now sit on a circle: a clock."
+ },
+ "d9d120998fcde4b7": {
+  "file": "d9d120998fcde4b7.mp3",
+  "duration": 2.376,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.163,
+    "network"
+   ],
+   [
+    0.588,
+    "adds"
+   ],
+   [
+    0.9,
+    "by"
+   ],
+   [
+    1.062,
+    "turning"
+   ],
+   [
+    1.4,
+    "hands"
+   ]
+  ],
+  "text": "The network adds by turning hands."
+ },
+ "64e573ad7d45a1de": {
+  "file": "64e573ad7d45a1de.mp3",
+  "duration": 5.616,
+  "words": [
+   [
+    0.1,
+    "There"
+   ],
+   [
+    0.2,
+    "are"
+   ],
+   [
+    0.275,
+    "several"
+   ],
+   [
+    0.75,
+    "such"
+   ],
+   [
+    1.038,
+    "clocks"
+   ],
+   [
+    1.913,
+    "one"
+   ],
+   [
+    2.225,
+    "per"
+   ],
+   [
+    2.425,
+    "frequency"
+   ],
+   [
+    3.612,
+    "pick"
+   ],
+   [
+    3.812,
+    "another"
+   ],
+   [
+    4.138,
+    "one"
+   ],
+   [
+    4.312,
+    "below"
+   ],
+   [
+    4.65,
+    "the"
+   ],
+   [
+    4.75,
+    "plot"
+   ]
+  ],
+  "text": "There are several such clocks, one per frequency: pick another one below the plot."
+ }
+}

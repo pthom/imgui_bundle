@@ -1,14 +1,22 @@
-"""narrator: the player of narrated explorables (first version: the silent clock, no voice yet).
+"""narrator: the player of narrated explorables.
 
 A lesson is the `::md Lesson` section of a program (see the format in _plans/narrated_explorables/nex_dsl__format.md):
 chapters are `##` headings, the narration is its paragraphs, and `cues` fenced blocks before a paragraph say what
 happens on the stage while it is read. The program declares what the cues may touch (parameters, actions), tags the
 widgets that show the parameters, and calls `lesson.gui()` for the strip (the captions, the controls, the chapters).
+
+The voice: `python narrator.py build scenario.md` synthesizes one clip per sentence (edge-tts, the voice of the front
+matter) into `scenario_audio/` beside the script, with the words' timings; only new sentences are synthesized. With
+the clips, the audio is the clock: a sentence lasts what its clip lasts, and a cue anchored to words fires on them.
+Without them (or with the voice off), the clock is estimated from the text.
 """
+import hashlib
 import inspect
+import json
 import math
 import os
 import re
+import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -22,6 +30,8 @@ SENTENCE_GAP = 0.4               # the silence after a sentence
 CHAPTER_GAP = 0.8                # the silence before a chapter
 HIGHLIGHT_DURATION = 3.0
 RESERVED_SECTIONS = ("More", "Code", "References")
+IN_BROWSER = sys.platform == "emscripten"
+DEFAULT_VOICE = "en-US-AndrewMultilingualNeural"
 _SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
 
@@ -39,6 +49,8 @@ class Sentence:
     char_start: int              # in the paragraph's text
     start: float = 0.0           # lesson time
     duration: float = 0.0
+    clip: str = ""               # the audio file of the sentence, if synthesized
+    words: list[tuple[float, str]] = field(default_factory=list)   # (offset in the clip, word), from the synthesis
 
 
 @dataclass
@@ -100,7 +112,26 @@ class _CuesBlock:
         self.source, self.line = source, line
 
 
-def _read_script(file: str, section: str) -> str:
+def audio_folder(script_file: str) -> Path:
+    return Path(script_file).with_name(Path(script_file).stem + "_audio")
+
+
+def clip_key(voice: str, text: str) -> str:
+    return hashlib.sha1(f"{voice}|{text}".encode("utf-8")).hexdigest()[:16]
+
+
+def load_audio_index(script_file: str) -> dict[str, Any]:
+    """{key: {"file", "duration", "words": [[offset, word], ...]}}, written by the build step"""
+    index = audio_folder(script_file) / "index.json"
+    if index.is_file():
+        try:
+            return dict(json.loads(index.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            return {}
+    return {}
+
+
+def _read_script(file: str, section: str, resolve: bool = True) -> str:
     """The script's text, its transclusions resolved: a markdown file as it is, or a ::md section of a program"""
     base = Path(file).parent
 
@@ -112,7 +143,7 @@ def _read_script(file: str, section: str) -> str:
         text = read_file(file)
         if text is None:
             raise LessonError(f"{file} not found")
-        return rich_md.resolve_transclusions(text, read_file, file)
+        return rich_md.resolve_transclusions(text, read_file, file) if resolve else text
     return rich_md.resolve_transclusions(f"![[{Path(file).name}#{section}]]", read_file, file)
 
 
@@ -266,17 +297,21 @@ class Parser:
             events.append(Event(0.0, kind, chapter=chapter, line=block.line, anchor=(paragraph, at), **kw))
 
         def check_param(name: str) -> None:
-            if name not in lesson.params:
+            if lesson.strict and name not in lesson.params:
                 raise LessonError(f"line {block.line}: unknown parameter {name!r} (declared: {list(lesson.params)})")
+
+        def check_value(name: str, value: Any) -> None:
+            if name in lesson.params:
+                lesson.params[name].check(value, block.line)
 
         def set_value(name: str, value: Any, at: Optional[str] = None) -> None:
             check_param(name)
-            lesson.params[name].check(value, block.line)
+            check_value(name, value)
             record("set", param=name, value=value, at=at)
 
         def animate(name: str, value: Any, over: Optional[float] = None, at: Optional[str] = None) -> None:
             check_param(name)
-            lesson.params[name].check(value, block.line)
+            check_value(name, value)
             record("animate", param=name, value=value, over=lesson.default_over if over is None else over, at=at)
 
         def highlight(name: str, at: Optional[str] = None) -> None:
@@ -306,6 +341,9 @@ class Parser:
             raise LessonError(f"line {block.line}: {e}") from e
 
     def _time_everything(self) -> None:
+        """The clock: a sentence lasts what its clip lasts, or an estimate from its length"""
+        audio = self.lesson.audio_index
+        folder = audio_folder(self.lesson.file)
         t = 0.0
         for i, chapter in enumerate(self.chapters):
             t += CHAPTER_GAP if i > 0 else 0.0     # the first chapter starts at 0: its cues set the opening state
@@ -314,7 +352,13 @@ class Parser:
                 paragraph.start = t
                 for sentence in paragraph.sentences:
                     sentence.start = t
-                    sentence.duration = max(0.8, len(sentence.text) * SECONDS_PER_CHAR)
+                    entry = audio.get(clip_key(self.lesson.voice, sentence.text))
+                    if entry:
+                        sentence.clip = str(folder / entry["file"])
+                        sentence.duration = float(entry["duration"])
+                        sentence.words = [(float(o), str(w)) for o, w in entry.get("words", [])]
+                    else:
+                        sentence.duration = max(0.8, len(sentence.text) * SECONDS_PER_CHAR)
                     t += sentence.duration + SENTENCE_GAP
                 paragraph.end = t
             chapter.end = t
@@ -334,6 +378,10 @@ class Parser:
             raise LessonError(f"line {line}: the words {words!r} are not in the paragraph that follows")
         for sentence in paragraph.sentences:
             if sentence.char_start <= pos < sentence.char_start + len(sentence.text):
+                if sentence.words:                 # the clip knows when each word is spoken
+                    index = len(sentence.text[:pos - sentence.char_start].split())
+                    if index < len(sentence.words):
+                        return sentence.start + sentence.words[index][0]
                 return sentence.start + sentence.duration * (pos - sentence.char_start) / max(1, len(sentence.text))
         return paragraph.start
 
@@ -366,6 +414,111 @@ class Param:
 
 
 # =============================================================================
+# The audio: a clip played at a time, its position read each frame
+# =============================================================================
+
+class _MiniaudioBackend:
+    """The desktop: miniaudio decodes the clip and plays it; the position is counted in frames"""
+    RATE, CHANNELS = 44100, 2
+
+    def __init__(self) -> None:
+        import miniaudio  # type: ignore[import-untyped]
+        self.miniaudio = miniaudio
+        self.device: Any = None
+        self.samples: Any = None
+        self.frame = 0
+        self.total = 0
+        self.decoded: dict[str, Any] = {}
+
+    def play(self, path: str, offset: float) -> None:
+        self.stop()
+        if path not in self.decoded:
+            self.decoded[path] = self.miniaudio.decode_file(path, nchannels=self.CHANNELS, sample_rate=self.RATE)
+        self.samples = self.decoded[path].samples
+        self.total = len(self.samples) // self.CHANNELS
+        self.frame = min(self.total, int(offset * self.RATE))
+        self._start()
+
+    def _start(self) -> None:
+        def feed() -> Any:
+            needed = yield b""
+            while self.frame < self.total:
+                chunk = self.samples[self.frame * self.CHANNELS:(self.frame + needed) * self.CHANNELS]
+                self.frame += needed
+                needed = yield chunk
+        generator = feed()
+        next(generator)
+        self.device = self.miniaudio.PlaybackDevice(nchannels=self.CHANNELS, sample_rate=self.RATE)
+        self.device.start(generator)
+
+    def pause(self) -> None:
+        if self.device is not None:
+            self.device.close()
+            self.device = None
+
+    def resume(self) -> None:
+        if self.device is None and self.samples is not None and self.frame < self.total:
+            self._start()
+
+    def stop(self) -> None:
+        self.pause()
+        self.samples, self.frame, self.total = None, 0, 0
+
+    def position(self) -> float:
+        return self.frame / self.RATE
+
+    def done(self) -> bool:
+        return self.samples is None or self.frame >= self.total
+
+
+class _WebBackend:
+    """The browser: an <audio> element plays the clip from a blob URL (the clip came with the lesson's files)"""
+
+    def __init__(self) -> None:
+        import js  # type: ignore[import-not-found]
+        from pyodide.ffi import to_js  # type: ignore[import-not-found]
+        self.js, self.to_js = js, to_js
+        self.audio = js.Audio.new()
+        self.urls: dict[str, str] = {}
+        self.active = False
+
+    def play(self, path: str, offset: float) -> None:
+        if path not in self.urls:
+            data = Path(path).read_bytes()
+            blob = self.js.Blob.new(self.to_js([self.js.Uint8Array.new(data)]), self.to_js({"type": "audio/mpeg"}))
+            self.urls[path] = self.js.URL.createObjectURL(blob)
+        self.audio.src = self.urls[path]
+        self.audio.currentTime = offset
+        self.audio.play()
+        self.active = True
+
+    def pause(self) -> None:
+        self.audio.pause()
+
+    def resume(self) -> None:
+        if self.active and not self.audio.ended:
+            self.audio.play()
+
+    def stop(self) -> None:
+        self.audio.pause()
+        self.active = False
+
+    def position(self) -> float:
+        return float(self.audio.currentTime)
+
+    def done(self) -> bool:
+        return not self.active or bool(self.audio.ended)
+
+
+def make_audio_backend() -> Any:
+    """The backend of this platform, or None when no audio can be played"""
+    try:
+        return _WebBackend() if IN_BROWSER else _MiniaudioBackend()
+    except Exception:
+        return None
+
+
+# =============================================================================
 # The player
 # =============================================================================
 
@@ -394,6 +547,12 @@ class Lesson:
         self.open_section: Optional[Section] = None
         self.show_full_text = False
         self.show_source = ""                      # "", "scenario" or "program": the source shown under the strip
+        self.strict = True                         # False for the build step: the parameters are not declared there
+        self.voice = DEFAULT_VOICE
+        self.voice_on = True
+        self.audio_index: dict[str, Any] = {}
+        self.audio = make_audio_backend()
+        self._speaking: Optional[Sentence] = None  # the sentence whose clip plays
         self._mtime = 0.0
         self._last_check = 0.0
         self._loaded = False
@@ -420,8 +579,13 @@ class Lesson:
     # ---- loading -------------------------------------------------------------------------------------------------
     def load(self) -> None:
         self.initial = {name: p.get() for name, p in self.params.items()}
+        self.audio_index = load_audio_index(self.file)
+        self._stop_audio()
         try:
             text = _read_script(self.file, self.section)
+            lines = text.splitlines()
+            fm0, _ = _parse_front_matter(lines)
+            self.voice = str(fm0.get("voice", DEFAULT_VOICE))
             self.script = Parser(self, text).parse()
             fm = self.script.front_matter
             defaults = fm.get("defaults", {}) if isinstance(fm.get("defaults"), dict) else {}
@@ -486,6 +650,7 @@ class Lesson:
         t = max(0.0, min(t, self.script.duration))
         starts = [s.start for c in self.script.chapters for p in c.paragraphs for s in p.sentences]
         self.t = max((s for s in starts if s <= t + 1e-6), default=0.0)
+        self._stop_audio()
         self.waiting = None
         self.passed = {id(e) for e in self.script.events if e.kind in ("pause", "challenge") and e.time < self.t}
         chapter_start = self.script.chapters[self.current_chapter()].start
@@ -529,18 +694,42 @@ class Lesson:
         if self.playing:
             self.started = True
         if self.playing and self.waiting is None:
-            t_next = self.t + imgui.get_io().delta_time
+            t_next = self._clock_next()
             stop = next((e for e in self.script.events if e.kind in ("pause", "challenge")
                          and id(e) not in self.passed and self.t - 1e-6 <= e.time <= t_next), None)
             if stop is not None:
                 self.t, self.waiting, self.waiting_since = stop.time, stop, time.time()
+                self._stop_audio()
             else:
                 self.t = min(t_next, self.script.duration)
                 if self.t >= self.script.duration:
                     self.playing = False
+                    self._stop_audio()
+        else:
+            self._stop_audio()
         if self.waiting is not None and self.waiting.kind == "challenge" and self._condition(self.waiting.until):
             self._resume()
         self._apply()
+
+    def _clock_next(self) -> float:
+        """The lesson time after this frame: the clip's position while a sentence is spoken, else the frame's time"""
+        delta = imgui.get_io().delta_time
+        sentence = self.current_sentence()
+        if self.audio is None or not self.voice_on or sentence is None or not sentence.clip \
+                or self.t >= sentence.start + sentence.duration:
+            self._stop_audio()
+            return self.t + delta
+        if self._speaking is not sentence:
+            self.audio.play(sentence.clip, max(0.0, self.t - sentence.start))
+            self._speaking = sentence
+        if self.audio.done():
+            return max(self.t, sentence.start + sentence.duration) + delta
+        return float(sentence.start + self.audio.position())
+
+    def _stop_audio(self) -> None:
+        if self.audio is not None and self._speaking is not None:
+            self.audio.stop()
+        self._speaking = None
 
     def _condition(self, expression: str) -> bool:
         names: dict[str, Any] = {"abs": abs, "min": min, "max": max}
@@ -657,6 +846,11 @@ class Lesson:
             imgui.same_line()
             if imgui.button(section.title):
                 self.open_section = None if self.open_section is section else section
+        if self.audio is not None and self.audio_index:
+            imgui.same_line()
+            if imgui.button("Voice: on" if self.voice_on else "Voice: off"):
+                self.voice_on = not self.voice_on
+                self._stop_audio()
         imgui.same_line()
         if imgui.button("Full text"):
             self.show_full_text = not self.show_full_text
@@ -682,3 +876,66 @@ class Lesson:
         imgui.begin_child("##full_text", ImVec2(0, em * 20), imgui.ChildFlags_.borders)
         rich_md.render(self.script.markdown)
         imgui.end_child()
+
+
+# =============================================================================
+# The build step: the clips
+# =============================================================================
+
+def build_audio(script_file: str) -> None:
+    """Synthesizes the clips of the sentences that have none yet (edge-tts), and writes the index"""
+    import asyncio
+    import edge_tts
+
+    lesson = Lesson(script_file)
+    lesson.strict = False
+    text = _read_script(script_file, lesson.section, resolve=False)   # transclusions are not spoken
+    lesson.voice = str(_parse_front_matter(text.splitlines())[0].get("voice", DEFAULT_VOICE))
+    script = Parser(lesson, text).parse()
+    folder = audio_folder(script_file)
+    folder.mkdir(exist_ok=True)
+    index = load_audio_index(script_file)
+    sentences = [s for c in script.chapters for p in c.paragraphs for s in p.sentences]
+    todo = {clip_key(lesson.voice, s.text): s.text for s in sentences if clip_key(lesson.voice, s.text) not in index}
+    print(f"{len(sentences)} sentences, {len(todo)} to synthesize with {lesson.voice}")
+
+    async def synthesize(key: str, sentence: str) -> None:
+        communicate = edge_tts.Communicate(sentence, lesson.voice, boundary="WordBoundary")
+        data: bytearray = bytearray()
+        words: list[list[Any]] = []
+        async for chunk in communicate.stream():
+            if chunk["type"] == "audio":
+                data.extend(chunk["data"])
+            elif chunk["type"] == "WordBoundary":
+                words.append([round(chunk["offset"] / 1e7, 3), chunk["text"]])
+        (folder / f"{key}.mp3").write_bytes(bytes(data))
+        last_offset = float(words[-1][0]) if words else 0.0
+        duration = round(last_offset + 0.5, 3)      # the last word plus a breath; a decoder gives the exact length
+        try:
+            import miniaudio  # type: ignore[import-untyped]
+            info = miniaudio.get_file_info(str(folder / f"{key}.mp3"))
+            duration = round(info.duration, 3)
+        except Exception:
+            pass
+        index[key] = {"file": f"{key}.mp3", "duration": duration, "words": words, "text": sentence}
+        print(f"  {duration:5.1f} s  {sentence[:70]}")
+
+    async def run() -> None:
+        for key, sentence in todo.items():
+            await synthesize(key, sentence)
+
+    asyncio.run(run())
+    keys = {clip_key(lesson.voice, s.text) for s in sentences}
+    stale = [k for k in index if k not in keys]
+    for k in stale:                                 # the clips of sentences that no longer exist
+        (folder / index[k]["file"]).unlink(missing_ok=True)
+        del index[k]
+    (folder / "index.json").write_text(json.dumps(index, indent=1, ensure_ascii=False) + "\n", encoding="utf-8")
+    print(f"index: {len(index)} clips, {len(stale)} removed")
+
+
+if __name__ == "__main__":
+    if len(sys.argv) == 3 and sys.argv[1] == "build":
+        build_audio(sys.argv[2])
+    else:
+        print("usage: python narrator.py build <scenario.md>")
