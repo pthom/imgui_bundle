@@ -9,6 +9,24 @@ defaults:
 
 ## Teaser
 
+[[Hide the top control bar "Play the training/slider/etc
+Maybe hide also the square at this moment
+]]
+
+[[Help me reword below - commit first, then place your version below - or let me see both versions]]
+In this lesson we are going to see how a neural network learns concepts.
+You are currently seeing two figures:
+
+The first figures shows two lines:
+- The first show the accuracy of a neural network on things it already knows, aka its "training set" (the blue line): It grows rapidly during the training.
+- The second line shows Its accuracy on things it did not know (aka its "test set"). Originally, it is unable to generalize to things it did not encounter before.
+
+The second picture is a visual representation of how the neural network "classified" its knowledge in its internal data (its weights). From complete chaos at the start, it evolves it into a nice circular pattern, Which shows that the network has learnt something inside its weights.
+
+The fact that neural networks may grasp subtle patterns from training data, and create inner representation That resembles concepts such as the one we form into our mind, is often called "Grokking".
+
+
+
 ```cues
 set_value("step", 1000)
 set_value("clock", 0)
