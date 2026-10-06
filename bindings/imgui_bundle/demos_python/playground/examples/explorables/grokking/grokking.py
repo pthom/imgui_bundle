@@ -237,7 +237,7 @@ def main() -> None:
     params.imgui_window_params.tweaked_theme.theme = hello_imgui.ImGuiTheme_.white_is_white
     params.ini_disable = True
     params.callbacks.show_gui = gui
-    immapp.run(params, immapp.AddOnsParams(with_implot=True, with_markdown=True))
+    immapp.run(params, immapp.AddOnsParams(with_implot=True, with_markdown=True, with_latex=True))
 
 
 if __name__ == "__main__":
