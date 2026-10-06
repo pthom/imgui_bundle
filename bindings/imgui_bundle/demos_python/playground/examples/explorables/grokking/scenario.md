@@ -19,7 +19,18 @@ In this lesson, we watch a neural network learn a concept. Two figures tell the 
 ```cues
 highlight("step", at="The first")
 ```
-The first shows two lines. The blue one is the network's accuracy on the sums it was trained on. It rises fast: the network learns them quickly. The green one is its accuracy on sums it has never seen. For a long time, it stays at zero: the network cannot generalize what it learned.
+[[Animate zoom on the first figure, it occupies the full visible zone]]
+The first shows two lines.
+
+[[highlight the blue line]]
+The blue one is the network's accuracy on the sums {{I dont want to say "sums" at this time. Things is underwhelming. Suggestions?}} it was trained on. It rises fast: the network learns them quickly.
+
+[[highlight the green line]]
+The green one is its accuracy on sums it has never seen..
+[[Highlight the zone where no generalization is made - play until there]]
+For a long time, it stays at zero: the network cannot generalize what it learned.
+[[Highlight the zone where no generalization is made - play until the end]]
+Then suddenly it becomes able to generalize on data it never saw before, And it soon makes no mistakes, even on cases it never encountered.
 
 ```cues
 animate("step", 0, over=1, at="The second")
