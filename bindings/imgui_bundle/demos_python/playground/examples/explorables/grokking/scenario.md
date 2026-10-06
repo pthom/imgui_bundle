@@ -26,13 +26,13 @@ set_value("step", 1000)
 
 When we train a network we use two distinct measures:
 
-[[Highlight the blue line]]
+[[Highlight the blue line - and make it blink a bit]]
 ```cues
 set_value("accent_line", "seen")
 ```
 - Its accuracy on the examples it was trained on. It rises fast: the network learns them quickly.
 
-[[Highlight the green line]]
+[[Highlight the green line - and make it blink a bit]]
 ```cues
 set_value("accent_line", "hidden")
 ```
