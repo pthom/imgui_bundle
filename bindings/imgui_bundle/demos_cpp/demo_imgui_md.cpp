@@ -207,14 +207,33 @@ int main() {
 A code block has a copy button, and syntax highlighting when the library is built with its code editor
 (`RichMd::HasCodeEditor()`). It is written between three backticks, with an optional language:
 
-<pre>
+````markdown
 ```cpp
 int main()
 {
     return 0;
 }
 ```
-</pre>
+````
+
+A block that shows a fence, as this one, is written between four backticks (or tildes): a fence
+closes only on as many backticks as it opened with, or more.
+
+<details>
+<summary>Show source</summary>
+
+`````markdown
+````markdown
+```cpp
+int main()
+{
+    return 0;
+}
+```
+````
+`````
+
+</details>
 
 ### Tables
 
@@ -386,14 +405,14 @@ classDiagram
 <details>
 <summary>Show source</summary>
 
-<pre>
+````markdown
 ```mermaid
 flowchart LR
     A[Markdown] --> B{Mermaid block?}
     B -->|yes| C([Parse]) --> D[Layout] --> E[(ImDrawList)]
     B -->|no| F[Code block]
 ```
-</pre>
+````
 
 </details>
 
@@ -571,12 +590,12 @@ RichMd::RegisterFencedBlockRenderer("csv", RenderCsv);
 ```
 
 Then in the markdown:
-<pre>
+````markdown
 ```csv
 name,score
 Alice,10
 ```
-</pre>
+````
 
 </details>
 
