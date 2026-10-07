@@ -113,7 +113,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("align_middle", TextEditor::Scroll::alignMiddle, "")
                 .value("align_bottom", TextEditor::Scroll::alignBottom, "");
         auto pyEnumSquiggleStyle =
-            nb::enum_<TextEditor::SquiggleStyle>(pyClassTextEditor, "SquiggleStyle", nb::is_arithmetic(), " access squiggly underlines\n squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph\n if a glyph with a squiggle is deleted, undo doesn't restore it\n a glyph has at most one squiggle: a new squiggle replaces the ones under it\n a squiggle is drawn as a wavy underline, or as a background behind the text (e.g. to highlight search results)\n tooltips must be UTF-8 encoded")
+            nb::enum_<TextEditor::SquiggleStyle>(pyClassTextEditor, "SquiggleStyle", nb::is_arithmetic(), " access squiggly underlines\n squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph\n if a glyph with a squiggle is deleted, undo doesn't restore it\n a squiggle is drawn as a wavy underline or as a background behind the text (e.g. to highlight search results)\n tooltips must be UTF-8 encoded")
                 .value("wave", TextEditor::SquiggleStyle::wave, "")
                 .value("background", TextEditor::SquiggleStyle::background, "");
         auto pyClassTextEditor_ClassChange =

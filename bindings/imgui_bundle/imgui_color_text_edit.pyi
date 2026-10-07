@@ -751,8 +751,7 @@ class TextEditor:
         """ access squiggly underlines
          squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
          if a glyph with a squiggle is deleted, undo doesn't restore it
-         a glyph has at most one squiggle: a new squiggle replaces the ones under it
-         a squiggle is drawn as a wavy underline, or as a background behind the text (e.g. to highlight search results)
+         a squiggle is drawn as a wavy underline or as a background behind the text (e.g. to highlight search results)
          tooltips must be UTF-8 encoded
         """
         # wave,    /* original C++ signature */
