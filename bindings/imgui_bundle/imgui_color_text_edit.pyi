@@ -223,6 +223,12 @@ class TextEditor:
     # inline bool IsReadOnlyEnabled() const;    /* original C++ signature */
     def is_read_only_enabled(self) -> bool:
         pass
+    # inline void SetFindReplaceEnabled(bool value);    /* original C++ signature */
+    def set_find_replace_enabled(self, value: bool) -> None:
+        pass
+    # inline bool IsFindReplaceEnabled() const;    /* original C++ signature */
+    def is_find_replace_enabled(self) -> bool:
+        pass
     # inline void SetCaretsVisible(bool value);    /* original C++ signature */
     def set_carets_visible(self, value: bool) -> None:
         pass
@@ -282,6 +288,12 @@ class TextEditor:
         pass
     # inline bool IsShowPanScrollIndicatorEnabled() const;    /* original C++ signature */
     def is_show_pan_scroll_indicator_enabled(self) -> bool:
+        pass
+    # inline void SetShowCurrentLineHighlightEnabled(bool value);    /* original C++ signature */
+    def set_show_current_line_highlight_enabled(self, value: bool) -> None:
+        pass
+    # inline bool IsShowCurrentLineHighlightEnabled() const;    /* original C++ signature */
+    def is_show_current_line_highlight_enabled(self) -> bool:
         pass
     # inline void SetShowMatchingBrackets(bool value);    /* original C++ signature */
     def set_show_matching_brackets(self, value: bool) -> None:
@@ -550,12 +562,12 @@ class TextEditor:
     class Scroll(enum.IntEnum):
         """ scrolling support"""
         # alignTop,    /* original C++ signature */
-        align_top = enum.auto()                   # (= 0)
+        align_top = enum.auto()                     # (= 0)
         # alignMiddle,    /* original C++ signature */
-        align_middle = enum.auto()                # (= 1)
+        align_middle = enum.auto()                  # (= 1)
         # alignBottom    /* original C++ signature */
         # 	}
-        align_bottom = enum.auto()                # (= 2)
+        align_bottom = enum.auto()                  # (= 2)
 
     # inline void ScrollToLine(size_t line, Scroll alignment=Scroll::alignMiddle);    /* original C++ signature */
     def scroll_to_line(
@@ -616,6 +628,13 @@ class TextEditor:
     def vis_pos2_doc_pos(self, pos: TextEditor.VisPos) -> TextEditor.DocPos:
         pass
 
+    # inline ImVec2 DocPos2ScreenPos(DocPos pos) const;    /* original C++ signature */
+    def doc_pos2_screen_pos(self, pos: TextEditor.DocPos) -> ImVec2:
+        """ get the screen position of the top left corner of a glyph
+         only valid after a call to Render that drew the editor (its window was visible: see ImGui::IsItemVisible)
+        """
+        pass
+
     # inline bool IsDocPosVisible(DocPos pos) const;    /* original C++ signature */
     def is_doc_pos_visible(self, pos: TextEditor.DocPos) -> bool:
         """ see if a specified document location is visible (not folded and currently on screen)"""
@@ -674,6 +693,8 @@ class TextEditor:
     def replace_text_in_all_cursors(self, text: str) -> None:
         pass
 
+    # the built-in find/replace window can be disabled (see SetFindReplaceEnabled) when the application provides its own search
+    # the editor then ignores Ctrl+F, Ctrl+Shift+F and Ctrl+G, so they reach the application's windows
     # inline void OpenFindReplaceWindow();    /* original C++ signature */
     def open_find_replace_window(self) -> None:
         pass
@@ -725,18 +746,30 @@ class TextEditor:
     def has_markers(self) -> bool:
         pass
 
-    # access squiggly underlines
-    # squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
-    # if a glyph with a squiggle is deleted, undo doesn't restore it
-    # tooltips must be UTF-8 encoded
-    # inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view());    /* original C++ signature */
+    # enum class SquiggleStyle    /* original C++ signature */
+    class SquiggleStyle(enum.IntEnum):
+        """ access squiggly underlines
+         squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph
+         if a glyph with a squiggle is deleted, undo doesn't restore it
+         a glyph has at most one squiggle: a new squiggle replaces the ones under it
+         a squiggle is drawn as a wavy underline, or as a background behind the text (e.g. to highlight search results)
+         tooltips must be UTF-8 encoded
+        """
+        # wave,    /* original C++ signature */
+        wave = enum.auto()                          # (= 0)
+        # background    /* original C++ signature */
+        # 	}
+        background = enum.auto()                    # (= 1)
+
+    # inline void AddSquiggle(DocPos start, DocPos end, size_t type, ImU32 color, const std::string_view& tooltip = std::string_view(), SquiggleStyle style = SquiggleStyle::wave);    /* original C++ signature */
     def add_squiggle(
         self,
         start: TextEditor.DocPos,
         end: TextEditor.DocPos,
         type: int,
         color: ImU32,
-        tooltip: str = str()
+        tooltip: str = str(),
+        style: TextEditor.SquiggleStyle = TextEditor.SquiggleStyle.wave
         ) -> None:
         pass
     # inline void ClearSquiggles(DocPos start, DocPos end);    /* original C++ signature */
@@ -838,7 +871,7 @@ class TextEditor:
     class Decorator:
         """ line-based decoration"""
         # size_t line;    /* original C++ signature */
-        line: int                                 # zero-based
+        line: int                                   # zero-based
         # float width;    /* original C++ signature */
         width: float
         # float height;    /* original C++ signature */
@@ -1129,49 +1162,53 @@ class TextEditor:
     class Color(enum.IntEnum):
         """ color palette support"""
         # text,    /* original C++ signature */
-        text = enum.auto()                        # (= 0)
+        text = enum.auto()                          # (= 0)
         # keyword,    /* original C++ signature */
-        keyword = enum.auto()                     # (= 1)
+        keyword = enum.auto()                       # (= 1)
         # declaration,    /* original C++ signature */
-        declaration = enum.auto()                 # (= 2)
+        declaration = enum.auto()                   # (= 2)
         # number,    /* original C++ signature */
-        number = enum.auto()                      # (= 3)
+        number = enum.auto()                        # (= 3)
         # string,    /* original C++ signature */
-        string = enum.auto()                      # (= 4)
+        string = enum.auto()                        # (= 4)
         # punctuation,    /* original C++ signature */
-        punctuation = enum.auto()                 # (= 5)
+        punctuation = enum.auto()                   # (= 5)
         # preprocessor,    /* original C++ signature */
-        preprocessor = enum.auto()                # (= 6)
+        preprocessor = enum.auto()                  # (= 6)
         # identifier,    /* original C++ signature */
-        identifier = enum.auto()                  # (= 7)
+        identifier = enum.auto()                    # (= 7)
         # knownIdentifier,    /* original C++ signature */
-        known_identifier = enum.auto()            # (= 8)
+        known_identifier = enum.auto()              # (= 8)
         # comment,    /* original C++ signature */
-        comment = enum.auto()                     # (= 9)
+        comment = enum.auto()                       # (= 9)
         # background,    /* original C++ signature */
-        background = enum.auto()                  # (= 10)
+        background = enum.auto()                    # (= 10)
         # cursor,    /* original C++ signature */
-        cursor = enum.auto()                      # (= 11)
+        cursor = enum.auto()                        # (= 11)
         # selection,    /* original C++ signature */
-        selection = enum.auto()                   # (= 12)
+        selection = enum.auto()                     # (= 12)
         # whitespace,    /* original C++ signature */
-        whitespace = enum.auto()                  # (= 13)
+        whitespace = enum.auto()                    # (= 13)
         # matchingBracketBackground,    /* original C++ signature */
-        matching_bracket_background = enum.auto() # (= 14)
+        matching_bracket_background = enum.auto()   # (= 14)
         # matchingBracketActive,    /* original C++ signature */
-        matching_bracket_active = enum.auto()     # (= 15)
+        matching_bracket_active = enum.auto()       # (= 15)
         # matchingBracketLevel1,    /* original C++ signature */
-        matching_bracket_level1 = enum.auto()     # (= 16)
+        matching_bracket_level1 = enum.auto()       # (= 16)
         # matchingBracketLevel2,    /* original C++ signature */
-        matching_bracket_level2 = enum.auto()     # (= 17)
+        matching_bracket_level2 = enum.auto()       # (= 17)
         # matchingBracketLevel3,    /* original C++ signature */
-        matching_bracket_level3 = enum.auto()     # (= 18)
+        matching_bracket_level3 = enum.auto()       # (= 18)
         # matchingBracketError,    /* original C++ signature */
-        matching_bracket_error = enum.auto()      # (= 19)
+        matching_bracket_error = enum.auto()        # (= 19)
         # lineNumber,    /* original C++ signature */
-        line_number = enum.auto()                 # (= 20)
+        line_number = enum.auto()                   # (= 20)
         # currentLineNumber,    /* original C++ signature */
-        current_line_number = enum.auto()         # (= 21)
+        current_line_number = enum.auto()           # (= 21)
+        # currentLineHighlight,    /* original C++ signature */
+        current_line_highlight = enum.auto()        # (= 22)
+        # currentLineHighlightBorder,    /* original C++ signature */
+        current_line_highlight_border = enum.auto() # (= 23)
 
     # struct Palette    /* original C++ signature */
     class Palette:
@@ -1301,7 +1338,7 @@ class TextEditor:
         break_before: str = "."
 
         # unicode line breaking options
-        # based on the unicode standard annex     #14 which identifies break
+        # based on the unicode standard annex       #14 which identifies break
         # opportunities expressed as rules which can be (de)activated below
         # see https://www.unicode.org/reports/tr14 for details
         # bool lb2 = true;    /* original C++ signature */

@@ -112,6 +112,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("align_top", TextEditor::Scroll::alignTop, "")
                 .value("align_middle", TextEditor::Scroll::alignMiddle, "")
                 .value("align_bottom", TextEditor::Scroll::alignBottom, "");
+        auto pyEnumSquiggleStyle =
+            nb::enum_<TextEditor::SquiggleStyle>(pyClassTextEditor, "SquiggleStyle", nb::is_arithmetic(), " access squiggly underlines\n squiggles are attached to glyphs and are not effected  by inserts or deletes before that glyph\n if a glyph with a squiggle is deleted, undo doesn't restore it\n a glyph has at most one squiggle: a new squiggle replaces the ones under it\n a squiggle is drawn as a wavy underline, or as a background behind the text (e.g. to highlight search results)\n tooltips must be UTF-8 encoded")
+                .value("wave", TextEditor::SquiggleStyle::wave, "")
+                .value("background", TextEditor::SquiggleStyle::background, "");
         auto pyClassTextEditor_ClassChange =
             nb::class_<TextEditor::Change>
                 (pyClassTextEditor, "Change", " detailed change report passed to callback below\n this callback is different from the one above as it reports every change (not just a summary) and is very detailed\n the insert flag states whether the change was an insert (True) or a delete (False)\n in case of an overwrite, there will be two actions (first a delete and then an insert)\n the start parameters refer to the insert point or the start of the delete\n the end parameters refer to the end of the inserted text or the end of the deleted text\n the text parameter contains the inserted or deleted text (UTF-8 encoded)\n line and index values are zero-based")
@@ -262,7 +266,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("matching_bracket_level3", TextEditor::Color::matchingBracketLevel3, "")
                 .value("matching_bracket_error", TextEditor::Color::matchingBracketError, "")
                 .value("line_number", TextEditor::Color::lineNumber, "")
-                .value("current_line_number", TextEditor::Color::currentLineNumber, "");
+                .value("current_line_number", TextEditor::Color::currentLineNumber, "")
+                .value("current_line_highlight", TextEditor::Color::currentLineHighlight, "")
+                .value("current_line_highlight_border", TextEditor::Color::currentLineHighlightBorder, "");
         auto pyClassTextEditor_ClassPalette =
             nb::class_<TextEditor::Palette>
                 (pyClassTextEditor, "Palette", "")
@@ -423,6 +429,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetReadOnlyEnabled, nb::arg("value"))
         .def("is_read_only_enabled",
             &TextEditor::IsReadOnlyEnabled)
+        .def("set_find_replace_enabled",
+            &TextEditor::SetFindReplaceEnabled, nb::arg("value"))
+        .def("is_find_replace_enabled",
+            &TextEditor::IsFindReplaceEnabled)
         .def("set_carets_visible",
             &TextEditor::SetCaretsVisible, nb::arg("value"))
         .def("is_carets_visible",
@@ -463,6 +473,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetShowPanScrollIndicatorEnabled, nb::arg("value"))
         .def("is_show_pan_scroll_indicator_enabled",
             &TextEditor::IsShowPanScrollIndicatorEnabled)
+        .def("set_show_current_line_highlight_enabled",
+            &TextEditor::SetShowCurrentLineHighlightEnabled, nb::arg("value"))
+        .def("is_show_current_line_highlight_enabled",
+            &TextEditor::IsShowCurrentLineHighlightEnabled)
         .def("set_show_matching_brackets",
             &TextEditor::SetShowMatchingBrackets, nb::arg("value"))
         .def("is_showing_matching_brackets",
@@ -643,6 +657,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::DocPos2VisPos, nb::arg("pos"))
         .def("vis_pos2_doc_pos",
             &TextEditor::VisPos2DocPos, nb::arg("pos"))
+        .def("doc_pos2_screen_pos",
+            &TextEditor::DocPos2ScreenPos,
+            nb::arg("pos"),
+            " get the screen position of the top left corner of a glyph\n only valid after a call to Render that drew the editor (its window was visible: see ImGui::IsItemVisible)")
         .def("is_doc_pos_visible",
             &TextEditor::IsDocPosVisible,
             nb::arg("pos"),
@@ -690,7 +708,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("has_markers",
             &TextEditor::HasMarkers)
         .def("add_squiggle",
-            &TextEditor::AddSquiggle, nb::arg("start"), nb::arg("end"), nb::arg("type"), nb::arg("color"), nb::arg("tooltip") = std::string_view())
+            &TextEditor::AddSquiggle, nb::arg("start"), nb::arg("end"), nb::arg("type"), nb::arg("color"), nb::arg("tooltip") = std::string_view(), nb::arg("style") = TextEditor::SquiggleStyle::wave)
         .def("clear_squiggles",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos>(&TextEditor::ClearSquiggles), nb::arg("start"), nb::arg("end"))
         .def("clear_squiggles",
