@@ -189,6 +189,66 @@ flowchart LR
 
 To draw a diagram outside of markdown: `rich_md.render_mermaid(source)` (Python), `RichMd::RenderMermaid(source)` (C++). The library's [Mermaid tour](https://pthom.github.io/imgui_rich_md/mermaid.html) shows more of them, and [what is supported](https://github.com/pthom/imgui_rich_md/blob/main/docs/mermaid.md) lists the syntax it reads and how its layout differs from mermaid.js.
 
+### Documents
+
+A long text reads better as a document: a scroll area of its own, a table of contents beside it, links between its sections, and a search.
+
+::::{tab-set}
+
+:::{tab-item} Python
+```python
+from imgui_bundle import imgui, immapp, rich_md
+
+
+def gui() -> None:
+    with rich_md.document("doc"):
+        rich_md.render("# Intro\n\nSee [the widgets](#a-section-of-widgets).\n\n## Details\n\nSome text.")
+        rich_md.document_heading(2, "A section of widgets")
+        imgui.button("A button")
+        rich_md.render("## The end\n\nBack to [the top](#intro).")
+
+
+immapp.run(gui, with_markdown=True)
+```
+:::
+
+:::{tab-item} C++
+```cpp
+#include "immapp/immapp.h"
+#include "imgui_rich_md/rich_md.h"
+
+void Gui()
+{
+    RichMd::BeginDocument("doc");
+    RichMd::Render("# Intro\n\nSee [the widgets](#a-section-of-widgets).\n\n## Details\n\nSome text.");
+    RichMd::DocumentHeading(2, "A section of widgets");
+    ImGui::Button("A button");
+    RichMd::Render("## The end\n\nBack to [the top](#intro).");
+    RichMd::EndDocument();
+}
+
+int main() {
+    ImmApp::AddOnsParams addons;
+    addons.withMarkdown = true;
+    HelloImGui::SimpleRunnerParams simple;
+    simple.guiFunction = Gui;
+    ImmApp::Run(simple, addons);
+    return 0;
+}
+```
+:::
+
+::::
+
+- Between the start and the end of a document, call `render()` as many times as you like, and any other widget: they share one table of contents and one search.
+- `document_heading()` gives a section made of widgets its heading.
+- A link `[text](#slug)` reaches a heading of any render of the document. The slugs are made as GitHub does: `## Headings and anchors` is `#headings-and-anchors`, and a repeated title gets `-1`, `-2`.
+- The search opens with Ctrl+F (Cmd+F on macOS), or with the magnifier of a narrow document. Enter goes to the next match, Shift+Enter to the previous one. The matches are also listed under the find bar and in the Search tab, and marked on the scrollbar.
+- The search also finds the text of the collapsed sections (a jump opens them), of the code blocks, and of the formulas (their LaTeX source).
+- `render_document(id, markdown)` is the one-call form, and `DocumentOptions` sets the table of contents, the search and the scroll's animation.
+
+Demo: [Try online](https://imgui-bundle.pages.dev/explorer/demo_imgui_md_document.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md_document.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md_document.cpp)
+
 ### Narrative programming
 
 A program can tell its own story. Its comments and strings hold named markdown sections (`::md Name`) and code regions (`::code`), and markdown transcludes them with an embed alone on its line, as in Obsidian: `![[#Square]]` for the prose of a section, `![[#Square#code]]` for its code, `![[other_file.py#Name]]` for another file. The story chooses its order; the program keeps its own.

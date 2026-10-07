@@ -99,6 +99,6 @@ playwright install firefox`, about 100 MB in `~/Library/Caches/ms-playwright`). 
 - The servers: `rm -f *.gz` fails in zsh when there is no `.gz` file (no match), which kills the `&&` chain: skip it.
 - Pyodide demo runner (`just pyodide_demo_runner`, port 6789, `?file=demo_imgui_md.py`) runs any file of
   `demos_python` with the local wheel; it does not expose `window.pyodide`, so `py:` does not work there.
-- Copy shortcut in Chrome on macOS: Cmd+C on the Emscripten GLFW pages, Ctrl+C on the Pyodide (SDL) pages.
+- Shortcuts on macOS (Chrome and Firefox): Cmd, on the Emscripten GLFW pages and on the Pyodide (SDL) pages alike (`io.config_mac_osx_behaviors` is True in both): drive them with `key:Meta+...` (e.g. `key:Meta+f` for a rich_md document's find, which `key:Control+f` does not open).
 - If macOS shows a warning attributed to the IDE hosting the terminal when Chrome starts, stop and tell the user
   (seen once; probable cause: Chrome had a pending update. It did not come back after Chrome was restarted).
