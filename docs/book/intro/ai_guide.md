@@ -224,6 +224,22 @@ Prefer StackLayout over `SameLine()` when:
 - You need right-alignment or centered content via `Spring()`
 - You want flexible spacing between groups of widgets
 
+### A widget that reads the mouse wheel
+
+Hello ImGui keeps the wheel on the window it scrolls: a page scrolled with the wheel keeps scrolling over a plot. A widget that reads `io.mouse_wheel` itself (a value changed by the wheel, a zoom) must claim the wheel while hovered, or the page takes it and the widget never sees it.
+
+```python
+imgui.invisible_button("zoom", em_to_vec2(10, 10))
+if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # hovered: the wheel is this widget's
+    zoom *= 1.1 ** imgui.get_io().mouse_wheel
+```
+
+```cpp
+ImGui::InvisibleButton("zoom", HelloImGui::EmToVec2(10, 10));
+if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY))  // hovered: the wheel is this widget's
+    zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
+```
+
 
 ## Let the AI see and drive the app
 

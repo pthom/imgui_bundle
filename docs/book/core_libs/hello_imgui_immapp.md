@@ -195,6 +195,32 @@ void gui() {
 - In the `HelloImGui` and `ImmApp` namespaces (C++, as `EmToVec2` and `EmSize`)
 :::
 
+### The mouse wheel in a page that scrolls
+
+Hello ImGui keeps the mouse wheel on the window it scrolls, as a browser does. A page scrolled with the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom. A wheel that starts on the plot zooms it. The page lets go of the wheel 0.7 s after its last wheel event.
+
+A widget of your own that reads the wheel (a value changed by the wheel, a zoom) claims it while hovered, as ImPlot and ImmVision do. Without the claim, in a page that scrolls, the page takes the wheel and the widget never sees it.
+
+::::{tab-set}
+
+:::{tab-item} Python
+```python
+imgui.invisible_button("zoom", em_to_vec2(10, 10))
+if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # hovered: the wheel is this widget's
+    zoom *= 1.1 ** imgui.get_io().mouse_wheel
+```
+:::
+
+:::{tab-item} C++
+```cpp
+ImGui::InvisibleButton("zoom", HelloImGui::EmToVec2(10, 10));
+if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY))  // hovered: the wheel is this widget's
+    zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
+```
+:::
+
+::::
+
 ---
 
 ## ImmApp
