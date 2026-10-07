@@ -72,6 +72,10 @@ if(EMSCRIPTEN)
     target_link_options(demo_imgui_bundle PRIVATE
         "SHELL:--preload-file ${_demos_root}/demos_cpp@/demos_cpp"
         "SHELL:--preload-file ${_demos_root}/demos_python@/demos_python"
+        # Not sources: what local runs leave in these folders (the Python caches, the imgui settings)
+        "SHELL:--exclude-file */__pycache__"
+        "SHELL:--exclude-file */.mypy_cache"
+        "SHELL:--exclude-file *.ini"
     )
 endif()
 
