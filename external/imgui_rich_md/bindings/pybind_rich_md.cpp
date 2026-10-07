@@ -124,12 +124,17 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("text", &RichMd::Heading::text, "without markup")
         .def_rw("slug", &RichMd::Heading::slug, "its anchor, made from the text as GitHub does (a repeated title gets -1, -2...)")
         .def_rw("y", &RichMd::Heading::y, "its top, in its window's content coordinates: SetScrollY(y) shows it at the top")
-        .def_rw("hidden", &RichMd::Heading::hidden, "inside a collapsed `<details>`: y is the one of the section's header")
+        .def_rw("hidden", &RichMd::Heading::hidden, "inside a collapsed `<details>` or a fold: y is the one of what hides it")
         ;
 
 
     m.def("last_render_headings",
         RichMd::LastRenderHeadings, "The headings of the last Render() call (valid until the next one)");
+
+    m.def("fold_all_headings",
+        RichMd::FoldAllHeadings,
+        nb::arg("folded"),
+        " Folds (or unfolds) all the foldable headings (MarkdownOptions::foldableHeadings), from the next frame: those of\n the current document between BeginDocument() and EndDocument(), else those of the last Render()");
 
 
     auto pyEnumScrollAnimation =
@@ -150,6 +155,7 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("search", &RichMd::DocumentOptions::search, "")
         .def_rw("scroll_animation", &RichMd::DocumentOptions::scrollAnimation, "")
         .def_rw("scroll_animation_seconds", &RichMd::DocumentOptions::scrollAnimationSeconds, "the duration of an animated scroll, whatever its distance")
+        .def_rw("foldable_headings", &RichMd::DocumentOptions::foldableHeadings, "The headings of this document fold (also when the context's MarkdownOptions::foldableHeadings is off)")
         ;
 
 
@@ -215,7 +221,7 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("document_heading",
         RichMd::DocumentHeading,
         nb::arg("level"), nb::arg("text"), nb::arg("draw_title") = true,
-        " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for `[text](#slug)` links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all.");
+        " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for `[text](#slug)` links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all. Returns whether the section\n shows: False when a fold hides it (MarkdownOptions::foldableHeadings), and the application skips its widgets.");
 
 
     auto pyClassMarkdownFontOptions =
@@ -310,6 +316,8 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("autolinks", &RichMd::MarkdownOptions::autolinks, " Recognize bare URLs, email addresses and www.* as clickable links\n without requiring <...> or []() syntax\n (MD_FLAG_PERMISSIVEAUTOLINKS — URL + email + WWW).\n Set to False to get strict CommonMark link behavior.")
         .def_rw("hard_soft_breaks", &RichMd::MarkdownOptions::hardSoftBreaks, "A newline in the source is a line break (as in GitHub comments and chat messages)")
         .def_rw("selectable_text", &RichMd::MarkdownOptions::selectableText, " The text can be selected with the mouse and copied (SetSelectableTextDefault changes it later,\n PushSelectableText for some renders)")
+        .def_rw("foldable_headings", &RichMd::MarkdownOptions::foldableHeadings, "")
+        .def_rw("foldable_headings_min_level", &RichMd::MarkdownOptions::foldableHeadingsMinLevel, "the first level that folds (a \"#\" heading often titles the whole text)")
         ;
 
 
