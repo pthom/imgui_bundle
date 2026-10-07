@@ -491,10 +491,10 @@ They come from the libraries in the bundle: [imgui-knobs](https://github.com/alt
 
 ### Markdown tour
 
-Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more.
+Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more.
 
 :::{dropdown} More
-Each section shows its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
+Each section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
 :::
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py)\

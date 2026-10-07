@@ -240,8 +240,8 @@
   },
   "demo_imgui_md.py": {
     "title": "Markdown: a tour of rich_md",
-    "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows\nits source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.",
-    "summary": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more.",
+    "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each\nsection shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.",
+    "summary": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more.",
     "uses": [],
     "cpp": true
   },

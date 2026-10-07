@@ -406,8 +406,8 @@ native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file
 :width: 400px
 :::
 
-Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows
-its source, ready to copy. `rich_md` draws it directly, with no browser and no HTML engine.
+Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each
+section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
 
 *Python, C++*
 
