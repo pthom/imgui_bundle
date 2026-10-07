@@ -116,6 +116,108 @@ void py_init_module_rich_md(nb::module_& m)
         " Whether the text can be selected, outside of a PushSelectableText(): changes the option selectableText of the\n current context");
 
 
+    auto pyClassHeading =
+        nb::class_<RichMd::Heading>
+            (m, "Heading", "A heading of the last render")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("level", &RichMd::Heading::level, "1 to 6")
+        .def_rw("text", &RichMd::Heading::text, "without markup")
+        .def_rw("slug", &RichMd::Heading::slug, "its anchor, made from the text as GitHub does (a repeated title gets -1, -2...)")
+        .def_rw("y", &RichMd::Heading::y, "its top, in its window's content coordinates: SetScrollY(y) shows it at the top")
+        .def_rw("hidden", &RichMd::Heading::hidden, "inside a collapsed <details>: y is the one of the section's header")
+        ;
+
+
+    m.def("last_render_headings",
+        RichMd::LastRenderHeadings, "The headings of the last Render() call (valid until the next one)");
+
+
+    auto pyEnumScrollAnimation =
+        nb::enum_<RichMd::ScrollAnimation>(m, "ScrollAnimation", nb::is_arithmetic(), "The scroll to a match, a heading or an anchor: eased over scrollAnimationSeconds, unless reduced motion is asked")
+            .value("follow_system", RichMd::ScrollAnimation::FollowSystem, "animated, unless the system asks for reduced motion (HostServices::PrefersReducedMotion)")
+            .value("always", RichMd::ScrollAnimation::Always, "")
+            .value("never", RichMd::ScrollAnimation::Never, "");
+
+
+    auto pyClassDocumentOptions =
+        nb::class_<RichMd::DocumentOptions>
+            (m, "DocumentOptions", "The options of a document")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("toc", &RichMd::DocumentOptions::toc, "")
+        .def_rw("toc_min_headings", &RichMd::DocumentOptions::tocMinHeadings, "with fewer headings, no table of contents")
+        .def_rw("toc_max_level", &RichMd::DocumentOptions::tocMaxLevel, "the deepest level listed")
+        .def_rw("narrow_width", &RichMd::DocumentOptions::narrowWidth, "A document narrower than this (in em) shows the line above the content instead of the panel (a phone)")
+        .def_rw("search", &RichMd::DocumentOptions::search, "")
+        .def_rw("scroll_animation", &RichMd::DocumentOptions::scrollAnimation, "")
+        .def_rw("scroll_animation_seconds", &RichMd::DocumentOptions::scrollAnimationSeconds, "the duration of an animated scroll, whatever its distance")
+        ;
+
+
+    m.def("begin_document",
+        [](const char * id, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const RichMd::DocumentOptions> & options = std::nullopt)
+        {
+            auto BeginDocument_adapt_mutable_param_with_default_value = [](const char * id, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const RichMd::DocumentOptions> & options = std::nullopt)
+            {
+
+                const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                    if (size.has_value())
+                        return size.value();
+                    else
+                        return ImVec2(0.f, 0.f);
+                }();
+
+                const RichMd::DocumentOptions& options_or_default = [&]() -> const RichMd::DocumentOptions {
+                    if (options.has_value())
+                        return options.value();
+                    else
+                        return RichMd::DocumentOptions();
+                }();
+
+                RichMd::BeginDocument(id, size_or_default, options_or_default);
+            };
+
+            BeginDocument_adapt_mutable_param_with_default_value(id, size, options);
+        },
+        nb::arg("id"), nb::arg("size").none() = nb::none(), nb::arg("options").none() = nb::none(),
+        "Python bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0., 0.)\n        * options: DocumentOptions()");
+
+    m.def("end_document",
+        RichMd::EndDocument);
+
+    m.def("render_document",
+        [](const char * id, const std::string & markdown, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const RichMd::DocumentOptions> & options = std::nullopt)
+        {
+            auto RenderDocument_adapt_mutable_param_with_default_value = [](const char * id, const std::string & markdown, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const RichMd::DocumentOptions> & options = std::nullopt)
+            {
+
+                const ImVec2& size_or_default = [&]() -> const ImVec2 {
+                    if (size.has_value())
+                        return size.value();
+                    else
+                        return ImVec2(0.f, 0.f);
+                }();
+
+                const RichMd::DocumentOptions& options_or_default = [&]() -> const RichMd::DocumentOptions {
+                    if (options.has_value())
+                        return options.value();
+                    else
+                        return RichMd::DocumentOptions();
+                }();
+
+                RichMd::RenderDocument(id, markdown, size_or_default, options_or_default);
+            };
+
+            RenderDocument_adapt_mutable_param_with_default_value(id, markdown, size, options);
+        },
+        nb::arg("id"), nb::arg("markdown"), nb::arg("size").none() = nb::none(), nb::arg("options").none() = nb::none(),
+        " The one-call form: BeginDocument(id, size, options), Render(markdown), EndDocument()\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0., 0.)\n        * options: DocumentOptions()");
+
+    m.def("document_heading",
+        RichMd::DocumentHeading,
+        nb::arg("level"), nb::arg("text"), nb::arg("draw_title") = true,
+        " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for [text](#slug) links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all.");
+
+
     auto pyClassMarkdownFontOptions =
         nb::class_<RichMd::MarkdownFontOptions>
             (m, "MarkdownFontOptions", "")

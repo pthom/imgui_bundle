@@ -225,6 +225,20 @@ if has_submodule("rich_md"):
         rich_md.render_file(sys._getframe(1).f_code.co_filename, target)
 
     rich_md.render_this_file = _render_this_file
+
+    import contextlib
+
+    @contextlib.contextmanager
+    def _document(id: str, size=None, options=None):  # type: ignore
+        """A document, as a context manager: `with rich_md.document("doc"):` calls begin_document() on entry and
+        end_document() on exit (also when the block raises)."""
+        rich_md.begin_document(id, size, options)
+        try:
+            yield
+        finally:
+            rich_md.end_document()
+
+    rich_md.document = _document
 if has_submodule("immvision"):
     from imgui_bundle._imgui_bundle import immvision as immvision
     _publish("immvision", immvision)
