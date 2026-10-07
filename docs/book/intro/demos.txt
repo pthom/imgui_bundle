@@ -107,7 +107,7 @@ The libraries in the bundle: full demos, widget tours, showcases.
 - Markdown tour: Markdown rendered in an ImGui window: styled text, tables, code, images, math, admonitions and more. Each section shows its source, ready to copy. rich_md draws it directly, with no browser and no HTML engine.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp
-- Markdown: a document with a table of contents and a search: Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections.
+- Markdown: a document with a table of contents and a search: Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections. The headings fold.
   Uses: ImPlot
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md_document.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md_document.cpp

@@ -3,7 +3,7 @@
 
 Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several
 renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code
-blocks and of the collapsed sections.
+blocks and of the collapsed sections. The headings fold.
 """
 import numpy as np
 from imgui_bundle import imgui, implot, rich_md, immapp, hello_imgui
@@ -23,6 +23,9 @@ to the document, with one table of contents and one search (see the code in "The
 
 Links to the sections, wherever they are: [the widgets](#a-section-of-widgets), [the collapsed
 section](#inside-a-collapsed-section), [the end](#the-end).
+
+The headings fold: the arrow at their left, shown under the mouse, hides their section. The menu of a right click,
+and the "..." menu at the top of the table of contents, fold or unfold them all.
 
 ## Headings and anchors
 
@@ -59,15 +62,17 @@ Ctrl+F (Cmd+F on macOS) opens the find bar. The search also finds the text of th
 their matches opens them), and of the code blocks:
 
 ```python
-with rich_md.document("document"):
+options = rich_md.DocumentOptions()
+options.foldable_headings = True  # an arrow at the left of each heading folds its section
+with rich_md.document("document", options=options):
     rich_md.render(intro)  # markdown: as many renders as you like
 
-    # Widgets, under a heading of the document
-    rich_md.document_heading(2, "A section of widgets")
-    _, frequency = imgui.slider_float("Frequency", frequency, 0.5, 5.0)
-    if implot.begin_plot("##wave"):
-        implot.plot_line("sin(f x)", xs, ys)
-        implot.end_plot()
+    # Widgets, under a heading of the document (False: its section is folded)
+    if rich_md.document_heading(2, "A section of widgets"):
+        _, frequency = imgui.slider_float("Frequency", frequency, 0.5, 5.0)
+        if implot.begin_plot("##wave"):
+            implot.plot_line("sin(f x)", xs, ys)
+            implot.end_plot()
 
     rich_md.render(more_markdown)  # the same document: one table of contents, one search
 ```
@@ -106,11 +111,14 @@ def _widgets_section() -> None:
 
 
 def gui() -> None:
-    with rich_md.document("document"):
+    options = rich_md.DocumentOptions()
+    options.foldable_headings = True  # an arrow at the left of each heading folds its section
+    with rich_md.document("document", options=options):
         rich_md.render(INTRO)
-        # document_heading() draws its title as a markdown heading, and gives it a slug: the widgets below are a section
-        rich_md.document_heading(2, "A section of widgets")
-        _widgets_section()
+        # document_heading() draws its title as a markdown heading, and gives it a slug: the widgets below are a
+        # section. It returns False when the section is folded: its widgets are skipped.
+        if rich_md.document_heading(2, "A section of widgets"):
+            _widgets_section()
         rich_md.render(LONG_TEXT)
 
 

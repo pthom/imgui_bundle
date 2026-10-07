@@ -512,7 +512,7 @@ Each section shows its source, ready to copy. `rich_md` draws it directly, with 
 Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F).
 
 :::{dropdown} More
-Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections.
+Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections. The headings fold.
 :::
 
 *Uses: ImPlot*

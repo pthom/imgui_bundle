@@ -247,7 +247,7 @@
   },
   "demo_imgui_md_document.py": {
     "title": "Markdown: a document with a table of contents and a search",
-    "text": "Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several\nrenders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code\nblocks and of the collapsed sections.",
+    "text": "Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several\nrenders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code\nblocks and of the collapsed sections. The headings fold.",
     "summary": "Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F).",
     "uses": [
       "ImPlot"
