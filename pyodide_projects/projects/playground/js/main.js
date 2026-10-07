@@ -111,6 +111,12 @@ runButton.addEventListener('click', async () => {
 const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
 document.getElementById('run-shortcut').textContent = isMac ? '⌘↵' : 'Ctrl+Enter';
 
+// Cmd+F / Ctrl+F in the app (a markdown document's find bar), not the browser's find bar, which would take the focus.
+// Only while the canvas has the focus: in the code editor, the browser's find stays.
+document.getElementById('canvas').addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'f' || e.key === 'F')) e.preventDefault();
+});
+
 // Keyboard shortcut: Ctrl+Enter (or Cmd+Enter on Mac)
 document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
