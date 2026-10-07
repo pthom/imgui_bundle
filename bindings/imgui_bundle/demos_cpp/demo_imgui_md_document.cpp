@@ -1,6 +1,7 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-// A markdown document: renders and widgets that share a table of contents, links between their sections, and a search
-// (Ctrl+F, Cmd+F on macOS) that also finds the text of the code blocks and of the collapsed sections.
+// A markdown document: renders and widgets that share a table of contents, links between their sections, a search
+// (Ctrl+F, Cmd+F on macOS) that also finds the text of the code blocks and of the collapsed sections, and headings
+// that fold.
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "demo_utils/api_demos.h"
 #include "imgui_rich_md/rich_md.h"
@@ -27,6 +28,9 @@ belong to the document, with one table of contents and one search (see the code 
 
 Links to the sections, wherever they are: [the widgets](#a-section-of-widgets), [the collapsed
 section](#inside-a-collapsed-section), [the end](#the-end).
+
+The headings fold: the arrow at their left, shown under the mouse, hides their section. The menu of a right click,
+and the "..." menu at the top of the table of contents, fold or unfold them all.
 
 ## Headings and anchors
 
@@ -63,16 +67,20 @@ Ctrl+F (Cmd+F on macOS) opens the find bar. The search also finds the text of th
 their matches opens them), and of the code blocks:
 
 ```cpp
-RichMd::BeginDocument("document");
+RichMd::DocumentOptions options;
+options.foldableHeadings = true;  // an arrow at the left of each heading folds its section
+RichMd::BeginDocument("document", ImVec2(0.f, 0.f), options);
 RichMd::Render(intro);  // markdown: as many renders as you like
 
-// Widgets, under a heading of the document
-RichMd::DocumentHeading(2, "A section of widgets");
-ImGui::SliderFloat("Frequency", &frequency, 0.5f, 5.f);
-if (ImPlot::BeginPlot("##wave"))
+// Widgets, under a heading of the document (false: its section is folded)
+if (RichMd::DocumentHeading(2, "A section of widgets"))
 {
-    ImPlot::PlotLine("sin(f x)", xs, ys, count);
-    ImPlot::EndPlot();
+    ImGui::SliderFloat("Frequency", &frequency, 0.5f, 5.f);
+    if (ImPlot::BeginPlot("##wave"))
+    {
+        ImPlot::PlotLine("sin(f x)", xs, ys, count);
+        ImPlot::EndPlot();
+    }
 }
 
 RichMd::Render(moreMarkdown);  // the same document: one table of contents, one search
@@ -119,11 +127,14 @@ The table of contents marks the section at the top of the view, and follows it a
 void gui_demo_imgui_md_document()
 {
     static const std::string longText = LongText();
-    RichMd::BeginDocument("document");
+    RichMd::DocumentOptions options;
+    options.foldableHeadings = true;  // an arrow at the left of each heading folds its section
+    RichMd::BeginDocument("document", ImVec2(0.f, 0.f), options);
     RichMd::Render(kIntro);
-    // DocumentHeading() draws its title as a markdown heading, and gives it a slug: the widgets below are a section
-    RichMd::DocumentHeading(2, "A section of widgets");
-    WidgetsSection();
+    // DocumentHeading() draws its title as a markdown heading, and gives it a slug: the widgets below are a section.
+    // It returns false when the section is folded: its widgets are skipped.
+    if (RichMd::DocumentHeading(2, "A section of widgets"))
+        WidgetsSection();
     RichMd::Render(longText);
     RichMd::EndDocument();
 }
