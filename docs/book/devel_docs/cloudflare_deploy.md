@@ -12,13 +12,9 @@ named `imgui-bundle`, reachable at <https://imgui-bundle.pages.dev/>:
 | `/local_wheels/`                   | Shared `imgui_bundle-*.whl`, loaded by the pyodide subparts |
 | `doc/assets/imgui_bundle_book.pdf` | PDF export of the documentation                             |
 
-A `_headers` file (`pyodide_projects/cf_headers`) scopes
-`Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy` to `/explorer/*`
-only; site-wide COI would break the playground (which pulls Pyodide and
-CodeMirror from CDNs that don't set `Cross-Origin-Resource-Policy`). The same
-file also sets `Content-Encoding: gzip` on `/explorer/*.data` because those
-emscripten asset bundles (`application/octet-stream`) aren't auto-compressed
-by the CF edge; they are pre-gzipped by `cf_stage`.
+The site's `_headers` file is in the website resources repository (`pthom/imgui_bundle_website_resources`, fetched into `docs/clone_website_resources/` by `just cf_resources_sync`), at `imgui-bundle.pages.dev/_headers`. `cf_stage` copies it to the staging root. It sets:
+- `Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy` on `/explorer/*` only: site-wide COI would break the playground, which pulls Pyodide and CodeMirror from CDNs that don't set `Cross-Origin-Resource-Policy`. A third-party script on the explorer's pages loads only if its server sends that header, or with the `crossorigin` attribute if it allows CORS.
+- `Content-Type: application/wasm` on `/explorer/*.data`: the emscripten asset bundles (`application/octet-stream`) are not in the CF edge's compressible list, and CF Pages strips a user-set `Content-Encoding`. Emscripten ignores the type of a `.data` file.
 
 
 ## How the deploy works
@@ -70,7 +66,7 @@ just cf_deploy
 # Test the composed site locally before deploying
 just cf_serve_local        # http://localhost:8764/
 # → COOP/COEP headers are applied only to /explorer/* (mirrors prod)
-# → Content-Encoding: gzip is applied to /explorer/*.data
+# → /explorer/*.data is served uncompressed (the site compresses it at the edge)
 
 # Inspect the staging tree (gitignored)
 ls _cf_staging/
