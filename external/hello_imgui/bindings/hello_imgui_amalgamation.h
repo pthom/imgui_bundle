@@ -2593,6 +2593,16 @@ struct RunnerParams
     // selection): the widget keeps its drag and the pinch is ignored (false), or the pinch takes over (true).
     bool touchPinchInterruptsWidgets = false;
 
+    // `wheelSession`: _bool, default = true_.
+    // The mouse wheel stays with the window it scrolls, as in a browser: a page scrolled with the wheel keeps
+    // scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that starts on
+    // the plot zooms it. The page lets go of the wheel 0.7 s after its last wheel event.
+    // A widget that reads io.MouseWheel itself claims the wheel while hovered, as ImPlot and ImmVision do:
+    //     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
+    // Without the claim, in a page that scrolls, the widget never sees the wheel.
+    // false: Dear ImGui's own behavior (a plot that arrives under the mouse takes the wheel).
+    bool wheelSession = true;
+
     #ifdef HELLOIMGUI_WITH_REMOTE_DISPLAY
     RemoteParams remoteParams; // Parameters for Remote display (experimental, unsupported)
     #endif

@@ -201,6 +201,8 @@ Hello ImGui keeps the mouse wheel on the window it scrolls, as a browser does. A
 
 A widget of your own that reads the wheel (a value changed by the wheel, a zoom) claims it while hovered, as ImPlot and ImmVision do. Without the claim, in a page that scrolls, the page takes the wheel and the widget never sees it.
 
+The option `wheel_session` of the runner params turns this off (C++: `runnerParams.wheelSession = false`): Dear ImGui's own behavior, where a plot that arrives under the mouse takes the wheel.
+
 ::::{tab-set}
 
 :::{tab-item} Python

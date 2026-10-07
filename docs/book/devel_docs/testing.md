@@ -22,7 +22,7 @@ cd bindings && ./mypy_bindings.sh # mypy
 
 ## GUI tests
 
-GUI tests live in `tests/tests_python_gui/` and require a display (they open windows). They are not run by default in CI.
+GUI tests live in `tests/tests_python_gui/` and require a display (they open windows). The CI runs them on Linux (under Xvfb) and on Windows (with Mesa's software OpenGL), not on macOS (`pip.yml`).
 
 To run them locally:
 ```bash

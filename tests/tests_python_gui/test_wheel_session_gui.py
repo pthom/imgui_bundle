@@ -1,12 +1,13 @@
 """The wheel session of hello_imgui, driven by the ImGui Test Engine, in a page that scrolls (a child window inside
 another one) with a widget that zooms with the wheel: a wheel that starts on the widget zooms it, and does not scroll
 the page; the mouse still, the wheel scrolls the page past the widget, which does not zoom. Two widgets: a real ImPlot
-plot, and a widget of the app that claims the wheel as the docs say (set_item_key_owner)."""
+plot, and a widget of the app that claims the wheel as the docs say (set_item_key_owner). With the option
+wheel_session off, Dear ImGui's own behavior: the plot that arrives under the still mouse takes the wheel."""
 
 from typing import Callable
 
 import numpy as np
-from imgui_bundle import imgui, implot
+from imgui_bundle import hello_imgui, imgui, implot
 from imgui_bundle.immapp import testing
 
 XS = np.linspace(0.0, 10.0, 200)
@@ -27,7 +28,7 @@ def _draw_custom_zoom(state: dict[str, float]) -> None:
         state["zoom"] *= 1.1 ** imgui.get_io().mouse_wheel
 
 
-def _run_bench(draw_zoomable: Callable[[dict[str, float]], None]) -> dict[str, list[float]]:
+def _run_bench(draw_zoomable: Callable[[dict[str, float]], None], wheel_session: bool = True) -> dict[str, list[float]]:
     state = {"scroll_y": 0.0, "zoom": 1.0}
     rects: dict[str, tuple[imgui.ImVec2, imgui.ImVec2]] = {}
 
@@ -77,7 +78,11 @@ def _run_bench(draw_zoomable: Callable[[dict[str, float]], None]) -> dict[str, l
             ctx.yield_()
             record("still")
 
-    testing.run(gui, test_fn, window_size=(500, 400), with_implot=True)
+    params = hello_imgui.RunnerParams()
+    params.callbacks.show_gui = gui
+    params.app_window_params.window_geometry.size = (500, 400)
+    params.wheel_session = wheel_session
+    testing.run(test_function=test_fn, runner_params=params, with_implot=True)
     return results
 
 
@@ -97,7 +102,13 @@ def test_wheel_session_widget_that_claims_the_wheel() -> None:
     _check(_run_bench(_draw_custom_zoom))
 
 
+def test_wheel_session_off() -> None:
+    results = _run_bench(_draw_plot, wheel_session=False)
+    assert len(set(results["zoom_still"])) > 1, results  # the plot under the still mouse zoomed
+
+
 if __name__ == "__main__":
     test_wheel_session_plot()
     test_wheel_session_widget_that_claims_the_wheel()
+    test_wheel_session_off()
     print("OK test_wheel_session")
