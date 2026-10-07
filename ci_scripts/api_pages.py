@@ -663,6 +663,13 @@ def _cell(text: str) -> str:
     return text.replace("|", "\\|").replace("\x00", "\\0")
 
 
+def _text_cell(text: str) -> str:
+    """A comment in a table cell: as _cell, and an HTML tag neutralized outside the code spans (a raw "<details>"
+    became an empty details node, on which MyST's book theme crashed)"""
+    parts = re.split(r"(`[^`]*`)", _cell(text))
+    return "".join(p if p.startswith("`") else re.sub(r"<(?=[A-Za-z_/])", r"\\<", p) for p in parts)
+
+
 def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> list[str]:
     """An entry as markdown: a heading with a label, the signatures, the doc"""
     qualified = f"{owner}.{entry.name}" if owner else entry.name
@@ -695,7 +702,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         out += _doc_lines(entry.doc)
         out += ["| Member | Value | C++ | |", "|---|---|---|---|"]
         for m in entry.children:
-            out.append(f"| `{m.name}` | {_cell(m.value)} | `{_cell(m.cpp)}` | {_cell(m.note)} |")
+            out.append(f"| `{m.name}` | {_cell(m.value)} | `{_cell(m.cpp)}` | {_text_cell(m.note)} |")
         out.append("")
     elif entry.kind == "class":
         out[1] = f"{hashes} `{qualified}` (class)"
@@ -706,7 +713,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         if attributes:
             out += ["| Attribute | C++ | |", "|---|---|---|"]
             for a in attributes:
-                out.append(f"| `{_cell(a.signature)}` | `{_cell(a.cpp)}` | {_cell(a.note)} |")
+                out.append(f"| `{_cell(a.signature)}` | `{_cell(a.cpp)}` | {_text_cell(a.note)} |")
             out.append("")
         for c in entry.children:
             if c.kind != "attribute":
@@ -900,7 +907,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         out += _doc_lines(_cpp_doc(entry.doc))
         out += ["| Member | Value | |", "|---|---|---|"]
         for m in entry.children:
-            out.append(f"| `{_cell(m.cpp)}` | {_cell(m.value)} | {_cell(m.note)} |")
+            out.append(f"| `{_cell(m.cpp)}` | {_cell(m.value)} | {_text_cell(m.note)} |")
         out.append("")
     elif entry.kind == "class":
         out[1] = f"{hashes} `{name}` (struct)"
@@ -911,7 +918,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         if attributes:
             out += ["| Member | |", "|---|---|"]
             for a in attributes:
-                out.append(f"| `{_cell(a.cpp)}` | {_cell(a.note)} |")
+                out.append(f"| `{_cell(a.cpp)}` | {_text_cell(a.note)} |")
             out.append("")
         for c in entry.children:
             if c.kind != "attribute" and (c.kind != "method" or c.cpp):  # a method without C++: litgen's invention
