@@ -47,7 +47,9 @@ def render_this_file(target: str = "") -> None:
     ...
 
 def document(
-    id: str, size: Optional[ImVec2Like] = None, options: Optional[DocumentOptions] = None
+    id: str,
+    size: Optional[ImVec2Like] = None,
+    options: Optional[DocumentOptions] = None,
 ) -> ContextManager[None]:
     """A document, as a context manager: `with rich_md.document("doc"):` calls begin_document() on entry and
     end_document() on exit. (Python only; C++: BeginDocument() / EndDocument())
@@ -267,13 +269,15 @@ def last_render_headings() -> List[Heading]:
 #    to the document, and a link `[text](#slug)` in any of them reaches a heading of any other. `DocumentHeading()`
 #    gives a section made of widgets its heading, as a markdown heading does.
 #
-#    The search: Ctrl+F (Cmd+F on macOS) in a document opens its find bar (on a touch screen: the magnifier above a
-#    narrow document, or the Search tab of the table of contents). The matches are highlighted in all its renders; Enter
-#    goes to the next one, Shift+Enter (or the up arrow) to the previous one, and past the last one back to the first
-#    (the bar says so). Escape closes the bar, and the current match becomes the selection. The matches with their
-#    context are listed under the bar and in the Search tab, the table of contents shows their count per section, and
-#    ticks on the scrollbar show where they are. The search also finds the text of the collapsed sections (a jump to one
-#    of their matches opens them), of the code blocks, and of the formulas (their LaTeX source: a formula is one match).
+#    The search: Ctrl+F (Cmd+F on macOS) in a document opens its find bar, and so does "/" when no text field is active
+#    (in a web page, Cmd+F also opens the browser's find bar, unless the page cancels the key while its canvas has the
+#    focus). On a touch screen: the magnifier above a narrow document, or the Search tab of the table of contents. The
+#    matches are highlighted in all its renders; Enter goes to the next one, Shift+Enter (or the up arrow) to the
+#    previous one, and past the last one back to the first (the bar says so). Escape closes the bar, and the current
+#    match becomes the selection. The matches with their context are listed under the bar and in the Search tab, the
+#    table of contents shows their count per section, and ticks on the scrollbar show where they are. The search also
+#    finds the text of the collapsed sections (a jump to one of their matches opens them), of the code blocks, and of the
+#    formulas (their LaTeX source: a formula is one match).
 
 # enum class ScrollAnimation    /* original C++ signature */
 class ScrollAnimation(enum.IntEnum):
@@ -358,7 +362,7 @@ def render_document(
 # void DocumentHeading(int level, const std::string& text, bool drawTitle = true);    /* original C++ signature */
 def document_heading(level: int, text: str, draw_title: bool = True) -> None:
     """Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug
-    (an anchor for [text](#slug) links). drawTitle: draws the text as a markdown heading of that level; False when
+    (an anchor for `[text](#slug)` links). drawTitle: draws the text as a markdown heading of that level; False when
     the title is drawn by other means (an ImGui text, a plot's own title), or not at all.
     """
     pass

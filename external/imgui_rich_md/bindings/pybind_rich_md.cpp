@@ -215,7 +215,7 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("document_heading",
         RichMd::DocumentHeading,
         nb::arg("level"), nb::arg("text"), nb::arg("draw_title") = true,
-        " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for [text](#slug) links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all.");
+        " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for `[text](#slug)` links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all.");
 
 
     auto pyClassMarkdownFontOptions =
