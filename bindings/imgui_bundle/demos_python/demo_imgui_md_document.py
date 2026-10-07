@@ -108,6 +108,8 @@ def _widgets_section() -> None:
     if implot.begin_plot("##wave", (-1, hello_imgui.em_size(12))):
         implot.plot_line("sin(f x)", xs, ys)
         implot.end_plot()
+        # On a touch screen, a drag on the plot pans it at once (else it would scroll the document)
+        hello_imgui.set_item_takes_touch_drags()
 
 
 def gui() -> None:

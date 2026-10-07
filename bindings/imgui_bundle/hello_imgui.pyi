@@ -3540,6 +3540,14 @@ def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> N
     """
     pass
 
+# void SetItemTakesTouchDrags();    /* original C++ signature */
+def set_item_takes_touch_drags() -> None:
+    """`SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch
+    screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
+    the widget's content, in any direction (a swipe that starts on it does not scroll the window).
+    """
+    pass
+
 # bool PrefersReducedMotion();    /* original C++ signature */
 def prefers_reduced_motion() -> bool:
     """`PrefersReducedMotion()`: True when the system asks for less motion: "Reduce motion" on macOS and iOS, "Show

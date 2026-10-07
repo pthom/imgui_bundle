@@ -120,6 +120,8 @@ The table of contents marks the section at the top of the view, and follows it a
         {
             ImPlot::PlotLine("sin(f x)", xs.data(), ys.data(), (int)xs.size());
             ImPlot::EndPlot();
+            // On a touch screen, a drag on the plot pans it at once (else it would scroll the document)
+            HelloImGui::SetItemTakesTouchDrags();
         }
     }
 }

@@ -2973,6 +2973,11 @@ namespace ManualRender
 //  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
     void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);
 
+// `SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch
+//  screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
+//  the widget's content, in any direction (a swipe that starts on it does not scroll the window).
+    void SetItemTakesTouchDrags();
+
 // `PrefersReducedMotion()`: true when the system asks for less motion: "Reduce motion" on macOS and iOS, "Show
 //  animations in Windows" turned off, a browser's prefers-reduced-motion. An application can then skip its animations
 //  (a scroll, a transition). False where the system has no such setting (Linux, Android).
