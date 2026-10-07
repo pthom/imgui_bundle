@@ -245,7 +245,8 @@ int main() {
 - A link `[text](#slug)` reaches a heading of any render of the document. The slugs are made as GitHub does: `## Headings and anchors` is `#headings-and-anchors`, and a repeated title gets `-1`, `-2`.
 - The search opens with Ctrl+F (Cmd+F on macOS), or with the magnifier of a narrow document. Enter goes to the next match, Shift+Enter to the previous one. The matches are also listed under the find bar and in the Search tab, and marked on the scrollbar.
 - The search also finds the text of the collapsed sections (a jump opens them), of the code blocks, and of the formulas (their LaTeX source).
-- `render_document(id, markdown)` is the one-call form, and `DocumentOptions` sets the table of contents, the search and the scroll's animation.
+- Headings that fold: with `foldable_headings` in `DocumentOptions` (or in the context's `MarkdownOptions`), an arrow at the left of each heading, from `##` on, folds its section until the next heading of the same level or above, across the renders. `document_heading()` returns False when its section is folded: skip its widgets then. The right-click menu and the "..." menu of the table of contents fold or unfold them all, as `fold_all_headings()` does.
+- `render_document(id, markdown)` is the one-call form, and `DocumentOptions` sets the table of contents, the search, the scroll's animation and the folds.
 
 Demo: [Try online](https://imgui-bundle.pages.dev/explorer/demo_imgui_md_document.html) | [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md_document.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md_document.cpp)
 
