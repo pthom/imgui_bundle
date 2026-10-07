@@ -451,7 +451,7 @@ Last line
 
 </details>
 
-### Icons, emoji and other fonts
+### Icons, emoji and fonts
 
 Dear ImGui Bundle merges Font Awesome into the markdown fonts: its icons work in every style, @@ICON_ROCKET@@ regular,
 **@@ICON_HEART@@ bold**, *@@ICON_CHECK@@ italic*, `@@ICON_COPY@@ code`, and in the headings of this page.
@@ -567,7 +567,7 @@ Alice,10
 
 </details>
 
-### Wikilinks and hard line breaks
+### Wikilinks and line breaks
 
 Two options of `MarkdownOptions`, set before the first render:
 
