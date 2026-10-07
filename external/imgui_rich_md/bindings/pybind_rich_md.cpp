@@ -124,7 +124,7 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("text", &RichMd::Heading::text, "without markup")
         .def_rw("slug", &RichMd::Heading::slug, "its anchor, made from the text as GitHub does (a repeated title gets -1, -2...)")
         .def_rw("y", &RichMd::Heading::y, "its top, in its window's content coordinates: SetScrollY(y) shows it at the top")
-        .def_rw("hidden", &RichMd::Heading::hidden, "inside a collapsed <details>: y is the one of the section's header")
+        .def_rw("hidden", &RichMd::Heading::hidden, "inside a collapsed `<details>`: y is the one of the section's header")
         ;
 
 
