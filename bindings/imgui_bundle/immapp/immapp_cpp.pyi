@@ -589,8 +589,9 @@ class code_utils:  # Proxy class that introduces typings for the *submodule* cod
 # <submodule snippets>
 class snippets:  # Proxy class that introduces typings for the *submodule* snippets
     pass  # (This corresponds to a C++ namespace. All methods are static!)
-    """Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. The markdown
-    code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
+    """Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. A snippet whose
+    lines overflow its width also shows a wrap button; the reader's choice holds for all the snippets of the session.
+    The markdown code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
     """
     # =================================================================================================================
     #                                      Snippet data
@@ -613,9 +614,12 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         angel_script = enum.auto()  # (= 5)
         # Lua,    /* original C++ signature */
         lua = enum.auto()  # (= 6)
-        # Python    /* original C++ signature */
-        #     }
+        # Python,    /* original C++ signature */
         python = enum.auto()  # (= 7)
+        # Markdown,    /* original C++ signature */
+        markdown = enum.auto()  # (= 8)
+        # PlainText       /* original C++ signature */
+        plain_text = enum.auto()  # (= 9)  # no highlighting
 
     # enum class SnippetTheme    /* original C++ signature */
     class SnippetTheme(enum.IntEnum):
@@ -675,6 +679,14 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
         add_final_empty_line: bool = (
             False  # Add an empty line at the end of the code if missing
         )
+
+        # Hooks for a host that knows the code (an API browser): the line under the mouse and the column in it.
+        # OnHover draws a tooltip when it has something to say (it returns False otherwise). OnContextMenu adds items
+        # to the right-click menu (it returns False when it has none: the menu closes).
+        # std::function<bool(const std::string& line, size_t column)> OnHover;    /* original C++ signature */
+        on_hover: Callable[[str, int], bool]
+        # std::function<bool(const std::string& line, size_t column)> OnContextMenu;    /* original C++ signature */
+        on_context_menu: Callable[[str, int], bool]
         def __init__(
             self,
             code: str = "",

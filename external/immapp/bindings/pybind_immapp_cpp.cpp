@@ -395,7 +395,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
     ////////////////////    <generated_from:snippets.h>    ////////////////////
 
     { // <namespace Snippets>
-        nb::module_ pyNsSnippets = m.def_submodule("snippets", "Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. The markdown\ncode blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.");
+        nb::module_ pyNsSnippets = m.def_submodule("snippets", "Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. A snippet whose\nlines overflow its width also shows a wrap button; the reader's choice holds for all the snippets of the session.\nThe markdown code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.");
         auto pyEnumSnippetLanguage =
             nb::enum_<Snippets::SnippetLanguage>(pyNsSnippets, "SnippetLanguage", nb::is_arithmetic(), "")
                 .value("cpp", Snippets::SnippetLanguage::Cpp, "")
@@ -405,7 +405,9 @@ void py_init_module_immapp_cpp(nb::module_& m)
                 .value("sql", Snippets::SnippetLanguage::Sql, "")
                 .value("angel_script", Snippets::SnippetLanguage::AngelScript, "")
                 .value("lua", Snippets::SnippetLanguage::Lua, "")
-                .value("python", Snippets::SnippetLanguage::Python, "");
+                .value("python", Snippets::SnippetLanguage::Python, "")
+                .value("markdown", Snippets::SnippetLanguage::Markdown, "")
+                .value("plain_text", Snippets::SnippetLanguage::PlainText, "no highlighting");
 
 
         auto pyEnumSnippetTheme =
@@ -453,6 +455,8 @@ void py_init_module_immapp_cpp(nb::module_& m)
             .def_rw("border", &Snippets::SnippetData::Border, "Draw a border around the editor")
             .def_rw("de_indent_code", &Snippets::SnippetData::DeIndentCode, "Keep the code indentation, but remove main indentation,")
             .def_rw("add_final_empty_line", &Snippets::SnippetData::AddFinalEmptyLine, "Add an empty line at the end of the code if missing")
+            .def_rw("on_hover", &Snippets::SnippetData::OnHover, "")
+            .def_rw("on_context_menu", &Snippets::SnippetData::OnContextMenu, "")
             ;
 
 
