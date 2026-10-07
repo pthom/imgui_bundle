@@ -197,7 +197,7 @@ void gui() {
 
 ### The mouse wheel in a page that scrolls
 
-Hello ImGui keeps the mouse wheel on the window it scrolls, as a browser does. A page scrolled with the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom. A wheel that starts on the plot zooms it. The page lets go of the wheel 0.7 s after its last wheel event.
+Hello ImGui keeps the mouse wheel on the window it scrolls, as a browser does. A page scrolled with the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom. A wheel that starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last wheel event.
 
 A widget of your own that reads the wheel (a value changed by the wheel, a zoom) claims it while hovered, as ImPlot and ImmVision do. Without the claim, in a page that scrolls, the page takes the wheel and the widget never sees it.
 
