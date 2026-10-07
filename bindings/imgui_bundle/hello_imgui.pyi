@@ -3540,6 +3540,14 @@ def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> N
     """
     pass
 
+# bool PrefersReducedMotion();    /* original C++ signature */
+def prefers_reduced_motion() -> bool:
+    """`PrefersReducedMotion()`: True when the system asks for less motion: "Reduce motion" on macOS and iOS, "Show
+    animations in Windows" turned off, a browser's prefers-reduced-motion. An application can then skip its animations
+    (a scroll, a transition). False where the system has no such setting (Linux, Android).
+    """
+    pass
+
 # float FrameRate(float durationForMean = 0.5f);    /* original C++ signature */
 def frame_rate(duration_for_mean: float = 0.5) -> float:
     """`FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.

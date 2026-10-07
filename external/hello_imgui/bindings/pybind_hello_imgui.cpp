@@ -1849,6 +1849,9 @@ void py_init_module_hello_imgui(nb::module_& m)
         nb::arg("rect_min"), nb::arg("rect_max"), nb::arg("url"),
         " `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap that ends inside this rectangle\n  (screen coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown.\n  A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes\n  two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing\n  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.");
 
+    m.def("prefers_reduced_motion",
+        HelloImGui::PrefersReducedMotion, " `PrefersReducedMotion()`: True when the system asks for less motion: \"Reduce motion\" on macOS and iOS, \"Show\n  animations in Windows\" turned off, a browser's prefers-reduced-motion. An application can then skip its animations\n  (a scroll, a transition). False where the system has no such setting (Linux, Android).");
+
     m.def("frame_rate",
         HelloImGui::FrameRate,
         nb::arg("duration_for_mean") = 0.5f,

@@ -1,5 +1,5 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-// Host services for ImGui Bundle: assets, textures and logging through HelloImGui.
+// Host services for ImGui Bundle: assets, textures, logging and the system's reduced motion through HelloImGui.
 // Compiled into imgui_md only in the bundle (IMGUI_RICHMD_HOST_HELLO_IMGUI); installed by
 // CreateContext for the fields the application did not set.
 #include "imgui_rich_md/rich_md_host.h"
@@ -61,6 +61,8 @@ namespace RichMd
             services.DefaultMergeFonts = _DefaultMergeFonts;
         if (!services.Log)
             services.Log = _Log;
+        if (!services.PrefersReducedMotion)
+            services.PrefersReducedMotion = HelloImGui::PrefersReducedMotion;
         SetHostServices(services);
     }
 }

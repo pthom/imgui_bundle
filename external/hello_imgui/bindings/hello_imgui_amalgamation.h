@@ -2973,6 +2973,11 @@ namespace ManualRender
 //  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
     void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);
 
+// `PrefersReducedMotion()`: true when the system asks for less motion: "Reduce motion" on macOS and iOS, "Show
+//  animations in Windows" turned off, a browser's prefers-reduced-motion. An application can then skip its animations
+//  (a scroll, a transition). False where the system has no such setting (Linux, Android).
+    bool PrefersReducedMotion();
+
 // `FrameRate(durationForMean = 0.5)`: Returns the current FrameRate.
 //  May differ from ImGui::GetIO().FrameRate, since one can choose the duration
 //  for the calculation of the mean value of the fps
