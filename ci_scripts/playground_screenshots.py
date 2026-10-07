@@ -150,6 +150,18 @@ def _shell_commands(ctx: Any) -> None:
         ctx.yield_(10)
 
 
+def _document_search(ctx: Any) -> None:
+    """Focuses the document (a click in its text), opens its find bar (Ctrl+F) and types a query"""
+    from imgui_bundle import imgui, ImVec2
+    ctx.mouse_move_to_pos(ImVec2(700, 300))
+    ctx.mouse_click(0)
+    ctx.yield_(3)
+    ctx.key_press(imgui.Key.mod_ctrl | imgui.Key.f)
+    ctx.yield_(5)
+    ctx.key_chars("the")
+    ctx.yield_(10)
+
+
 def _command_palette(ctx: Any) -> None:
     """Opens the command palette (Ctrl+Shift+P), and filters its commands"""
     from imgui_bundle import imgui
@@ -171,6 +183,7 @@ SHOTS: dict[str, Shot] = {
     # The explorer's demos (source: demos_python)
     "demo_widgets.py": Shot(crop=(0.0, 0.0, 0.82, 0.512)),  # 16:10, as the launcher's cards
     "demo_imgui_md.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
+    "demo_imgui_md_document.py": Shot(test=_document_search, crop=(0.0, 0.0, 1.0, 0.78125)),  # 1000 x 800: 16:10
     "demo_text_edit.py": Shot(crop=(0.0, 0.0, 0.85, 0.664)),
     "demo_logger.py": Shot(crop=(0.0, 0.0, 0.8, 0.667)),
     "demo_terminal.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.5625)),

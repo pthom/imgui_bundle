@@ -413,6 +413,23 @@ its source, ready to copy. `rich_md` draws it directly, with no browser and no H
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
 
+### Markdown: a document with a table of contents and a search
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_imgui_md_document.jpg
+:alt: Markdown: a document with a table of contents and a search
+:width: 400px
+:::
+
+Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several
+renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code
+blocks and of the collapsed sections.
+
+*Python, C++*
+
+*Uses: ImPlot*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md_document.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_imgui_md_document.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md_document.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md_document.cpp)
+
 ### Code editor
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_text_edit.jpg

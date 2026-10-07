@@ -503,6 +503,26 @@ Each section shows its source, ready to copy. `rich_md` draws it directly, with 
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_imgui_md_document.jpg
+:alt: Markdown: a document with a table of contents and a search
+:::
+
+### Markdown: a document with a table of contents and a search
+
+Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F).
+
+:::{dropdown} More
+Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections.
+:::
+
+*Uses: ImPlot*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md_document.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md_document.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_imgui_md_document.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md_document.cpp)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_text_edit.jpg
 :alt: Code editor
 :::

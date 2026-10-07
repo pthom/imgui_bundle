@@ -289,6 +289,13 @@
             "in_place": true
         },
         {
+            "label": "Markdown: a document with a table of contents and a search",
+            "filename": "demo_imgui_md_document.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
             "label": "Code editor",
             "filename": "demo_text_edit.py",
             "category": "Library tours",
