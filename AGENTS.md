@@ -164,6 +164,7 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
 
 * Tests leave `*.ini` files (imgui settings) in the repo root. Remove only the untracked ones, since `pytest.ini` and `hello_imgui_example.ini` are tracked: `git ls-files --others --exclude-standard '*.ini' | xargs rm -f`.
 * On macOS, GUI tests and screenshots crash at setup when the display is asleep (GLFW reports no monitor). Run `caffeinate -u -d -t 240 &` first.
+* A visual check (a screenshot, a demo tried by hand) covers at least the dark and the light themes (`ImGui::StyleColorsLight()`, or the app's theme option): a color that reads well in one can vanish in the other, e.g. a field as white as its background.
 
 ## Build & Platform Notes
 This project spans C++/Python with cross-platform builds (Emscripten, iOS). Be cautious about removing includes like <cstdio>: always check all platform targets before removing headers.
