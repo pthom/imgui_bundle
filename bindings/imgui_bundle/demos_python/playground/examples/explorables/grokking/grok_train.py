@@ -67,8 +67,9 @@ decay*). Without the decay, the network memorizes and never groks.
 ::code
 """
 class Trainer:
-    def __init__(self, params: dict[str, np.ndarray]) -> None:
+    def __init__(self, params: dict[str, np.ndarray], lr: float = LR, weight_decay: float = WEIGHT_DECAY) -> None:
         self.params = params
+        self.lr, self.weight_decay = lr, weight_decay
         self.m = {k: np.zeros_like(v) for k, v in params.items()}
         self.v = {k: np.zeros_like(v) for k, v in params.items()}
         self.t = 0
@@ -91,10 +92,10 @@ class Trainer:
         self.t += 1
         b1, b2, eps = 0.9, 0.999, 1e-8
         for k in p:                                          # AdamW
-            p[k] *= 1 - LR * WEIGHT_DECAY
+            p[k] *= 1 - self.lr * self.weight_decay
             self.m[k] = b1 * self.m[k] + (1 - b1) * g[k]
             self.v[k] = b2 * self.v[k] + (1 - b2) * g[k] ** 2
-            p[k] -= LR * (self.m[k] / (1 - b1**self.t)) / (np.sqrt(self.v[k] / (1 - b2**self.t)) + eps)
+            p[k] -= self.lr * (self.m[k] / (1 - b1**self.t)) / (np.sqrt(self.v[k] / (1 - b2**self.t)) + eps)
 # ::endcode
 
 
@@ -162,7 +163,8 @@ def record_path(out: Path) -> None:
     np.savez_compressed(out, steps=np.array(steps), train_acc=np.array(train_acc, np.float32),
                         test_acc=np.array(test_acc, np.float32), train_loss=np.array(train_loss, np.float32),
                         test_loss=np.array(test_loss, np.float32), correct=np.array(correct, np.uint8),
-                        train_mask=train_mask.reshape(P, P), clock_frequencies=frequencies, clocks=clocks)
+                        train_mask=train_mask.reshape(P, P), clock_frequencies=frequencies, clocks=clocks,
+                        clock_axes=axes.astype(np.float32))
     print(f"wrote {out} ({out.stat().st_size // 1024} KB, {len(steps)} checkpoints)")
 
 

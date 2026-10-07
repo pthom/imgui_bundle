@@ -333,8 +333,13 @@ class Parser:
                       at: Optional[str] = None) -> None:
             record("challenge", prompt=prompt, until=until, hint=hint, hint_after=hint_after, at=at)
 
-        namespace: dict[str, Any] = {"set_value": set_value, "animate": animate, "highlight": highlight,
-                                     "pause": pause, "challenge": challenge, **lesson.constants}
+        class Lenient(dict[str, Any]):           # the build step knows no actions: an unknown name records nothing
+            def __missing__(self, key: str) -> Callable[..., None]:
+                return lambda *args, **kw: None
+
+        namespace: dict[str, Any] = (dict if lesson.strict else Lenient)(
+            {"set_value": set_value, "animate": animate, "highlight": highlight,
+             "pause": pause, "challenge": challenge, **lesson.constants})
         for action_name in lesson.actions:
             def make_call(name: str) -> Callable[..., None]:
                 def call(*args: Any, at: Optional[str] = None) -> None:
@@ -633,6 +638,10 @@ class Lesson:
                 value = event.value
         return value
 
+    def _has_keyframe(self, name: str, t: float) -> bool:
+        assert self.script is not None
+        return any(e.param == name and e.kind in ("set", "animate") and e.time <= t + 1e-6 for e in self.script.events)
+
     def next_keyframe_time(self, name: str, t: float) -> float:
         assert self.script is not None
         return next((e.time for e in self.script.events if e.param == name and e.kind in ("set", "animate")
@@ -683,7 +692,7 @@ class Lesson:
         for name, p in self.params.items():
             if p.hold_until >= 0 and self.t >= p.hold_until:
                 p.hold_until = -1.0
-            if p.hold_until < 0:
+            if p.hold_until < 0 and self._has_keyframe(name, self.t):   # a parameter no cue has set yet is the learner's
                 p.set(self.value_at(name, self.t))
         for event in self.script.events:
             if event.time > self.t + 1e-6:

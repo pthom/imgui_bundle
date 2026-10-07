@@ -1954,5 +1954,449 @@
    ]
   ],
   "text": "There are several such clocks, one per frequency: pick another one below the plot."
+ },
+ "a7180d1c745422e8": {
+  "file": "a7180d1c745422e8.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "Now"
+   ],
+   [
+    0.275,
+    "it"
+   ],
+   [
+    0.325,
+    "is"
+   ],
+   [
+    0.438,
+    "your"
+   ],
+   [
+    0.537,
+    "turn"
+   ]
+  ],
+  "text": "Now it is your turn."
+ },
+ "17ef54a5dbc82bfd": {
+  "file": "17ef54a5dbc82bfd.mp3",
+  "duration": 5.592,
+  "words": [
+   [
+    0.075,
+    "Under"
+   ],
+   [
+    0.25,
+    "the"
+   ],
+   [
+    0.338,
+    "table"
+   ],
+   [
+    1.062,
+    "two"
+   ],
+   [
+    1.3,
+    "knobs"
+   ],
+   [
+    2.175,
+    "the"
+   ],
+   [
+    2.3,
+    "weight"
+   ],
+   [
+    2.663,
+    "decay"
+   ],
+   [
+    3.538,
+    "and"
+   ],
+   [
+    3.65,
+    "the"
+   ],
+   [
+    3.737,
+    "seed"
+   ],
+   [
+    4.3,
+    "of"
+   ],
+   [
+    4.362,
+    "the"
+   ],
+   [
+    4.412,
+    "random"
+   ],
+   [
+    4.787,
+    "start"
+   ]
+  ],
+  "text": "Under the table, two knobs: the weight decay, and the seed of the random start."
+ },
+ "1e36af3930da4f0b": {
+  "file": "1e36af3930da4f0b.mp3",
+  "duration": 4.824,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.15,
+    "Train"
+   ],
+   [
+    0.463,
+    "button"
+   ],
+   [
+    0.875,
+    "trains"
+   ],
+   [
+    1.225,
+    "a"
+   ],
+   [
+    1.275,
+    "new"
+   ],
+   [
+    1.6,
+    "network"
+   ],
+   [
+    2.562,
+    "live"
+   ],
+   [
+    3.4,
+    "in"
+   ],
+   [
+    3.487,
+    "a"
+   ],
+   [
+    3.55,
+    "few"
+   ],
+   [
+    3.825,
+    "seconds"
+   ]
+  ],
+  "text": "The Train button trains a new network, live, in a few seconds."
+ },
+ "9c11ed7a81ebc850": {
+  "file": "9c11ed7a81ebc850.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "Look"
+   ],
+   [
+    0.25,
+    "at"
+   ],
+   [
+    0.3,
+    "the"
+   ],
+   [
+    0.375,
+    "hidden"
+   ],
+   [
+    0.662,
+    "set"
+   ]
+  ],
+  "text": "Look at the hidden set."
+ },
+ "c4095baee2edb0a4": {
+  "file": "c4095baee2edb0a4.mp3",
+  "duration": 7.944,
+  "words": [
+   [
+    0.113,
+    "Without"
+   ],
+   [
+    0.438,
+    "the"
+   ],
+   [
+    0.55,
+    "weight"
+   ],
+   [
+    0.863,
+    "decay"
+   ],
+   [
+    1.938,
+    "the"
+   ],
+   [
+    2.013,
+    "network"
+   ],
+   [
+    2.438,
+    "memorizes"
+   ],
+   [
+    3.25,
+    "just"
+   ],
+   [
+    3.525,
+    "as"
+   ],
+   [
+    3.612,
+    "fast"
+   ],
+   [
+    4.575,
+    "and"
+   ],
+   [
+    4.675,
+    "never"
+   ],
+   [
+    4.925,
+    "groks"
+   ],
+   [
+    5.75,
+    "the"
+   ],
+   [
+    5.85,
+    "green"
+   ],
+   [
+    6.225,
+    "curve"
+   ],
+   [
+    6.513,
+    "stays"
+   ],
+   [
+    6.95,
+    "at"
+   ],
+   [
+    7.05,
+    "zero"
+   ]
+  ],
+  "text": "Without the weight decay, the network memorizes just as fast, and never groks: the green curve stays at zero."
+ },
+ "cf0ff4cf5f855221": {
+  "file": "cf0ff4cf5f855221.mp3",
+  "duration": 8.496,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.175,
+    "decay"
+   ],
+   [
+    0.713,
+    "is"
+   ],
+   [
+    0.863,
+    "what"
+   ],
+   [
+    1.05,
+    "pushes"
+   ],
+   [
+    1.5,
+    "the"
+   ],
+   [
+    1.6,
+    "network"
+   ],
+   [
+    2.087,
+    "from"
+   ],
+   [
+    2.212,
+    "the"
+   ],
+   [
+    2.3,
+    "table"
+   ],
+   [
+    2.6,
+    "to"
+   ],
+   [
+    2.663,
+    "the"
+   ],
+   [
+    2.737,
+    "clocks"
+   ],
+   [
+    3.8,
+    "a"
+   ],
+   [
+    3.85,
+    "memorized"
+   ],
+   [
+    4.513,
+    "table"
+   ],
+   [
+    4.838,
+    "costs"
+   ],
+   [
+    5.325,
+    "large"
+   ],
+   [
+    5.7,
+    "weights"
+   ],
+   [
+    6.475,
+    "a"
+   ],
+   [
+    6.525,
+    "clock"
+   ],
+   [
+    6.862,
+    "costs"
+   ],
+   [
+    7.263,
+    "small"
+   ],
+   [
+    7.625,
+    "ones"
+   ]
+  ],
+  "text": "The decay is what pushes the network from the table to the clocks: a memorized table costs large weights, a clock costs small ones."
+ },
+ "106f7276d22afaed": {
+  "file": "106f7276d22afaed.mp3",
+  "duration": 3.336,
+  "words": [
+   [
+    0.1,
+    "Try"
+   ],
+   [
+    0.275,
+    "another"
+   ],
+   [
+    0.575,
+    "seed"
+   ],
+   [
+    1.288,
+    "with"
+   ],
+   [
+    1.413,
+    "the"
+   ],
+   [
+    1.5,
+    "decay"
+   ],
+   [
+    2.188,
+    "back"
+   ],
+   [
+    2.562,
+    "to"
+   ],
+   [
+    2.675,
+    "one"
+   ]
+  ],
+  "text": "Try another seed, with the decay back to one."
+ },
+ "10167cda2e202c2a": {
+  "file": "10167cda2e202c2a.mp3",
+  "duration": 3.384,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "clocks"
+   ],
+   [
+    0.512,
+    "change"
+   ],
+   [
+    0.9,
+    "frequency"
+   ],
+   [
+    2.013,
+    "the"
+   ],
+   [
+    2.087,
+    "story"
+   ],
+   [
+    2.438,
+    "does"
+   ],
+   [
+    2.612,
+    "not"
+   ]
+  ],
+  "text": "The clocks change frequency; the story does not."
  }
 }

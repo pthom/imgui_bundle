@@ -14,20 +14,107 @@ from imgui_bundle import hello_imgui, imgui, immapp, implot, icons_fontawesome_4
 from imgui_bundle import ImVec2, ImVec4
 
 import narrator
+import grok_train
 from grok_train import P
 
-DATA = np.load(Path(__file__).parent / "grokking_data.npz")  # recorded by grok_train.py
-STEPS: np.ndarray = DATA["steps"]                                  # the training step of each checkpoint
-LAST_STEP = int(STEPS[-1])
-GROK_START = int(STEPS[np.argmax(DATA["test_acc"] > 0.1)])          # where the hidden sums start to be answered
 CHECKPOINTS_PER_SECOND = 40                                        # the speed of the play button
+LIVE_TRAINING_BUDGET_S = 0.035                                     # the time spent training per frame, live
 ACCENT_BLINK_SECONDS = 4.0                                         # an accented curve blinks that long
 ONE_FIGURE_BELOW_EM = 36.0                                         # a narrower stage (a phone) shows one figure
 FIGURE_NAMES = {"table": "Table", "accuracy": "Accuracy", "clock": "Clock"}
 
 
+class TrainingPath:
+    """What the figures show at every checkpoint of a training: the recorded run, or a live one"""
+
+    def __init__(self, train_mask: np.ndarray, clock_axes: np.ndarray, clock_frequencies: np.ndarray) -> None:
+        self.train_mask = train_mask                  # (P, P): the sums shown during the training
+        self.clock_axes = clock_axes                  # (CLOCKS, 2, D_EMBED): the planes of the clock views
+        self.clock_frequencies = clock_frequencies
+        self.steps = np.zeros(0, np.int64)
+        self.train_acc = np.zeros(0, np.float32)
+        self.test_acc = np.zeros(0, np.float32)
+        self.correct = np.zeros((0, P, P), np.uint8)
+        self.clocks = np.zeros((0, len(clock_frequencies), P, 2), np.float32)   # (steps, CLOCKS, P, 2)
+
+    @staticmethod
+    def recorded(file: Path) -> "TrainingPath":
+        data = np.load(file)
+        path = TrainingPath(data["train_mask"], data["clock_axes"], data["clock_frequencies"])
+        path.steps, path.train_acc, path.test_acc = data["steps"], data["train_acc"], data["test_acc"]
+        path.correct, path.clocks = data["correct"], data["clocks"]
+        return path
+
+    @property
+    def last_step(self) -> int:
+        return int(self.steps[-1]) if len(self.steps) else 0
+
+    @property
+    def grok_start(self) -> int:
+        """The step where the hidden sums start to be answered (the end of the path if they never are)"""
+        above = np.flatnonzero(self.test_acc > 0.1)
+        return int(self.steps[above[0]]) if len(above) else self.last_step
+
+
+class LiveTraining:
+    """A network trained here, a few steps per frame, with the learner's hyperparameters"""
+
+    def __init__(self, weight_decay: float, seed: int, clock_axes: np.ndarray, frequencies: np.ndarray) -> None:
+        rng = np.random.default_rng(seed)
+        self.pairs, train_mask = grok_train.make_data(rng)
+        self.train = self.pairs[train_mask]
+        self.trainer = grok_train.Trainer(grok_train.init_params(rng), weight_decay=weight_decay)
+        self.path = TrainingPath(train_mask.reshape(P, P), clock_axes, frequencies)
+        self.embeddings: list[np.ndarray] = []
+        self.step = 0
+        self.done = False
+        self._checkpoint()
+
+    def _checkpoint(self) -> None:
+        right = grok_train.forward(self.trainer.params, self.pairs)[3].argmax(1) == self.pairs[:, 2]
+        mask = self.path.train_mask.reshape(-1)
+        e = self.trainer.params["E"] - self.trainer.params["E"].mean(0)
+        self.embeddings.append(e)
+        p = self.path
+        p.steps = np.append(p.steps, self.step)
+        p.train_acc = np.append(p.train_acc, np.float32(right[mask].mean()))
+        p.test_acc = np.append(p.test_acc, np.float32(right[~mask].mean()))
+        p.correct = np.concatenate([p.correct, right.reshape(1, P, P).astype(np.uint8)])
+        clocks = np.array([[e @ a.T for a in p.clock_axes]], np.float32)
+        p.clocks = np.concatenate([p.clocks, clocks])
+
+    def run_some(self, budget_s: float) -> None:
+        """Trains until the time budget of this frame is spent, or the run is over"""
+        t0 = time.perf_counter()
+        while not self.done and time.perf_counter() - t0 < budget_s:
+            self.trainer.step(self.train)
+            self.step += 1
+            if self.step % grok_train.CHECKPOINT_EVERY == 0:
+                self._checkpoint()
+            if self.step >= grok_train.STEPS:
+                self.done = True
+                self._finish()
+
+    def _finish(self) -> None:
+        """The clock views of this run: the planes of its own strongest frequencies, at every checkpoint"""
+        p = self.path
+        final = self.embeddings[-1]
+        p.clock_frequencies = grok_train.clock_frequencies(final, grok_train.CLOCKS)
+        p.clock_axes = np.array([grok_train.clock_axes(final, int(k)) for k in p.clock_frequencies])
+        p.clocks = np.array([[e @ a.T for a in p.clock_axes] for e in self.embeddings], np.float32)
+
+
+RECORDED = TrainingPath.recorded(Path(__file__).parent / "grokking_data.npz")   # recorded by grok_train.py
+LAST_STEP = RECORDED.last_step
+
+
 class AppState:
     def __init__(self) -> None:
+        self.path = RECORDED          # the training shown: the recorded one, or the live one
+        self.live: LiveTraining | None = None
+        self.training_live = False
+        self.weight_decay = 1.0       # the hyperparameters of the next live training
+        self.seed = 42
         self.checkpoint = 0           # the index of the checkpoint shown
         self.playing = False
         self.play_accumulator = 0.0
@@ -42,18 +129,18 @@ class AppState:
 
     @property
     def step(self) -> int:
-        return int(STEPS[self.checkpoint])
+        return int(self.path.steps[self.checkpoint]) if len(self.path.steps) else 0
 
     @step.setter
     def step(self, step: int) -> None:
-        self.checkpoint = int(np.clip(np.searchsorted(STEPS, step), 0, len(STEPS) - 1))
+        self.checkpoint = int(np.clip(np.searchsorted(self.path.steps, step), 0, max(0, len(self.path.steps) - 1)))
 
     def set_step(self, step: int) -> None:
         self.step = step
 
     def toggle_training(self) -> None:
         self.playing = not self.playing
-        if self.playing and self.checkpoint == len(STEPS) - 1:
+        if self.playing and self.checkpoint == len(self.path.steps) - 1:
             self.checkpoint = 0
 
     def advance(self) -> None:
@@ -61,15 +148,40 @@ class AppState:
         self.play_accumulator += imgui.get_io().delta_time * CHECKPOINTS_PER_SECOND
         while self.play_accumulator >= 1.0:
             self.play_accumulator -= 1.0
-            if self.checkpoint < len(STEPS) - 1:
+            if self.checkpoint < len(self.path.steps) - 1:
                 self.checkpoint += 1
             else:
                 self.playing = False
+
+    def start_training(self) -> None:
+        """A live training with the current hyperparameters; the figures follow it"""
+        self.playing = False                      # while it trains, a live run is seen on the recorded run's planes
+        self.live = LiveTraining(self.weight_decay, int(self.seed), RECORDED.clock_axes, RECORDED.clock_frequencies)
+        self.path, self.training_live, self.checkpoint = self.live.path, True, 0
+
+    def use_recorded(self) -> None:
+        """Back to the recorded training (the lesson's chapters are written on it)"""
+        self.live, self.training_live = None, False
+        self.path = RECORDED
+        self.checkpoint = min(self.checkpoint, len(RECORDED.steps) - 1)
+
+    def train_live(self) -> None:
+        """Called every frame while a live training runs: the shown checkpoint follows it"""
+        assert self.live is not None
+        lesson.touched("step")
+        self.live.run_some(LIVE_TRAINING_BUDGET_S)
+        self.checkpoint = len(self.path.steps) - 1
+        if self.live.done:
+            self.training_live = False
 
 
 app_state = AppState()
 lesson = narrator.Lesson(Path(__file__).parent / "scenario.md", program=__file__)   # the script, watched: edit it live
 lesson.param(name="step", owner=app_state, range=(0, LAST_STEP))
+lesson.param(name="weight_decay", owner=app_state, range=(0.0, 1.0))
+lesson.param(name="seed", owner=app_state, range=(0, 9999))
+lesson.action(name="train", function=app_state.start_training)
+lesson.action(name="use_recorded", function=app_state.use_recorded)
 lesson.param(name="clock", owner=app_state, range=(0, 3))
 lesson.param(name="table_view", owner=app_state)
 lesson.param(name="view", owner=app_state)
@@ -105,10 +217,10 @@ def table_colormap() -> int:
 
 def table_cells(checkpoint: int) -> np.ndarray:
     """0: seen and wrong, 1: seen and right, 2: hidden and wrong, 3: hidden and right"""
-    hidden = (~DATA["train_mask"]).astype(np.float32)
+    hidden = (~app_state.path.train_mask).astype(np.float32)
     if app_state.table_view == "split":
         return np.asarray(1.0 + hidden, dtype=np.float32)            # seen in blue, hidden in red
-    right = DATA["correct"][checkpoint].astype(np.float32)
+    right = app_state.path.correct[checkpoint].astype(np.float32)
     return np.asarray(2.0 * hidden + right, dtype=np.float32)
 
 
@@ -135,8 +247,9 @@ def gui_accuracy(size: ImVec2) -> None:
         implot.setup_axes("training step", "accuracy")
         implot.setup_axes_limits(0, LAST_STEP, -0.02, 1.02, imgui.Cond_.always)
         implot.setup_legend(implot.Location_.south_east, implot.LegendFlags_.no_buttons)
+        path = app_state.path
         if app_state.zone != "none":
-            lo, hi = (0, GROK_START) if app_state.zone == "memorizing" else (GROK_START, LAST_STEP)
+            lo, hi = (0, path.grok_start) if app_state.zone == "memorizing" else (path.grok_start, LAST_STEP)
             implot.plot_shaded("##zone", np.array([lo, hi], np.float64), np.array([1.02, 1.02]), np.array([-0.02, -0.02]),
                                spec=implot.Spec(fill_color=ImVec4(1.0, 0.8, 0.3, 0.18)))
         if app_state.accent_line != app_state._last_accent:
@@ -153,7 +266,7 @@ def gui_accuracy(size: ImVec2) -> None:
                 line_color = ImVec4(color.x + (1 - color.x) * k, color.y + (1 - color.y) * k,
                                     color.z + (1 - color.z) * k, 1.0)
                 weight = 3.5 + 3.0 * k
-            implot.plot_line(label, STEPS.astype(np.float64), DATA[key].astype(np.float64),
+            implot.plot_line(label, path.steps.astype(np.float64), getattr(path, key).astype(np.float64),
                              spec=implot.Spec(line_color=line_color, line_weight=weight))
         changed, x, *_ = implot.drag_line_x(0, float(app_state.step), ImVec4(1.0, 0.8, 0.3, 1.0), 2.0)
         if not changed and implot.is_plot_hovered() and imgui.is_mouse_down(imgui.MouseButton_.left):
@@ -168,7 +281,8 @@ def gui_accuracy(size: ImVec2) -> None:
 def gui_clocks(size: ImVec2) -> None:
     """The 53 numbers inside the network: their embeddings on the plane of one frequency (a clock, once it groks)"""
     em = hello_imgui.em_size()
-    frequencies = DATA["clock_frequencies"]
+    path = app_state.path
+    frequencies = path.clock_frequencies
     h = button_height()
     imgui.push_style_var(imgui.StyleVar_.frame_padding,                # the label centered on the chips' height
                          ImVec2(imgui.get_style().frame_padding.x, (h - imgui.get_font_size()) / 2))
@@ -187,9 +301,9 @@ def gui_clocks(size: ImVec2) -> None:
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
     if implot.begin_plot("##clock", ImVec2(max(1.0, size.x), max(1.0, height)), flags):
         implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, implot.AxisFlags_.no_tick_labels)
-        extent = float(np.abs(DATA["clocks"]).max()) * 1.1
+        extent = float(np.abs(RECORDED.clocks).max()) * 1.1
         implot.setup_axes_limits(-extent, extent, -extent, extent, imgui.Cond_.always)
-        points = DATA["clocks"][app_state.checkpoint, app_state.clock]
+        points = path.clocks[app_state.checkpoint, app_state.clock]
         small = min(size.x, height) < 30 * em                       # a small clock: smaller labels, larger dots
         implot.plot_scatter("##numbers", points[:, 0].astype(np.float64), points[:, 1].astype(np.float64),
                             spec=implot.Spec(marker=implot.Marker_.circle, marker_size=4 if small else 3,
@@ -205,7 +319,8 @@ def gui_clocks(size: ImVec2) -> None:
 
 def gui_controls() -> None:
     """Play, pause, and the slider of the training step; on a phone, the accuracies go into the slider"""
-    seen, hidden = DATA["train_acc"][app_state.checkpoint], DATA["test_acc"][app_state.checkpoint]
+    path = app_state.path
+    seen, hidden = path.train_acc[app_state.checkpoint], path.test_acc[app_state.checkpoint]
     if lesson.compact:
         h = button_height()
         icon = fa.ICON_FA_PAUSE if app_state.playing else fa.ICON_FA_PLAY
@@ -230,6 +345,30 @@ def gui_controls() -> None:
     if not lesson.compact:
         imgui.same_line()
         imgui.text(f"seen: {seen:4.0%}   hidden: {hidden:4.0%}")
+    gui_hyperparameters()
+
+
+def gui_hyperparameters() -> None:
+    """The weight decay, the seed, and Train: a live training replaces the recorded one in the figures"""
+    em = hello_imgui.em_size()
+    h = button_height()
+    imgui.set_next_item_width(12 * em)
+    changed, app_state.weight_decay = imgui.slider_float("Weight decay", app_state.weight_decay, 0.0, 1.0, "%.2f")
+    lesson.widget("weight_decay", changed=changed)
+    imgui.same_line()
+    imgui.set_next_item_width(6 * em)
+    changed, app_state.seed = imgui.input_int("Seed", app_state.seed, 0)
+    lesson.widget("seed", changed=changed)
+    imgui.same_line()
+    if app_state.training_live:
+        imgui.button(f"Training... {app_state.path.last_step}", ImVec2(0, h))
+    elif imgui.button("Train", ImVec2(0, h)):
+        app_state.start_training()
+        lesson.touched("step")
+    if app_state.live is not None:
+        imgui.same_line()
+        if imgui.button("Recorded run", ImVec2(0, h)):
+            app_state.use_recorded()
 
 
 def gui_figure_chips(figures: list[str], shown: str) -> None:
@@ -284,9 +423,12 @@ def gui_stage() -> None:
 
 
 def gui() -> None:
-    if app_state.playing:
+    if app_state.training_live:
+        app_state.train_live()
+    elif app_state.playing:
         app_state.advance()
-    hello_imgui.get_runner_params().fps_idling.enable_idling = not (app_state.playing or lesson.playing)
+    hello_imgui.get_runner_params().fps_idling.enable_idling = \
+        not (app_state.playing or app_state.training_live or lesson.playing)
     lesson.gui(stage=gui_stage)
 
 

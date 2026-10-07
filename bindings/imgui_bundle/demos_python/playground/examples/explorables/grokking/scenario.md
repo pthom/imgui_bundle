@@ -137,3 +137,23 @@ Look inside. The 53 numbers, as the network represents them, now sit on a circle
 On the plane of frequency $k$, the number $n$ sits at the angle $2 \pi k n / 53$. Adding $a$ and $b$ is adding
 angles: $\cos(a + b) = \cos a \cos b - \sin a \sin b$. The network found this trick by itself, pushed by the weight
 decay: a memorized table costs large weights, a clock costs small ones (Nanda et al., 2023).
+
+## Experiments
+
+[[The whole stage, with the weight decay and the seed under the table; back on the recorded run]]
+```cues
+use_recorded()
+set_value("view", "full")
+set_value("table_view", "answers")
+set_value("focus", "accuracy")
+set_value("step", 1000)
+```
+Now it is your turn. Under the table, two knobs: the weight decay, and the seed of the random start. The Train button trains a new network, live, in a few seconds.
+
+[[The first challenge: without the weight decay, no grokking. The voice waits for the training to end.]]
+```cues
+challenge("Set the weight decay to zero, press Train, and wait for the end of the training.", until="weight_decay == 0 and step >= 1000", hint="The weight decay slider is under the table; Train starts the training.", hint_after=30)
+```
+Look at the hidden set. Without the weight decay, the network memorizes just as fast, and never groks: the green curve stays at zero. The decay is what pushes the network from the table to the clocks: a memorized table costs large weights, a clock costs small ones.
+
+Try another seed, with the decay back to one. The clocks change frequency; the story does not.
