@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const initialCode = await initial_example_code();
     editor.setValue(initialCode);
     setLoadedCode(initialCode);
-    setEditorLabel('Welcome to Dear ImGui Bundle');
+    setEditorLabel('Welcome');
 });
 
 
@@ -544,7 +544,7 @@ async function showWelcome() {
     setLoadedCode(initialCode);
     loadedExampleFilename = null;
     markOwnCodeSwitch(null);
-    setEditorLabel('Welcome to Dear ImGui Bundle');
+    setEditorLabel('Welcome');
     clearError();
     markCurrentExample(WELCOME_FILENAME);
     await prepareWelcome();

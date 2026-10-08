@@ -54,8 +54,7 @@ else:
 
 SITE = "https://imgui-bundle.pages.dev"
 # The interactive manuals, by their filename in the catalog (examples.json)
-MANUALS = [("Dear ImGui", "manual_imgui.py"), ("ImPlot", "manual_implot.py"), ("ImPlot3D", "manual_implot3d.py"),
-           ("ImAnim", "manual_im_anim.py")]
+MANUALS = [("Dear ImGui", "manual_imgui.py"), ("ImPlot", "manual_implot.py"), ("ImPlot3D", "manual_implot3d.py")]
 SLIDE_DURATION = 5.0  # s: the carousel moves to the next slide by itself, until the user touches it
 
 
@@ -366,6 +365,8 @@ def _implot_subplot2_filled():
     if implot.begin_plot("Stock Prices", flags=_implot_flags()):
         implot.setup_axes("Days", "Price")
         implot.setup_axes_limits(0, 100, 0, 500)
+        if is_small_screen():  # fewer ticks: in a narrow plot the default labels run together
+            implot.setup_axis_ticks(implot.ImAxis_.x1, 0, 100, 3)
         spec = implot.Spec(fill_alpha=0.25)
         implot.plot_shaded("Stock 1", _filled_xs, _filled_ys1, 0.0, spec)
         implot.plot_line("Stock 1", _filled_xs, _filled_ys1)
@@ -1013,13 +1014,17 @@ def _spiral_loss(state: _SpiralState, size: ImVec2) -> None:
 
 def _spiral_controls(state: _SpiralState, width: float) -> None:
     em = hello_imgui.em_size()
+    row_left = imgui.get_cursor_screen_pos().x
     if imgui.button("Pause" if state.training else "Train", ImVec2(em * 5, 0)):
         state.training = not state.training
     imgui.same_line()
     if imgui.button("Reset"):
         state.reset()
-    imgui.same_line()
-    imgui.text(f"step {state.steps}  |  loss {state.losses[-1]:.3f}  |  {state.accuracy:.0%} right")
+    status = f"step {state.steps}  |  loss {state.losses[-1]:.3f}  |  {state.accuracy:.0%} right"
+    buttons_w = imgui.get_item_rect_max().x - row_left + imgui.get_style().item_spacing.x
+    if buttons_w + imgui.calc_text_size(status).x <= width:
+        imgui.same_line()  # else on its own line (a phone)
+    imgui.text(status)
     imgui.set_next_item_width(width - em * 9)
     _, state.rate = imgui.slider_float("learning rate", state.rate, 0.01, 10.0, "%.2f", imgui.SliderFlags_.logarithmic)
 
@@ -1033,12 +1038,15 @@ def _spiral_slide_gui(content_size: ImVec2):
         state.train()
     em = hello_imgui.em_size()
     gap = em * 0.5
-    controls_h = em * 3.6
+    status_fits = em * 9.5 + imgui.calc_text_size("step 99999  |  loss 0.000  |  100% right").x <= content_size.x
+    controls_h = imgui.get_frame_height_with_spacing() * (2 if status_fits else 3) + em * 0.2
     plots_h = content_size.y - controls_h
-    if is_small_screen():  # the plane, then the loss under it (when there is room for it)
+    if is_small_screen():  # the plane, then the loss under it (when there is room for a curve)
         side = min(content_size.x, plots_h * 0.65)
+        if plots_h - side - gap < em * 7:
+            side = min(content_size.x, plots_h)
         _spiral_plane(state, ImVec2(side, side))
-        if plots_h - side - gap >= em * 5:
+        if plots_h - side - gap >= em * 7:
             _spiral_loss(state, ImVec2(content_size.x, plots_h - side - gap))
     else:
         side = min(plots_h, content_size.x * 0.55)
@@ -1145,7 +1153,7 @@ if HAS_IMMVISION:
 
         em = hello_imgui.em_size()
         img_h, img_w = _immvision_image.shape[:2]
-        display_w = int(size.x * 0.5 - em) if both else int(size.x)
+        display_w = int(size.x * 0.5 - em) if both else int(size.x - em * 2.2)  # the frame around an image
         display_h = int(min(display_w * img_h / img_w, size.y))
         display_w = int(display_h * img_w / img_h)
         _immvision_params.image_display_size = (display_w, display_h)
@@ -1171,7 +1179,8 @@ if HAS_IMMVISION:
     def _immvision_gui_side():
         global _immvision_animating, _immvision_start_time
         imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
-        imgui.text_wrapped("Drag to pan, scroll to zoom: at a high zoom, the pixels show their values")
+        hint = "Drag to pan, the buttons zoom" if is_small_screen() else "Drag to pan, scroll to zoom"
+        imgui.text_wrapped(hint + ": at a high zoom, the pixels show their values")
         imgui.pop_style_color()
         if not _immvision_animating:
             imgui.same_line()
@@ -1182,7 +1191,9 @@ if HAS_IMMVISION:
     def _immvision_slide_gui(content_size: ImVec2):
         em = hello_imgui.em_size()
         narrow = is_small_screen()
-        # The zoom buttons under the images, then the hint (on two lines on a phone)
+        # The zoom buttons under the images, then the hint (on two lines on a phone). On a phone, no pixel info: it
+        # shows the pixel under the mouse, and a finger does not hover
+        _immvision_params.show_pixel_info = not narrow
         side_h = em * (5.0 if narrow else 3.8)
         _immvision_gui_main(ImVec2(content_size.x, content_size.y - side_h), both=not narrow)
         _immvision_gui_side()
@@ -1315,9 +1326,13 @@ class _PipeGraph:
         edges = _PipeNode("Edges", ["in"], None)
         overlay = _PipeNode("Overlay", ["image", "edges"], 0.8)
         self.nodes = [julia, blur, edges, overlay]
-        # Two levels, so that the link from the image to the overlay passes under the blur and the edges
-        for node, position in ((julia, ImVec2(0, 6)), (blur, ImVec2(11, 0)), (edges, ImVec2(22, 0)),
-                               (overlay, ImVec2(33, 11))):
+        # Two levels, so that the link from the image to the overlay passes under the blur and the edges; on a phone,
+        # two rows of two (the graph is fitted to the view: in a row of four, the nodes would be too small to read)
+        if is_small_screen():
+            positions = (ImVec2(0, 0), ImVec2(10, 0), ImVec2(0, 13), ImVec2(10, 13))
+        else:
+            positions = (ImVec2(0, 6), ImVec2(11, 0), ImVec2(22, 0), ImVec2(33, 11))
+        for node, position in zip((julia, blur, edges, overlay), positions, strict=True):
             node_ed.set_node_position(node.id, position * em_size())  # in the editor's coordinates
         self.links: list[tuple[node_ed.LinkId, node_ed.PinId, node_ed.PinId]] = []  # (id, an output, an input)
         self.connect(julia.output, blur.inputs[0][0])
@@ -1714,7 +1729,7 @@ def _table_slide_gui(content_size: ImVec2):
 
 _MARKDOWN_SAMPLE = r"""
 ## Dear ImGui Bundle — live markdown
-> *Edit the panel on the left and watch the right update in real time.*
+> *Edit the source, and watch the render follow in real time.*
 ### What you can write
 - **Bold**, *italic*, ~~strike~~, <u>underline</u>, <mark>highlight</mark>, `code`
 - Keyboard shortcuts: <kbd>Ctrl</kbd>+<kbd>S</kbd>, <kbd>Cmd</kbd>+<kbd>K</kbd>
@@ -1945,15 +1960,23 @@ def _haiku_code(index: int, size: ImVec2) -> None:
     imgui.end_child()
 
 
+HAIKU_APP_SIZE_EM = ImVec2(22.0, 31.5)  # what the heart app needs: its 21 em plot, its knobs below, a margin
+
+
 def _haiku_running_app(size: ImVec2) -> None:
-    """The app that the Python code runs: its gui(), in a frame"""
+    """The app that the Python code runs: its gui(), in a frame, under a smaller font when the frame is too small for
+    it (its sizes are in em, so they follow)"""
     assert _haiku_app is not None
+    em = hello_imgui.em_size()
+    scale = min(1.0, size.x / (HAIKU_APP_SIZE_EM.x * em), size.y / (HAIKU_APP_SIZE_EM.y * em))
     panel_bg(imgui.get_cursor_screen_pos(), size, 0.04, 0.3)
-    imgui.begin_child("##haiku_app", size, False, imgui.WindowFlags_.no_background)
+    imgui.begin_child("##haiku_app", size, False, imgui.WindowFlags_.no_background | imgui.WindowFlags_.no_scrollbar)
+    imgui.push_font(None, imgui.get_style().font_size_base * scale)
     imgui.set_cursor_pos(ImVec2(hello_imgui.em_size(0.5), hello_imgui.em_size(0.5)))
     imgui.begin_group()
     _haiku_app["gui"]()
     imgui.end_group()
+    imgui.pop_font()
     imgui.end_child()
 
 
@@ -2105,6 +2128,7 @@ def _gallery_slide_gui(content_size: ImVec2):
 
     em = hello_imgui.em_size()
     narrow = is_small_screen()
+    top_y = imgui.get_cursor_pos_y()  # content_size starts here (below the title card)
 
     # Language radio buttons (and on a phone, the snippet shown)
     _, _gallery_lang = imgui.radio_button("Python", _gallery_lang, 0)
@@ -2121,8 +2145,7 @@ def _gallery_slide_gui(content_size: ImVec2):
         lambda: _gallery_gui_color(em, s),
         lambda: _gallery_gui_form(em, s),
     ]
-    cursor_offset_y = imgui.get_cursor_screen_pos().y - imgui.get_window_pos().y
-    remaining_h = content_size.y - cursor_offset_y
+    remaining_h = content_size.y - (imgui.get_cursor_pos_y() - top_y)
     if narrow:  # one snippet, its code above its widget
         _gallery_render_cell(_gallery_snippet, content_size.x, remaining_h, em, snippets_gui[_gallery_snippet],
                              stacked=True)
@@ -2150,8 +2173,12 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func, stac
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
     pad = em * 0.4
     avail_h = h - imgui.get_cursor_pos_y() - pad
-    if stacked:
-        code_size, code_flags = ImVec2(w - pad, avail_h * 0.5), imgui.ChildFlags_.resize_y | imgui.ChildFlags_.borders
+    code_font = rich_md.get_code_font()
+    code_font_size = code_font.size * (0.7 if stacked else 0.8)
+    if stacked:  # the code as tall as its lines (and a horizontal scroll bar), at most 55% of the cell
+        nb_lines = len(_GALLERY_SNIPPETS[idx][1 if _gallery_lang == 0 else 2].splitlines())
+        code_h = imgui.get_frame_height_with_spacing() + (nb_lines + 1.6) * code_font_size * 1.1 + em * 0.6
+        code_size, code_flags = ImVec2(w - pad, min(code_h, avail_h * 0.55)), imgui.ChildFlags_.borders
     else:
         code_size, code_flags = ImVec2((w - pad * 2) * 0.5, avail_h), imgui.ChildFlags_.resize_x | imgui.ChildFlags_.borders
 
@@ -2165,8 +2192,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func, stac
         _gallery_render_cell._copy_times[idx] = imgui.get_time()
     copied_recently = (imgui.get_time() - _gallery_render_cell._copy_times.get(idx, -1.0)) < 0.7
     imgui.set_item_tooltip("Copied!" if copied_recently else "Copy")
-    code_font = rich_md.get_code_font()
-    imgui.push_font(code_font.font, code_font.size * 0.8)
+    imgui.push_font(code_font.font, code_font_size)
     editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1))
     imgui.pop_font()
     imgui.end_child()
@@ -2183,11 +2209,13 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func, stac
 def _gallery_gui_plot(em: float):
     t = imgui.get_time()
     x = np.linspace(0, 4 * np.pi, 200)
+    implot.push_style_var(implot.StyleVar_.plot_min_size, ImVec2(em * 8, em * 5))  # (ImPlot's own minimum is taller)
     if implot.begin_plot("##wave", ImVec2(-1, -1)):
         implot.plot_line("sin", x, np.sin(x + t))
         implot.plot_line("cos", x, np.cos(x + t * 0.7))
         implot.end_plot()
         hello_imgui.set_item_is_live()  # the waves move on their own
+    implot.pop_style_var()
 
 
 def _gallery_gui_knob(em: float, s):
@@ -2254,6 +2282,7 @@ _welcome_head: list[str] = []  # the tagline and the subtitle: the paragraphs of
 _welcome_rest = ""  # its sections, in the window of the prose
 _welcome_loaded = False
 _about_opened_at: Optional[float] = None  # when the window of the prose opened (None: closed)
+_about_press_outside = False  # the last press, while the window of the prose is open, was outside it
 _cta_height = 0.0  # the height of the button and the manuals' line, measured at the last frame
 HEAD_EXPANDED_DURATION = 8.0  # s: on a phone, a tap on the short tagline shows all of it for that long
 _head_expanded_until = 0.0  # the time until which the whole head shows, on a phone
@@ -2337,7 +2366,7 @@ def _render_head() -> None:
 def _about_window() -> None:
     """The prose of welcome.md, in a modal window that slides up as it fades in; a click outside, Escape or its close
     button closes it"""
-    global _about_opened_at
+    global _about_opened_at, _about_press_outside
     if _about_opened_at is None:
         return
     if not imgui.is_popup_open(ABOUT_TITLE):
@@ -2364,11 +2393,20 @@ def _about_window() -> None:
         _about_opened_at = None
     else:
         rich_md.render(_welcome_rest)
-        clicked_outside = (imgui.is_mouse_clicked(imgui.MouseButton_.left)
-                           and not imgui.is_window_hovered(imgui.HoveredFlags_.root_and_child_windows))
+        # A tap outside its rectangle closes it: the press and the release both outside, the press after it opened (the
+        # release of the click that opened it must not close it). By the position, not the hover: on a touch screen, a
+        # press that swipes the window's text to scroll it is not hovering.
+        window_min = imgui.get_window_pos()
+        window_max = window_min + imgui.get_window_size()
+        mouse = imgui.get_io().mouse_pos
+        inside = window_min.x <= mouse.x <= window_max.x and window_min.y <= mouse.y <= window_max.y
+        if imgui.is_mouse_clicked(imgui.MouseButton_.left):
+            _about_press_outside = not inside
+        clicked_outside = imgui.is_mouse_released(imgui.MouseButton_.left) and _about_press_outside and not inside
         if not keep_open or clicked_outside or imgui.is_key_pressed(imgui.Key.escape):
             imgui.close_current_popup()
             _about_opened_at = None
+            _about_press_outside = False
         imgui.end_popup()
     imgui.pop_style_color()
     imgui.pop_style_var(3)
@@ -2388,8 +2426,12 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     title_font_size = font_size * (1.0 if narrow else 1.2)
     font = imgui.get_font()
 
-    link = "Open the full demo " + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT if slide.demo and host.open_demo else ""
-    link_size = imgui.calc_text_size(link) if link else ImVec2(0, 0)
+    # The link to the full demo: on a phone, a small "Full demo" badge on the title's line
+    link_text = "Full demo " if narrow else "Open the full demo "
+    link = link_text + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT if slide.demo and host.open_demo else ""
+    link_font_size = font_size * (0.85 if narrow else 1.0)
+    badge_pad = ImVec2(em * 0.45, em * 0.15) if narrow else ImVec2(0, 0)
+    link_size = (imgui.calc_text_size(link) * (link_font_size / font_size) + badge_pad * 2) if link else ImVec2(0, 0)
     title_size = imgui.calc_text_size(slide.title)
     title_h = title_size.y * (title_font_size / font_size)
     desc_size = ImVec2(0, 0) if narrow else imgui.calc_text_size(slide.description, None, False, slide_width - em * 2.0)
@@ -2398,7 +2440,7 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     card_pad_y = em * (0.25 if narrow else 0.4)
     card_w = slide_width - em * 1.0
     # The link at the right of the title when both fit on the line, else on a line of its own under the text
-    link_on_title = link_size.x + title_size.x * (title_font_size / font_size) + em * 1.0 <= card_w - 2 * card_pad_x
+    link_on_title = narrow or link_size.x + title_size.x * (title_font_size / font_size) + em <= card_w - 2 * card_pad_x
     inner_h = title_h + desc_size.y + (em * 0.3 if not narrow else 0.0)
     if link and not link_on_title:
         inner_h += link_size.y + em * 0.3
@@ -2435,9 +2477,17 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
         if hovered:
             imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
         color = imgui.color_convert_float4_to_u32(rich_md.link_color())
-        dl.add_text(link_pos, color, link)
-        if hovered:
-            dl.add_line(ImVec2(link_pos.x, link_pos.y + link_size.y), ImVec2(link_pos.x + link_size.x, link_pos.y + link_size.y), color)
+        if narrow:  # a pill in the accent color
+            dl.add_rect_filled(link_pos, link_pos + link_size,
+                               imgui.color_convert_float4_to_u32(ImVec4(accent_col.x, accent_col.y, accent_col.z,
+                                                                        0.55 if hovered else 0.35)),
+                               link_size.y * 0.5)
+            dl.add_text(font, link_font_size, link_pos + badge_pad, title_col, link)
+        else:
+            dl.add_text(link_pos, color, link)
+            if hovered:
+                underline_y = link_pos.y + link_size.y
+                dl.add_line(ImVec2(link_pos.x, underline_y), ImVec2(link_pos.x + link_size.x, underline_y), color)
     # After the link: ImGui gives the hover to the first item submitted, so the link keeps its click
     _card_swipe(ImVec2(card_x, card_y), ImVec2(card_w, card_h), slide_width)
     imgui.set_cursor_screen_pos(cursor)
@@ -2722,9 +2772,13 @@ def _manuals_line(open_demo: Callable[[str], None], avail_x: float, small: bool)
     """The manuals: "or open an interactive manual: Dear ImGui | ImPlot | ImPlot3D | ImAnim" (shorter on a phone;
     centered when it fits on one line, else wrapped as the links row)"""
     em = hello_imgui.em_size()
-    intro = "Interactive manuals: " if small else "or open an interactive manual: "
+    intro = "Interactive docs: " if small else "or open an interactive manual: "
     parts_w = imgui.calc_text_size(intro).x + sum(imgui.calc_text_size(name).x for name, _ in MANUALS)
     parts_w += imgui.calc_text_size(" | ").x * (len(MANUALS) - 1)
+    # On a phone, one line: a smaller font when needed (down to 75%)
+    scale = max(0.75, min(1.0, avail_x / parts_w)) if small else 1.0
+    imgui.push_font(None, imgui.get_style().font_size_base * scale)
+    parts_w *= scale
     if parts_w <= avail_x:
         imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail_x - parts_w) / 2)
     imgui.text_disabled(intro)
@@ -2743,6 +2797,7 @@ def _manuals_line(open_demo: Callable[[str], None], avail_x: float, small: bool)
             imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
             if imgui.is_mouse_clicked(imgui.MouseButton_.left):
                 open_demo(filename)
+    imgui.pop_font()
     _IntroAutomations.init()
     if _IntroAutomations.show_immediate_apps is not None:  # the explorer with the test engine: a guided tour
         imgui.same_line(0, em)
