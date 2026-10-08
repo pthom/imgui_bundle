@@ -954,10 +954,11 @@ def _spiral_slide_gui(content_size: ImVec2):
     gap = em * 0.5
     controls_h = em * 3.6
     plots_h = content_size.y - controls_h
-    if is_small_screen():  # the plane, then the loss under it
+    if is_small_screen():  # the plane, then the loss under it (when there is room for it)
         side = min(content_size.x, plots_h * 0.65)
         _spiral_plane(state, ImVec2(side, side))
-        _spiral_loss(state, ImVec2(content_size.x, plots_h - side - gap))
+        if plots_h - side - gap >= em * 5:
+            _spiral_loss(state, ImVec2(content_size.x, plots_h - side - gap))
     else:
         side = min(plots_h, content_size.x * 0.55)
         _spiral_plane(state, ImVec2(side, side))
@@ -1760,7 +1761,10 @@ def _gallery_gui_form(em: float, s):
 # ============================================================================
 
 def links_row():
-    """The main links row: the site | Repository | Documentation | Playground | Discord"""
+    """The main links row: the site | Repository | Documentation | Playground | Discord. Not on a phone: three lines
+    there, and the fold has them all (the "Start here" of resources.md)"""
+    if is_small_screen():
+        return
     links = [
         ("imgui-bundle.pages.dev", "https://imgui-bundle.pages.dev", "Main project site"),
         ("Repository", "https://github.com/pthom/imgui_bundle", "Source code, issues, discussions"),
@@ -1837,12 +1841,17 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     link_size = imgui.calc_text_size(link) if link else ImVec2(0, 0)
     title_size = imgui.calc_text_size(slide.title)
     title_h = title_size.y * (title_font_size / font_size)
-    desc_size = imgui.calc_text_size(slide.description, None, False, slide_width - em * 2.0)
+    narrow = is_small_screen()  # a phone: the title and the link, no description
+    desc_size = ImVec2(0, 0) if narrow else imgui.calc_text_size(slide.description, None, False, slide_width - em * 2.0)
 
     card_pad_x = em * 1.0
     card_pad_y = em * 0.4
-    inner_h = title_h + desc_size.y + em * 0.3
     card_w = slide_width - em * 1.0
+    # The link at the right of the title when both fit on the line, else on a line of its own under the text
+    link_on_title = link_size.x + title_size.x * (title_font_size / font_size) + em * 1.0 <= card_w - 2 * card_pad_x
+    inner_h = title_h + desc_size.y + (em * 0.3 if not narrow else 0.0)
+    if link and not link_on_title:
+        inner_h += link_size.y + em * 0.3
     card_h = inner_h + card_pad_y * 2.0
     card_x = imgui.get_cursor_screen_pos().x + (slide_width - card_w) * 0.5
     card_y = imgui.get_cursor_screen_pos().y
@@ -1856,13 +1865,18 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     dl.add_rect_filled(ImVec2(card_x, card_y), ImVec2(card_x + card_w, card_y + card_h), card_bg, em * 0.4)
     dl.add_rect(ImVec2(card_x, card_y), ImVec2(card_x + card_w, card_y + card_h), card_border, em * 0.4, 1.5, 0)
     dl.add_text(font, title_font_size, ImVec2(card_x + card_pad_x, card_y + card_pad_y), title_col, slide.title)
-    dl.add_text(font, font_size, ImVec2(card_x + card_pad_x, card_y + card_pad_y + title_h + em * 0.3),
-                desc_col, slide.description, None, slide_width - em * 2.0)
+    if not narrow:
+        dl.add_text(font, font_size, ImVec2(card_x + card_pad_x, card_y + card_pad_y + title_h + em * 0.3),
+                    desc_col, slide.description, None, slide_width - em * 2.0)
 
     total_h = card_h + em * 0.4
     cursor = imgui.get_cursor_screen_pos()
-    if link:  # at the top right of the card, on the title's line
-        link_pos = ImVec2(card_x + card_w - card_pad_x - link_size.x, card_y + card_pad_y + (title_h - link_size.y) / 2)
+    if link:  # at the right of the card: on the title's line, or on its own line under the text
+        if link_on_title:
+            link_y = card_y + card_pad_y + (title_h - link_size.y) / 2
+        else:
+            link_y = card_y + card_h - card_pad_y - link_size.y
+        link_pos = ImVec2(card_x + card_w - card_pad_x - link_size.x, link_y)
         imgui.set_cursor_screen_pos(link_pos)
         if imgui.invisible_button(f"##open_{slide.demo}", link_size):
             assert host.open_demo is not None
@@ -1954,7 +1968,8 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     # --- Carousel zone: use available height, maintain 4:3 aspect ratio. While the prose is unfolded above, the
     # carousel keeps the height it had folded, and the page scrolls ---
     global _carousel_height_folded
-    min_height = em * 12.0 if is_small_screen() else em * 15.0
+    # On a phone the page scrolls rather than squeeze the slides (a large text setting halves the screen)
+    min_height = em * 26.0 if is_small_screen() else em * 15.0
     if not _more_info_expanded:
         _carousel_height_folded = max(imgui.get_content_region_avail().y - bottom_margin, min_height)
     carousel_height = max(_carousel_height_folded, min_height)
