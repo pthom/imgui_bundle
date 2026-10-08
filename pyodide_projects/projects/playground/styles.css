@@ -130,17 +130,37 @@ html, body {
     outline: none;
     border-color: #9cdcfe;
 }
-#gallery-size {
+#gallery-size {  /* the label on two lines, then "-" and "+"; a vertical separator from the library */
     display: flex;
     align-items: center;
-    gap: 6px;
-    margin-left: 10px;
-    font-size: 0.85em;
+    gap: 4px;
+    padding-left: 8px;
+    border-left: 1px solid #555;
+}
+#gallery-size-label {
+    margin-right: 2px;
+    font-size: 0.7em;
+    line-height: 1.1;
     color: #aaa;
 }
-#gallery-size-slider {
-    width: 7em;
-    accent-color: #73a6ff;  /* the launcher's accent */
+#gallery-size button {
+    width: 2em;
+    height: 1.6em;
+    padding: 0;
+    font: inherit;
+    line-height: 1;
+    color: #ddd;
+    background-color: #3a3a3a;
+    border: 1px solid #555;
+    border-radius: 12px;
+    cursor: pointer;
+}
+#gallery-size button:hover:not(:disabled) {
+    background-color: #4a4a4a;
+}
+#gallery-size button:disabled {
+    opacity: 0.35;
+    cursor: default;
 }
 #gallery-clear {
     padding: 2px 8px;
@@ -410,6 +430,14 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+}
+#editor-label.two-lines {  /* too long for one line (js/main.js, fitEditorLabel) */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    white-space: normal;
+    font-size: 0.85em;
+    line-height: 1.15;
 }
 
 #editor-modified {
@@ -835,18 +863,18 @@ body {
         margin-left: auto;
         padding: 0 8px;
     }
-    #gallery-library {
+    #gallery-library {  /* narrow: the thumbnails' size fits beside it */
+        max-width: 6.5em;
         margin-left: 0;
     }
     #gallery-search {
         flex: 1;
+        min-width: 7em;
         width: auto;
     }
-    #gallery-size {  /* one column of cards: no slider, the default size */
-        display: none;
-    }
-    #gallery {
-        --card-width: 15em !important;
+    #gallery-size button {  /* for a finger */
+        width: 2.1em;
+        height: 1.9em;
     }
     #editor-and-canvas-container {
         flex-direction: column;

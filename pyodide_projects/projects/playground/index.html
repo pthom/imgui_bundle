@@ -176,11 +176,13 @@
         <div id="gallery-bar">
             <div id="gallery-chips"></div>
             <select id="gallery-library" title="Keep the demos that use a library"></select>
+            <div id="gallery-size" role="group" aria-label="Thumbnail size">
+                <span id="gallery-size-label">Thumbnail<br>size</span>
+                <button id="gallery-smaller" title="Smaller thumbnails" aria-label="Smaller thumbnails">&minus;</button>
+                <button id="gallery-larger" title="Larger thumbnails" aria-label="Larger thumbnails">+</button>
+            </div>
             <input id="gallery-search" type="search" placeholder="Search the demos"
                    title="Words to find in the title, the description, the category or the libraries of a demo">
-            <label id="gallery-size" title="The size of the cards">Size
-                <input id="gallery-size-slider" type="range" min="10" max="30" step="1" value="15">
-            </label>
             <button id="gallery-clear" title="Clear the filters (Escape)" hidden>&times;</button>
             <button id="gallery-close" aria-label="Close the gallery" title="Close (Escape)">&times;</button>
         </div>

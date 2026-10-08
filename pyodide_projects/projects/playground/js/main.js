@@ -162,7 +162,16 @@ runEditorPythonCode = async function() {
 // Update the editor toolbar label
 function setEditorLabel(label) {
     document.getElementById('editor-label').textContent = label;
+    fitEditorLabel();
 }
+
+// A label too long for one line goes on two, a little smaller; checked again when the toolbar's width changes
+function fitEditorLabel() {
+    const label = document.getElementById('editor-label');
+    label.classList.remove('two-lines');
+    if (label.scrollWidth > label.clientWidth) label.classList.add('two-lines');
+}
+new ResizeObserver(fitEditorLabel).observe(document.getElementById('editor-toolbar'));
 
 // The panel over the canvas for a desktop-only demo (its code is in the editor, it does not run here): its picture,
 // the notice, and a chip per variant when it has some (the Python backends: each chip loads its file). The Run

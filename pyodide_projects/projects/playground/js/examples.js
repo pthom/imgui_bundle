@@ -413,6 +413,39 @@ function dealCards() {
     }
 }
 
+// The size of the thumbnails: "-" and "+" step through these minimal widths of a card (em), skipping those that would
+// not change the number of columns at the gallery's width; the width chosen is remembered by this browser
+const CARD_WIDTHS = [8, 9, 10, 11, 12.5, 14, 15, 17, 19, 22, 25, 30, 40];
+const CARD_WIDTH_KEY = 'playground-gallery-card-width';
+let cardWidth = 15;
+
+function galleryColumns(width) {
+    const grid = document.querySelector('.gallery-grid');
+    if (!grid || !grid.clientWidth) return 1;
+    const style = getComputedStyle(grid);
+    const gap = parseFloat(style.columnGap) || 0;
+    const cardPixels = Math.min(width * parseFloat(style.fontSize), grid.clientWidth);
+    return Math.max(1, Math.floor((grid.clientWidth + gap) / (cardPixels + gap)));
+}
+
+function nextCardWidth(direction) {  // 1: larger thumbnails (fewer columns), -1: smaller; null when none changes them
+    const columns = galleryColumns(cardWidth);
+    const steps = direction > 0 ? CARD_WIDTHS.filter(w => w > cardWidth)
+                                : CARD_WIDTHS.filter(w => w < cardWidth).reverse();
+    return steps.find(w => galleryColumns(w) !== columns) ?? null;
+}
+
+function updateSizeButtons() {
+    document.getElementById('gallery-smaller').disabled = nextCardWidth(-1) === null;
+    document.getElementById('gallery-larger').disabled = nextCardWidth(1) === null;
+}
+
+function setCardWidth(width) {
+    cardWidth = width;
+    document.getElementById('gallery').style.setProperty('--card-width', width + 'em');
+    updateSizeButtons();
+}
+
 function openGallery() {
     const gallery = document.getElementById('gallery');
     gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';  // under the header
@@ -424,6 +457,7 @@ function openGallery() {
     if (current) current.scrollIntoView({block: 'center'});
     markCategoryInView();
     if (wasHidden) dealCards();
+    updateSizeButtons();
     // Not on a touch screen, where the keyboard would cover the gallery (a phone held sideways is wider than 768 px)
     if (!window.matchMedia('(pointer: coarse)').matches) document.getElementById('gallery-search').focus();
 }
@@ -514,19 +548,23 @@ document.addEventListener('DOMContentLoaded', () => {
     const library = document.getElementById('gallery-library');
     search.addEventListener('input', filterGallery);
     library.addEventListener('change', filterGallery);
-    // The size of the cards (their minimal width, in em), remembered by this browser
-    const size = document.getElementById('gallery-size-slider');
-    const setCardWidth = () => gallery.style.setProperty('--card-width', size.value + 'em');
-    try { size.value = localStorage.getItem('playground-gallery-card-width') || size.value; } catch (e) {}
-    setCardWidth();
-    size.addEventListener('input', () => {
-        setCardWidth();
-        try { localStorage.setItem('playground-gallery-card-width', size.value); } catch (e) {}
-    });
+    const searchPlaceholder = () => { search.placeholder = narrowScreen.matches ? 'Search' : 'Search the demos'; };
+    narrowScreen.addEventListener('change', searchPlaceholder);  // a phone: a shorter word, the bar is narrow
+    searchPlaceholder();
+    try { setCardWidth(parseFloat(localStorage.getItem(CARD_WIDTH_KEY)) || cardWidth); } catch (e) {}
+    for (const [id, direction] of [['gallery-smaller', -1], ['gallery-larger', 1]]) {
+        document.getElementById(id).addEventListener('click', () => {
+            const width = nextCardWidth(direction);
+            if (width === null) return;
+            setCardWidth(width);
+            try { localStorage.setItem(CARD_WIDTH_KEY, String(width)); } catch (e) {}
+        });
+    }
     document.getElementById('gallery-body').addEventListener('scroll', markCategoryInView);
-    window.addEventListener('resize', () => {  // the header's height changes
-        if (!gallery.hidden)
-            gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';
+    window.addEventListener('resize', () => {  // the header's height changes, and the columns the buttons can reach
+        if (gallery.hidden) return;
+        gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';
+        updateSizeButtons();
     });
     // Escape (listened in the capture phase: the canvas may stop the events)
     document.addEventListener('keydown', (event) => {
