@@ -44,14 +44,17 @@ A small synthesizer written in Python, which plays through your browser's
 Play it with the mouse, or with your computer keyboard (the letters are on the keys), or pick a tune.
 """
 
-# The piano: two octaves, from C4 (MIDI note 60) to C6
-LOWEST_NOTE = 60
-NB_NOTES = 25
+# The piano: four octaves, from C3 (MIDI note 48) to C7
+LOWEST_NOTE = 48
+NB_NOTES = 49
 PIANO_HEIGHT = 13.0  # em
+PIANO_HEIGHT_NARROW = 10.0  # em: on a narrow screen, so that the controls and the keys fit on the screen together
 MIN_KEY_WIDTH = 2.4  # em: a white key at least as wide as a finger; else the piano shows part of its keys
 STRIP_HEIGHT = 2.0  # em: the strip above the keys, the whole piano in miniature, which moves the view
-# The computer keys that play them, as in a tracker: the bottom letter row plays C4 to B4, the top row C5 to C6.
-# The piano shows them on its keys.
+VIEW_SPEED = 12.0  # 1/s: the view glides to its place (in about a quarter of a second)
+# The computer keys that play two octaves, as in a tracker: the bottom letter row plays C4 to B4, the top row C5 to
+# C6. The piano shows them on its keys.
+KEYS_LOWEST_NOTE = 60  # C4
 KEY_LABELS = "Z S X D C V G B H N J M Q 2 W 3 E R 5 T 6 Y 7 U I".split()
 
 
@@ -107,7 +110,7 @@ NOTE_LENGTH = 0.9  # of the note's duration in a tune: a short gap separates rep
 ECHO_DELAY = 0.3  # seconds
 
 # The layout
-NARROW_EM = 46.0  # below this width (in em, a phone): the tune cards two by two, the controls on three rows
+NARROW_EM = 46.0  # below this width (in em, a phone): the tune cards two by two, the controls on two rows, smaller
 
 # The scope
 SCOPE_SAMPLES = 1024  # about 20 ms
@@ -287,7 +290,9 @@ class State:
         self.volume = 0.8
         self.tempo = 120.0  # beats per minute
         self.synth: Synth | None = None
-        self.first_key = 0  # the first white key in view, when the piano shows part of its keys
+        # The first white key in view, when the piano shows part of its keys: C4, where the computer keys start
+        self.first_key = sum(not is_black(note) for note in range(LOWEST_NOTE, KEYS_LOWEST_NOTE))
+        self.view: float | None = None  # the first white key drawn: it glides to first_key
         self.strip_pressed = False  # the press on the piano started on its strip: it moves the view
 
     def ensure_synth(self) -> Synth | None:
@@ -357,11 +362,11 @@ def tune_cards(state: State) -> None:
         tune_card(state, tune, ImVec2(width, height))
 
 
-def waveform_button(state: State, i: int) -> None:
+def waveform_button(state: State, i: int, size: ImVec2) -> None:
     """A button that draws its waveform"""
     name = WAVEFORMS[i]
     selected = state.waveform == i
-    if imgui.invisible_button(name, em_to_vec2(3.4, 2.4)):
+    if imgui.invisible_button(name, size):
         state.waveform = i
     imgui.set_item_tooltip(name)
     p_min, p_max = imgui.get_item_rect_min(), imgui.get_item_rect_max()
@@ -379,67 +384,72 @@ def waveform_button(state: State, i: int) -> None:
     draw_list.add_polyline(list(zip(xs.tolist(), ys.tolist(), strict=True)), color, em_size(0.1), 0)
 
 
-def knob(label: str, value: float, v_min: float, v_max: float, format: str, flags: int = 0) -> tuple[bool, float]:
+def knob(label: str, value: float, v_min: float, v_max: float, format: str, size: float,
+         flags: int = 0) -> tuple[bool, float]:
     """A knob, its label above and its value below"""
     imgui.begin_vertical(label, ImVec2(0, 0), 0.5)
-    r = imgui_knobs.knob(label, value, v_min, v_max, format=format, flags=flags, size=em_size(4.0),
+    r = imgui_knobs.knob(label, value, v_min, v_max, format=format, flags=flags, size=size,
                          variant=imgui_knobs.ImGuiKnobVariant_.wiper)
     imgui.end_vertical()
     return r
 
 
-def synth_name() -> None:
+def synth_name(subtitle: bool) -> None:
     imgui.begin_vertical("name")
     imgui.push_font(None, imgui.get_style().font_size_base * 1.8)
-    imgui.text_colored(imgui.color_convert_u32_to_float4(PLAYED_KEY), "PY-25")
+    imgui.text_colored(imgui.color_convert_u32_to_float4(PLAYED_KEY), f"PY-{NB_NOTES}")
     imgui.pop_font()
-    imgui.text_disabled("Python synthesizer")
+    if subtitle:
+        imgui.text_disabled("Python synthesizer")
     imgui.end_vertical()
 
 
-def waveforms(state: State) -> None:
+def waveforms(state: State, button_size: ImVec2) -> None:
     imgui.begin_vertical("waveforms")
     imgui.text_disabled("Waveform")
     imgui.begin_horizontal("waveform buttons")
     for i in range(len(WAVEFORMS)):
-        waveform_button(state, i)
+        waveform_button(state, i, button_size)
     imgui.end_horizontal()
     imgui.end_vertical()
 
 
-def knobs(state: State) -> bool:
+def knobs(state: State, size: float) -> bool:
     """The knobs, side by side; True when one that the synth reads changed"""
     imgui_knobs.set_knob_colors(KNOB_COLORS)
-    changed1, state.echo = knob("Echo", state.echo, 0.0, 1.0, "%.2f")
+    changed1, state.echo = knob("Echo", state.echo, 0.0, 1.0, "%.2f", size)
     imgui.spring(0, em_size(1))
-    changed2, state.brightness = knob("Brightness", state.brightness, 200.0, 12000.0, "%.0f Hz",
+    changed2, state.brightness = knob("Brightness", state.brightness, 200.0, 12000.0, "%.0f Hz", size,
                                       imgui_knobs.ImGuiKnobFlags_.logarithmic.value)
     imgui.spring(0, em_size(1))
-    changed3, state.volume = knob("Volume", state.volume, 0.0, 1.0, "%.2f")
+    changed3, state.volume = knob("Volume", state.volume, 0.0, 1.0, "%.2f", size)
     imgui.spring(0, em_size(1))
-    _, state.tempo = knob("Tempo", state.tempo, 60.0, 240.0, "%.0f bpm")
+    _, state.tempo = knob("Tempo", state.tempo, 60.0, 240.0, "%.0f bpm", size)
     imgui_knobs.unset_knob_colors()
     return changed1 or changed2 or changed3
 
 
 def controls(state: State) -> None:
-    """The synth's name, the waveforms, and the knobs: in a row, or on three rows on a narrow screen"""
+    """The synth's name, the waveforms, and the knobs: in a row; on a narrow screen, on two rows and smaller"""
     width = imgui.get_content_region_avail().x
     if is_narrow():
-        synth_name()
-        waveforms(state)
+        imgui.begin_horizontal("name and waveforms", ImVec2(width, 0), 0.5)
+        synth_name(subtitle=False)
+        imgui.spring()
+        waveforms(state, em_to_vec2(2.8, 2.0))
+        imgui.end_horizontal()
         imgui.begin_horizontal("knobs", ImVec2(width, 0), 0.5)
         imgui.spring()
-        changed = knobs(state)
+        changed = knobs(state, em_size(3.6))  # wide enough for "4000 Hz" and "120 bpm"
         imgui.spring()
         imgui.end_horizontal()
     else:
         imgui.begin_horizontal("controls", ImVec2(width, 0), 0.5)
-        synth_name()
+        synth_name(subtitle=True)
         imgui.spring()
-        waveforms(state)
+        waveforms(state, em_to_vec2(3.4, 2.4))
         imgui.spring()
-        changed = knobs(state)
+        changed = knobs(state, em_size(4.0))
         imgui.end_horizontal()
     if changed and state.synth is not None:
         state.synth.apply(state)
@@ -466,7 +476,7 @@ def piano_key_rects(p0: ImVec2, size: ImVec2) -> tuple[list[KeyRect], list[KeyRe
 def computer_keys_held() -> set[int]:
     if imgui.get_io().want_text_input:  # typing a value in a knob
         return set()
-    return {LOWEST_NOTE + i for i, key in enumerate(PIANO_KEYS) if imgui.is_key_down(key)}
+    return {KEYS_LOWEST_NOTE + i for i, key in enumerate(PIANO_KEYS) if imgui.is_key_down(key)}
 
 
 def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
@@ -484,7 +494,8 @@ def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
                               BLACK_KEY_FRONT if black else WHITE_KEY_FRONT, rounding, bottom_corners)
     draw_list.add_rect(p_min, p_max, KEY_OUTLINE, rounding, flags=bottom_corners)
 
-    labels = [KEY_LABELS[note - LOWEST_NOTE]]
+    i = note - KEYS_LOWEST_NOTE
+    labels = [KEY_LABELS[i]] if 0 <= i < len(KEY_LABELS) else []  # the computer key that plays it
     if note % 12 == 0:
         labels.insert(0, f"C{note // 12 - 1}")  # the octave, above the key's letter
     label_color = imgui.IM_COL32(200, 200, 200, 255) if black else imgui.IM_COL32(70, 70, 70, 255)
@@ -495,7 +506,7 @@ def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
         draw_list.add_text(ImVec2((p_min.x + p_max.x - label_size.x) / 2, y), label_color, label)
 
 
-def draw_strip(p0: ImVec2, size: ImVec2, first_key: int, nb_shown: int, key_color: Callable[[int, int], int]) -> None:
+def draw_strip(p0: ImVec2, size: ImVec2, first_key: float, nb_shown: int, key_color: Callable[[int, int], int]) -> None:
     """The whole piano in miniature: the keys out of view veiled, a frame around the ones in view"""
     draw_list = imgui.get_window_draw_list()
     whites, blacks = piano_key_rects(p0, size)
@@ -520,7 +531,7 @@ def piano(state: State) -> None:
     has_strip = nb_shown < NB_WHITE_KEYS
     top = em_size(STRIP_HEIGHT if has_strip else 0.45)  # the strip, or the felt
     keys_p0 = ImVec2(p0.x, p0.y + top)
-    keys_size = ImVec2(width, em_size(PIANO_HEIGHT))
+    keys_size = ImVec2(width, em_size(PIANO_HEIGHT_NARROW if is_narrow() else PIANO_HEIGHT))
     imgui.invisible_button("piano", ImVec2(width, top + keys_size.y))
     hello_imgui.set_item_takes_touch_drags()  # on a touch screen, a key plays at once, and a drag is a glissando
 
@@ -530,10 +541,17 @@ def piano(state: State) -> None:
     if imgui.is_item_active() and state.strip_pressed:  # the view follows the finger on the strip
         state.first_key = round((mouse.x - p0.x) / width * NB_WHITE_KEYS - nb_shown / 2)
     state.first_key = max(0, min(state.first_key, NB_WHITE_KEYS - nb_shown))
+    if state.view is None:
+        state.view = float(state.first_key)
+    state.view += (state.first_key - state.view) * min(1.0, imgui.get_io().delta_time * VIEW_SPEED)
+    if abs(state.first_key - state.view) < 0.01:
+        state.view = float(state.first_key)
+    else:
+        hello_imgui.request_refresh()  # the view glides on its own
 
     # The keys: the whole piano at their size, shifted so that the first key in view is at the left
     white_width = width / nb_shown
-    whites, blacks = piano_key_rects(ImVec2(p0.x - state.first_key * white_width, keys_p0.y),
+    whites, blacks = piano_key_rects(ImVec2(p0.x - state.view * white_width, keys_p0.y),
                                      ImVec2(white_width * NB_WHITE_KEYS, keys_size.y))
     held = computer_keys_held()
     if imgui.is_item_active() and not state.strip_pressed and p0.x <= mouse.x < p0.x + width:
@@ -559,7 +577,7 @@ def piano(state: State) -> None:
             draw_key(note, p_min, p_max, key_color(note, normal))
     draw_list.pop_clip_rect()
     if has_strip:
-        draw_strip(p0, ImVec2(width, top - em_size(0.2)), state.first_key, nb_shown, key_color)
+        draw_strip(p0, ImVec2(width, top - em_size(0.2)), state.view, nb_shown, key_color)
     else:
         draw_list.add_rect_filled(p0, ImVec2(p0.x + width, p0.y + top), FELT)
 
