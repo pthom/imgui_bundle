@@ -1650,7 +1650,9 @@ void DemoCodeViewer_Show()
                 colorsPushed = 3;
             }
 
-            if (ImGui::BeginTabItem(displayName.c_str(), nullptr, flags))
+            // The ID from the file, not from its label: the label changes with the language, the selection stays
+            std::string tabLabel = displayName + "###" + file.baseName;
+            if (ImGui::BeginTabItem(tabLabel.c_str(), nullptr, flags))
             {
                 g_currentFileIndex = (int)i;
                 ImGui::EndTabItem();
