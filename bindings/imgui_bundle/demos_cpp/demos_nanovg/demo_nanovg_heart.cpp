@@ -150,12 +150,12 @@ void gui_demo_nanovg_heart()
         appState.Init();
         HelloImGui::GetRunnerParams()->callbacks.EnqueueBeforeExit([] { appState.Release(); });
     }
-    HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;  // the heart beats at each frame
 
     ImGui::Text("This image below is rendered by NanoVG, via a framebuffer.");
     // Render our drawing to a framebuffer, and use it as a texture for ImGui
     NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, DrawScene);
     ImGui::Image(appState.nvgFramebuffer->TextureId, HelloImGui::EmToVec2(50.f, 30.f));
+    HelloImGui::SetItemIsLive();  // the heart beats on its own: no idling while the image is visible
 
     ImGui::ColorEdit4("Heart color", &gDrawingState.HeartColor.x);
 }

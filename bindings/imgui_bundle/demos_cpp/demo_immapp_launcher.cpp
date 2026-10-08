@@ -1029,7 +1029,8 @@ void DemoLauncher::DetailPage()
 void DemoLauncher::Gui(bool withTitle)
 {
     NewFrame();
-    KeepSmooth(PicturesLoading() || _scrollTarget.has_value() || Dealing());
+    if (PicturesLoading() || _scrollTarget.has_value() || Dealing())
+        HelloImGui::RequestRefresh();  // pictures that load, a scroll or a deal move on their own
     if (ImGui::IsKeyPressed(ImGuiKey_Escape) && !ImGui::IsAnyItemActive())  // active: the search box
         Back();
     if (_codeView.has_value())  // no header: the demo's title and the way back are the only row
@@ -1068,23 +1069,6 @@ void DemoLauncher::Gui(bool withTitle)
     ImGui::EndChild();
     ImGui::EndChild();
 }
-
-void DemoLauncher::KeepSmooth(bool animating)
-{
-    // No idling while something moves (smooth animations), then the app's idling setting is back
-    auto& fpsIdling = HelloImGui::GetRunnerParams()->fpsIdling;
-    if (animating && !_idlingBefore.has_value())
-    {
-        _idlingBefore = fpsIdling.enableIdling;
-        fpsIdling.enableIdling = false;
-    }
-    else if (!animating && _idlingBefore.has_value())
-    {
-        fpsIdling.enableIdling = *_idlingBefore;
-        _idlingBefore.reset();
-    }
-}
-
 
 void gui_demo_immapp_launcher()
 {

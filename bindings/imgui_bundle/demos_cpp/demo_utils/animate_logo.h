@@ -1,7 +1,6 @@
 #pragma once
 #include <string>
-#include "imgui.h"
-#include "imgui_internal.h"
 
-void DrawTransparentImage(ImTextureID texture, ImRect rect, float alpha);
-void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, ImVec2 emTopRightMargin, float finalAlpha, const char* url);
+// The logo appears at the center of the screen, then flies to the top right corner of the area that remains in the
+// window: call it before the content it decorates. It plays once, then stays there as a link to url.
+void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, float finalAlpha, const char* url);

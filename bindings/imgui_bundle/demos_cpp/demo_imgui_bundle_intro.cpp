@@ -284,6 +284,7 @@ namespace IntroLorenz
             ImPlot3D::PlotLine("Trajectory", sTraj1->xs.data(), sTraj1->ys.data(), sTraj1->zs.data(), (int)sTraj1->xs.size());
             ImPlot3D::PlotLine("Trajectory2", sTraj2->xs.data(), sTraj2->ys.data(), sTraj2->zs.data(), (int)sTraj2->xs.size());
             ImPlot3D::EndPlot();
+            HelloImGui::SetItemIsLive();  // the trajectories move on their own
         }
         sTraj1->step();
         sTraj2->step();
@@ -430,6 +431,7 @@ namespace IntroImPlotShowcase
             ImPlot::PlotLine("g(x)", sLineXs.data(), ys2.data(), kLineN);
             ImPlot::PlotLine("h(x)", sLineXs.data(), ys3.data(), kLineN);
             ImPlot::EndPlot();
+            HelloImGui::SetItemIsLive();  // the curves move on their own
         }
     }
 
@@ -592,6 +594,7 @@ namespace IntroTable
                 ImGui::PopID();
             }
             ImGui::EndTable();
+            HelloImGui::SetItemIsLive(sPlaying);  // the playhead moves on its own
         }
     }
 
@@ -818,6 +821,7 @@ namespace IntroImmVision
         ImmVision::Image("Original##intro", sImage, &sParams);
         ImGui::SameLine();
         ImmVision::Image("Sobel##intro", sImageSobel, &sParamsSobel);
+        HelloImGui::SetItemIsLive(sAnimating);  // the zoom moves on its own
     }
 
     void GuiSidePanel()
@@ -1144,6 +1148,7 @@ namespace IntroGallery
             ImPlot::PlotLine("sin", x, s, 200);
             ImPlot::PlotLine("cos", x, c, 200);
             ImPlot::EndPlot();
+            HelloImGui::SetItemIsLive();  // the waves move on their own
         }
 #else
         ImGui::Text("ImPlot not available");
@@ -1560,6 +1565,7 @@ void main(){
                 ImVec2(width, height),
                 ImVec2(0, 1), ImVec2(1, 0)  // flip Y for FBO
             );
+            HelloImGui::SetItemIsLive();  // the shader moves on its own
         }
     }
 
@@ -1914,6 +1920,8 @@ void IntroMiniDemos()
     animatedOffset = SmoothDamp(animatedOffset, target, 8.f, dt);
     if (fabsf(animatedOffset - target) < 0.001f)
         animatedOffset = target;
+    if (animatedOffset != target)
+        HelloImGui::RequestRefresh();  // the slides slide on their own
 
     // --- Slide area (motto card + demo content, all scrolling together) ---
     float navBarHeight = em * 2.0f;
@@ -2064,9 +2072,6 @@ void IntroMiniDemos()
 // explorer draws its own header above it)
 void IntroWelcomeGui()
 {
-    // Disable idling so animations run smoothly
-    HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
-
     IntroDescription();
     ImGui::Separator();
     RichMd::Render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*");

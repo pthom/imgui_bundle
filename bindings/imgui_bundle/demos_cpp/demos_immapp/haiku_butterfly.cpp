@@ -89,6 +89,7 @@ public:
                 "Trajectory", traj1->xs.data(), traj1->ys.data(), traj1->zs.data(), traj1->xs.size());
             ImPlot3D::PlotLine("Trajectory2", traj2->xs.data(), traj2->ys.data(), traj2->zs.data(), traj2->xs.size());
             ImPlot3D::EndPlot();
+            HelloImGui::SetItemIsLive();  // the trajectories move on their own: no idling while they are visible
         }
         traj1->step();
         traj2->step();
@@ -116,7 +117,6 @@ private:
 }  // namespace
 
 void gui_haiku_butterfly() {
-    HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;  // the trajectories move at each frame
     static CompareLorenzTrajectories lorenz_comparer;
     lorenz_comparer.gui();
 }

@@ -190,7 +190,7 @@ namespace
         std::string demoInPlace;  // the stem of the demo shown by the Demo state
         // What a demo in place may change, saved when it is first drawn and restored when the page shows something
         // else, so that no demo has to clean up
-        struct AppState { std::string stem; ImGuiStyle style; bool idling; };
+        struct AppState { std::string stem; ImGuiStyle style; };
         std::optional<AppState> savedAppState;
 #ifdef __EMSCRIPTEN__
         std::string browserRoute;  // the route of the browser's current history entry
@@ -260,7 +260,7 @@ namespace
 
         void SaveAppState(const std::string& stem)
         {
-            savedAppState = AppState{stem, ImGui::GetStyle(), HelloImGui::GetRunnerParams()->fpsIdling.enableIdling};
+            savedAppState = AppState{stem, ImGui::GetStyle()};
         }
 
         // The font sizes stay as they are: the reader may have changed them meanwhile (the status bar's font scale)
@@ -273,7 +273,6 @@ namespace
             style.FontSizeBase = fontSizeBase;
             style.FontScaleMain = fontScaleMain;
             style.FontScaleDpi = fontScaleDpi;
-            HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = savedAppState->idling;
             savedAppState.reset();
         }
 

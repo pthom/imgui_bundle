@@ -2,101 +2,92 @@
 
 #include "demo_utils/animate_logo.h"
 
-#include <map>
-#include <fplus/fplus.hpp>
 #include "imgui.h"
+#include "imgui_internal.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/clock.h"
 #include "immapp/browse_to_url.h"
 
+#include <algorithm>
 
-void DrawTransparentImage(ImTextureID texture, ImRect rect, float alpha)
+
+namespace
 {
-    auto alphaColor = ImGui::GetColorU32(ImVec4(1.f, 1.f, 1.f, alpha));
-    ImGui::GetForegroundDrawList()->AddImageQuad(
-        texture,
-        {rect.Min.x, rect.Min.y}, {rect.Max.x, rect.Min.y},
-        {rect.Max.x, rect.Max.y}, {rect.Min.x, rect.Max.y},
-        ImVec2(0, 0), ImVec2(1, 0), ImVec2(1, 1), ImVec2(0, 1),
-        alphaColor
-    );
+    const double APPEAR = 0.3, HOLD = 0.4, FLIGHT = 0.6;  // s: the logo fades in at the center, stays, then flies
+
+    float EaseOutCubic(float t) { return 1.f - (1.f - t) * (1.f - t) * (1.f - t); }
+
+    float EaseInOutCubic(float t)
+    {
+        return t < 0.5f ? 4.f * t * t * t : 1.f - (2.f - 2.f * t) * (2.f - 2.f * t) * (2.f - 2.f * t) / 2.f;
+    }
+
+    ImRect LerpRect(const ImRect& a, const ImRect& b, float k)
+    {
+        return ImRect(ImLerp(a.Min, b.Min, k), ImLerp(a.Max, b.Max, k));
+    }
+
+    ImRect CenteredRect(ImVec2 center, ImVec2 size) { return ImRect(center - size / 2.f, center + size / 2.f); }
 }
 
 
-void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, ImVec2 emTopRightMargin, float finalAlpha, const char* url)
+void AnimateLogo(const std::string& logoFile, float ratioWidthHeight, float finalAlpha, const char* url)
 {
     static double startTime = -1.;
     if (startTime < 0.)
         startTime = ImmApp::ClockSeconds();
+    double t = ImmApp::ClockSeconds() - startTime;
+    if (HelloImGui::PrefersReducedMotion())  // no flight: the logo is in its corner at once
+        t = APPEAR + HOLD + FLIGHT;
 
-    ImTextureID logoTexture = HelloImGui::ImTextureIdFromAsset(logoFile.c_str());
+    // Where it lands: the top right corner of the area that remains, smaller on a narrow screen
+    float em = ImGui::GetFontSize();
+    ImVec2 pos = ImGui::GetCursorScreenPos(), avail = ImGui::GetContentRegionAvail();
+    float height = em * (avail.x > em * 40.f ? 2.5f : 1.8f);
+    float right = pos.x + avail.x;
+    ImRect corner(ImVec2(right - height * ratioWidthHeight, pos.y), ImVec2(right, pos.y + height));
 
-    auto unlerp = [](double a, double b, double x) {
-        return (x - a) / (b - a);
-    };
-
-    ImRect rect0, rect1;
-    float alpha0, alpha1;
-    {
-        ImVec2 one(1.f, 1.f);
-        auto viewportSize = ImGui::GetMainViewport()->Size;
-        auto viewportPosition = ImGui::GetMainViewport()->Pos;
-        float viewportMinSize = std::min(viewportSize.x, viewportSize.y);
-
-        ImVec2 size0 = ImVec2(viewportMinSize * 0.8f, viewportMinSize * 0.8f / ratioWidthHeight);
-        ImVec2 position0 = ImGui::GetMainViewport()->GetCenter() - size0 / 2.f;
-        rect0 = ImRect(position0, position0 + size0);
-        alpha0 = 1.f;
-
-        float em = ImGui::GetFontSize();
-        ImVec2 size1 = ImVec2(viewportMinSize * 0.12f * ratioWidthHeight, viewportMinSize * 0.12f);
-        ImVec2 position1 = ImVec2(viewportPosition.x + viewportSize.x - size1.x, viewportPosition.y);
-        position1 = position1 + ImVec2(-emTopRightMargin.x * em, emTopRightMargin.y * em);
-        rect1 = ImRect(position1, position1 + size1);
-        alpha1 = finalAlpha;
-    }
-
-    float kAnimation; // between 0 and 1
-    {
-        double dt = ImmApp::ClockSeconds() - startTime;
-
-        double tPause = 0.4, tAnimation = 0.8;
-
-        if (dt < tPause)
-            kAnimation = 0;
-        else if (dt < tAnimation)
-            kAnimation = unlerp(tPause, tAnimation, dt);
-        else
-            kAnimation = 1.;
-    }
+    // Where it appears: big, at the center of the screen
+    ImGuiViewport* viewport = ImGui::GetMainViewport();
+    float bigHeight = std::min(viewport->Size.x / ratioWidthHeight, viewport->Size.y) * 0.5f;
+    ImVec2 bigSize(bigHeight * ratioWidthHeight, bigHeight);
+    ImRect center = CenteredRect(viewport->GetCenter(), bigSize);
 
     ImRect rect;
     float alpha;
+    if (t < APPEAR)  // it fades in, growing a little
     {
-        rect = ImRect(ImLerp(rect0.Min, rect1.Min, kAnimation), ImLerp(rect0.Max, rect1.Max, kAnimation));
-        alpha = ImLerp(alpha0, alpha1, kAnimation);
+        float k = EaseOutCubic((float)(t / APPEAR));
+        rect = LerpRect(CenteredRect(viewport->GetCenter(), bigSize * 0.9f), center, k);
+        alpha = k;
+    }
+    else if (t < APPEAR + HOLD)
+    {
+        rect = center;
+        alpha = 1.f;
+    }
+    else  // it flies to its corner, and fades to finalAlpha
+    {
+        float k = EaseInOutCubic(std::min((float)((t - APPEAR - HOLD) / FLIGHT), 1.f));
+        rect = LerpRect(center, corner, k);
+        alpha = ImLerp(1.f, finalAlpha, k);
+    }
+    if (t < APPEAR + HOLD + FLIGHT)
+        HelloImGui::RequestRefresh();  // it moves on its own (a drawing, not a widget)
+
+    if (rect.Contains(ImGui::GetMousePos()))
+    {
+        alpha = 1.f;
+        if (ImGui::IsMouseClicked(0))
+            ImmApp::BrowseToUrl(url);
     }
 
-    {
-        if (kAnimation < 1.f)
-            HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = false;
-        static bool wasIdlingRestored = false;
-        if ( (kAnimation >= 1.f ) && ! wasIdlingRestored)
-        {
-            HelloImGui::GetRunnerParams()->fpsIdling.enableIdling = true;
-            wasIdlingRestored = true;
-        }
-    }
-
-    {
-        auto mousePosition = ImGui::GetMousePos();
-        if (rect.Contains(mousePosition))
-        {
-            alpha = 1.f;
-            if (ImGui::IsMouseClicked(0))
-                ImmApp::BrowseToUrl(url);
-        }
-    }
-
-    DrawTransparentImage(logoTexture, rect, alpha);
+    // Over the page's widgets, but clipped to the page: it never covers what surrounds it (the explorer's header)
+    ImTextureID texture = HelloImGui::ImTextureIdFromAsset(logoFile.c_str());
+    ImVec2 windowPos = ImGui::GetWindowPos();
+    ImDrawList* drawList = ImGui::GetForegroundDrawList();
+    drawList->PushClipRect(windowPos, windowPos + ImGui::GetWindowSize());
+    drawList->AddImage(texture, rect.Min, rect.Max, ImVec2(0, 0), ImVec2(1, 1),
+                       ImGui::GetColorU32(ImVec4(1.f, 1.f, 1.f, alpha)));
+    drawList->PopClipRect();
 }

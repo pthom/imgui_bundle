@@ -7,6 +7,8 @@
 
 void gui_demo_imgui_show_demo_window()
 {
+    // The logo lands at the top right of the page, beside the title
+    AnimateLogo("images/logo_imgui_600.jpg", 2.f, 0.45f, "https://github.com/ocornut/imgui");
     RichMd::Render(R"(
         # Dear ImGui
         Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right.
@@ -20,6 +22,4 @@ void gui_demo_imgui_show_demo_window()
 #else
     ImGui::ShowDemoWindow_MaybeDocked(false);
 #endif
-
-    AnimateLogo("images/logo_imgui_600.jpg", 2.f, ImVec2(1.f * 0.2f, 4.8f * 0.2f), 0.45f, "https://github.com/ocornut/imgui");
 }

@@ -101,7 +101,6 @@ private:
     void Detail();
     void DetailPage();
     void ShowCode();
-    void KeepSmooth(bool animating);
     bool DrawPicture(ImDrawList* drawList, const std::string& stem, ImVec2 topLeft, float width, float aspect,
                      float rounding, ImDrawFlags corners);
     void NewFrame();
@@ -121,7 +120,6 @@ private:
     std::map<std::string, int> _variant;  // per demo with variants: the one picked in the detail pane
     std::string _library;  // the library in use: the gallery shows the demos that use it (all when empty)
     std::string _search;   // the words typed in the search box: the gallery shows the demos that have them all
-    std::optional<bool> _idlingBefore;  // the app's idling setting, while the launcher animates
     std::optional<double> _dealtAt;  // when the gallery last arrived on screen: its cards are dealt one by one
     std::optional<std::map<std::string, int>> _dealOrder;  // the cards dealt, in their order: those in view when it began
     std::pair<ImVec2, ImVec2> _galleryRect;  // on screen, this frame: the cards are dealt from below it
