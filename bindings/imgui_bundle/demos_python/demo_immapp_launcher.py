@@ -30,7 +30,9 @@ DEMOS_PYTHON_DIR = Path(demos_python_folder()).resolve()
 DEMOS_CPP_DIR = Path(demos_cpp_folder()).resolve()  # its folders mirror those of demos_python
 EXAMPLES_DIR = DEMOS_PYTHON_DIR / "playground/examples"
 
-CARD_WIDTH = 15.0  # em: the minimum width of a card
+CARD_WIDTH = 15.0  # em: the minimum width of a card, by default
+CARD_WIDTHS = [8.0, 9.0, 10.0, 11.0, 12.5, 14.0, 15.0, 17.0, 19.0, 22.0, 25.0, 30.0, 40.0]  # em: the thumbnail sizes
+MIN_TEXT_SCALE = 0.75  # a card narrower than CARD_WIDTH has smaller texts, down to this scale
 DETAIL_WIDTH = 28.0  # em
 PICTURE_ASPECT = 1.6  # of the pictures on the cards (cropped to it, or fitted when their shape is too different)
 MAX_CROP = 1.5  # a picture more than 1.5 times wider or taller than the card's shape is fitted, not cropped
@@ -324,11 +326,12 @@ def fit(text: str, width: float, lines: int) -> str:
     return " ".join(words) + "…"
 
 
-def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.ImDrawList] = None) -> None:
+def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.ImDrawList] = None,
+              scale: float = 1.0) -> None:
     """Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)"""
     if draw_list is None:
         draw_list = imgui.get_window_draw_list()
-    imgui.push_font(None, imgui.get_style().font_size_base * 0.85)
+    imgui.push_font(None, imgui.get_style().font_size_base * 0.85 * scale)
     pad = ImVec2(em_size(0.4), em_size(0.1))
     x = bottom_right.x
     for tag in reversed(tags):
@@ -340,6 +343,11 @@ def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.I
         draw_list.add_text(ImVec2(x + pad.x, top + pad.y), IM_COL32(240, 245, 255, 255), tag)
         x -= em_size(0.25)
     imgui.pop_font()
+
+
+def card_text_scale(width: float) -> float:
+    """The scale of a card's texts: they follow its width, from their size on a card of the default width"""
+    return max(MIN_TEXT_SCALE, min(1.0, width / em_size(CARD_WIDTH)))
 
 
 class Launcher:
@@ -362,6 +370,8 @@ class Launcher:
         self.detail_open = False  # on a small screen, the detail is a page of its own (a card opens it) not a pane
         self.card_rects: dict[str, tuple[ImVec2, ImVec2]] = {}  # on screen, this frame (the intro's automations click)
         self.card_hovered: dict[str, bool] = {}  # the card's item, last frame (the colors are pushed before it)
+        self.card_width = CARD_WIDTH  # em: the minimal width of a card (the thumbnail size buttons change it)
+        self.gallery_width = 0.0  # last frame: the columns that the thumbnail size buttons can reach depend on it
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -415,6 +425,7 @@ class Launcher:
         imgui.dummy(ImVec2(em_size(1.0), 0))
         imgui.same_line()
         self.library_filter()
+        self.thumbnail_size()
         self.search_box()
         imgui.new_line()
         imgui.separator()
@@ -439,6 +450,40 @@ class Launcher:
             imgui.set_item_tooltip("Clears the search and the library filter")
         imgui.same_line()
 
+    def columns(self, card_width: float) -> int:
+        """The number of columns of the gallery for this minimal width of a card (em), at the gallery's width"""
+        spacing = em_size(1.0)
+        return max(1, int((self.gallery_width + spacing) // (em_size(card_width) + spacing)))
+
+    def next_card_width(self, direction: int) -> Optional[float]:
+        """The next thumbnail size that changes the number of columns (1: larger, -1: smaller), or None"""
+        columns = self.columns(self.card_width)
+        steps = ([w for w in CARD_WIDTHS if w > self.card_width] if direction > 0
+                 else [w for w in reversed(CARD_WIDTHS) if w < self.card_width])
+        return next((w for w in steps if self.columns(w) != columns), None)
+
+    def thumbnail_size(self) -> None:
+        """A separator, "Thumbnail size", then "-" and "+": each press changes the number of columns"""
+        label = "Thumbnail size"
+        style = imgui.get_style()
+        button_width = imgui.calc_text_size(fa.ICON_FA_PLUS).x + 2 * style.frame_padding.x
+        width = imgui.calc_text_size(label).x + 2 * button_width + 4 * style.item_spacing.x
+        if width > imgui.get_content_region_avail().x:
+            imgui.new_line()
+        imgui.internal.separator_ex(imgui.internal.SeparatorFlags_.vertical)
+        imgui.same_line()
+        imgui.text_disabled(label)
+        imgui.same_line()
+        for icon, direction, tooltip in [(fa.ICON_FA_MINUS, -1, "Smaller thumbnails"),
+                                         (fa.ICON_FA_PLUS, 1, "Larger thumbnails")]:
+            target = self.next_card_width(direction)
+            imgui.begin_disabled(target is None)
+            if imgui.small_button(f"{icon}##thumbnails {direction}") and target is not None:
+                self.card_width = target
+            imgui.end_disabled()
+            imgui.set_item_tooltip(tooltip)
+            imgui.same_line()
+
     def library_filter(self) -> None:
         """A button that says which library the gallery is filtered on, and a popup to pick one"""
         label = f"Library: {self.library} " + fa.ICON_FA_TIMES if self.library else "Library " + fa.ICON_FA_CARET_DOWN
@@ -458,7 +503,9 @@ class Launcher:
         """The demo's picture, its label and the first sentences of its description; a click selects it"""
         padding = em_size(0.6)
         title_scale = 1.1
-        height = width / PICTURE_ASPECT + imgui.get_text_line_height() * (title_scale + 2) + em_size(1.6)
+        text_scale = card_text_scale(width)
+        height = (width / PICTURE_ASPECT + imgui.get_text_line_height() * text_scale * (title_scale + 2)
+                  + em_size(1.6))
         top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         self.card_rects[demo.filename] = (top_left, bottom_right)
@@ -490,17 +537,20 @@ class Launcher:
         # picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
         self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom_right = imgui.get_item_rect_max()
-        draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
+        draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
+                  scale=text_scale)
         imgui.set_cursor_pos(ImVec2(padding, imgui.get_cursor_pos_y() + em_size(0.4)))
-        imgui.push_font(None, imgui.get_style().font_size_base * title_scale)
+        imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
         imgui.text(fit(demo.label, width - 2 * padding, 1))
         imgui.pop_font()
         imgui.set_cursor_pos_x(padding)
         imgui.push_text_wrap_pos(width - padding)
+        imgui.push_font(None, imgui.get_style().font_size_base * text_scale)
         shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.text_disabled(shown)
         summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value
                                                 | imgui.HoveredFlags_.allow_when_overlapped_by_item.value)
+        imgui.pop_font()
         imgui.pop_text_wrap_pos()
         if self.deal_order is not None and demo.filename not in self.deal_order and self.dealing():
             gallery_top, gallery_bottom = self.gallery_rect[0].y, self.gallery_rect[1].y
@@ -582,22 +632,26 @@ class Launcher:
         """The card as primitives on a draw list (the flying double of `card`, which lays it out as widgets)"""
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         padding, title_scale, rounding = em_size(0.6), 1.1, em_size(0.5)
+        text_scale = card_text_scale(width)
         draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BG), rounding)
         self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
                               imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom = top_left.y + width / PICTURE_ASPECT
-        draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)), draw_list)
-        font, font_size = imgui.get_font(), imgui.get_font_size()
-        imgui.push_font(None, imgui.get_style().font_size_base * title_scale)
+        draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)), draw_list,
+                  text_scale)
+        font, font_size = imgui.get_font(), imgui.get_font_size() * text_scale
+        imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
         title = fit(demo.label, width - 2 * padding, 1)
+        imgui.pop_font()
+        imgui.push_font(None, imgui.get_style().font_size_base * text_scale)
+        summary = fit(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.pop_font()
         y = picture_bottom + em_size(0.4)
         draw_list.add_text(font, font_size * title_scale, ImVec2(top_left.x + padding, y),
                            imgui.get_color_u32(imgui.Col_.text), title)
         y += font_size * title_scale + imgui.get_style().item_spacing.y
         draw_list.add_text(font, font_size, ImVec2(top_left.x + padding, y),
-                           imgui.get_color_u32(imgui.Col_.text_disabled),
-                           fit(plain_text(demo.summary), width - 2 * padding, 2), wrap_width=width - 2 * padding)
+                           imgui.get_color_u32(imgui.Col_.text_disabled), summary, wrap_width=width - 2 * padding)
         draw_list.add_rect(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BORDER), rounding)
 
     def gallery(self) -> None:
@@ -606,7 +660,8 @@ class Launcher:
         self.gallery_rect = (pos, ImVec2(pos.x + size.x, pos.y + size.y))
         spacing = em_size(1.0)
         avail = imgui.get_content_region_avail().x
-        columns = max(1, int((avail + spacing) // (em_size(CARD_WIDTH) + spacing)))
+        self.gallery_width = avail
+        columns = self.columns(self.card_width)
         card_width = (avail - (columns - 1) * spacing) / columns  # the cards fill the width
         categories = [c for c in self.categories if self.shown(c)]
         if not categories:
