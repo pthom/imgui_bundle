@@ -24,8 +24,10 @@ volume + echo -> analyser                   (read by the scope)
 
 ## Gotcha
 
-Browsers require a *user gesture* before an `AudioContext` may produce sound. We create it at the first sound: the
-click or the key press that asks for it is the gesture.
+Browsers require a *user gesture* before an `AudioContext` may produce sound, and it must start inside the gesture's
+handler, which the frames of Python come after. A few lines of JavaScript start it at the first touch, click or key
+press anywhere on the page: a phone takes a moment to start its audio, better at the first scroll than at the first
+note.
 """
 import sys
 from dataclasses import dataclass
@@ -110,7 +112,9 @@ NOTE_LENGTH = 0.9  # of the note's duration in a tune: a short gap separates rep
 ECHO_DELAY = 0.3  # seconds
 
 # The layout
-NARROW_EM = 46.0  # below this width (in em, a phone): the tune cards two by two, the controls on two rows, smaller
+NARROW_EM = 46.0  # below this width (in em, a phone): the tunes or the piano, a switch between them; smaller controls
+TUNES_VIEW, PIANO_VIEW = 0, 1  # the views on a narrow screen
+VIEW_LABELS = [icons_fontawesome_4.ICON_FA_LIST + " Tunes", icons_fontawesome_4.ICON_FA_MUSIC + " Piano"]
 
 # The scope
 SCOPE_SAMPLES = 1024  # about 20 ms
@@ -167,17 +171,48 @@ def is_black(note: int) -> bool:
 
 
 NOTES = range(LOWEST_NOTE, LOWEST_NOTE + NB_NOTES)
+
+
+def white_keys_below(note: int) -> int:
+    """The white keys of the piano below this note"""
+    return sum(not is_black(n) for n in range(LOWEST_NOTE, note))
+
+
 NB_WHITE_KEYS = sum(not is_black(note) for note in NOTES)
 PIANO_KEYS = [imgui.Key[label.lower() if label.isalpha() else "_" + label] for label in KEY_LABELS]
+
+
+# Creates and resumes window.pySynthAudio inside the handler of the first gesture (see the docstring at the top)
+START_AUDIO_JS = """
+if (!window.pySynthAudioListening) {
+    window.pySynthAudioListening = true;
+    const events = ['pointerdown', 'touchend', 'click', 'keydown'];
+    const start = () => {
+        window.pySynthAudio = window.pySynthAudio || new AudioContext();
+        window.pySynthAudio.resume().then(() => events.forEach((e) => document.removeEventListener(e, start, true)));
+    };
+    events.forEach((e) => document.addEventListener(e, start, true));
+}
+"""
+
+
+def audio_context() -> Any:
+    """The page's audio context, once a gesture created it. None before, and on desktop."""
+    if not IN_BROWSER:
+        return None
+    import js  # type: ignore[import-not-found]
+
+    js.eval(START_AUDIO_JS)
+    return getattr(js.window, "pySynthAudio", None)
 
 
 class Synth:
     """The audio graph (see the docstring at the top). Needs the browser."""
 
-    def __init__(self) -> None:
-        from js import AudioContext, Float32Array, Uint8Array  # type: ignore[import-not-found]
+    def __init__(self, ctx: Any) -> None:
+        from js import Float32Array, Uint8Array  # type: ignore[import-not-found]
 
-        self.ctx = ctx = AudioContext.new()
+        self.ctx = ctx
         self.filter = ctx.createBiquadFilter()
         self.filter.type = "lowpass"
         self.volume = ctx.createGain()
@@ -205,6 +240,10 @@ class Synth:
         self.tune_bus: Any = None  # the tune's notes go through it, so that Stop can cut them
         self.tune_notes: list[tuple[int, float, float]] = []  # note, start, end
         self.tune_start = self.tune_end = 0.0
+
+    def starting(self) -> bool:
+        """The browser is still starting the audio (a phone takes a moment)"""
+        return bool(self.ctx.state != "running")
 
     def apply(self, state: "State") -> None:
         self.filter.frequency.value = state.brightness
@@ -291,15 +330,19 @@ class State:
         self.tempo = 120.0  # beats per minute
         self.synth: Synth | None = None
         # The first white key in view, when the piano shows part of its keys: C4, where the computer keys start
-        self.first_key = sum(not is_black(note) for note in range(LOWEST_NOTE, KEYS_LOWEST_NOTE))
+        self.first_key = white_keys_below(KEYS_LOWEST_NOTE)
         self.view: float | None = None  # the first white key drawn: it glides to first_key
         self.strip_pressed = False  # the press on the piano started on its strip: it moves the view
+        self.narrow_view = TUNES_VIEW
+        self.tune_to_show: Tune | None = None  # a tune that starts: the piano shows its keys
 
     def ensure_synth(self) -> Synth | None:
-        """The synth, created at the first sound, since browsers require a user gesture first. None on desktop."""
-        if self.synth is None and IN_BROWSER:
-            self.synth = Synth()
-            self.synth.apply(self)
+        """The synth, once a gesture started the page's audio (see audio_context). None on desktop."""
+        if self.synth is None:
+            ctx = audio_context()
+            if ctx is not None:
+                self.synth = Synth(ctx)
+                self.synth.apply(self)
         return self.synth
 
 
@@ -334,20 +377,27 @@ def tune_card(state: State, tune: Tune, size: ImVec2) -> None:
 
     imgui.set_cursor_pos_y(imgui.get_window_height() - imgui.get_frame_height() - imgui.get_style().window_padding.y)
     if synth is not None and playing:
-        if imgui.button(icons_fontawesome_4.ICON_FA_STOP + " Stop"):
-            synth.stop_tune()
-        imgui.same_line()
-        imgui.push_style_color(imgui.Col_.plot_histogram, tune_color)
-        imgui.progress_bar(synth.tune_progress(), ImVec2(-1, 0), "")
-        imgui.pop_style_color()
+        stop_and_progress(synth)
     elif imgui.button(icons_fontawesome_4.ICON_FA_PLAY + " Play"):
         new_synth = state.ensure_synth()
         if new_synth is not None:
             new_synth.play_tune(tune, state.tempo, WAVEFORMS[state.waveform])
+            state.tune_to_show = tune
+            state.narrow_view = PIANO_VIEW  # on a narrow screen: watch the keys play
 
     imgui.end_child()
     imgui.pop_style_var()
     imgui.pop_style_color(2)
+
+
+def stop_and_progress(synth: Synth) -> None:
+    """Stop, and the tune's progress, on one line"""
+    if imgui.button(icons_fontawesome_4.ICON_FA_STOP + " Stop"):
+        synth.stop_tune()
+    imgui.same_line()
+    imgui.push_style_color(imgui.Col_.plot_histogram, imgui.color_convert_u32_to_float4(TUNE_KEY))
+    imgui.progress_bar(synth.tune_progress(), ImVec2(-1, 0), "")
+    imgui.pop_style_color()
 
 
 def tune_cards(state: State) -> None:
@@ -391,15 +441,20 @@ def knob(label: str, value: float, v_min: float, v_max: float, format: str, size
     r = imgui_knobs.knob(label, value, v_min, v_max, format=format, flags=flags, size=size,
                          variant=imgui_knobs.ImGuiKnobVariant_.wiper)
     imgui.end_vertical()
+    # On a touch screen, a drag on the knob turns it at once (it does not scroll the page), even after a pause
+    hello_imgui.set_item_takes_touch_drags(long_press_is_right_click=False)
     return r
 
 
-def synth_name(subtitle: bool) -> None:
+def synth_name(state: State, subtitle: bool) -> None:
+    """The name, and below it a subtitle, or that the sound is starting"""
     imgui.begin_vertical("name")
     imgui.push_font(None, imgui.get_style().font_size_base * 1.8)
     imgui.text_colored(imgui.color_convert_u32_to_float4(PLAYED_KEY), f"PY-{NB_NOTES}")
     imgui.pop_font()
-    if subtitle:
+    if state.synth is not None and state.synth.starting():
+        imgui.text_disabled("Starting the sound...")
+    elif subtitle:
         imgui.text_disabled("Python synthesizer")
     imgui.end_vertical()
 
@@ -414,16 +469,17 @@ def waveforms(state: State, button_size: ImVec2) -> None:
     imgui.end_vertical()
 
 
-def knobs(state: State, size: float) -> bool:
-    """The knobs, side by side; True when one that the synth reads changed"""
+def knobs(state: State, size: float, spread: bool) -> bool:
+    """The knobs, side by side: 1 em apart, or spread over the row; True when one that the synth reads changed"""
+    gap = (1.0, -1.0) if spread else (0.0, em_size(1))  # the weight and the spacing of the springs between them
     imgui_knobs.set_knob_colors(KNOB_COLORS)
     changed1, state.echo = knob("Echo", state.echo, 0.0, 1.0, "%.2f", size)
-    imgui.spring(0, em_size(1))
+    imgui.spring(*gap)
     changed2, state.brightness = knob("Brightness", state.brightness, 200.0, 12000.0, "%.0f Hz", size,
                                       imgui_knobs.ImGuiKnobFlags_.logarithmic.value)
-    imgui.spring(0, em_size(1))
+    imgui.spring(*gap)
     changed3, state.volume = knob("Volume", state.volume, 0.0, 1.0, "%.2f", size)
-    imgui.spring(0, em_size(1))
+    imgui.spring(*gap)
     _, state.tempo = knob("Tempo", state.tempo, 60.0, 240.0, "%.0f bpm", size)
     imgui_knobs.unset_knob_colors()
     return changed1 or changed2 or changed3
@@ -434,22 +490,22 @@ def controls(state: State) -> None:
     width = imgui.get_content_region_avail().x
     if is_narrow():
         imgui.begin_horizontal("name and waveforms", ImVec2(width, 0), 0.5)
-        synth_name(subtitle=False)
+        synth_name(state, subtitle=False)
         imgui.spring()
         waveforms(state, em_to_vec2(2.8, 2.0))
         imgui.end_horizontal()
         imgui.begin_horizontal("knobs", ImVec2(width, 0), 0.5)
         imgui.spring()
-        changed = knobs(state, em_size(3.6))  # wide enough for "4000 Hz" and "120 bpm"
+        changed = knobs(state, em_size(3.6), spread=True)  # wide enough for "4000 Hz" and "120 bpm"
         imgui.spring()
         imgui.end_horizontal()
     else:
         imgui.begin_horizontal("controls", ImVec2(width, 0), 0.5)
-        synth_name(subtitle=True)
+        synth_name(state, subtitle=True)
         imgui.spring()
         waveforms(state, em_to_vec2(3.4, 2.4))
         imgui.spring()
-        changed = knobs(state, em_size(4.0))
+        changed = knobs(state, em_size(4.0), spread=False)
         imgui.end_horizontal()
     if changed and state.synth is not None:
         state.synth.apply(state)
@@ -533,13 +589,18 @@ def piano(state: State) -> None:
     keys_p0 = ImVec2(p0.x, p0.y + top)
     keys_size = ImVec2(width, em_size(PIANO_HEIGHT_NARROW if is_narrow() else PIANO_HEIGHT))
     imgui.invisible_button("piano", ImVec2(width, top + keys_size.y))
-    hello_imgui.set_item_takes_touch_drags()  # on a touch screen, a key plays at once, and a drag is a glissando
+    # On a touch screen, a key plays at once, a drag is a glissando, and a still finger holds the note
+    hello_imgui.set_item_takes_touch_drags(long_press_is_right_click=False)
 
     mouse = imgui.get_mouse_pos()
     if imgui.is_item_activated():
         state.strip_pressed = has_strip and mouse.y < keys_p0.y
     if imgui.is_item_active() and state.strip_pressed:  # the view follows the finger on the strip
         state.first_key = round((mouse.x - p0.x) / width * NB_WHITE_KEYS - nb_shown / 2)
+    if state.tune_to_show is not None:  # the view centers on the tune's notes
+        notes = [note for note, _ in parse_notes(state.tune_to_show.notes) if note is not None]
+        state.first_key = round((white_keys_below(min(notes)) + white_keys_below(max(notes)) + 1 - nb_shown) / 2)
+        state.tune_to_show = None
     state.first_key = max(0, min(state.first_key, NB_WHITE_KEYS - nb_shown))
     if state.view is None:
         state.view = float(state.first_key)
@@ -641,13 +702,49 @@ def scope(state: State) -> None:
 STATE = State()
 
 
+def view_switch(state: State) -> None:
+    """On a narrow screen: the tunes, or the piano"""
+    width = (imgui.get_content_region_avail().x - imgui.get_style().item_spacing.x) / 2
+    for view, label in enumerate(VIEW_LABELS):
+        if view > 0:
+            imgui.same_line()
+        selected = state.narrow_view == view
+        if selected:
+            imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
+        if imgui.button(label, ImVec2(width, em_size(2.2))):
+            state.narrow_view = view
+        if selected:
+            imgui.pop_style_color()
+
+
+def now_playing(state: State) -> None:
+    """On a narrow screen, above the piano: the tune that plays, and Stop"""
+    imgui.align_text_to_frame_padding()
+    synth = state.synth
+    if synth is None or synth.tune is None:
+        imgui.text_disabled("Play the keys, or pick a tune")
+        return
+    imgui.text_colored(imgui.color_convert_u32_to_float4(TUNE_KEY), synth.tune.name)
+    imgui.same_line()
+    stop_and_progress(synth)
+
+
 def gui() -> None:
     header()
-    tune_cards(STATE)
-    imgui.dummy(em_to_vec2(0, 0.3))
-    synth_panel(STATE)
-    imgui.dummy(em_to_vec2(0, 0.3))
-    scope(STATE)
+    narrow = is_narrow()
+    if narrow:
+        view_switch(STATE)
+    if not narrow or STATE.narrow_view == TUNES_VIEW:
+        tune_cards(STATE)
+        imgui.dummy(em_to_vec2(0, 0.3))
+    if not narrow or STATE.narrow_view == PIANO_VIEW:
+        if narrow:
+            now_playing(STATE)
+        synth_panel(STATE)
+        imgui.dummy(em_to_vec2(0, 0.3))
+        scope(STATE)
+    elif STATE.synth is not None:  # the piano is not drawn: the computer keys still play, and a tune still ends
+        STATE.synth.update(computer_keys_held(), WAVEFORMS[STATE.waveform])
 
 
 immapp.run(gui, window_title="WebAudio synthesizer", window_size=(1100, 860), with_markdown=True)
