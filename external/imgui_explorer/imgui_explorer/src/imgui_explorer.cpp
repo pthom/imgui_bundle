@@ -9,7 +9,6 @@
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"
 #include "library_config.h"
-#include "hello_imgui/icons_font_awesome_4.h"
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -407,7 +406,17 @@ namespace
     // The "..." button of a small screen, and its menu: the library's intro and links, then the status bar's content
     void GuiExplorerMenu(bool withStatus)
     {
-        if (ImGui::Button(ICON_FA_ELLIPSIS_H "##explorer_menu", HelloImGui::EmToVec2(2.2f, 1.5f)))
+        bool clicked = ImGui::Button("##explorer_menu", HelloImGui::EmToVec2(2.2f, 1.5f));
+        {
+            // The "..." drawn at the button's center (the icon font's ellipsis sits off center)
+            ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
+            ImVec2 c((mi.x + ma.x) * 0.5f, (mi.y + ma.y) * 0.5f);
+            float em = ImGui::GetFontSize();
+            for (int i = -1; i <= 1; ++i)
+                ImGui::GetWindowDrawList()->AddCircleFilled(
+                    ImVec2(c.x + (float)i * em * 0.3f, c.y), em * 0.1f, ImGui::GetColorU32(ImGuiCol_Text));
+        }
+        if (clicked)
             ImGui::OpenPopup("##explorer_menu_popup");
         if (!ImGui::BeginPopup("##explorer_menu_popup"))
             return;
