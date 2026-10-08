@@ -372,6 +372,7 @@ class Launcher:
         self.card_hovered: dict[str, bool] = {}  # the card's item, last frame (the colors are pushed before it)
         self.card_width = CARD_WIDTH  # em: the minimal width of a card (the thumbnail size buttons change it)
         self.gallery_width = 0.0  # last frame: the columns that the thumbnail size buttons can reach depend on it
+        self.scroll_anchor: Optional[tuple[str, float]] = None  # a size change: the card at the top, and its offset
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -479,10 +480,22 @@ class Launcher:
             target = self.next_card_width(direction)
             imgui.begin_disabled(target is None)
             if imgui.small_button(f"{icon}##thumbnails {direction}") and target is not None:
+                self.scroll_anchor = self.top_card()  # it stays where it is, while the rows change
                 self.card_width = target
             imgui.end_disabled()
             imgui.set_item_tooltip(tooltip)
             imgui.same_line()
+
+    def top_card(self) -> Optional[tuple[str, float]]:
+        """The first card shown in the gallery's view, and its offset from the gallery's top (at the last frame)"""
+        top = self.gallery_rect[0].y
+        shown = {d.filename for c in self.categories for d in self.shown(c)}
+        cards = [(rect[0].y, filename) for filename, rect in self.card_rects.items()
+                 if filename in shown and rect[1].y > top]
+        if not cards:
+            return None
+        y, filename = min(cards)
+        return filename, y - top
 
     def library_filter(self) -> None:
         """A button that says which library the gallery is filtered on, and a popup to pick one"""
@@ -506,6 +519,9 @@ class Launcher:
         text_scale = card_text_scale(width)
         height = (width / PICTURE_ASPECT + imgui.get_text_line_height() * text_scale * (title_scale + 2)
                   + em_size(1.6))
+        if self.scroll_anchor is not None and self.scroll_anchor[0] == demo.filename:  # after a size change
+            imgui.set_scroll_y(imgui.get_cursor_pos_y() - self.scroll_anchor[1])
+            self.scroll_anchor = None
         top_left = imgui.get_cursor_screen_pos()
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         self.card_rects[demo.filename] = (top_left, bottom_right)
