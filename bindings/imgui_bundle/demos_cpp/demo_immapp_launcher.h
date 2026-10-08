@@ -93,6 +93,10 @@ private:
     bool Chip(const std::string& label, float highlight);
     void SearchBox();
     void LibraryFilter();
+    void ThumbnailSize();  // "Thumbnail size", then "-" and "+": each press changes the number of columns
+    int Columns(float cardWidth) const;  // of the gallery, for this minimal width of a card (em), at its width
+    std::optional<float> NextCardWidth(int direction) const;  // 1: larger thumbnails, -1: smaller; none if no change
+    std::optional<std::pair<std::string, float>> TopCard() const;  // the first card in view, its offset from the top
     void Card(const DemoEntry& demo, float width);
     void CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 topLeft, float width, float height);
     void FlyingCard(const DemoEntry& demo, ImVec2 topLeft, float width, float height, float flight, int index);
@@ -129,6 +133,9 @@ private:
     bool _detailOpen = false;  // on a small screen, the detail is a page of its own (a card opens it), not a pane
     std::map<std::string, std::pair<ImVec2, ImVec2>> _cardRects;
     std::map<std::string, bool> _cardHovered;  // the card's item, last frame (the colors are pushed before it)
+    float _cardWidth;  // em: the minimal width of a card (the thumbnail size buttons change it)
+    float _galleryWidth = 0.f;  // last frame: the columns that the thumbnail size buttons can reach depend on it
+    std::optional<std::pair<std::string, float>> _scrollAnchor;  // a size change: the card at the top, and its offset
 };
 
 

@@ -20,6 +20,7 @@
 #include <iterator>
 #include <regex>
 #include <sstream>
+#include <tuple>
 
 namespace
 {
@@ -29,7 +30,10 @@ namespace
     // In a clone of the repository, the pictures are also here, before they reach the website
     const std::string LOCAL_PICTURES = "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground/";
 
-    const float CARD_WIDTH = 15.f;  // em: the minimum width of a card
+    const float CARD_WIDTH = 15.f;  // em: the minimum width of a card, by default
+    const std::vector<float> CARD_WIDTHS = {8.f, 9.f, 10.f, 11.f, 12.5f, 14.f, 15.f, 17.f, 19.f, 22.f, 25.f, 30.f,
+                                            40.f};  // em: the thumbnail sizes
+    const float MIN_TEXT_SCALE = 0.75f;  // a card narrower than CARD_WIDTH has smaller texts, down to this scale
     const float DETAIL_WIDTH = 28.f;  // em
     const float PICTURE_ASPECT = 1.6f;  // of the pictures on the cards (cropped to it, or fitted when too different)
     const float MAX_CROP = 1.5f;  // a picture more than 1.5 times wider or taller than the card's shape is fitted
@@ -105,11 +109,12 @@ namespace
     }
 
     // Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)
-    void DrawTags(const std::vector<std::string>& tags, ImVec2 bottomRight, ImDrawList* drawList = nullptr)
+    void DrawTags(const std::vector<std::string>& tags, ImVec2 bottomRight, ImDrawList* drawList = nullptr,
+                  float scale = 1.f)
     {
         if (drawList == nullptr)
             drawList = ImGui::GetWindowDrawList();
-        ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 0.85f);
+        ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 0.85f * scale);
         ImVec2 pad(Em(0.4f), Em(0.1f));
         float x = bottomRight.x;
         for (auto it = tags.rbegin(); it != tags.rend(); ++it)
@@ -124,6 +129,9 @@ namespace
         }
         ImGui::PopFont();
     }
+
+    // The scale of a card's texts: they follow its width, from their size on a card of the default width
+    float CardTextScale(float width) { return std::clamp(width / Em(CARD_WIDTH), MIN_TEXT_SCALE, 1.f); }
 
     std::string ReadRepoFile(const std::string& repoRelative)
     {
@@ -289,6 +297,7 @@ ImU32 Curtain(float alpha)
 DemoLauncher::DemoLauncher()
 {
     _categories = LoadCatalog();
+    _cardWidth = CARD_WIDTH;
     if (!_categories.empty() && !_categories[0].demos.empty())
         _selected = &_categories[0].demos[0];
 }
@@ -403,9 +412,80 @@ void DemoLauncher::Filters()
     ImGui::Dummy(ImVec2(Em(1.f), 0));
     ImGui::SameLine();
     LibraryFilter();
+    ThumbnailSize();
     SearchBox();
     ImGui::NewLine();
     ImGui::Separator();
+}
+
+int DemoLauncher::Columns(float cardWidth) const
+{
+    float spacing = Em(1.f);
+    return std::max(1, (int)((_galleryWidth + spacing) / (Em(cardWidth) + spacing)));
+}
+
+std::optional<float> DemoLauncher::NextCardWidth(int direction) const
+{
+    int columns = Columns(_cardWidth);
+    std::vector<float> steps;
+    for (float w : CARD_WIDTHS)
+        if (direction > 0 ? w > _cardWidth : w < _cardWidth)
+            steps.push_back(w);
+    if (direction < 0)
+        std::reverse(steps.begin(), steps.end());
+    for (float w : steps)
+        if (Columns(w) != columns)
+            return w;
+    return std::nullopt;
+}
+
+std::optional<std::pair<std::string, float>> DemoLauncher::TopCard() const
+{
+    // The first card shown in the gallery's view (at the last frame): _cardRects also has the cards a filter hides
+    float top = _galleryRect.first.y;
+    std::optional<std::pair<std::string, float>> best;
+    float bestY = 0.f;
+    for (const auto& category : _categories)
+        for (const DemoEntry* demo : Shown(category))
+        {
+            auto it = _cardRects.find(demo->filename);
+            if (it == _cardRects.end() || it->second.second.y <= top)
+                continue;
+            if (!best.has_value() || it->second.first.y < bestY)
+            {
+                best = std::make_pair(demo->filename, it->second.first.y - top);
+                bestY = it->second.first.y;
+            }
+        }
+    return best;
+}
+
+void DemoLauncher::ThumbnailSize()
+{
+    const char* label = "Thumbnail size";
+    const ImGuiStyle& style = ImGui::GetStyle();
+    float buttonWidth = ImGui::CalcTextSize(ICON_FA_PLUS).x + 2 * style.FramePadding.x;
+    float width = ImGui::CalcTextSize(label).x + 2 * buttonWidth + 4 * style.ItemSpacing.x;
+    if (width > ImGui::GetContentRegionAvail().x)
+        ImGui::NewLine();
+    ImGui::SeparatorEx(ImGuiSeparatorFlags_Vertical);
+    ImGui::SameLine();
+    ImGui::TextDisabled("%s", label);
+    ImGui::SameLine();
+    for (auto [icon, direction, tooltip] : {std::tuple{ICON_FA_MINUS, -1, "Smaller thumbnails"},
+                                            std::tuple{ICON_FA_PLUS, 1, "Larger thumbnails"}})
+    {
+        std::optional<float> target = NextCardWidth(direction);
+        ImGui::BeginDisabled(!target.has_value());
+        if (ImGui::SmallButton((std::string(icon) + "##thumbnails " + std::to_string(direction)).c_str()) && target)
+        {
+            _scrollAnchor = TopCard();  // it stays where it is, while the rows change
+            _cardWidth = *target;
+        }
+        ImGui::EndDisabled();
+        ImGui::SetItemTooltip("%s", tooltip);
+        ImGui::SameLine();
+    }
 }
 
 void DemoLauncher::SearchBox()
@@ -578,7 +658,13 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     // The demo's picture, its label and the first sentences of its description; a click selects it
     float padding = Em(0.6f);
     const float titleScale = 1.1f;
-    float height = width / PICTURE_ASPECT + ImGui::GetTextLineHeight() * (titleScale + 2) + Em(1.6f);
+    float textScale = CardTextScale(width);
+    float height = width / PICTURE_ASPECT + ImGui::GetTextLineHeight() * textScale * (titleScale + 2) + Em(1.6f);
+    if (_scrollAnchor.has_value() && _scrollAnchor->first == demo.filename)  // after a size change
+    {
+        ImGui::SetScrollY(ImGui::GetCursorPosY() - _scrollAnchor->second);
+        _scrollAnchor.reset();
+    }
     ImVec2 topLeft = ImGui::GetCursorScreenPos();
     ImVec2 bottomRight(topLeft.x + width, topLeft.y + height);
     _cardRects[demo.filename] = {topLeft, bottomRight};
@@ -612,16 +698,19 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.8f),
                 ImDrawFlags_RoundCornersTop);
     ImVec2 pictureBottomRight = ImGui::GetItemRectMax();
-    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)));
+    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)), nullptr,
+             textScale);
     ImGui::SetCursorPos(ImVec2(padding, ImGui::GetCursorPosY() + Em(0.4f)));
-    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale);
+    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
     ImGui::TextUnformatted(Fit(demo.label, width - 2 * padding, 1).c_str());
     ImGui::PopFont();
     ImGui::SetCursorPosX(padding);
     ImGui::PushTextWrapPos(width - padding);
+    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * textScale);
     std::string shown = Fit(demo.summaryPlain, width - 2 * padding, 2);
     ImGui::TextDisabled("%s", shown.c_str());
     bool summaryHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_AllowWhenOverlappedByItem);
+    ImGui::PopFont();
     ImGui::PopTextWrapPos();
     auto flight = Flight(demo.filename);
     if (flight.has_value() && *flight < 1.f && _dealOrder.has_value())
@@ -720,21 +809,25 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     ImVec2 bottomRight(topLeft.x + width, topLeft.y + height);
     float padding = Em(0.6f), rounding = Em(0.5f);
     const float titleScale = 1.1f;
+    float textScale = CardTextScale(width);
     drawList->AddRectFilled(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BG), rounding);
     DrawPicture(drawList, demo.stem, topLeft, width, PICTURE_ASPECT, Em(0.8f), ImDrawFlags_RoundCornersTop);
     float pictureBottom = topLeft.y + width / PICTURE_ASPECT;
-    DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), drawList);
+    DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), drawList, textScale);
     ImFont* font = ImGui::GetFont();
-    float fontSize = ImGui::GetFontSize();
-    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale);
+    float fontSize = ImGui::GetFontSize() * textScale;
+    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
     std::string title = Fit(demo.label, width - 2 * padding, 1);
+    ImGui::PopFont();
+    ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * textScale);
+    std::string summary = Fit(demo.summaryPlain, width - 2 * padding, 2);
     ImGui::PopFont();
     float y = pictureBottom + Em(0.4f);
     drawList->AddText(font, fontSize * titleScale, ImVec2(topLeft.x + padding, y), ImGui::GetColorU32(ImGuiCol_Text),
                       title.c_str());
     y += fontSize * titleScale + ImGui::GetStyle().ItemSpacing.y;
     drawList->AddText(font, fontSize, ImVec2(topLeft.x + padding, y), ImGui::GetColorU32(ImGuiCol_TextDisabled),
-                      Fit(demo.summaryPlain, width - 2 * padding, 2).c_str(), nullptr, width - 2 * padding);
+                      summary.c_str(), nullptr, width - 2 * padding);
     drawList->AddRect(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BORDER), rounding);
 }
 
@@ -745,7 +838,8 @@ void DemoLauncher::Gallery()
     _galleryRect = {pos, ImVec2(pos.x + size.x, pos.y + size.y)};
     float spacing = Em(1.f);
     float avail = ImGui::GetContentRegionAvail().x;
-    int columns = std::max(1, (int)((avail + spacing) / (Em(CARD_WIDTH) + spacing)));
+    _galleryWidth = avail;
+    int columns = Columns(_cardWidth);
     float cardWidth = (avail - (columns - 1) * spacing) / columns;  // the cards fill the width
     std::vector<std::pair<const DemoCategory*, std::vector<const DemoEntry*>>> categories;
     for (const auto& category : _categories)
