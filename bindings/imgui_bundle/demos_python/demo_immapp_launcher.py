@@ -354,7 +354,6 @@ class Launcher:
         self.variant: dict[str, int] = {}  # per demo with variants: the one picked in the detail pane
         self.library = ""  # the library in use: the gallery shows the demos that use it (all when empty)
         self.search = ""  # the words typed in the search box: the gallery shows the demos that have them all
-        self.idling_before: Optional[bool] = None  # the app's idling setting, while the launcher animates
         self.dealt_at: Optional[float] = None  # when the gallery last arrived on screen: its cards are dealt one by one
         self.deal_order: Optional[dict[str, int]] = None  # the cards dealt, in their order: the ones in view when it began
         self.gallery_rect = (ImVec2(0, 0), ImVec2(0, 0))  # on screen, this frame: the cards are dealt from below it
@@ -747,7 +746,8 @@ class Launcher:
     def gui(self, with_title: bool = True) -> None:
         """The launcher; without its title when the explorer draws its own header above"""
         self.pictures.new_frame()
-        self.keep_smooth(self.pictures.still_loading() or self.scroll_target is not None or self.dealing())
+        if self.pictures.still_loading() or self.scroll_target is not None or self.dealing():
+            hello_imgui.request_refresh()  # pictures that load, a scroll or a deal move on their own
         if imgui.is_key_pressed(imgui.Key.escape) and not imgui.is_any_item_active():  # active: the search box
             self.back()
         if self.code_view is not None:  # no header: the demo's title and the way back are the only row
@@ -779,16 +779,6 @@ class Launcher:
         self.detail()
         imgui.end_child()
         imgui.end_child()
-
-    def keep_smooth(self, animating: bool) -> None:
-        """No idling while something moves (smooth animations), then the app's idling setting is back"""
-        fps_idling = hello_imgui.get_runner_params().fps_idling
-        if animating and self.idling_before is None:
-            self.idling_before = fps_idling.enable_idling
-            fps_idling.enable_idling = False
-        elif not animating and self.idling_before is not None:
-            fps_idling.enable_idling = self.idling_before
-            self.idling_before = None
 
 
 _LAUNCHER: Optional[Launcher] = None

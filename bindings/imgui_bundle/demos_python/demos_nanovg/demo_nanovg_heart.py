@@ -143,11 +143,11 @@ def main():
         imgui.image(
             imgui.ImTextureRef(app_state.nvg_framebuffer.texture_id),
             hello_imgui.em_to_vec2(50, 30))
+        hello_imgui.set_item_is_live()  # the heart beats on its own: no idling while the image is visible
 
         _, gDrawingState.heart_color = imgui.color_edit4("Heart color", gDrawingState.heart_color)
 
     runner_params.callbacks.show_gui = gui
-    runner_params.fps_idling.enable_idling = False
 
     hello_imgui.run(runner_params)
 

@@ -85,6 +85,7 @@ class CompareLorenzTrajectories:
             implot3d.plot_line("Trajectory", self.traj1.xs, self.traj1.ys, self.traj1.zs)
             implot3d.plot_line("Trajectory2", self.traj2.xs, self.traj2.ys, self.traj2.zs)
             implot3d.end_plot()
+            hello_imgui.set_item_is_live()  # the trajectories move on their own: no idling while they are visible
         self.traj1.step()
         self.traj2.step()
 
@@ -102,5 +103,4 @@ immapp.run(lambda: lorenz_comparer.gui(),
            with_implot3d=True,
            with_markdown=True,
            window_size_auto=True,
-           window_title="Butterfly Effect",
-           fps_idle=0)
+           window_title="Butterfly Effect")

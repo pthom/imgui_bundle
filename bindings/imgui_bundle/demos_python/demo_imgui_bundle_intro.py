@@ -287,6 +287,7 @@ def _lorenz_gui_main(plot_size: ImVec2):
         zs2 = np.array(_lorenz_traj2.zs, dtype=np.float64)
         implot3d.plot_line("Trajectory2", xs2, ys2, zs2)
         implot3d.end_plot()
+        hello_imgui.set_item_is_live()  # the trajectories move on their own
     _lorenz_traj1.step(_lorenz_params)
     _lorenz_traj2.step(_lorenz_params)
 
@@ -401,6 +402,7 @@ if HAS_IMPLOT and HAS_NUMPY:
             implot.plot_line("g(x)", _implot_xs, ys2)
             implot.plot_line("h(x)", _implot_xs, ys3)
             implot.end_plot()
+            hello_imgui.set_item_is_live()  # the curves move on their own
 
     def _implot_subplot2_filled():
         """Static filled line plots (stock prices)."""
@@ -543,6 +545,7 @@ def _table_gui_main(size: ImVec2):
                     imgui.pop_id()
             imgui.pop_id()
         imgui.end_table()
+        hello_imgui.set_item_is_live(_table_playing)  # the playhead moves on its own
 
 
 def _table_gui_side():
@@ -711,6 +714,7 @@ if HAS_IMMVISION and HAS_OPENCV and HAS_NUMPY:
         immvision.image("Original##intro", _immvision_image, _immvision_params)
         imgui.same_line()
         immvision.image("Sobel##intro", _immvision_image_sobel, _immvision_params_sobel)
+        hello_imgui.set_item_is_live(_immvision_animating)  # the zoom moves on its own
 
     def _immvision_gui_side():
         global _immvision_animating, _immvision_start_time
@@ -1110,6 +1114,7 @@ def _gallery_gui_plot(w: float, h: float, em: float):
         implot.plot_line("sin", x, np.sin(x + t))
         implot.plot_line("cos", x, np.cos(x + t * 0.7))
         implot.end_plot()
+        hello_imgui.set_item_is_live()  # the waves move on their own
 
 
 def _gallery_gui_knob(w: float, h: float, em: float, s):
@@ -1380,6 +1385,7 @@ out vec4 FragColor;
             tex_ref = imgui.ImTextureRef(_shader_state.texture)
             imgui.image(tex_ref, ImVec2(width, height),
                         ImVec2(0, 1), ImVec2(1, 0))  # flip Y for FBO
+            hello_imgui.set_item_is_live()  # the shader moves on its own
         else:
             imgui.dummy(ImVec2(width, height))
 
@@ -1723,6 +1729,8 @@ def _intro_mini_demos():
     _animated_offset = smooth_damp(_animated_offset, target, 8.0, dt)
     if abs(_animated_offset - target) < 0.001:
         _animated_offset = target
+    if _animated_offset != target:
+        hello_imgui.request_refresh()  # the slides slide on their own
 
     # --- Slide area ---
     nav_bar_height = em * 2.0
@@ -1837,9 +1845,6 @@ def _intro_mini_demos():
 def welcome_gui():
     """The intro without its title and links row: the description, "More info", the carousel of mini demos
     (the explorer draws its own header above it)"""
-    # Disable idling so animations run smoothly
-    hello_imgui.get_runner_params().fps_idling.enable_idling = False
-
     _intro_description()
     imgui.separator()
     rich_md.render("*Below are some examples showing what can be achieved with Dear ImGui Bundle*")
@@ -1862,5 +1867,4 @@ if __name__ == "__main__":
         with_implot3d=True,
         with_markdown=True,
         with_latex=True,
-        fps_idle=0,
     )

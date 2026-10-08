@@ -23,8 +23,6 @@ heart_thickness = 0.15
 
 def gui():
     global heart_pulse_rate, phase, t0, x, y, heart_thickness
-    # Make sure that the animation is smooth
-    hello_imgui.get_runner_params().fps_idling.enable_idling = False
 
     t = time.time()
     phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
@@ -35,6 +33,7 @@ def gui():
     for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):  # Give some thickness to the heart
         implot.plot_line("", x * k * k2, y * k * k2)
     implot.end_plot()
+    hello_imgui.set_item_is_live()  # the heart beats on its own: the app keeps its full speed while it is visible
 
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180,
                                            variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=hello_imgui.em_size(4.0))
@@ -44,4 +43,4 @@ def gui():
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(380, 470), with_implot=True, fps_idle=0)
+    immapp.run(gui, window_size=(380, 470), with_implot=True)

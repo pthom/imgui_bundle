@@ -22,7 +22,7 @@ def draw_transparent_image(
     )
 
 
-@immapp.static(start_time=-1.0, was_idling_restored=False)
+@immapp.static(start_time=-1.0)
 def animate_logo(
     logo_file: str,
     ratio_width_height: float,
@@ -105,10 +105,7 @@ def animate_logo(
     alpha = lerp(alpha0, alpha1, k_animation)
 
     if k_animation < 1:
-        hello_imgui.get_runner_params().fps_idling.enable_idling = False
-    if k_animation >= 1.0 and not static.was_idling_restored:
-        hello_imgui.get_runner_params().fps_idling.enable_idling = True
-        static.was_idling_restored = True
+        hello_imgui.request_refresh()  # the logo moves on its own (drawn on a draw list: no widget to mark as live)
 
     mouse_position = imgui.get_mouse_pos()
     if rect.contains(mouse_position):
