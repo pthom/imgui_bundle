@@ -148,6 +148,53 @@ namespace
         return clicked;
     }
 
+    // A segmented control, as the ImGui Explorer's "Demo | Code": one rounded frame, the selected part filled.
+    // Returns the part selected
+    int SegmentedSwitch(const char* strId, const std::vector<const char*>& labels, int current)
+    {
+        float em = Em();
+        std::vector<float> widths, lefts;
+        ImVec2 p0 = ImGui::GetCursorScreenPos();
+        float x = p0.x;
+        for (const char* label : labels)
+        {
+            lefts.push_back(x);
+            widths.push_back(ImGui::CalcTextSize(label).x + em * 1.6f);
+            x += widths.back();
+        }
+        ImVec2 p1(x, p0.y + em * 1.5f);
+        auto partAt = [&](float px) {
+            int part = 0;
+            for (int i = 0; i < (int)lefts.size(); i++)
+                if (px >= lefts[i])
+                    part = i;
+            return part;
+        };
+        // The position of the press, rather than of the release: a touch screen may not report the latter
+        if (ImGui::InvisibleButton((std::string("##") + strId).c_str(), ImVec2(p1.x - p0.x, p1.y - p0.y)))
+            current = partAt(ImGui::GetIO().MouseClickedPos[0].x);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        float rounding = (p1.y - p0.y) * 0.5f;
+        auto fill = [&](int i, ImU32 color) {
+            ImDrawFlags corners = (i == 0 ? ImDrawFlags_RoundCornersLeft : 0)
+                                  | (i == (int)labels.size() - 1 ? ImDrawFlags_RoundCornersRight : 0);
+            drawList->AddRectFilled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
+                                    corners ? rounding : 0.f, corners ? corners : ImDrawFlags_RoundCornersNone);
+        };
+        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
+        if (ImGui::IsItemHovered() && partAt(ImGui::GetMousePos().x) != current)
+            fill(partAt(ImGui::GetMousePos().x), ImGui::GetColorU32(ImGuiCol_FrameBgHovered));
+        fill(current, ImGui::GetColorU32(ImGuiCol_ButtonActive));
+        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Border), rounding);
+        for (int i = 0; i < (int)labels.size(); i++)
+        {
+            ImVec2 size = ImGui::CalcTextSize(labels[i]);
+            drawList->AddText(ImVec2(lefts[i] + (widths[i] - size.x) / 2, p0.y + (p1.y - p0.y - size.y) / 2),
+                              ImGui::GetColorU32(ImGuiCol_Text), labels[i]);
+        }
+        return current;
+    }
+
     // The scale of a card's texts: they follow its width, from their size on a card of the default width
     float CardTextScale(float width) { return std::clamp(width / Em(CARD_WIDTH), MIN_TEXT_SCALE, 1.f); }
 
@@ -1092,28 +1139,43 @@ void DemoLauncher::ShowCode()
     }
     ImGui::SameLine();
     BigText(demo->label.c_str(), 1.3f);
+    bool small = SmallScreen();
+    if (small && files.size() == 2)  // one language at a time: a switch, then its file (C++ first, here)
+    {
+        int index = _codeLanguage == "Python" ? 0 : 1;
+        _codeLanguage = SegmentedSwitch("language", {"Python", "C++"}, index) == 0 ? "Python" : "C++";
+    }
     for (auto& file : files)  // where the file is, and how to open it
     {
+        if (small && files.size() == 2 && file.language != _codeLanguage)
+            continue;
         ImGui::PushID(file.language.c_str());
         ImGui::TextDisabled("%s:", file.language.c_str());
         ImGui::SameLine();
-        ImGui::TextUnformatted(file.repoFile.c_str());
+        if (small)  // a long path wraps
+            ImGui::TextWrapped("%s", file.repoFile.c_str());
+        else
+            ImGui::TextUnformatted(file.repoFile.c_str());
+        bool firstButton = true;  // on a phone, the buttons start a line of their own, under the path
 #ifndef __EMSCRIPTEN__
-        ImGui::SameLine();
+        if (!small)
+            ImGui::SameLine();
+        firstButton = false;
         if (ImGui::SmallButton(ICON_FA_FOLDER_OPEN "  Open"))
             ImmApp::BrowseToUrl(("file://" + RepoFile(file.repoFile)).c_str());
         ImGui::SetItemTooltip("Opens the file with the application your system uses for it");
 #endif
         if (!file.GithubUrl().empty())
         {
-            ImGui::SameLine();
+            if (!(small && firstButton))
+                ImGui::SameLine();
             if (ImGui::SmallButton(ICON_FA_GLOBE "  GitHub"))
                 ImmApp::BrowseToUrl(file.GithubUrl().c_str());
         }
         ImGui::PopID();
     }
     std::vector<CodeFile*> shown;
-    if (files.size() == 2)  // one language, or both side by side
+    if (files.size() == 2 && !small)  // one language, or both side by side
     {
         for (const char* choice : {"Side by side", "Python", "C++"})
             if (Chip(choice, choice == _codeLanguage ? 1.f : 0.f))
@@ -1121,7 +1183,7 @@ void DemoLauncher::ShowCode()
         ImGui::NewLine();
     }
     for (auto& file : files)
-        if (files.size() < 2 || _codeLanguage == "Side by side" || _codeLanguage == file.language)
+        if (files.size() < 2 || (_codeLanguage == "Side by side" && !small) || _codeLanguage == file.language)
             shown.push_back(&file);
     int lines = (int)(ImGui::GetContentRegionAvail().y / ImGui::GetTextLineHeight()) - 4;
     for (auto* file : shown)

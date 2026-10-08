@@ -361,6 +361,46 @@ def sign_button(str_id: str, plus: bool) -> bool:
     return clicked
 
 
+_switch_press_x: dict[str, float] = {}  # where the last press on each segmented switch was
+
+
+def segmented_switch(str_id: str, labels: list[str], current: int) -> int:
+    """A segmented control, as the ImGui Explorer's "Demo | Code": one rounded frame, the selected part filled.
+    Returns the part selected"""
+    em = em_size()
+    widths = [imgui.calc_text_size(label).x + em * 1.6 for label in labels]
+    p0 = imgui.get_cursor_screen_pos()
+    p1 = ImVec2(p0.x + sum(widths), p0.y + em * 1.5)
+    clicked = imgui.invisible_button(f"##{str_id}", p1 - p0)
+    if imgui.is_item_activated():  # the press, rather than the release: a touch screen may not report the latter
+        _switch_press_x[str_id] = imgui.get_mouse_pos().x
+    lefts = [p0.x + sum(widths[:i]) for i in range(len(labels))]
+
+    def part_at(x: float) -> int:
+        return max((i for i, left in enumerate(lefts) if x >= left), default=0)
+
+    if clicked and str_id in _switch_press_x:
+        current = part_at(_switch_press_x[str_id])
+    draw_list, rounding = imgui.get_window_draw_list(), (p1.y - p0.y) * 0.5
+
+    def fill(i: int, color: int) -> None:
+        corners = ((imgui.ImDrawFlags_.round_corners_left.value if i == 0 else 0)
+                   | (imgui.ImDrawFlags_.round_corners_right.value if i == len(labels) - 1 else 0))
+        draw_list.add_rect_filled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
+                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_corners_none.value)
+
+    draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
+    if imgui.is_item_hovered() and part_at(imgui.get_mouse_pos().x) != current:
+        fill(part_at(imgui.get_mouse_pos().x), imgui.get_color_u32(imgui.Col_.frame_bg_hovered))
+    fill(current, imgui.get_color_u32(imgui.Col_.button_active))
+    draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.border), rounding)
+    for i, label in enumerate(labels):
+        size = imgui.calc_text_size(label)
+        draw_list.add_text(ImVec2(lefts[i] + (widths[i] - size.x) / 2, p0.y + (p1.y - p0.y - size.y) / 2),
+                           imgui.get_color_u32(imgui.Col_.text), label)
+    return current
+
+
 def card_text_scale(width: float) -> float:
     """The scale of a card's texts: they follow its width, from their size on a card of the default width"""
     return max(MIN_TEXT_SCALE, min(1.0, width / em_size(CARD_WIDTH)))
@@ -812,18 +852,30 @@ class Launcher:
             return
         imgui.same_line()
         big_text(demo.label, 1.3)
+        small = small_screen()
+        if small and len(files) == 2:  # one language at a time: a switch, then its file
+            index = 1 if self.code_language == "C++" else 0
+            self.code_language = ["Python", "C++"][segmented_switch("language", ["Python", "C++"], index)]
+            files = [f for f in files if f.language == self.code_language]
         for file in files:  # where the file is, and how to open it
             imgui.push_id(file.language)
             imgui.text_disabled(f"{file.language}:")
             imgui.same_line()
-            imgui.text(file.in_repository.as_posix())
+            if small:  # a long path wraps
+                imgui.text_wrapped(file.in_repository.as_posix())
+            else:
+                imgui.text(file.in_repository.as_posix())
+            first_button = True  # on a phone, the buttons start a line of their own, under the path
             if can_run_subprocess():  # i.e. not in Pyodide
-                imgui.same_line()
+                if not small:
+                    imgui.same_line()
+                first_button = False
                 if imgui.small_button(fa.ICON_FA_FOLDER_OPEN + "  Open"):
                     open_url(file.path.as_uri())
                 imgui.set_item_tooltip("Opens the file with the application your system uses for it")
             if file.github_url is not None:
-                imgui.same_line()
+                if not (small and first_button):
+                    imgui.same_line()
                 if imgui.small_button(fa.ICON_FA_GLOBE + "  GitHub"):
                     open_url(file.github_url)
             imgui.pop_id()
