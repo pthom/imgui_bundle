@@ -253,6 +253,14 @@ html, body {
     width: 100%;
     height: 100%;
     object-fit: cover;
+    object-position: left top;  /* cropped, it keeps its top-left corner: the pictures are laid out from there */
+}
+.gallery-fitted {  /* a shape far from the card's: the whole picture, centered on a dark background */
+    background-color: #14161a;
+}
+.gallery-fitted img {
+    object-fit: contain;
+    object-position: center;
 }
 .gallery-no-picture::before {
     content: '</>';

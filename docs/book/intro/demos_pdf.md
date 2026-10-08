@@ -8,8 +8,6 @@ The demos of Dear ImGui Bundle, by category, as in its demo launcher (the "Demos
 
 The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.
 
-*Read the code of a few of them: it gives the feel of the framework.*
-
 ### What is an Immediate GUI
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/welcome_imm_mode.jpg
@@ -725,6 +723,11 @@ support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
 
 ### A GUI beside a Jupyter notebook
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/notebooks.jpg
+:alt: A GUI beside a Jupyter notebook
+:width: 400px
+:::
 
 A GUI that stays open beside a Jupyter notebook while its cells run. Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and `immapp.nb.start()` that returns at once); its video trains a neural network live, its learning rate on a slider.
 

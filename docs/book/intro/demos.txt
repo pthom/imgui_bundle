@@ -6,7 +6,6 @@ The demos of the catalog, by category: what each one shows, the libraries it use
 ## Start here
 
 The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.
-Read the code of a few of them: it gives the feel of the framework.
 
 - What is an Immediate GUI: With Dear ImGui, your GUI code is simple and direct: no widget trees, no callbacks, no state synchronization. You call functions to create widgets, and they return the current value. That's it.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/welcome_imm_mode.py

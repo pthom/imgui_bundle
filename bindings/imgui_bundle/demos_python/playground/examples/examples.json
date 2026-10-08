@@ -16,8 +16,7 @@
     "categories": [
         {
             "name": "Start here",
-            "about": "The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.",
-            "tip": "Read the code of a few of them: it gives the feel of the framework."
+            "about": "The bundle in ten minutes: what it is, first apps, and a few lines that do a lot."
         },
         {
             "name": "Interactive manuals",

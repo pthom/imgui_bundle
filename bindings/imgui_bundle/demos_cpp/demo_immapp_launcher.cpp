@@ -512,8 +512,9 @@ bool DemoLauncher::PicturesLoading() const
 bool DemoLauncher::DrawPicture(ImDrawList* drawList, const std::string& stem, ImVec2 topLeft, float width, float aspect,
                                float rounding, ImDrawFlags corners)
 {
-    // The picture on this draw list, from this corner, cropped to the aspect ratio (or fitted, when its shape is
-    // too different), fading in over a placeholder once it is loaded. Returns whether it is drawn.
+    // The picture on this draw list, from this corner, cropped to the aspect ratio from its top-left corner (or
+    // fitted, when its shape is too different), fading in over a placeholder once it is loaded. Returns whether it
+    // is drawn.
     std::optional<RichMd::MarkdownImage> image;
     auto it = _pictures.find(stem);
     if (it != _pictures.end())
@@ -559,18 +560,10 @@ bool DemoLauncher::DrawPicture(ImDrawList* drawList, const std::string& stem, Im
             bottomRight.x = topLeft.x + pictureWidth;
         }
     }
-    else if (imageAspect > aspect)  // crop the sides
-    {
-        float margin = (1 - aspect / imageAspect) / 2;
-        uv0 = ImVec2(margin, 0);
-        uv1 = ImVec2(1 - margin, 1);
-    }
-    else if (imageAspect < aspect)  // crop the top and the bottom
-    {
-        float margin = (1 - imageAspect / aspect) / 2;
-        uv0 = ImVec2(0, margin);
-        uv1 = ImVec2(1, 1 - margin);
-    }
+    else if (imageAspect > aspect)  // crop its right side (the pictures are laid out from their top-left corner)
+        uv1 = ImVec2(aspect / imageAspect, 1);
+    else if (imageAspect < aspect)  // crop its bottom
+        uv1 = ImVec2(1, imageAspect / aspect);
     drawList->AddImageRounded(ImTextureRef(image->texture_id), topLeft, bottomRight, uv0, uv1,
                               IM_COL32(255, 255, 255, (int)(255 * alpha)), rounding, corners);
     return true;

@@ -209,8 +209,8 @@ class Pictures:
 
     def draw_at(self, draw_list: imgui.ImDrawList, stem: str, top_left: ImVec2, width: float, aspect: float,
                 rounding: float = 0.0, corners: int = 0) -> None:
-        """The picture on this draw list, from this corner, cropped to the aspect ratio (or fitted, when its shape is
-        too different)"""
+        """The picture on this draw list, from this corner, cropped to the aspect ratio from its top-left corner (or
+        fitted, when its shape is too different)"""
         image = self.image(stem)
         image_aspect = image.size.x / image.size.y if image is not None else PICTURE_ASPECT
         bottom_right = ImVec2(top_left.x + width, top_left.y + width / aspect)
@@ -234,12 +234,10 @@ class Pictures:
                 picture_width = (bottom_right.y - top_left.y) * image_aspect
                 top_left = ImVec2((top_left.x + bottom_right.x - picture_width) / 2, top_left.y)
                 bottom_right = ImVec2(top_left.x + picture_width, bottom_right.y)
-        elif image_aspect > aspect:  # crop the sides
-            margin = (1 - aspect / image_aspect) / 2
-            uv0, uv1 = ImVec2(margin, 0), ImVec2(1 - margin, 1)
-        elif image_aspect < aspect:  # crop the top and the bottom
-            margin = (1 - image_aspect / aspect) / 2
-            uv0, uv1 = ImVec2(0, margin), ImVec2(1, 1 - margin)
+        elif image_aspect > aspect:  # crop its right side (the pictures are laid out from their top-left corner)
+            uv1 = ImVec2(aspect / image_aspect, 1)
+        elif image_aspect < aspect:  # crop its bottom
+            uv1 = ImVec2(1, image_aspect / aspect)
         draw_list.add_image_rounded(imgui.ImTextureRef(image.texture_id), top_left, bottom_right, uv0, uv1,
                                     IM_COL32(255, 255, 255, int(255 * alpha)), rounding, corners)
 

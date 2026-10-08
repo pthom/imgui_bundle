@@ -245,6 +245,10 @@ function makeCard(example, category) {
     img.alt = '';
     img.loading = 'lazy';
     img.onerror = () => { img.remove(); picture.classList.add('gallery-no-picture'); };  // no picture yet
+    img.onload = () => {  // a shape far from the card's (16:10) is fitted whole, as in the launchers (MAX_CROP)
+        const ratio = img.naturalWidth / img.naturalHeight / 1.6;
+        if (Math.max(ratio, 1 / ratio) > 1.5) picture.classList.add('gallery-fitted');
+    };
     img.src = '../resources/playground/' + example.filename.split('/').pop().replace(/\.(py|md)$/, '.jpg');
     const tags = element('span', 'gallery-tags');
     tags.appendChild(element('span', 'gallery-tag python', 'Python'));

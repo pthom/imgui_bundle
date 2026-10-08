@@ -10,8 +10,6 @@ In each card, ▶︎ Run opens the demo in your browser, and Code shows its sour
 
 The bundle in ten minutes: what it is, first apps, and a few lines that do a lot.
 
-*Read the code of a few of them: it gives the feel of the framework.*
-
 :::::{grid} 1 2 3 3
 
 ::::{card}
@@ -873,6 +871,10 @@ The window shows both rates: the GUI's frames per second, and the loop's computa
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/notebooks.jpg
+:alt: A GUI beside a Jupyter notebook
+:::
+
 ### A GUI beside a Jupyter notebook
 
 A GUI that stays open beside a Jupyter notebook while its cells run.
