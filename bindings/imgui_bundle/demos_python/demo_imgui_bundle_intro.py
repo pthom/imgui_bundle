@@ -2543,14 +2543,14 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     if carousel_offset_x > 0.0:  # indent(0) indents by the style's default: the carousel would overflow
         imgui.indent(carousel_offset_x)
 
-    # --- Auto-advance ---
+    # --- Auto-advance, until the user touches something (a slide's widget, an arrow): then the slide stays ---
+    if imgui.is_any_item_active():
+        _auto_stopped = True
     if not _auto_stopped:
-        user_interacting = imgui.is_any_item_active()
-        if not user_interacting:
-            _auto_timer += dt
-            if _auto_timer > SLIDE_DURATION:
-                _current_slide = (_current_slide + 1) % slide_count
-                _auto_timer = 0.0
+        _auto_timer += dt
+        if _auto_timer > SLIDE_DURATION:
+            _current_slide = (_current_slide + 1) % slide_count
+            _auto_timer = 0.0
 
     # --- Smooth slide animation (none while a swipe holds the slides: they follow the finger) ---
     target = float(_current_slide)
