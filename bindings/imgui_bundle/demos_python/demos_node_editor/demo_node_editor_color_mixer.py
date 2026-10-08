@@ -112,8 +112,8 @@ def initial_graph() -> Graph:
     blue = graph.add_node("Color", ImVec2(0, 9), ImVec4(0.2, 0.35, 0.95, 1.0))
     mix = graph.add_node("Mix", ImVec2(13, 4))
     swatch = graph.add_node("Swatch", ImVec2(26, 0))
-    invert = graph.add_node("Invert", ImVec2(26, 10))
-    swatch2 = graph.add_node("Swatch", ImVec2(39, 8))
+    invert = graph.add_node("Invert", ImVec2(26, 12))
+    swatch2 = graph.add_node("Swatch", ImVec2(39, 10))
     assert red.output and blue.output and mix.output and invert.output
     graph.connect(red.output, mix.inputs[0])
     graph.connect(blue.output, mix.inputs[1])
@@ -175,6 +175,7 @@ def draw_node(graph: Graph, node: Node) -> None:
     ed.begin_node(node.id)
     imgui.push_id(node.id.id())  # the widgets of two nodes of the same kind need different ids
     rich_md.render(f"**{node.kind}**  \n{NODE_KINDS[node.kind].doc}")  # the title, and on the next line the doc
+    imgui.dummy(ImVec2(width, 0))  # the node's width: its text wraps at it (see editor())
 
     for pin in node.inputs:  # the inputs, on the left
         draw_pin(pin, input_color(graph, pin))
@@ -296,10 +297,12 @@ state = AppState()
 
 def editor() -> ed.EditorContext:
     """The demo's own editor, with its own config, whatever the app that shows it: an app such as the bundle's explorer
-    shows several node editor demos, which need different configs (the image pipeline wraps the text in its nodes)."""
+    shows several node editor demos, which need different configs."""
     if state.editor is None:
         config = ed.Config()
         config.settings_file = None  # the demo places its nodes at start: nothing to save
+        # The text wraps at the width of the node, not of the window
+        config.force_window_content_width_to_node_width = True
         state.editor = ed.create_editor(config)
     return state.editor
 

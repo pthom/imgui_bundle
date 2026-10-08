@@ -162,8 +162,8 @@ Graph InitialGraph()
     Node* blue = graph.AddNode(Kind::Color, ImVec2(0, 9), ImVec4(0.2f, 0.35f, 0.95f, 1.0f));
     Node* mix = graph.AddNode(Kind::Mix, ImVec2(13, 4));
     Node* swatch = graph.AddNode(Kind::Swatch, ImVec2(26, 0));
-    Node* invert = graph.AddNode(Kind::Invert, ImVec2(26, 10));
-    Node* swatch2 = graph.AddNode(Kind::Swatch, ImVec2(39, 8));
+    Node* invert = graph.AddNode(Kind::Invert, ImVec2(26, 12));
+    Node* swatch2 = graph.AddNode(Kind::Swatch, ImVec2(39, 10));
     graph.Connect(red->output.get(), mix->inputs[0].get());
     graph.Connect(blue->output.get(), mix->inputs[1].get());
     graph.Connect(mix->output.get(), swatch->inputs[0].get());
@@ -244,6 +244,7 @@ void DrawNode(Graph& graph, Node& node)
     ImGui::PushID((int)node.id.Get());  // the widgets of two nodes of the same kind need different ids
     // The title, and on the next line the doc
     RichMd::Render(std::string("**") + Info(node.kind).name + "**  \n" + Info(node.kind).doc);
+    ImGui::Dummy(ImVec2(width, 0));  // the node's width: its text wraps at it (see Editor())
 
     for (auto& pin : node.inputs)  // the inputs, on the left
     {
@@ -413,7 +414,7 @@ AppState& State()
 }
 
 // The demo's own editor, with its own config, whatever the app that shows it: an app such as the bundle's explorer
-// shows several node editor demos, which need different configs (the image pipeline wraps the text in its nodes).
+// shows several node editor demos, which need different configs.
 ed::EditorContext* Editor()
 {
     AppState& state = State();
@@ -421,6 +422,8 @@ ed::EditorContext* Editor()
     {
         ed::Config config;
         config.SettingsFile = nullptr;  // the demo places its nodes at start: nothing to save
+        // The text wraps at the width of the node, not of the window
+        config.ForceWindowContentWidthToNodeWidth = true;
         state.editor = ed::CreateEditor(&config);
     }
     return state.editor;
