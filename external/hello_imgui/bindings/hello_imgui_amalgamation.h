@@ -2332,8 +2332,9 @@ struct FpsIdling
     // When the application is idling (no user interaction detected), its FPS
     // will be reduced to this value in order to save CPU and GPU resources.
     //
-    // For animated or real-time widgets (e.g., live video), you may need a
-    // higher idle refresh rate, or even disable idling entirely.
+    // Content that changes on its own (an animation, a live image, a plot of
+    // varying data) keeps the full speed while it changes: call
+    // HelloImGui::SetItemIsLive() after its widget, or HelloImGui::RequestRefresh().
     //
     // Set fpsIdle = 0.f for maximum refresh speed during idling.
     float fpsIdle = 9.f;
@@ -2977,6 +2978,16 @@ namespace ManualRender
 //  screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
 //  the widget's content, in any direction (a swipe that starts on it does not scroll the window).
     void SetItemTakesTouchDrags();
+
+// `SetItemIsLive(live = true)`: call it right after a widget whose content changes on its own (an animation, a live
+//  image, a plot of varying data), at each frame: while it is live and visible, the app does not idle (see
+//  RunnerParams.fpsIdling).
+    void SetItemIsLive(bool live = true);
+
+// `RequestRefresh()`: the next frame comes at full speed, even without user input: the app does not idle. Callable
+//  from any thread: call it when new data arrives (a camera, a socket), or at each frame while something that is no
+//  widget moves (a background, a drawing).
+    void RequestRefresh();
 
 // `PrefersReducedMotion()`: true when the system asks for less motion: "Reduce motion" on macOS and iOS, "Show
 //  animations in Windows" turned off, a browser's prefers-reduced-motion. An application can then skip its animations

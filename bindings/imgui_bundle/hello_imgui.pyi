@@ -2842,8 +2842,9 @@ class FpsIdling:
     # When the application is idling (no user interaction detected), its FPS
     # will be reduced to this value in order to save CPU and GPU resources.
     #
-    # For animated or real-time widgets (e.g., live video), you may need a
-    # higher idle refresh rate, or even disable idling entirely.
+    # Content that changes on its own (an animation, a live image, a plot of
+    # varying data) keeps the full speed while it changes: call
+    # HelloImGui::SetItemIsLive() after its widget, or HelloImGui::RequestRefresh().
     #
     # Set fpsIdle = 0. for maximum refresh speed during idling.
     fps_idle: float = 9.0
@@ -3545,6 +3546,22 @@ def set_item_takes_touch_drags() -> None:
     """`SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch
     screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
     the widget's content, in any direction (a swipe that starts on it does not scroll the window).
+    """
+    pass
+
+# void SetItemIsLive(bool live = true);    /* original C++ signature */
+def set_item_is_live(live: bool = True) -> None:
+    """`SetItemIsLive(live = True)`: call it right after a widget whose content changes on its own (an animation, a live
+    image, a plot of varying data), at each frame: while it is live and visible, the app does not idle (see
+    RunnerParams.fpsIdling).
+    """
+    pass
+
+# void RequestRefresh();    /* original C++ signature */
+def request_refresh() -> None:
+    """`RequestRefresh()`: the next frame comes at full speed, even without user input: the app does not idle. Callable
+    from any thread: call it when new data arrives (a camera, a socket), or at each frame while something that is no
+    widget moves (a background, a drawing).
     """
     pass
 

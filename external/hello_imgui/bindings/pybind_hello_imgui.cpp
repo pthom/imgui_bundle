@@ -1570,7 +1570,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         },
         nb::arg("fps_idle") = 9.f, nb::arg("time_active_after_last_event") = 3.f, nb::arg("enable_idling") = true, nb::arg("is_idling") = false, nb::arg("remember_enable_idling") = false, nb::arg("fps_idling_mode") = HelloImGui::FpsIdlingMode::Auto, nb::arg("vsync_to_monitor") = true, nb::arg("fps_max") = 0.f
         )
-        .def_rw("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default = 9_.\n\n When the application is idling (no user interaction detected), its FPS\n will be reduced to this value in order to save CPU and GPU resources.\n\n For animated or real-time widgets (e.g., live video), you may need a\n higher idle refresh rate, or even disable idling entirely.\n\n Set fpsIdle = 0. for maximum refresh speed during idling.")
+        .def_rw("fps_idle", &HelloImGui::FpsIdling::fpsIdle, " `fpsIdle`: _float, default = 9_.\n\n When the application is idling (no user interaction detected), its FPS\n will be reduced to this value in order to save CPU and GPU resources.\n\n Content that changes on its own (an animation, a live image, a plot of\n varying data) keeps the full speed while it changes: call\n HelloImGui::SetItemIsLive() after its widget, or HelloImGui::RequestRefresh().\n\n Set fpsIdle = 0. for maximum refresh speed during idling.")
         .def_rw("time_active_after_last_event", &HelloImGui::FpsIdling::timeActiveAfterLastEvent, " `timeActiveAfterLastEvent`: _float, default = 3.f_.\n\n The duration (in seconds) after the last user event before the\n application switches to idling mode.")
         .def_rw("enable_idling", &HelloImGui::FpsIdling::enableIdling, " `enableIdling`: _bool, default = true_.\n\n Enables or disables idling. When disabled, the application renders at\n full speed regardless of user activity.\n\n This can be changed dynamically during execution.")
         .def_rw("is_idling", &HelloImGui::FpsIdling::isIdling, " `isIdling`: _bool (updated dynamically)_.\n\n This boolean is updated internally at runtime, and becomes True when\n the application is considered idle.")
@@ -1851,6 +1851,14 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     m.def("set_item_takes_touch_drags",
         HelloImGui::SetItemTakesTouchDrags, " `SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch\n  screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move\n  the widget's content, in any direction (a swipe that starts on it does not scroll the window).");
+
+    m.def("set_item_is_live",
+        HelloImGui::SetItemIsLive,
+        nb::arg("live") = true,
+        " `SetItemIsLive(live = True)`: call it right after a widget whose content changes on its own (an animation, a live\n  image, a plot of varying data), at each frame: while it is live and visible, the app does not idle (see\n  RunnerParams.fpsIdling).");
+
+    m.def("request_refresh",
+        HelloImGui::RequestRefresh, " `RequestRefresh()`: the next frame comes at full speed, even without user input: the app does not idle. Callable\n  from any thread: call it when new data arrives (a camera, a socket), or at each frame while something that is no\n  widget moves (a background, a drawing).");
 
     m.def("prefers_reduced_motion",
         HelloImGui::PrefersReducedMotion, " `PrefersReducedMotion()`: True when the system asks for less motion: \"Reduce motion\" on macOS and iOS, \"Show\n  animations in Windows\" turned off, a browser's prefers-reduced-motion. An application can then skip its animations\n  (a scroll, a transition). False where the system has no such setting (Linux, Android).");
