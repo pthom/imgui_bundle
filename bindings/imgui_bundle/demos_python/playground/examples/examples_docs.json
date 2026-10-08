@@ -1,8 +1,8 @@
 {
   "demo_imgui_bundle_intro.py": {
-    "title": "Dear ImGui Bundle: the welcome page",
-    "text": "The first screen of the explorer and of the playground: the tagline, a carousel of live mini demos (plots, a\nshader, a neural network, images, a node editor, widgets, markdown, code), a button to the catalog of demos, and\nthe prose of demos_assets/welcome.md behind \"More info & links\". The page that shows it (the explorer, the playground)\ngives it a Host: what the button and the links do.",
-    "summary": "The first screen of the explorer and of the playground: the tagline, a carousel of live mini demos (plots, a shader, a neural network, images, a node editor, widgets, markdown, code), a button to the catalog of demos, and the prose of demos_assets/welcome.md behind \"More info & links\".",
+    "title": "Welcome to Dear ImGui Bundle",
+    "text": "The tour you see when you arrive: a carousel of live mini demos, from plots and a shader to a neural network. Each\nslide opens its full demo.",
+    "summary": "The tour you see when you arrive: a carousel of live mini demos, from plots and a shader to a neural network.",
     "uses": [
       "ImPlot",
       "ImPlot3D",

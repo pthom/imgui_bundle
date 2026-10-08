@@ -788,6 +788,11 @@ nothing was lost.
 
 ### Python backends: GLFW, SDL, pyglet, pygame, wgpu
 
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/example_python_backend_glfw3.jpg
+:alt: Python backends: GLFW, SDL, pyglet, pygame, wgpu
+:width: 400px
+:::
+
 With a pure Python backend, you drive the full app loop. See
 [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python-backend/). Unlike `immapp.run()`, there
 is no Hello ImGui here: no DPI handling, themes or assets.

@@ -17,6 +17,9 @@ Usage:
 When a picture is saved, the hash of its example's file goes to picture_hashes.json, next to the pictures: `--stale`
 compares it with the file as it is now. A change that does not show (e.g. a docstring) calls for `--mark-fresh`.
 
+The examples that cannot run under the tool (CODE_SHOTS, e.g. a pure Python backend, which opens its own window) get
+a picture of the gist of their code, rendered as a markdown code block.
+
 The examples that run only in the browser (BROWSER_SHOTS) are pictured in Chrome, in the local playground, with the
 screenshot-web-demos skill (it opens a visible Chrome window: ask first). For each of them:
     uv run --no-project --with playwright python .claude/skills/screenshot-web-demos/drive_page.py \
@@ -250,6 +253,20 @@ BROWSER_SHOTS: dict[str, Box] = {
 }
 
 
+# The examples that cannot run under the tool: the gist of their code, for their picture
+CODE_SHOTS: dict[str, str] = {
+    "example_python_backend_glfw3.py": """\
+while not glfw.window_should_close(window):
+    glfw.poll_events()
+    impl.process_inputs()
+    imgui.new_frame()
+    gui()  # your widgets
+    imgui.render()
+    impl.render(imgui.get_draw_data())
+    glfw.swap_buffers(window)""",
+}
+
+
 def _save(image: Any, crop: Box, output: Path) -> None:
     """Crops the picture, and saves it WIDTH pixels wide, as JPEG"""
     from PIL import Image
@@ -260,11 +277,36 @@ def _save(image: Any, crop: Box, output: Path) -> None:
     image.convert("RGB").save(output, "JPEG", quality=85, optimize=True, progressive=True)
 
 
+def _code_picture(filename: str, output: str, raw: bool) -> None:
+    """In a child process: the gist of the example's code (CODE_SHOTS), in a markdown code block, as its picture"""
+    from PIL import Image
+    from imgui_bundle import hello_imgui, imgui, immapp, rich_md
+
+    frame = [0]
+
+    def gui() -> None:
+        imgui.push_font(None, imgui.get_style().font_size_base * 1.35)  # the code fills the card's shape (16:10)
+        rich_md.render("```python\n" + CODE_SHOTS[filename] + "\n```")
+        imgui.pop_font()
+        frame[0] += 1
+        if frame[0] >= 30:
+            hello_imgui.get_runner_params().app_shall_exit = True
+    immapp.run(gui, window_size=(560, 350), with_markdown=True, fps_idle=0)
+    image = Image.fromarray(hello_imgui.final_app_window_screenshot())
+    if raw:
+        image.save(output)
+    else:
+        _save(image, (0.0, 0.0, 1.0, 1.0), Path(output))
+
+
 def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
     """In a child process: runs the example (a copy of it, at path), then saves its picture"""
     from PIL import Image
     from imgui_bundle import hello_imgui, immapp
 
+    if filename in CODE_SHOTS:
+        _code_picture(filename, output, raw)
+        return
     shot = SHOTS[filename]
     # The example runs as the __main__ module, at its path: inspect.getsource() then finds its code (demo_pydantic.py)
     main_module = types.ModuleType("__main__")
@@ -405,13 +447,13 @@ def _list_stale() -> None:
     """Lists the examples whose file changed since their picture was taken"""
     examples, hashes = _examples(), _hashes()
     stale = 0
-    for filename in [*SHOTS, *BROWSER_SHOTS]:
+    for filename in [*SHOTS, *CODE_SHOTS, *BROWSER_SHOTS]:
         recorded = hashes.get(Path(filename).stem)
         if recorded != _file_hash(filename, examples):
             stale += 1
             where = "browser: see --browser" if filename in BROWSER_SHOTS else "desktop"
             print(f"{'changed' if recorded else 'no hash':12s} {filename} ({where})")
-    print(f"{stale} of {len(SHOTS) + len(BROWSER_SHOTS)} pictures may be stale")
+    print(f"{stale} of {len(SHOTS) + len(CODE_SHOTS) + len(BROWSER_SHOTS)} pictures may be stale")
 
 
 def main() -> None:
@@ -423,7 +465,7 @@ def main() -> None:
         _list_stale()
         return
     if args[:1] == ["--mark-fresh"]:
-        _record([f for f in [*SHOTS, *BROWSER_SHOTS] if len(args) == 1 or Path(f).stem in args[1:]])
+        _record([f for f in [*SHOTS, *CODE_SHOTS, *BROWSER_SHOTS] if len(args) == 1 or Path(f).stem in args[1:]])
         return
     if args[:1] == ["--browser"]:
         from PIL import Image
@@ -442,7 +484,7 @@ def main() -> None:
     if args[:1] == ["--raw"]:
         raw_dir, args = Path(args[1]), args[2:]
         raw_dir.mkdir(parents=True, exist_ok=True)
-    names = [f for f in SHOTS if not args or Path(f).stem in args]
+    names = [f for f in [*SHOTS, *CODE_SHOTS] if not args or Path(f).stem in args]
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     examples = _examples()
     for filename in names:

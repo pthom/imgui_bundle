@@ -948,6 +948,10 @@ Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), Im
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/example_python_backend_glfw3.jpg
+:alt: Python backends: GLFW, SDL, pyglet, pygame, wgpu
+:::
+
 ### Python backends: GLFW, SDL, pyglet, pygame, wgpu
 
 With a pure Python backend, you drive the full app loop.

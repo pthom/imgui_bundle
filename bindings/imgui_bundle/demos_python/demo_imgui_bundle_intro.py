@@ -1,11 +1,12 @@
 # Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-"""Dear ImGui Bundle: the welcome page
+"""Welcome to Dear ImGui Bundle
 
-The first screen of the explorer and of the playground: the tagline, a carousel of live mini demos (plots, a
-shader, a neural network, images, a node editor, widgets, markdown, code), a button to the catalog of demos, and
-the prose of demos_assets/welcome.md behind "More info & links". The page that shows it (the explorer, the playground)
-gives it a Host: what the button and the links do.
+The tour you see when you arrive: a carousel of live mini demos, from plots and a shader to a neural network. Each
+slide opens its full demo.
 """
+# The first screen of the explorer and of the playground: the tagline, the carousel, a button to the catalog of demos,
+# and the prose of demos_assets/welcome.md behind "More info & links". The page that shows it (the explorer, the
+# playground) gives it a Host: what the button and the links do.
 import math
 import sys
 from dataclasses import dataclass
