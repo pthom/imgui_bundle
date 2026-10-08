@@ -1,6 +1,7 @@
 // Slide 8: Web Deployment — static screenshot
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 #include "imgui.h"
+#include "imgui_internal.h"  // IM_PI (else only included by the test engine)
 #include "imgui_rich_md/rich_md.h"
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/browse_to_url.h"
