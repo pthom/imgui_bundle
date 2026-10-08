@@ -51,11 +51,9 @@ function getDemoFromUrl() {
 
 // Run this function on page load
 document.addEventListener('DOMContentLoaded', async () => {
-    // The welcome hides its code from the start, while Pyodide loads (a ?demo= link shows the demo's code)
-    if (!getDemoFromUrl() && !narrowScreen.matches) {
-        setCodeFolded(true);
-        document.querySelector('#loading-banner .loading-hint').hidden = true;  // "browse the code on the left"
-    }
+    // The welcome hides its code (index.html): no "browse the code on the left" while Pyodide loads
+    if (!getDemoFromUrl() && !narrowScreen.matches)
+        document.querySelector('#loading-banner .loading-hint').hidden = true;
     const initialCode = await initial_example_code();
     editor.setValue(initialCode);
     setLoadedCode(initialCode);
@@ -524,17 +522,31 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.state && event.state.demo) {
             await loadDemoByFilename(event.state.demo, false);
         } else {
-            // Back to the root URL (no ?demo=): restore the landing page
-            const initialCode = await initial_example_code();
-            editor.setValue(initialCode);
-            setLoadedCode(initialCode);
-            loadedExampleFilename = null;
-            markOwnCodeSwitch(null);
-            setEditorLabel('Welcome to Dear ImGui Bundle');
-            clearError();
-            markCurrentExample(WELCOME_FILENAME);
-            await prepareWelcome();
-            await runEditorPythonCode();
+            await showWelcome();  // back to the root URL (no ?demo=)
         }
     });
+    // The header's title goes back to the welcome without reloading the page (Pyodide stays loaded); a middle click
+    // or a modifier still opens the page anew
+    document.querySelector('.motto-title-link').addEventListener('click', async (event) => {
+        if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
+        event.preventDefault();
+        closeGallery();
+        if (loadedExampleFilename === null) return;  // already there
+        history.pushState({}, '', window.location.pathname);
+        await showWelcome();
+    });
 });
+
+// The welcome in place of the demo shown: its code, then its run
+async function showWelcome() {
+    const initialCode = await initial_example_code();
+    editor.setValue(initialCode);
+    setLoadedCode(initialCode);
+    loadedExampleFilename = null;
+    markOwnCodeSwitch(null);
+    setEditorLabel('Welcome to Dear ImGui Bundle');
+    clearError();
+    markCurrentExample(WELCOME_FILENAME);
+    await prepareWelcome();
+    await runEditorPythonCode();
+}

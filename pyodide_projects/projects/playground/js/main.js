@@ -62,6 +62,9 @@ function onNarrowScreenChange() {
 narrowScreen.addEventListener('change', onNarrowScreenChange);
 setPane('demo');
 onNarrowScreenChange();
+// The page starts with the code folded (index.html), for the welcome; a link to a demo shows its code from the start
+if (getDemoFromUrl())
+    document.getElementById('editor-and-canvas-container').classList.remove('code-hidden');
 
 // Initialize CodeMirror for the code editor
 const editor = CodeMirror(document.getElementById('editor'), {

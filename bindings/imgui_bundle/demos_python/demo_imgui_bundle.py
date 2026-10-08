@@ -173,7 +173,7 @@ class Explorer:
         """The title, the sentence of the state, and at the right the switch between the states (on its own row when
         the title leaves it no room: a phone)"""
         top = imgui.get_cursor_pos_y()
-        demo_immapp_launcher.big_text("Dear ImGui Bundle", 2.0)
+        demo_immapp_launcher.big_text("Dear ImGui Bundle", 1.4 if demo_immapp_launcher.small_screen() else 2.0)
         title_width = imgui.get_item_rect_size().x
         below_title = imgui.get_cursor_pos_y()
         width = imgui.get_content_region_avail().x

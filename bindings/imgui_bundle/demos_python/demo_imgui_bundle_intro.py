@@ -248,6 +248,38 @@ def _accent_button(label: str, size: ImVec2) -> bool:
     return clicked
 
 
+MANUAL_PICTURE_ASPECT = 640 / 401  # the width / the height of the manuals' pictures (their cards' in the catalog)
+
+
+def _manual_picture(demo: str, width: float) -> None:
+    """The picture of a manual (its card's, from the site), which opens it when the page can open a demo"""
+    url = f"{SITE}/resources/playground/{demo.replace('.py', '.jpg')}"
+    top_left = imgui.get_cursor_screen_pos()
+    rich_md.render(f'<img src="{url}" width="{int(width)}">')
+    bottom_right = ImVec2(top_left.x + width, imgui.get_cursor_screen_pos().y)
+    if _host.open_demo is None or not imgui.is_mouse_hovering_rect(top_left, bottom_right):
+        return
+    imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
+    imgui.get_window_draw_list().add_rect(top_left, bottom_right, imgui.get_color_u32(imgui.Col_.button_hovered),
+                                          hello_imgui.em_size(0.3), 2.0)
+    if imgui.is_mouse_clicked(imgui.MouseButton_.left):
+        _host.open_demo(demo)
+
+
+def _manual_teaser(text: str, demo: str) -> None:
+    """A line of text, then the manual's picture below it, as large as the space left allows (none if too small)"""
+    em = hello_imgui.em_size()
+    imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x)
+    imgui.text_wrapped(text)
+    imgui.pop_text_wrap_pos()
+    avail = imgui.get_content_region_avail()
+    width = min(avail.x - em * 0.5, (avail.y - em * 0.5) * MANUAL_PICTURE_ASPECT)
+    if width < em * 6:
+        return
+    imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail.x - width) / 2)
+    _manual_picture(demo, width)
+
+
 def panel_bg(top_left: ImVec2, size: ImVec2, alpha_bg: float = 0.08, alpha_border: float = 0.3) -> None:
     """A rounded rectangle in the accent color, behind a part of a slide"""
     em = hello_imgui.em_size()
@@ -281,11 +313,6 @@ _shaded_ys2: np.ndarray = None  # type: ignore
 _shaded_ys3: np.ndarray = None  # type: ignore
 _shaded_ys4: np.ndarray = None  # type: ignore
 
-# Stem plots (static)
-_stem_xs: np.ndarray = None  # type: ignore
-_stem_ys1: np.ndarray = None  # type: ignore
-_stem_ys2: np.ndarray = None  # type: ignore
-
 
 def _random_range(low: float, high: float, n: int) -> np.ndarray:
     return low + (high - low) * np.random.rand(n)
@@ -295,7 +322,6 @@ def _implot_init():
     global _implot_inited, _implot_xs
     global _filled_xs, _filled_ys1, _filled_ys2, _filled_ys3
     global _shaded_xs, _shaded_ys, _shaded_ys1, _shaded_ys2, _shaded_ys3, _shaded_ys4
-    global _stem_xs, _stem_ys1, _stem_ys2
     np.random.seed(0)
 
     _implot_xs = np.linspace(0, 1, 1001, dtype=np.float64)
@@ -314,11 +340,6 @@ def _implot_init():
     _shaded_ys3 = 0.75 + 0.2 * np.sin(25 * _shaded_xs)
     _shaded_ys4 = 0.75 + 0.1 * np.cos(25 * _shaded_xs)
 
-    # Stem plots (from original demo_stem_plots)
-    _stem_xs = np.linspace(0, 1, 51, dtype=np.float64)
-    _stem_ys1 = 1.0 + 0.5 * np.sin(25 * _stem_xs) * np.cos(2 * _stem_xs)
-    _stem_ys2 = 0.5 + 0.25 * np.sin(10 * _stem_xs) * np.sin(_stem_xs)
-
     _implot_inited = True
 
 
@@ -328,7 +349,7 @@ def _implot_subplot1_line_plots():
     ys1 = 0.5 + 0.5 * np.sin(6.0 * (_implot_xs + t))
     ys2 = 0.5 + 0.3 * np.cos(4.0 * (_implot_xs + t))
     ys3 = 0.5 + 0.2 * np.sin(10.0 * _implot_xs + t) * np.cos(3.0 * _implot_xs + t)
-    if implot.begin_plot("Line Plots"):
+    if implot.begin_plot("Line Plots", flags=_implot_flags()):
         implot.setup_axes("x", "y",
                           implot.AxisFlags_.no_tick_labels,
                           implot.AxisFlags_.no_tick_labels)
@@ -342,7 +363,7 @@ def _implot_subplot1_line_plots():
 
 def _implot_subplot2_filled():
     """Static filled line plots (stock prices)."""
-    if implot.begin_plot("Stock Prices"):
+    if implot.begin_plot("Stock Prices", flags=_implot_flags()):
         implot.setup_axes("Days", "Price")
         implot.setup_axes_limits(0, 100, 0, 500)
         spec = implot.Spec(fill_alpha=0.25)
@@ -358,7 +379,7 @@ def _implot_subplot2_filled():
 def _implot_subplot3_shaded():
     """Shaded plots (from original demo)."""
     spec = implot.Spec(fill_alpha=0.25)
-    if implot.begin_plot("Shaded Plots"):
+    if implot.begin_plot("Shaded Plots", flags=_implot_flags()):
         implot.setup_legend(implot.Location_.north_west, implot.LegendFlags_.reverse)
         implot.plot_shaded("Uncertain Data", _shaded_xs, _shaded_ys1, _shaded_ys2, spec)
         implot.plot_line("Uncertain Data", _shaded_xs, _shaded_ys, spec)
@@ -368,27 +389,33 @@ def _implot_subplot3_shaded():
         implot.end_plot()
 
 
-def _implot_subplot4_stems():
-    """Stem plots (from original demo)."""
-    if implot.begin_plot("Stem Plots"):
-        implot.setup_axis_limits(implot.ImAxis_.x1, 0, 1.0)
-        implot.setup_axis_limits(implot.ImAxis_.y1, 0, 1.6)
-        implot.plot_stems("Stems 1", _stem_xs, _stem_ys1)
-        implot.plot_stems("Stems 2", _stem_xs, _stem_ys2,
-                          spec=implot.Spec(marker=implot.Marker_.circle))
-        implot.end_plot()
+def _implot_flags() -> int:
+    """No legends on a phone: they would cover the small plots"""
+    return implot.Flags_.no_legend.value if is_small_screen() else 0
 
 
 def _implot_slide_gui(content_size: ImVec2):
+    """Three plots, and in the place of the fourth the picture of the ImPlot manual"""
     if not _implot_inited:
         _implot_init()
     sub_flags = implot.SubplotFlags_.no_resize
-    if implot.begin_subplots("##ImPlotShowcase", 2, 2, content_size, sub_flags):
-        _implot_subplot1_line_plots()
-        _implot_subplot2_filled()
-        _implot_subplot3_shaded()
-        _implot_subplot4_stems()
-        implot.end_subplots()
+    if not implot.begin_subplots("##ImPlotShowcase", 2, 2, content_size, sub_flags):
+        return
+    _implot_subplot1_line_plots()
+    _implot_subplot2_filled()
+    _implot_subplot3_shaded()
+    implot.end_subplots()
+    after = imgui.get_cursor_screen_pos()
+    top_left, bottom_right = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+    em = hello_imgui.em_size()
+    cell_min = ImVec2((top_left.x + bottom_right.x) / 2 + em, (top_left.y + bottom_right.y) / 2 + em * 0.5)
+    imgui.set_cursor_screen_pos(cell_min)
+    imgui.begin_child("##implot_manual", bottom_right - cell_min - ImVec2(em * 0.5, em * 0.5), False,
+                      imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_background)
+    _manual_teaser("Every plot type, with its code: the ImPlot manual", "manual_implot.py")
+    imgui.end_child()
+    imgui.set_cursor_screen_pos(after)
+    imgui.dummy(ImVec2(0, 0))  # ImGui wants an item where the cursor was moved
 
 
 # ============================================================================
@@ -822,6 +849,10 @@ def _lorenz_gui_side():
     imgui.spacing()
     if _accent_button(icons_fontawesome_4.ICON_FA_SYNC + "  Restart", ImVec2(avail, em * 1.8)):
         _lorenz_init_trajectories()
+    imgui.spacing()
+    imgui.separator()
+    imgui.spacing()
+    _manual_teaser("Every 3D plot type, with its code: the ImPlot3D manual", "manual_implot3d.py")
 
 
 def _lorenz_gui_side_narrow():
@@ -987,8 +1018,8 @@ def _spiral_controls(state: _SpiralState, width: float) -> None:
         state.reset()
     imgui.same_line()
     imgui.text(f"step {state.steps}  |  loss {state.losses[-1]:.3f}  |  {state.accuracy:.0%} right")
-    imgui.set_next_item_width(width - em * 7)
-    _, state.rate = imgui.slider_float("rate", state.rate, 0.01, 10.0, "%.2f", imgui.SliderFlags_.logarithmic)
+    imgui.set_next_item_width(width - em * 9)
+    _, state.rate = imgui.slider_float("learning rate", state.rate, 0.01, 10.0, "%.2f", imgui.SliderFlags_.logarithmic)
 
 
 def _spiral_slide_gui(content_size: ImVec2):
@@ -1450,8 +1481,6 @@ _table_bpm = 140.0
 _table_playing = True
 _table_accum = 0.0
 _table_hl_color = ImVec4(0.3, 0.5, 1.0, 0.25)
-MANUAL_PICTURE = SITE + "/resources/playground/manual_imgui.jpg"  # the Dear ImGui manual, as its card shows it
-MANUAL_PICTURE_ASPECT = 640 / 401  # its width / its height
 
 
 def _table_init():
@@ -1557,20 +1586,6 @@ def _table_bpm_knob(size_em: float):
     _, _table_bpm = _accent_knob("##bpm", _table_bpm, 60.0, 300.0, "%.0f", hello_imgui.em_size(size_em))
 
 
-def _manual_picture(width: float) -> None:
-    """The picture of the Dear ImGui manual, which opens it (when the page can open a demo)"""
-    top_left = imgui.get_cursor_screen_pos()
-    rich_md.render(f'<img src="{MANUAL_PICTURE}" width="{int(width)}">')
-    bottom_right = ImVec2(top_left.x + width, imgui.get_cursor_screen_pos().y)
-    if _host.open_demo is None or not imgui.is_mouse_hovering_rect(top_left, bottom_right):
-        return
-    imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
-    imgui.get_window_draw_list().add_rect(top_left, bottom_right, imgui.get_color_u32(imgui.Col_.button_hovered),
-                                          hello_imgui.em_size(0.3), 2.0)
-    if imgui.is_mouse_clicked(imgui.MouseButton_.left):
-        _host.open_demo("manual_imgui.py")
-
-
 def _table_gui_side():
     """Play, the tempo and the highlight's color on one row; below, the picture of the manual"""
     global _table_hl_color
@@ -1601,11 +1616,7 @@ def _table_gui_side():
     imgui.spacing()
     imgui.separator()
     imgui.spacing()
-    imgui.push_text_wrap_pos(imgui.get_window_width() - em * 0.5)
-    imgui.text_wrapped("All of Dear ImGui's widgets, with their code: the interactive manual")
-    imgui.pop_text_wrap_pos()
-    height_left = imgui.get_content_region_avail().y - em * 0.5
-    _manual_picture(min(imgui.get_window_width() - em, height_left * MANUAL_PICTURE_ASPECT))
+    _manual_teaser("All of Dear ImGui's widgets, with their code: the interactive manual", "manual_imgui.py")
 
 
 def _table_gui_side_narrow():
@@ -1655,6 +1666,13 @@ Euler's identity $e^{i\pi} + 1 = 0$ generalizes to:
 $$
 e^{i\theta} = \cos\theta + i\sin\theta
 $$
+### A diagram
+```mermaid
+flowchart LR
+    A[Markdown] --> B{rich_md}
+    B --> C[Text and math]
+    B --> D[Diagrams]
+```
 ## Tables with *resizable* columns and *alignment*
 |Id| Library    | What it does        |
 |-:|:----------:|---------------------|
@@ -1697,9 +1715,8 @@ def _markdown_source(size: ImVec2):
 
 
 def _markdown_rendered(size: ImVec2):
-    imgui.begin_child("##md_rendered", size, False, imgui.WindowFlags_.no_scrollbar)
-    rich_md.render(_markdown_text_editor.get_text())
-    imgui.end_child()
+    """The render, as a document: its table of contents beside it (or above it, when narrow)"""
+    rich_md.render_document("##md_rendered", _markdown_text_editor.get_text(), size)
 
 
 def _markdown_slide_gui(content_size: ImVec2):
@@ -1788,7 +1805,7 @@ ImGui::ColorPicker4("##color", &c.x);
     ("Mini Form",
      # Python
      """\
-_, name = imgui.input_text("Name", name)
+_changed, name = imgui.input_text("Name", name)
 if imgui.button("Greet") and name:
     greeting = f"Hello, {name}!"
 imgui.text_colored(ImVec4(0.4, 1, 0.4, 1), greeting)
@@ -1945,7 +1962,7 @@ def _gallery_gui_color(em: float, s):
 
 def _gallery_gui_form(em: float, s):
     imgui.set_next_item_width(-1)
-    _, s._name = imgui.input_text("Name", s._name)
+    _changed, s._name = imgui.input_text("Name", s._name)
     if imgui.button("Greet") and s._name:
         s._greeting = f"Hello, {s._name}!"
     imgui.text_colored(ImVec4(0.4, 1.0, 0.4, 1.0), s._greeting)
@@ -1987,7 +2004,7 @@ def links_row():
 
 ABOUT_TITLE = "About Dear ImGui Bundle"  # the window of the prose
 ABOUT_ANIMATION = 0.3  # s: the window of the prose slides up and fades in
-HEAD_SCALE_SMALL_SCREEN = 0.85  # the tagline's size on a phone, where it would take a third of the screen
+HEAD_SCALE_SMALL_SCREEN = 0.75  # the tagline's size on a phone, where it would take a third of the screen
 
 _welcome_head: list[str] = []  # the tagline and the subtitle: the paragraphs of welcome.md before its first section
 _welcome_rest = ""  # its sections, in the window of the prose
@@ -2177,7 +2194,7 @@ def slides() -> list[CarouselSlide]:
         _slides.append(CarouselSlide(
             "GPU-Accelerated Rendering",
             "Dear ImGui renders directly on the GPU, fast enough to blend custom shaders and 3D content into your UI.",
-            _shader_slide_gui, "demo_custom_background.py"))
+            _shader_slide_gui, "webgl_background_shader.py" if IS_PYODIDE else "demo_custom_background.py"))
     _slides.append(CarouselSlide(
         "3D Data Exploration",
         "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
@@ -2209,6 +2226,13 @@ def slides() -> list[CarouselSlide]:
         "No widget trees, no callbacks, no state sync. Each snippet below is the complete code for the live demo beside it. The interactive manuals read the same way: every section with its code.",
         _gallery_slide_gui, "manual_imgui.py"))
     return _slides
+
+
+def _slides_bg_color() -> int:
+    """The slides' background: the page's, a little darker (more so in a dark theme), so that they stand out"""
+    bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    k = 0.75 if 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z < 0.5 else 0.93
+    return imgui.color_convert_float4_to_u32(ImVec4(bg.x * k, bg.y * k, bg.z * k, 1.0))
 
 
 def _intro_mini_demos(host: Host, bottom_margin: float):
@@ -2270,6 +2294,8 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     slide_width = carousel_width
 
     slide_area_pos = imgui.get_cursor_screen_pos()
+    imgui.get_window_draw_list().add_rect_filled(  # behind the slides, which have no background of their own
+        slide_area_pos, slide_area_pos + ImVec2(carousel_width, slide_height), _slides_bg_color(), em * 0.5)
     imgui.begin_child("##carousel_zone", ImVec2(carousel_width, slide_height), False,
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse
                       | imgui.WindowFlags_.no_background)
@@ -2432,7 +2458,14 @@ def welcome_gui(host: Host):
 
 def gui(host: Optional[Host] = None):
     """The whole page: the title, the links row, the welcome"""
-    rich_md.render("# Dear ImGui Bundle")
+    if is_small_screen():  # the title smaller, in the font of a markdown title
+        font = rich_md.get_font(rich_md.MarkdownFontSpec(header_level_=1))
+        imgui.push_font(font.font, font.size * 0.7)
+        imgui.text("Dear ImGui Bundle")
+        imgui.pop_font()
+        imgui.separator()
+    else:
+        rich_md.render("# Dear ImGui Bundle")
     links_row()
     welcome_gui(host or Host())
 

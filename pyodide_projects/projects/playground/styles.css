@@ -1,6 +1,7 @@
 /* Reset and basic styles */
 html, body {
     height: 100%;
+    height: 100dvh;  /* the visible height: on a phone, Safari's toolbars would hide the bottom of 100% */
     margin: 0;
     font-family: Arial, sans-serif;
 }
@@ -652,6 +653,7 @@ body {
     position: relative;
     height: 100%;
     width: 100%;
+    background-color: #2d2d2d;  /* what shows while the canvas is empty, between two demos (not the page's white) */
 }
 
 /* The hint on a demo meant to be hacked, over the canvas, shown once (js/examples.js) */
