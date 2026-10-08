@@ -221,6 +221,7 @@ html, body {
     margin: 10px 0 16px;
 }
 .gallery-card {
+    container-type: inline-size;  /* its texts follow its width (cqi): smaller thumbnails, smaller texts */
     overflow: hidden;
     background-color: #292e3d;
     border: 1px solid #40404d;
@@ -301,7 +302,7 @@ html, body {
 }
 .gallery-tag {
     padding: 1px 7px;
-    font-size: 0.75em;
+    font-size: clamp(0.6em, 5cqi, 0.75em);
     color: #f0f5ff;
     border-radius: 10px;
 }
@@ -333,7 +334,7 @@ html, body {
 }
 .gallery-title {
     padding: 8px 10px 0;
-    font-size: 1.05em;
+    font-size: clamp(0.75em, 7cqi, 1.05em);  /* 7% of the card's width: 1.05em on a card of the default width */
     color: #fff;
     white-space: nowrap;
     overflow: hidden;
@@ -345,7 +346,7 @@ html, body {
     -webkit-box-orient: vertical;
     overflow: hidden;
     margin: 2px 10px 10px;  /* a margin, not a padding: a clamped box paints its third line in its padding */
-    font-size: 0.9em;
+    font-size: clamp(0.7em, 6cqi, 0.9em);
     color: #aaa;
 }
 
