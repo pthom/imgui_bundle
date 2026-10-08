@@ -192,6 +192,8 @@ namespace
                 demo.inPlace = d["in_place"];
                 for (const auto& v : d["variants"])
                     demo.variants.emplace_back(v["label"], v["python_file"]);
+                demo.page = d.value("page", "");
+                demo.video = d.value("video", "");
                 category.demos.push_back(demo);
             }
             categories.push_back(category);
@@ -822,6 +824,22 @@ void DemoLauncher::ShowCodeOf(const DemoEntry& demo)
     _codeView = std::make_pair(&demo, files);
 }
 
+// An action that opens a URL. In a browser, on a touch screen, the page opens it from the tap itself (a tap seen by
+// ImGui is too late for the browser to allow a new tab)
+void DemoLauncher::LinkAction(const char* label, const char* tooltip, const char* url)
+{
+    bool clicked = Action(label, tooltip);
+#ifdef __EMSCRIPTEN__
+    if (ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen)
+    {
+        HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+        return;
+    }
+#endif
+    if (clicked)
+        ImmApp::BrowseToUrl(url);
+}
+
 void DemoLauncher::Detail()
 {
     // The selected demo: its picture, its description, and what to do with it
@@ -849,6 +867,14 @@ void DemoLauncher::Detail()
     }
     ImGui::Dummy(ImVec2(0, Em(0.6f)));
 
+    if (!demo.page.empty())  // a page entry: its page and its video, nothing to run
+    {
+        LinkAction(ICON_FA_BOOK "  Read the page", "Opens the page in your browser", demo.page.c_str());
+        if (!demo.video.empty())
+            LinkAction(ICON_FA_FILM "  Watch the video", "Opens the video in your browser", demo.video.c_str());
+        ImGui::PopStyleVar();
+        return;
+    }
     if (!demo.variants.empty())  // e.g. the Python backends: one card, a combo picks the file to run and to show
     {
         int& index = _variant[demo.filename];

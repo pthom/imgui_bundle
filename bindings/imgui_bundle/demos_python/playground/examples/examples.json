@@ -510,6 +510,15 @@
             "where": "desktop"
         },
         {
+            "label": "A GUI beside a Jupyter notebook",
+            "filename": "notebooks.md",
+            "category": "Python specifics",
+            "where": "desktop",
+            "page": "https://imgui-bundle.pages.dev/doc/python/notebook-runners/",
+            "video": "https://www.youtube.com/watch?v=VqLz5F_bk60",
+            "uses": ["ImPlot"]
+        },
+        {
             "label": "Control the GLFW window",
             "filename": "demo_glfw_window_manip.py",
             "category": "Python specifics",

@@ -26,6 +26,10 @@ platform when it is bound to one ("Python specifics", "In the browser"); a refer
 code of each section beside it); a showcase to "Interactive science" when it teaches science, else to the category of
 what it shows off. Within a category, the entries are in the reader's order: simple first.
 
+A page entry (its "page": a URL, and an optional "video") is a page to read, not a demo to run: e.g. the notebooks,
+which run in Jupyter. Its "filename" is a markdown file, whose title and first paragraph play the docstring's role;
+the cards link to the page and the video instead of the code.
+
 Convention: an example's module docstring starts with a title (a first line, possibly "# Title", or underlined with
 = or -), then a blank line, then a paragraph that tells a visitor what the example shows. Its first sentence, the
 summary that the cards show, stands alone: it says what the example is about, in at most 120 characters. The menu
@@ -195,6 +199,8 @@ def write_cpp_catalog(manifest: dict[str, Any], docs: dict[str, dict[str, Any]])
             "cpp_file": cpp_path.relative_to(REPO).as_posix() if cpp_path is not None else None,
             "cpp_url": e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),  # "": none online
             "in_place": bool(e.get("in_place")),  # its function may be linked in the explorer
+            "page": e.get("page", ""),  # a page entry: its URL (it has no code to run)
+            "video": e.get("video", ""),
             "variants": [{"label": v["label"], "python_file": (folder / v["filename"]).resolve().relative_to(REPO).as_posix()}
                          for v in e.get("variants", [])],
         })
@@ -208,6 +214,8 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
     of a row align), the description is its summary, with the rest in a "More" dropdown, and the links are short, a row
     per language"""
     source, stem, where = e.get("source", "examples"), Path(e["filename"]).stem, e.get("where", "both")
+    if e.get("page"):
+        return page_card(e, docs, in_grid)
     path = disk_path(manifest["sources"], f"{source}/{e['filename']}")
     if "cpp" in e:  # a C++ version that is not the mirror of the Python file (e.g. in a submodule)
         cpp: Optional[Path] = REPO / e["cpp"]
@@ -257,8 +265,34 @@ def demo_card(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], e: dict
     return lines + [text, "", f"*{', '.join(tags)}*", ""] + uses_line + [" · ".join(links), ""]
 
 
+def page_links(e: dict[str, Any]) -> list[tuple[str, str]]:
+    """A page entry's links: (label, url), the page then the video"""
+    return [("Page", e["page"])] + ([("Video", e["video"])] if e.get("video") else [])
+
+
+def page_card(e: dict[str, Any], docs: dict[str, dict[str, Any]], in_grid: bool) -> list[str]:
+    """The card of a page entry: as a demo's, with the links to the page and its video instead of the code"""
+    stem = Path(e["filename"]).stem
+    picture = PICTURES / f"{stem}.jpg"
+    lines = []
+    if picture.is_file():
+        lines += [f":::{{image}} {os.path.relpath(picture, BOOK_PAGE.parent)}", f":alt: {e['label']}"]
+        lines += [":::", ""] if in_grid else [":width: 400px", ":::", ""]
+    heading = [f"### {e['label']}", ""]
+    lines = lines + heading if in_grid else heading + lines
+    text = docs.get(e["filename"], {}).get("text", "")
+    links = " · ".join(f"[{label}]({url})" for label, url in page_links(e))
+    if in_grid:
+        summary, rest = summary_and_rest(text)
+        return lines + [summary, ""] + ([":::{dropdown} More", rest, ":::", ""] if rest else []) + [links, ""]
+    return lines + [text, "", links, ""]
+
+
 def demo_code_links(manifest: dict[str, Any], e: dict[str, Any]) -> list[tuple[str, str]]:
-    """The code of a demo on GitHub: (language, url), Python first (one per variant when it has some), then C++"""
+    """The code of a demo on GitHub: (language, url), Python first (one per variant when it has some), then C++; for a
+    page entry, its page and its video"""
+    if e.get("page"):
+        return page_links(e)
     path = disk_path(manifest["sources"], f"{e.get('source', 'examples')}/{e['filename']}")
     links = [(f"Python ({v['label']})", f"{GITHUB}{(path.parent / v['filename']).relative_to(REPO).as_posix()}")
              for v in e.get("variants", [])] or [("Python", f"{GITHUB}{path.relative_to(REPO).as_posix()}")]
@@ -357,7 +391,8 @@ def main() -> None:
         if filename in docs:
             raise ValueError(f"{filename} is listed twice: examples_docs.json is keyed by file names")
         folder = EXAMPLES_DIR / manifest["sources"][example.get("source", "examples")]
-        docstring = ast.get_docstring(ast.parse((folder / filename).read_text()))
+        source_text = (folder / filename).read_text()
+        docstring = source_text if example.get("page") else ast.get_docstring(ast.parse(source_text))
         if docstring is None:
             print(f"warning: {filename} has no docstring")
             continue
@@ -370,7 +405,8 @@ def main() -> None:
         if len(plain(summary)) > MAX_SUMMARY and example.get("launcher", True):  # "launcher": false has no card
             print(f"warning: {filename}: its summary (first sentence) has {len(plain(summary))} characters "
                   f"(more than {MAX_SUMMARY})")
-        files = [folder / v["filename"] for v in example.get("variants", [])] or [folder / filename]
+        files = [] if example.get("page") else ([folder / v["filename"] for v in example.get("variants", [])]
+                                                or [folder / filename])
         docs[filename] = {"title": title, "text": text, "summary": summary,
                           "uses": example.get("uses", uses(files)),  # "uses" in examples.json: the imports mislead
                           "cpp": cpp_file(example, (folder / filename).resolve()) is not None}  # the gallery's C++ tag

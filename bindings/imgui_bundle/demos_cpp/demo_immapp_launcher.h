@@ -32,6 +32,8 @@ struct DemoEntry
     std::string cppUrl;      // where its C++ version runs online (the explorer's page by default; "" when it cannot)
     bool inPlace = false;    // its function may be linked in the explorer
     std::vector<std::pair<std::string, std::string>> variants;  // the same demo in other files: label, Python file
+    std::string page;        // a page entry (e.g. the notebooks): its URL; it has no code to run or show
+    std::string video;       // a page entry's video, if any
 
     std::vector<std::string> Tags() const;
 };
@@ -98,6 +100,7 @@ private:
     void SmoothScroll();
     void Gallery();
     bool Action(const char* label, const char* tooltip);
+    void LinkAction(const char* label, const char* tooltip, const char* url);
     void Detail();
     void DetailPage();
     void ShowCode();

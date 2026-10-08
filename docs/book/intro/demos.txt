@@ -176,6 +176,10 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py
 - Run code alongside the GUI (async) (desktop only): The GUI runs as an asyncio task, while a Python loop keeps computing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop yields with await asyncio.sleep(0) to share the event loop. See async support.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py
+- A GUI beside a Jupyter notebook (desktop only): A GUI that stays open beside a Jupyter notebook while its cells run. Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and immapp.nb.start() that returns at once); its video trains a neural network live, its learning rate on a slider.
+  Uses: ImPlot
+  Page: https://imgui-bundle.pages.dev/doc/python/notebook-runners/
+  Video: https://www.youtube.com/watch?v=VqLz5F_bk60
 - Control the GLFW window (desktop only): glfw_utils.glfw_window_hello_imgui() returns the GLFW window that Hello ImGui created. With it, any function of pyGLFW works on your app's window. Here, buttons maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in the taskbar.
   Uses: GLFW
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py

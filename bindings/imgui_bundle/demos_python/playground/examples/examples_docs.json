@@ -455,6 +455,15 @@
     "uses": [],
     "cpp": false
   },
+  "notebooks.md": {
+    "title": "A GUI beside a Jupyter notebook",
+    "text": "A GUI that stays open beside a Jupyter notebook while its cells run. Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and `immapp.nb.start()` that returns at once); its video trains a neural network live, its learning rate on a slider.",
+    "summary": "A GUI that stays open beside a Jupyter notebook while its cells run.",
+    "uses": [
+      "ImPlot"
+    ],
+    "cpp": false
+  },
   "demo_glfw_window_manip.py": {
     "title": "Control the native window with GLFW: maximize, move, opacity.",
     "text": "`glfw_utils.glfw_window_hello_imgui()` returns the [GLFW](https://www.glfw.org) window that Hello ImGui created. With\nit, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works on your app's window. Here, buttons\nmaximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in\nthe taskbar.",

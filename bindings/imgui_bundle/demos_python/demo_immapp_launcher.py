@@ -72,6 +72,8 @@ class Demo:
     cpp_path: Optional[Path]  # its C++ version, if any
     cpp_url: str  # where its C++ version runs online (the explorer's page by default; "" when it cannot run there)
     variants: list[tuple[str, Path]] = field(default_factory=list)  # the same demo in other files (label, file)
+    page: str = ""  # a page entry (e.g. the notebooks): its URL; it has no code to run or show
+    video: str = ""  # a page entry's video, if any
 
     @property
     def stem(self) -> str:
@@ -121,6 +123,8 @@ def load_catalog() -> list[Category]:
             cpp_path=cpp_path if cpp_path is not None and cpp_path.exists() else None,
             cpp_url=e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html"),
             variants=[(v["label"], (folder / v["filename"]).resolve()) for v in e.get("variants", [])],
+            page=e.get("page", ""),
+            video=e.get("video", ""),
         ))
     return [c for c in categories.values() if c.demos]
 
@@ -652,6 +656,13 @@ class Launcher:
             imgui.text_disabled("Uses: " + ", ".join(demo.uses))
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
+        if demo.page:  # a page entry: its page and its video, nothing to run
+            if self.action(fa.ICON_FA_BOOK + "  Read the page", "Opens the page in your browser"):
+                open_url(demo.page)
+            if demo.video and self.action(fa.ICON_FA_FILM + "  Watch the video", "Opens the video in your browser"):
+                open_url(demo.video)
+            imgui.pop_style_var()
+            return
         path = demo.path
         if demo.variants:  # e.g. the Python backends: one card, a combo picks the file to run and to show
             index = self.variant.get(demo.filename, 0)

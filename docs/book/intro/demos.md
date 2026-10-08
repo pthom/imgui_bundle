@@ -873,6 +873,19 @@ The window shows both rates: the GUI's frames per second, and the loop's computa
 ::::
 
 ::::{card}
+### A GUI beside a Jupyter notebook
+
+A GUI that stays open beside a Jupyter notebook while its cells run.
+
+:::{dropdown} More
+Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and `immapp.nb.start()` that returns at once); its video trains a neural network live, its learning rate on a slider.
+:::
+
+[Page](https://imgui-bundle.pages.dev/doc/python/notebook-runners/) · [Video](https://www.youtube.com/watch?v=VqLz5F_bk60)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_glfw_window_manip.jpg
 :alt: Control the GLFW window
 :class: demo-fit

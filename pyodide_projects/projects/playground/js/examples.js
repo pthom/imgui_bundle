@@ -245,7 +245,7 @@ function makeCard(example, category) {
     img.alt = '';
     img.loading = 'lazy';
     img.onerror = () => { img.remove(); picture.classList.add('gallery-no-picture'); };  // no picture yet
-    img.src = '../resources/playground/' + example.filename.split('/').pop().replace(/\.py$/, '.jpg');
+    img.src = '../resources/playground/' + example.filename.split('/').pop().replace(/\.(py|md)$/, '.jpg');
     const tags = element('span', 'gallery-tags');
     tags.appendChild(element('span', 'gallery-tag python', 'Python'));
     if (doc.cpp) tags.appendChild(element('span', 'gallery-tag cpp', 'C++'));
@@ -258,6 +258,10 @@ function makeCard(example, category) {
     card.append(picture, element('div', 'gallery-title', example.label), element('div', 'gallery-summary', summary));
     if (unmet.length) return card;  // greyed, not clickable
     card.addEventListener('click', async () => {
+        if (example.page) {  // a page entry (e.g. the notebooks): its page, in a new tab; nothing to run here
+            window.open(example.page, '_blank', 'noopener');
+            return;
+        }
         closeGallery();
         await loadDemoByFilename(example.filename);
     });
@@ -439,6 +443,10 @@ function markOwnCodeSwitch(example) {
 async function loadDemoByFilename(filename, updateHistory = true) {
     // Look up in metadata (includes hidden demos)
     const example = examplesMetadata.find(e => e.filename === filename);
+    if (example && example.page) {  // a link to a page entry (?demo=notebooks.md): the page itself
+        window.location.assign(example.page);
+        return;
+    }
     const packages = example ? example.packages : undefined;
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;
