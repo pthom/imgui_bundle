@@ -97,7 +97,7 @@ void py_init_module_rich_md(nb::module_& m)
     m.def("render",
         RichMd::Render,
         nb::arg("markdown_string"),
-        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its transclusions\n are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).");
+        " Renders a markdown string. Its common indentation is removed first (so that a string written\n inside an indented function renders as expected; no-op on flush-left text), then its transclusions\n are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).\n Its size follows a size pushed with ImGui::PushFont(None, size), relative to the frame's base size:\n PushFont(None, ImGui::GetStyle().FontSizeBase * 0.8) renders it at 80%.");
 
     m.def("render_raw",
         RichMd::RenderRaw,
@@ -389,7 +389,7 @@ void py_init_module_rich_md(nb::module_& m)
 
 
     m.def("get_code_font",
-        RichMd::GetCodeFont);
+        RichMd::GetCodeFont, "The markdown's fonts, at the size that a render would use now (see Render(): they follow a pushed size)");
 
 
     auto pyClassMarkdownFontSpec =

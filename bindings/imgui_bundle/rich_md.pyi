@@ -202,6 +202,8 @@ def render(markdown_string: str) -> None:
     """Renders a markdown string. Its common indentation is removed first (so that a string written
     inside an indented function renders as expected; no-op on flush-left text), then its transclusions
     are resolved (see ResolveTransclusions; the files are read through the host's ReadAsset).
+    Its size follows a size pushed with ImGui::PushFont(None, size), relative to the frame's base size:
+    PushFont(None, ImGui::GetStyle().FontSizeBase * 0.8) renders it at 80%.
     """
     pass
 
@@ -676,6 +678,7 @@ class SizedFont:
 
 # SizedFont GetCodeFont();    /* original C++ signature */
 def get_code_font() -> SizedFont:
+    """The markdown's fonts, at the size that a render would use now (see Render(): they follow a pushed size)"""
     pass
 
 # struct MarkdownFontSpec    /* original C++ signature */
