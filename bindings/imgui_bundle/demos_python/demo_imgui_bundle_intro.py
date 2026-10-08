@@ -2465,8 +2465,9 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     dl = imgui.get_window_draw_list()
 
     # --- Carousel zone: use available height, maintain 4:3 aspect ratio ---
-    # On a phone the page scrolls rather than squeeze the slides (a large text setting halves the screen)
-    min_height = em * 26.0 if is_small_screen() else em * 15.0
+    # On a phone the welcome fits the screen, even with a large text setting: the arrows, the dots and the button stay
+    # in view, and nothing needs a vertical swipe (most of the page takes the finger: plots, editors, the cards)
+    min_height = em * 12.0 if is_small_screen() else em * 15.0
     carousel_height = max(imgui.get_content_region_avail().y - bottom_margin, min_height)
     carousel_width = carousel_height * (4.0 / 3.0)
     avail_width = imgui.get_content_region_avail().x
