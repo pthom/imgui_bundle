@@ -819,6 +819,10 @@ body {
     #pane-switch {
         display: inline-flex;
     }
+    /* A manual's demo: its own switch shows its code, and the playground's would read the same (js/examples.js) */
+    body.own-code-switch.pane-demo #pane-switch, body.own-code-switch.pane-demo #editor-toolbar-right {
+        display: none;
+    }
     body.pane-demo #editor, body.pane-demo #error-output {
         display: none;
     }

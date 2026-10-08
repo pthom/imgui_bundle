@@ -26,8 +26,7 @@ def gui() -> None:
         animate_logo("images/logo_imgui_600.jpg", 2.0, 0.45, "https://github.com/ocornut/imgui")
     rich_md.render("""
         # Dear ImGui
-        Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code
-        with the toggle at the top right.
+        Browse the demos below, and read their code beside them (on a small screen: under "Code").
     """)
     imgui.separator()
     show_manual("imgui", fallback=lambda: imgui.show_demo_window())

@@ -8,7 +8,7 @@ void gui_demo_im_anim()
 {
     RichMd::Render(R"(
         # ImAnim
-        ImAnim is an Animation Engine for Dear ImGui. Browse the demos below, and look at their code in the right panel! You may switch between C++ and Python code with the toggle at the top right of this window.
+        ImAnim is an Animation Engine for Dear ImGui. Browse the demos below, and read their code beside them (on a small screen: under "Code").
     )");
 
     ImGui::NewLine();

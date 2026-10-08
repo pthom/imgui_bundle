@@ -637,8 +637,8 @@ namespace {
                     ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
                 }
                 if (mode.narrow && !GNarrowLayout_CodeSeen)
-                    ImGui::TextWrapped("Open a section of the demo, or tap a widget in it, then switch to \"Code\" "
-                                       "at the top: it shows the source of that section.");
+                    ImGui::TextWrapped("Open a section of the demo, or tap a widget in it, then tap \"Code\" in the "
+                                       "switch above: it shows the source of that section.");
                 DemoMarker_ShowShortInfo();
                 lastCursorPos = ImGui::GetCursorScreenPos();
                 ImGui::EndChild();

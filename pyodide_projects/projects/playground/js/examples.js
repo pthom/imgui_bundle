@@ -382,6 +382,14 @@ function closeGallery() {
     document.getElementById('examples-button').setAttribute('aria-expanded', 'false');
 }
 
+// The interactive manuals have their own "Demo | Code" switch, for the code of their demo. On a phone, the playground's
+// switch hides while their demo shows (styles.css): one switch on screen. It comes back with the code pane (an error).
+function markOwnCodeSwitch(example) {
+    const own = !!example && example.category === 'Interactive manuals';
+    document.body.classList.toggle('own-code-switch', own);
+    if (own && narrowScreen.matches) setPane('demo');
+}
+
 // Load a demo by filename (works for both visible and hidden demos)
 async function loadDemoByFilename(filename, updateHistory = true) {
     // Look up in metadata (includes hidden demos)
@@ -390,6 +398,7 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;
     const source = example ? example.source : undefined;
+    markOwnCodeSwitch(example);
     await loadExample(filename, packages, label, bundleFolders, source);
     markCurrentExample(filename);
     // Update browser URL and history
@@ -468,6 +477,7 @@ document.addEventListener('DOMContentLoaded', () => {
             editor.setValue(initialCode);
             setLoadedCode(initialCode);
             loadedExampleFilename = null;
+            markOwnCodeSwitch(null);
             setEditorLabel('Welcome to Dear ImGui Bundle');
             clearError();
             markCurrentExample('landing_page.py');
