@@ -103,6 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
             placement: 'bottom',
             maxWidth: 300,
             theme: 'light-border',
+            // While it shows, a transparent backdrop under it: a click beside it closes it, and does nothing else (it
+            // would reach a card, or the canvas). Its close button closes it too.
+            onShow(instance) {
+                const backdrop = document.createElement('div');
+                backdrop.id = 'about-backdrop';
+                backdrop.addEventListener('click', () => instance.hide());
+                document.body.appendChild(backdrop);
+            },
+            onMount(instance) {
+                instance.popper.querySelector('.about-close').addEventListener('click', () => instance.hide());
+            },
+            onHide() {
+                const backdrop = document.getElementById('about-backdrop');
+                if (backdrop) backdrop.remove();
+            },
         });
     } catch (error) {
         console.error('Error loading Tippy.js:', error);

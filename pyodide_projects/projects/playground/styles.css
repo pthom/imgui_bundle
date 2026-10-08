@@ -61,6 +61,23 @@ html, body {
 .about-popup p {
     margin: 6px 0 0;
 }
+.about-close {
+    float: right;
+    margin: -2px -2px 0 8px;
+    padding: 0 6px;
+    font-size: 1.2em;
+    line-height: 1.2;
+    color: inherit;
+    background: transparent;
+    border: 1px solid #777;
+    border-radius: 4px;
+    cursor: pointer;
+}
+#about-backdrop {  /* under the (i)'s note while it shows (js/main.js): a click beside the note closes it, and only that */
+    position: fixed;
+    inset: 0;
+    z-index: 9998;  /* under the note (tippy's 9999), over the page and the gallery */
+}
 .about-popup a {
     color: #8cb4ff;  /* the title link's color */
 }
