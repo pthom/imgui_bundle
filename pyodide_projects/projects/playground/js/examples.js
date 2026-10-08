@@ -1,12 +1,14 @@
 // js/examples.js
 
-// Initial code in example/_initial_code.py
-// ========================================
+// The welcome: the explorer's intro module, served from demos_python (its entry in examples.json)
+// ==============================================================================================
+const WELCOME_FILENAME = 'demo_imgui_bundle_intro.py';
+const WELCOME_SOURCE = 'demos_python';
 
 // load the initial example code
 async function initial_example_code() {
     try {
-        const response = await fetch('examples/landing_page.py');
+        const response = await fetch(`${WELCOME_SOURCE}/${WELCOME_FILENAME}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -16,6 +18,29 @@ async function initial_example_code() {
         console.error('Error loading initial code:', error);
         return `# Fallback initial code\nprint("Failed to load initial code.")`;
     }
+}
+
+// Before the welcome runs: the files it reads (welcome.md, resources.md) in Pyodide's file system, and the editor
+// folded (its 1500 lines are not what the visitor came for; the "Code" rail unfolds it)
+async function prepareWelcome() {
+    if (examplesMetadata.length === 0) examplesMetadata = await fetchExampleMetadata();
+    const welcome = examplesMetadata.find(e => e.filename === WELCOME_FILENAME);
+    if (welcome) await installBundleFiles(welcome.bundle_files, welcome.source);
+    if (!narrowScreen.matches) setCodeFolded(true);
+}
+
+// A demo meant to be hacked (the Start here category): a hint, once, that the code at the left is the point
+let hackHintShown = false;
+function showHackHint(example) {
+    if (hackHintShown || !example || example.category !== 'Start here' || example.filename === WELCOME_FILENAME) return;
+    hackHintShown = true;
+    const hint = document.createElement('div');
+    hint.id = 'hack-hint';
+    hint.textContent = narrowScreen.matches ? 'Try it: open the Code, edit it, then Run'
+                                            : 'Try it: edit the code at the left, then click Run';
+    document.getElementById('canvas-container').appendChild(hint);
+    setTimeout(() => hint.classList.add('fading'), 6000);
+    hint.addEventListener('transitionend', () => hint.remove(), {once: true});
 }
 
 // Check URL for ?demo=filename parameter
@@ -120,12 +145,29 @@ async function installBundleFolders(bundleFolders, source) {
     }
 }
 
+// A few files from a big folder (examples.json "bundle_files": paths from the example's source folder), written
+// into Pyodide's file system at the same place as a bundle folder's files (/home/pyodide/<path without ../>)
+async function installBundleFiles(bundleFiles, source) {
+    if (!bundleFiles || bundleFiles.length === 0 || !pyodide) return;
+    for (const file of bundleFiles) {
+        const resp = await fetch(`${source || 'examples'}/${file}`);
+        if (!resp.ok) {
+            console.warn(`Bundle file not found: ${file}`);
+            continue;
+        }
+        const path = `/home/pyodide/${file.replace(/^(\.\.\/)+/, '')}`;
+        pyodide.FS.mkdirTree(path.substring(0, path.lastIndexOf('/')));
+        pyodide.FS.writeFile(path, new Uint8Array(await resp.arrayBuffer()));
+    }
+}
+
 // Function to load example content (and install packages + bundle folders if needed).
 // source: the served folder of the example's file (examples.json "source"; e.g. demos_immapp), examples by default
-async function loadExample(filename, packages, label, bundleFolders, source) {
+async function loadExample(filename, packages, label, bundleFolders, source, bundleFiles) {
     try {
         await installExamplePackages(packages);
         await installBundleFolders(bundleFolders, source);
+        await installBundleFiles(bundleFiles, source);
         const response = await fetch(`${source || 'examples'}/${filename}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -397,10 +439,13 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     const packages = example ? example.packages : undefined;
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;
+    const bundleFiles = example ? example.bundle_files : undefined;
     const source = example ? example.source : undefined;
     markOwnCodeSwitch(example);
-    await loadExample(filename, packages, label, bundleFolders, source);
+    if (!narrowScreen.matches) setCodeFolded(filename === WELCOME_FILENAME);  // the welcome hides the code
+    await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
     markCurrentExample(filename);
+    showHackHint(example);
     // Update browser URL and history
     if (updateHistory) {
         const url = new URL(window.location);
@@ -440,7 +485,7 @@ async function loadDemoFromUrlIfNeeded() {
 
 // Initialize the examples menu on page load
 document.addEventListener('DOMContentLoaded', () => {
-    buildGallery().then(() => markCurrentExample(getDemoFromUrl() || 'landing_page.py'));
+    buildGallery().then(() => markCurrentExample(getDemoFromUrl() || WELCOME_FILENAME));
 
     const gallery = document.getElementById('gallery');
     document.getElementById('examples-button').addEventListener('click', () => {
@@ -480,7 +525,8 @@ document.addEventListener('DOMContentLoaded', () => {
             markOwnCodeSwitch(null);
             setEditorLabel('Welcome to Dear ImGui Bundle');
             clearError();
-            markCurrentExample('landing_page.py');
+            markCurrentExample(WELCOME_FILENAME);
+            await prepareWelcome();
             await runEditorPythonCode();
         }
     });

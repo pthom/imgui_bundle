@@ -174,7 +174,7 @@ MAIN_WINDOW = "Main window (title bar invisible)"  # Hello ImGui's full window, 
 
 
 SHOTS: dict[str, Shot] = {
-    "landing_page.py": Shot(crop=(0.0, 0.02, 0.49, 0.57)),
+    "demo_imgui_bundle_intro.py": Shot(frames=90),  # the welcome: its first slide, once the carousel settled
     "welcome_imm_mode.py": Shot(crop=(0.0, 0.52, 0.66, 0.86)),
     "immvision.py": Shot(frames=120, crop=(0.0, 0.3, 0.75, 0.72)),
     "fiatlight_image.py": Shot(frames=200, setup=_fixed_picture, crop=(0.02, 0.08, 0.95, 0.82)),  # layout: fiat_settings

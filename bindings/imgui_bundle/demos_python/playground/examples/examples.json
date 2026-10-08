@@ -48,9 +48,11 @@
     "examples": [
         {
             "label": "Welcome to Dear ImGui Bundle",
-            "filename": "landing_page.py",
+            "filename": "demo_imgui_bundle_intro.py",
+            "source": "demos_python",
             "category": "Start here",
-            "launcher": false
+            "launcher": false,
+            "bundle_files": ["../demos_assets/welcome.md", "../demos_assets/resources.md"]
         },
         {
             "label": "What is an Immediate GUI",

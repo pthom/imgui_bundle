@@ -20,7 +20,7 @@ if importlib.util.find_spec("numpy") is None:
 
 from typing import Literal, Optional
 
-from imgui_bundle import imgui, hello_imgui, immapp, rich_md, ImVec2, ImVec4, em_size, icons_fontawesome_4 as fa
+from imgui_bundle import imgui, hello_imgui, immapp, ImVec2, ImVec4, em_size, icons_fontawesome_4 as fa
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
 from imgui_bundle.demos_python import demo_immapp_launcher
 from imgui_bundle.demos_python import demo_utils
@@ -105,6 +105,8 @@ class Explorer:
         self.forward = True  # the change goes from Welcome to Demos (the pages slide up), or back (down)
         self.launcher = demo_immapp_launcher.Launcher()
         self.nb_demos = sum(len(category.demos) for category in self.launcher.categories)
+        # What the welcome's button and links do here
+        self.host = demo_imgui_bundle_intro.Host(self.nb_demos, lambda: self.go(DEMOS), self.open_demo)
         self.right_width = 0.0  # of the header's switch, measured on the previous frame
 
     def gui(self) -> None:
@@ -177,18 +179,14 @@ class Explorer:
         width = imgui.get_content_region_avail().x
         right = imgui.get_cursor_pos_x() + width - em_size(0.5)
         one_row = title_width + self.right_width + em_size(1.5) <= width
-        if one_row:
-            if self.state == WELCOME:
-                sentence, color = "   Interactive apps in Python and C++, for desktop, web and mobile.", imgui.Col_.text_disabled
-            else:
-                sentence = "   Pick a demo: see it, run it, and read its code: each demo is a documented quickstart."
-                color = imgui.Col_.text
+        if one_row and self.state == DEMOS:  # the Welcome has its tagline below the links
+            sentence = "   Pick a demo: see it, run it, and read its code: each demo is a documented quickstart."
             # Only when it does not reach the switch; same_line only then: pending, it would make the title's row
             # the chips' line
             if title_width + imgui.calc_text_size(sentence).x + self.right_width + em_size(3) <= width:
                 imgui.same_line()
                 imgui.set_cursor_pos_y(top + em_size(0.75))  # the sentence sits on the title's baseline
-                imgui.text_colored(imgui.get_style_color_vec4(color), sentence)
+                imgui.text(sentence)
         # The cursor is set, not put on the same line (see above)
         imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5) if one_row else below_title))
         imgui.begin_group()
@@ -214,29 +212,20 @@ class Explorer:
 
     def welcome(self) -> None:
         demo_imgui_bundle_intro.links_row()
-        avail = imgui.get_content_region_avail()
-        imgui.begin_child("welcome", ImVec2(0, avail.y - em_size(3.5)))
-        demo_imgui_bundle_intro.welcome_gui()
+        imgui.begin_child("welcome")
+        demo_imgui_bundle_intro.welcome_gui(self.host)
         imgui.end_child()
-        # The call to action, centered
-        label = f"{fa.ICON_FA_TH_LARGE}  Browse the {self.nb_demos} demos"
-        imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
-        imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em_size(1.2), em_size(0.4)))
-        width = imgui.calc_text_size(label).x + em_size(2.4)
-        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail.x - width) / 2)
-        if imgui.button(label):
-            self.go(DEMOS)
-        imgui.pop_style_var()
-        imgui.pop_font()
-        if imgui.is_item_hovered(imgui.HoveredFlags_.delay_normal):
-            categories = ", ".join(category.name for category in self.launcher.categories)
-            imgui.begin_tooltip()
-            imgui.begin_child("tip", ImVec2(em_size(30), 0), imgui.ChildFlags_.auto_resize_y.value)  # wraps the text
-            rich_md.render(f"**{self.nb_demos} demos, in {len(self.launcher.categories)} categories:** {categories}.\n\n"
-                           "Each one is a documented quickstart: see it, run it, and read its code. Together they are "
-                           "the tutorials and the interactive manuals of the bundle.")
-            imgui.end_child()
-            imgui.end_tooltip()
+
+    def open_demo(self, filename: str) -> None:
+        """The welcome's links to a demo of the catalog: the Demos state, with that demo selected"""
+        launcher = self.launcher
+        demo = next((d for c in launcher.categories for d in c.demos if d.filename == filename), None)
+        if demo is None:
+            return
+        launcher.code_view = None
+        launcher.selected = demo
+        launcher.detail_open = demo_immapp_launcher.small_screen()
+        self.go(DEMOS)
 
 
 def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:

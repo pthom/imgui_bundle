@@ -245,7 +245,8 @@ async function initialize() {
     if (demoFromUrl) {
         await loadDemoFromUrlIfNeeded();
     } else {
-        // Run the initial example automatically
+        // Run the welcome (js/examples.js)
+        await prepareWelcome();
         await runEditorPythonCode();
     }
 }
