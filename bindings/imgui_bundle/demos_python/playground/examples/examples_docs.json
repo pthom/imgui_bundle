@@ -1,13 +1,20 @@
 {
-  "landing_page.py": {
-    "title": "Dear ImGui Bundle",
-    "text": "*Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear\nImGui](https://github.com/ocornut/imgui).*",
-    "summary": "*Interactive Python & C++ apps for desktop, mobile, and web - powered by [Dear ImGui](https://github.com/ocornut/imgui).*",
+  "demo_imgui_bundle_intro.py": {
+    "title": "Dear ImGui Bundle: the welcome page",
+    "text": "The first screen of the explorer and of the playground: the tagline, a carousel of live mini demos (plots, a\nshader, a neural network, images, a node editor, widgets, markdown, code), a button to the catalog of demos, and\nthe prose of demos_assets/welcome.md behind \"More info & links\". The page that shows it (the explorer, the playground)\ngives it a Host: what the button and the links do.",
+    "summary": "The first screen of the explorer and of the playground: the tagline, a carousel of live mini demos (plots, a shader, a neural network, images, a node editor, widgets, markdown, code), a button to the catalog of demos, and the prose of demos_assets/welcome.md behind \"More info & links\".",
     "uses": [
+      "ImPlot",
+      "ImPlot3D",
+      "ImmVision",
+      "knobs",
+      "toggles",
       "code editor",
+      "node editor",
+      "OpenGL",
       "browser APIs"
     ],
-    "cpp": false
+    "cpp": true
   },
   "welcome_imm_mode.py": {
     "title": "What is an Immediate GUI",

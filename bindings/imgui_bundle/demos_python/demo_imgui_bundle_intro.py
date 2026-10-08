@@ -1193,7 +1193,9 @@ if HAS_IMMVISION:
 # demos_node_editor/demo_node_editor_image_pipeline.py, with numpy filters)
 # ============================================================================
 
-PIPE_IMAGE_SIZE = (192, 144)  # the Julia set that enters the pipeline: width, height
+PIPE_IMAGE_SIZE = (200, 150)  # the image that enters the pipeline: width, height (a half of the pictures)
+PIPE_PICTURE = "images/golden_gate.jpg"  # an asset; from picsum.photos (Chris Brignola, Unsplash), copied
+PIPE_RANDOM_URL = "https://picsum.photos/400/300?random={}"  # a random picture (the number defeats the cache)
 PIPE_IMAGE_WIDTH_EM = 7.0  # the width of the images in the nodes (it gives the nodes their width)
 PIPE_LINK_COLOR = ImVec4(0.4, 0.75, 1.0, 1.0)
 PIPE_UNLINKED = ImVec4(0.3, 0.3, 0.3, 1.0)
@@ -1240,6 +1242,37 @@ def _pipe_overlay(image: np.ndarray, edges: np.ndarray, strength: float) -> np.n
     return overlaid
 
 
+def _half_size(image: np.ndarray) -> np.ndarray:
+    """The image at half its size (each pixel the mean of 2 x 2): the filters run four times faster"""
+    h, w = image.shape[0] // 2 * 2, image.shape[1] // 2 * 2
+    quads = image[:h, :w].astype(np.float32).reshape(h // 2, 2, w // 2, 2, -1)
+    half: np.ndarray = quads.mean(axis=(1, 3)).astype(np.uint8)
+    return half
+
+
+def _pipe_picture_from_bytes(file_bytes: bytes) -> Optional[np.ndarray]:
+    """A picture file's bytes decoded, at half size; None when they are not a picture, or when this build of the bundle
+    has no decoder (a Pyodide wheel older than immapp.decode_image)"""
+    if not hasattr(immapp, "decode_image"):
+        return None
+    try:
+        return _half_size(immapp.decode_image(file_bytes))
+    except ValueError:
+        return None
+
+
+def _pipe_default_picture() -> np.ndarray:
+    """The asset's picture, or a Julia set when it cannot be read"""
+    path = hello_imgui.asset_file_full_path(PIPE_PICTURE, assert_if_not_found=False)
+    picture = None
+    if path:
+        with open(path, "rb") as f:
+            picture = _pipe_picture_from_bytes(f.read())
+    if picture is None:
+        picture = _julia_image(PIPE_IMAGE_SIZE[0], PIPE_IMAGE_SIZE[1], -0.8 + 0.156j, 60)
+    return picture
+
+
 class _PipeNode:
     """A node of the pipeline: its pins, its parameter, and its result (computed again when an input or the
     parameter changes)"""
@@ -1249,16 +1282,23 @@ class _PipeNode:
         self.id = node_ed.NodeId.create()
         self.inputs = [(node_ed.PinId.create(), name) for name in inputs]
         self.output = node_ed.PinId.create()
-        self.param = param  # the Julia set's angle of c, the blur's sigma, the overlay's strength (None: no parameter)
+        self.param = param  # the blur's sigma, the overlay's strength (None: no parameter)
         self.result: Optional[np.ndarray] = None
         self.key: Any = None  # what the result was computed from
         self.version = 0  # one more at each new result: its image is sent again to the GPU
         self.shown_version = -1
+        # The Image node: its picture, and the download of a random one
+        self.picture: Optional[np.ndarray] = None
+        self.picture_version = 0
+        self.download: Optional[immapp.Download] = None
+        self.download_count = 0
+        self.download_error = ""
 
     def compute(self, inputs: list[np.ndarray]) -> np.ndarray:
-        if self.kind == "Julia set":
-            assert self.param is not None
-            return _julia_image(PIPE_IMAGE_SIZE[0], PIPE_IMAGE_SIZE[1], 0.7885 * np.exp(1j * self.param), 60)
+        if self.kind == "Image":
+            if self.picture is None:
+                self.picture = _pipe_default_picture()
+            return self.picture
         if self.kind == "Blur":
             assert self.param is not None
             return _pipe_blur(inputs[0], self.param)
@@ -1270,12 +1310,12 @@ class _PipeNode:
 
 class _PipeGraph:
     def __init__(self) -> None:
-        julia = _PipeNode("Julia set", [], 2.9)
+        julia = _PipeNode("Image", [], None)
         blur = _PipeNode("Blur", ["in"], 1.5)
         edges = _PipeNode("Edges", ["in"], None)
         overlay = _PipeNode("Overlay", ["image", "edges"], 0.8)
         self.nodes = [julia, blur, edges, overlay]
-        # Two levels, so that the link from the Julia set to the overlay passes under the blur and the edges
+        # Two levels, so that the link from the image to the overlay passes under the blur and the edges
         for node, position in ((julia, ImVec2(0, 6)), (blur, ImVec2(11, 0)), (edges, ImVec2(22, 0)),
                                (overlay, ImVec2(33, 11))):
             node_ed.set_node_position(node.id, position * em_size())  # in the editor's coordinates
@@ -1320,7 +1360,7 @@ class _PipeGraph:
             if node.result is not None:
                 node.result, node.key = None, None
             return None
-        key = (node.param, tuple((id(s), s.version) for s in sources if s is not None))
+        key = (node.param, node.picture_version, tuple((id(s), s.version) for s in sources if s is not None))
         if key != node.key:
             node.result = node.compute([i for i in inputs if i is not None])
             node.key = key
@@ -1357,11 +1397,11 @@ def _pipe_node(graph: _PipeGraph, node: _PipeNode) -> None:
         _pipe_pin(pin, node_ed.PinKind.input, graph.source(pin) is not None)
         imgui.same_line()
         imgui.text(name)
+    if node.kind == "Image":
+        _pipe_random_picture(node, width)
     if node.param is not None:
         imgui.set_next_item_width(width)
-        if node.kind == "Julia set":
-            _, node.param = imgui.slider_float("##param", node.param, 0.0, 2.0 * math.pi, "angle of c %.2f")
-        elif node.kind == "Blur":
+        if node.kind == "Blur":
             _, node.param = imgui.slider_float("##param", node.param, 0.0, 4.0, "sigma %.1f")
         else:
             _, node.param = imgui.slider_float("##param", node.param, 0.0, 1.0, "strength %.2f")
@@ -1380,6 +1420,28 @@ def _pipe_node(graph: _PipeGraph, node: _PipeNode) -> None:
     imgui.end_horizontal()
     imgui.pop_id()
     node_ed.end_node()
+
+
+def _pipe_random_picture(node: _PipeNode, width: float) -> None:
+    """The Image node's button: a random picture from picsum.photos, downloaded without blocking the GUI"""
+    if not hasattr(immapp, "decode_image"):
+        return  # this build cannot decode a download (a Pyodide wheel older than immapp.decode_image)
+    if node.download is not None:
+        if not node.download.done:
+            imgui.text_disabled("Downloading...")
+            hello_imgui.set_item_is_live()  # the download ends on its own
+            return
+        picture = _pipe_picture_from_bytes(node.download.data) if not node.download.error else None
+        node.download_error = "" if picture is not None else "No picture: offline?"
+        if picture is not None:
+            node.picture = picture
+            node.picture_version += 1
+        node.download = None
+    if imgui.button(icons_fontawesome_4.ICON_FA_RANDOM + " Random", ImVec2(width, 0)):
+        node.download_count += 1
+        node.download = immapp.start_download(PIPE_RANDOM_URL.format(node.download_count))
+    if node.download_error:
+        imgui.text_disabled(node.download_error)
 
 
 def _pipe_push_theme_colors() -> int:

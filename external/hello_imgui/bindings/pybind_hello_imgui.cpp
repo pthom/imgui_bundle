@@ -82,6 +82,30 @@ nb::handle FinalAppWindowScreenshot()
 namespace HelloImGui { float FinalAppWindowScreenshotFramebufferScale(); }
 
 
+// An image file's bytes (PNG, JPEG, BMP, GIF...) decoded by stb_image (LoadImageDataFromEncodedData), as a numpy array
+// that owns a copy of the pixels: (height, width, channels), or (height, width) for one channel
+nb::handle LoadImageDataFromEncodedData(const nb::bytes& fileBytes, int desiredChannels)
+{
+    HelloImGui::ImageData imageData = HelloImGui::LoadImageDataFromEncodedData(
+        fileBytes.c_str(), fileBytes.size(), desiredChannels);
+    if (imageData.data == nullptr)
+        throw nb::value_error("load_image_data_from_encoded_data: these bytes are not an image that stb_image decodes");
+
+    size_t width = (size_t)imageData.width, height = (size_t)imageData.height, channels = (size_t)imageData.channels;
+    size_t totalSize = width * height * channels;
+    uint8_t* pixels = new uint8_t[totalSize];
+    std::memcpy(pixels, imageData.data, totalSize);
+    imageData.Free();
+    nb::capsule owner(pixels, [](void* p) noexcept { delete[] static_cast<uint8_t*>(p); });
+
+    nb::ndarray<uint8_t, nb::numpy> array = (channels == 1)
+        ? nb::ndarray<uint8_t, nb::numpy>(pixels, {height, width}, owner, {(int64_t)width, 1})
+        : nb::ndarray<uint8_t, nb::numpy>(pixels, {height, width, channels}, owner,
+                                          {(int64_t)(width * channels), (int64_t)channels, 1});
+    return nb::detail::type_caster<nb::ndarray<uint8_t, nb::numpy>>::from_cpp(array, nb::rv_policy::move, nullptr);
+}
+
+
 //
 // Tooling to expose set_load_asset_file_data_function
 //
@@ -126,6 +150,8 @@ void py_init_module_hello_imgui(nb::module_& m)
 
     m.def("final_app_window_screenshot", FinalAppWindowScreenshot);
     m.def("final_app_window_screenshot_framebuffer_scale", HelloImGui::FinalAppWindowScreenshotFramebufferScale);
+    m.def("load_image_data_from_encoded_data", LoadImageDataFromEncodedData,
+          nb::arg("file_bytes"), nb::arg("desired_channels") = 4);
 
     m.def("get_glfw_window_address", []() {
         return (size_t) HelloImGui::GetRunnerParams()->backendPointers.glfwWindow;

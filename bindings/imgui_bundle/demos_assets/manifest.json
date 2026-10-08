@@ -9,6 +9,7 @@
   "images/bear_transparent.png",
   "images/bundle_playground.jpg",
   "images/demo_tex_inspect.png",
+  "images/golden_gate.jpg",
   "images/haiku.png",
   "images/house.jpg",
   "images/imgui_notebook.jpg",
@@ -17,5 +18,6 @@
   "images/nanovg_full_demo.jpg",
   "images/tennis.jpg",
   "nanovg_demo_images/image1.jpg",
-  "resources.md"
+  "resources.md",
+  "welcome.md"
 ]

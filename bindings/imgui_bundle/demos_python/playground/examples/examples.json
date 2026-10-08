@@ -52,7 +52,8 @@
             "source": "demos_python",
             "category": "Start here",
             "launcher": false,
-            "bundle_files": ["../demos_assets/welcome.md", "../demos_assets/resources.md"]
+            "bundle_files": ["../demos_assets/welcome.md", "../demos_assets/resources.md",
+                             "../demos_assets/images/golden_gate.jpg"]
         },
         {
             "label": "What is an Immediate GUI",

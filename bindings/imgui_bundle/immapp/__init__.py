@@ -276,6 +276,17 @@ async def download_url_bytes_async(url: str, timeout_s: float = 10.0) -> bytes:
 __all__.append("download_url_bytes_async")
 
 
+def decode_image(file_bytes: bytes, channels: int = 3) -> Any:
+    """Decodes an image file's bytes (PNG, JPEG, BMP, GIF, TGA...; the format is detected), e.g. downloaded with
+    start_download(): a numpy array of uint8, (height, width, channels). channels: 3 = RGB, 4 = RGBA, 1 = gray
+    (then (height, width)). Raises ValueError when the bytes are not an image.
+    No OpenCV needed, in Pyodide too (it is hello_imgui.load_image_data_from_encoded_data(), with stb_image)."""
+    from imgui_bundle import hello_imgui
+    return hello_imgui.load_image_data_from_encoded_data(file_bytes, channels)
+
+__all__.append("decode_image")
+
+
 class Download:
     """A request running in the background, started by start_download(). Look at `done` at each frame, then at
     `error` and `data`."""

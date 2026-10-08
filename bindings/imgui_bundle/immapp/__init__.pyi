@@ -1,3 +1,5 @@
+import numpy as np
+
 from . import immapp_cpp as immapp_cpp
 from .immapp_cpp import (
     clock_seconds as clock_seconds,
@@ -75,6 +77,14 @@ async def download_url_bytes_async(url: str, timeout_s: float = 10.0) -> bytes:
         url: the URL to download from
         timeout_s: how long to wait for the server's answer
     """
+    ...
+
+
+def decode_image(file_bytes: bytes, channels: int = 3) -> np.ndarray:
+    """Decodes an image file's bytes (PNG, JPEG, BMP, GIF, TGA...; the format is detected), e.g. downloaded with
+    start_download(): a numpy array of uint8, (height, width, channels). channels: 3 = RGB, 4 = RGBA, 1 = gray
+    (then (height, width)). Raises ValueError when the bytes are not an image.
+    No OpenCV needed, in Pyodide too (it is hello_imgui.load_image_data_from_encoded_data(), with stb_image)."""
     ...
 
 
