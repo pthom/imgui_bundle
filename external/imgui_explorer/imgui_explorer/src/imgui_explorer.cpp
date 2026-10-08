@@ -25,11 +25,33 @@ namespace
         ImGui::TextUnformatted(text);
         ImGui::PopStyleColor();
         ImGui::SetItemTooltip("%s", url);
-        if (ImGui::IsItemClicked())
+        // In the browser, on a touch screen, the page opens the url from the touch itself (a tap seen by ImGui comes
+        // too late for the browser): the click then does nothing more. A mouse click on such a device still opens it.
+        bool tapOpensUrl = (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen) != 0;
+        if (tapOpensUrl)
+            HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+        bool isTap = tapOpensUrl && ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
+        if (ImGui::IsItemClicked() && !isTap)
             ImmApp::BrowseToUrl(url);
         if (ImGui::IsItemHovered())
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
     };
+
+    // Below this width (in em), the explorer shows one pane at a time, the demo or the code (an upright phone)
+    constexpr float kNarrowWidthEm = 50.f;
+    // Below this height (in em), the status bar goes to the "..." menu (a sideways phone)
+    constexpr float kShortHeightEm = 36.f;
+
+    // How the explorer fits the space it has
+    struct LayoutMode
+    {
+        bool narrow = false;        // one pane at a time, a "Demo | Code" switch, the library in a combo
+        bool statusInMenu = false;  // the status bar's content is in the "..." menu
+        bool CompactToolbar() const { return narrow || statusInMenu; }  // the intro and the links in the "..." menu
+    };
+
+    bool GNarrowLayout_ShowsCode = false;  // one pane at a time: the code is shown, otherwise the demo
+    bool GNarrowLayout_CodeSeen = false;   // the code was shown once: the tip above the demo goes away
 
     bool                                GDemoMarker_FlagFollowSource = true;
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
@@ -228,52 +250,164 @@ namespace
             DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
     }
 
-    // Top toolbar: library selection buttons + C++/Python toggle
-    void ShowLibraryToolbar()
+    // The library: buttons, or a combo where they do not fit (nothing in single-library mode)
+    void GuiSelectLibrary(bool asCombo)
     {
-        auto guiSelectLibrary = []()
-        {
-            if (! IsSingleLibraryMode())
-            {
-                // Multi-library mode: show library selection buttons
-                const auto& libs = GetAllLibraryConfigs();
-                int currentIdx = GetCurrentLibraryIndex();
+        if (IsSingleLibraryMode())
+            return;
 
+        const auto& libs = GetAllLibraryConfigs();
+        int currentIdx = GetCurrentLibraryIndex();
+
+        if (asCombo)
+        {
+            ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
+            if (ImGui::BeginCombo("##library", libs[currentIdx].name.c_str()))
+            {
                 for (size_t i = 0; i < libs.size(); ++i)
-                {
-                    ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
-                    bool isSelected = ((int)i == currentIdx);
-                    if (isSelected)
-                        ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
-                    if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.4f)))
+                    if (ImGui::Selectable(libs[i].name.c_str(), (int)i == currentIdx))
                         SetCurrentLibraryIndex((int)i);
-
-                    if (isSelected)
-                        ImGui::PopStyleColor();
-                    ImGui::PopStyleVar();
-                }
+                ImGui::EndCombo();
             }
-        };
+            return;
+        }
 
-        auto guiPythonCppToggle = []()
+        for (size_t i = 0; i < libs.size(); ++i)
         {
-            if (DemoCodeViewer_IsPythonOnlyMode())
-            {
-                ImGui::Text("C++ & Python code: ");
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemSpacing.x);
-                RenderLink("Online Explorer", "https://imgui-bundle.pages.dev/explorer/");
-            }
+            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
+            bool isSelected = ((int)i == currentIdx);
+            if (isSelected)
+                ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
+            if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.4f)))
+                SetCurrentLibraryIndex((int)i);
+
+            if (isSelected)
+                ImGui::PopStyleColor();
+            ImGui::PopStyleVar();
+        }
+    }
+
+    // C++/Python toggle (to be called inside a horizontal layout)
+    void GuiPythonCppToggle()
+    {
+        if (DemoCodeViewer_IsPythonOnlyMode())
+        {
+            ImGui::Text("C++ & Python code: ");
+            ImGui::SetCursorPosX(ImGui::GetCursorPosX() - ImGui::GetStyle().ItemSpacing.x);
+            RenderLink("Online Explorer", "https://imgui-bundle.pages.dev/explorer/");
+        }
+        else
+        {
+            bool showPython = DemoCodeViewer_GetShowPython();
+            if (ImGui::RadioButton("C++", !showPython))
+                DemoCodeViewer_SetShowPython(false);
+            if (ImGui::RadioButton("Python", showPython))
+                DemoCodeViewer_SetShowPython(true);
+        }
+    }
+
+    // One pane at a time: a segmented control "Demo | Code", whose selected half is filled
+    void GuiDemoCodeSwitch()
+    {
+        ImVec2 size = HelloImGui::EmToVec2(8.f, 1.5f);
+        ImVec2 p0 = ImGui::GetCursorScreenPos();
+        ImVec2 p1(p0.x + size.x, p0.y + size.y);
+        float xMid = p0.x + size.x * 0.5f;
+        // The position of the press, rather than of the release: a touch screen may not report the latter
+        if (ImGui::InvisibleButton("##demo_code_switch", size))
+            GNarrowLayout_ShowsCode = ImGui::GetIO().MouseClickedPos[0].x >= xMid;
+        if (GNarrowLayout_ShowsCode)
+            GNarrowLayout_CodeSeen = true;
+
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        float rounding = size.y * 0.5f;
+        auto fillHalf = [&](bool codeHalf, ImGuiCol col)
+        {
+            if (codeHalf)
+                drawList->AddRectFilled(ImVec2(xMid, p0.y), p1, ImGui::GetColorU32(col), rounding,
+                                        ImDrawFlags_RoundCornersRight);
+            else
+                drawList->AddRectFilled(p0, ImVec2(xMid, p1.y), ImGui::GetColorU32(col), rounding,
+                                        ImDrawFlags_RoundCornersLeft);
+        };
+        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
+        if (ImGui::IsItemHovered())
+        {
+            bool overCode = ImGui::GetIO().MousePos.x >= xMid;
+            if (overCode != GNarrowLayout_ShowsCode)
+                fillHalf(overCode, ImGuiCol_FrameBgHovered);
+        }
+        fillHalf(GNarrowLayout_ShowsCode, ImGuiCol_ButtonActive);
+        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Border), rounding);
+
+        const char* labels[2] = {"Demo", "Code"};
+        for (int i = 0; i < 2; ++i)
+        {
+            ImVec2 textSize = ImGui::CalcTextSize(labels[i]);
+            ImVec2 textPos(p0.x + size.x * 0.5f * (float)i + (size.x * 0.5f - textSize.x) * 0.5f,
+                           p0.y + (size.y - textSize.y) * 0.5f);
+            drawList->AddText(textPos, ImGui::GetColorU32(ImGuiCol_Text), labels[i]);
+        }
+    }
+
+    // The "..." button of a small screen, and its menu: the library's intro and links, then the status bar's content
+    void GuiExplorerMenu(bool withStatus)
+    {
+        if (ImGui::Button(ICON_FA_ELLIPSIS_H "##explorer_menu", HelloImGui::EmToVec2(2.2f, 1.5f)))
+            ImGui::OpenPopup("##explorer_menu_popup");
+        if (!ImGui::BeginPopup("##explorer_menu_popup"))
+            return;
+
+        ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + HelloImGui::EmSize(24.f));
+        const auto& lib = GetCurrentLibrary();
+        ImGui::TextUnformatted(lib.introText.c_str());
+        for (const auto& [label, url] : lib.links)
+            RenderLink(label.c_str(), url.c_str());
+
+        if (withStatus)
+        {
+            ImGui::Separator();
+            ImGui::TextUnformatted("Dear ImGui Explorer: an interactive manual for Dear ImGui, ImPlot & ImPlot3D.");
+            RenderLink("A part of Dear ImGui Bundle", "https://imgui-bundle.pages.dev/");
+
+            auto & params = *HelloImGui::GetRunnerParams();
+            ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
+            if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen)
+                ImGui::TextUnformatted("Zoom: pinch with two fingers.");
             else
             {
-                bool showPython = DemoCodeViewer_GetShowPython();
-                if (ImGui::RadioButton("C++", !showPython))
-                    DemoCodeViewer_SetShowPython(false);
-                if (ImGui::RadioButton("Python", showPython))
-                    DemoCodeViewer_SetShowPython(true);
+                ImGui::SetNextItemWidth(150.f); // a fixed width, as in the status bar: the slider changes the scale
+                ImGui::SliderFloat("Font scale", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
             }
-        };
+            const char* idlingInfo = params.fpsIdling.isIdling ? " (Idling)" : "";
+            ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
+        }
+        ImGui::PopTextWrapPos();
+        ImGui::EndPopup();
+    }
 
+    // Top toolbar: library selection buttons + C++/Python toggle.
+    // On a small screen: the library and a "..." menu (with the intro and the links), and the "Demo | Code" switch
+    // when narrow (the C++/Python toggle then goes to the code pane)
+    void ShowLibraryToolbar(const LayoutMode& mode)
+    {
         float w = ImGui::GetContentRegionAvail().x;
+
+        if (mode.CompactToolbar())
+        {
+            ImGui::BeginHorizontal("tools", ImVec2(w, 0.f));
+            if (mode.narrow)
+                GuiDemoCodeSwitch();
+            GuiSelectLibrary(mode.narrow);
+            ImGui::Spring();
+            if (!mode.narrow)
+                GuiPythonCppToggle();
+            GuiExplorerMenu(mode.statusInMenu);
+            ImGui::EndHorizontal();
+
+            ImGui::Separator();
+            return;
+        }
 
         // Show library intro text and links
         const auto& lib = GetCurrentLibrary();
@@ -290,9 +424,9 @@ namespace
         ImGui::SameLine(w * 0.5f);
 
         ImGui::BeginHorizontal("tools", ImVec2(w * 0.5f, 0.f));
-        guiSelectLibrary();
+        GuiSelectLibrary(false);
         ImGui::Spring();
-        guiPythonCppToggle();
+        GuiPythonCppToggle();
         ImGui::EndHorizontal();
 
         ImGui::Separator();
@@ -395,26 +529,47 @@ namespace {
 
     void ShowExplorerLayout(bool show_status_bar)
     {
-        ShowLibraryToolbar();
+        LayoutMode mode;
+        {
+            ImVec2 availableSize = ImGui::GetContentRegionAvail();
+            mode.narrow = availableSize.x < HelloImGui::EmSize(kNarrowWidthEm);
+            bool isShort = availableSize.y < HelloImGui::EmSize(kShortHeightEm);
+            mode.statusInMenu = show_status_bar && (mode.narrow || isShort);
+        }
+        ShowLibraryToolbar(mode);
 
         // Use all space, except for a small margin at the bottom for the status bar
         ImVec2 availableSize = ImGui::GetContentRegionAvail();
         if (availableSize.x <= 0 || availableSize.y <= 0)
             return; // this can happen in the very first frame, let's bail out in this case.
 
-        if (show_status_bar)
+        bool showStatusBar = show_status_bar && !mode.statusInMenu;
+        if (showStatusBar)
             availableSize.y -= ImGui::GetFrameHeightWithSpacing();
 
-        float leftPaneWidth = availableSize.x * 0.45f;
+        // Narrow: one pane at a time, which takes the whole width
+        bool showDemo = !mode.narrow || !GNarrowLayout_ShowsCode;
+        bool showCode = !mode.narrow || GNarrowLayout_ShowsCode;
 
         // Render the demo: we create a child window which occupies the full height and which can be resized
         // (will serve as a splitter)
         // Then, we position the demo window and display it in a regular window
+        if (showDemo)
         {
             ImVec2 lastCursorPos;
             {
-                int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
-                ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
+                // Narrow, another child: the resizable one keeps the width chosen by the user
+                if (mode.narrow)
+                    ImGui::BeginChild("##demo_area_narrow", availableSize, ImGuiChildFlags_Borders, 0);
+                else
+                {
+                    int demoChildFlags = ImGuiChildFlags_Borders | ImGuiChildFlags_ResizeX;
+                    float leftPaneWidth = availableSize.x * 0.45f;
+                    ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
+                }
+                if (mode.narrow && !GNarrowLayout_CodeSeen)
+                    ImGui::TextWrapped("Explore the demo, then switch to \"Code\" at the top: it shows the source of "
+                                       "the part you touched last.");
                 DemoMarker_ShowShortInfo();
                 lastCursorPos = ImGui::GetCursorScreenPos();
                 ImGui::EndChild();
@@ -437,13 +592,23 @@ namespace {
                 ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
         }
 
-        ImGui::SameLine();
+        if (showDemo && showCode)
+            ImGui::SameLine();
 
-        ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), ImGuiChildFlags_Borders, 0);
-        DemoCodeViewer_Show();
-        ImGui::EndChild();
+        if (showCode)
+        {
+            ImGui::BeginChild("editor", ImVec2(0.f, availableSize.y), ImGuiChildFlags_Borders, 0);
+            if (mode.narrow)
+            {
+                ImGui::BeginHorizontal("cpp_python");
+                GuiPythonCppToggle();
+                ImGui::EndHorizontal();
+            }
+            DemoCodeViewer_Show();
+            ImGui::EndChild();
+        }
 
-        if (show_status_bar)
+        if (showStatusBar)
             ShowStatusBar();
     }
 

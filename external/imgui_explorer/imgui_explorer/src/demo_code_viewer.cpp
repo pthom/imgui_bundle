@@ -60,6 +60,8 @@ namespace
     // Editor display preferences (apply to whichever editor is currently shown)
     bool g_wordWrap = false;
     bool g_showMinimap = true;
+    // Below this width (in em), the code viewer is compact (a phone): no line info, no minimap, a shorter label
+    constexpr float kCompactWidthEm = 35.f;
 
     // The API tab (after the files' tabs): the entry shown, or the candidates of an ambiguous lookup
     ApiRef g_apiCurrent;
@@ -605,6 +607,20 @@ namespace
 
     std::vector<ApiRef> HitsAt(const std::string& line, size_t column);
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount);
+
+    // In a toolbar: the next item goes on the same line, or on the next one when it does not fit (a narrow screen)
+    void SameLineIfFits(float itemWidth)
+    {
+        ImGui::SameLine();
+        if (ImGui::GetContentRegionAvail().x < itemWidth)
+            ImGui::NewLine();
+    }
+
+    float CheckboxWidth(const char* label)
+    {
+        const ImGuiStyle& style = ImGui::GetStyle();
+        return ImGui::GetFrameHeight() + style.ItemInnerSpacing.x + ImGui::CalcTextSize(label, nullptr, true).x;
+    }
 
     // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height;
     // the snippet shows a wrap button when a line overflows
@@ -1765,6 +1781,8 @@ void DemoCodeViewer_Show()
     std::string apiWord = IdentifierAtCursor(editor);
     std::vector<ApiRef> apiHits = apiWord.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, apiWord);
 
+    bool compact = ImGui::GetContentRegionAvail().x < HelloImGui::EmSize(kCompactWidthEm);
+
     // Top bar with line info and copy button
     {
         // Copy button
@@ -1775,7 +1793,7 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        if (ImGui::SmallButton("View on github at this line"))
+        if (ImGui::SmallButton(compact ? "GitHub" : "View on github at this line"))
         {
             auto pos = editor.GetMainCursorPosition();
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
@@ -1814,18 +1832,27 @@ void DemoCodeViewer_Show()
                               "then here.\nIts signatures in Python and C++, its doc, where the demo uses it.");
         ImGui::EndDisabled();
 
-        ImGui::SameLine();
+        // Compact: no line info (the gutter shows the line numbers, the tab names the file)
+        if (!compact)
+        {
+            auto pos = editor.GetMainCursorPosition();
+            char lineInfo[256];
+            snprintf(lineInfo, sizeof(lineInfo), "%6zu / %6zu  | %s", pos.line + 1, editor.GetLineCount(),
+                     displayName.c_str());
+            SameLineIfFits(ImGui::CalcTextSize(lineInfo).x);
+            ImGui::TextUnformatted(lineInfo);
+        }
 
-        auto pos = editor.GetMainCursorPosition();
-        ImGui::Text("%6zu / %6zu  | %s", pos.line + 1, editor.GetLineCount(), displayName.c_str());
-
-        ImGui::SameLine();
+        SameLineIfFits(CheckboxWidth("Wrap"));
         ImGui::Checkbox("Wrap", &g_wordWrap);
         ImGui::SetItemTooltip("Wrap long lines to the editor width");
-        ImGui::SameLine();
-        ImGui::Checkbox("Minimap", &g_showMinimap);
-        ImGui::SetItemTooltip("Show minimap on the right side of the editor");
-        ImGui::SameLine();
+        if (!compact)
+        {
+            SameLineIfFits(CheckboxWidth("Minimap"));
+            ImGui::Checkbox("Minimap", &g_showMinimap);
+            ImGui::SetItemTooltip("Show minimap on the right side of the editor");
+        }
+        SameLineIfFits(CheckboxWidth("API tooltips"));
         ImGui::Checkbox("API tooltips", &g_apiTooltips);
         ImGui::SetItemTooltip("A tooltip with the API of the identifier under the mouse");
     }
@@ -1872,11 +1899,11 @@ void DemoCodeViewer_Show()
             SearchPrev(editor, content, g_searchBuffer, g_searchCaseSensitive, g_searchMatchWord);
         ImGui::SetItemTooltip("Previous match (Shift+F3)");
         ImGui::EndDisabled();
-        ImGui::SameLine();
+        SameLineIfFits(CheckboxWidth("Aa##casesensitive"));
         ImGui::SetNextItemShortcut(ImGuiKey_C | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Aa##casesensitive", &g_searchCaseSensitive);
         ImGui::SetItemTooltip("Case sensitive (Alt+C)");
-        ImGui::SameLine();
+        SameLineIfFits(CheckboxWidth("Word##matchword"));
         ImGui::SetNextItemShortcut(ImGuiKey_W | ImGuiMod_Alt, ImGuiInputFlags_RouteGlobal);
         ImGui::Checkbox("Word##matchword", &g_searchMatchWord);
         ImGui::SetItemTooltip("Match whole word (Alt+W)");
@@ -1915,7 +1942,7 @@ void DemoCodeViewer_Show()
 
     // Apply user display preferences to the active editor
     editor.SetWordWrapEnabled(g_wordWrap);
-    editor.SetShowMiniMapEnabled(g_showMinimap);
+    editor.SetShowMiniMapEnabled(g_showMinimap && !compact);
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
