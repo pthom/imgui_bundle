@@ -240,6 +240,30 @@ if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY))  // hovered: the wheel is this
     zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
 ```
 
+### Animations and live data: idling
+
+Hello ImGui lowers the frame rate 3 seconds after the last user input, to save the CPU. An animation, a live image or a plot of varying data then becomes choppy. Keep it smooth:
+- `set_item_is_live()` right after its widget: the app keeps its full speed while the widget is visible.
+- `request_refresh()` from any thread, when new data arrives (a camera, a socket).
+
+```python
+if implot.begin_plot("Live data"):
+    implot.plot_line("signal", xs, ys)
+    implot.end_plot()
+    hello_imgui.set_item_is_live()  # no idling while the plot is visible
+```
+
+```cpp
+if (ImPlot::BeginPlot("Live data"))
+{
+    ImPlot::PlotLine("signal", xs.data(), ys.data(), (int)xs.size());
+    ImPlot::EndPlot();
+    HelloImGui::SetItemIsLive();  // no idling while the plot is visible
+}
+```
+
+Do not turn idling off (`fps_idling.enable_idling = False`, or `fps_idle=0`) to animate one widget: these settings are global, and the app would never idle. Keep them for an app whose whole window always moves.
+
 
 ## Let the AI see and drive the app
 
@@ -465,7 +489,7 @@ immapp.run(params)
    - Manage multiple alternative layouts
 
 5. **Performance Settings**:
-   - Control frame rate limiting with `fps_idling`
+   - Control frame rate limiting with `fps_idling` (global; for one animated widget, see "Animations and live data: idling" above)
    - Mobile device optimizations
    - Background rendering options
 

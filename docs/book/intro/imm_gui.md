@@ -123,7 +123,7 @@ The example below shows how to create a more complete application that uses an a
 import time
 import numpy as np
 
-from imgui_bundle import implot, imgui, immapp, imgui_knobs
+from imgui_bundle import implot, imgui, immapp, imgui_knobs, hello_imgui
 
 # Fill x and y whose plot is a heart
 vals = np.arange(0, np.pi * 2, 0.01)
@@ -148,18 +148,15 @@ def gui():
     if implot.begin_plot("Heart", immapp.em_to_vec2(21, 21)):
         implot.plot_line("", x * k, y * k)
         implot.end_plot()
+        # The heart beats on its own: the app keeps its full speed while the plot is visible
+        hello_imgui.set_item_is_live()
 
     # let the user set the pulse rate via a knob
     _, heart_pulse_rate = imgui_knobs.knob("Pulse Rate", heart_pulse_rate, 30.0, 180.0)
 
 
 if __name__ == "__main__":
-    immapp.run(gui,
-               window_size_auto=True,
-               window_title="Hello!",
-               with_implot=True,
-               fps_idle=0  # Make sure that the animation is smooth (do not limit fps when idle)
-               )
+    immapp.run(gui, window_size_auto=True, window_title="Hello!", with_implot=True)
 ```
 :::
 :::{tab-item} C++
@@ -206,6 +203,8 @@ int main(int , char *[]) {
         {
             ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
             ImPlot::EndPlot();
+            // The heart beats on its own: the app keeps its full speed while the plot is visible
+            HelloImGui::SetItemIsLive();
         }
 
         // let the user set the pulse rate via a knob
@@ -217,7 +216,6 @@ int main(int , char *[]) {
         .guiFunction = gui,
         .windowTitle = "Hello!",
         .windowSizeAuto = true,
-        .fpsIdle = 0.f // Make sure that the animation is smooth (do not limit fps when idle)
     };
     ImmApp::Run(runnerParams, addOnsParams);
 }

@@ -379,16 +379,51 @@ Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/i
 Demonstrates FPS idling to reduce CPU usage when the app is idle.
 ````
 
-Hello ImGui automatically reduces FPS when no user interaction is detected. Configure this with:
+Hello ImGui tries hard to save the CPU (and the battery): 3 seconds after the last user interaction, it lowers the frame rate to `fps_idle` (10 by default with `immapp.run`).
+
+Content that changes on its own (an animation, a live image, a plot of varying data) would then become choppy. Two calls keep it smooth:
+- `set_item_is_live()`, right after its widget: the app keeps its full speed while the widget is visible.
+- `request_refresh()`, from any thread, when new data arrives (a camera, a socket): the next frame comes at full speed.
+
+::::{tab-set}
+:::{tab-item} Python
+```python
+if implot.begin_plot("Live data"):
+    implot.plot_line("signal", xs, ys)
+    implot.end_plot()
+    hello_imgui.set_item_is_live()  # no idling while the plot is visible
+
+# In a thread that receives data:
+hello_imgui.request_refresh()
+```
+:::
+:::{tab-item} C++
+```cpp
+if (ImPlot::BeginPlot("Live data"))
+{
+    ImPlot::PlotLine("signal", xs.data(), ys.data(), (int)xs.size());
+    ImPlot::EndPlot();
+    HelloImGui::SetItemIsLive();  // no idling while the plot is visible
+}
+
+// In a thread that receives data:
+HelloImGui::RequestRefresh();
+```
+:::
+::::
+
+The idling settings are global: they act on the whole application. Prefer the calls above to keep some content moving.
 
 ```python
-immapp.run(gui, fps_idle=10.0)  # 10 FPS when idle
+immapp.run(gui, fps_idle=10.0)  # the frame rate when idle (0: no idling)
 
-# Or dynamically:
-runner_params = hello_imgui.get_runner_params()
-runner_params.fps_idling.fps_idle = 10.0
-runner_params.fps_idling.enable_idling = True
+# Or while the app runs:
+fps_idling = hello_imgui.get_runner_params().fps_idling
+fps_idling.fps_idle = 10.0
+fps_idling.enable_idling = False  # no idling at all
 ```
+
+In a browser, frames come at the display's rate: the idle frame rate is the nearest one it allows (on a 60 Hz display: 30, 20, 15...).
 
 * Demo: [Try online](https://imgui-bundle.pages.dev/explorer/demo_powersave.html) |
 * Source code: [Python](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py) | [C++](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
