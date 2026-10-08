@@ -2,3 +2,6 @@ local_wheels/imgui_bundle*.whl
 # A link to the website resources (docs/clone_website_resources/...), to see the examples' pictures locally
 resources
 
+# A link to the home page's assets (docs/clone_website_resources/imgui_bundle_pages_landing/final/assets), served
+# at /assets/ as on the site: the playground's loading video
+assets

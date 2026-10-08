@@ -628,7 +628,9 @@ body {
 }
 
 #loading-video {
-    width: min(280px, 80%);
+    width: min(640px, 80%);
+    max-height: 50vh;
+    object-fit: contain;
     margin-top: 18px;
     border-radius: 6px;
     border: 1px solid #444;

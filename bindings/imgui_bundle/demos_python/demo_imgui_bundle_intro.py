@@ -73,6 +73,9 @@ class Host:
     open_demo: Optional[Callable[[str], None]] = None  # opens one demo of the catalog, by its filename in examples.json
 
 
+_host = Host()  # the page that shows the welcome (welcome_gui sets it): the slides' own links use it
+
+
 # ============================================================================
 # Test engine automations: "Show me" walks the explorer's demos (the explorer only)
 # ============================================================================
@@ -220,6 +223,29 @@ def draw_side_panel(panel_id: str, width: float, height: float, draw_widgets: Ca
     draw_widgets()
     imgui.pop_item_width()
     imgui.end_child()
+
+
+def _accent_knob(label: str, value: float, v_min: float, v_max: float, fmt: str, size: float) -> tuple[bool, float]:
+    """A knob in the accent color of the style (the sequencer's tempo, Lorenz's parameters)"""
+    accent = imgui.get_style_color_vec4(imgui.Col_.slider_grab)
+    imgui.push_style_color(imgui.Col_.frame_bg, ImVec4(accent.x, accent.y, accent.z, 0.4))
+    imgui.push_style_color(imgui.Col_.frame_bg_hovered, ImVec4(accent.x, accent.y, accent.z, 0.6))
+    imgui.push_style_color(imgui.Col_.frame_bg_active, ImVec4(accent.x, accent.y, accent.z, 0.8))
+    changed, value = imgui_knobs.knob(label, value, v_min, v_max, 0.0, fmt, imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+                                      size, imgui_knobs.ImGuiKnobFlags_.always_clamp)
+    imgui.pop_style_color(3)
+    return changed, value
+
+
+def _accent_button(label: str, size: ImVec2) -> bool:
+    """A button in the accent color of the style"""
+    accent = imgui.get_style_color_vec4(imgui.Col_.button_hovered)
+    imgui.push_style_color(imgui.Col_.button, ImVec4(accent.x, accent.y, accent.z, 0.55))
+    imgui.push_style_color(imgui.Col_.button_hovered, ImVec4(accent.x, accent.y, accent.z, 0.8))
+    imgui.push_style_color(imgui.Col_.button_active, ImVec4(accent.x, accent.y, accent.z, 1.0))
+    clicked = imgui.button(label, size)
+    imgui.pop_style_color(3)
+    return clicked
 
 
 def panel_bg(top_left: ImVec2, size: ImVec2, alpha_bg: float = 0.08, alpha_border: float = 0.3) -> None:
@@ -758,36 +784,58 @@ def _lorenz_gui_main(plot_size: ImVec2):
     _lorenz_traj2.step(_lorenz_params)
 
 
-def _lorenz_gui_side():
+def _lorenz_knobs(size: float, all_five: bool) -> None:
+    """The parameters as knobs, on one row: sigma, rho and beta (then dt and the initial gap, when all_five)"""
     global _lorenz_initial_delta
-    imgui.text_disabled("Butterfly Effect")
-    imgui.set_item_tooltip(
-        "Tiny changes in initial conditions lead to\n"
-        "completely different trajectories.\n"
-        "The hallmark of deterministic chaos.")
-    imgui.spacing()
-    _, _lorenz_params.sigma = imgui.slider_float("Sigma", _lorenz_params.sigma, 0.0, 100.0)
+    p = _lorenz_params
+    _, p.sigma = _accent_knob("Sigma", p.sigma, 0.0, 30.0, "%.1f", size)
     imgui.set_item_tooltip("Rate of divergence (chaos level)")
-    _, _lorenz_params.rho = imgui.slider_float("Rho", _lorenz_params.rho, 0.0, 100.0)
+    imgui.same_line()
+    _, p.rho = _accent_knob("Rho", p.rho, 0.0, 60.0, "%.1f", size)
     imgui.set_item_tooltip("Size and shape of the attractor")
-    _, _lorenz_params.beta = imgui.slider_float("Beta", _lorenz_params.beta, 0.0, 10.0)
+    imgui.same_line()
+    _, p.beta = _accent_knob("Beta", p.beta, 0.0, 8.0, "%.2f", size)
     imgui.set_item_tooltip("Damping on vertical movement")
-    _, _lorenz_params.dt = imgui.slider_float("dt", _lorenz_params.dt, 0.0, 0.05)
+    if not all_five:
+        return
+    _, p.dt = _accent_knob("dt", p.dt, 0.001, 0.03, "%.3f", size)
     imgui.set_item_tooltip("Time step (smaller = smoother)")
-    _, _lorenz_initial_delta = imgui.slider_float("Delta", _lorenz_initial_delta, 0.0, 0.2)
-    imgui.set_item_tooltip("Initial difference between trajectories")
-    if imgui.button("Reset"):
+    imgui.same_line()
+    _, _lorenz_initial_delta = _accent_knob("Gap", _lorenz_initial_delta, 0.0, 0.2, "%.2f", size)
+    imgui.set_item_tooltip("The initial gap between the two trajectories (Restart applies it)")
+
+
+def _lorenz_gui_side():
+    em = hello_imgui.em_size()
+    pad = em * 0.5
+    imgui.text("Butterfly effect")
+    imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
+    imgui.push_text_wrap_pos(imgui.get_window_width() - pad)
+    imgui.text_wrapped(f"Two trajectories start {_lorenz_initial_delta:.2f} apart, then part ways: "
+                       "deterministic chaos.")
+    imgui.pop_text_wrap_pos()
+    imgui.pop_style_color()
+    imgui.spacing()
+    avail = imgui.get_window_width() - 2 * pad
+    spacing = imgui.get_style().item_spacing.x
+    _lorenz_knobs(min(em * 3.6, (avail - 2 * spacing) / 3), all_five=True)
+    imgui.spacing()
+    if _accent_button(icons_fontawesome_4.ICON_FA_SYNC + "  Restart", ImVec2(avail, em * 1.8)):
         _lorenz_init_trajectories()
 
 
 def _lorenz_gui_side_narrow():
-    """The three parameters that matter, on two lines"""
-    _, _lorenz_params.sigma = imgui.slider_float("Sigma", _lorenz_params.sigma, 0.0, 100.0)
+    """Sigma, rho and beta, and the Restart button, on one row"""
+    em = hello_imgui.em_size()
+    pad = em * 0.5
+    button_w = em * 5.5
+    spacing = imgui.get_style().item_spacing.x
+    size = min(em * 3.0, (imgui.get_window_width() - 2 * pad - button_w - 3 * spacing) / 3)
+    top = imgui.get_cursor_pos_y()
+    _lorenz_knobs(size, all_five=False)
     imgui.same_line()
-    _, _lorenz_params.rho = imgui.slider_float("Rho", _lorenz_params.rho, 0.0, 100.0)
-    _, _lorenz_params.beta = imgui.slider_float("Beta", _lorenz_params.beta, 0.0, 10.0)
-    imgui.same_line()
-    if imgui.button("Reset"):
+    imgui.set_cursor_pos_y(top + em * 1.4)  # level with the knobs, below their titles
+    if _accent_button(icons_fontawesome_4.ICON_FA_SYNC + " Restart", ImVec2(button_w, em * 1.8)):
         _lorenz_init_trajectories()
 
 
@@ -795,7 +843,7 @@ def _lorenz_slide_gui(content_size: ImVec2):
     em = hello_imgui.em_size()
     gap = em * 0.5
     if is_small_screen():  # the plot, then the parameters under it
-        panel_h = em * 4.0
+        panel_h = em * 6.5
         _lorenz_gui_main(ImVec2(content_size.x, content_size.y - panel_h - gap))
         draw_side_panel("##lorenz_side", content_size.x, panel_h, _lorenz_gui_side_narrow)
         return
@@ -1004,8 +1052,9 @@ if HAS_IMMVISION:
     _ZOOM_OUT_DURATION = 1.5
     _PAUSE_DURATION = 3.0
     _TOTAL_CYCLE = _ZOOM_IN_DURATION + _HOLD_DURATION + _ZOOM_OUT_DURATION + _PAUSE_DURATION
-    _MIN_ZOOM = 1.0
-    _MAX_ZOOM = 40.0
+    # Display pixels per image pixel at the end of the zoom: ImmVision draws the pixels' values from 36 (uint8
+    # images) or 48 (float images), whatever the size of the image on screen
+    _PIXEL_VALUES_ZOOM = 60.0
     _immvision_zoom_center = (0.0, 0.0)
 
     def _immvision_init():
@@ -1019,7 +1068,7 @@ if HAS_IMMVISION:
             params.show_options_panel = False
             params.show_image_info = False
             params.show_pixel_info = True
-            params.show_zoom_buttons = False
+            params.show_zoom_buttons = True  # below the image: zoom in, out, to fit, at 1:1
             params.zoom_key = "intro_immvision"  # the two images zoom and pan together
         _immvision_params_edges.colormap_settings.colormap = "Viridis"
 
@@ -1028,24 +1077,24 @@ if HAS_IMMVISION:
         _immvision_start_time = immapp.clock_seconds()
         _immvision_inited = True
 
-    def _immvision_current_zoom_ratio() -> float:
-        """The whole image first, then a zoom to the pixels, a hold, and back"""
+    def _immvision_zoom_progress() -> float:
+        """From 0 (the whole image) to 1 (its pixels and their values): the whole image first, then the zoom in, a
+        hold, and the zoom out"""
         elapsed = math.fmod(immapp.clock_seconds() - _immvision_start_time, _TOTAL_CYCLE)
         if elapsed < _PAUSE_DURATION:
-            return _MIN_ZOOM
+            return 0.0
         elapsed -= _PAUSE_DURATION
         if elapsed < _ZOOM_IN_DURATION:
             t = elapsed / _ZOOM_IN_DURATION
-            eased = 1.0 - (1.0 - t) * (1.0 - t)
-            return _MIN_ZOOM + (_MAX_ZOOM - _MIN_ZOOM) * eased
+            return 1.0 - (1.0 - t) * (1.0 - t)
         elapsed -= _ZOOM_IN_DURATION
         if elapsed < _HOLD_DURATION:
-            return _MAX_ZOOM
+            return 1.0
         elapsed -= _HOLD_DURATION
         if elapsed < _ZOOM_OUT_DURATION:
             t = elapsed / _ZOOM_OUT_DURATION
-            return _MAX_ZOOM - (_MAX_ZOOM - _MIN_ZOOM) * t * t
-        return _MIN_ZOOM
+            return 1.0 - t * t
+        return 0.0
 
     def _immvision_check_user_interaction() -> bool:
         hovering = (_immvision_params.mouse_info.is_mouse_hovering
@@ -1072,8 +1121,8 @@ if HAS_IMMVISION:
         if _immvision_animating:
             # From the whole image (the zoom that fits it, centered) to the pixels around the zoom target
             fit_zoom = display_w / img_w
-            zoom = fit_zoom * _immvision_current_zoom_ratio()
-            t = (zoom - fit_zoom) / (fit_zoom * (_MAX_ZOOM - _MIN_ZOOM))
+            t = _immvision_zoom_progress()
+            zoom = fit_zoom + (max(_PIXEL_VALUES_ZOOM, fit_zoom) - fit_zoom) * t
             center = (img_w * 0.5 + (_immvision_zoom_center[0] - img_w * 0.5) * t,
                       img_h * 0.5 + (_immvision_zoom_center[1] - img_h * 0.5) * t)
             _immvision_params.zoom_pan_matrix = immvision.make_zoom_pan_matrix(
@@ -1100,131 +1149,233 @@ if HAS_IMMVISION:
     def _immvision_slide_gui(content_size: ImVec2):
         em = hello_imgui.em_size()
         narrow = is_small_screen()
-        side_h = em * (3.2 if narrow else 2.0)  # the hint wraps on two lines on a phone
+        # The zoom buttons under the images, then the hint (on two lines on a phone)
+        side_h = em * (5.0 if narrow else 3.8)
         _immvision_gui_main(ImVec2(content_size.x, content_size.y - side_h), both=not narrow)
         _immvision_gui_side()
 
 
 # ============================================================================
-# Slide: a node editor, colors mixed through a graph (a mini version of demo_node_editor_color_mixer.py)
+# Slide: a node editor, an image through a pipeline of filters (a mini version of
+# demos_node_editor/demo_node_editor_image_pipeline.py, with numpy filters)
 # ============================================================================
 
-class _MixNode:
-    """A node of the mixer: a Color (picked), a Mix of its two inputs, or a Swatch (shows its input)"""
+PIPE_IMAGE_SIZE = (192, 144)  # the Julia set that enters the pipeline: width, height
+PIPE_IMAGE_WIDTH_EM = 7.0  # the width of the images in the nodes (it gives the nodes their width)
+PIPE_LINK_COLOR = ImVec4(0.4, 0.75, 1.0, 1.0)
+PIPE_UNLINKED = ImVec4(0.3, 0.3, 0.3, 1.0)
 
-    def __init__(self, kind: str, color: ImVec4) -> None:
+
+def _pipe_blur(image: np.ndarray, sigma: float) -> np.ndarray:
+    """A gaussian blur, in two passes (one per axis), the borders repeated"""
+    if sigma < 0.3:
+        return image
+    radius = int(math.ceil(3.0 * sigma))
+    kernel = np.exp(-0.5 * (np.arange(-radius, radius + 1) / sigma) ** 2)
+    kernel /= kernel.sum()
+    out = image.astype(np.float32)
+    for axis in (0, 1):
+        pad = [(0, 0)] * out.ndim
+        pad[axis] = (radius, radius)
+        padded = np.pad(out, pad, mode="edge")
+        n = out.shape[axis]
+        acc = np.zeros_like(out)
+        for k, weight in enumerate(kernel):
+            acc += weight * np.take(padded, np.arange(k, k + n), axis=axis)
+        out = acc
+    return out.clip(0, 255).astype(np.uint8)
+
+
+def _pipe_edges(image: np.ndarray) -> np.ndarray:
+    """The magnitude of the gradient of the gray image, scaled to 0..255: a gray image"""
+    gray = image.astype(np.float32).mean(axis=2) if image.ndim == 3 else image.astype(np.float32)
+    gy, gx = np.gradient(gray)
+    magnitude = np.hypot(gx, gy)
+    edges: np.ndarray = (255.0 * magnitude / max(float(magnitude.max()), 1e-6)).astype(np.uint8)
+    return edges
+
+
+def _pipe_overlay(image: np.ndarray, edges: np.ndarray, strength: float) -> np.ndarray:
+    """The edges painted in yellow over the image"""
+    rgb = image if image.ndim == 3 else np.repeat(image[..., None], 3, axis=2)
+    gray_edges = edges if edges.ndim == 2 else edges.mean(axis=2)
+    if rgb.shape[:2] != gray_edges.shape:
+        return rgb
+    mask = (gray_edges.astype(np.float32) / 255.0 * strength * 2.0).clip(0.0, 1.0)[..., None]
+    out = rgb.astype(np.float32) * (1.0 - mask) + np.array([255.0, 220.0, 60.0], np.float32) * mask
+    overlaid: np.ndarray = out.astype(np.uint8)
+    return overlaid
+
+
+class _PipeNode:
+    """A node of the pipeline: its pins, its parameter, and its result (computed again when an input or the
+    parameter changes)"""
+
+    def __init__(self, kind: str, inputs: list[str], param: Optional[float]) -> None:
         self.kind = kind
         self.id = node_ed.NodeId.create()
-        n_inputs = {"Color": 0, "Mix": 2, "Swatch": 1}[kind]
-        self.inputs = [node_ed.PinId.create() for _ in range(n_inputs)]
-        self.output = node_ed.PinId.create() if kind != "Swatch" else None
-        self.color = color  # what a Color node gives
-        self.mix = 0.5
+        self.inputs = [(node_ed.PinId.create(), name) for name in inputs]
+        self.output = node_ed.PinId.create()
+        self.param = param  # the Julia set's angle of c, the blur's sigma, the overlay's strength (None: no parameter)
+        self.result: Optional[np.ndarray] = None
+        self.key: Any = None  # what the result was computed from
+        self.version = 0  # one more at each new result: its image is sent again to the GPU
+        self.shown_version = -1
+
+    def compute(self, inputs: list[np.ndarray]) -> np.ndarray:
+        if self.kind == "Julia set":
+            assert self.param is not None
+            return _julia_image(PIPE_IMAGE_SIZE[0], PIPE_IMAGE_SIZE[1], 0.7885 * np.exp(1j * self.param), 60)
+        if self.kind == "Blur":
+            assert self.param is not None
+            return _pipe_blur(inputs[0], self.param)
+        if self.kind == "Edges":
+            return _pipe_edges(inputs[0])
+        assert self.param is not None
+        return _pipe_overlay(inputs[0], inputs[1], self.param)  # Overlay
 
 
-class _MixGraph:
-    UNLINKED = ImVec4(0.3, 0.3, 0.3, 1.0)
-
+class _PipeGraph:
     def __init__(self) -> None:
-        em = em_size()
-        self.nodes = [_MixNode("Color", ImVec4(0.95, 0.2, 0.2, 1.0)), _MixNode("Color", ImVec4(0.2, 0.35, 0.95, 1.0)),
-                      _MixNode("Mix", ImVec4(1, 1, 1, 1)), _MixNode("Swatch", ImVec4(1, 1, 1, 1))]
-        red, blue, mix, swatch = self.nodes
+        julia = _PipeNode("Julia set", [], 2.9)
+        blur = _PipeNode("Blur", ["in"], 1.5)
+        edges = _PipeNode("Edges", ["in"], None)
+        overlay = _PipeNode("Overlay", ["image", "edges"], 0.8)
+        self.nodes = [julia, blur, edges, overlay]
+        # Two levels, so that the link from the Julia set to the overlay passes under the blur and the edges
+        for node, position in ((julia, ImVec2(0, 6)), (blur, ImVec2(11, 0)), (edges, ImVec2(22, 0)),
+                               (overlay, ImVec2(33, 11))):
+            node_ed.set_node_position(node.id, position * em_size())  # in the editor's coordinates
         self.links: list[tuple[node_ed.LinkId, node_ed.PinId, node_ed.PinId]] = []  # (id, an output, an input)
-        for position, node in ((ImVec2(0, 0), red), (ImVec2(0, 8), blue), (ImVec2(11, 4), mix),
-                               (ImVec2(22, 4), swatch)):
-            node_ed.set_node_position(node.id, position * em)
-        assert red.output is not None and blue.output is not None and mix.output is not None
-        self.connect(red.output, mix.inputs[0])
-        self.connect(blue.output, mix.inputs[1])
-        self.connect(mix.output, swatch.inputs[0])
+        self.connect(julia.output, blur.inputs[0][0])
+        self.connect(blur.output, edges.inputs[0][0])
+        self.connect(julia.output, overlay.inputs[0][0])
+        self.connect(edges.output, overlay.inputs[1][0])
 
     def connect(self, output: node_ed.PinId, input: node_ed.PinId) -> None:
         self.links = [link for link in self.links if link[2] != input]  # an input receives one link at most
         self.links.append((node_ed.LinkId.create(), output, input))
 
-    def node_of_pin(self, pin: node_ed.PinId) -> Optional[_MixNode]:
+    def node_of_pin(self, pin: node_ed.PinId) -> Optional[_PipeNode]:
         for node in self.nodes:
-            if pin == node.output or any(pin == p for p in node.inputs):
+            if pin == node.output or any(pin == p for p, _ in node.inputs):
                 return node
         return None
 
     def is_output(self, pin: node_ed.PinId) -> bool:
         return any(pin == node.output for node in self.nodes)
 
-    def input_color(self, pin: node_ed.PinId) -> ImVec4:
-        for _, output, input in self.links:
-            if input == pin:
-                node = self.node_of_pin(output)
-                return self.node_color(node) if node else self.UNLINKED
-        return self.UNLINKED
+    def source(self, input: node_ed.PinId) -> Optional[_PipeNode]:
+        """The node whose output reaches this input"""
+        for _, output, linked_input in self.links:
+            if linked_input == input:
+                return self.node_of_pin(output)
+        return None
 
-    def node_color(self, node: _MixNode) -> ImVec4:
-        if node.kind == "Color":
-            return node.color
-        inputs = [self.input_color(pin) for pin in node.inputs]
-        if node.kind == "Mix":
-            return inputs[0] * (1.0 - node.mix) + inputs[1] * node.mix
-        return inputs[0]  # a swatch
+    def feeds(self, node: _PipeNode, other: _PipeNode) -> bool:
+        """True if `node` is `other`, or feeds it through links"""
+        if node is other:
+            return True
+        sources = [self.source(pin) for pin, _ in other.inputs]
+        return any(s is not None and self.feeds(node, s) for s in sources)
+
+    def evaluate(self, node: _PipeNode) -> Optional[np.ndarray]:
+        """The node's result, computed again only when its parameter or one of its sources changed"""
+        sources = [self.source(pin) for pin, _ in node.inputs]
+        inputs = [self.evaluate(s) if s is not None else None for s in sources]
+        if any(i is None for i in inputs):
+            if node.result is not None:
+                node.result, node.key = None, None
+            return None
+        key = (node.param, tuple((id(s), s.version) for s in sources if s is not None))
+        if key != node.key:
+            node.result = node.compute([i for i in inputs if i is not None])
+            node.key = key
+            node.version += 1
+        return node.result
 
 
-_mix_editor: Optional[node_ed.EditorContext] = None
-_mix_graph: Optional[_MixGraph] = None
-_mix_frames = 0
-_mix_size = ImVec2(0, 0)
+_pipe_editor: Optional[node_ed.EditorContext] = None
+_pipe_graph: Optional[_PipeGraph] = None
+_pipe_frames = 0
+_pipe_size = ImVec2(0, 0)
 
 
-def _mix_pin(graph: _MixGraph, pin: node_ed.PinId, kind: node_ed.PinKind, color: ImVec4) -> None:
+def _pipe_pin(pin: node_ed.PinId, kind: node_ed.PinKind, linked: bool) -> None:
     node_ed.begin_pin(pin, kind)
-    node_ed.pin_pivot_alignment(ImVec2(0.5, 0.5))
+    node_ed.pin_pivot_alignment(ImVec2(0.5, 0.5))  # the links reach the center of the circle
     node_ed.pin_pivot_size(ImVec2(0, 0))
     radius = em_size(0.4)
     top_left = imgui.get_cursor_screen_pos()
     imgui.dummy(ImVec2(2 * radius, 2 * radius))
     center = top_left + ImVec2(radius, radius)
     draw_list = imgui.get_window_draw_list()
-    draw_list.add_circle_filled(center, radius, imgui.get_color_u32(color))
+    draw_list.add_circle_filled(center, radius, imgui.get_color_u32(PIPE_LINK_COLOR if linked else PIPE_UNLINKED))
     draw_list.add_circle(center, radius, imgui.get_color_u32(imgui.Col_.text), thickness=1.5)
     node_ed.end_pin()
 
 
-def _mix_node(graph: _MixGraph, node: _MixNode) -> None:
-    width = em_size(7.0)
+def _pipe_node(graph: _PipeGraph, node: _PipeNode) -> None:
+    width = em_size(PIPE_IMAGE_WIDTH_EM)
     node_ed.begin_node(node.id)
     imgui.push_id(node.id.id())
     imgui.text(node.kind)
-    for pin in node.inputs:  # the inputs, on the left
-        _mix_pin(graph, pin, node_ed.PinKind.input, graph.input_color(pin))
+    for pin, name in node.inputs:  # the inputs, on the left
+        _pipe_pin(pin, node_ed.PinKind.input, graph.source(pin) is not None)
         imgui.same_line()
-        imgui.text("in")
-    if node.kind == "Color":
+        imgui.text(name)
+    if node.param is not None:
         imgui.set_next_item_width(width)
-        _, node.color = imgui.color_edit4("##color", node.color, imgui.ColorEditFlags_.no_alpha.value)
-    elif node.kind == "Mix":
-        imgui.set_next_item_width(width)
-        _, node.mix = imgui.slider_float("##mix", node.mix, 0.0, 1.0, "t = %.2f")
+        if node.kind == "Julia set":
+            _, node.param = imgui.slider_float("##param", node.param, 0.0, 2.0 * math.pi, "angle of c %.2f")
+        elif node.kind == "Blur":
+            _, node.param = imgui.slider_float("##param", node.param, 0.0, 4.0, "sigma %.1f")
+        else:
+            _, node.param = imgui.slider_float("##param", node.param, 0.0, 1.0, "strength %.2f")
+    height = width * PIPE_IMAGE_SIZE[1] / PIPE_IMAGE_SIZE[0]
+    if node.result is not None:
+        immvision.image_display("##image", node.result, (int(width), int(height)),
+                                refresh_image=node.version != node.shown_version)
+        node.shown_version = node.version
     else:
-        swatch = em_size(4.0)
-        imgui.color_button("##swatch", graph.node_color(node), 0, ImVec2(swatch, swatch))
-    if node.output is not None:  # the output, on the right
-        imgui.begin_horizontal("output", ImVec2(width, 0))
-        imgui.spring()
-        imgui.text("out")
-        _mix_pin(graph, node.output, node_ed.PinKind.output, graph.node_color(node))
-        imgui.end_horizontal()
+        imgui.dummy(ImVec2(width, height * 0.5))
+        imgui.text_disabled("(no input)")
+    imgui.begin_horizontal("output", ImVec2(width, 0))  # the output, on the right
+    imgui.spring()
+    imgui.text("out")
+    _pipe_pin(node.output, node_ed.PinKind.output, any(link[1] == node.output for link in graph.links))
+    imgui.end_horizontal()
     imgui.pop_id()
     node_ed.end_node()
 
 
-def _mix_new_links(graph: _MixGraph) -> None:
-    """A link dragged from a pin to another: accepted from an output to an input of another node"""
-    if node_ed.begin_create(ImVec4(1, 1, 1, 1), 2.0):
+def _pipe_push_theme_colors() -> int:
+    """The editor's colors from the ImGui theme: its own are dark, and its text unreadable under a light theme.
+    Returns how many colors were pushed"""
+    window = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    text = imgui.get_style_color_vec4(imgui.Col_.text)
+
+    def towards_text(t: float, alpha: float = 1.0) -> ImVec4:
+        return ImVec4(window.x + (text.x - window.x) * t, window.y + (text.y - window.y) * t,
+                      window.z + (text.z - window.z) * t, alpha)
+
+    colors = [(node_ed.StyleColor.bg, towards_text(0.04)), (node_ed.StyleColor.grid, towards_text(0.5, 0.12)),
+              (node_ed.StyleColor.node_bg, towards_text(0.10)), (node_ed.StyleColor.node_border, towards_text(0.5))]
+    for index, color in colors:
+        node_ed.push_style_color(index, color)
+    return len(colors)
+
+
+def _pipe_new_links(graph: _PipeGraph) -> None:
+    """A link dragged from a pin to another: accepted from an output to an input, unless it makes a loop"""
+    if node_ed.begin_create(PIPE_LINK_COLOR, 2.0):
         start_id, end_id = node_ed.PinId(), node_ed.PinId()
         if node_ed.query_new_link(start_id, end_id):
-            start_node, end_node = graph.node_of_pin(start_id), graph.node_of_pin(end_id)
-            if start_node is not None and end_node is not None:
-                output, input = (end_id, start_id) if graph.is_output(end_id) else (start_id, end_id)
-                if graph.is_output(output) and not graph.is_output(input) and start_node is not end_node:
+            output, input = (end_id, start_id) if graph.is_output(end_id) else (start_id, end_id)
+            output_node, input_node = graph.node_of_pin(output), graph.node_of_pin(input)
+            if output_node is not None and input_node is not None:
+                if graph.is_output(output) and not graph.is_output(input) \
+                        and not graph.feeds(input_node, output_node):
                     if node_ed.accept_new_item():
                         graph.connect(output, input)
                 else:
@@ -1232,7 +1383,7 @@ def _mix_new_links(graph: _MixGraph) -> None:
         node_ed.end_create()
 
 
-def _mix_deletions(graph: _MixGraph) -> None:
+def _pipe_deletions(graph: _PipeGraph) -> None:
     if node_ed.begin_delete():
         link_id = node_ed.LinkId()
         while node_ed.query_deleted_link(link_id):
@@ -1244,35 +1395,44 @@ def _mix_deletions(graph: _MixGraph) -> None:
         node_ed.end_delete()
 
 
-def _mixer_slide_gui(content_size: ImVec2):
-    global _mix_editor, _mix_graph, _mix_frames, _mix_size
-    if _mix_editor is None:
+def _pipeline_slide_gui(content_size: ImVec2):
+    global _pipe_editor, _pipe_graph, _pipe_frames, _pipe_size
+    em = hello_imgui.em_size()
+    if _pipe_editor is None:
         config = node_ed.Config()
         config.settings_file = None  # the slide places its nodes: nothing to save
-        _mix_editor = node_ed.create_editor(config)
+        _pipe_editor = node_ed.create_editor(config)
     previous_editor = node_ed.get_current_editor()
-    node_ed.set_current_editor(_mix_editor)
-    node_ed.begin("##mixer", content_size)
-    if _mix_graph is None:
-        _mix_graph = _MixGraph()
-    for node in _mix_graph.nodes:
-        _mix_node(_mix_graph, node)
-    for link_id, output, input in _mix_graph.links:
-        source = _mix_graph.node_of_pin(output)
-        node_ed.link(link_id, output, input, _mix_graph.node_color(source) if source else _MixGraph.UNLINKED, 3.0)
-    _mix_new_links(_mix_graph)
-    _mix_deletions(_mix_graph)
+    node_ed.set_current_editor(_pipe_editor)
+    hint_h = em * (2.8 if is_small_screen() else 1.5)
+    editor_size = ImVec2(content_size.x, content_size.y - hint_h)
+    nb_colors = _pipe_push_theme_colors()
+    node_ed.begin("##pipeline", editor_size)
+    if _pipe_graph is None:
+        _pipe_graph = _PipeGraph()
+    for node in _pipe_graph.nodes:
+        _pipe_graph.evaluate(node)
+    for node in _pipe_graph.nodes:
+        _pipe_node(_pipe_graph, node)
+    for link_id, output, input in _pipe_graph.links:
+        node_ed.link(link_id, output, input, PIPE_LINK_COLOR, 3.0)
+    _pipe_new_links(_pipe_graph)
+    _pipe_deletions(_pipe_graph)
     node_ed.end()
+    node_ed.pop_style_color(nb_colors)
     # Fit the graph in the view once the editor knows the size of the nodes (the third frame), and when the slide's
     # size changes (a phone turned). The navigation functions work after end().
-    size_changed = abs(_mix_size.x - content_size.x) > 1.0 or abs(_mix_size.y - content_size.y) > 1.0
-    if _mix_frames == 2 or (size_changed and _mix_frames > 2):
+    size_changed = abs(_pipe_size.x - editor_size.x) > 1.0 or abs(_pipe_size.y - editor_size.y) > 1.0
+    if _pipe_frames == 2 or (size_changed and _pipe_frames > 2):
         node_ed.navigate_to_content(0.0)
-    _mix_size = ImVec2(content_size.x, content_size.y)
-    _mix_frames += 1
+    _pipe_size = editor_size
+    _pipe_frames += 1
     if previous_editor is not None:  # the app's own editor, if it has one
         node_ed.set_current_editor(previous_editor)
-    imgui.text_disabled("Drag from a pin to another to link them. Right-drag to pan, the wheel to zoom.")
+    imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
+    imgui.text_wrapped("Move a slider: the nodes downstream follow. Drag from a pin to another to link them; "
+                       "right-drag to pan, the wheel to zoom.")
+    imgui.pop_style_color()
 
 
 # ============================================================================
@@ -1281,28 +1441,34 @@ def _mixer_slide_gui(content_size: ImVec2):
 
 _table_instruments = ["kick", "snare", "hihat", "open-hh", "tom", "clap", "rim", "crash"]
 _table_num_instr = 8
-_table_num_beats = 8
+_table_num_beats = 16
 _table_pattern: List[List[bool]] = []
+_table_volume = [8.0, 7.0, 5.0, 4.0, 6.0, 7.0, 5.0, 3.0]  # per instrument, 0 to 10
 _table_inited = False
 _table_playhead = 0
 _table_bpm = 140.0
 _table_playing = True
 _table_accum = 0.0
 _table_hl_color = ImVec4(0.3, 0.5, 1.0, 0.25)
+MANUAL_PICTURE = SITE + "/resources/playground/manual_imgui.jpg"  # the Dear ImGui manual, as its card shows it
+MANUAL_PICTURE_ASPECT = 640 / 401  # its width / its height
 
 
 def _table_init():
+    """A pattern of 8 steps, played twice"""
     global _table_pattern, _table_inited
-    _table_pattern = [[False] * _table_num_instr for _ in range(_table_num_beats)]
-    _table_pattern[0][0] = _table_pattern[4][0] = True   # kick
-    _table_pattern[2][1] = _table_pattern[6][1] = True   # snare
-    for i in range(0, _table_num_beats, 2):
-        _table_pattern[i][2] = True                        # hihat
-    _table_pattern[1][3] = _table_pattern[5][3] = True    # open-hh
-    _table_pattern[3][4] = True                            # tom
-    _table_pattern[6][5] = True                            # clap
-    _table_pattern[4][6] = _table_pattern[7][6] = True    # rim
-    _table_pattern[0][7] = True                            # crash
+    bar = [[False] * _table_num_instr for _ in range(8)]
+    bar[0][0] = bar[4][0] = True   # kick
+    bar[2][1] = bar[6][1] = True   # snare
+    for i in range(0, 8, 2):
+        bar[i][2] = True           # hihat
+    bar[1][3] = bar[5][3] = True   # open-hh
+    bar[3][4] = True               # tom
+    bar[6][5] = True               # clap
+    bar[4][6] = bar[7][6] = True   # rim
+    bar[0][7] = True               # crash
+    _table_pattern = [list(bar[row % 8]) for row in range(_table_num_beats)]
+    _table_pattern[15][4] = _table_pattern[14][4] = True  # a tom fill at the end
     _table_inited = True
 
 
@@ -1362,6 +1528,18 @@ def _table_gui_main(size: ImVec2, num_instr: int):
                     _, _table_pattern[row][col] = imgui.checkbox("", _table_pattern[row][col])
                     imgui.pop_id()
             imgui.pop_id()
+
+        # The last row: a volume knob per instrument
+        imgui.table_next_row()
+        imgui.table_set_column_index(0)
+        imgui.align_text_to_frame_padding()
+        imgui.text_disabled("Vol")
+        knob_flags = imgui_knobs.ImGuiKnobFlags_.no_title | imgui_knobs.ImGuiKnobFlags_.no_input
+        for col in range(num_instr):
+            if imgui.table_set_column_index(col + 1):
+                _, _table_volume[col] = imgui_knobs.knob(
+                    f"##vol{col}", _table_volume[col], 0.0, 10.0, 0.0, "%.0f",
+                    imgui_knobs.ImGuiKnobVariant_.wiper_dot, imgui.get_frame_height(), knob_flags)
         imgui.end_table()
         hello_imgui.set_item_is_live(_table_playing)  # the playhead moves on its own
 
@@ -1376,37 +1554,58 @@ def _table_play_toggle():
 
 def _table_bpm_knob(size_em: float):
     global _table_bpm
-    em = hello_imgui.em_size()
-    accent = imgui.get_style_color_vec4(imgui.Col_.slider_grab)
-    imgui.push_style_color(imgui.Col_.frame_bg, ImVec4(accent.x, accent.y, accent.z, 0.4))
-    imgui.push_style_color(imgui.Col_.frame_bg_hovered, ImVec4(accent.x, accent.y, accent.z, 0.6))
-    imgui.push_style_color(imgui.Col_.frame_bg_active, ImVec4(accent.x, accent.y, accent.z, 0.8))
-    _, _table_bpm = imgui_knobs.knob(
-        "##bpm", _table_bpm, 60.0, 300.0, 0.0, "%.0f",
-        imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-        em * size_em, imgui_knobs.ImGuiKnobFlags_.always_clamp)
-    imgui.pop_style_color(3)
+    _, _table_bpm = _accent_knob("##bpm", _table_bpm, 60.0, 300.0, "%.0f", hello_imgui.em_size(size_em))
+
+
+def _manual_picture(width: float) -> None:
+    """The picture of the Dear ImGui manual, which opens it (when the page can open a demo)"""
+    top_left = imgui.get_cursor_screen_pos()
+    rich_md.render(f'<img src="{MANUAL_PICTURE}" width="{int(width)}">')
+    bottom_right = ImVec2(top_left.x + width, imgui.get_cursor_screen_pos().y)
+    if _host.open_demo is None or not imgui.is_mouse_hovering_rect(top_left, bottom_right):
+        return
+    imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
+    imgui.get_window_draw_list().add_rect(top_left, bottom_right, imgui.get_color_u32(imgui.Col_.button_hovered),
+                                          hello_imgui.em_size(0.3), 2.0)
+    if imgui.is_mouse_clicked(imgui.MouseButton_.left):
+        _host.open_demo("manual_imgui.py")
 
 
 def _table_gui_side():
+    """Play, the tempo and the highlight's color on one row; below, the picture of the manual"""
     global _table_hl_color
+    em = hello_imgui.em_size()
+    imgui.begin_group()
     imgui.text("Play")
     _table_play_toggle()
-    imgui.spacing()
+    imgui.end_group()
+    imgui.same_line(0.0, em * 1.5)
+    imgui.begin_group()
     imgui.text("Tempo")
     _table_bpm_knob(3.5)
-    imgui.spacing()
+    imgui.end_group()
+    imgui.same_line(0.0, em * 1.5)
+    imgui.begin_group()
     imgui.text("Highlight")
     picker_flags = (imgui.ColorEditFlags_.no_side_preview
                     | imgui.ColorEditFlags_.no_inputs
                     | imgui.ColorEditFlags_.no_label
                     | imgui.ColorEditFlags_.alpha_bar
                     | imgui.ColorEditFlags_.picker_hue_wheel)
+    imgui.set_next_item_width(em * 7.0)
     _, _table_hl_color = imgui.color_picker4("##hl_wheel", _table_hl_color, picker_flags)
-
-    imgui.new_line()
-    imgui.new_line()
+    imgui.end_group()
     _IntroAutomations.show_link("More info: complex app layout", _IntroAutomations.show_docking)
+
+    # The manual of all the widgets, below: as wide as the panel, or as tall as the space left
+    imgui.spacing()
+    imgui.separator()
+    imgui.spacing()
+    imgui.push_text_wrap_pos(imgui.get_window_width() - em * 0.5)
+    imgui.text_wrapped("All of Dear ImGui's widgets, with their code: the interactive manual")
+    imgui.pop_text_wrap_pos()
+    height_left = imgui.get_content_region_avail().y - em * 0.5
+    _manual_picture(min(imgui.get_window_width() - em, height_left * MANUAL_PICTURE_ASPECT))
 
 
 def _table_gui_side_narrow():
@@ -1428,12 +1627,10 @@ def _table_slide_gui(content_size: ImVec2):
         _table_gui_main(ImVec2(content_size.x, content_size.y - panel_h - gap), 6)
         draw_side_panel("##table_side", content_size.x, panel_h, _table_gui_side_narrow)
         return
-    main_side = content_size.y
-    side_panel_w = content_size.x - main_side - gap
-    _table_gui_main(ImVec2(main_side, main_side), _table_num_instr)
-    if side_panel_w > em * 4.0:
-        imgui.same_line(0.0, gap)
-        draw_side_panel("##table_side", side_panel_w, main_side, _table_gui_side)
+    table_w = min(em * 21.0, content_size.x * 0.5)  # the width of its columns and their angled headers
+    _table_gui_main(ImVec2(table_w, content_size.y), _table_num_instr)
+    imgui.same_line(0.0, gap)
+    draw_side_panel("##table_side", content_size.x - table_w - gap, content_size.y, _table_gui_side)
 
 
 # ============================================================================
@@ -1483,6 +1680,7 @@ def _init_markdown_editor():
     global _markdown_text_editor, _markdown_editor_initialized
     _markdown_text_editor = ed.TextEditor()
     _markdown_text_editor.set_text(_MARKDOWN_SAMPLE)
+    _markdown_text_editor.set_language(ed.TextEditor.Language.markdown())
     _markdown_text_editor.set_palette(ed.TextEditor.get_dark_palette())
     _markdown_editor_initialized = True
 
@@ -1787,41 +1985,106 @@ def links_row():
             imgui.set_tooltip(tooltip)
 
 
-_welcome_head = ""  # the tagline and the subtitle: what welcome.md says before its first section
-_welcome_rest = ""  # its sections, behind "More info & links"
+ABOUT_TITLE = "About Dear ImGui Bundle"  # the window of the prose
+ABOUT_ANIMATION = 0.3  # s: the window of the prose slides up and fades in
+HEAD_SCALE_SMALL_SCREEN = 0.85  # the tagline's size on a phone, where it would take a third of the screen
+
+_welcome_head: list[str] = []  # the tagline and the subtitle: the paragraphs of welcome.md before its first section
+_welcome_rest = ""  # its sections, in the window of the prose
 _welcome_loaded = False
-_more_info_expanded = False
+_about_opened_at: Optional[float] = None  # when the window of the prose opened (None: closed)
 
 
 def _load_welcome_text() -> None:
-    """welcome.md, an asset (demos_assets): the text before the first "## " heading is shown, the rest folded"""
+    """welcome.md, an asset (demos_assets): its paragraphs before the first "## " heading are the head (one line of
+    text each, `*italic*` for the whole paragraph), the rest is the prose"""
     global _welcome_head, _welcome_rest, _welcome_loaded
     _welcome_loaded = True
     path = hello_imgui.asset_file_full_path("welcome.md", assert_if_not_found=False)
     if not path:
-        _welcome_head = "*Interactive Python & C++ apps for desktop, mobile, and the web.*"
+        _welcome_head = ["*Interactive Python & C++ apps for desktop, mobile, and the web.*"]
         return
     with open(path, encoding="utf-8") as f:
         text = f.read()
     cut = text.find("\n## ")
-    _welcome_head, _welcome_rest = (text, "") if cut < 0 else (text[:cut], text[cut + 1:])
+    head, _welcome_rest = (text, "") if cut < 0 else (text[:cut], text[cut + 1:])
+    _welcome_head = [p.strip() for p in head.split("\n\n") if p.strip()]
 
 
-def _render_more_info():
-    """The tagline, and the rest of welcome.md behind a small button"""
-    global _more_info_expanded
+def _render_head() -> None:
+    """The tagline and the subtitle, and at the right of their last line the button that opens the prose. Drawn with
+    the markdown fonts, not rendered as markdown: a phone shows them smaller"""
+    global _about_opened_at
     if not _welcome_loaded:
         _load_welcome_text()
-    rich_md.render(_welcome_head)
+    em = hello_imgui.em_size()
+    small = is_small_screen()
+    label = icons_fontawesome_4.ICON_FA_INFO_CIRCLE if small else f"More info & links {icons_fontawesome_4.ICON_FA_EXPAND}"
+    button_w = imgui.calc_text_size(label).x + imgui.get_style().frame_padding.x * 2.0
+    top_left = imgui.get_cursor_screen_pos()
+    avail_x = imgui.get_content_region_avail().x
+    imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + avail_x - (button_w + em if _welcome_rest else 0.0))
+    last_line_end = 0.0  # where the last paragraph ends, when it takes one line (else the button goes at the right)
+    for i, paragraph in enumerate(_welcome_head):
+        italic = len(paragraph) > 2 and paragraph.startswith("*") and paragraph.endswith("*")
+        text = paragraph.strip("*") if italic else paragraph
+        font = rich_md.get_font(rich_md.MarkdownFontSpec(italic_=italic))
+        imgui.push_font(font.font, font.size * (HEAD_SCALE_SMALL_SCREEN if small else 1.0))
+        if i > 0:
+            imgui.dummy(ImVec2(0, em * 0.2))
+        width = imgui.calc_text_size(text).x
+        last_line_end = width if width + button_w + em <= avail_x else 0.0
+        imgui.text_wrapped(text)
+        imgui.pop_font()
+    imgui.pop_text_wrap_pos()
     if not _welcome_rest:
         return
-    arrow = icons_fontawesome_4.ICON_FA_COMPRESS if _more_info_expanded else icons_fontawesome_4.ICON_FA_EXPAND
-    if imgui.small_button(f"More info & links {arrow}"):
-        _more_info_expanded = not _more_info_expanded
-    if _more_info_expanded:
-        imgui.indent()
+    below = imgui.get_cursor_screen_pos()
+    button_x = top_left.x + (last_line_end + em if last_line_end > 0.0 else avail_x - button_w)
+    imgui.set_cursor_screen_pos(ImVec2(button_x, below.y - imgui.get_text_line_height_with_spacing()))
+    if imgui.small_button(label):
+        _about_opened_at = imgui.get_time()
+    imgui.set_cursor_screen_pos(below)
+
+
+def _about_window() -> None:
+    """The prose of welcome.md, in a modal window that slides up as it fades in; a click outside, Escape or its close
+    button closes it"""
+    global _about_opened_at
+    if _about_opened_at is None:
+        return
+    if not imgui.is_popup_open(ABOUT_TITLE):
+        imgui.open_popup(ABOUT_TITLE)
+    em = hello_imgui.em_size()
+    t = min((imgui.get_time() - _about_opened_at) / ABOUT_ANIMATION, 1.0)
+    eased = 1.0 - (1.0 - t) ** 3
+    if t < 1.0:
+        hello_imgui.request_refresh()  # the window arrives on its own
+    viewport = imgui.get_main_viewport()
+    center = viewport.get_center()
+    imgui.set_next_window_pos(ImVec2(center.x, center.y + em * 3.0 * (1.0 - eased)), imgui.Cond_.always,
+                              ImVec2(0.5, 0.5))
+    imgui.set_next_window_size(ImVec2(min(em * 56.0, viewport.size.x * 0.94), viewport.size.y * 0.82),
+                               imgui.Cond_.always)
+    imgui.push_style_var(imgui.StyleVar_.alpha, max(eased, 0.01))
+    imgui.push_style_var(imgui.StyleVar_.window_rounding, em * 0.6)
+    imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(em * 1.2, em * 0.8))
+    background = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    imgui.push_style_color(imgui.Col_.popup_bg, ImVec4(background.x, background.y, background.z, 1.0))  # opaque
+    opened, keep_open = imgui.begin_popup_modal(ABOUT_TITLE, True,
+                                                imgui.WindowFlags_.no_move | imgui.WindowFlags_.no_saved_settings)
+    if not opened:  # its close button
+        _about_opened_at = None
+    else:
         rich_md.render(_welcome_rest)
-        imgui.unindent()
+        clicked_outside = (imgui.is_mouse_clicked(imgui.MouseButton_.left)
+                           and not imgui.is_window_hovered(imgui.HoveredFlags_.root_and_child_windows))
+        if not keep_open or clicked_outside or imgui.is_key_pressed(imgui.Key.escape):
+            imgui.close_current_popup()
+            _about_opened_at = None
+        imgui.end_popup()
+    imgui.pop_style_color()
+    imgui.pop_style_var(3)
 
 
 # ============================================================================
@@ -1898,7 +2161,6 @@ _current_slide = 0
 _animated_offset = 0.0
 _auto_timer = 0.0
 _auto_stopped = False
-_carousel_height_folded = 0.0
 _slides: Optional[list[CarouselSlide]] = None
 
 
@@ -1929,10 +2191,11 @@ def slides() -> list[CarouselSlide]:
             "Image Analysis",
             "ImmVision lets you zoom, pan, and inspect pixel values in real time, with linked views and colormaps.",
             _immvision_slide_gui, "demo_immvision_inspector.py"))
-    _slides.append(CarouselSlide(
-        "Visual Node Editors",
-        "Explore ideas in graph form with imgui-node-editor: connect functions, see the data flow, build pipelines visually.",
-        _mixer_slide_gui, "demo_node_editor_color_mixer.py"))
+        _slides.append(CarouselSlide(  # its nodes show their images with ImmVision
+            "Visual Node Editors",
+            "Explore ideas in graph form with imgui-node-editor: an image flows through filters written in numpy, "
+            "and each node shows its result.",
+            _pipeline_slide_gui, "demo_node_editor_image_pipeline.py"))
     _slides.append(CarouselSlide(
         "Feature-Rich Widgets",
         "Dear ImGui ships with advanced tables featuring angled headers, column reordering, sorting, and much more.",
@@ -1965,14 +2228,10 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     em = hello_imgui.em_size()
     dl = imgui.get_window_draw_list()
 
-    # --- Carousel zone: use available height, maintain 4:3 aspect ratio. While the prose is unfolded above, the
-    # carousel keeps the height it had folded, and the page scrolls ---
-    global _carousel_height_folded
+    # --- Carousel zone: use available height, maintain 4:3 aspect ratio ---
     # On a phone the page scrolls rather than squeeze the slides (a large text setting halves the screen)
     min_height = em * 26.0 if is_small_screen() else em * 15.0
-    if not _more_info_expanded:
-        _carousel_height_folded = max(imgui.get_content_region_avail().y - bottom_margin, min_height)
-    carousel_height = max(_carousel_height_folded, min_height)
+    carousel_height = max(imgui.get_content_region_avail().y - bottom_margin, min_height)
     carousel_width = carousel_height * (4.0 / 3.0)
     avail_width = imgui.get_content_region_avail().x
     if carousel_width > avail_width:
@@ -2158,14 +2417,17 @@ def _call_to_action(host: Host) -> None:
 
 def welcome_gui(host: Host):
     """The welcome without its title and links row (the explorer draws its own header above it): the tagline and the
-    folded prose, the carousel of mini demos, the button to the demos and the manuals"""
-    _render_more_info()
+    button to the prose, the carousel of mini demos, the button to the demos and the manuals"""
+    global _host
+    _host = host
+    _render_head()
     imgui.separator()
     em = hello_imgui.em_size()
     # The button and the manuals' line (two lines on a phone)
     bottom = 0.0 if host.browse is None else em * (6.2 if is_small_screen() else 4.6)
     _intro_mini_demos(host, bottom)
     _call_to_action(host)
+    _about_window()
 
 
 def gui(host: Optional[Host] = None):

@@ -51,6 +51,11 @@ function getDemoFromUrl() {
 
 // Run this function on page load
 document.addEventListener('DOMContentLoaded', async () => {
+    // The welcome hides its code from the start, while Pyodide loads (a ?demo= link shows the demo's code)
+    if (!getDemoFromUrl() && !narrowScreen.matches) {
+        setCodeFolded(true);
+        document.querySelector('#loading-banner .loading-hint').hidden = true;  // "browse the code on the left"
+    }
     const initialCode = await initial_example_code();
     editor.setValue(initialCode);
     setLoadedCode(initialCode);
@@ -442,7 +447,9 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     const bundleFiles = example ? example.bundle_files : undefined;
     const source = example ? example.source : undefined;
     markOwnCodeSwitch(example);
-    if (!narrowScreen.matches) setCodeFolded(filename === WELCOME_FILENAME);  // the welcome hides the code
+    // The welcome and the manuals hide the code (a manual shows its own); the other demos show it, to be edited
+    const hidesCode = filename === WELCOME_FILENAME || (!!example && example.category === 'Interactive manuals');
+    if (!narrowScreen.matches) setCodeFolded(hidesCode);
     await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
     markCurrentExample(filename);
     showHackHint(example);
