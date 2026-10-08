@@ -277,14 +277,18 @@ namespace
 
     // Shows a line: the cursor on it, scrolled near the top, highlighted by a line marker (not a selection: a selection
     // would feed the copy button and the search)
-    void ShowLine(CodeFile& cf, bool python, int line)
+    void MarkLine(TextEditor& editor, int line)
     {
-        TextEditor& editor = python ? cf.pyEditor : cf.cppEditor;
-        cf.cppEditor.ClearMarkers();
-        cf.pyEditor.ClearMarkers();
         editor.AddMarker((size_t)line, IM_COL32(255, 220, 100, 110), IM_COL32(255, 220, 100, 36), "", "");
         editor.SetCursor(TextEditor::DocPos(line, 0));
-        editor.ScrollToLine(line - 2, TextEditor::Scroll::alignTop);
+        editor.ScrollToLine(line - 2, TextEditor::Scroll::alignTop);  // applied when the editor is next drawn
+    }
+    // The same in one language (the other loses its marker)
+    void ShowLine(CodeFile& cf, bool python, int line)
+    {
+        cf.cppEditor.ClearMarkers();
+        cf.pyEditor.ClearMarkers();
+        MarkLine(python ? cf.pyEditor : cf.cppEditor, line);
     }
 
     void PopulateEditor(CodeFile& cf, const std::string& content, bool isPython)
@@ -1721,18 +1725,24 @@ void DemoCodeViewer_Show()
             ShowLine(cf, true, g_pendingScrollLine - 1);
             scrolledPython = true;
         }
-        else if (g_userPrefPython && cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
+        else
         {
-            auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
-            if (it2 != cf.pyMarkers.end())
+            // A section: both languages show it (Python at its marker, when it has one), so that a switch of language
+            // keeps it
+            int pyLine = -1;
+            if (cf.pyState == LoadState::Loaded && !g_pendingScrollSection.empty())
             {
-                ShowLine(cf, true, it2->second - 1);
-                scrolledPython = true;
+                auto it2 = cf.pyMarkers.find(g_pendingScrollSection);
+                if (it2 != cf.pyMarkers.end())
+                    pyLine = it2->second;
             }
-        }
-        if (!scrolledPython)
-        {
-            ShowLine(cf, false, g_pendingScrollLine - 1);
+            cf.cppEditor.ClearMarkers();
+            cf.pyEditor.ClearMarkers();
+            if (cf.cppState == LoadState::Loaded)
+                MarkLine(cf.cppEditor, g_pendingScrollLine - 1);
+            if (pyLine > 0)
+                MarkLine(cf.pyEditor, pyLine - 1);
+            scrolledPython = g_userPrefPython && pyLine > 0;
         }
         // Auto-switch displayed language to match what we scrolled
         if (g_userPrefPython || g_pendingScrollPython)
