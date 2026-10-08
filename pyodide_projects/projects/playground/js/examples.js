@@ -446,8 +446,12 @@ function setCardWidth(width) {
     updateSizeButtons();
 }
 
-function openGallery() {
+// The open catalog is an entry of the browser's history (the page under it, as its state's demo): back from a demo
+// picked in it returns to it, and back from it closes it. restoring: it opens from that entry (no new one)
+function openGallery(restoring = false) {
     const gallery = document.getElementById('gallery');
+    if (!restoring && !(history.state && history.state.gallery))
+        history.pushState({...(history.state || {}), gallery: true}, '', window.location.href);
     gallery.style.top = document.getElementById('header').getBoundingClientRect().bottom + 'px';  // under the header
     const wasHidden = gallery.hidden;
     gallery.hidden = false;
@@ -460,6 +464,11 @@ function openGallery() {
     updateSizeButtons();
     // Not on a touch screen, where the keyboard would cover the gallery (a phone held sideways is wider than 768 px)
     if (!window.matchMedia('(pointer: coarse)').matches) document.getElementById('gallery-search').focus();
+}
+
+// The user closes the catalog (its close button, Escape, the Demos button): back from its entry, which closes it
+function dismissGallery() {
+    if (history.state && history.state.gallery) history.back(); else closeGallery();
 }
 
 function closeGallery() {
@@ -540,9 +549,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gallery = document.getElementById('gallery');
     document.getElementById('examples-button').addEventListener('click', () => {
-        if (gallery.hidden || !gallery.classList.contains('open')) openGallery(); else closeGallery();
+        if (gallery.hidden || !gallery.classList.contains('open')) openGallery(); else dismissGallery();
     });
-    document.getElementById('gallery-close').addEventListener('click', closeGallery);
+    document.getElementById('gallery-close').addEventListener('click', dismissGallery);
     document.getElementById('gallery-clear').addEventListener('click', clearGalleryFilters);
     const search = document.getElementById('gallery-search');
     const library = document.getElementById('gallery-library');
@@ -572,25 +581,32 @@ document.addEventListener('DOMContentLoaded', () => {
         if (search.value || library.value) {  // a first Escape clears the filters, a second closes
             clearGalleryFilters();
         } else {
-            closeGallery();
+            dismissGallery();
         }
     }, true);
 
     // Handle browser back/forward buttons
     window.addEventListener('popstate', async (event) => {
-        if (event.state && event.state.demo) {
-            await loadDemoByFilename(event.state.demo, false);
-        } else {
-            await showWelcome();  // back to the root URL (no ?demo=)
+        const state = event.state || {};
+        if (state.gallery) {  // the catalog, over the page shown (its own page loads if it closes: the entry before)
+            openGallery(true);
+            return;
         }
+        closeGallery();
+        const demo = state.demo || null;  // none: the root URL, the welcome
+        if (demo === loadedExampleFilename) return;  // shown already: the catalog closed over it
+        if (demo) await loadDemoByFilename(demo, false); else await showWelcome();
     });
     // The header's title goes back to the welcome without reloading the page (Pyodide stays loaded); a middle click
     // or a modifier still opens the page anew
     document.querySelector('.motto-title-link').addEventListener('click', async (event) => {
         if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey) return;
         event.preventDefault();
+        if (loadedExampleFilename === null) {  // already there
+            dismissGallery();
+            return;
+        }
         closeGallery();
-        if (loadedExampleFilename === null) return;  // already there
         history.pushState({}, '', window.location.pathname);
         await showWelcome();
     });
