@@ -321,10 +321,12 @@ cd -
 
 For libraries without a fork, simply pull:
 ```bash
-cd external/glfw/glfw
+cd external/hello_imgui/hello_imgui
 git pull
 cd -
 ```
+
+A library pinned to a release tag (`pinned_tag` in `all_external_libraries.py`: glfw, the GLFW of the desktop Python wheel) has no tracking branch, and `just libs_pull` skips it. Its update is a deliberate step: the new tag in `all_external_libraries.py`, then `git fetch official --tags && git checkout <tag>` in the submodule.
 
 Or pull all submodules at once:
 ```bash

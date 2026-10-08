@@ -15,6 +15,9 @@ class ExternalLibrary:
 
     official_branch: str = "master"
     official_remote_name: str = "official"
+    # An official library pinned to a release tag: checked out at the tag, no tracking branch, never pulled. An update
+    # is a deliberate step: a new tag here, then `git checkout <tag>` in the submodule.
+    pinned_tag: Optional[str] = None
 
     fork_git_url: Optional[str] = None
     fork_branch: str = "imgui_bundle"
@@ -125,6 +128,12 @@ class ExternalLibrary:
         return ShellCommands(cmd)
 
     def cmd_attach_branches(self) -> ShellCommands:
+        if self.pinned_tag is not None:
+            cmd = f"""
+                cd {self.git_folder_abs_path()}
+                git checkout {self.pinned_tag}
+            """
+            return ShellCommands(cmd)
         cmd = f"""
             cd {self.git_folder_abs_path()}
             git checkout -b {self.attached_git_branch()} || git checkout {self.attached_git_branch()}
@@ -206,6 +215,9 @@ class ExternalLibrary:
             print(
                 f"run_pull: skipped {self.name} because it does not appear to be a submodule"
             )
+            return
+        if self.pinned_tag is not None:
+            print(f"run_pull: skipped {self.name}, pinned to the tag {self.pinned_tag}")
             return
         self.cmd_pull().run()
 
