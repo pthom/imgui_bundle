@@ -130,6 +130,24 @@ namespace
         ImGui::PopFont();
     }
 
+    // A small button with a minus or a plus drawn at its center (an icon font's glyph sits a little high)
+    bool SignButton(const char* strId, bool plus)
+    {
+        float height = ImGui::GetFontSize();
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 0));  // as SmallButton
+        bool clicked = ImGui::Button((std::string("##") + strId).c_str(), ImVec2(height * 1.6f, height));
+        ImGui::PopStyleVar();
+        ImVec2 a = ImGui::GetItemRectMin(), b = ImGui::GetItemRectMax();
+        float cx = std::round((a.x + b.x) / 2), cy = std::round((a.y + b.y) / 2);
+        float half = std::round(height * 0.25f), thickness = std::max(1.f, std::round(height * 0.12f));
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
+        drawList->AddRectFilled(ImVec2(cx - half, cy - thickness / 2), ImVec2(cx + half, cy + thickness / 2), color);
+        if (plus)
+            drawList->AddRectFilled(ImVec2(cx - thickness / 2, cy - half), ImVec2(cx + thickness / 2, cy + half), color);
+        return clicked;
+    }
+
     // The scale of a card's texts: they follow its width, from their size on a card of the default width
     float CardTextScale(float width) { return std::clamp(width / Em(CARD_WIDTH), MIN_TEXT_SCALE, 1.f); }
 
@@ -464,7 +482,7 @@ void DemoLauncher::ThumbnailSize()
 {
     const char* label = "Thumbnail size";
     const ImGuiStyle& style = ImGui::GetStyle();
-    float buttonWidth = ImGui::CalcTextSize(ICON_FA_PLUS).x + 2 * style.FramePadding.x;
+    float buttonWidth = ImGui::GetFontSize() * 1.6f;  // SignButton's
     float width = ImGui::CalcTextSize(label).x + 2 * buttonWidth + 4 * style.ItemSpacing.x;
     if (width > ImGui::GetContentRegionAvail().x)
         ImGui::NewLine();
@@ -472,12 +490,11 @@ void DemoLauncher::ThumbnailSize()
     ImGui::SameLine();
     ImGui::TextDisabled("%s", label);
     ImGui::SameLine();
-    for (auto [icon, direction, tooltip] : {std::tuple{ICON_FA_MINUS, -1, "Smaller thumbnails"},
-                                            std::tuple{ICON_FA_PLUS, 1, "Larger thumbnails"}})
+    for (auto [direction, tooltip] : {std::pair{-1, "Smaller thumbnails"}, std::pair{1, "Larger thumbnails"}})
     {
         std::optional<float> target = NextCardWidth(direction);
         ImGui::BeginDisabled(!target.has_value());
-        if (ImGui::SmallButton((std::string(icon) + "##thumbnails " + std::to_string(direction)).c_str()) && target)
+        if (SignButton(("thumbnails " + std::to_string(direction)).c_str(), direction > 0) && target)
         {
             _scrollAnchor = TopCard();  // it stays where it is, while the rows change
             _cardWidth = *target;

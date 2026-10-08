@@ -345,6 +345,22 @@ def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.I
     imgui.pop_font()
 
 
+def sign_button(str_id: str, plus: bool) -> bool:
+    """A small button with a minus or a plus drawn at its center (an icon font's glyph sits a little high)"""
+    height = imgui.get_font_size()
+    imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(imgui.get_style().frame_padding.x, 0))  # as small_button
+    clicked = imgui.button(f"##{str_id}", ImVec2(height * 1.6, height))
+    imgui.pop_style_var()
+    a, b = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+    cx, cy = round((a.x + b.x) / 2), round((a.y + b.y) / 2)
+    half, thickness = round(height * 0.25), max(1.0, round(height * 0.12))
+    draw_list, color = imgui.get_window_draw_list(), imgui.get_color_u32(imgui.Col_.text)
+    draw_list.add_rect_filled(ImVec2(cx - half, cy - thickness / 2), ImVec2(cx + half, cy + thickness / 2), color)
+    if plus:
+        draw_list.add_rect_filled(ImVec2(cx - thickness / 2, cy - half), ImVec2(cx + thickness / 2, cy + half), color)
+    return clicked
+
+
 def card_text_scale(width: float) -> float:
     """The scale of a card's texts: they follow its width, from their size on a card of the default width"""
     return max(MIN_TEXT_SCALE, min(1.0, width / em_size(CARD_WIDTH)))
@@ -467,7 +483,7 @@ class Launcher:
         """A separator, "Thumbnail size", then "-" and "+": each press changes the number of columns"""
         label = "Thumbnail size"
         style = imgui.get_style()
-        button_width = imgui.calc_text_size(fa.ICON_FA_PLUS).x + 2 * style.frame_padding.x
+        button_width = imgui.get_font_size() * 1.6  # sign_button's
         width = imgui.calc_text_size(label).x + 2 * button_width + 4 * style.item_spacing.x
         if width > imgui.get_content_region_avail().x:
             imgui.new_line()
@@ -475,11 +491,10 @@ class Launcher:
         imgui.same_line()
         imgui.text_disabled(label)
         imgui.same_line()
-        for icon, direction, tooltip in [(fa.ICON_FA_MINUS, -1, "Smaller thumbnails"),
-                                         (fa.ICON_FA_PLUS, 1, "Larger thumbnails")]:
+        for direction, tooltip in [(-1, "Smaller thumbnails"), (1, "Larger thumbnails")]:
             target = self.next_card_width(direction)
             imgui.begin_disabled(target is None)
-            if imgui.small_button(f"{icon}##thumbnails {direction}") and target is not None:
+            if sign_button(f"thumbnails {direction}", direction > 0) and target is not None:
                 self.scroll_anchor = self.top_card()  # it stays where it is, while the rows change
                 self.card_width = target
             imgui.end_disabled()
