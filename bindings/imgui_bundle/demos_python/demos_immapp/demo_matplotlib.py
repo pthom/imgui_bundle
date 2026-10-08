@@ -10,7 +10,7 @@ Needs Matplotlib: `pip install "imgui-bundle[matplotlib]"`.
 
 import matplotlib
 import matplotlib.pyplot as plt
-from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx
+from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx, hello_imgui
 import numpy as np
 from numpy.typing import NDArray
 
@@ -65,6 +65,7 @@ def main():
         with imgui_ctx.begin_group():
             animated_figure.animate()
             imgui_fig.fig("Animated figure", animated_figure.fig, refresh_image=True, show_options_button=False)
+            hello_imgui.set_item_is_live()  # the figure moves on its own: no idling while it is visible
             imgui.set_next_item_width(immapp.em_size(20))
             _, animated_figure.amplitude = imgui.slider_float("amplitude", animated_figure.amplitude, 0.1, 2.0)
 
@@ -75,7 +76,6 @@ def main():
 
 
     runner_params = immapp.RunnerParams()
-    runner_params.fps_idling.fps_idle = 0  # disable idling, so that the animation is fast
     runner_params.app_window_params.window_geometry.size = (1400, 600)
     runner_params.app_window_params.window_title = "imgui_fig demo"
     runner_params.callbacks.show_gui = gui

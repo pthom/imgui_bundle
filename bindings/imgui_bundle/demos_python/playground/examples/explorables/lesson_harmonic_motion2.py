@@ -342,6 +342,7 @@ def gui(state: AppState):
         else:
             implot.setup_axes_limits(0, 10, -2.5, 2.5, imgui.Cond_.always)
         implot.end_plot()
+        hello_imgui.set_item_is_live()  # the oscillation moves on its own: no idling while it is visible
 
     imgui.spacing()
     imgui.spacing()
@@ -442,7 +443,6 @@ def main():
     params.callbacks.show_gui = lambda: gui(state)
     params.app_window_params.window_geometry.size = (1000, 800)
     params.app_window_params.window_title = "Lesson: Simple Harmonic Motion"
-    params.fps_idling.fps_idle = 25
     addons = immapp.AddOnsParams(with_markdown=True, with_implot= True, with_latex=True)
     immapp.run(params, addons)
 

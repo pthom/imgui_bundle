@@ -299,6 +299,7 @@ def draw_cobweb(state: AppState, size: ImVec2):
             implot.plot_line("orbit", cx, cy, spec=implot.Spec(line_weight=2.0, line_color=ACCENT))
             implot.plot_scatter("##now", np.array([cx[-1]]), np.array([cy[-1]]), spec=implot.Spec(line_color=ImVec4(1, 1, 1, 1)))
         implot.end_plot()
+        hello_imgui.set_item_is_live(not state.paused)  # the cobweb redraws itself, unless paused
 
 
 def draw_bifurcation(state: AppState, size: ImVec2):
@@ -484,7 +485,6 @@ def main():
         with_implot=True,
         with_markdown=True,
         with_latex=True,
-        fps_idle=0,
         ini_disable=True,
     )
 

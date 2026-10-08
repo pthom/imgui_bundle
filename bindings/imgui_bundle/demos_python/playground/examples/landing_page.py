@@ -97,6 +97,7 @@ def slide_implot(size):
             implot.plot_line("sin", s.xs, 0.5 + 0.5 * np.sin(6 * (s.xs + t)))
             implot.plot_line("cos", s.xs, 0.5 + 0.3 * np.cos(4 * (s.xs + t)))
             implot.end_plot()
+            hello_imgui.set_item_is_live()  # the lines move on their own
         # Filled
         spec = implot.Spec(fill_alpha=0.25)
         if implot.begin_plot("Stock Prices"):
@@ -151,6 +152,7 @@ def slide_lorenz(size):
         implot3d.plot_line("Traj 1", np.array(s.xs), np.array(s.ys), np.array(s.zs))
         implot3d.plot_line("Traj 2", np.array(s.xs2), np.array(s.ys2), np.array(s.zs2))
         implot3d.end_plot()
+        hello_imgui.set_item_is_live()  # the trajectories move on their own
 
     pos = imgui.get_item_rect_max() - hello_imgui.em_to_vec2(12, 1.2)
     imgui.set_cursor_screen_pos(pos)
@@ -235,6 +237,7 @@ def slide_widgets(size):
                     variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=em * 2, format="%.1f")
 
         imgui.end_table()
+        hello_imgui.set_item_is_live(s.playing)  # the playhead moves on its own
 
     # Side panel (right)
     imgui.same_line()
@@ -363,6 +366,8 @@ def show_carousel(avail_size):
     _animated_offset = _smooth_damp(_animated_offset, target, 8.0, dt)
     if abs(_animated_offset - target) < 0.001:
         _animated_offset = target
+    if _animated_offset != target:
+        hello_imgui.request_refresh()  # the slides slide on their own
 
     # Layout
     nav_h = em * 2.0
@@ -470,6 +475,8 @@ def show_code_editor(size):
             _fade_target_slide = -1
     else:
         _fade_alpha = min(1.0, _fade_alpha + dt * 4.0)
+    if _fade_target_slide >= 0 or _fade_alpha < 1.0:
+        hello_imgui.request_refresh()  # the code fades on its own
 
     # Initial load
     if _editor_current_slide < 0:
@@ -572,7 +579,7 @@ def gui():
 
 def main():
     immapp.run(gui, window_size=(1200, 800), window_title="Dear ImGui Bundle Playground",
-               with_implot=True, with_implot3d=True, with_markdown=True, fps_idle=0, ini_disable=True)
+               with_implot=True, with_implot3d=True, with_markdown=True, ini_disable=True)
 
 
 if __name__ == "__main__":

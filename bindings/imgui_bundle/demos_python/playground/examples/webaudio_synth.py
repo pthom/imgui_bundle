@@ -32,7 +32,7 @@ from dataclasses import dataclass
 from typing import Any, Callable
 
 import numpy as np
-from imgui_bundle import imgui, immapp, imgui_knobs, rich_md, icons_fontawesome_4, em_size, em_to_vec2
+from imgui_bundle import imgui, immapp, imgui_knobs, rich_md, icons_fontawesome_4, em_size, em_to_vec2, hello_imgui
 from imgui_bundle import ImVec2, ImVec4, ImVec2Like, ImColor
 
 IN_BROWSER = sys.platform == "emscripten"
@@ -106,6 +106,7 @@ ECHO_DELAY = 0.3  # seconds
 
 # The scope
 SCOPE_SAMPLES = 1024  # about 20 ms
+SILENCE = 1e-4  # below this level, the scope's samples are silence
 SCOPE_ZOOM = 3.0
 SPECTRUM_BINS = 128  # of 1024: up to about 3 kHz
 
@@ -515,6 +516,8 @@ def scope(state: State) -> None:
     draw_list.add_rect_filled(p0, ImVec2(p0.x + size.x, p0.y + size.y), SCOPE_BACKGROUND, rounding)
     draw_list.add_text(ImVec2(p0.x + em_size(0.6), p0.y + em_size(0.4)), caption_color, "Waveform")
     samples = state.synth.waveform() if state.synth is not None else np.zeros(SCOPE_SAMPLES, np.float32)
+    sounding = state.synth is not None and (state.synth.tune is not None or np.abs(samples).max() > SILENCE)
+    hello_imgui.set_item_is_live(sounding)  # the scope moves on its own while it shows sound (notes, their echo)
     rising = np.flatnonzero((samples[:-1] < 0) & (samples[1:] >= 0))
     start = rising[0] if len(rising) > 0 else 0
     shown = np.clip(samples[start:start + SCOPE_SAMPLES] * SCOPE_ZOOM, -1.0, 1.0)
@@ -552,4 +555,4 @@ def gui() -> None:
     scope(STATE)
 
 
-immapp.run(gui, window_title="WebAudio synthesizer", window_size=(1100, 860), fps_idle=0, with_markdown=True)
+immapp.run(gui, window_title="WebAudio synthesizer", window_size=(1100, 860), with_markdown=True)

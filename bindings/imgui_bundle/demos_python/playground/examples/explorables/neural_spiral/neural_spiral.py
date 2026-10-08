@@ -131,7 +131,6 @@ def playground_widget() -> None:
     """The points over the network's answer, the loss beside them, and the buttons"""
     if state.training:
         state.train()
-    hello_imgui.get_runner_params().fps_idling.enable_idling = not state.training
 
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text
     if implot.begin_plot("##plane", em_to_vec2(22, 22), flags | implot.Flags_.equal):
@@ -148,6 +147,7 @@ def playground_widget() -> None:
                 marker=implot.Marker_.circle, marker_size=4, marker_fill_color=color,
                 marker_line_color=imgui.ImVec4(1, 1, 1, 1)))
         implot.end_plot()
+    hello_imgui.set_item_is_live(state.training)  # the network learns on its own while it trains
     imgui.same_line()
     if implot.begin_plot("Loss", em_to_vec2(20, 22), flags):
         implot.setup_axes("step", "", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)

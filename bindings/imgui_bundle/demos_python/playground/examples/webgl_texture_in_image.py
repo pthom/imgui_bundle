@@ -290,6 +290,7 @@ def gui():
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
     imgui.separator()
     imgui.image(imgui.ImTextureRef(TEXTURE_ID), ImVec2(TEX_W, TEX_H))
+    hello_imgui.set_item_is_live()  # the cube rotates on its own: no idling while it is visible
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
     imgui.end()
     _docs_window()
@@ -307,7 +308,6 @@ def before_exit():
 
 def main():
     runner_params = hello_imgui.RunnerParams()
-    runner_params.fps_idling.enable_idling = False
     runner_params.app_window_params.window_title = "3D cube via WebGL -> imgui.image (Pyodide)"
     runner_params.imgui_window_params.default_imgui_window_type = (
         hello_imgui.DefaultImGuiWindowType.no_default_window

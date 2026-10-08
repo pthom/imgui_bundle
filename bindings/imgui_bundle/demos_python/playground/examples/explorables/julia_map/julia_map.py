@@ -337,8 +337,8 @@ class State:
             self.choose_c(target_c if t == 1.0 else start_c + (target_c - start_c) * ease(t))
             if t == 1.0:
                 self.glide = None
-        moving = self.journey is not None or self.glide is not None
-        hello_imgui.get_runner_params().fps_idling.enable_idling = not moving  # a smooth journey
+        if self.journey is not None or self.glide is not None:
+            hello_imgui.request_refresh()  # a journey or a glide moves on its own: a smooth one
 
     def follow_map(self) -> None:
         """The Julia set around z = c, at the scale of the map: where the two sets look alike"""

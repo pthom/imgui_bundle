@@ -729,6 +729,8 @@ class Lesson:
         if self.waiting is not None and self.waiting.kind == "challenge" and self._condition(self.waiting.until):
             self._resume()
         self._apply()
+        if self.playing and self.waiting is None:
+            hello_imgui.request_refresh()  # the lesson's clock runs: what it animates moves on its own
 
     def _clock_next(self) -> float:
         """The lesson time after this frame: the clip's position while a sentence is spoken, else the frame's time"""
@@ -784,6 +786,7 @@ class Lesson:
             color = imgui.get_color_u32(ImVec4(1.0, 0.6, 0.1, 0.35 + 0.6 * k))
             imgui.get_foreground_draw_list().add_rect(p.rect[0] - ImVec2(4, 4), p.rect[1] + ImVec2(4, 4), color,
                                                       rounding=4.0, thickness=3.0)
+            hello_imgui.request_refresh()  # the highlight pulses on its own
 
     # ---- the frame -----------------------------------------------------------------------------------------------
     def gui(self, stage: Callable[[], None]) -> None:

@@ -329,6 +329,7 @@ def gui(state: AppState):
     imgui.pop_style_var()
 
     imgui.end_child()
+    hello_imgui.set_item_is_live(not state.paused)  # the animation moves on its own, unless paused
 
 
 def main():
@@ -339,7 +340,6 @@ def main():
         window_size=(1200, 750),
         with_implot=True,
         with_markdown=True,
-        fps_idle=0,
         ini_disable=True
     )
 
