@@ -269,3 +269,16 @@ void BrowseToUrl(const std::string& url)
 {
     BrowseToUrl(url.c_str());
 }
+
+
+void ShowManualIntro(const char* title, const char* line)
+{
+    // Under 50 em, the explorer shows one pane at a time (kNarrowWidthEm, imgui_explorer.cpp)
+    bool narrow = ImGui::GetContentRegionAvail().x < HelloImGui::EmSize(50.f);
+    std::string hint = narrow
+        ? "Browse the demos below, and when you want to see the code for one of them, switch to the code view."
+        : "Browse the demos below, and read their code beside them.";
+    std::string text = std::string("# ") + title + "\n" + (line[0] ? std::string(line) + " " : "") + hint;
+    RichMd::Render(text);
+    ImGui::Separator();
+}

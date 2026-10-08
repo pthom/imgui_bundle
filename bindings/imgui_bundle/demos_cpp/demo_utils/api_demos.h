@@ -20,6 +20,10 @@ std::string ReadCppCode(const std::string& demo_file_path);
 std::string ReadPythonCode(const std::string& demo_file_path);
 std::string ReadMarkdownDoc(const std::string& doc_file_name);
 
+// The title of an interactive manual, a line about its library, and how to read the manual (the code beside the
+// demos, or behind the switch to the code view on a narrow screen), then a separator
+void ShowManualIntro(const char* title, const char* line = "");
+
 void ShowPythonVsCppCode(const std::string& pythonCode, const std::string& cppCode, int nbLines = 0);
 void ShowPythonVsCppFile(const char* demo_file_path, int nb_lines = 0);
 

@@ -7,9 +7,9 @@ it. Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, 
 from imgui_bundle import imgui, immapp
 
 try:
-    from imgui_bundle.demos_python.manuals.manual_common import show_manual
+    from imgui_bundle.demos_python.manuals.manual_common import show_intro, show_manual
 except ImportError:  # a script: the module is beside this file
-    from manual_common import show_manual  # type: ignore[import-not-found, no-redef]
+    from manual_common import show_intro, show_manual  # type: ignore[import-not-found, no-redef]
 
 
 def fallback() -> None:
@@ -17,6 +17,7 @@ def fallback() -> None:
 
 
 def gui() -> None:
+    show_intro("ImAnim", "ImAnim is an Animation Engine for Dear ImGui.")
     show_manual("im_anim", fallback=fallback)
 
 

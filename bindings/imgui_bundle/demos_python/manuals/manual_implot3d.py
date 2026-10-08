@@ -7,14 +7,15 @@ Lines, scatter, surfaces, meshes and more, in Python and C++. From
 from imgui_bundle import immapp, implot3d
 
 try:
-    from imgui_bundle.demos_python.manuals.manual_common import show_manual
+    from imgui_bundle.demos_python.manuals.manual_common import show_intro, show_manual
 except ImportError:  # a script: the module is beside this file
-    from manual_common import show_manual  # type: ignore[import-not-found, no-redef]
+    from manual_common import show_intro, show_manual  # type: ignore[import-not-found, no-redef]
 
 FPS_IDLE = 30.0  # when idle: its demos animate, and they are not ours to mark as live (set_item_is_live)
 
 
 def gui() -> None:
+    show_intro("ImPlot3D")
     show_manual("implot3_d", fallback=lambda: implot3d.show_demo_window())
 
 
