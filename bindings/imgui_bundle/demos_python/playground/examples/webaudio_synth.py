@@ -27,7 +27,7 @@ volume + echo -> analyser                   (read by the scope)
 Browsers require a *user gesture* before an `AudioContext` may produce sound, and it must start inside the gesture's
 handler, which the frames of Python come after. A few lines of JavaScript start it at the first touch, click or key
 press anywhere on the page: a phone takes a moment to start its audio, better at the first scroll than at the first
-note.
+note. The tunes wait until it runs.
 """
 import sys
 from dataclasses import dataclass
@@ -182,27 +182,28 @@ NB_WHITE_KEYS = sum(not is_black(note) for note in NOTES)
 PIANO_KEYS = [imgui.Key[label.lower() if label.isalpha() else "_" + label] for label in KEY_LABELS]
 
 
-# Creates and resumes window.pySynthAudio inside the handler of the first gesture (see the docstring at the top)
+# Creates window.pySynthAudio inside the handler of the first gesture (see the docstring at the top), and resumes it
+# at each gesture: a phone may suspend it (a call, another app)
 START_AUDIO_JS = """
 if (!window.pySynthAudioListening) {
     window.pySynthAudioListening = true;
-    const events = ['pointerdown', 'touchend', 'click', 'keydown'];
     const start = () => {
         window.pySynthAudio = window.pySynthAudio || new AudioContext();
-        window.pySynthAudio.resume().then(() => events.forEach((e) => document.removeEventListener(e, start, true)));
+        window.pySynthAudio.resume();
     };
-    events.forEach((e) => document.addEventListener(e, start, true));
+    ['pointerdown', 'touchend', 'click', 'keydown'].forEach((e) => document.addEventListener(e, start, true));
 }
 """
+if IN_BROWSER:  # at once: the first gesture, wherever it lands, starts the audio
+    import js  # type: ignore[import-not-found]
+
+    js.eval(START_AUDIO_JS)
 
 
 def audio_context() -> Any:
     """The page's audio context, once a gesture created it. None before, and on desktop."""
     if not IN_BROWSER:
         return None
-    import js  # type: ignore[import-not-found]
-
-    js.eval(START_AUDIO_JS)
     return getattr(js.window, "pySynthAudio", None)
 
 
@@ -336,14 +337,16 @@ class State:
         self.narrow_view = TUNES_VIEW
         self.tune_to_show: Tune | None = None  # a tune that starts: the piano shows its keys
 
-    def ensure_synth(self) -> Synth | None:
-        """The synth, once a gesture started the page's audio (see audio_context). None on desktop."""
+    def ensure_synth(self) -> None:
+        """Each frame: creates the synth once a gesture created the page's audio (see audio_context)"""
         if self.synth is None:
             ctx = audio_context()
             if ctx is not None:
                 self.synth = Synth(ctx)
                 self.synth.apply(self)
-        return self.synth
+
+    def sound_ready(self) -> bool:
+        return self.synth is not None and not self.synth.starting()
 
 
 def header() -> None:
@@ -378,12 +381,13 @@ def tune_card(state: State, tune: Tune, size: ImVec2) -> None:
     imgui.set_cursor_pos_y(imgui.get_window_height() - imgui.get_frame_height() - imgui.get_style().window_padding.y)
     if synth is not None and playing:
         stop_and_progress(synth)
-    elif imgui.button(icons_fontawesome_4.ICON_FA_PLAY + " Play"):
-        new_synth = state.ensure_synth()
-        if new_synth is not None:
-            new_synth.play_tune(tune, state.tempo, WAVEFORMS[state.waveform])
+    else:
+        imgui.begin_disabled(not state.sound_ready())  # sound_status() says why
+        if imgui.button(icons_fontawesome_4.ICON_FA_PLAY + " Play") and synth is not None:
+            synth.play_tune(tune, state.tempo, WAVEFORMS[state.waveform])
             state.tune_to_show = tune
             state.narrow_view = PIANO_VIEW  # on a narrow screen: watch the keys play
+        imgui.end_disabled()
 
     imgui.end_child()
     imgui.pop_style_var()
@@ -446,15 +450,12 @@ def knob(label: str, value: float, v_min: float, v_max: float, format: str, size
     return r
 
 
-def synth_name(state: State, subtitle: bool) -> None:
-    """The name, and below it a subtitle, or that the sound is starting"""
+def synth_name(subtitle: bool) -> None:
     imgui.begin_vertical("name")
     imgui.push_font(None, imgui.get_style().font_size_base * 1.8)
     imgui.text_colored(imgui.color_convert_u32_to_float4(PLAYED_KEY), f"PY-{NB_NOTES}")
     imgui.pop_font()
-    if state.synth is not None and state.synth.starting():
-        imgui.text_disabled("Starting the sound...")
-    elif subtitle:
+    if subtitle:
         imgui.text_disabled("Python synthesizer")
     imgui.end_vertical()
 
@@ -490,7 +491,7 @@ def controls(state: State) -> None:
     width = imgui.get_content_region_avail().x
     if is_narrow():
         imgui.begin_horizontal("name and waveforms", ImVec2(width, 0), 0.5)
-        synth_name(state, subtitle=False)
+        synth_name(subtitle=False)
         imgui.spring()
         waveforms(state, em_to_vec2(2.8, 2.0))
         imgui.end_horizontal()
@@ -501,7 +502,7 @@ def controls(state: State) -> None:
         imgui.end_horizontal()
     else:
         imgui.begin_horizontal("controls", ImVec2(width, 0), 0.5)
-        synth_name(state, subtitle=True)
+        synth_name(subtitle=True)
         imgui.spring()
         waveforms(state, em_to_vec2(3.4, 2.4))
         imgui.spring()
@@ -621,8 +622,6 @@ def piano(state: State) -> None:
                 held.add(note)
                 break
 
-    if held:
-        state.ensure_synth()
     tune_notes: set[int] = set()
     if state.synth is not None:
         state.synth.update(held, WAVEFORMS[state.waveform])
@@ -717,12 +716,30 @@ def view_switch(state: State) -> None:
             imgui.pop_style_color()
 
 
+def sound_status(state: State) -> bool:
+    """In the browser, until the sound runs: a line that says why the tunes wait. True when shown."""
+    if not IN_BROWSER or state.sound_ready():
+        return False
+    color = imgui.color_convert_u32_to_float4(TUNE_KEY)
+    if state.synth is None:  # browsers wait for a gesture
+        touch = imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen.value
+        text = ("Tap" if touch else "Click") + " anywhere to start the sound"
+    else:  # a phone takes a moment: the text pulses meanwhile
+        text = "Starting the sound..."
+        color = ImVec4(color.x, color.y, color.z, 0.65 + 0.35 * float(np.sin(5.0 * imgui.get_time())))
+        hello_imgui.request_refresh()
+    imgui.align_text_to_frame_padding()
+    imgui.text_colored(color, icons_fontawesome_4.ICON_FA_VOLUME_UP + "  " + text)
+    return True
+
+
 def now_playing(state: State) -> None:
     """On a narrow screen, above the piano: the tune that plays, and Stop"""
     imgui.align_text_to_frame_padding()
     synth = state.synth
     if synth is None or synth.tune is None:
-        imgui.text_disabled("Play the keys, or pick a tune")
+        if not sound_status(state):
+            imgui.text_disabled("Play the keys, or pick a tune")
         return
     imgui.text_colored(imgui.color_convert_u32_to_float4(TUNE_KEY), synth.tune.name)
     imgui.same_line()
@@ -730,11 +747,13 @@ def now_playing(state: State) -> None:
 
 
 def gui() -> None:
+    STATE.ensure_synth()
     header()
     narrow = is_narrow()
     if narrow:
         view_switch(STATE)
     if not narrow or STATE.narrow_view == TUNES_VIEW:
+        sound_status(STATE)
         tune_cards(STATE)
         imgui.dummy(em_to_vec2(0, 0.3))
     if not narrow or STATE.narrow_view == PIANO_VIEW:
