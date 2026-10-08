@@ -267,12 +267,12 @@ namespace
                     "%s.py:%d - \"%s\"", file_no_ext, pyLine, section);
             else
                 snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                    "%s.cpp:%d (no python demo) - \"%s\"", file_no_ext, line + 1, section);
+                    "%s.cpp:%d (no python demo) - \"%s\"", file_no_ext, line, section);
         }
         else
         {
             snprintf(GDemoMarker_CodeLookupInfo, sizeof(GDemoMarker_CodeLookupInfo),
-                "%s.cpp:%d - \"%s\"", file_no_ext, line + 1, section);
+                "%s.cpp:%d - \"%s\"", file_no_ext, line, section);
         }
 
         // Suppress the navigation jump while any widget is being manipulated
