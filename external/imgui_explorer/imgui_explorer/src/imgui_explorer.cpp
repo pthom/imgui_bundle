@@ -389,6 +389,21 @@ namespace
         }
     }
 
+    // A zoom button, its "-" or "+" drawn at its center (the icon font's minus sits off center)
+    bool ZoomButton(const char* id, bool plus)
+    {
+        bool clicked = ImGui::Button(id, HelloImGui::EmToVec2(2.f, 1.5f));
+        ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
+        ImVec2 c((mi.x + ma.x) * 0.5f, (mi.y + ma.y) * 0.5f);
+        float h = ImGui::GetFontSize() * 0.35f, t = ImGui::GetFontSize() * 0.09f;  // the half length and thickness
+        ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        drawList->AddRectFilled(ImVec2(c.x - h, c.y - t), ImVec2(c.x + h, c.y + t), col);
+        if (plus)
+            drawList->AddRectFilled(ImVec2(c.x - t, c.y - h), ImVec2(c.x + t, c.y + h), col);
+        return clicked;
+    }
+
     // The "..." button of a small screen, and its menu: the library's intro and links, then the status bar's content
     void GuiExplorerMenu(bool withStatus)
     {
@@ -412,7 +427,17 @@ namespace
             auto & params = *HelloImGui::GetRunnerParams();
             ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
             // (no font scale slider: it would move under the finger as the scale changes)
-            ImGui::TextUnformatted("Zoom: pinch with two fingers.");
+            float& scale = ImGui::GetStyle().FontScaleMain;
+            ImGui::AlignTextToFramePadding();
+            ImGui::TextUnformatted("Zoom");
+            ImGui::SameLine();
+            if (ZoomButton("##zoom_out", false))
+                scale = ImClamp(scale / 1.1f, 0.5f, 5.f);
+            ImGui::SameLine();
+            if (ZoomButton("##zoom_in", true))
+                scale = ImClamp(scale * 1.1f, 0.5f, 5.f);
+            ImGui::SameLine();
+            ImGui::TextUnformatted("or pinch with two fingers.");
             const char* idlingInfo = params.fpsIdling.isIdling ? " (Idling)" : "";
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
