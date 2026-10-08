@@ -1,6 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // Power save: when nothing happens, Hello ImGui lowers the frame rate to spare the CPU. What changes on its own (a live
-// plot, a spinner) then moves by jumps.
+// plot, a spinner) then moves by jumps, unless it says that it is live: HelloImGui::SetItemIsLive().
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #include "immapp/immapp.h"
 #include "imgui.h"
@@ -20,6 +20,7 @@ namespace
 
     // A signal of varying data, sampled once per frame: the gaps between the samples are the frame durations
     std::vector<double> gTimes, gValues;
+    bool gLive = false;  // the plot and the spinner say that they are live (HelloImGui::SetItemIsLive)
 
     void SampleSignal()
     {
@@ -64,6 +65,7 @@ namespace
             ImPlot::PlotLine("signal", ages.data(), gValues.data(), (int)ages.size());
             ImPlot::EndPlot();
         }
+        HelloImGui::SetItemIsLive(gLive);  // the plot changes on its own: the app does not idle while it is visible
     }
 }  // namespace
 
@@ -76,13 +78,19 @@ void gui_demo_powersave()
     ShowPace();
     ImGui::TextWrapped(
         "In order to reduce the CPU usage, the FPS is reduced automatically when no user interaction is detected. "
-        "As a consequence, the plot and the spinner below may move by jumps. Move the mouse or touch the screen, "
-        "and they are smooth again.");
+        "As a consequence, the plot and the spinner below move by jumps after 3 seconds without input. Unless they "
+        "say that they are live: call HelloImGui::SetItemIsLive() right after such a widget, and the app keeps its "
+        "full speed while the widget is visible.");
+    ImGui::Checkbox("The plot and the spinner are live", &gLive);
 
     ShowSignal();
     auto color = ImColor(0.3f, 0.5f, 0.9f, 1.f);
     float radius1 = ImGui::GetFontSize();
     ImSpinner::SpinnerAngTriple("spinner_arc_fade", radius1, radius1 * 1.5f, radius1 * 2.f, 2.5f, color, color, color);
+    HelloImGui::SetItemIsLive(gLive);
+
+    ImGui::TextWrapped("Data that arrives in another thread (a camera, a socket): call HelloImGui::RequestRefresh() "
+                       "when it arrives.");
 
     ImGui::TextWrapped("You can adjust HelloImGui::GetRunnerParams()->fpsIdling.fpsIdle if you need smoother "
                        "animations when the app is idle. A value of 0 means that the refresh will be as fast as "
