@@ -411,13 +411,8 @@ namespace
 
             auto & params = *HelloImGui::GetRunnerParams();
             ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
-            if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen)
-                ImGui::TextUnformatted("Zoom: pinch with two fingers.");
-            else
-            {
-                ImGui::SetNextItemWidth(150.f); // a fixed width, as in the status bar: the slider changes the scale
-                ImGui::SliderFloat("Font scale", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
-            }
+            // (no font scale slider: it would move under the finger as the scale changes)
+            ImGui::TextUnformatted("Zoom: pinch with two fingers.");
             const char* idlingInfo = params.fpsIdling.isIdling ? " (Idling)" : "";
             ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), idlingInfo);
         }
