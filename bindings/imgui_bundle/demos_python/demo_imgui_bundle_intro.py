@@ -1698,7 +1698,7 @@ def _table_slide_gui(content_size: ImVec2):
     em = hello_imgui.em_size()
     gap = em * 0.5
     if is_small_screen():  # six instruments fit the width; the controls under the table
-        panel_h = em * 3.5
+        panel_h = em * 4.6  # the tempo knob and its value under it
         _table_gui_main(ImVec2(content_size.x, content_size.y - panel_h - gap), 6)
         draw_side_panel("##table_side", content_size.x, panel_h, _table_gui_side_narrow)
         return
@@ -2254,6 +2254,9 @@ _welcome_head: list[str] = []  # the tagline and the subtitle: the paragraphs of
 _welcome_rest = ""  # its sections, in the window of the prose
 _welcome_loaded = False
 _about_opened_at: Optional[float] = None  # when the window of the prose opened (None: closed)
+_cta_height = 0.0  # the height of the button and the manuals' line, measured at the last frame
+HEAD_EXPANDED_DURATION = 8.0  # s: on a phone, a tap on the short tagline shows all of it for that long
+_head_expanded_until = 0.0  # the time until which the whole head shows, on a phone
 
 
 def _load_welcome_text() -> None:
@@ -2272,21 +2275,39 @@ def _load_welcome_text() -> None:
     _welcome_head = [p.strip() for p in head.split("\n\n") if p.strip()]
 
 
+def _short_head() -> list[str]:
+    """On a phone: the tagline's first sentence only (it ends at its first ". ")"""
+    if not _welcome_head:
+        return []
+    first = _welcome_head[0]
+    italic = first.startswith("*") and first.endswith("*")
+    text = first.strip("*") if italic else first
+    cut = text.find(". ")
+    if cut < 0:
+        return [first]
+    return [f"*{text[:cut + 1]}*" if italic else text[:cut + 1]]
+
+
 def _render_head() -> None:
     """The tagline and the subtitle, and at the right of their last line the button that opens the prose. Drawn with
-    the markdown fonts, not rendered as markdown: a phone shows them smaller"""
-    global _about_opened_at
+    the markdown fonts, not rendered as markdown: a phone shows them smaller, and only the tagline's first sentence,
+    until a tap shows the rest for a while"""
+    global _about_opened_at, _head_expanded_until
     if not _welcome_loaded:
         _load_welcome_text()
     em = hello_imgui.em_size()
     small = is_small_screen()
+    expanded = not small or imgui.get_time() < _head_expanded_until
+    paragraphs = _welcome_head if expanded else _short_head()
+    if small and expanded:
+        hello_imgui.request_refresh()  # the head folds back on its own
     label = icons_fontawesome_4.ICON_FA_INFO_CIRCLE if small else f"More info & links {icons_fontawesome_4.ICON_FA_EXPAND}"
     button_w = imgui.calc_text_size(label).x + imgui.get_style().frame_padding.x * 2.0
     top_left = imgui.get_cursor_screen_pos()
     avail_x = imgui.get_content_region_avail().x
     imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + avail_x - (button_w + em if _welcome_rest else 0.0))
     last_line_end = 0.0  # where the last paragraph ends, when it takes one line (else the button goes at the right)
-    for i, paragraph in enumerate(_welcome_head):
+    for i, paragraph in enumerate(paragraphs):
         italic = len(paragraph) > 2 and paragraph.startswith("*") and paragraph.endswith("*")
         text = paragraph.strip("*") if italic else paragraph
         font = rich_md.get_font(rich_md.MarkdownFontSpec(italic_=italic))
@@ -2298,6 +2319,11 @@ def _render_head() -> None:
         imgui.text_wrapped(text)
         imgui.pop_font()
     imgui.pop_text_wrap_pos()
+    if small:  # a tap on the text shows all of it, or folds it back
+        head_bottom = imgui.get_cursor_screen_pos().y
+        if imgui.is_mouse_hovering_rect(top_left, ImVec2(top_left.x + avail_x - button_w - em, head_bottom)) \
+                and imgui.is_mouse_released(imgui.MouseButton_.left) and imgui.get_mouse_drag_delta(0).y == 0:
+            _head_expanded_until = 0.0 if expanded else imgui.get_time() + HEAD_EXPANDED_DURATION
     if not _welcome_rest:
         return
     below = imgui.get_cursor_screen_pos()
@@ -2358,18 +2384,18 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     em = hello_imgui.em_size()
     dl = imgui.get_window_draw_list()
     font_size = imgui.get_font_size()
-    title_font_size = font_size * 1.2
+    narrow = is_small_screen()  # a phone: the title and the link, smaller, no description
+    title_font_size = font_size * (1.0 if narrow else 1.2)
     font = imgui.get_font()
 
     link = "Open the full demo " + icons_fontawesome_4.ICON_FA_CHEVRON_RIGHT if slide.demo and host.open_demo else ""
     link_size = imgui.calc_text_size(link) if link else ImVec2(0, 0)
     title_size = imgui.calc_text_size(slide.title)
     title_h = title_size.y * (title_font_size / font_size)
-    narrow = is_small_screen()  # a phone: the title and the link, no description
     desc_size = ImVec2(0, 0) if narrow else imgui.calc_text_size(slide.description, None, False, slide_width - em * 2.0)
 
-    card_pad_x = em * 1.0
-    card_pad_y = em * 0.4
+    card_pad_x = em * (0.6 if narrow else 1.0)
+    card_pad_y = em * (0.25 if narrow else 0.4)
     card_w = slide_width - em * 1.0
     # The link at the right of the title when both fit on the line, else on a line of its own under the text
     link_on_title = link_size.x + title_size.x * (title_font_size / font_size) + em * 1.0 <= card_w - 2 * card_pad_x
@@ -2673,22 +2699,30 @@ def _call_to_action(host: Host) -> None:
     """Centered: the big "Browse the N demos" button, then the line of the interactive manuals"""
     if host.browse is None:
         return
+    global _cta_height
     em = hello_imgui.em_size()
+    small = is_small_screen()
+    top = imgui.get_cursor_screen_pos().y
     avail_x = imgui.get_content_region_avail().x
     label = f"{icons_fontawesome_4.ICON_FA_TH_LARGE}  Browse the {host.nb_demos} demos"
-    imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
-    imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em * 1.2, em * 0.4))
+    imgui.push_font(None, imgui.get_style().font_size_base * (1.15 if small else 1.3))
+    imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em * 1.2, em * (0.3 if small else 0.4)))
     width = imgui.calc_text_size(label).x + em * 2.4
     imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail_x - width) / 2)
     if imgui.button(label):
         host.browse()
     imgui.pop_style_var()
     imgui.pop_font()
-    if host.open_demo is None:
-        return
-    # The manuals: "or open an interactive manual: Dear ImGui | ImPlot | ImPlot3D | ImAnim" (centered when it fits
-    # on one line, else wrapped as the links row)
-    intro = "or open an interactive manual: "
+    if host.open_demo is not None:
+        _manuals_line(host.open_demo, avail_x, small)
+    _cta_height = imgui.get_cursor_screen_pos().y - top
+
+
+def _manuals_line(open_demo: Callable[[str], None], avail_x: float, small: bool) -> None:
+    """The manuals: "or open an interactive manual: Dear ImGui | ImPlot | ImPlot3D | ImAnim" (shorter on a phone;
+    centered when it fits on one line, else wrapped as the links row)"""
+    em = hello_imgui.em_size()
+    intro = "Interactive manuals: " if small else "or open an interactive manual: "
     parts_w = imgui.calc_text_size(intro).x + sum(imgui.calc_text_size(name).x for name, _ in MANUALS)
     parts_w += imgui.calc_text_size(" | ").x * (len(MANUALS) - 1)
     if parts_w <= avail_x:
@@ -2708,7 +2742,7 @@ def _call_to_action(host: Host) -> None:
         if imgui.is_item_hovered():
             imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
             if imgui.is_mouse_clicked(imgui.MouseButton_.left):
-                host.open_demo(filename)
+                open_demo(filename)
     _IntroAutomations.init()
     if _IntroAutomations.show_immediate_apps is not None:  # the explorer with the test engine: a guided tour
         imgui.same_line(0, em)
@@ -2724,8 +2758,8 @@ def welcome_gui(host: Host):
     _render_head()
     imgui.separator()
     em = hello_imgui.em_size()
-    # The button and the manuals' line (two lines on a phone)
-    bottom = 0.0 if host.browse is None else em * (6.2 if is_small_screen() else 4.6)
+    # The button and the manuals' line: their height at the last frame (an estimate at the first)
+    bottom = 0.0 if host.browse is None else (_cta_height + em * 0.3 if _cta_height > 0.0 else em * 4.6)
     _intro_mini_demos(host, bottom)
     _call_to_action(host)
     _about_window()
