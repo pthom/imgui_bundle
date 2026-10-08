@@ -2970,17 +2970,20 @@ namespace ManualRender
 //  normally create — they are not usable outside `Run()`.
     bool InitGlLoader();
 
-// `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap that ends inside this rectangle
-//  (screen coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown.
+// `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap on this rectangle (screen
+//  coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown (several
+//  rectangles per frame: the links of a text).
 //  A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes
 //  two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing
 //  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
     void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);
 
-// `SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch
-//  screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
-//  the widget's content, in any direction (a swipe that starts on it does not scroll the window).
-    void SetItemTakesTouchDrags();
+// `SetItemTakesTouchDrags(longPressIsRightClick = true)`: call it right after a widget that is dragged (a plot, a node
+//  editor, a canvas). On a touch screen, a press on it goes to the widget at once, without the hold, even in a window
+//  that scrolls: its drags move the widget's content, in any direction (a swipe that starts on it does not scroll the
+//  window). A finger still on it for half a second becomes a right click (its context menu), unless
+//  longPressIsRightClick is false: the widget then keeps the finger as long as it stays (a piano key, a fire button).
+    void SetItemTakesTouchDrags(bool longPressIsRightClick = true);
 
 // `SetItemIsLive(live = true)`: call it right after a widget whose content changes on its own (an animation, a live
 //  image, a plot of varying data), at each frame: while it is live and visible, the app does not idle (see

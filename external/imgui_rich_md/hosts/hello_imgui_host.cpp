@@ -1,5 +1,6 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-// Host services for ImGui Bundle: assets, textures, logging and the system's reduced motion through HelloImGui.
+// Host services for ImGui Bundle: assets, textures, logging, the system's reduced motion, and in the browser the links
+// opened from a tap, through HelloImGui.
 // Compiled into imgui_md only in the bundle (IMGUI_RICHMD_HOST_HELLO_IMGUI); installed by
 // CreateContext for the fields the application did not set.
 #include "imgui_rich_md/rich_md_host.h"
@@ -63,6 +64,10 @@ namespace RichMd
             services.Log = _Log;
         if (!services.PrefersReducedMotion)
             services.PrefersReducedMotion = HelloImGui::PrefersReducedMotion;
+#ifdef __EMSCRIPTEN__
+        if (!services.TapOpensUrl)
+            services.TapOpensUrl = HelloImGui::SetTapOpensUrl;
+#endif
         SetHostServices(services);
     }
 }

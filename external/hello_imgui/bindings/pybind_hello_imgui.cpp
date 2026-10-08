@@ -1847,10 +1847,12 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("set_tap_opens_url",
         HelloImGui::SetTapOpensUrl,
         nb::arg("rect_min"), nb::arg("rect_max"), nb::arg("url"),
-        " `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap that ends inside this rectangle\n  (screen coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown.\n  A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes\n  two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing\n  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.");
+        " `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap on this rectangle (screen\n  coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown (several\n  rectangles per frame: the links of a text).\n  A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes\n  two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing\n  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.");
 
     m.def("set_item_takes_touch_drags",
-        HelloImGui::SetItemTakesTouchDrags, " `SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch\n  screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move\n  the widget's content, in any direction (a swipe that starts on it does not scroll the window).");
+        HelloImGui::SetItemTakesTouchDrags,
+        nb::arg("long_press_is_right_click") = true,
+        " `SetItemTakesTouchDrags(longPressIsRightClick = True)`: call it right after a widget that is dragged (a plot, a node\n  editor, a canvas). On a touch screen, a press on it goes to the widget at once, without the hold, even in a window\n  that scrolls: its drags move the widget's content, in any direction (a swipe that starts on it does not scroll the\n  window). A finger still on it for half a second becomes a right click (its context menu), unless\n  longPressIsRightClick is False: the widget then keeps the finger as long as it stays (a piano key, a fire button).");
 
     m.def("set_item_is_live",
         HelloImGui::SetItemIsLive,

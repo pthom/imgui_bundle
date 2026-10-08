@@ -3536,19 +3536,22 @@ def init_gl_loader() -> bool:
 
 # void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);    /* original C++ signature */
 def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> None:
-    """`SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap that ends inside this rectangle
-    (screen coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown.
+    """`SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap on this rectangle (screen
+    coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown (several
+    rectangles per frame: the links of a text).
     A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes
     two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing
     more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
     """
     pass
 
-# void SetItemTakesTouchDrags();    /* original C++ signature */
-def set_item_takes_touch_drags() -> None:
-    """`SetItemTakesTouchDrags()`: call it right after a widget that is dragged (a plot, a node editor, a canvas). On a touch
-    screen, a press on it goes to the widget at once, without the hold, even in a window that scrolls: its drags move
-    the widget's content, in any direction (a swipe that starts on it does not scroll the window).
+# void SetItemTakesTouchDrags(bool longPressIsRightClick = true);    /* original C++ signature */
+def set_item_takes_touch_drags(long_press_is_right_click: bool = True) -> None:
+    """`SetItemTakesTouchDrags(longPressIsRightClick = True)`: call it right after a widget that is dragged (a plot, a node
+    editor, a canvas). On a touch screen, a press on it goes to the widget at once, without the hold, even in a window
+    that scrolls: its drags move the widget's content, in any direction (a swipe that starts on it does not scroll the
+    window). A finger still on it for half a second becomes a right click (its context menu), unless
+    longPressIsRightClick is False: the widget then keeps the finger as long as it stays (a piano key, a fire button).
     """
     pass
 
