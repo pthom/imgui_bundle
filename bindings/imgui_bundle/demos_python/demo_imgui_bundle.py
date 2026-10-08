@@ -18,7 +18,7 @@ if importlib.util.find_spec("numpy") is None:
     )
     sys.exit(1)
 
-from typing import Optional
+from typing import Literal, Optional
 
 from imgui_bundle import imgui, hello_imgui, immapp, rich_md, ImVec2, ImVec4, em_size, icons_fontawesome_4 as fa
 from imgui_bundle.demos_python import demo_imgui_bundle_intro
@@ -30,7 +30,71 @@ CHANGE_DURATION = 0.4  # s: a change of state, through the background
 DRIFT = 3.0  # em: the page leaving slides that much (up when going forward), the one arriving comes from as far
 WELCOME_LABEL = fa.ICON_FA_HOME + "  Welcome"  # the switch of the header (the intro's automations click it)
 DEMOS_LABEL = fa.ICON_FA_TH_LARGE + "  Demos"
+# em: below this width, the status bar's content goes to a "..." menu in the header (in the bar, the app's part and
+# hello_imgui's idling and FPS, at a fixed place from the right, would overlap)
+STATUS_IN_MENU_BELOW = 60.0
 _EXPLORER: Optional["Explorer"] = None  # the page, once the app is set up (the intro's automations drive it)
+
+
+def status_in_menu() -> bool:
+    return imgui.get_io().display_size.x < em_size(STATUS_IN_MENU_BELOW)
+
+
+def is_touch_screen() -> bool:
+    return bool(imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen)
+
+
+def symbol_button(label: str, symbol: Literal["-", "+", "..."], size: ImVec2) -> bool:
+    """A button with its symbol drawn at its center (the icon font's minus and ellipsis sit off center)"""
+    clicked = imgui.button(label, size)
+    mi, ma = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+    c = ImVec2((mi.x + ma.x) * 0.5, (mi.y + ma.y) * 0.5)
+    em = imgui.get_font_size()
+    h, t = em * 0.35, em * 0.09  # the half length and the half thickness of a stroke
+    col = imgui.get_color_u32(imgui.Col_.text)
+    draw_list = imgui.get_window_draw_list()
+    if symbol == "...":
+        for i in (-1, 0, 1):
+            draw_list.add_circle_filled(ImVec2(c.x + i * em * 0.3, c.y), em * 0.1, col)
+        return clicked
+    draw_list.add_rect_filled(ImVec2(c.x - h, c.y - t), ImVec2(c.x + h, c.y + t), col)
+    if symbol == "+":
+        draw_list.add_rect_filled(ImVec2(c.x - t, c.y - h), ImVec2(c.x + t, c.y + h), col)
+    return clicked
+
+
+def zoom_buttons(button_height: float) -> None:
+    """The zoom: two buttons, and the pinch on a touch screen. No slider where the finger is: it would move under the
+    finger as the scale changes"""
+    style = imgui.get_style()
+    size = ImVec2(em_size(2), button_height)
+    imgui.align_text_to_frame_padding()
+    imgui.text("Zoom")
+    imgui.same_line()
+    if symbol_button("##zoom_out", "-", size):
+        style.font_scale_main = min(max(style.font_scale_main / 1.1, 0.5), 5.0)
+    imgui.same_line()
+    if symbol_button("##zoom_in", "+", size):
+        style.font_scale_main = min(max(style.font_scale_main * 1.1, 0.5), 5.0)
+    if is_touch_screen():
+        imgui.same_line()
+        imgui.text("or pinch with two fingers")
+
+
+def status_menu() -> None:
+    """The "..." button of a narrow screen (as tall as the header's chips), and its menu: the status bar's content"""
+    from imgui_bundle import __version__, __build_number__
+    if symbol_button("##status_menu", "...", ImVec2(em_size(2), imgui.get_font_size())):
+        imgui.open_popup("##status_menu_popup")
+    if not imgui.begin_popup("##status_menu_popup"):
+        return
+    imgui.text_disabled("Dear ImGui Bundle Explorer")
+    imgui.text_disabled(f"v{__version__} build {__build_number__}")
+    zoom_buttons(em_size(1.5))
+    fps_idling = hello_imgui.get_runner_params().fps_idling
+    _, fps_idling.enable_idling = imgui.checkbox("Enable idling", fps_idling.enable_idling)
+    imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}{' (Idling)' if fps_idling.is_idling else ''}")
+    imgui.end_popup()
 
 
 class Explorer:
@@ -49,6 +113,7 @@ class Explorer:
         if (self.state == DEMOS and self.launcher.depth == 0 and not imgui.is_any_item_active()
                 and imgui.is_key_pressed(imgui.Key.escape)):  # else the launcher goes back one level itself
             self.go(WELCOME)
+        hello_imgui.get_runner_params().imgui_window_params.show_status_bar = not status_in_menu()
         self.header()
         self.page()
 
@@ -141,6 +206,8 @@ class Explorer:
             imgui.pop_style_color()
             imgui.same_line()
         imgui.pop_style_var()
+        if status_in_menu():
+            status_menu()
         imgui.end_group()
         self.right_width = imgui.get_item_rect_size().x
         imgui.set_cursor_pos_y(max(imgui.get_cursor_pos_y(), below_title))  # the chips are shorter than the title
@@ -205,13 +272,14 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
 
     def show_status_bar():
         from imgui_bundle import __version__, __build_number__
-        imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
-        _, imgui.get_style().font_scale_main = imgui.slider_float("Font scale", imgui.get_style().font_scale_main, 0.5, 5)
-        imgui.same_line(spacing=hello_imgui.em_size(4))
-        if demo_immapp_launcher.small_screen():  # the bar's right part (idling, FPS) leaves no room for more
-            imgui.text_disabled(f"v{__version__}")
+        if is_touch_screen():
+            zoom_buttons(imgui.get_frame_height())
         else:
-            imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
+            imgui.set_next_item_width(imgui.get_content_region_avail().x / 10)
+            _, imgui.get_style().font_scale_main = imgui.slider_float(
+                "Font scale", imgui.get_style().font_scale_main, 0.5, 5)
+        imgui.same_line(spacing=hello_imgui.em_size(4))
+        imgui.text_disabled(f"Dear ImGui Bundle Explorer - v{__version__} build {__build_number__}")
 
     runner_params.callbacks.show_status = show_status_bar
 
