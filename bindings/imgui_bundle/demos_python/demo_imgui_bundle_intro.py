@@ -903,6 +903,131 @@ def _lorenz_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
+# Slide: a live data stream, plotted at the screen's rate (as beside a Jupyter notebook, whose cells feed it)
+# ============================================================================
+
+STREAM_WINDOW = 1.0  # seconds of data on the plot
+STREAM_RATES = (10.0, 10000.0)  # samples per second: the slider's range (logarithmic: the look changes up to ~1000)
+
+
+class _StreamState:
+    """Two sensors, sampled at `rate` samples per second: the samples of the last frame are added at each frame"""
+
+    def __init__(self) -> None:
+        self.rng = np.random.default_rng(1)
+        self.rate = 1000.0
+        self.t = np.zeros(0)
+        self.a = np.zeros(0)
+        self.b = np.zeros(0)
+        self.t_end = 0.0  # the time of the last sample
+        self.debt = 0.0  # the samples due, less those taken
+        self.last_time: Optional[float] = None
+
+    def step(self) -> None:
+        now = imgui.get_time()
+        if self.last_time is None:  # the first frame: the plot full at once
+            self.last_time = now
+            self.debt = STREAM_WINDOW * self.rate
+        self.debt += max(0.0, min(now - self.last_time, 0.1)) * self.rate  # (a pause of the app adds no burst)
+        self.last_time = now
+        n = int(self.debt)
+        if n <= 0:
+            return
+        self.debt -= n
+        t = self.t_end + np.arange(1, n + 1) / self.rate
+        self.t_end = float(t[-1])
+        noise = self.rng.normal(0.0, 1.0, (2, n))
+        a = np.sin(2 * np.pi * 1.5 * t) + 0.35 * np.sin(2 * np.pi * 9.3 * t) + 0.07 * noise[0]
+        b = 0.8 * np.sin(2 * np.pi * 0.63 * t + 1.0) * np.cos(2 * np.pi * 5.1 * t) - 0.2 + 0.05 * noise[1]
+        first = int(np.searchsorted(self.t, self.t_end - STREAM_WINDOW))  # the samples older than the window go
+        self.t = np.concatenate([self.t[first:], t])
+        self.a = np.concatenate([self.a[first:], a])
+        self.b = np.concatenate([self.b[first:], b])
+
+
+_stream: Optional[_StreamState] = None
+
+
+def _stream_plot(state: _StreamState, size: ImVec2) -> None:
+    flags = implot.Flags_.no_menus | implot.Flags_.no_mouse_text | _implot_flags()
+    if implot.begin_plot("##stream", size, flags):
+        implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels.value, 0)
+        implot.setup_axis_limits(implot.ImAxis_.x1, state.t_end - STREAM_WINDOW, state.t_end, imgui.Cond_.always)
+        implot.setup_axis_limits(implot.ImAxis_.y1, -1.7, 1.7, imgui.Cond_.always)
+        if len(state.t) > 1:  # (none yet at the first frame)
+            implot.plot_line("sensor 1", state.t, state.a)
+            implot.plot_line("sensor 2", state.t, state.b)
+        implot.end_plot()
+        hello_imgui.set_item_is_live()  # the data flow on their own
+
+
+def _stream_stats(state: _StreamState) -> list[str]:
+    return [f"{imgui.get_io().framerate:.0f} frames per second", f"{state.rate:,.0f} samples per second",
+            f"{2 * len(state.t):,} points on the plot"]
+
+
+def _stream_rate_slider(state: _StreamState, width: float) -> None:
+    imgui.set_next_item_width(width)
+    _, state.rate = imgui.slider_float("##rate", state.rate, STREAM_RATES[0], STREAM_RATES[1], "%.0f samples / s",
+                                       imgui.SliderFlags_.logarithmic.value)
+
+
+def _stream_side() -> None:
+    assert _stream is not None
+    em = hello_imgui.em_size()
+    width = imgui.get_window_width() - em
+    imgui.indent(em * 0.5)  # the panel's padding, for the lines after the first
+    imgui.text("Live data stream")
+    imgui.spacing()
+    for line in _stream_stats(_stream):
+        imgui.text_disabled(line)
+    imgui.spacing()
+    _stream_rate_slider(_stream, width)
+    imgui.spacing()
+    rich_md.render("The same GUI runs beside a **Jupyter notebook**: `immapp.nb.start(gui)` returns at once, and the "
+                   "cells keep feeding it.")
+    imgui.unindent(em * 0.5)
+
+
+def _stream_side_narrow() -> None:
+    """The figures on one line (on two when they do not fit), then the rate"""
+    assert _stream is not None
+    em = hello_imgui.em_size()
+    width = imgui.get_window_width() - em
+    fps, samples, _ = _stream_stats(_stream)
+    line = f"{fps}  |  {samples}"
+    imgui.indent(em * 0.5)  # the panel's padding, for the lines after the first
+    if imgui.calc_text_size(line).x <= width:
+        imgui.text_disabled(line)
+    else:
+        imgui.text_disabled(fps)
+        imgui.text_disabled(samples)
+    _stream_rate_slider(_stream, width)
+    imgui.unindent(em * 0.5)
+
+
+def _stream_slide_gui(content_size: ImVec2):
+    global _stream
+    if _stream is None:
+        _stream = _StreamState()
+    _stream.step()
+    em = hello_imgui.em_size()
+    gap = em * 0.5
+    if is_small_screen():  # the plot, then the figures and the rate under it
+        fps, samples, _ = _stream_stats(_stream)
+        two_lines = imgui.calc_text_size(f"{fps}  |  {samples}").x > content_size.x - em
+        panel_h = (imgui.get_text_line_height_with_spacing() * (2 if two_lines else 1) + imgui.get_frame_height()
+                   + em * 1.3)
+        _stream_plot(_stream, ImVec2(content_size.x, content_size.y - panel_h - gap))
+        draw_side_panel("##stream_side", content_size.x, panel_h, _stream_side_narrow)
+        return
+    side_w = min(em * 17.0, content_size.x * 0.4)
+    _stream_plot(_stream, ImVec2(content_size.x - side_w - gap, content_size.y))
+    imgui.same_line(0.0, gap)
+    draw_side_panel("##stream_side", side_w, content_size.y, _stream_side)
+
+
+# ============================================================================
 # Slide: a tiny neural network learns two spirals (the explorable's widget, see explorables/neural_spiral)
 # ============================================================================
 
@@ -2558,6 +2683,11 @@ def slides() -> list[CarouselSlide]:
         "3D Data Exploration",
         "ImPlot3D adds rotatable, zoomable 3D plots. Navigate complex datasets with intuitive controls.",
         _lorenz_slide_gui, "manual_implot3d.py"))
+    _slides.append(CarouselSlide(
+        "Real-Time Data Streams",
+        "Thousands of samples per second, plotted at your screen's refresh rate. The same GUI runs beside a Jupyter "
+        "notebook, live while your cells compute.",
+        _stream_slide_gui, "notebooks.md"))
     _slides.append(CarouselSlide(
         "Interactive Science",
         "A tiny neural network learns two spirals, live: a model with its knobs, in a few lines of numpy. The explorable tells how it works, formula by formula.",
