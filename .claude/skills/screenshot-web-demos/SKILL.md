@@ -65,10 +65,24 @@ uv run --no-project --with playwright python $SK/drive_page.py http://localhost:
     wait:40 "py:__import__('imgui_bundle').__version__" "py:__import__('imgui_bundle').imgui.get_version()" shot:playground
 ```
 
-Then `Read` the PNG files. Actions: `wait:SECONDS`, `move:X,Y`, `click:X,Y`, `wheel:DX,DY`, `key:KEYS`, `shot:NAME`,
-`py:EXPRESSION`, `js:EXPRESSION` (see the docstring of the script). `--console` prints the page's console (Pyodide's
+Then `Read` the PNG files. Actions: `wait:SECONDS`, `move:X,Y`, `click:X,Y`, `down:X,Y`, `up`, `wheel:DX,DY`, `key:KEYS`,
+`shot:NAME`, `py:EXPRESSION`, `js:EXPRESSION` (see the docstring of the script). A widget held by the mouse (a slider while
+dragged): `click:BLANK_X,BLANK_Y down:X,Y move:X2,Y shot:held up` (the first click: see "Gotchas"). `--console` prints the page's console (Pyodide's
 stdout/stderr, wasm aborts). The context has clipboard permissions: `"js:navigator.clipboard.readText()"` after
 clicking a copy button checks what the app wrote (a JS promise is awaited). Viewport: 1400 x 900, device scale 1, so coordinates read on a screenshot can be used as is; `--viewport 480x800` for a phone.
+
+## A setting before the app starts (a theme)
+
+A Hello ImGui app reads its ini file at startup, from the page's in-memory file system. A copy of the page, written next to
+it in the build's `bin/` folder (never in the repo), can write that file before the app starts. For a theme, replace
+`preRun:[]` in the copy with:
+
+```js
+preRun:[function(){FS.writeFile("/Power_save.ini", ";;;<<<HelloImGui_Misc>>>;;;\n[Theme]\nName=ImGuiColorsLight\n")}]
+```
+
+- The ini's name is the window title, each character other than a letter or a digit replaced by `_` ("Power save" gives `Power_save.ini`), unless the app sets `iniFilename`.
+- The theme names are those of `ImGuiTheme_Name()` (`ImGuiColorsLight`, `DarculaDarker`, `MaterialFlat`...). One copy per theme gives the dark and light checks of the same page.
 
 ## What to check
 
@@ -101,6 +115,10 @@ xcrun simctl shutdown <udid>                          # when done
 - Taps need idb (Meta's iOS Development Bridge), installed by the user: `brew install facebook/fb/idb-companion` (Homebrew asks to trust the tap's formula first), then `uv tool install fb-idb --python 3.13`. Its taps reach the ImGui canvas as touches; `idb ui swipe` and `idb ui text` exist too. `idb ui describe-point` finds nothing on the canvas (it has no accessibility tree): harmless.
 - Wait between the steps: the wasm startup takes a few seconds, and idling lowers the frame rate after 3 s. A small Python script with `time.sleep` between the `simctl` calls does it.
 - `simctl io screenshot` reads the simulator itself: it works even where macOS blocks `screencapture` for the terminal.
+- Other sessions may be using the simulator: check `xcrun simctl list devices booted` first. A device you did not boot belongs to someone else: ask before driving it. Name your device by its UDID (`openurl <udid>`, `io <udid>`), not `booted`.
+- A screenshot during a drag (a held slider): start `idb ui swipe --udid <udid> X1 Y X2 Y --duration 4` in the background, and take the screenshot about 2 s later.
+- A swipe that starts on a widget that takes the drags (a code block, a plot) goes to that widget, not to the page: start it on text or on blank space.
+- With a page zoom set in Safari (other than 100%), the canvas sometimes keeps the unzoomed size at the first load: the content is cut on the right and the end of the page hides under the toolbar. Reload.
 
 ## Gotchas
 
@@ -109,6 +127,7 @@ xcrun simctl shutdown <udid>                          # when done
 - **Prefer seeing to clicking.** Clicks use pixel coordinates read on a previous screenshot: they break when a layout changes.
   Take a screenshot first, read the coordinates, then click. For Pyodide, prefer `py:` checks: they are exact.
 - ImGui needs the mouse move on one frame and the button on the following ones: the helper handles it (move, wait, down, up, wait).
+- **An Emscripten page sometimes loses its first press** (about 1 run in 5 on 2026-10-08, the cause unknown; 14 runs out of 14 fine after a first click). Start with a click on blank space before the clicks or the holds that matter, and check the result on the screenshot (a held slider's frame changes color).
 - Playwright draws no mouse cursor: in a visible run, only ImGui's hover highlight shows where the mouse is.
 - `uv run` needs `--no-project`, otherwise it tries to build imgui_bundle itself.
 - **One browser run at a time.** Two concurrent `drive_page.py` runs gave non-deterministic pages (sections opened by
@@ -117,6 +136,6 @@ xcrun simctl shutdown <udid>                          # when done
 - Pyodide demo runner (`just pyodide_demo_runner`, port 6789, `?file=demo_imgui_md.py`) runs any file of
   `demos_python` with the local wheel; it does not expose `window.pyodide`, so `py:` does not work there.
 - Shortcuts on macOS (Chrome and Firefox): Cmd, on the Emscripten GLFW pages and on the Pyodide (SDL) pages alike (`io.config_mac_osx_behaviors` is True in both): drive them with `key:Meta+...` (e.g. `key:Meta+f` for a rich_md document's find, which `key:Control+f` does not open).
-- A phone on the local network reaches the servers at the Mac's address (`http://192.168.x.y:<port>`). There the browser ignores COOP/COEP (an http origin other than localhost is not secure): the bundle explorer (`demo_imgui_bundle.html`, whose test engine needs threads) waits forever at "Initializing". The demos' own pages and the playground work. For the explorer, use the iPhone simulator (above), or wait for a deploy (https).
+- A phone on the local network reaches the servers at the Mac's address (`http://192.168.x.y:<port>`). There the browser ignores COOP/COEP (an http origin other than localhost is not secure), so a page built with threads waits forever at "Initializing". A bundle build with `IMGUI_BUNDLE_BUILD_DEMOS` builds every page with threads (for the test engine): the explorer and the demos' own pages alike. The playground works (Pyodide). For a phone: the iPhone simulator (above), a deploy (https), or a build without threads, in a folder of its own. That build needs a temporary local edit, never committed: in `imgui_bundle_cmake/imgui_bundle_build_lib.cmake`, `if (IMGUI_BUNDLE_BUILD_DEMOS)` becomes `if (IMGUI_BUNDLE_BUILD_DEMOS AND NOT IMGUI_BUNDLE_TMP_NO_PTHREAD)`; configure with `-DIMGUI_BUNDLE_TMP_NO_PTHREAD=ON -DHELLOIMGUI_EMSCRIPTEN_PTHREAD=OFF -DHELLOIMGUI_EMSCRIPTEN_PTHREAD_ALLOW_MEMORY_GROWTH=OFF -DHELLOIMGUI_WITH_TEST_ENGINE=OFF`, build the demo's target, then revert the edit. The revert makes that folder reconfigure at its next build, with threads again: a rebuild needs the edit again.
 - If macOS shows a warning attributed to the IDE hosting the terminal when Chrome starts, stop and tell the user
   (seen once; probable cause: Chrome had a pending update. It did not come back after Chrome was restarted).

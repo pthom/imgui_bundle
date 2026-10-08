@@ -6,7 +6,10 @@ Usage (throwaway environment, nothing installed in the project venv):
 Actions, executed in order:
     wait:SECONDS     wait (wasm startup: ~6 s; Pyodide page: ~40 s)
     click:X,Y        mouse click at viewport coordinates (read them on a previous screenshot)
-    move:X,Y         move the mouse (ImGui scrolls the hovered window: move before wheel)
+    move:X,Y         move the mouse (ImGui scrolls the hovered window: move before wheel); after down: a drag
+    down:X,Y         press the mouse button there and keep it down (a held slider: a click on blank space first,
+                     then down, move, shot, up)
+    up               release the mouse button
     key:KEYS         press keys, Playwright syntax (key:Control+a, key:Enter)
     wheel:DX,DY      mouse wheel scroll (positive DY scrolls down), at the last mouse position
     shot:NAME        save PREFIX_NAME.png
@@ -26,12 +29,16 @@ from urllib.parse import urlparse
 
 from playwright.sync_api import Page, sync_playwright
 
-def click(page: Page, x: float, y: float, visible: bool) -> None:
+def press(page: Page, x: float, y: float, visible: bool) -> None:
     # ImGui must see the mouse move on one frame, and the button on the following ones
     page.mouse.move(x - 120, y - 40)
     page.mouse.move(x, y, steps=25 if visible else 2)
     page.wait_for_timeout(500 if visible else 150)
     page.mouse.down()
+
+
+def click(page: Page, x: float, y: float, visible: bool) -> None:
+    press(page, x, y, visible)
     page.wait_for_timeout(80)
     page.mouse.up()
     page.wait_for_timeout(1500 if visible else 600)  # with idling, the app redraws slowly
@@ -84,6 +91,13 @@ def main() -> None:
             elif kind == "click":
                 x, y = (float(v) for v in value.split(","))
                 click(page, x, y, visible)
+            elif kind == "down":
+                x, y = (float(v) for v in value.split(","))
+                press(page, x, y, visible)
+                page.wait_for_timeout(300)
+            elif kind == "up":
+                page.mouse.up()
+                page.wait_for_timeout(600)
             elif kind == "move":
                 x, y = (float(v) for v in value.split(","))
                 page.mouse.move(x, y, steps=10 if visible else 2)
