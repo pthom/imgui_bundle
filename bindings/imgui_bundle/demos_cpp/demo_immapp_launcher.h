@@ -90,7 +90,8 @@ public:
 private:
     std::vector<const DemoEntry*> Shown(const DemoCategory& category) const;
     std::vector<std::pair<std::string, int>> Libraries() const;
-    bool Chip(const std::string& label, float highlight);
+    bool Chip(const std::string& label, float highlight, bool wrap = true);
+    void StripEnds();  // on a phone, at an end of the chips' row that has more: a fade and a chevron
     void SearchBox();
     void LibraryFilter();
     void ThumbnailSize();  // "Thumbnail size", then "-" and "+": each press changes the number of columns
@@ -136,6 +137,7 @@ private:
     float _cardWidth;  // em: the minimal width of a card (the thumbnail size buttons change it)
     float _galleryWidth = 0.f;  // last frame: the columns that the thumbnail size buttons can reach depend on it
     std::optional<std::pair<std::string, float>> _scrollAnchor;  // a size change: the card at the top, and its offset
+    std::string _chipCentered;  // on a phone: the chip last scrolled to the middle of the chips' row
 };
 
 

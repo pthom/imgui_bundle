@@ -387,11 +387,11 @@ std::string DemoLauncher::ChipLabel(const DemoCategory& category) const
     return category.name + " (" + std::to_string(Shown(category).size()) + ")";
 }
 
-bool DemoLauncher::Chip(const std::string& label, float highlight)
+bool DemoLauncher::Chip(const std::string& label, float highlight, bool wrap)
 {
     // A small button, colored with the accent when highlighted (in view, or in use); a row of chips wraps
     float width = ImGui::CalcTextSize(label.c_str()).x + 2 * ImGui::GetStyle().FramePadding.x;
-    if (width > ImGui::GetContentRegionAvail().x)
+    if (wrap && width > ImGui::GetContentRegionAvail().x)
         ImGui::NewLine();
     ImVec4 button = ImGui::GetStyleColorVec4(ImGuiCol_Button);
     ImVec4 accent(LAUNCHER_ACCENT.x, LAUNCHER_ACCENT.y, LAUNCHER_ACCENT.z, 0.55f);
@@ -417,23 +417,65 @@ void DemoLauncher::Title()
 
 void DemoLauncher::Filters()
 {
+    // On a phone, the chips are one row that scrolls sideways (as in the playground), the chip of the category in view
+    // in its middle
+    bool strip = SmallScreen();
+    if (strip)
+        ImGui::BeginChild("##chips", ImVec2(0, ImGui::GetFontSize() + 2), 0, ImGuiWindowFlags_NoScrollbar);
     for (const auto& category : _categories)
     {
         float highlight = Tween(("chip " + category.name).c_str(), category.name == _categoryInView ? 1.f : 0.f, 0.25f);
-        if (Chip(ChipLabel(category), highlight) && !_codeView.has_value())
+        if (Chip(ChipLabel(category), highlight, !strip) && !_codeView.has_value())
         {
             if (_categoryY.count(category.name))
                 _scrollTarget = _categoryY[category.name];
             _nbScrolls += 1;
         }
+        if (strip && category.name == _categoryInView && _chipCentered != category.name)
+        {
+            ImGui::SetScrollHereX(0.5f);
+            _chipCentered = category.name;
+        }
     }
-    ImGui::Dummy(ImVec2(Em(1.f), 0));
-    ImGui::SameLine();
+    if (strip)
+    {
+        StripEnds();
+        ImGui::EndChild();
+    }
+    else
+    {
+        ImGui::Dummy(ImVec2(Em(1.f), 0));
+        ImGui::SameLine();
+    }
     LibraryFilter();
     ThumbnailSize();
     SearchBox();
     ImGui::NewLine();
     ImGui::Separator();
+}
+
+void DemoLauncher::StripEnds()
+{
+    ImVec2 pos = ImGui::GetWindowPos(), size = ImGui::GetWindowSize();
+    ImDrawList* drawList = ImGui::GetWindowDrawList();
+    ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+    ImU32 opaque = ImGui::ColorConvertFloat4ToU32(ImVec4(bg.x, bg.y, bg.z, 1.f));
+    ImU32 clear = ImGui::ColorConvertFloat4ToU32(ImVec4(bg.x, bg.y, bg.z, 0.f));
+    float width = Em(2.5f);
+    ImU32 text = ImGui::GetColorU32(ImGuiCol_Text);
+    if (ImGui::GetScrollX() > 1.f)
+    {
+        drawList->AddRectFilledMultiColor(pos, ImVec2(pos.x + width, pos.y + size.y), opaque, clear, clear, opaque);
+        drawList->AddText(ImVec2(pos.x, pos.y + 1), text, ICON_FA_CHEVRON_LEFT);
+    }
+    if (ImGui::GetScrollX() < ImGui::GetScrollMaxX() - 1.f)
+    {
+        float right = pos.x + size.x;
+        drawList->AddRectFilledMultiColor(ImVec2(right - width, pos.y), ImVec2(right, pos.y + size.y), clear, opaque,
+                                          opaque, clear);
+        drawList->AddText(ImVec2(right - ImGui::CalcTextSize(ICON_FA_CHEVRON_RIGHT).x, pos.y + 1), text,
+                          ICON_FA_CHEVRON_RIGHT);
+    }
 }
 
 int DemoLauncher::Columns(float cardWidth) const

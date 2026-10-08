@@ -389,6 +389,7 @@ class Launcher:
         self.card_width = CARD_WIDTH  # em: the minimal width of a card (the thumbnail size buttons change it)
         self.gallery_width = 0.0  # last frame: the columns that the thumbnail size buttons can reach depend on it
         self.scroll_anchor: Optional[tuple[str, float]] = None  # a size change: the card at the top, and its offset
+        self.chip_centered = ""  # on a phone: the chip last scrolled to the middle of the chips' row
 
     def libraries(self) -> list[tuple[str, int]]:
         """The libraries the demos use, with how many use each, the most used first"""
@@ -409,10 +410,10 @@ class Launcher:
     def chip_label(self, category: Category) -> str:
         return f"{category.name} ({len(self.shown(category))})"
 
-    def chip(self, label: str, highlight: float) -> bool:
+    def chip(self, label: str, highlight: float, wrap: bool = True) -> bool:
         """A small button, colored with the accent when highlighted (in view, or in use); a row of chips wraps"""
         width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x
-        if width > imgui.get_content_region_avail().x:
+        if wrap and width > imgui.get_content_region_avail().x:
             imgui.new_line()
         button = imgui.get_style_color_vec4(imgui.Col_.button)
         imgui.push_style_color(imgui.Col_.button, lerp(button, ImVec4(ACCENT.x, ACCENT.y, ACCENT.z, 0.55), highlight))
@@ -433,19 +434,48 @@ class Launcher:
         imgui.text("Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.")
 
     def filters(self) -> None:
-        """The category chips, the library filter and the search box, then a separator"""
+        """The category chips, the library filter and the search box, then a separator. On a phone, the chips are one
+        row that scrolls sideways (as in the playground), the chip of the category in view in its middle"""
+        strip = small_screen()
+        if strip:
+            imgui.begin_child("##chips", ImVec2(0, imgui.get_font_size() + 2), 0, imgui.WindowFlags_.no_scrollbar.value)
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
-            if self.chip(self.chip_label(category), highlight) and self.code_view is None:
+            if self.chip(self.chip_label(category), highlight, wrap=not strip) and self.code_view is None:
                 self.scroll_target = self.category_y.get(category.name)
                 self.nb_scrolls += 1
-        imgui.dummy(ImVec2(em_size(1.0), 0))
-        imgui.same_line()
+            if strip and category.name == self.category_in_view and self.chip_centered != category.name:
+                imgui.set_scroll_here_x(0.5)
+                self.chip_centered = category.name
+        if strip:
+            self.strip_ends()
+            imgui.end_child()
+        else:
+            imgui.dummy(ImVec2(em_size(1.0), 0))
+            imgui.same_line()
         self.library_filter()
         self.thumbnail_size()
         self.search_box()
         imgui.new_line()
         imgui.separator()
+
+    def strip_ends(self) -> None:
+        """At an end of the chips' row that has more, a fade and a chevron: the row scrolls"""
+        pos, size = imgui.get_window_pos(), imgui.get_window_size()
+        draw_list = imgui.get_window_draw_list()
+        bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+        opaque = imgui.color_convert_float4_to_u32(ImVec4(bg.x, bg.y, bg.z, 1.0))
+        clear = imgui.color_convert_float4_to_u32(ImVec4(bg.x, bg.y, bg.z, 0.0))
+        width, text = em_size(2.5), imgui.get_color_u32(imgui.Col_.text)
+        if imgui.get_scroll_x() > 1.0:
+            draw_list.add_rect_filled_multi_color(pos, ImVec2(pos.x + width, pos.y + size.y), opaque, clear, clear, opaque)
+            draw_list.add_text(ImVec2(pos.x, pos.y + 1), text, fa.ICON_FA_CHEVRON_LEFT)
+        if imgui.get_scroll_x() < imgui.get_scroll_max_x() - 1.0:
+            right = pos.x + size.x
+            draw_list.add_rect_filled_multi_color(ImVec2(right - width, pos.y), ImVec2(right, pos.y + size.y), clear,
+                                                  opaque, opaque, clear)
+            chevron = imgui.calc_text_size(fa.ICON_FA_CHEVRON_RIGHT).x
+            draw_list.add_text(ImVec2(right - chevron, pos.y + 1), text, fa.ICON_FA_CHEVRON_RIGHT)
 
     def search_box(self) -> None:
         """The words to find in the demos (Escape clears them)"""
