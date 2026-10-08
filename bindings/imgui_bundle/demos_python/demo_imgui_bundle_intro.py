@@ -256,7 +256,9 @@ def _manual_picture(demo: str, width: float) -> None:
     top_left = imgui.get_cursor_screen_pos()
     rich_md.render(f'<img src="{url}" width="{int(width)}">')
     bottom_right = ImVec2(top_left.x + width, imgui.get_cursor_screen_pos().y)
-    if _host.open_demo is None or not imgui.is_mouse_hovering_rect(top_left, bottom_right):
+    # The rectangle alone is not enough: is_window_hovered() is False when a window above (the prose's) covers it
+    if _host.open_demo is None or not imgui.is_mouse_hovering_rect(top_left, bottom_right) \
+            or not imgui.is_window_hovered():
         return
     imgui.set_mouse_cursor(imgui.MouseCursor_.hand)
     imgui.get_window_draw_list().add_rect(top_left, bottom_right, imgui.get_color_u32(imgui.Col_.button_hovered),
@@ -795,6 +797,11 @@ def _lorenz_gui_main(plot_size: ImVec2):
     if not _lorenz_inited:
         _lorenz_init_trajectories()
 
+    # On a touch screen, the gesture that rotates the plot, on a line under it (the plot and the line: one group)
+    touch = bool(imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen)
+    if touch:
+        plot_size = ImVec2(plot_size.x, plot_size.y - imgui.get_text_line_height_with_spacing())
+    imgui.begin_group()
     if implot3d.begin_plot("Lorenz##intro", plot_size):
         implot3d.setup_axes("X", "Y", "Z",
                             implot3d.AxisFlags_.auto_fit,
@@ -810,6 +817,11 @@ def _lorenz_gui_main(plot_size: ImVec2):
         implot3d.plot_line("Trajectory2", xs2, ys2, zs2)
         implot3d.end_plot()
         hello_imgui.set_item_is_live()  # the trajectories move on their own
+    if touch:
+        note = "Drag with two fingers to rotate."
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (plot_size.x - imgui.calc_text_size(note).x) / 2)
+        imgui.text_disabled(note)
+    imgui.end_group()
     _lorenz_traj1.step(_lorenz_params)
     _lorenz_traj2.step(_lorenz_params)
 
@@ -864,7 +876,7 @@ def _lorenz_gui_side_narrow():
     pad = em * 0.5
     button_w = em * 5.5
     spacing = imgui.get_style().item_spacing.x
-    size = min(em * 3.0, (imgui.get_window_width() - 2 * pad - button_w - 3 * spacing) / 3)
+    size = min(em * 2.4, (imgui.get_window_width() - 2 * pad - button_w - 3 * spacing) / 3)
     top = imgui.get_cursor_pos_y()
     _lorenz_knobs(size, all_five=False)
     imgui.same_line()
@@ -877,7 +889,7 @@ def _lorenz_slide_gui(content_size: ImVec2):
     em = hello_imgui.em_size()
     gap = em * 0.5
     if is_small_screen():  # the plot, then the parameters under it
-        panel_h = em * 6.5
+        panel_h = em * 5.9
         _lorenz_gui_main(ImVec2(content_size.x, content_size.y - panel_h - gap))
         draw_side_panel("##lorenz_side", content_size.x, panel_h, _lorenz_gui_side_narrow)
         return
@@ -2019,7 +2031,7 @@ _GALLERY_SNIPPETS = [
     ("Animated Plot",
      # Python
      """\
-t = imgui.get_time()
+t = imgui.get_time() * 3
 x = np.linspace(0, 4 * np.pi, 200)
 if implot.begin_plot("##wave", ImVec2(-1, -1)):
     implot.plot_line("sin", x, np.sin(x + t))
@@ -2027,7 +2039,7 @@ if implot.begin_plot("##wave", ImVec2(-1, -1)):
     implot.end_plot()""",
      # C++
      """\
-float t = ImGui::GetTime();
+float t = ImGui::GetTime() * 3.f;
 std::vector<float> x(200), s(200), c(200);
 for (int i = 0; i < 200; i++) {
     x[i] = i * 4.f * IM_PI / 199.f;
@@ -2207,7 +2219,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func, stac
 
 
 def _gallery_gui_plot(em: float):
-    t = imgui.get_time()
+    t = imgui.get_time() * 3
     x = np.linspace(0, 4 * np.pi, 200)
     implot.push_style_var(implot.StyleVar_.plot_min_size, ImVec2(em * 8, em * 5))  # (ImPlot's own minimum is taller)
     if implot.begin_plot("##wave", ImVec2(-1, -1)):
@@ -2351,6 +2363,7 @@ def _render_head() -> None:
     if small:  # a tap on the text shows all of it, or folds it back
         head_bottom = imgui.get_cursor_screen_pos().y
         if imgui.is_mouse_hovering_rect(top_left, ImVec2(top_left.x + avail_x - button_w - em, head_bottom)) \
+                and imgui.is_window_hovered() \
                 and imgui.is_mouse_released(imgui.MouseButton_.left) and imgui.get_mouse_drag_delta(0).y == 0:
             _head_expanded_until = 0.0 if expanded else imgui.get_time() + HEAD_EXPANDED_DURATION
     if not _welcome_rest:
