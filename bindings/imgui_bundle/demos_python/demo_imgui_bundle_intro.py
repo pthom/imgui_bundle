@@ -728,9 +728,11 @@ void main(){
         imgui.set_next_window_pos(ImVec2(overlay_x, overlay_y), imgui.Cond_.always.value)
         imgui.set_next_window_bg_alpha(0.45)
         imgui.push_style_var(imgui.StyleVar_.window_rounding, em * 0.5)
+        # No focus when it appears: the slide comes into view during a swipe, and a focused window would end the swipe
         if imgui.begin("##seascape_overlay", None,
                        imgui.WindowFlags_.always_auto_resize | imgui.WindowFlags_.no_title_bar
-                       | imgui.WindowFlags_.no_move | imgui.WindowFlags_.no_saved_settings)[0]:
+                       | imgui.WindowFlags_.no_move | imgui.WindowFlags_.no_saved_settings
+                       | imgui.WindowFlags_.no_focus_on_appearing)[0]:
             imgui.push_item_width(overlay_w - em * 2.0)
             _shader_gui_side(narrow)
             imgui.pop_item_width()
@@ -2348,9 +2350,33 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
         dl.add_text(link_pos, color, link)
         if hovered:
             dl.add_line(ImVec2(link_pos.x, link_pos.y + link_size.y), ImVec2(link_pos.x + link_size.x, link_pos.y + link_size.y), color)
-        imgui.set_cursor_screen_pos(cursor)
+    # After the link: ImGui gives the hover to the first item submitted, so the link keeps its click
+    _card_swipe(ImVec2(card_x, card_y), ImVec2(card_w, card_h), slide_width)
+    imgui.set_cursor_screen_pos(cursor)
     imgui.dummy(ImVec2(slide_width, total_h))
     return total_h
+
+
+def _card_swipe(top_left: ImVec2, size: ImVec2, slide_width: float) -> None:
+    """A drag on a slide's title card (a swipe, on a touch screen) moves the carousel with it; released past 3 em, the
+    next or the previous slide comes"""
+    global _current_slide, _drag_offset, _auto_stopped
+    imgui.set_cursor_screen_pos(top_left)
+    imgui.invisible_button("##swipe", size)
+    hello_imgui.set_item_takes_touch_drags(False)  # on a touch screen, the finger's drag is this button's at once
+    if not (imgui.is_item_active() or imgui.is_item_deactivated()):
+        return
+    dx = imgui.get_mouse_drag_delta(imgui.MouseButton_.left).x
+    if imgui.is_item_active():
+        _drag_offset = _current_slide - dx / slide_width
+        _auto_stopped = True
+        return
+    _drag_offset = None
+    em = hello_imgui.em_size()
+    if dx < -em * 3:
+        _current_slide = (_current_slide + 1) % len(slides())
+    elif dx > em * 3:
+        _current_slide = (_current_slide - 1) % len(slides())
 
 
 # Module-level carousel state
@@ -2358,6 +2384,7 @@ _current_slide = 0
 _animated_offset = 0.0
 _auto_timer = 0.0
 _auto_stopped = False
+_drag_offset: Optional[float] = None  # while a swipe drags the slides: where they are (in slides)
 _slides: Optional[list[CarouselSlide]] = None
 
 
@@ -2462,9 +2489,9 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
                 _current_slide = (_current_slide + 1) % slide_count
                 _auto_timer = 0.0
 
-    # --- Smooth slide animation ---
+    # --- Smooth slide animation (none while a swipe holds the slides: they follow the finger) ---
     target = float(_current_slide)
-    _animated_offset = smooth_damp(_animated_offset, target, 8.0, dt)
+    _animated_offset = _drag_offset if _drag_offset is not None else smooth_damp(_animated_offset, target, 8.0, dt)
     if abs(_animated_offset - target) < 0.001:
         _animated_offset = target
     if _animated_offset != target:
