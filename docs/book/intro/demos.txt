@@ -73,8 +73,8 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
   Uses: OpenGL
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
-- Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: watch the FPS and the spinner slow down. Move the mouse, and they speed up again. The slider sets fps_idle (0 means full speed), and the checkbox turns idling off, for example during an animation.
-  Uses: spinners
+- Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: the live plot and the spinner then move by jumps. Move the mouse or touch the screen, and they are smooth again. The slider sets fps_idle (0 means full speed), and the checkbox turns idling off, for example during an animation.
+  Uses: ImPlot, spinners
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp
 - Chinese and other non-Latin fonts (desktop only): The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as ???. The fix: load a font that has the glyphs you need, first, so that it becomes the default font. This demo shows how, with Noto Sans SC: download it, and the demo's sample lines come alive.

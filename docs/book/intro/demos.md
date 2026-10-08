@@ -328,13 +328,13 @@ The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Ale
 
 ### Power save when idle
 
-When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: watch the FPS and the spinner slow down.
+When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: the live plot and the spinner then move by jumps.
 
 :::{dropdown} More
-Move the mouse, and they speed up again. The slider sets `fps_idle` (0 means full speed), and the checkbox turns idling off, for example during an animation.
+Move the mouse or touch the screen, and they are smooth again. The slider sets `fps_idle` (0 means full speed), and the checkbox turns idling off, for example during an animation.
 :::
 
-*Uses: spinners*
+*Uses: ImPlot, spinners*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_powersave.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_powersave.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
