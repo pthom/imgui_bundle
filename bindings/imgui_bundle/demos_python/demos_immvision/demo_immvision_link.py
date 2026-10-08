@@ -9,31 +9,37 @@ import numpy as np
 
 from imgui_bundle import immvision, immapp, imgui, rich_md, hello_imgui, register_demos_assets_folder
 
+NARROW_WIDTH_EM = 40  # Under this width (in em), two images per row instead of four
+
 register_demos_assets_folder()
 # In RGB: ImmVision's default order (OpenCV reads BGR)
 image_bgr = cv2.imread(hello_imgui.asset_file_full_path("images/tennis.jpg"))
 image = cv2.cvtColor(image_bgr, cv2.COLOR_BGR2RGB)  # type: ignore[arg-type]
-channels = [np.ascontiguousarray(image[:, :, i]) for i in range(image.shape[2])]
+images = {"RGB": image}
+for i, channel_name in enumerate(["Red", "Green", "Blue"]):
+    images[channel_name] = np.ascontiguousarray(image[:, :, i])
 
-params_rgb = immvision.ImageParams()
-params_rgb.image_display_size = (300, 0)
-params_rgb.zoom_key = "some_common_zoom_key"
-
-params_channels = immvision.ImageParams()
-params_channels.image_display_size = (300, 0)
-params_channels.zoom_key = "some_common_zoom_key"
+# One params per image, all with the same zoom key
+all_params = {}
+for name in images:
+    all_params[name] = immvision.ImageParams()
+    all_params[name].zoom_key = "tennis"
 
 
 def gui():
     rich_md.render(
-        "If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel"
+        "Images whose params share a `zoom_key` pan and zoom together: drag one to pan, zoom with the mouse wheel."
     )
 
-    immvision.image("RGB", image, params_rgb)
-    for i, channel in enumerate(channels):
-        immvision.image(f"channel {i}", channel, params_channels)
-        imgui.same_line()
-    imgui.new_line()
+    # Four images in a row, or two on a narrow screen (a phone)
+    narrow = imgui.get_content_region_avail().x < NARROW_WIDTH_EM * imgui.get_font_size()
+    if imgui.begin_table("images", 2 if narrow else 4):
+        for name, img in images.items():
+            imgui.table_next_column()
+            # A negative width: the column's width, less one pixel (ImmVision then stores the size it used)
+            all_params[name].image_display_size = (-1, 0)
+            immvision.image(name, img, all_params[name])
+        imgui.end_table()
 
 
 if __name__ == "__main__":

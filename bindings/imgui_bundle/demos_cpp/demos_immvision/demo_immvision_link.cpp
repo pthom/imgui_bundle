@@ -26,30 +26,41 @@ static std::vector<ImmVision::ImageBuffer> SplitChannels(const ImmVision::ImageB
 
 void gui_demo_immvision_link()
 {
+    constexpr float kNarrowWidthEm = 40.f; // Under this width (in em), two images per row instead of four
+
     static bool inited = false;
-    static ImmVision::ImageBuffer image;
-    static std::vector<ImmVision::ImageBuffer> channels;
-    static ImmVision::ImageParams params_rgb, params_channels;
+    static std::vector<std::string> names = {"RGB", "Red", "Green", "Blue"};
+    static std::vector<ImmVision::ImageBuffer> images;
+    // One params per image, all with the same zoom key
+    static std::vector<ImmVision::ImageParams> allParams(4);
 
     if (!inited)
     {
-        image = ImmVision::ImRead(DemosAssetsFolder() + "/images/tennis.jpg");
-        channels = SplitChannels(image);
+        ImmVision::ImageBuffer image = ImmVision::ImRead(DemosAssetsFolder() + "/images/tennis.jpg");
+        images.push_back(image);
+        for (const auto& channel : SplitChannels(image))
+            images.push_back(channel);
 
-        params_rgb.ImageDisplaySize = {300, 0};
-        params_rgb.ZoomKey = "some_common_zoom_key";
-
-        params_channels.ImageDisplaySize = {300, 0};
-        params_channels.ZoomKey = "some_common_zoom_key";
+        for (auto& params : allParams)
+            params.ZoomKey = "tennis";
 
         inited = true;
     }
 
-    RichMd::Render(R"(If two images params share the same ZoomKey, then the images will pan in sync. Pan and zoom the image with the mouse and the mouse wheel)");
-    ImmVision::Image("RGB", image, &params_rgb);
-    for (size_t i = 0; i < channels.size(); ++i) {
-        ImmVision::Image(std::string("channel") + std::to_string(i), channels[i], &params_channels);
-        ImGui::SameLine();
+    RichMd::Render(
+        "Images whose params share a `ZoomKey` pan and zoom together: drag one to pan, zoom with the mouse wheel.");
+
+    // Four images in a row, or two on a narrow screen (a phone)
+    bool narrow = ImGui::GetContentRegionAvail().x < kNarrowWidthEm * ImGui::GetFontSize();
+    if (ImGui::BeginTable("images", narrow ? 2 : 4))
+    {
+        for (size_t i = 0; i < images.size(); ++i)
+        {
+            ImGui::TableNextColumn();
+            // A negative width: the column's width, less one pixel (ImmVision then stores the size it used)
+            allParams[i].ImageDisplaySize = {-1, 0};
+            ImmVision::Image(names[i], images[i], &allParams[i]);
+        }
+        ImGui::EndTable();
     }
-    ImGui::NewLine();
 }
