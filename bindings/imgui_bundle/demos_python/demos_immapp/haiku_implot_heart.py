@@ -20,6 +20,7 @@ phase = 0.0
 t0 = time.time() + 0.2
 heart_pulse_rate = 80.0
 heart_thickness = 0.15
+LARGEST_SCALE = 0.9 * 1.3  # of the heart: the pulse scales it up to 0.9, the thickness knob up to 1.3
 
 def gui():
     global heart_pulse_rate, phase, t0, x, y, heart_thickness
@@ -30,6 +31,9 @@ def gui():
     t0 = t
 
     implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
+    # Axes sized for the largest heart (fitted to the first frame's heart, a small one, they would clip the next ones)
+    implot.setup_axes_limits(x.min() * LARGEST_SCALE, x.max() * LARGEST_SCALE,
+                             y.min() * LARGEST_SCALE, y.max() * LARGEST_SCALE)
     for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):  # Give some thickness to the heart
         implot.plot_line("", x * k * k2, y * k * k2)
     implot.end_plot()
