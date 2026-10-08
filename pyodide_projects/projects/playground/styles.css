@@ -130,6 +130,18 @@ html, body {
     outline: none;
     border-color: #9cdcfe;
 }
+#gallery-size {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 10px;
+    font-size: 0.85em;
+    color: #aaa;
+}
+#gallery-size-slider {
+    width: 7em;
+    accent-color: #73a6ff;  /* the launcher's accent */
+}
 #gallery-clear {
     padding: 2px 8px;
     font: inherit;
@@ -183,7 +195,8 @@ html, body {
 }
 .gallery-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(15em, 1fr));  /* the cards fill the width, one column on a phone */
+    /* The cards fill the width; --card-width comes from the size slider (js/examples.js), never wider than the screen */
+    grid-template-columns: repeat(auto-fill, minmax(min(var(--card-width, 15em), 100%), 1fr));
     gap: 16px;
     margin: 10px 0 16px;
 }
@@ -820,6 +833,12 @@ body {
     #gallery-search {
         flex: 1;
         width: auto;
+    }
+    #gallery-size {  /* one column of cards: no slider, the default size */
+        display: none;
+    }
+    #gallery {
+        --card-width: 15em !important;
     }
     #editor-and-canvas-container {
         flex-direction: column;

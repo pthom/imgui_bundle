@@ -510,6 +510,15 @@ document.addEventListener('DOMContentLoaded', () => {
     const library = document.getElementById('gallery-library');
     search.addEventListener('input', filterGallery);
     library.addEventListener('change', filterGallery);
+    // The size of the cards (their minimal width, in em), remembered by this browser
+    const size = document.getElementById('gallery-size-slider');
+    const setCardWidth = () => gallery.style.setProperty('--card-width', size.value + 'em');
+    try { size.value = localStorage.getItem('playground-gallery-card-width') || size.value; } catch (e) {}
+    setCardWidth();
+    size.addEventListener('input', () => {
+        setCardWidth();
+        try { localStorage.setItem('playground-gallery-card-width', size.value); } catch (e) {}
+    });
     document.getElementById('gallery-body').addEventListener('scroll', markCategoryInView);
     window.addEventListener('resize', () => {  // the header's height changes
         if (!gallery.hidden)
