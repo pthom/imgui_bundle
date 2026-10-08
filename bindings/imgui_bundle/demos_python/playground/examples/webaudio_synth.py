@@ -516,7 +516,7 @@ def scope(state: State) -> None:
     draw_list.add_rect_filled(p0, ImVec2(p0.x + size.x, p0.y + size.y), SCOPE_BACKGROUND, rounding)
     draw_list.add_text(ImVec2(p0.x + em_size(0.6), p0.y + em_size(0.4)), caption_color, "Waveform")
     samples = state.synth.waveform() if state.synth is not None else np.zeros(SCOPE_SAMPLES, np.float32)
-    sounding = state.synth is not None and (state.synth.tune is not None or np.abs(samples).max() > SILENCE)
+    sounding = state.synth is not None and (state.synth.tune is not None or bool(np.abs(samples).max() > SILENCE))
     hello_imgui.set_item_is_live(sounding)  # the scope moves on its own while it shows sound (notes, their echo)
     rising = np.flatnonzero((samples[:-1] < 0) & (samples[1:] >= 0))
     start = rising[0] if len(rising) > 0 else 0
