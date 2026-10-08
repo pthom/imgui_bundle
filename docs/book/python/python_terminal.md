@@ -37,7 +37,6 @@ def gui():
 params = hello_imgui.RunnerParams()
 params.callbacks.load_additional_fonts = load_fonts
 params.callbacks.show_gui = gui
-params.fps_idling.enable_idling = False  # repaint while shell output streams in
 immapp.run(params)
 ```
 
@@ -51,7 +50,7 @@ The module separates the *widget* from the *byte source*:
 keyboard -> ImGui -> transport -> shell/remote -> view.feed -> pyte -> ImGui draws it
 ```
 
-* **`TerminalView`** owns a [pyte](https://github.com/selectel/pyte) VT100 screen, draws it, and translates keyboard/mouse input. It knows nothing about where bytes come from: push output in with `view.feed(bytes)`, receive keystrokes via the `view.on_input` callback.
+* **`TerminalView`** owns a [pyte](https://github.com/selectel/pyte) VT100 screen, draws it, and translates keyboard/mouse input. It knows nothing about where bytes come from: push output in with `view.feed(bytes)`, receive keystrokes via the `view.on_input` callback. `feed()` may be called from any thread, and asks for the next frames (`hello_imgui.request_refresh()`): the app does not idle while output streams in.
 * A **transport** produces and consumes those bytes. `LocalShellTransport` runs a local shell behind a pseudo-terminal (macOS / Linux). Any object with `start(view)` / `stop()` works (`TerminalTransport` protocol); `start()` takes ownership of `view.on_input` / `view.on_resize`.
 
 ### Remote shell (SSH, websocket, robot companion computer...)
@@ -64,6 +63,8 @@ view.on_input  = lambda data: channel.send(data)          # keystrokes -> remote
 view.on_resize = lambda cols, rows: channel.resize(cols, rows)
 # in a background reader:  for chunk in channel: view.feed(chunk)
 ```
+
+When your reader thread changes what the GUI shows (connected, closed, an error), it calls `hello_imgui.request_refresh()`, so that the app shows it at once, even while it idles.
 
 Runnable remote demos (in `demos_python/demos_terminal/`):
 

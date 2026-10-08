@@ -74,8 +74,7 @@ def gui() -> None:
 
 def main() -> None:
     from imgui_bundle import immapp
-    immapp.run(gui, window_title="imgui_terminal demo", window_size=(900, 600),
-               fps_idle=0.0)
+    immapp.run(gui, window_title="imgui_terminal demo", window_size=(900, 600))
 
 
 if __name__ == "__main__":

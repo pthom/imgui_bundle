@@ -81,6 +81,7 @@ class WebSocketTransport:
         except Exception as e:
             print(f"[websocket transport] {type(e).__name__}: {e}", file=sys.stderr)
         self.alive = False
+        hello_imgui.request_refresh()  # the app shows the end at once, even while idling
 
     def _enqueue(self, item: bytes | str) -> None:
         if self._loop is not None and self._out is not None:
@@ -141,7 +142,6 @@ def main() -> None:
     params.callbacks.load_additional_fonts = load_fonts
     params.callbacks.show_gui = gui
     params.callbacks.before_exit = on_exit
-    params.fps_idling.fps_idle = 20  # idling speed than the default (9), since shell output arrives asynchronously
     immapp.run(params)
 
 

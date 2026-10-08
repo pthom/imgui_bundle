@@ -62,6 +62,7 @@ class SSHTransport:
         except Exception as e:
             self.error = f"{type(e).__name__}: {e}"
         self.alive = False
+        hello_imgui.request_refresh()  # the app shows the end or the error at once, even while idling
 
     def _write(self, data: bytes) -> None:
         if self._chan is not None:
@@ -119,7 +120,6 @@ def main() -> None:
     params.callbacks.load_additional_fonts = load_fonts
     params.callbacks.show_gui = gui
     params.callbacks.before_exit = on_exit
-    params.fps_idling.fps_idle = 20  # idling speed than the default (9), since shell output arrives asynchronously
     immapp.run(params)
 
 

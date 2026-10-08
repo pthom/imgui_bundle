@@ -33,7 +33,7 @@ except ImportError as e:
         'Install it with: pip install "imgui-bundle[terminal]"  (or: pip install pyte)'
     ) from e
 
-from imgui_bundle import imgui
+from imgui_bundle import imgui, hello_imgui
 
 IV = imgui.ImVec2
 RGB = tuple[int, int, int]
@@ -176,6 +176,7 @@ class TerminalView:
                 self.stream.feed(data)
             except Exception:
                 pass  # an unsupported escape must not kill the reader thread
+        hello_imgui.request_refresh()  # the app does not idle while output streams in
 
     def _send(self, data: bytes) -> None:
         """Bytes the emulator must send back to the program (query replies)."""

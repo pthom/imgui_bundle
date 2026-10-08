@@ -146,7 +146,6 @@ def main() -> None:
     params.callbacks.show_gui = lambda: gui(app_state)
     params.callbacks.confirm_exit = lambda: confirm_exit(app_state)  # warn if >1 tab
     params.callbacks.before_exit = lambda: on_exit(app_state)
-    params.fps_idling.fps_idle = 20  # idling speed than the default (9), since shell output arrives asynchronously
 
     immapp.run(params)
 

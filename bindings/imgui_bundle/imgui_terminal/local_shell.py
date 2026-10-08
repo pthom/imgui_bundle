@@ -17,6 +17,7 @@ import subprocess
 import termios
 import threading
 
+from imgui_bundle import hello_imgui
 from imgui_bundle.imgui_terminal.terminal_view import TerminalView
 
 
@@ -73,6 +74,7 @@ class LocalShellTransport:
             except OSError:
                 break
         self.alive = False
+        hello_imgui.request_refresh()  # the app shows the exit at once, even while idling
 
     def write(self, data: bytes) -> None:
         try:
