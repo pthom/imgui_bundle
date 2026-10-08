@@ -2591,6 +2591,7 @@ struct RunnerParams
     // `touchThinScrollbars`: _bool, default = true_.
     // On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
     // controls, since a swipe scrolls anywhere (on a bar too). Applied at each frame (after a theme, a pinch).
+    // A hold on a bar hands its thumb over, drawn wider over the content while held (as on iOS).
     // False keeps the theme's bars.
     bool touchThinScrollbars = true;
 
