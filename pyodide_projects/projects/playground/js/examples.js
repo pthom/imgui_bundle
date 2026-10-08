@@ -351,6 +351,7 @@ function filterGallery() {
     document.getElementById('gallery-no-match').hidden = shown.size > 0;
     document.getElementById('gallery-clear').hidden = !words.length && !library;
     markCategoryInView();
+    updateSizeButtons();  // the columns are measured on a grid shown
 }
 
 function clearGalleryFilters() {
@@ -420,8 +421,9 @@ const CARD_WIDTH_KEY = 'playground-gallery-card-width';
 let cardWidth = 15;
 
 function galleryColumns(width) {
-    const grid = document.querySelector('.gallery-grid');
-    if (!grid || !grid.clientWidth) return 1;
+    // A grid shown: a search may hide the first categories (a hidden grid has no width)
+    const grid = [...document.querySelectorAll('.gallery-grid')].find(g => g.clientWidth > 0);
+    if (!grid) return 1;
     const style = getComputedStyle(grid);
     const gap = parseFloat(style.columnGap) || 0;
     const cardPixels = Math.min(width * parseFloat(style.fontSize), grid.clientWidth);
@@ -441,8 +443,15 @@ function updateSizeButtons() {
 }
 
 function setCardWidth(width) {
+    // The card at the top of the gallery stays there: its rows change, but not what the reader was looking at
+    const body = document.getElementById('gallery-body');
+    const top = body.getBoundingClientRect().top;
+    const anchor = [...document.querySelectorAll('.gallery-card')]
+        .find(card => card.offsetParent !== null && card.getBoundingClientRect().bottom > top);
+    const offset = anchor ? anchor.getBoundingClientRect().top - top : 0;
     cardWidth = width;
     document.getElementById('gallery').style.setProperty('--card-width', width + 'em');
+    if (anchor) body.scrollTop += anchor.getBoundingClientRect().top - top - offset;
     updateSizeButtons();
 }
 
@@ -490,8 +499,10 @@ function markOwnCodeSwitch(example) {
 async function loadDemoByFilename(filename, updateHistory = true) {
     // Look up in metadata (includes hidden demos)
     const example = examplesMetadata.find(e => e.filename === filename);
-    if (example && example.page) {  // a link to a page entry (?demo=notebooks.md): the page itself
-        window.location.assign(example.page);
+    if (example && example.page) {  // a page entry (e.g. the notebooks): its page, in a new tab when a link of the
+        // welcome opens it; a ?demo= link to it, or a browser that refuses the tab, goes to the page itself
+        const tab = getDemoFromUrl() !== filename ? window.open(example.page, '_blank') : null;
+        if (tab) tab.opener = null; else window.location.assign(example.page);
         return;
     }
     const packages = example ? example.packages : undefined;
