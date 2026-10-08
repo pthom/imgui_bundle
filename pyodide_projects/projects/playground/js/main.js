@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             delay: [100, 100],
             theme: 'light-border',
         });
-        tippy('#about-button', {  // the (i) of a phone's header: a tap opens what the playground is, another closes it
+        tippy('#about-button', {  // the (i) of the header: a click opens what the playground is, another closes it
             content: document.getElementById('about-content').innerHTML,
             allowHTML: true,
             trigger: 'click',

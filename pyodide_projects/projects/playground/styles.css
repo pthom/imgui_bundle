@@ -39,8 +39,8 @@ html, body {
     display: flex;
     align-items: center;
 }
-#about-button {  /* the (i) next to the title: a phone only, where the motto is hidden (the media query below) */
-    display: none;
+#about-button {  /* the (i) next to the title: what the playground is (js/main.js) */
+    display: inline-block;
     width: 1.5em;
     height: 1.5em;
     margin-left: 0.6em;
@@ -837,9 +837,6 @@ body {
     }
     .motto-title {
         font-size: 0.9rem;
-    }
-    #about-button {
-        display: inline-block;
     }
     #examples-menu {
         margin-right: 0;
