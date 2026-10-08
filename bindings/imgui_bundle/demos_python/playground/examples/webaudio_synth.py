@@ -121,6 +121,8 @@ SCOPE_SAMPLES = 1024  # about 20 ms
 SILENCE = 1e-4  # below this level, the scope's samples are silence
 SCOPE_ZOOM = 3.0
 SPECTRUM_BINS = 128  # of 1024: up to about 3 kHz
+SCOPE_MIN_HEIGHT = 6.0  # em
+SCOPE_MIN_HEIGHT_NARROW = 3.0  # em: in the piano view of a narrow screen, which fits the screen from its switch down
 
 # Colors
 PLAYED_KEY = imgui.IM_COL32(255, 150, 60, 255)  # the keys you play
@@ -335,6 +337,7 @@ class State:
         self.view: float | None = None  # the first white key drawn: it glides to first_key
         self.strip_pressed = False  # the press on the piano started on its strip: it moves the view
         self.narrow_view = TUNES_VIEW
+        self.narrow_view_shown: int | None = None  # the view drawn at the last frame: a view that appears scrolls
         self.tune_to_show: Tune | None = None  # a tune that starts: the piano shows its keys
 
     def ensure_synth(self) -> None:
@@ -657,10 +660,9 @@ def synth_panel(state: State) -> None:
     imgui.pop_style_color()
 
 
-def scope(state: State) -> None:
-    """The waveform and the spectrum of what the speakers play, in the remaining height"""
-    avail = imgui.get_content_region_avail()
-    size = ImVec2((avail.x - imgui.get_style().item_spacing.x) / 2, max(avail.y, em_size(6)))
+def scope(state: State, height: float) -> None:
+    """The waveform and the spectrum of what the speakers play"""
+    size = ImVec2((imgui.get_content_region_avail().x - imgui.get_style().item_spacing.x) / 2, height)
     draw_list = imgui.get_window_draw_list()
     rounding = em_size(0.5)
     caption_color = imgui.get_color_u32(imgui.Col_.text_disabled)
@@ -750,6 +752,8 @@ def gui() -> None:
     STATE.ensure_synth()
     header()
     narrow = is_narrow()
+    spacing = imgui.get_style().item_spacing.y
+    switch_top = imgui.get_cursor_pos_y() - spacing  # in the window's content
     if narrow:
         view_switch(STATE)
     if not narrow or STATE.narrow_view == TUNES_VIEW:
@@ -761,9 +765,16 @@ def gui() -> None:
             now_playing(STATE)
         synth_panel(STATE)
         imgui.dummy(em_to_vec2(0, 0.3))
-        scope(STATE)
+        if narrow:  # the scope ends where the screen does when the switch is at its top: the view fits the screen
+            bottom = switch_top + imgui.get_window_height() - imgui.get_style().window_padding.y
+            scope(STATE, max(bottom - imgui.get_cursor_pos_y(), em_size(SCOPE_MIN_HEIGHT_NARROW)))
+            if STATE.narrow_view_shown != PIANO_VIEW:  # it appears: scroll to it
+                imgui.set_scroll_y(switch_top)
+        else:  # in the remaining height
+            scope(STATE, max(imgui.get_content_region_avail().y, em_size(SCOPE_MIN_HEIGHT)))
     elif STATE.synth is not None:  # the piano is not drawn: the computer keys still play, and a tune still ends
         STATE.synth.update(computer_keys_held(), WAVEFORMS[STATE.waveform])
+    STATE.narrow_view_shown = STATE.narrow_view if narrow else None
 
 
 immapp.run(gui, window_title="WebAudio synthesizer", window_size=(1100, 860), with_markdown=True)
