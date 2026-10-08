@@ -104,6 +104,9 @@ RELEASE = 0.08  # seconds (a time constant)
 NOTE_LENGTH = 0.9  # of the note's duration in a tune: a short gap separates repeated notes
 ECHO_DELAY = 0.3  # seconds
 
+# The layout
+NARROW_EM = 46.0  # below this width (in em, a phone): the tune cards two by two, the controls on three rows
+
 # The scope
 SCOPE_SAMPLES = 1024  # about 20 ms
 SILENCE = 1e-4  # below this level, the scope's samples are silence
@@ -297,7 +300,11 @@ def header() -> None:
                            "No sound on desktop: this demo uses the browser's WebAudio API. Run it in the playground.")
 
 
-def tune_card(state: State, tune: Tune, width: float) -> None:
+def is_narrow() -> bool:
+    return imgui.get_content_region_avail().x < em_size(NARROW_EM)
+
+
+def tune_card(state: State, tune: Tune, size: ImVec2) -> None:
     """The tune's name, origin and a fact, then Play, or Stop and the progress while it plays"""
     synth = state.synth
     playing = synth is not None and synth.tune is tune
@@ -305,12 +312,14 @@ def tune_card(state: State, tune: Tune, width: float) -> None:
     imgui.push_style_color(imgui.Col_.border, tune_color if playing else imgui.get_style_color_vec4(imgui.Col_.border))
     imgui.push_style_color(imgui.Col_.child_bg, ImVec4(tune_color.x, tune_color.y, tune_color.z, 0.12 if playing else 0))
     imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.5))
-    imgui.begin_child(tune.name, ImVec2(width, em_size(7.6)), imgui.ChildFlags_.borders.value)
+    imgui.begin_child(tune.name, size, imgui.ChildFlags_.borders.value)
 
     imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
     imgui.text(tune.name)
     imgui.pop_font()
-    imgui.text_disabled(tune.origin)
+    imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
+    imgui.text_wrapped(tune.origin)
+    imgui.pop_style_color()
     imgui.text_wrapped(tune.fact)
 
     imgui.set_cursor_pos_y(imgui.get_window_height() - imgui.get_frame_height() - imgui.get_style().window_padding.y)
@@ -332,12 +341,15 @@ def tune_card(state: State, tune: Tune, width: float) -> None:
 
 
 def tune_cards(state: State) -> None:
+    """The tunes in a row, or two by two on a narrow screen"""
+    per_row = 2 if is_narrow() else len(TUNES)
     spacing = imgui.get_style().item_spacing.x
-    width = (imgui.get_content_region_avail().x - (len(TUNES) - 1) * spacing) / len(TUNES)
+    width = (imgui.get_content_region_avail().x - (per_row - 1) * spacing) / per_row
+    height = em_size(9.5 if per_row == 2 else 7.6)  # narrower, the texts take more lines
     for i, tune in enumerate(TUNES):
-        if i > 0:
+        if i % per_row > 0:
             imgui.same_line()
-        tune_card(state, tune, width)
+        tune_card(state, tune, ImVec2(width, height))
 
 
 def waveform_button(state: State, i: int) -> None:
@@ -371,18 +383,16 @@ def knob(label: str, value: float, v_min: float, v_max: float, format: str, flag
     return r
 
 
-def controls(state: State) -> None:
-    """A row: the synth's name, the waveforms, and the knobs"""
-    imgui.begin_horizontal("controls", ImVec2(imgui.get_content_region_avail().x, 0), 0.5)
-
+def synth_name() -> None:
     imgui.begin_vertical("name")
     imgui.push_font(None, imgui.get_style().font_size_base * 1.8)
     imgui.text_colored(imgui.color_convert_u32_to_float4(PLAYED_KEY), "PY-25")
     imgui.pop_font()
     imgui.text_disabled("Python synthesizer")
     imgui.end_vertical()
-    imgui.spring()
 
+
+def waveforms(state: State) -> None:
     imgui.begin_vertical("waveforms")
     imgui.text_disabled("Waveform")
     imgui.begin_horizontal("waveform buttons")
@@ -390,8 +400,10 @@ def controls(state: State) -> None:
         waveform_button(state, i)
     imgui.end_horizontal()
     imgui.end_vertical()
-    imgui.spring()
 
+
+def knobs(state: State) -> bool:
+    """The knobs, side by side; True when one that the synth reads changed"""
     imgui_knobs.set_knob_colors(KNOB_COLORS)
     changed1, state.echo = knob("Echo", state.echo, 0.0, 1.0, "%.2f")
     imgui.spring(0, em_size(1))
@@ -402,8 +414,29 @@ def controls(state: State) -> None:
     imgui.spring(0, em_size(1))
     _, state.tempo = knob("Tempo", state.tempo, 60.0, 240.0, "%.0f bpm")
     imgui_knobs.unset_knob_colors()
-    imgui.end_horizontal()
-    if (changed1 or changed2 or changed3) and state.synth is not None:
+    return changed1 or changed2 or changed3
+
+
+def controls(state: State) -> None:
+    """The synth's name, the waveforms, and the knobs: in a row, or on three rows on a narrow screen"""
+    width = imgui.get_content_region_avail().x
+    if is_narrow():
+        synth_name()
+        waveforms(state)
+        imgui.begin_horizontal("knobs", ImVec2(width, 0), 0.5)
+        imgui.spring()
+        changed = knobs(state)
+        imgui.spring()
+        imgui.end_horizontal()
+    else:
+        imgui.begin_horizontal("controls", ImVec2(width, 0), 0.5)
+        synth_name()
+        imgui.spring()
+        waveforms(state)
+        imgui.spring()
+        changed = knobs(state)
+        imgui.end_horizontal()
+    if changed and state.synth is not None:
         state.synth.apply(state)
 
 
