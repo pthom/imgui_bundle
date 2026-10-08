@@ -1,6 +1,6 @@
 ---
 name: screenshot-web-demos
-description: See and drive the WEB builds of imgui_bundle (Emscripten explorers, Pyodide playground and pages) in Chrome - screenshots, a few clicks, and reading versions from inside Pyodide. Use for the web checks before a release, or to validate a change that only shows in the browser. Rarely needed. Ask the user before launching the browser, unless their rules allow it.
+description: See and drive the WEB builds of imgui_bundle (Emscripten explorers, Pyodide playground and pages) in Chrome - screenshots, a few clicks, and reading versions from inside Pyodide - or in an iPhone simulator (Safari, touch). Use for the web checks before a release, or to validate a change that only shows in the browser or on a touch screen. Rarely needed. Ask the user before launching the browser or the simulator, unless their rules allow it.
 ---
 
 # Screenshot and drive the web demos
@@ -85,6 +85,23 @@ maintainer chose this skill alone. Revisit at a release if the checks feel repet
 playwright install firefox`, about 100 MB in `~/Library/Caches/ms-playwright`). For what differs between browsers only
 (the API pages' anchors in Firefox, 2026-10-04); the clipboard checks work in Chrome only.
 
+## iPhone simulator (Safari, touch)
+
+For what only a touch screen shows: the touch layer, `ImGuiConfigFlags_IsTouchScreen`, a phone's width. It needs a Mac with Xcode. The simulator reaches the Mac's servers at `localhost`, a secure context, so the threaded builds work there (the bundle explorer included), unlike a phone on the local network.
+
+```bash
+xcrun simctl list devices available | grep iPhone     # pick one, note its UDID
+xcrun simctl boot <udid> && open -a Simulator        # a visible window
+xcrun simctl openurl booted http://localhost:8642/demo_imgui_bundle.html
+xcrun simctl io booted screenshot /tmp/web_shots/sim.png
+idb ui tap --udid <udid> X Y                          # in points: the screenshot's pixels / 3 (iPhone 17: 1206 x 2622 px)
+xcrun simctl shutdown <udid>                          # when done
+```
+
+- Taps need idb (Meta's iOS Development Bridge), installed by the user: `brew install facebook/fb/idb-companion` (Homebrew asks to trust the tap's formula first), then `uv tool install fb-idb --python 3.13`. Its taps reach the ImGui canvas as touches; `idb ui swipe` and `idb ui text` exist too. `idb ui describe-point` finds nothing on the canvas (it has no accessibility tree): harmless.
+- Wait between the steps: the wasm startup takes a few seconds, and idling lowers the frame rate after 3 s. A small Python script with `time.sleep` between the `simctl` calls does it.
+- `simctl io screenshot` reads the simulator itself: it works even where macOS blocks `screencapture` for the terminal.
+
 ## Gotchas
 
 - **Never use plain `chrome --headless --screenshot`** on these pages: it writes the image but never exits (the render loop
@@ -100,6 +117,6 @@ playwright install firefox`, about 100 MB in `~/Library/Caches/ms-playwright`). 
 - Pyodide demo runner (`just pyodide_demo_runner`, port 6789, `?file=demo_imgui_md.py`) runs any file of
   `demos_python` with the local wheel; it does not expose `window.pyodide`, so `py:` does not work there.
 - Shortcuts on macOS (Chrome and Firefox): Cmd, on the Emscripten GLFW pages and on the Pyodide (SDL) pages alike (`io.config_mac_osx_behaviors` is True in both): drive them with `key:Meta+...` (e.g. `key:Meta+f` for a rich_md document's find, which `key:Control+f` does not open).
-- A phone on the local network reaches the servers at the Mac's address (`http://192.168.x.y:<port>`). There the browser ignores COOP/COEP (an http origin other than localhost is not secure): the bundle explorer (`demo_imgui_bundle.html`, whose test engine needs threads) waits forever at "Initializing". The demos' own pages and the playground work. The explorer's phone check waits for a deploy (https).
+- A phone on the local network reaches the servers at the Mac's address (`http://192.168.x.y:<port>`). There the browser ignores COOP/COEP (an http origin other than localhost is not secure): the bundle explorer (`demo_imgui_bundle.html`, whose test engine needs threads) waits forever at "Initializing". The demos' own pages and the playground work. For the explorer, use the iPhone simulator (above), or wait for a deploy (https).
 - If macOS shows a warning attributed to the IDE hosting the terminal when Chrome starts, stop and tell the user
   (seen once; probable cause: Chrome had a pending update. It did not come back after Chrome was restarted).
