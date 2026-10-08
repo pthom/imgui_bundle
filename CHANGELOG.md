@@ -6,7 +6,7 @@
 
 On a touch screen (a phone running the explorer or the playground, a tablet), Hello ImGui turns a finger into what its user expects, with nothing to write in the app:
 - a swipe scrolls the content of a window, with inertia and a bounce at the end, even when the drag starts on a button or on a markdown text; a tap still clicks (when the finger lifts), two taps are a double click, and a short hold then a drag goes to the widget under the finger (a slider, a text selection; a ring around the finger shows when the hold took effect);
-- a finger still for half a second is a right click (the context menus), except on a widget that acted on the press already (a button that repeats while held);
+- a finger still for half a second, then lifted, is a right click (the context menus): a ring around the finger shows it, and a move after the ring cancels it (a slider dragged after a pause keeps its drag); not on a widget that acted on the press already (a button that repeats while held);
 - two fingers that pinch scale the app (its font); two fingers that move together are a right drag (the pan of a node editor, the box selection of a plot);
 - a text widget that is active shows a keyboard button next to it: a tap opens the phone's keyboard, and what is typed goes to the widget.
 

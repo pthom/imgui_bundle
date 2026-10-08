@@ -27,7 +27,7 @@ namespace
 const char* GESTURES = R"(
 - **Swipe** anywhere, on this text or on the button below: the content scrolls, with inertia, and a bounce at the end.
 - **Tap** a button: a click. **Hold** a slider a moment, then drag it.
-- **Hold** a word of this text half a second: the menu of a right click (Copy, Select All). Hold the button: its menu.
+- **Hold** a word of this text half a second, until a ring shows, then lift: the menu of a right click (Copy, Select All). The same on the button: its menu.
 - **Pinch** with two fingers: the app (its font) scales.
 - **Drag with two fingers**: a right drag, which box-selects in the plot.
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.

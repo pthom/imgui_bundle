@@ -3125,9 +3125,10 @@ class RunnerParams:
 
     # bool touchLongPressIsRightClick = true;    /* original C++ signature */
     # `touchLongPressIsRightClick`: _bool, default = true_.
-    # On a touch screen (never with a mouse): a finger still for half a second is a right click (the context
-    # menus), as on a phone. The widget under it loses the press it got at the hold (a release outside it), so
-    # that a long press on a button is not a click.
+    # On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the
+    # context menus), as Windows' press-and-hold; a ring around the finger shows when the lift will right click. The
+    # release reaches no widget, so that a long press on a button is not a click. A move after the ring cancels it:
+    # the widget under the finger keeps its press (a slider dragged after a pause, a text selection that grows).
     touch_long_press_is_right_click: bool = True
 
     # TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;    /* original C++ signature */
@@ -3550,8 +3551,8 @@ def set_item_takes_touch_drags(long_press_is_right_click: bool = True) -> None:
     """`SetItemTakesTouchDrags(longPressIsRightClick = True)`: call it right after a widget that is dragged (a plot, a node
     editor, a canvas). On a touch screen, a press on it goes to the widget at once, without the hold, even in a window
     that scrolls: its drags move the widget's content, in any direction (a swipe that starts on it does not scroll the
-    window). A finger still on it for half a second becomes a right click (its context menu), unless
-    longPressIsRightClick is False: the widget then keeps the finger as long as it stays (a piano key, a fire button).
+    window). A finger still on it for half a second, then lifted, is a right click (its context menu), unless
+    longPressIsRightClick is False (a piano key, a fire button: a finger held still then lifted is no right click).
     """
     pass
 
