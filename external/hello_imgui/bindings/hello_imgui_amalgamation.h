@@ -2588,6 +2588,12 @@ struct RunnerParams
     // the widget under the finger keeps its press (a slider dragged after a pause, a text selection that grows).
     bool touchLongPressIsRightClick = true;
 
+    // `touchThinScrollbars`: _bool, default = true_.
+    // On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
+    // controls, since a swipe scrolls anywhere (on a bar too). Applied at each frame (after a theme, a pinch).
+    // False keeps the theme's bars.
+    bool touchThinScrollbars = true;
+
     // `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
     // Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers
     // that move together are a right drag.

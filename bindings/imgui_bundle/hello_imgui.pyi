@@ -3131,6 +3131,13 @@ class RunnerParams:
     # the widget under the finger keeps its press (a slider dragged after a pause, a text selection that grows).
     touch_long_press_is_right_click: bool = True
 
+    # bool touchThinScrollbars = true;    /* original C++ signature */
+    # `touchThinScrollbars`: _bool, default = true_.
+    # On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
+    # controls, since a swipe scrolls anywhere (on a bar too). Applied at each frame (after a theme, a pinch).
+    # False keeps the theme's bars.
+    touch_thin_scrollbars: bool = True
+
     # TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;    /* original C++ signature */
     # `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
     # Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers
@@ -3178,6 +3185,7 @@ class RunnerParams:
         emscripten_fps: int = 0,
         touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto,
         touch_long_press_is_right_click: bool = True,
+        touch_thin_scrollbars: bool = True,
         touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale,
         touch_pinch_interrupts_widgets: bool = False,
         wheel_session: bool = True,
