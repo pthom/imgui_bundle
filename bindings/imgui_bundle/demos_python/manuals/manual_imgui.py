@@ -18,6 +18,8 @@ try:  # the logo needs the demos' utilities and assets
 except ImportError:  # the playground ships neither: no logo there
     HAS_LOGO = False
 
+FPS_IDLE = 30.0  # when idle: its demos animate, and they are not ours to mark as live (set_item_is_live)
+
 
 def gui() -> None:
     if HAS_LOGO:  # it lands at the top right of the page, beside the title
@@ -32,4 +34,4 @@ def gui() -> None:
 
 
 if __name__ == "__main__":
-    immapp.run(gui, window_size=(1100, 800), with_markdown=True)
+    immapp.run(gui, window_size=(1100, 800), with_markdown=True, fps_idle=FPS_IDLE)

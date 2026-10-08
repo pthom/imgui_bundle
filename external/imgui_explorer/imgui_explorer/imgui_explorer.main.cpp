@@ -64,7 +64,7 @@ int main(int argc, char** argv)
 
     runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui_Cpp(library, true); };
 
-    runnerParams.fpsIdling.fpsIdle = 24.f; // When idling, keep a reasonable framerate
+    runnerParams.fpsIdling.fpsIdle = 30.f; // The demos animate, and are not ours to mark as live (SetItemIsLive)
 
     runnerParams.iniClearPreviousSettings = true; // start with a clean layout each time (for demo purposes)
 
