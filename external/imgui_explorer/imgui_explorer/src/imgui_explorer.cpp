@@ -52,18 +52,24 @@ namespace
 
     bool GNarrowLayout_ShowsCode = false;  // one pane at a time: the code is shown, otherwise the demo
     bool GNarrowLayout_CodeSeen = false;   // the code was shown once: the tip above the demo goes away
+    bool GNarrowLayout_Active = false;     // the explorer shows one pane at a time (set at each frame)
 
     int GDemo_LastShownFrame = -1;         // the last frame when the demo was shown
     bool GDemo_ShownAtLastFrame = false;   // the demo was shown at the frame before (all its open sections were seen)
 
     bool                                GDemoMarker_FlagFollowSource = true;
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
+    int                                 GDemoMarker_PrevLibIndex = -1;   // the lookup info is reset when they change
+    int                                 GDemoMarker_PrevFileIndex = -1;
 
     // Follow source only makes sense when the active code-viewer tab is the demo
     // file (imgui_demo.cpp, implot_demo.cpp, ...). On API reference tabs the user
     // is reading docs and should not be yanked back by hover-driven navigation.
+    // One pane at a time: the code is hidden while the demo is shown, and a tap there selects the demo's tab.
     bool IsFollowSourceApplicable()
     {
+        if (GNarrowLayout_Active)
+            return true;
         const auto& files = GetCurrentLibraryFiles();
         int idx = DemoCodeViewer_GetCurrentFileIndex();
         if (idx < 0 || idx >= (int)files.size())
@@ -78,15 +84,13 @@ namespace
     {
         // Reset lookup info when library or file tab changes
         {
-            static int prevLibIndex = -1;
-            static int prevFileIndex = -1;
             int libIndex = GetCurrentLibraryIndex();
             int fileIndex = DemoCodeViewer_GetCurrentFileIndex();
-            if (libIndex != prevLibIndex || fileIndex != prevFileIndex)
+            if (libIndex != GDemoMarker_PrevLibIndex || fileIndex != GDemoMarker_PrevFileIndex)
             {
                 GDemoMarker_CodeLookupInfo[0] = '\0';
-                prevLibIndex = libIndex;
-                prevFileIndex = fileIndex;
+                GDemoMarker_PrevLibIndex = libIndex;
+                GDemoMarker_PrevFileIndex = fileIndex;
             }
         }
 
@@ -278,7 +282,11 @@ namespace
         // (The tap that opened a section may still hold the active id)
         bool idle = ImGui::GetActiveID() == 0 || justOpened;
         if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable() && idle)
+        {
             DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
+            // A tab changed by the jump keeps the lookup info
+            GDemoMarker_PrevFileIndex = DemoCodeViewer_GetCurrentFileIndex();
+        }
     }
 
     // The library: buttons, or a combo where they do not fit (nothing in single-library mode)
@@ -567,6 +575,7 @@ namespace {
             bool isShort = availableSize.y < HelloImGui::EmSize(kShortHeightEm);
             mode.statusInMenu = show_status_bar && (mode.narrow || isShort);
         }
+        GNarrowLayout_Active = mode.narrow;
         ShowLibraryToolbar(mode);
 
         // Use all space, except for a small margin at the bottom for the status bar
