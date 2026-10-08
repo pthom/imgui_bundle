@@ -6,6 +6,7 @@
 // full size under a slim bar. Escape goes back one state (the code view, the demo, then Welcome).
 #include "demo_imgui_bundle.h"
 #include "demo_immapp_launcher.h"
+#include "demo_imgui_bundle_intro.h"
 
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
@@ -26,9 +27,6 @@
 #include <cstdlib>
 #endif
 
-// The intro
-void IntroWelcomeGui();  // its content without the title and the links
-void RenderLinksRow();
 // The demos whose function can be linked in the explorer (the catalog says which ones may run in place)
 void gui_welcome_imm_mode();
 void gui_demo_parametric_curve();
@@ -201,9 +199,13 @@ namespace
         std::string browserRoute;  // the route of the browser's current history entry
 #endif
         float rightWidth = 0.f;  // of the header's switch, measured on the previous frame
+        WelcomeHost host;  // what the welcome's button and links do here
 
         Explorer()
         {
+            host.nbDemos = launcher.NbDemos();
+            host.browse = [this]() { Go(State::Demos); };
+            host.openDemo = [this](const std::string& filename) { OpenDemo(filename); };
             launcher.inPlaceFunctions = {
                 {"welcome_imm_mode", gui_welcome_imm_mode}, {"demo_parametric_curve", gui_demo_parametric_curve},
                 {"demo_implot_markdown", gui_demo_implot_markdown}, {"haiku_butterfly", gui_haiku_butterfly},
@@ -459,36 +461,23 @@ namespace
 
         void Welcome()
         {
-            float em = HelloImGui::EmSize();
             RenderLinksRow();
-            ImVec2 avail = ImGui::GetContentRegionAvail();
-            ImGui::BeginChild("welcome", ImVec2(0, avail.y - em * 3.5f));
-            IntroWelcomeGui();
+            ImGui::BeginChild("welcome");
+            WelcomeGui(host);
             ImGui::EndChild();
-            // The call to action, centered
-            std::string label = std::string(ICON_FA_TH_LARGE "  Browse the ") + std::to_string(launcher.NbDemos()) + " demos";
-            ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 1.3f);
-            ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(em * 1.2f, em * 0.4f));
-            float width = ImGui::CalcTextSize(label.c_str()).x + em * 2.4f;
-            ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (avail.x - width) / 2);
-            if (ImGui::Button(label.c_str()))
-                Go(State::Demos);
-            ImGui::PopStyleVar();
-            ImGui::PopFont();
-            if (ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal))
-            {
-                std::string categories;
-                for (const auto& category : launcher.Categories())
-                    categories += (categories.empty() ? "" : ", ") + category.name;
-                ImGui::BeginTooltip();
-                ImGui::BeginChild("tip", ImVec2(em * 30.f, 0), ImGuiChildFlags_AutoResizeY);  // wraps the text
-                RichMd::Render("**" + std::to_string(launcher.NbDemos()) + " demos, in "
-                               + std::to_string(launcher.Categories().size()) + " categories:** " + categories + ".\n\n"
-                               "Each one is a documented quickstart: see it, run it, and read its code. Together they "
-                               "are the tutorials and the interactive manuals of the bundle.");
-                ImGui::EndChild();
-                ImGui::EndTooltip();
-            }
+        }
+
+        // The welcome's links to a demo of the catalog: the Demos state, with that demo selected
+        void OpenDemo(const std::string& filename)
+        {
+            for (const auto& category : launcher.Categories())
+                for (const auto& demo : category.demos)
+                    if (demo.filename == filename)
+                    {
+                        launcher.GoTo("detail/" + demo.stem);
+                        Go(State::Demos);
+                        return;
+                    }
         }
 
         // A demo whose function is linked here, full size under a slim bar: the way back, its name, its code
