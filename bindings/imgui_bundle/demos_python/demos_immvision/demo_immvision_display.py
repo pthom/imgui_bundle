@@ -9,6 +9,9 @@ from imgui_bundle import immvision, immapp, rich_md, ImVec2, imgui, hello_imgui,
 
 register_demos_assets_folder()
 
+TENNIS_WIDTH_EM = 22.5  # the first image's width, at most: on a phone, the window's width
+SECOND_COLUMN_MIN_EM = 20.0  # the second column goes beside the first if it has this width there, else below
+
 
 def read_image(asset: str, with_alpha: bool = False):
     """An image of the demos' assets, in RGB (ImmVision's default order; OpenCV reads BGR)"""
@@ -22,7 +25,8 @@ def read_image(asset: str, with_alpha: bool = False):
 def gui() -> None:
     statics = gui
     if not statics.inited:
-        statics.image_display_size = ImVec2(0, immapp.em_size(15))
+        width = min(hello_imgui.em_size(TENNIS_WIDTH_EM), imgui.get_content_region_avail().x)
+        statics.image_display_size = ImVec2(width, 0)  # the height follows the image's aspect ratio
         statics.bear = read_image("images/bear_transparent.png", with_alpha=True)
         statics.tennis = read_image("images/tennis.jpg")
 
@@ -39,7 +43,8 @@ def gui() -> None:
     )
     imgui.end_group()
 
-    imgui.same_line()
+    if imgui.get_content_region_avail().x - imgui.get_item_rect_size().x >= hello_imgui.em_size(SECOND_COLUMN_MIN_EM):
+        imgui.same_line()
 
     imgui.begin_group()
     rich_md.render("# immvision.image()")
