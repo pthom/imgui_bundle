@@ -30,14 +30,14 @@ def gui():
     k = 0.8 + 0.1 * np.cos(phase)
     t0 = t
 
-    implot.begin_plot("Heart", immapp.em_to_vec2(21, 21))
-    # Axes sized for the largest heart (fitted to the first frame's heart, a small one, they would clip the next ones)
-    implot.setup_axes_limits(x.min() * LARGEST_SCALE, x.max() * LARGEST_SCALE,
-                             y.min() * LARGEST_SCALE, y.max() * LARGEST_SCALE)
-    for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):  # Give some thickness to the heart
-        implot.plot_line("", x * k * k2, y * k * k2)
-    implot.end_plot()
-    hello_imgui.set_item_is_live()  # the heart beats on its own: the app keeps its full speed while it is visible
+    if implot.begin_plot("Heart", immapp.em_to_vec2(21, 21)):  # False when the plot is not visible (clipped)
+        # Axes sized for the largest heart (fitted to the first frame's heart, a small one, they would clip the next)
+        implot.setup_axes_limits(x.min() * LARGEST_SCALE, x.max() * LARGEST_SCALE,
+                                 y.min() * LARGEST_SCALE, y.max() * LARGEST_SCALE)
+        for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):  # Give some thickness to the heart
+            implot.plot_line("", x * k * k2, y * k * k2)
+        implot.end_plot()
+        hello_imgui.set_item_is_live()  # the heart beats on its own: the app keeps its full speed while visible
 
     _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180,
                                            variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=hello_imgui.em_size(4.0))

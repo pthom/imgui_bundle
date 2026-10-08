@@ -44,18 +44,21 @@ void gui_haiku_implot_heart() {
 
     ImGui::Text("Bloat free code");
 
-    ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21));
-    // Axes sized for the largest heart (fitted to the first frame's heart, a small one, they would clip the next ones)
-    auto [xMin, xMax] = std::minmax_element(x.begin(), x.end());
-    auto [yMin, yMax] = std::minmax_element(y.begin(), y.end());
-    ImPlot::SetupAxesLimits(*xMin * LARGEST_SCALE, *xMax * LARGEST_SCALE, *yMin * LARGEST_SCALE, *yMax * LARGEST_SCALE);
-    for (double k2 = 1 - (double)heart_thickness; k2 <= 1. + (double)heart_thickness; k2 += 0.01)
+    if (ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21)))  // false when the plot is not visible (clipped)
     {
-        auto xk = VectorTimesK(x, k * k2), yk = VectorTimesK(y, k * k2);
-        ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
+        // Axes sized for the largest heart (fitted to the first frame's heart, a small one, they would clip the next)
+        auto [xMin, xMax] = std::minmax_element(x.begin(), x.end());
+        auto [yMin, yMax] = std::minmax_element(y.begin(), y.end());
+        ImPlot::SetupAxesLimits(*xMin * LARGEST_SCALE, *xMax * LARGEST_SCALE,
+                                *yMin * LARGEST_SCALE, *yMax * LARGEST_SCALE);
+        for (double k2 = 1 - (double)heart_thickness; k2 <= 1. + (double)heart_thickness; k2 += 0.01)
+        {
+            auto xk = VectorTimesK(x, k * k2), yk = VectorTimesK(y, k * k2);
+            ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());
+        }
+        ImPlot::EndPlot();
+        HelloImGui::SetItemIsLive();  // the heart beats on its own: the app keeps its full speed while it is visible
     }
-    ImPlot::EndPlot();
-    HelloImGui::SetItemIsLive();  // the heart beats on its own: the app keeps its full speed while it is visible
 
     ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
     ImGui::SameLine();

@@ -1744,6 +1744,186 @@ def _markdown_slide_gui(content_size: ImVec2):
 
 
 # ============================================================================
+# Slide: a whole app, the heart haiku (demos_immapp/haiku_implot_heart.py): its complete code, and beside it the
+# app that this code runs
+# ============================================================================
+
+_HAIKU_PYTHON = r'''import time
+import numpy as np
+from imgui_bundle import implot, imgui_knobs, imgui, immapp, hello_imgui
+
+# Fill x and y whose plot is a heart
+vals = np.arange(0, np.pi * 2, 0.01)
+x = np.power(np.sin(vals), 3) * 16
+y = 13 * np.cos(vals) - 5 * np.cos(2 * vals) - 2 * np.cos(3 * vals) - np.cos(4 * vals)
+# Heart pulse rate and time tracking
+phase = 0.0
+t0 = time.time() + 0.2
+heart_pulse_rate = 80.0
+heart_thickness = 0.15
+LARGEST_SCALE = 0.9 * 1.3  # of the heart: the pulse scales it up to 0.9, the thickness up to 1.3
+
+def gui():
+    global heart_pulse_rate, phase, t0, heart_thickness
+    t = time.time()
+    phase += (t - t0) * heart_pulse_rate / (np.pi * 2)
+    k = 0.8 + 0.1 * np.cos(phase)
+    t0 = t
+
+    if implot.begin_plot("Heart", immapp.em_to_vec2(21, 21)):
+        implot.setup_axes_limits(x.min() * LARGEST_SCALE, x.max() * LARGEST_SCALE,
+                                 y.min() * LARGEST_SCALE, y.max() * LARGEST_SCALE)
+        for k2 in np.arange(1 - heart_thickness, 1 + heart_thickness, 0.01):
+            implot.plot_line("", x * k * k2, y * k * k2)  # some thickness
+        implot.end_plot()
+        hello_imgui.set_item_is_live()  # the heart beats on its own
+
+    _, heart_pulse_rate = imgui_knobs.knob("Pulse", heart_pulse_rate, 30, 180,
+        variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=immapp.em_size(4.0))
+    imgui.same_line()
+    _, heart_thickness = imgui_knobs.knob("Line Thickness", heart_thickness, 0.01, 0.3,
+        variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot, size=immapp.em_size(4.0))
+
+if __name__ == "__main__":
+    immapp.run(gui, window_size=(380, 470), with_implot=True)
+'''
+
+_HAIKU_CPP = r'''#include "imgui.h"
+#include "implot/implot.h"
+#include "imgui-knobs/imgui-knobs.h"
+#include "immapp/immapp.h"
+#include <algorithm>
+#include <cmath>
+
+const double LARGEST_SCALE = 0.9 * 1.3;  // of the heart: the pulse scales it up to 0.9, the thickness up to 1.3
+
+std::vector<double> VectorTimesK(const std::vector<double>& values, double k) {
+    std::vector<double> r(values.size(), 0.);
+    for (size_t i = 0; i < values.size(); ++i)
+        r[i] = k * values[i];
+    return r;
+}
+
+void Gui() {
+    // Fill x and y whose plot is a heart
+    const double pi = 3.1415926535;
+    static std::vector<double> x, y;
+    if (x.empty()) {
+        for (double t = 0.; t < pi * 2.; t += 0.01) {
+            x.push_back(pow(sin(t), 3.) * 16.);
+            y.push_back(13. * cos(t) - 5 * cos(2. * t) - 2 * cos(3. * t) - cos(4. * t));
+        }
+    }
+    // Heart pulse rate and time tracking
+    static double phase = 0., t0 = ImmApp::ClockSeconds() + 0.2;
+    static float heart_pulse_rate = 80., heart_thickness = 0.15;
+    double t = ImmApp::ClockSeconds();
+    phase += (t - t0) * (double)heart_pulse_rate / (pi * 2.);
+    double k = 0.8 + 0.1 * cos(phase);
+    t0 = t;
+
+    if (ImPlot::BeginPlot("Heart", ImmApp::EmToVec2(21, 21))) {
+        auto [xMin, xMax] = std::minmax_element(x.begin(), x.end());
+        auto [yMin, yMax] = std::minmax_element(y.begin(), y.end());
+        ImPlot::SetupAxesLimits(*xMin * LARGEST_SCALE, *xMax * LARGEST_SCALE,
+                                *yMin * LARGEST_SCALE, *yMax * LARGEST_SCALE);
+        for (double k2 = 1 - heart_thickness; k2 <= 1. + heart_thickness; k2 += 0.01) {
+            auto xk = VectorTimesK(x, k * k2), yk = VectorTimesK(y, k * k2);
+            ImPlot::PlotLine("", xk.data(), yk.data(), (int)xk.size());  // some thickness
+        }
+        ImPlot::EndPlot();
+        HelloImGui::SetItemIsLive();  // the heart beats on its own
+    }
+
+    ImGuiKnobs::Knob("Pulse", &heart_pulse_rate, 30., 180.);
+    ImGui::SameLine();
+    ImGuiKnobs::Knob("Line Thickness", &heart_thickness, 0.01, 0.3);
+}
+
+int main() {
+    HelloImGui::SimpleRunnerParams runnerParams;
+    runnerParams.guiFunction = Gui;
+    runnerParams.windowTitle = "Hello!";
+    runnerParams.windowSize = {380, 470};
+    ImmApp::AddOnsParams addOnsParams;
+    addOnsParams.withImplot = true;
+    ImmApp::Run(runnerParams, addOnsParams);
+}
+'''
+
+_haiku_app: Optional[dict[str, Any]] = None  # the globals of the Python code above, run once (its gui() is the app)
+_haiku_editors: list[Any] = []  # the code, in a read-only editor: [Python, C++]
+_haiku_view = -1  # 0: Python, 1: C++ (on a phone, 2: the app); -1 until the first frame: the app on a phone
+
+
+def _haiku_init() -> None:
+    global _haiku_app
+    _haiku_app = {"__name__": "haiku_implot_heart"}  # not "__main__": the code defines gui(), and does not run it
+    exec(_HAIKU_PYTHON, _haiku_app)
+    for code, language in ((_HAIKU_PYTHON, ed.TextEditor.Language.python()),
+                           (_HAIKU_CPP, ed.TextEditor.Language.cpp())):
+        editor = ed.TextEditor()
+        editor.set_text(code)
+        editor.set_language(language)
+        editor.set_palette(ed.TextEditor.get_dark_palette())
+        editor.set_read_only_enabled(True)
+        editor.set_show_whitespaces_enabled(False)  # a page of code, to be read
+        _haiku_editors.append(editor)
+
+
+def _haiku_code(index: int, size: ImVec2) -> None:
+    panel_bg(imgui.get_cursor_screen_pos(), size)
+    imgui.begin_child("##haiku_code", size, False, imgui.WindowFlags_.no_background)
+    code_font = rich_md.get_code_font()
+    imgui.push_font(code_font.font, code_font.size * 0.85)
+    _haiku_editors[index].render("##haiku_editor", size)
+    imgui.pop_font()
+    imgui.end_child()
+
+
+def _haiku_running_app(size: ImVec2) -> None:
+    """The app that the Python code runs: its gui(), in a frame"""
+    assert _haiku_app is not None
+    panel_bg(imgui.get_cursor_screen_pos(), size, 0.04, 0.3)
+    imgui.begin_child("##haiku_app", size, False, imgui.WindowFlags_.no_background)
+    imgui.set_cursor_pos(ImVec2(hello_imgui.em_size(0.5), hello_imgui.em_size(0.5)))
+    imgui.begin_group()
+    _haiku_app["gui"]()
+    imgui.end_group()
+    imgui.end_child()
+
+
+def _haiku_slide_gui(content_size: ImVec2):
+    global _haiku_view
+    if _haiku_app is None:
+        _haiku_init()
+    em = hello_imgui.em_size()
+    gap = em * 0.5
+    narrow = is_small_screen()
+    labels = ["Python", "C++"] + (["The app"] if narrow else [])
+    if _haiku_view < 0:
+        _haiku_view = 2 if narrow else 0
+    for i, label in enumerate(labels):
+        if i > 0:
+            imgui.same_line()
+        if imgui.radio_button(label, _haiku_view == i):
+            _haiku_view = i
+    if not narrow and _haiku_view == 2:
+        _haiku_view = 0
+    size = ImVec2(content_size.x, content_size.y - imgui.get_frame_height_with_spacing())
+    if narrow:  # one at a time: the code, or the app
+        if _haiku_view == 2:
+            _haiku_running_app(size)
+        else:
+            _haiku_code(_haiku_view, size)
+        return
+    app_w = min(em * 23.0, size.x * 0.45)  # the heart is 21 em wide
+    _haiku_code(_haiku_view, ImVec2(size.x - app_w - gap, size.y))
+    imgui.same_line(0, gap)
+    _haiku_running_app(ImVec2(app_w, size.y))
+
+
+# ============================================================================
 # Slide: "Code that reads like a book": four snippets, each beside the widget it draws
 # ============================================================================
 
@@ -2221,6 +2401,11 @@ def slides() -> list[CarouselSlide]:
         "Rich Documentation, Built In",
         "Render markdown directly in your UI - headers, code blocks, tables, links, math and images, all from a simple string.",
         _markdown_slide_gui, "demo_imgui_md.py"))
+    _slides.append(CarouselSlide(
+        "A Whole App in a Few Lines",
+        "The complete program of a beating heart, imports and window included, and beside it the app it runs. "
+        "No boilerplate: the GUI is a function that draws each frame.",
+        _haiku_slide_gui, "haiku_implot_heart.py"))
     _slides.append(CarouselSlide(
         "Code That Reads Like a Book",
         "No widget trees, no callbacks, no state sync. Each snippet below is the complete code for the live demo beside it. The interactive manuals read the same way: every section with its code.",
