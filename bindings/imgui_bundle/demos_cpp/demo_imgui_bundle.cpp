@@ -18,6 +18,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <map>
 #include <optional>
 #include <string>
 #ifdef __EMSCRIPTEN__
@@ -114,6 +115,10 @@ namespace
     // em: below this width, the status bar's content goes to a "..." menu in the header (in the bar, the app's part
     // and hello_imgui's idling and FPS, at a fixed place from the right, would overlap)
     const float STATUS_IN_MENU_BELOW = 60.f;
+    // The idle rate of a demo in place that needs its own, as its Python main() sets it: the manuals' demos animate,
+    // and are not ours to mark as live (HelloImGui::SetItemIsLive)
+    const std::map<std::string, float> FPS_IDLE_IN_PLACE = {
+        {"manual_imgui", 30.f}, {"manual_implot", 30.f}, {"manual_implot3d", 30.f}, {"manual_im_anim", 30.f}};
 
     bool StatusInMenu() { return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize(STATUS_IN_MENU_BELOW); }
 
@@ -188,9 +193,9 @@ namespace
         bool forward = true;  // the change goes deeper (Welcome, Demos, a demo: the pages slide up), or back
         DemoLauncher launcher;
         std::string demoInPlace;  // the stem of the demo shown by the Demo state
-        // What a demo in place may change, saved when it is first drawn and restored when the page shows something
-        // else, so that no demo has to clean up
-        struct AppState { std::string stem; ImGuiStyle style; };
+        // What a demo in place may change, and the idle rate it gets, saved when it is first drawn and restored when
+        // the page shows something else, so that no demo has to clean up
+        struct AppState { std::string stem; ImGuiStyle style; float fpsIdle; };
         std::optional<AppState> savedAppState;
 #ifdef __EMSCRIPTEN__
         std::string browserRoute;  // the route of the browser's current history entry
@@ -260,7 +265,10 @@ namespace
 
         void SaveAppState(const std::string& stem)
         {
-            savedAppState = AppState{stem, ImGui::GetStyle()};
+            float& fpsIdle = HelloImGui::GetRunnerParams()->fpsIdling.fpsIdle;
+            savedAppState = AppState{stem, ImGui::GetStyle(), fpsIdle};
+            if (FPS_IDLE_IN_PLACE.count(stem))
+                fpsIdle = FPS_IDLE_IN_PLACE.at(stem);
         }
 
         // The font sizes stay as they are: the reader may have changed them meanwhile (the status bar's font scale)
@@ -273,6 +281,7 @@ namespace
             style.FontSizeBase = fontSizeBase;
             style.FontScaleMain = fontScaleMain;
             style.FontScaleDpi = fontScaleDpi;
+            HelloImGui::GetRunnerParams()->fpsIdling.fpsIdle = savedAppState->fpsIdle;
             savedAppState.reset();
         }
 
@@ -377,7 +386,7 @@ namespace
                               ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
             ImGui::SetCursorPos(ImVec2(0.f, drift));
             ImGui::BeginChild("page", avail);
-            // Before the next page draws: the launcher saves the idling to restore it after its animation
+            // Before the next page draws: it starts with the app's own settings
             if (shown != State::Demo && savedAppState.has_value())
                 RestoreAppState();
             if (shown == State::Welcome)
