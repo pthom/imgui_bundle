@@ -1,116 +1,75 @@
+"""A logo that appears at the center of the screen, then flies to the top right corner of the page it decorates"""
 import webbrowser
 from imgui_bundle import imgui, hello_imgui, immapp, ImVec4, ImVec2
 
-ImTextureID = int
+APPEAR, HOLD, FLIGHT = 0.3, 0.4, 0.6  # s: the logo fades in at the center, stays, then flies to its corner
+
+Rect = tuple[ImVec2, ImVec2]  # min, max
 
 
-def draw_transparent_image(
-    texture: ImTextureID, rect: imgui.internal.ImRect, alpha: float
-):
-    alpha_color = imgui.get_color_u32(ImVec4(1.0, 1.0, 1.0, alpha))
-    imgui.get_foreground_draw_list().add_image_quad(
-        imgui.ImTextureRef(texture),
-        ImVec2(rect.min.x, rect.min.y),
-        ImVec2(rect.max.x, rect.min.y),
-        ImVec2(rect.max.x, rect.max.y),
-        ImVec2(rect.min.x, rect.max.y),
-        ImVec2(0, 0),
-        ImVec2(1, 0),
-        ImVec2(1, 1),
-        ImVec2(0, 1),
-        alpha_color,
-    )
+def _ease_out_cubic(t: float) -> float:
+    return 1.0 - (1.0 - t) ** 3
+
+
+def _ease_in_out_cubic(t: float) -> float:
+    return 4.0 * t ** 3 if t < 0.5 else 1.0 - (2.0 - 2.0 * t) ** 3 / 2.0
+
+
+def _lerp_rect(a: Rect, b: Rect, k: float) -> Rect:
+    return (ImVec2(a[0].x + (b[0].x - a[0].x) * k, a[0].y + (b[0].y - a[0].y) * k),
+            ImVec2(a[1].x + (b[1].x - a[1].x) * k, a[1].y + (b[1].y - a[1].y) * k))
+
+
+def _centered_rect(center: ImVec2, width: float, height: float) -> Rect:
+    return (ImVec2(center.x - width / 2, center.y - height / 2), ImVec2(center.x + width / 2, center.y + height / 2))
 
 
 @immapp.static(start_time=-1.0)
-def animate_logo(
-    logo_file: str,
-    ratio_width_height: float,
-    em_top_right_margin: ImVec2,
-    final_alpha: float,
-    url: str,
-):
+def animate_logo(logo_file: str, ratio_width_height: float, final_alpha: float, url: str) -> None:
+    """The logo appears at the center of the screen, then flies to the top right corner of the area that remains in
+    the window: call it before the content it decorates. It plays once, then stays there as a link to url."""
     static = animate_logo
     if static.start_time < 0:
         static.start_time = immapp.clock_seconds()
+    t = immapp.clock_seconds() - static.start_time
+    if hello_imgui.prefers_reduced_motion():  # no flight: the logo is in its corner at once
+        t = APPEAR + HOLD + FLIGHT
 
-    logo_texture = hello_imgui.im_texture_id_from_asset(logo_file)
+    # Where it lands: the top right corner of the area that remains, smaller on a narrow screen
+    em = imgui.get_font_size()
+    pos, avail = imgui.get_cursor_screen_pos(), imgui.get_content_region_avail()
+    height = em * (2.5 if avail.x > em * 40 else 1.8)
+    right = pos.x + avail.x
+    corner: Rect = (ImVec2(right - height * ratio_width_height, pos.y), ImVec2(right, pos.y + height))
 
-    def unlerp(a, b, x):
-        return (x - a) / (b - a)
+    # Where it appears: big, at the center of the screen
+    viewport = imgui.get_main_viewport()
+    big_height = min(viewport.size.x / ratio_width_height, viewport.size.y) * 0.5
+    center = _centered_rect(viewport.get_center(), big_height * ratio_width_height, big_height)
 
-    def lerp(a, b, x):
-        return a + (b - a) * x
+    if t < APPEAR:  # it fades in, growing a little
+        k = _ease_out_cubic(t / APPEAR)
+        smaller = _centered_rect(viewport.get_center(), big_height * ratio_width_height * 0.9, big_height * 0.9)
+        rect, alpha = _lerp_rect(smaller, center, k), k
+    elif t < APPEAR + HOLD:
+        rect, alpha = center, 1.0
+    else:  # it flies to its corner, and fades to final_alpha
+        k = _ease_in_out_cubic(min((t - APPEAR - HOLD) / FLIGHT, 1.0))
+        rect, alpha = _lerp_rect(center, corner, k), 1.0 + (final_alpha - 1.0) * k
+    if t < APPEAR + HOLD + FLIGHT:
+        hello_imgui.request_refresh()  # it moves on its own (a drawing, not a widget)
 
-    rect0: imgui.internal.ImRect = imgui.internal.ImRect()
-    rect1: imgui.internal.ImRect = imgui.internal.ImRect()
-    alpha0: float = 1
-    alpha1: float = 1
-
-    @immapp.run_anon_block
-    def fill_positions():
-        nonlocal rect0, rect1, alpha0, alpha1
-        ImVec2(1.0, 1.0)
-        viewport_size = imgui.get_main_viewport().size
-        viewport_position = imgui.get_main_viewport().pos
-        viewport_min_size = min(viewport_size.x, viewport_size.y)
-        vp_center = imgui.get_main_viewport().get_center()
-
-        size0 = ImVec2(
-            viewport_min_size * 0.8, viewport_min_size * 0.8 / ratio_width_height
-        )
-        position0 = ImVec2(vp_center.x - size0.x / 2, vp_center.y - size0.y / 2)
-        rect0 = imgui.internal.ImRect(
-            position0, ImVec2(position0.x + size0.x, position0.y + size0.y)
-        )
-        alpha0 = 1.0
-
-        em = imgui.get_font_size()
-        size1 = ImVec2(
-            viewport_min_size * 0.12 * ratio_width_height, viewport_min_size * 0.12
-        )
-        position1 = ImVec2(
-            viewport_position.x + viewport_size.x - size1.x, viewport_position.y
-        )
-        position1 = ImVec2(
-            position1.x - em_top_right_margin.x * em,
-            position1.y + em_top_right_margin.y * em,
-        )
-        rect1 = imgui.internal.ImRect(
-            position1, ImVec2(position1.x + size1.x, position1.y + size1.y)
-        )
-        alpha1 = final_alpha
-
-    k_animation: float = 0  # between 0 and 1
-
-    @immapp.run_anon_block
-    def fill_k():
-        nonlocal k_animation
-        dt = immapp.clock_seconds() - static.start_time
-
-        t_pause = 0.4
-        t_animation = 0.8
-
-        if dt < t_pause:
-            k_animation = 0
-        elif dt < t_animation:
-            k_animation = unlerp(t_pause, t_animation, dt)
-        else:
-            k_animation = 1.0
-
-    rect = imgui.internal.ImRect(
-        imgui.internal.im_lerp(rect0.min, rect1.min, k_animation),
-        imgui.internal.im_lerp(rect0.max, rect1.max, k_animation),
-    )
-    alpha = lerp(alpha0, alpha1, k_animation)
-
-    if k_animation < 1:
-        hello_imgui.request_refresh()  # the logo moves on its own (drawn on a draw list: no widget to mark as live)
-
-    mouse_position = imgui.get_mouse_pos()
-    if rect.contains(mouse_position):
-        alpha = 1
+    mouse = imgui.get_mouse_pos()
+    if rect[0].x <= mouse.x <= rect[1].x and rect[0].y <= mouse.y <= rect[1].y:
+        alpha = 1.0
         if imgui.is_mouse_clicked(0):
             webbrowser.open(url)
 
-    draw_transparent_image(logo_texture, rect, alpha)
+    # Over the page's widgets, but clipped to the page: it never covers what surrounds it (the explorer's header)
+    texture = imgui.ImTextureRef(hello_imgui.im_texture_id_from_asset(logo_file))
+    window_pos, window_size = imgui.get_window_pos(), imgui.get_window_size()
+    draw_list = imgui.get_foreground_draw_list()
+    draw_list.push_clip_rect(window_pos, ImVec2(window_pos.x + window_size.x, window_pos.y + window_size.y))
+    draw_list.add_image(texture, rect[0], rect[1], ImVec2(0, 0), ImVec2(1, 1),
+                        imgui.get_color_u32(ImVec4(1.0, 1.0, 1.0, alpha)))
+    draw_list.pop_clip_rect()

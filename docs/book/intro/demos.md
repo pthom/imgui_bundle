@@ -324,6 +324,7 @@ The [Seascape shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Ale
 ::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_powersave.jpg
 :alt: Power save when idle
+:class: demo-fit
 :::
 
 ### Power save when idle
