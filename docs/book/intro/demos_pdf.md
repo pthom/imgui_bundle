@@ -729,7 +729,7 @@ support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 :width: 400px
 :::
 
-A live GUI beside your Jupyter notebook, at 60 or 120 frames per second while the cells run. In async mode (`immapp.nb.start()`), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.
+At 60 or 120 frames per second, a live GUI beside your Jupyter notebook while the cells run. In async mode (`immapp.nb.start()`), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.
 
 [Page](https://imgui-bundle.pages.dev/doc/python/notebook-runners/) · [Video](https://www.youtube.com/watch?v=VqLz5F_bk60)
 

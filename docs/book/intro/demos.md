@@ -877,7 +877,7 @@ The window shows both rates: the GUI's frames per second, and the loop's computa
 
 ### A GUI beside a Jupyter notebook
 
-A live GUI beside your Jupyter notebook, at 60 or 120 frames per second while the cells run.
+At 60 or 120 frames per second, a live GUI beside your Jupyter notebook while the cells run.
 
 :::{dropdown} More
 In async mode (`immapp.nb.start()`), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.
