@@ -118,7 +118,7 @@ xcrun simctl shutdown <udid>                          # when done
 - Other sessions may be using the simulator: check `xcrun simctl list devices booted` first. A device you did not boot belongs to someone else: ask before driving it. Name your device by its UDID (`openurl <udid>`, `io <udid>`), not `booted`.
 - A screenshot during a drag (a held slider): start `idb ui swipe --udid <udid> X1 Y X2 Y --duration 4` in the background, and take the screenshot about 2 s later.
 - A swipe that starts on a widget that takes the drags (a code block, a plot) goes to that widget, not to the page: start it on text or on blank space.
-- With a page zoom set in Safari (other than 100%), the canvas sometimes keeps the unzoomed size at the first load: the content is cut on the right and the end of the page hides under the toolbar. Reload.
+- A page zoom set in Safari (other than 100%) lands just after the load, and the canvas follows it since hello_imgui dacdd1d (2026-10-08). A build older than that may keep the unzoomed size at the first load (the content cut on the right, the end of the page under the toolbar): rebuild, or reload.
 
 ## Gotchas
 
