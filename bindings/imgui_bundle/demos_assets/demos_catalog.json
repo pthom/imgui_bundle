@@ -784,8 +784,8 @@
           "filename": "notebooks.md",
           "stem": "notebooks",
           "where": "desktop",
-          "text": "A GUI that stays open beside a Jupyter notebook while its cells run. Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and `immapp.nb.start()` that returns at once); its video trains a neural network live, its learning rate on a slider.",
-          "summary": "A GUI that stays open beside a Jupyter notebook while its cells run.",
+          "text": "A live GUI beside your Jupyter notebook, at 60 or 120 frames per second while the cells run. In async mode (`immapp.nb.start()`), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.",
+          "summary": "A live GUI beside your Jupyter notebook, at 60 or 120 frames per second while the cells run.",
           "uses": [
             "ImPlot"
           ],

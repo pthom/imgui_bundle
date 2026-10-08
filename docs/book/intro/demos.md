@@ -877,10 +877,10 @@ The window shows both rates: the GUI's frames per second, and the loop's computa
 
 ### A GUI beside a Jupyter notebook
 
-A GUI that stays open beside a Jupyter notebook while its cells run.
+A live GUI beside your Jupyter notebook, at 60 or 120 frames per second while the cells run.
 
 :::{dropdown} More
-Change a variable in a cell, and the plot follows; train a model, and tune it while it learns. The page explains the two modes (blocking, and `immapp.nb.start()` that returns at once); its video trains a neural network live, its learning rate on a slider.
+In async mode (`immapp.nb.start()`), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.
 :::
 
 [Page](https://imgui-bundle.pages.dev/doc/python/notebook-runners/) · [Video](https://www.youtube.com/watch?v=VqLz5F_bk60)
