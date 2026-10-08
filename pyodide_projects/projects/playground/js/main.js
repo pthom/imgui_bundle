@@ -94,6 +94,16 @@ document.addEventListener('DOMContentLoaded', () => {
             delay: [100, 100],
             theme: 'light-border',
         });
+        tippy('#about-button', {  // the (i) of a phone's header: a tap opens what the playground is, another closes it
+            content: document.getElementById('about-content').innerHTML,
+            allowHTML: true,
+            trigger: 'click',
+            interactive: true,
+            appendTo: () => document.body,  // not in the title's heading (an interactive one goes in its parent)
+            placement: 'bottom',
+            maxWidth: 300,
+            theme: 'light-border',
+        });
     } catch (error) {
         console.error('Error loading Tippy.js:', error);
     }

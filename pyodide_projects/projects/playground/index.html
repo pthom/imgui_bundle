@@ -85,7 +85,7 @@
             </a>
             <!-- Motto -->
             <div id="motto">
-                <h1 class="motto-title"><a href="/playground" class="motto-title-link"><span class="motto-title-long">Dear ImGui Bundle </span>Playground</a></h1>
+                <h1 class="motto-title"><a href="/playground" class="motto-title-link"><span class="motto-title-long">Dear ImGui Bundle </span>Playground</a><button id="about-button" aria-label="About the playground">i</button></h1>
                 <!-- What the playground is; the bundle's own tagline is in the canvas (the welcome) -->
                 <p class="motto-subtitle">Live Python in your browser: pick a demo, edit it, run it.</p>
             </div>
@@ -170,6 +170,18 @@
     <!-- Split.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/split.js/1.6.0/split.min.js"></script>
     <!-- CodeMirror JS -->
+
+    <!-- What the (i) next to the title shows, on a phone, where the motto is hidden (js/main.js) -->
+    <template id="about-content">
+        <div class="about-popup">
+            <strong>Live Python in your browser</strong>
+            <p>Each demo is a Python program that runs here, in your browser, with Pyodide: no server, nothing to
+               install.</p>
+            <p>Pick a demo, open its Code, edit it, then Run.</p>
+            <p><a href="https://imgui-bundle.pages.dev" target="_blank">Dear ImGui Bundle</a>: interactive apps in Python
+               and C++, for desktop, web and mobile.</p>
+        </div>
+    </template>
 
     <!-- The gallery of demos: the launcher's twin in HTML, an overlay under the header (js/examples.js) -->
     <div id="gallery" hidden>

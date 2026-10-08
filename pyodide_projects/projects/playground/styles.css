@@ -39,6 +39,31 @@ html, body {
     display: flex;
     align-items: center;
 }
+#about-button {  /* the (i) next to the title: a phone only, where the motto is hidden (the media query below) */
+    display: none;
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 0.6em;
+    padding: 0;
+    vertical-align: middle;
+    font: italic 700 0.85em Georgia, serif;
+    color: #ddd;
+    background: transparent;
+    border: 1px solid #999;
+    border-radius: 50%;
+    cursor: pointer;
+}
+.about-popup {
+    padding: 2px 2px 4px;
+    text-align: left;
+    font-family: system-ui, sans-serif;
+}
+.about-popup p {
+    margin: 6px 0 0;
+}
+.about-popup a {
+    color: #8cb4ff;  /* the title link's color */
+}
 
 
 /* The gallery of demos: a button in the header, and an overlay under it (see js/examples.js) */
@@ -812,6 +837,9 @@ body {
     }
     .motto-title {
         font-size: 0.9rem;
+    }
+    #about-button {
+        display: inline-block;
     }
     #examples-menu {
         margin-right: 0;
