@@ -53,6 +53,9 @@ namespace
     bool GNarrowLayout_ShowsCode = false;  // one pane at a time: the code is shown, otherwise the demo
     bool GNarrowLayout_CodeSeen = false;   // the code was shown once: the tip above the demo goes away
 
+    int GDemo_LastShownFrame = -1;         // the last frame when the demo was shown
+    bool GDemo_ShownAtLastFrame = false;   // the demo was shown at the frame before (all its open sections were seen)
+
     bool                                GDemoMarker_FlagFollowSource = true;
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
 
@@ -114,14 +117,32 @@ namespace
     private:
         struct ZoneBoundings
         {
-            ZoneBoundings() : SourceLineNumber(-1), MinY(-1.0f), MaxY(-1.0f), Window(NULL) {}
+            ZoneBoundings() : SourceLineNumber(-1), MinY(-1.0f), MaxY(-1.0f), Window(NULL), LastFrame(-1) {}
             int SourceLineNumber;
             float MinY, MaxY;
             ImGuiWindow* Window;
+            int LastFrame;  // the last frame when its marker was called
         };
 
     public:
         DemoMarkersRegistry() : AllZonesBoundings(), PreviousZoneSourceLine(-1) {}
+
+        // Call before IsMouveHoveringDemoMarker: true when the marker was not called at the last frame, while the demo
+        // was shown (a tree node or a tab that just opened). At most one per frame: the first, the outermost.
+        bool IsJustShown(int line_number)
+        {
+            int frame = ImGui::GetFrameCount();
+            if (CurrentFrame != frame)
+            {
+                CurrentFrame = frame;
+                JustShownReported = false;
+            }
+            int lastFrame = HasZoneBoundingsForLine(line_number) ? GetZoneBoundingsForLine(line_number).LastFrame : -1;
+            bool justShown = GDemo_ShownAtLastFrame && lastFrame != frame - 1 && !JustShownReported;
+            if (justShown)
+                JustShownReported = true;
+            return justShown;
+        }
 
         bool IsMouveHoveringDemoMarker(int line_number)
         {
@@ -140,6 +161,7 @@ namespace
                 current_zone_boundings.SourceLineNumber = line_number;
 
             current_zone_boundings.Window = ImGui::GetCurrentWindow();
+            current_zone_boundings.LastFrame = ImGui::GetFrameCount();
             current_zone_boundings.MinY = ImGui::GetCursorScreenPos().y;
             current_zone_boundings.MaxY = -1.0f; // Reset: will be set by next marker, or stay -1 (= extends to bottom)
             SetZoneBoundingsForLine(line_number, current_zone_boundings);
@@ -192,6 +214,8 @@ namespace
 
         ImVector<ZoneBoundings> AllZonesBoundings;
         int PreviousZoneSourceLine;
+        int CurrentFrame = -1;           // the frame of the last call to IsJustShown
+        bool JustShownReported = false;  // IsJustShown returned true during CurrentFrame
     };
 
 
@@ -205,7 +229,12 @@ namespace
     // Callback invoked by IMGUI_DEMO_MARKER when a demo section is hovered
     void OnDemoMarkerCallback(const char* file_ext_cpp, int line, const char* section)
     {
-        if (!DemoMarker_IsMouveHovering(line))
+        // On a touch screen, nothing is hovered between two touches, and a section's zone starts below its title:
+        // a section that a tap just opened becomes the current one. (Not with a mouse: its hover, on the title of the
+        // section, would bring the code back to the zone above at the next frame.)
+        bool justOpened = GDemoMarkersRegistry.IsJustShown(line)
+                       && ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
+        if (!DemoMarker_IsMouveHovering(line) && !justOpened)
             return;
         // Compute file name without extension
         char file_no_ext[256];
@@ -246,7 +275,9 @@ namespace
         // (e.g. drag-selecting text in the code editor, dragging a slider in
         // the demo). The info text above still updates so the user keeps
         // feedback about what zone they are crossing.
-        if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable() && ImGui::GetActiveID() == 0)
+        // (The tap that opened a section may still hold the active id)
+        bool idle = ImGui::GetActiveID() == 0 || justOpened;
+        if (GDemoMarker_FlagFollowSource && IsFollowSourceApplicable() && idle)
             DemoCodeViewer_ShowCodeAt(file_ext_cpp, line, section);
     }
 
@@ -568,8 +599,8 @@ namespace {
                     ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
                 }
                 if (mode.narrow && !GNarrowLayout_CodeSeen)
-                    ImGui::TextWrapped("Explore the demo, then switch to \"Code\" at the top: it shows the source of "
-                                       "the part you touched last.");
+                    ImGui::TextWrapped("Open a section of the demo, or tap a widget in it, then switch to \"Code\" "
+                                       "at the top: it shows the source of that section.");
                 DemoMarker_ShowShortInfo();
                 lastCursorPos = ImGui::GetCursorScreenPos();
                 ImGui::EndChild();
@@ -585,6 +616,10 @@ namespace {
                 demoPos = tl;
                 demoSize = ImVec2(br.x - tl.x - br_margin, br.y - tl.y - br_margin);
             }
+
+            int frame = ImGui::GetFrameCount();
+            GDemo_ShownAtLastFrame = (GDemo_LastShownFrame == frame - 1);
+            GDemo_LastShownFrame = frame;
 
             if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
                 ShowCurrentLibraryDemo(demoPos, demoSize);

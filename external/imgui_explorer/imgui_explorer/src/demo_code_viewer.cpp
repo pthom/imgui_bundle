@@ -1707,8 +1707,11 @@ void DemoCodeViewer_Show()
 #endif
 
     CodeFile& cf = g_codeFiles[currentFile.baseName];
-    // Handle pending scroll (before computing showingPython, since it may switch language)
-    if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0)
+    // Handle pending scroll (before computing showingPython, since it may switch language). It waits for the files:
+    // on the web, they load at their first display (e.g. a narrow screen shows the code after a tap in the demo)
+    bool filesLoading = cf.cppState == LoadState::Loading || cf.pyState == LoadState::Loading;
+    if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0
+        && !filesLoading)
     {
         bool scrolledPython = false;
         if (g_pendingScrollPython && cf.pyState == LoadState::Loaded)
