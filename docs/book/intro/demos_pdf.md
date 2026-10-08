@@ -271,12 +271,12 @@ shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 20
 :::
 
 When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:
-the live plot and the spinner then move by jumps. Move the mouse or touch the screen, and they are smooth again. The
-slider sets `fps_idle` (0 means full speed), and the checkbox turns idling off, for example during an animation.
+after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with
+`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.
 
 *Python, C++*
 
-*Uses: ImPlot, spinners*
+*Uses: ImPlot, toggles, spinners*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_powersave.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_powersave.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
 

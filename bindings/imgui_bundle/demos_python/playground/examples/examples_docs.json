@@ -173,10 +173,11 @@
   },
   "demo_powersave.py": {
     "title": "Power save: the app slows down when you don't use it.",
-    "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nthe live plot and the spinner then move by jumps. Move the mouse or touch the screen, and they are smooth again. The\nslider sets `fps_idle` (0 means full speed), and the checkbox turns idling off, for example during an animation.",
-    "summary": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: the live plot and the spinner then move by jumps.",
+    "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nafter 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with\n`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.",
+    "summary": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: after 3 seconds, the live plot and the spinner become choppy.",
     "uses": [
       "ImPlot",
+      "toggles",
       "spinners"
     ],
     "cpp": true
