@@ -2336,6 +2336,9 @@ struct FpsIdling
     // varying data) keeps the full speed while it changes: call
     // HelloImGui::SetItemIsLive() after its widget, or HelloImGui::RequestRefresh().
     //
+    // In a browser, frames come at the display's rate: the idle frame rate is the
+    // nearest one it allows (on a 60 Hz display: 30, 20, 15...).
+    //
     // Set fpsIdle = 0.f for maximum refresh speed during idling.
     float fpsIdle = 9.f;
 
