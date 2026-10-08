@@ -72,7 +72,8 @@ def main() -> None:
         if args.browser == "firefox":
             browser = p.firefox.launch(headless=args.headless)
         else:
-            browser = p.chromium.launch(channel="chrome", headless=args.headless)
+            # Chrome's own sandbox: Playwright turns it off by default (--no-sandbox, and a warning bar in Chrome)
+            browser = p.chromium.launch(channel="chrome", headless=args.headless, chromium_sandbox=True)
         # clipboard permissions: `js:navigator.clipboard.readText()` checks what an ImGui copy button wrote
         # (Chrome only: Firefox does not grant them through Playwright)
         width, height = (int(v) for v in args.viewport.split("x"))
