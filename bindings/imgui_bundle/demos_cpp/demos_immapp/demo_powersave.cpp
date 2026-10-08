@@ -87,8 +87,9 @@ void gui_demo_powersave()
     ImGui::TextWrapped("You can adjust HelloImGui::GetRunnerParams()->fpsIdling.fpsIdle if you need smoother "
                        "animations when the app is idle. A value of 0 means that the refresh will be as fast as "
                        "possible.");
-    ImGui::SetNextItemWidth(HelloImGui::EmSize(12.f));
-    ImGui::SliderFloat("fpsIdling.fpsIdle", &fpsIdling.fpsIdle, 0.f, 60.f, "%.0f");
+    ImGui::TextUnformatted("fpsIdling.fpsIdle");  // the label above the slider: the slider gets the whole width
+    ImGui::SetNextItemWidth(-FLT_MIN);
+    ImGui::SliderFloat("##fpsIdle", &fpsIdling.fpsIdle, 0.f, 60.f, "%.0f");
 
     ImGui::TextWrapped("You can also set HelloImGui::GetRunnerParams()->fpsIdling.enableIdling.");
     ImGui::Checkbox("Enable Idling", &fpsIdling.enableIdling);

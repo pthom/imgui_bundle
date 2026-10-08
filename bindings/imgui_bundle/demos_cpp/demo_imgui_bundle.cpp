@@ -16,6 +16,7 @@
 #include "imgui_explorer.h"
 #endif
 
+#include <algorithm>
 #include <cmath>
 #include <optional>
 #include <string>
@@ -110,6 +111,72 @@ namespace
 
     const float CHANGE_DURATION = 0.4f;  // s: a change of state, through the background
     const float DRIFT = 3.f;  // em: the page leaving slides that much (up when going forward), the one arriving as far
+    // em: below this width, the status bar's content goes to a "..." menu in the header (in the bar, the app's part
+    // and hello_imgui's idling and FPS, at a fixed place from the right, would overlap)
+    const float STATUS_IN_MENU_BELOW = 60.f;
+
+    bool StatusInMenu() { return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize(STATUS_IN_MENU_BELOW); }
+
+    enum class Symbol { Minus, Plus, Dots };
+
+    // A button with its symbol drawn at its center (the icon font's minus and ellipsis sit off center)
+    bool SymbolButton(const char* id, Symbol symbol, ImVec2 size)
+    {
+        bool clicked = ImGui::Button(id, size);
+        ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
+        ImVec2 c((mi.x + ma.x) * 0.5f, (mi.y + ma.y) * 0.5f);
+        float em = ImGui::GetFontSize();
+        float h = em * 0.35f, t = em * 0.09f;  // the half length and the half thickness of a stroke
+        ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        if (symbol == Symbol::Dots)
+        {
+            for (int i = -1; i <= 1; ++i)
+                drawList->AddCircleFilled(ImVec2(c.x + (float)i * em * 0.3f, c.y), em * 0.1f, col);
+            return clicked;
+        }
+        drawList->AddRectFilled(ImVec2(c.x - h, c.y - t), ImVec2(c.x + h, c.y + t), col);
+        if (symbol == Symbol::Plus)
+            drawList->AddRectFilled(ImVec2(c.x - t, c.y - h), ImVec2(c.x + t, c.y + h), col);
+        return clicked;
+    }
+
+    // The zoom: two buttons, and the pinch on a touch screen. No slider where the finger is: it would move under the
+    // finger as the scale changes
+    void ZoomButtons(float buttonHeight)
+    {
+        float& scale = ImGui::GetStyle().FontScaleMain;
+        ImVec2 size(HelloImGui::EmSize(2.f), buttonHeight);
+        ImGui::AlignTextToFramePadding();
+        ImGui::TextUnformatted("Zoom");
+        ImGui::SameLine();
+        if (SymbolButton("##zoom_out", Symbol::Minus, size))
+            scale = std::clamp(scale / 1.1f, 0.5f, 5.f);
+        ImGui::SameLine();
+        if (SymbolButton("##zoom_in", Symbol::Plus, size))
+            scale = std::clamp(scale * 1.1f, 0.5f, 5.f);
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen)
+        {
+            ImGui::SameLine();
+            ImGui::TextUnformatted("or pinch with two fingers");
+        }
+    }
+
+    // The "..." button of a narrow screen (as tall as the header's chips), and its menu: the status bar's content
+    void StatusMenu()
+    {
+        if (SymbolButton("##status_menu", Symbol::Dots, ImVec2(HelloImGui::EmSize(2.f), ImGui::GetFontSize())))
+            ImGui::OpenPopup("##status_menu_popup");
+        if (!ImGui::BeginPopup("##status_menu_popup"))
+            return;
+        ImGui::TextDisabled("Dear ImGui Bundle Explorer");
+        ImGui::TextDisabled("v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
+        ZoomButtons(HelloImGui::EmSize(1.5f));
+        auto& params = *HelloImGui::GetRunnerParams();
+        ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
+        ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), params.fpsIdling.isIdling ? " (Idling)" : "");
+        ImGui::EndPopup();
+    }
 
     enum class State { Welcome, Demos, Demo };  // Demo: a demo in place
 
@@ -183,6 +250,7 @@ namespace
                 else if (state == State::Demos && launcher.Depth() == 0)  // else the launcher goes back one level
                     Go(State::Welcome);
             }
+            HelloImGui::GetRunnerParams()->imGuiWindowParams.showStatusBar = !StatusInMenu();
             Header();
             Page();
 #ifdef __EMSCRIPTEN__
@@ -374,6 +442,8 @@ namespace
                 ImGui::SameLine();
             }
             ImGui::PopStyleVar();
+            if (StatusInMenu())
+                StatusMenu();
             ImGui::EndGroup();
             rightWidth = ImGui::GetItemRectSize().x;
             ImGui::SetCursorPosY(std::max(ImGui::GetCursorPosY(), belowTitle));  // the chips are shorter than the title
@@ -488,13 +558,15 @@ std::pair<HelloImGui::RunnerParams, ImmApp::AddOnsParams> ExplorerParams()
 
     auto showStatusBar = []()
     {
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
-        ImGui::SliderFloat("Font scale", & ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
-        ImGui::SameLine(0.f, HelloImGui::EmSize(4.f));
-        if (SmallScreen())  // the bar's right part (idling, FPS) leaves no room for more
-            ImGui::TextDisabled("v" IMGUI_BUNDLE_VERSION);
+        if (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen)
+            ZoomButtons(ImGui::GetFrameHeight());
         else
-            ImGui::TextDisabled("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
+        {
+            ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x / 10.f);
+            ImGui::SliderFloat("Font scale", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
+        }
+        ImGui::SameLine(0.f, HelloImGui::EmSize(4.f));
+        ImGui::TextDisabled("Dear ImGui Bundle Explorer - v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
     };
     runnerParams.callbacks.ShowStatus = showStatusBar;
 
