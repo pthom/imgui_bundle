@@ -48,6 +48,8 @@ Play it with the mouse, or with your computer keyboard (the letters are on the k
 LOWEST_NOTE = 60
 NB_NOTES = 25
 PIANO_HEIGHT = 13.0  # em
+MIN_KEY_WIDTH = 2.4  # em: a white key at least as wide as a finger; else the piano shows part of its keys
+STRIP_HEIGHT = 2.0  # em: the strip above the keys, the whole piano in miniature, which moves the view
 # The computer keys that play them, as in a tracker: the bottom letter row plays C4 to B4, the top row C5 to C6.
 # The piano shows them on its keys.
 KEY_LABELS = "Z S X D C V G B H N J M Q 2 W 3 E R 5 T 6 Y 7 U I".split()
@@ -124,6 +126,7 @@ NO_SHADOW = imgui.IM_COL32(0, 0, 0, 0)
 WHITE_KEY_FRONT = imgui.IM_COL32(0, 0, 0, 22)  # the front face of the keys, seen from above
 BLACK_KEY_FRONT = imgui.IM_COL32(255, 255, 255, 45)
 FELT = imgui.IM_COL32(130, 24, 38, 255)
+STRIP_VEIL = imgui.IM_COL32(0, 0, 0, 150)  # over the keys out of view, in the strip
 PANEL = ImVec4(0.16, 0.16, 0.19, 1.0)
 KNOB_COLORS = imgui_knobs.KnobColors(
     primary=imgui_knobs.color_set(ImColor(1.0, 0.59, 0.24, 1.0), ImColor(1.0, 0.7, 0.4, 1.0), ImColor(1.0, 0.7, 0.4, 1.0)),
@@ -284,6 +287,8 @@ class State:
         self.volume = 0.8
         self.tempo = 120.0  # beats per minute
         self.synth: Synth | None = None
+        self.first_key = 0  # the first white key in view, when the piano shows part of its keys
+        self.strip_pressed = False  # the press on the piano started on its strip: it moves the view
 
     def ensure_synth(self) -> Synth | None:
         """The synth, created at the first sound, since browsers require a user gesture first. None on desktop."""
@@ -490,17 +495,48 @@ def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
         draw_list.add_text(ImVec2((p_min.x + p_max.x - label_size.x) / 2, y), label_color, label)
 
 
+def draw_strip(p0: ImVec2, size: ImVec2, first_key: int, nb_shown: int, key_color: Callable[[int, int], int]) -> None:
+    """The whole piano in miniature: the keys out of view veiled, a frame around the ones in view"""
+    draw_list = imgui.get_window_draw_list()
+    whites, blacks = piano_key_rects(p0, size)
+    for note, p_min, p_max in whites:
+        draw_list.add_rect_filled(p_min, p_max, key_color(note, WHITE_KEY))
+        draw_list.add_rect(p_min, p_max, KEY_OUTLINE)
+    for note, p_min, p_max in blacks:
+        draw_list.add_rect_filled(p_min, p_max, key_color(note, BLACK_KEY))
+    x0 = p0.x + size.x * first_key / NB_WHITE_KEYS
+    x1 = p0.x + size.x * (first_key + nb_shown) / NB_WHITE_KEYS
+    draw_list.add_rect_filled(p0, ImVec2(x0, p0.y + size.y), STRIP_VEIL)
+    draw_list.add_rect_filled(ImVec2(x1, p0.y), ImVec2(p0.x + size.x, p0.y + size.y), STRIP_VEIL)
+    draw_list.add_rect(ImVec2(x0, p0.y), ImVec2(x1, p0.y + size.y), PLAYED_KEY, em_size(0.2), thickness=em_size(0.15))
+
+
 def piano(state: State) -> None:
-    """Draws the keyboard, and plays the keys held with the mouse or the computer keyboard"""
+    """Draws the piano, and plays the keys held with the mouse, a finger or the computer keyboard. When the keys would
+    be thinner than a finger, it shows part of them: a strip above them, the whole piano in miniature, moves the view"""
     p0 = imgui.get_cursor_screen_pos()
     width = imgui.get_content_region_avail().x
-    felt = em_size(0.45)
-    imgui.invisible_button("piano", ImVec2(width, felt + em_size(PIANO_HEIGHT)))
-    whites, blacks = piano_key_rects(ImVec2(p0.x, p0.y + felt), ImVec2(width, em_size(PIANO_HEIGHT)))
+    nb_shown = max(1, min(NB_WHITE_KEYS, int(width / em_size(MIN_KEY_WIDTH))))  # the white keys in view
+    has_strip = nb_shown < NB_WHITE_KEYS
+    top = em_size(STRIP_HEIGHT if has_strip else 0.45)  # the strip, or the felt
+    keys_p0 = ImVec2(p0.x, p0.y + top)
+    keys_size = ImVec2(width, em_size(PIANO_HEIGHT))
+    imgui.invisible_button("piano", ImVec2(width, top + keys_size.y))
+    hello_imgui.set_item_takes_touch_drags()  # on a touch screen, a key plays at once, and a drag is a glissando
 
+    mouse = imgui.get_mouse_pos()
+    if imgui.is_item_activated():
+        state.strip_pressed = has_strip and mouse.y < keys_p0.y
+    if imgui.is_item_active() and state.strip_pressed:  # the view follows the finger on the strip
+        state.first_key = round((mouse.x - p0.x) / width * NB_WHITE_KEYS - nb_shown / 2)
+    state.first_key = max(0, min(state.first_key, NB_WHITE_KEYS - nb_shown))
+
+    # The keys: the whole piano at their size, shifted so that the first key in view is at the left
+    white_width = width / nb_shown
+    whites, blacks = piano_key_rects(ImVec2(p0.x - state.first_key * white_width, keys_p0.y),
+                                     ImVec2(white_width * NB_WHITE_KEYS, keys_size.y))
     held = computer_keys_held()
-    if imgui.is_item_active():  # the mouse is pressed on the piano: dragging it makes a glissando
-        mouse = imgui.get_mouse_pos()
+    if imgui.is_item_active() and not state.strip_pressed and p0.x <= mouse.x < p0.x + width:
         for note, p_min, p_max in blacks + whites:  # the black keys first, since they lie on top
             if p_min.x <= mouse.x < p_max.x and p_min.y <= mouse.y < p_max.y:
                 held.add(note)
@@ -513,11 +549,19 @@ def piano(state: State) -> None:
         state.synth.update(held, WAVEFORMS[state.waveform])
         tune_notes = state.synth.tune_notes_sounding()
 
-    imgui.get_window_draw_list().add_rect_filled(p0, ImVec2(p0.x + width, p0.y + felt), FELT)
-    for keys, key_color in ((whites, WHITE_KEY), (blacks, BLACK_KEY)):
+    def key_color(note: int, normal: int) -> int:
+        return PLAYED_KEY if note in held else TUNE_KEY if note in tune_notes else normal
+
+    draw_list = imgui.get_window_draw_list()
+    draw_list.push_clip_rect(keys_p0, ImVec2(keys_p0.x + width, keys_p0.y + keys_size.y), True)
+    for keys, normal in ((whites, WHITE_KEY), (blacks, BLACK_KEY)):
         for note, p_min, p_max in keys:
-            draw_key(note, p_min, p_max,
-                     PLAYED_KEY if note in held else TUNE_KEY if note in tune_notes else key_color)
+            draw_key(note, p_min, p_max, key_color(note, normal))
+    draw_list.pop_clip_rect()
+    if has_strip:
+        draw_strip(p0, ImVec2(width, top - em_size(0.2)), state.first_key, nb_shown, key_color)
+    else:
+        draw_list.add_rect_filled(p0, ImVec2(p0.x + width, p0.y + top), FELT)
 
 
 def synth_panel(state: State) -> None:
