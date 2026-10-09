@@ -404,6 +404,49 @@ def segmented_switch(str_id: str, labels: list[str], current: int) -> int:
     return current
 
 
+DARK_THEME = hello_imgui.ImGuiTheme_.darcula_darker  # Hello ImGui's default
+LIGHT_THEME = hello_imgui.ImGuiTheme_.white_is_white
+
+
+def apply_theme(theme: hello_imgui.ImGuiTheme_) -> None:
+    """The app takes this theme, keeping its tweaks (rounding, colors)"""
+    tweaked_theme = hello_imgui.get_runner_params().imgui_window_params.tweaked_theme
+    tweaked_theme.theme = theme
+    hello_imgui.apply_tweaked_theme(tweaked_theme)
+
+
+def theme_switch() -> None:
+    """A moon (dark), a sun (light), and "..." for a list of all of Hello ImGui's themes"""
+    theme = hello_imgui.get_runner_params().imgui_window_params.tweaked_theme.theme
+    current = 0 if theme == DARK_THEME else 1 if theme == LIGHT_THEME else 2
+    picked = segmented_switch("theme", [fa.ICON_FA_MOON, fa.ICON_FA_SUN, fa.ICON_FA_ELLIPSIS_H], current)
+    if picked == 0 and current != 0:
+        apply_theme(DARK_THEME)
+    elif picked == 1 and current != 1:
+        apply_theme(LIGHT_THEME)
+    elif picked == 2 and imgui.is_item_deactivated() and imgui.is_item_hovered():  # "...", pressed again or not
+        imgui.open_popup("##themes")
+    imgui.set_item_tooltip("The theme: dark, light, or one of all the themes")
+    if imgui.begin_popup("##themes"):
+        draw_list, em = imgui.get_window_draw_list(), em_size()
+        for t in hello_imgui.ImGuiTheme_:
+            if t == hello_imgui.ImGuiTheme_.count:
+                continue
+            # A swatch: the theme's window, a button and its accent on it
+            style = hello_imgui.theme_to_style(t)
+            p = imgui.get_cursor_screen_pos()
+            draw_list.add_rect_filled(p, ImVec2(p.x + em * 2.2, p.y + em), imgui.color_convert_float4_to_u32(
+                style.color_(imgui.Col_.window_bg)), em * 0.2)
+            for i, col in enumerate([imgui.Col_.button, imgui.Col_.check_mark]):
+                x = p.x + em * (0.3 + i * 0.85)
+                draw_list.add_rect_filled(ImVec2(x, p.y + em * 0.25), ImVec2(x + em * 0.6, p.y + em * 0.75),
+                                          imgui.color_convert_float4_to_u32(style.color_(col)), em * 0.1)
+            imgui.set_cursor_screen_pos(ImVec2(p.x + em * 2.6, p.y))
+            if imgui.selectable(hello_imgui.imgui_theme_name(t).replace("_", " "), t == theme)[0]:
+                apply_theme(t)
+        imgui.end_popup()
+
+
 def card_text_scale(width: float) -> float:
     """The scale of a card's texts: they follow its width, from their size on a card of the default width"""
     return max(MIN_TEXT_SCALE, min(1.0, width / em_size(CARD_WIDTH)))
