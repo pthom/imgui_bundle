@@ -753,6 +753,18 @@ starts from there, and swings beside it.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py)
 
+### Seaborn: a joint plot
+
+[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them
+as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each
+on its side. Move the correlation: the cloud stretches along a line.
+
+*Python*
+
+*Uses: Matplotlib, seaborn*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py)
+
 ### Pydantic models
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_pydantic.jpg

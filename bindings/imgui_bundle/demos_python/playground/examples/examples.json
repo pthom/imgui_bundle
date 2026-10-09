@@ -542,6 +542,15 @@
             ]
         },
         {
+            "label": "Seaborn: a joint plot",
+            "filename": "demo_seaborn.py",
+            "category": "Python specifics",
+            "source": "demos_immapp",
+            "packages": [
+                "seaborn"
+            ]
+        },
+        {
             "label": "Pydantic models",
             "filename": "demo_pydantic.py",
             "category": "Python specifics",

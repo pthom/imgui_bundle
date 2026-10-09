@@ -72,9 +72,10 @@ USES = {
     "im_file_dialog": "file dialogs",
     "imgui_color_text_edit": "code editor", "imgui_node_editor": "node editor", "imguizmo": "ImGuizmo",
     "nanovg": "NanoVG", "im_anim": "ImAnim", "imgui_tex_inspect": "Tex Inspect", "imgui_terminal": "terminal",
-    "imgui_fig": "Matplotlib", "matplotlib": "Matplotlib", "pydantic": "Pydantic", "fiatlight": "Fiatlight",
-    "cv2": "OpenCV", "pandas": "pandas", "OpenGL": "OpenGL", "glfw": "GLFW", "glfw_utils": "GLFW",
-    "sdl2": "SDL", "sdl3": "SDL", "pyglet": "pyglet", "pygame": "pygame", "wgpu": "wgpu", "js": "browser APIs",
+    "imgui_fig": "Matplotlib", "matplotlib": "Matplotlib", "seaborn": "seaborn", "pydantic": "Pydantic",
+    "fiatlight": "Fiatlight", "cv2": "OpenCV", "pandas": "pandas", "OpenGL": "OpenGL", "glfw": "GLFW",
+    "glfw_utils": "GLFW", "sdl2": "SDL", "sdl3": "SDL", "pyglet": "pyglet", "pygame": "pygame", "wgpu": "wgpu",
+    "js": "browser APIs",
 }
 RUN_ICON = "\u25b6\ufe0e"  # ▶, as text (not as an emoji): the links that run a demo in the browser, in the cards
 

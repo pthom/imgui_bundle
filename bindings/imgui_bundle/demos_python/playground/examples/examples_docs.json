@@ -475,6 +475,16 @@
     ],
     "cpp": false
   },
+  "demo_seaborn.py": {
+    "title": "Seaborn: a joint plot of two correlated variables",
+    "text": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them\nas they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each\non its side. Move the correlation: the cloud stretches along a line.",
+    "summary": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.",
+    "uses": [
+      "Matplotlib",
+      "seaborn"
+    ],
+    "cpp": false
+  },
   "demo_pydantic.py": {
     "title": "ImVec2 and ImVec4 in Pydantic models.",
     "text": "Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included.\n`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as\nfields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that\nnothing was lost.",

@@ -182,6 +182,9 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
 - Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
   Uses: Matplotlib
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py
+- Seaborn: a joint plot: Seaborn draws statistics figures on top of Matplotlib, so imgui_fig.fig() shows them as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
+  Uses: Matplotlib, seaborn
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py
 - Pydantic models: Save and load your app's settings with Pydantic, ImVec2 and colors included. ImVec2_Pydantic, ImVec4_Pydantic and ImColor_Pydantic are the usual ImVec2, ImVec4 and ImColor, usable as fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that nothing was lost.
   Uses: Pydantic
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py

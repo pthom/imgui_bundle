@@ -907,6 +907,21 @@ Here, the phase portrait of a damped pendulum: the flow of its motion (a stream 
 ::::
 
 ::::{card}
+### Seaborn: a joint plot
+
+[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.
+
+:::{dropdown} More
+Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
+:::
+
+*Uses: Matplotlib, seaborn*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_pydantic.jpg
 :alt: Pydantic models
 :::

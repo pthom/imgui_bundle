@@ -207,9 +207,10 @@ disable_error_code = ["attr-defined", "no-untyped-def"]
 module = ["OpenGL.*", "glfw.*", "glm"]
 ignore_missing_imports = true
 
-# paramiko (imgui_terminal SSH demo) is untyped; miniaudio and edge_tts (the narrator's voice) are optional, absent on CI
+# paramiko (imgui_terminal SSH demo) is untyped; miniaudio and edge_tts (the narrator's voice) and seaborn (its demo)
+# are optional, absent on CI
 [[tool.mypy.overrides]]
-module = ["paramiko", "miniaudio", "edge_tts"]
+module = ["paramiko", "miniaudio", "edge_tts", "seaborn"]
 ignore_missing_imports = true
 
 # tiny_nn, julia_points, grok_train, narrator: sibling modules of the neural_spiral, julia_map and grokking explorables

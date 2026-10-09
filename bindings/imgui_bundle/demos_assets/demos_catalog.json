@@ -818,6 +818,25 @@
           "variants": []
         },
         {
+          "label": "Seaborn: a joint plot",
+          "filename": "demo_seaborn.py",
+          "stem": "demo_seaborn",
+          "where": "both",
+          "text": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them\nas they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each\non its side. Move the correlation: the cloud stretches along a line.",
+          "summary": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.",
+          "uses": [
+            "Matplotlib",
+            "seaborn"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_seaborn.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
           "label": "Pydantic models",
           "filename": "demo_pydantic.py",
           "stem": "demo_pydantic",
