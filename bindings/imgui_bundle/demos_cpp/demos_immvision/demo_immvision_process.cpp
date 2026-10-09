@@ -13,6 +13,9 @@ void gui_demo_immvision_process()
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
+#include <optional>
+
+constexpr float kNarrowWidthEm = 46.f; // Under this width (in em, a phone), controls and images go one under the other
 
 // The parameters for our image processing pipeline
 struct SobelParams
@@ -58,8 +61,19 @@ cv::Mat ComputeSobel(const cv::Mat& image, const SobelParams& params)
 }
 
 
+// Between two groups of controls: a separator on the same line, or a new line on a narrow screen
+static void NextControls(bool narrow)
+{
+    if (!narrow)
+    {
+        ImGui::SameLine();
+        ImGui::Text(" | ");
+        ImGui::SameLine();
+    }
+}
+
 // A GUI to edit the parameters for our image processing pipeline
-bool GuiSobelParams(SobelParams& params)
+bool GuiSobelParams(SobelParams& params, bool narrow)
 {
     bool changed = false;
 
@@ -69,9 +83,7 @@ bool GuiSobelParams(SobelParams& params)
     {
         changed = true;
     }
-    ImGui::SameLine();
-    ImGui::Text(" | ");
-    ImGui::SameLine();
+    NextControls(narrow);
 
     // Deriv order
     ImGui::Text("Deriv order");
@@ -83,11 +95,10 @@ bool GuiSobelParams(SobelParams& params)
             changed = true;
             params.deriv_order = deriv_order;
         }
-        ImGui::SameLine();
+        if (deriv_order < 4)
+            ImGui::SameLine();
     }
-
-    ImGui::Text(" | ");
-    ImGui::SameLine();
+    NextControls(narrow);
 
     ImGui::Text("Orientation");
     ImGui::SameLine();
@@ -126,14 +137,28 @@ struct AppStateProcess {
         imageSobel = ComputeSobel(image.to_cv_mat(), sobelParams);
 
         immvisionParams = ImmVision::ImageParams();
-        immvisionParams.ImageDisplaySize = ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParams.ZoomKey = "z";
 
         immvisionParamsSobel = ImmVision::ImageParams();
-        immvisionParamsSobel.ImageDisplaySize = ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParamsSobel.ZoomKey = "z";
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
+
+    // The images side by side, 22 em wide; on a narrow screen (a phone), at the window's width (a negative width), and
+    // the options of the filtered image in a window of their own. Set when the layout changes only: the user may
+    // resize the images in between.
+    void FitLayout(bool narrow)
+    {
+        if (wasNarrow == narrow)
+            return;
+        wasNarrow = narrow;
+        ImmVision::Size size = narrow ? ImmVision::Size(-1, 0) : ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
+        immvisionParams.ImageDisplaySize = size;
+        immvisionParamsSobel.ImageDisplaySize = size;
+        immvisionParamsSobel.ShowOptionsInTooltip = narrow;
+    }
+
+    std::optional<bool> wasNarrow; // the layout of the last frame
 };
 
 
@@ -144,19 +169,22 @@ void gui_demo_immvision_process()
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
     RichMd::Render(R"(
-        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
+        An image processing pipeline (a Sobel filter): adjust its parameters, and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel
         * Apply Colormaps to the filtered image in the options tab.
     )");
     ImGui::Separator();
 
-    if (GuiSobelParams(appState.sobelParams)) {
+    bool narrow = ImGui::GetContentRegionAvail().x < ImmApp::EmSize(kNarrowWidthEm);
+    if (GuiSobelParams(appState.sobelParams, narrow)) {
         appState.imageSobel = ComputeSobel(appState.image.to_cv_mat(), appState.sobelParams);
         appState.immvisionParamsSobel.RefreshImage = true;
     }
+    appState.FitLayout(narrow);
     ImmVision::Image("Original", appState.image, &appState.immvisionParams);
-    ImGui::SameLine();
+    if (!narrow)
+        ImGui::SameLine();
     ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
 }
 

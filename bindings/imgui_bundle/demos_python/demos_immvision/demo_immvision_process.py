@@ -17,6 +17,7 @@ from imgui_bundle import imgui, immvision, immapp, rich_md, hello_imgui, registe
 register_demos_assets_folder()
 
 RANDOM_PHOTO_URL = "https://picsum.photos/640/480"  # a different photo at each download
+NARROW_WIDTH_EM = 46  # Under this width (in em, a phone), the controls and the images go one under the other
 
 ImageRgb = NDArray[np.uint8]
 ImageFloat = NDArray[np.floating[Any]]
@@ -57,7 +58,15 @@ def compute_sobel(image: ImageRgb, params: SobelParams) -> ImageFloat:
     return r  # type: ignore
 
 
-def gui_sobel_params(params: SobelParams) -> bool:
+def next_controls(narrow: bool):
+    """Between two groups of controls: a separator on the same line, or a new line on a narrow screen"""
+    if not narrow:
+        imgui.same_line()
+        imgui.text(" | ")
+        imgui.same_line()
+
+
+def gui_sobel_params(params: SobelParams, narrow: bool) -> bool:
     """A GUI to edit the parameters for our image processing pipeline"""
     changed = False
 
@@ -66,9 +75,7 @@ def gui_sobel_params(params: SobelParams) -> bool:
     c, params.blur_size = imgui.slider_float("Blur size", params.blur_size, 0.5, 10)
     if c:
         changed = True
-    imgui.same_line()
-    imgui.text(" | ")
-    imgui.same_line()
+    next_controls(narrow)
 
     # Deriv order
     imgui.text("Deriv order")
@@ -79,10 +86,9 @@ def gui_sobel_params(params: SobelParams) -> bool:
         )
         if c:
             changed = True
-        imgui.same_line()
-
-    imgui.text(" | ")
-    imgui.same_line()
+        if deriv_order < 4:
+            imgui.same_line()
+    next_controls(narrow)
 
     imgui.text("Orientation")
     imgui.same_line()
@@ -122,13 +128,24 @@ class AppState:
         self.download: Optional[immapp.Download] = None  # the download of a random photo, in the background
 
         self.immvision_params = immvision.ImageParams()
-        self.immvision_params.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params.zoom_key = "z"
 
         self.immvision_params_sobel = immvision.ImageParams()
-        self.immvision_params_sobel.image_display_size = (int(immapp.em_size(22)), 0)
         self.immvision_params_sobel.zoom_key = "z"
         self.immvision_params_sobel.show_options_panel = True
+        self.was_narrow: Optional[bool] = None  # the layout of the last frame
+
+    def fit_layout(self, narrow: bool):
+        """The images side by side, 22 em wide; on a narrow screen (a phone), at the window's width (a negative width),
+        and the options of the filtered image in a window of their own. Set when the layout changes only: the user may
+        resize the images in between."""
+        if narrow == self.was_narrow:
+            return
+        self.was_narrow = narrow
+        size = (-1, 0) if narrow else (int(immapp.em_size(22)), 0)
+        self.immvision_params.image_display_size = size
+        self.immvision_params_sobel.image_display_size = size
+        self.immvision_params_sobel.show_options_in_tooltip = narrow
 
 
 def take_downloaded_photo(state: AppState) -> bool:
@@ -156,7 +173,7 @@ def gui():
 
     rich_md.render(
         """
-        This example shows a example of image processing (sobel filter) where you can adjust the params and see their effect in real time.
+        An image processing pipeline (a Sobel filter): adjust its parameters, and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel
         * Apply Colormaps to the filtered image in the options tab.
@@ -164,8 +181,10 @@ def gui():
     )
     imgui.separator()
 
-    changed = gui_sobel_params(static.app_state.sobel_params)
-    imgui.same_line(spacing=immapp.em_size(3))
+    narrow = imgui.get_content_region_avail().x < immapp.em_size(NARROW_WIDTH_EM)
+    changed = gui_sobel_params(static.app_state.sobel_params, narrow)
+    if not narrow:
+        imgui.same_line(spacing=immapp.em_size(3))
     if imgui.button("Random photo"):
         # The download runs in the background (the GUI stays responsive): take_downloaded_photo() takes its result
         static.app_state.download = immapp.start_download(RANDOM_PHOTO_URL)
@@ -177,10 +196,12 @@ def gui():
     static.app_state.immvision_params.refresh_image = new_image
     static.app_state.immvision_params_sobel.refresh_image = changed or new_image
 
+    static.app_state.fit_layout(narrow)
     immvision.image(
         "Original", static.app_state.image, static.app_state.immvision_params
     )
-    imgui.same_line()
+    if not narrow:
+        imgui.same_line()
     immvision.image(
         "Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel
     )
