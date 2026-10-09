@@ -689,21 +689,21 @@ tips](https://imgui-bundle.pages.dev/doc/python/python-tips/).
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py)
 
-### Run code alongside the GUI (async)
+### Async: compute beside the GUI
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_run_async.jpg
-:alt: Run code alongside the GUI (async)
+:alt: Async: compute beside the GUI
 :width: 400px
 :::
 
 The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps
 computing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop
-yields with `await asyncio.sleep(0)` to share the event loop. See [async
+works in short slices, and yields between them with `await asyncio.sleep(...)` to share the event loop. See [async
 support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 
-*Python, Desktop only*
+*Python*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
 
 ### A GUI beside a Jupyter notebook
 

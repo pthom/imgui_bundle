@@ -832,21 +832,19 @@ The same exists for child windows, menus, popups, tables, tabs, fonts and styles
 
 ::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_run_async.jpg
-:alt: Run code alongside the GUI (async)
+:alt: Async: compute beside the GUI
 :class: demo-fit
 :::
 
-### Run code alongside the GUI (async)
+### Async: compute beside the GUI
 
 The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps computing.
 
 :::{dropdown} More
-The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop yields with `await asyncio.sleep(0)` to share the event loop. See [async support](https://imgui-bundle.pages.dev/doc/python/python-async/).
+The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop works in short slices, and yields between them with `await asyncio.sleep(...)` to share the event loop. See [async support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 :::
 
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
 
 ::::
 

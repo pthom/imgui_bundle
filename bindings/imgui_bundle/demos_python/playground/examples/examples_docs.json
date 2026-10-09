@@ -441,7 +441,7 @@
   },
   "demo_run_async.py": {
     "title": "Run Python code alongside the GUI with immapp.run_async.",
-    "text": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps\ncomputing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop\nyields with `await asyncio.sleep(0)` to share the event loop. See [async\nsupport](https://imgui-bundle.pages.dev/doc/python/python-async/).",
+    "text": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps\ncomputing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop\nworks in short slices, and yields between them with `await asyncio.sleep(...)` to share the event loop. See [async\nsupport](https://imgui-bundle.pages.dev/doc/python/python-async/).",
     "summary": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps computing.",
     "uses": [],
     "cpp": false

@@ -512,11 +512,10 @@
             "source": "demos_immapp"
         },
         {
-            "label": "Run code alongside the GUI (async)",
+            "label": "Async: compute beside the GUI",
             "filename": "demo_run_async.py",
             "category": "Python specifics",
-            "source": "demos_immapp",
-            "where": "desktop"
+            "source": "demos_immapp"
         },
         {
             "label": "A GUI beside a Jupyter notebook",

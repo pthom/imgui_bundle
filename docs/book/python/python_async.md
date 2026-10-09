@@ -143,6 +143,14 @@ async def my_computation():
 Without `await asyncio.sleep(0)`, the GUI will freeze because asyncio can't switch between tasks.
 
 
+## In the browser
+
+The same code runs in the browser, with [Pyodide](https://pyodide.org), whose event loop is the browser's:
+- Start the app with `asyncio.ensure_future(main())`: `asyncio.run()` fails there, an event loop runs already.
+- Yield with a short sleep (e.g. `await asyncio.sleep(0.02)`), after a slice of work: the browser draws the page only while Python sleeps, and `await asyncio.sleep(0)` would freeze it.
+
+The demo `demo_run_async.py` does both (it runs in the [playground](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py)).
+
 ## Downloads that do not block the GUI
 
 `immapp.start_download()` starts an HTTP request in the background, from a GUI function. It works with `immapp.run` and `immapp.run_async`, on the desktop (in a thread) and in the browser (with a fetch). Look at the result's `done` at each frame:
