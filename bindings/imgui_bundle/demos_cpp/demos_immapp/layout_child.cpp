@@ -70,11 +70,27 @@ void BottomContent()
 
 void gui_layout_child()
 {
-    RichMd::Render(R"(# Resizable Layouts with BeginChild
+    // The documentation: open at first, it folds to its first paragraph as soon as the user tries the panels
+    RichMd::FoldingTextOptions docOptions;
+    docOptions.foldOnClickElsewhere = true;
+    RichMd::RenderFolding("doc", R"(# Resizable Layouts with BeginChild
+Learn how to create resizable adjacent panels, using child windows.
+
 `BeginChild` creates scrollable, nestable sub-regions. With `ImGuiChildFlags_ResizeX` or `ResizeY`, the user can
 **drag dividers** to resize panels. This demo builds a classic app layout with them: a sidebar, a main area, and a
 bottom panel.
-)");
+
+**Key pattern:**
+```cpp
+ImGui::BeginChild("left", ImVec2(width, 0), ImGuiChildFlags_ResizeX);
+// ... left content ...
+ImGui::EndChild();
+ImGui::SameLine();
+ImGui::BeginChild("right");
+// ... right content ...
+ImGui::EndChild();
+```
+)", docOptions);
     ImGui::Separator();
     float em = ImGui::GetFontSize();
 

@@ -16,7 +16,7 @@ imgui.begin_child("right")
 imgui.end_child()
 ```
 """
-from imgui_bundle import imgui, immapp, ImVec4
+from imgui_bundle import imgui, immapp, rich_md, ImVec4
 
 
 # Sample content for each panel
@@ -74,8 +74,11 @@ def bottom_content():
 
 
 def gui():
-    # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=18)
+    # The documentation: open at first, it folds to its first paragraph as soon as the user tries the panels
+    doc_options = rich_md.FoldingTextOptions()
+    doc_options.fold_on_click_elsewhere = True
+    rich_md.render_folding("doc", __doc__, doc_options)
+    imgui.separator()
 
     em = imgui.get_font_size()
 
