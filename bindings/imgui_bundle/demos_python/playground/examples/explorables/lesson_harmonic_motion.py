@@ -42,7 +42,7 @@ The solution is a pure sinusoid:
 
 $$x(t) = A\cos(\omega_0 t + \phi)$$
 
-**Try it below:** adjust the mass and spring stiffness, and watch how the motion changes.
+**Try it:** adjust the mass and spring stiffness below, and watch the motion change in the figure above.
 """
 
 DAMPING_INTRO = r"""### What is damping?
@@ -315,6 +315,33 @@ def knob_spacing(narrow: bool):
         imgui.spring(0, hello_imgui.em_size())
 
 
+def gui_figure(state: AppState, narrow: bool):
+    """The spring and the mass, then the plot of the displacement: at the top, always visible"""
+    em = hello_imgui.em_size()
+
+    # Spring-mass animation
+    anim_height = em * (6 if narrow else 8)
+    cursor = imgui.get_cursor_screen_pos()
+    avail_w = imgui.get_content_region_avail().x
+    imgui.dummy(ImVec2(avail_w, anim_height))
+    draw_spring_mass(state, cursor, avail_w, anim_height)
+
+    # Displacement plot (always render to avoid layout height change on reset)
+    plot_w = imgui.get_content_region_avail().x
+    if implot.begin_plot("##displacement", ImVec2(plot_w, em * (8 if narrow else 10))):
+        implot.setup_axes("Time (s)", "Displacement x")
+        if len(state.t_history) > 1:
+            ts = np.array(state.t_history)
+            xs = np.array(state.x_history)
+            implot.setup_axes_limits(ts[0], ts[-1] + 0.5, -2.5, 2.5,
+                                    imgui.Cond_.always)
+            implot.plot_line("x(t)", ts, xs)
+        else:
+            implot.setup_axes_limits(0, 10, -2.5, 2.5, imgui.Cond_.always)
+        implot.end_plot()
+        hello_imgui.set_item_is_live()  # the oscillation moves on its own: no idling while it is visible
+
+
 def gui(state: AppState):
     state.update()
     em = hello_imgui.em_size()
@@ -322,7 +349,9 @@ def gui(state: AppState):
     # and the information under the knobs
     narrow = imgui.get_content_region_avail().x < em * NARROW_WIDTH_EM
 
-    # Full-width scrollable lesson
+    # The figure at the top; below it, the lesson scrolls
+    gui_figure(state, narrow)
+    imgui.separator()
     imgui.begin_child("lesson", ImVec2(0, 0), imgui.ChildFlags_.none)
 
     # ---- INTRODUCTION ----
@@ -355,33 +384,6 @@ def gui(state: AppState):
         imgui.spring()
         imgui.end_horizontal()
 
-    imgui.spacing()
-
-    # Spring-mass animation
-    anim_height = em * 8
-    cursor = imgui.get_cursor_screen_pos()
-    avail_w = imgui.get_content_region_avail().x
-    imgui.dummy(ImVec2(avail_w, anim_height))
-    draw_spring_mass(state, cursor, avail_w, anim_height)
-
-    imgui.spacing()
-
-    # Displacement plot (always render to avoid layout height change on reset)
-    plot_w = imgui.get_content_region_avail().x
-    if implot.begin_plot("##displacement", ImVec2(plot_w, em * 10)):
-        implot.setup_axes("Time (s)", "Displacement x")
-        if len(state.t_history) > 1:
-            ts = np.array(state.t_history)
-            xs = np.array(state.x_history)
-            implot.setup_axes_limits(ts[0], ts[-1] + 0.5, -2.5, 2.5,
-                                    imgui.Cond_.always)
-            implot.plot_line("x(t)", ts, xs)
-        else:
-            implot.setup_axes_limits(0, 10, -2.5, 2.5, imgui.Cond_.always)
-        implot.end_plot()
-        hello_imgui.set_item_is_live()  # the oscillation moves on its own: no idling while it is visible
-
-    imgui.spacing()
     imgui.spacing()
 
     # ---- DAMPING SECTION ----
