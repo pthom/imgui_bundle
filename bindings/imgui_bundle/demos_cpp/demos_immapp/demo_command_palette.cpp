@@ -74,7 +74,10 @@ void gui_demo_command_palette()
     if (appState.show_command_palette)
         ImCmd::CommandPaletteWindow("CommandPalette", &appState.show_command_palette);
 
-    ImGui::Text("Press Ctrl+Shift+P to bring up the command palette");
+    if (ImGui::Button("Open the command palette"))  // a touch screen has no keyboard shortcut
+        appState.show_command_palette = true;
+    ImGui::SameLine();
+    ImGui::Text("or press Ctrl+Shift+P");
 
     ImGui::SetCursorPosY(ImGui::GetCursorPosY() + 100.f);
     ImGui::Separator();
