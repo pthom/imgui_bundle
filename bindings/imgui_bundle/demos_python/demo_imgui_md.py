@@ -2,9 +2,11 @@
 """Markdown: a tour of rich_md
 
 Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each
-section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
+section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold,
+and widgets between its renders (a live plot).
 """
-from imgui_bundle import imgui, rich_md, immapp
+import numpy as np
+from imgui_bundle import imgui, implot, rich_md, immapp, hello_imgui
 from imgui_bundle.immapp import icons_fontawesome_6 as fa
 
 # Filled by the on_heading callback (set when this demo runs standalone: see main())
@@ -21,9 +23,60 @@ def example_markdown_string() -> str:
 tour of what it renders, each feature with its source.
 
 > [!TIP]
-> The table of contents on the left lists the sections, and Ctrl+F (Cmd+F on macOS) searches the page. The arrow at
-> the left of a heading (under the mouse) folds its section; the "..." menu of the table of contents folds or unfolds
-> them all. Open *Show source* for a snippet to copy.
+> Ctrl+F (Cmd+F on macOS) searches the page, and the table of contents lists its sections: see
+> [Navigation](#navigation). Open *Show source* for a snippet to copy.
+
+## @@ICON_DOCUMENT@@ A document
+
+This page is a **document**: markdown in a scroll area of its own, with a table of contents, folds, a search, and
+links between its sections. Several markdown renders and ordinary widgets make it, as the plot below.
+
+### Navigation
+
+- The **table of contents** lists the headings: a click scrolls there. It marks the section at the top of the view,
+  and follows the scroll. Drag its edge to resize it; the arrow at its top hides it. On a narrow screen (a phone), it
+  is a menu, in the line above the page. A heading inside a collapsed section is listed dimmed: a click opens it.
+- The **folds**: the arrow at the left of a heading (under the mouse, always on a touch screen) hides its section. A
+  right click, or the "..." menu of the table of contents, folds or unfolds them all.
+- The **links** to a heading use its *slug*, made from its text as GitHub does: `### Navigation` is `#navigation`,
+  and `[text](#slug)` scrolls there: [the search](#search), [the tables](#tables). A repeated title gets a number: a
+  second "Notes" is `#notes-1`.
+
+### Search
+
+Ctrl+F (Cmd+F on macOS) opens the find bar; on a touch screen, the magnifier above the page does. Enter goes to the
+next match, Shift+Enter to the previous one. The search also finds the text of the code blocks and of the collapsed
+sections, as the *Show source* blocks: a jump to a match opens its section. Try `begin_plot`: it is only in the source
+below.
+
+@@LIVE_PLOT@@
+
+The slider and the plot above are ordinary widgets, between two markdown renders: they scroll with the page, and their
+heading is in the table of contents. `document_heading()` draws it, and returns False when its section is folded: the
+widgets are then skipped.
+
+<details>
+<summary>Show source</summary>
+
+```python
+options = rich_md.DocumentOptions()
+options.foldable_headings = True  # an arrow at the left of each heading folds its section
+with rich_md.document("tour", options=options):
+    rich_md.render(intro)  # markdown: as many renders as you like
+
+    # Widgets, under a heading of the document (False: its section is folded)
+    if rich_md.document_heading(3, "Widgets in the page"):
+        _, frequency = imgui.slider_float("Frequency", frequency, 0.5, 5.0)
+        if implot.begin_plot("##wave"):
+            implot.plot_line("sin(f x)", xs, ys)
+            implot.end_plot()
+
+    rich_md.render(more_markdown)  # the same document: one table of contents, one search
+```
+
+`rich_md.render_document(id, markdown)` is the one-call form, for markdown alone.
+
+</details>
 
 ## @@ICON_TEXT@@ Text
 
@@ -526,25 +579,6 @@ Hidden content (regular markdown here).
 
 ## @@ICON_DEVELOPERS@@ For developers
 
-### Documents and folds
-
-This page is a document: a scroll area of its own, a table of contents beside it, links `[text](#slug)` between its
-sections, and a search that also finds the text of the code blocks and of the collapsed sections. Several renders
-and widgets can share one document; `rich_md.render_document(id, markdown)` is the one-call form. With
-`foldable_headings`, an arrow folds a heading's section. The demo "Markdown: a document" shows more.
-
-<details>
-<summary>Show source</summary>
-
-```python
-options = rich_md.DocumentOptions()
-options.foldable_headings = True  # an arrow at the left of each heading folds its section
-with rich_md.document("tour", options=options):
-    rich_md.render(markdown)  # as many renders and widgets as you like
-```
-
-</details>
-
 ### Custom fenced blocks
 
 A fenced block whose language you registered is drawn by your own function instead of the code renderer: tables from
@@ -680,6 +714,7 @@ def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
         markdown.replace("@@WIKILINKS_STATUS@@", wikilinks_status)
         .replace("@@HEADINGS_STATUS@@", headings_status)
         .replace("@@SUPPORT_STATUS@@", support_status)
+        .replace("@@ICON_DOCUMENT@@", fa.ICON_FA_FILE_LINES)
         .replace("@@ICON_TEXT@@", fa.ICON_FA_FONT)
         .replace("@@ICON_CODE@@", fa.ICON_FA_CODE)
         .replace("@@ICON_EXTENSIONS@@", fa.ICON_FA_PUZZLE_PIECE)
@@ -692,6 +727,19 @@ def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
 
 
 _csv_renderer_registered = False
+_frequency = 2.0  # the frequency of the plot, in "Widgets in the page"
+
+
+def _widgets_in_the_page() -> None:
+    """A section made of widgets: a slider and the plot it drives"""
+    global _frequency
+    _, _frequency = imgui.slider_float("Frequency", _frequency, 0.5, 5.0)
+    xs = np.linspace(0.0, 10.0, 400)
+    if implot.begin_plot("##wave", (-1, hello_imgui.em_size(12))):
+        implot.plot_line("sin(f x)", xs, np.sin(_frequency * xs))
+        implot.end_plot()
+        # On a touch screen, a drag on the plot pans it at once (else it would scroll the document)
+        hello_imgui.set_item_takes_touch_drags()
 
 
 def gui():
@@ -704,11 +752,18 @@ def gui():
     # The headings rendered during the previous frame are listed in this one
     headings_last_frame = list(_headings)
     _headings.clear()
+    markdown = _fill_dynamic_parts(example_markdown_string(), headings_last_frame)
+    before_plot, after_plot = markdown.split("@@LIVE_PLOT@@")
     # The page is a document: a table of contents, a search, and headings that fold
     options = rich_md.DocumentOptions()
     options.foldable_headings = True
     with rich_md.document("markdown_tour", options=options):
-        rich_md.render(_fill_dynamic_parts(example_markdown_string(), headings_last_frame))
+        rich_md.render(before_plot)
+        # document_heading() draws its title as a markdown heading, and gives it a slug: the widgets below are a
+        # section. It returns False when the section is folded: its widgets are skipped.
+        if rich_md.document_heading(3, "Widgets in the page"):
+            _widgets_in_the_page()
+        rich_md.render(after_plot)
 
 
 def main():
@@ -718,7 +773,7 @@ def main():
     options.callbacks.on_wiki_link = lambda target: print("wikilink clicked:", target)
     options.callbacks.on_heading = lambda level, text: _headings.append("  " * (level - 1) + text)
     _standalone_options = True
-    immapp.run(gui, with_latex=True, with_markdown_options=options, window_size=(1100, 850))
+    immapp.run(gui, with_latex=True, with_implot=True, with_markdown_options=options, window_size=(1100, 850))
 
 
 if __name__ == "__main__":
