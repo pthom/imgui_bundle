@@ -25,6 +25,27 @@
 
 namespace
 {
+    // True when the window background is light (a light theme)
+    bool IsLightTheme()
+    {
+        ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+        return 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
+    }
+
+    // Tinted tabs: the given colors on a dark background; in a light theme, mixed with white, so that the text reads
+    void PushTabColors(ImVec4 tab, ImVec4 hovered, ImVec4 selected)
+    {
+        bool light = IsLightTheme();
+        auto adapt = [light](ImVec4 c, float white) {
+            if (!light)
+                return c;
+            return ImVec4(c.x + (1.f - c.x) * white, c.y + (1.f - c.y) * white, c.z + (1.f - c.z) * white, c.w);
+        };
+        ImGui::PushStyleColor(ImGuiCol_Tab, adapt(tab, 0.75f));
+        ImGui::PushStyleColor(ImGuiCol_TabHovered, adapt(hovered, 0.55f));
+        ImGui::PushStyleColor(ImGuiCol_TabSelected, adapt(selected, 0.6f));
+    }
+
     enum class LoadState { NotLoaded, Loading, Loaded, Failed };
 
     struct CodeFile
@@ -298,7 +319,6 @@ namespace
         editor.SetLanguage(isPython
             ? TextEditor::Language::Python()
             : TextEditor::Language::Cpp());
-        editor.SetPalette(TextEditor::GetDarkPalette());
         editor.SetReadOnlyEnabled(true);
         editor.SetShowLineNumbersEnabled(true);
         editor.SetShowWhitespacesEnabled(false);
@@ -1648,9 +1668,8 @@ void DemoCodeViewer_Show()
             int colorsPushed = 0;
             if (file.isApiReference)
             {
-                ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.15f, 0.25f, 0.40f, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.25f, 0.40f, 0.55f, 1.0f));
-                ImGui::PushStyleColor(ImGuiCol_TabSelected, ImVec4(0.20f, 0.35f, 0.50f, 1.0f));
+                PushTabColors(ImVec4(0.15f, 0.25f, 0.40f, 1.0f), ImVec4(0.25f, 0.40f, 0.55f, 1.0f),
+                              ImVec4(0.20f, 0.35f, 0.50f, 1.0f));
                 colorsPushed = 3;
             }
 
@@ -1669,9 +1688,8 @@ void DemoCodeViewer_Show()
         // The API tab: the index of the library's modules (the card of an entry, the list of all)
         {
             ImGuiTabItemFlags flags = g_pendingApiTabSelect ? ImGuiTabItemFlags_SetSelected : 0;
-            ImGui::PushStyleColor(ImGuiCol_Tab, ImVec4(0.15f, 0.35f, 0.25f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_TabHovered, ImVec4(0.25f, 0.50f, 0.38f, 1.0f));
-            ImGui::PushStyleColor(ImGuiCol_TabSelected, ImVec4(0.20f, 0.45f, 0.32f, 1.0f));
+            PushTabColors(ImVec4(0.15f, 0.35f, 0.25f, 1.0f), ImVec4(0.25f, 0.50f, 0.38f, 1.0f),
+                          ImVec4(0.20f, 0.45f, 0.32f, 1.0f));
             if (ImGui::BeginTabItem(ICON_FA_BOOK " API", nullptr, flags))
             {
                 g_currentFileIndex = (int)files.size();
@@ -1955,7 +1973,8 @@ void DemoCodeViewer_Show()
     if (codeFont.font)
         ImGui::PushFont(codeFont.font, codeFont.size);
 
-    // Apply user display preferences to the active editor
+    // Apply user display preferences to the active editor; its palette follows the theme (light on a light background)
+    editor.SetPalette(IsLightTheme() ? TextEditor::GetLightPalette() : TextEditor::GetDarkPalette());
     editor.SetWordWrapEnabled(g_wordWrap);
     editor.SetShowMiniMapEnabled(g_showMinimap && !compact);
 
