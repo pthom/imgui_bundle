@@ -11,6 +11,8 @@ hello_imgui.apply_theme(hello_imgui.ImGuiTheme_.darcula)  # or apply_tweaked_the
 """
 from imgui_bundle import imgui, immapp, hello_imgui, rich_md, ImVec2
 
+NARROW_WIDTH_EM = 40  # Under this width (in em, a phone), the theme selector goes above the preview
+
 
 def gui_select_theme() -> None:
     """Shows hello_imgui's theme selector and tweak panel
@@ -90,20 +92,27 @@ def gui_layout() -> None:
         - on the left, the theme selector
         - on the right, a widget collection to preview the theme
     """
+    narrow = imgui.get_content_region_avail().x < hello_imgui.em_size(NARROW_WIDTH_EM)
+
     # Documentation panel
-    immapp.render_markdown_doc_panel(__doc__, height_em=14)
+    immapp.render_markdown_doc_panel(__doc__, height_em=8 if narrow else 14)
 
     avail = imgui.get_content_region_avail()
 
-    # Left: theme selector / tweak panel (resizable)
-    left_w = avail.x * 0.5  # initial width
-    imgui.begin_child("##theme_tweak", size=(left_w, 0),
-        child_flags=imgui.ChildFlags_.resize_x)
+    # Left (on a narrow screen: top): theme selector / tweak panel (resizable)
+    if narrow:
+        imgui.begin_child("##theme_tweak", size=(0, avail.y * 0.5),
+            child_flags=imgui.ChildFlags_.resize_y)
+    else:
+        left_w = avail.x * 0.5  # initial width
+        imgui.begin_child("##theme_tweak", size=(left_w, 0),
+            child_flags=imgui.ChildFlags_.resize_x)
     gui_select_theme()
     imgui.end_child()
 
-    # Make sure our two panels are horizontally side by side
-    imgui.same_line()
+    # Make sure our two panels are horizontally side by side (unless narrow)
+    if not narrow:
+        imgui.same_line()
 
     # Right: preview with widgets
     imgui.begin_child("##preview")
