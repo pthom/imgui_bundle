@@ -452,7 +452,10 @@ def demo_command_palette():
         )
 
     imgui.new_line()
-    imgui.text("Press Ctrl+Shift+P to bring up the command palette")
+    if imgui.button("Open the command palette"):  # a touch screen has no keyboard shortcut
+        static.show_command_palette = True
+    imgui.same_line()
+    imgui.text("or press Ctrl+Shift+P")
     imgui.new_line()
     imgui.text(f"{static.counter=}")
 
@@ -485,19 +488,21 @@ def demo_cool_bar():
     )
 
     cool_bar_settings = im_cool_bar.ImCoolBarSettings()
-    cool_bar_settings.anchor = ImVec2(
-        0.5, 0.07
-    )  #  position in the window (ratio of window size)
     cool_bar_settings.mode = im_cool_bar.ImCoolBarFlags_.horizontal
-    if im_cool_bar.begin_cool_bar("##CoolBarMain", cool_bar_settings):
+    # The bar is a window of its own, placed in the viewport: its anchor is a ratio of the viewport's free space.
+    # Here, it goes where the cursor is, in the space kept for it below, and scrolls with the page
+    viewport = imgui.get_main_viewport()
+    bar_height = cool_bar_settings.normal_size + 2 * imgui.get_style().window_padding.y
+    bar_top = imgui.get_cursor_screen_pos().y - viewport.pos.y
+    cool_bar_settings.anchor = ImVec2(0.5, bar_top / (viewport.size.y - bar_height))
+    if imgui.is_rect_visible(ImVec2(1, bar_height)) and im_cool_bar.begin_cool_bar("##CoolBarMain", cool_bar_settings):
         for label in button_labels:
             if im_cool_bar.cool_bar_item():
                 if show_cool_bar_button(label):
                     print(f"Clicked {label}")
         im_cool_bar.end_cool_bar()
 
-    imgui.new_line()
-    imgui.new_line()
+    imgui.dummy(ImVec2(0, bar_height))
 
 
 def gui():

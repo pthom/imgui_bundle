@@ -473,7 +473,10 @@ void DemoCommandPalette()
         ImCmd::CommandPaletteWindow("CommandPalette", &showCommandPalette);
 
     ImGui::NewLine();
-    ImGui::Text("Press Ctrl+Shift+P to bring up the command palette");
+    if (ImGui::Button("Open the command palette"))  // a touch screen has no keyboard shortcut
+        showCommandPalette = true;
+    ImGui::SameLine();
+    ImGui::Text("or press Ctrl+Shift+P");
     ImGui::NewLine();
     ImGui::Text("counter=%i", counter);
 }
@@ -507,9 +510,14 @@ void DemoCoolBar()
     )");
 
     ImGui::ImCoolBarSettings coolBarSettings;
-    coolBarSettings.anchor = ImVec2(0.5f, 0.07f); // position in the window (ratio of window size)
     coolBarSettings.mode = ImCoolBarFlags_Horizontal;
-    if (ImGui::BeginCoolBar("##CoolBarMain", coolBarSettings))
+    // The bar is a window of its own, placed in the viewport: its anchor is a ratio of the viewport's free space.
+    // Here, it goes where the cursor is, in the space kept for it below, and scrolls with the page
+    const ImGuiViewport* viewport = ImGui::GetMainViewport();
+    float barHeight = coolBarSettings.normalSize + 2.f * ImGui::GetStyle().WindowPadding.y;
+    float barTop = ImGui::GetCursorScreenPos().y - viewport->Pos.y;
+    coolBarSettings.anchor = ImVec2(0.5f, barTop / (viewport->Size.y - barHeight));
+    if (ImGui::IsRectVisible(ImVec2(1.f, barHeight)) && ImGui::BeginCoolBar("##CoolBarMain", coolBarSettings))
     {
         for (const std::string& label: buttonLabels)
         {
@@ -522,7 +530,7 @@ void DemoCoolBar()
         ImGui::EndCoolBar();
     }
 
-    ImGui::NewLine(); ImGui::NewLine();
+    ImGui::Dummy(ImVec2(0.f, barHeight));
 }
 
 
