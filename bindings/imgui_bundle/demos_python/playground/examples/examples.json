@@ -150,6 +150,18 @@
             "hidden": true
         },
         {
+            "label": "Rich Markdown: a narrated tour",
+            "filename": "explorables/rich_md_tour/rich_md_tour.py",
+            "category": "Library tours",
+            "bundle_folders": [
+                "explorables/rich_md_tour"
+            ],
+            "bundle_files": [
+                "explorables/grokking/narrator.py"
+            ],
+            "hidden": true
+        },
+        {
             "label": "Narrated explorables: the idea, in one page",
             "filename": "explorables/nex_pitch/nex_pitch.py",
             "category": "Interactive science",

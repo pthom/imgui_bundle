@@ -1,0 +1,3413 @@
+{
+ "082d6f1bd54e1ff2": {
+  "file": "082d6f1bd54e1ff2.mp3",
+  "duration": 1.968,
+  "words": [
+   [
+    0.1,
+    "This"
+   ],
+   [
+    0.237,
+    "page"
+   ],
+   [
+    0.875,
+    "is"
+   ],
+   [
+    0.975,
+    "markdown"
+   ]
+  ],
+  "text": "This page is markdown."
+ },
+ "2bcbe0f2c1f15faa": {
+  "file": "2bcbe0f2c1f15faa.mp3",
+  "duration": 7.512,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.163,
+    "table"
+   ],
+   [
+    0.925,
+    "formulas"
+   ],
+   [
+    1.663,
+    "code"
+   ],
+   [
+    2.337,
+    "a"
+   ],
+   [
+    2.438,
+    "diagram"
+   ],
+   [
+    3.625,
+    "Dear"
+   ],
+   [
+    4.025,
+    "ImGui"
+   ],
+   [
+    4.475,
+    "draws"
+   ],
+   [
+    4.888,
+    "all"
+   ],
+   [
+    5.125,
+    "of"
+   ],
+   [
+    5.213,
+    "it"
+   ],
+   [
+    5.525,
+    "with"
+   ],
+   [
+    5.662,
+    "no"
+   ],
+   [
+    5.862,
+    "browser"
+   ],
+   [
+    6.425,
+    "and"
+   ],
+   [
+    6.5,
+    "no"
+   ],
+   [
+    6.65,
+    "web"
+   ],
+   [
+    6.862,
+    "view"
+   ]
+  ],
+  "text": "A table, formulas, code, a diagram: Dear ImGui draws all of it, with no browser and no web view."
+ },
+ "1e316de9db2cf51e": {
+  "file": "1e316de9db2cf51e.mp3",
+  "duration": 1.488,
+  "words": [
+   [
+    0.113,
+    "Here"
+   ],
+   [
+    0.275,
+    "is"
+   ],
+   [
+    0.362,
+    "its"
+   ],
+   [
+    0.487,
+    "source"
+   ]
+  ],
+  "text": "Here is its source."
+ },
+ "0c716786e5b32b52": {
+  "file": "0c716786e5b32b52.mp3",
+  "duration": 3.288,
+  "words": [
+   [
+    0.113,
+    "When"
+   ],
+   [
+    0.2,
+    "the"
+   ],
+   [
+    0.263,
+    "source"
+   ],
+   [
+    0.562,
+    "changes"
+   ],
+   [
+    1.438,
+    "the"
+   ],
+   [
+    1.538,
+    "page"
+   ],
+   [
+    1.925,
+    "follows"
+   ],
+   [
+    2.3,
+    "at"
+   ],
+   [
+    2.375,
+    "once"
+   ]
+  ],
+  "text": "When the source changes, the page follows at once."
+ },
+ "fd84931268d5a589": {
+  "file": "fd84931268d5a589.mp3",
+  "duration": 2.4,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "library"
+   ],
+   [
+    0.713,
+    "is"
+   ],
+   [
+    0.812,
+    "called"
+   ],
+   [
+    1.262,
+    "Rich"
+   ],
+   [
+    1.475,
+    "Markdown"
+   ]
+  ],
+  "text": "The library is called Rich Markdown."
+ },
+ "8d2d1356042ec396": {
+  "file": "8d2d1356042ec396.mp3",
+  "duration": 6.744,
+  "words": [
+   [
+    0.1,
+    "It"
+   ],
+   [
+    0.237,
+    "runs"
+   ],
+   [
+    0.537,
+    "wherever"
+   ],
+   [
+    1.113,
+    "Dear"
+   ],
+   [
+    1.7,
+    "ImGui"
+   ],
+   [
+    2.337,
+    "runs"
+   ],
+   [
+    3.288,
+    "on"
+   ],
+   [
+    3.375,
+    "the"
+   ],
+   [
+    3.475,
+    "desktop"
+   ],
+   [
+    4.263,
+    "on"
+   ],
+   [
+    4.375,
+    "a"
+   ],
+   [
+    4.438,
+    "phone"
+   ],
+   [
+    5.375,
+    "and"
+   ],
+   [
+    5.438,
+    "in"
+   ],
+   [
+    5.525,
+    "this"
+   ],
+   [
+    5.688,
+    "web"
+   ],
+   [
+    5.888,
+    "page"
+   ]
+  ],
+  "text": "It runs wherever Dear ImGui runs: on the desktop, on a phone, and in this web page."
+ },
+ "7b6b27f896aa5064": {
+  "file": "7b6b27f896aa5064.mp3",
+  "duration": 2.28,
+  "words": [
+   [
+    0.1,
+    "Let"
+   ],
+   [
+    0.175,
+    "us"
+   ],
+   [
+    0.3,
+    "write"
+   ],
+   [
+    0.475,
+    "the"
+   ],
+   [
+    0.575,
+    "page"
+   ],
+   [
+    0.875,
+    "again"
+   ],
+   [
+    1.238,
+    "from"
+   ],
+   [
+    1.4,
+    "the"
+   ],
+   [
+    1.462,
+    "start"
+   ]
+  ],
+  "text": "Let us write the page again, from the start."
+ },
+ "c4294617e2731b44": {
+  "file": "c4294617e2731b44.mp3",
+  "duration": 2.064,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.15,
+    "hash"
+   ],
+   [
+    0.438,
+    "sign"
+   ],
+   [
+    1.087,
+    "makes"
+   ],
+   [
+    1.262,
+    "a"
+   ],
+   [
+    1.325,
+    "heading"
+   ]
+  ],
+  "text": "A hash sign makes a heading."
+ },
+ "0b7e7018e2f24173": {
+  "file": "0b7e7018e2f24173.mp3",
+  "duration": 2.16,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.163,
+    "paragraph"
+   ],
+   [
+    0.85,
+    "is"
+   ],
+   [
+    0.938,
+    "plain"
+   ],
+   [
+    1.262,
+    "text"
+   ]
+  ],
+  "text": "A paragraph is plain text."
+ },
+ "2b6edb9219d9f141": {
+  "file": "2b6edb9219d9f141.mp3",
+  "duration": 5.088,
+  "words": [
+   [
+    0.1,
+    "Stars"
+   ],
+   [
+    0.438,
+    "make"
+   ],
+   [
+    0.588,
+    "a"
+   ],
+   [
+    0.65,
+    "word"
+   ],
+   [
+    0.887,
+    "italic"
+   ],
+   [
+    1.762,
+    "or"
+   ],
+   [
+    1.938,
+    "bold"
+   ],
+   [
+    2.9,
+    "two"
+   ],
+   [
+    3.163,
+    "tildes"
+   ],
+   [
+    3.925,
+    "strike"
+   ],
+   [
+    4.25,
+    "it"
+   ],
+   [
+    4.325,
+    "through"
+   ]
+  ],
+  "text": "Stars make a word italic or bold; two tildes strike it through."
+ },
+ "5c4c1f7862a0606e": {
+  "file": "5c4c1f7862a0606e.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.163,
+    "dash"
+   ],
+   [
+    0.55,
+    "starts"
+   ],
+   [
+    0.85,
+    "a"
+   ],
+   [
+    0.887,
+    "list"
+   ]
+  ],
+  "text": "A dash starts a list."
+ },
+ "faa7427dd3ebda16": {
+  "file": "faa7427dd3ebda16.mp3",
+  "duration": 3.768,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "page"
+   ],
+   [
+    0.5,
+    "wraps"
+   ],
+   [
+    0.9,
+    "the"
+   ],
+   [
+    1.012,
+    "long"
+   ],
+   [
+    1.375,
+    "lines"
+   ],
+   [
+    2.275,
+    "and"
+   ],
+   [
+    2.388,
+    "the"
+   ],
+   [
+    2.487,
+    "bullets"
+   ],
+   [
+    2.875,
+    "follow"
+   ]
+  ],
+  "text": "The page wraps the long lines, and the bullets follow."
+ },
+ "54f481b75a181437": {
+  "file": "54f481b75a181437.mp3",
+  "duration": 2.304,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.138,
+    "quote"
+   ],
+   [
+    0.425,
+    "starts"
+   ],
+   [
+    0.8,
+    "with"
+   ],
+   [
+    0.887,
+    "a"
+   ],
+   [
+    0.95,
+    "greater-than"
+   ],
+   [
+    1.512,
+    "sign"
+   ]
+  ],
+  "text": "A quote starts with a greater-than sign."
+ },
+ "785df566e69aa9af": {
+  "file": "785df566e69aa9af.mp3",
+  "duration": 3.504,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.15,
+    "link"
+   ],
+   [
+    0.463,
+    "is"
+   ],
+   [
+    0.588,
+    "its"
+   ],
+   [
+    0.738,
+    "text"
+   ],
+   [
+    1.15,
+    "in"
+   ],
+   [
+    1.212,
+    "brackets"
+   ],
+   [
+    2.112,
+    "then"
+   ],
+   [
+    2.237,
+    "its"
+   ],
+   [
+    2.375,
+    "address"
+   ]
+  ],
+  "text": "A link is its text in brackets, then its address."
+ },
+ "6e7e60a05edc6849": {
+  "file": "6e7e60a05edc6849.mp3",
+  "duration": 2.832,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.138,
+    "table"
+   ],
+   [
+    0.475,
+    "is"
+   ],
+   [
+    0.575,
+    "drawn"
+   ],
+   [
+    1.025,
+    "with"
+   ],
+   [
+    1.2,
+    "pipes"
+   ],
+   [
+    1.7,
+    "and"
+   ],
+   [
+    1.775,
+    "dashes"
+   ]
+  ],
+  "text": "A table is drawn with pipes and dashes."
+ },
+ "aa3d3f087eeb98a1": {
+  "file": "aa3d3f087eeb98a1.mp3",
+  "duration": 3.912,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.163,
+    "colons"
+   ],
+   [
+    0.562,
+    "on"
+   ],
+   [
+    0.625,
+    "the"
+   ],
+   [
+    0.7,
+    "second"
+   ],
+   [
+    1.125,
+    "line"
+   ],
+   [
+    1.725,
+    "align"
+   ],
+   [
+    2.175,
+    "a"
+   ],
+   [
+    2.237,
+    "column"
+   ],
+   [
+    2.95,
+    "to"
+   ],
+   [
+    3.075,
+    "the"
+   ],
+   [
+    3.163,
+    "right"
+   ]
+  ],
+  "text": "The colons on the second line align a column to the right."
+ },
+ "fbb7ab511a7908be": {
+  "file": "fbb7ab511a7908be.mp3",
+  "duration": 7.488,
+  "words": [
+   [
+    0.1,
+    "One"
+   ],
+   [
+    0.412,
+    "line"
+   ],
+   [
+    0.75,
+    "per"
+   ],
+   [
+    1.1,
+    "row"
+   ],
+   [
+    1.925,
+    "the"
+   ],
+   [
+    2.125,
+    "inner"
+   ],
+   [
+    2.35,
+    "planets"
+   ],
+   [
+    3.212,
+    "then"
+   ],
+   [
+    3.337,
+    "the"
+   ],
+   [
+    3.575,
+    "outer"
+   ],
+   [
+    3.95,
+    "ones"
+   ],
+   [
+    4.312,
+    "with"
+   ],
+   [
+    4.425,
+    "their"
+   ],
+   [
+    4.562,
+    "distance"
+   ],
+   [
+    5.037,
+    "to"
+   ],
+   [
+    5.125,
+    "the"
+   ],
+   [
+    5.225,
+    "Sun"
+   ],
+   [
+    5.875,
+    "and"
+   ],
+   [
+    5.938,
+    "the"
+   ],
+   [
+    6.05,
+    "length"
+   ],
+   [
+    6.463,
+    "of"
+   ],
+   [
+    6.525,
+    "their"
+   ],
+   [
+    6.7,
+    "year"
+   ]
+  ],
+  "text": "One line per row: the inner planets, then the outer ones, with their distance to the Sun and the length of their year."
+ },
+ "45c8e202368803ad": {
+  "file": "45c8e202368803ad.mp3",
+  "duration": 2.784,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.175,
+    "farther"
+   ],
+   [
+    0.5,
+    "the"
+   ],
+   [
+    0.6,
+    "planet"
+   ],
+   [
+    1.312,
+    "the"
+   ],
+   [
+    1.413,
+    "longer"
+   ],
+   [
+    1.863,
+    "its"
+   ],
+   [
+    2.025,
+    "year"
+   ]
+  ],
+  "text": "The farther the planet, the longer its year."
+ },
+ "f339554cd097b434": {
+  "file": "f339554cd097b434.mp3",
+  "duration": 2.4,
+  "words": [
+   [
+    0.175,
+    "Formulas"
+   ],
+   [
+    0.65,
+    "are"
+   ],
+   [
+    0.875,
+    "written"
+   ],
+   [
+    1.212,
+    "in"
+   ],
+   [
+    1.35,
+    "LaTeX"
+   ]
+  ],
+  "text": "Formulas are written in LaTeX."
+ },
+ "de5ada0ce3a9d563": {
+  "file": "de5ada0ce3a9d563.mp3",
+  "duration": 5.568,
+  "words": [
+   [
+    0.113,
+    "Between"
+   ],
+   [
+    0.487,
+    "single"
+   ],
+   [
+    0.912,
+    "dollars"
+   ],
+   [
+    1.863,
+    "a"
+   ],
+   [
+    1.913,
+    "formula"
+   ],
+   [
+    2.45,
+    "sits"
+   ],
+   [
+    2.775,
+    "in"
+   ],
+   [
+    2.837,
+    "the"
+   ],
+   [
+    2.913,
+    "text"
+   ],
+   [
+    3.875,
+    "here"
+   ],
+   [
+    4.463,
+    "Kepler's"
+   ],
+   [
+    4.838,
+    "law"
+   ]
+  ],
+  "text": "Between single dollars, a formula sits in the text: here, Kepler's law."
+ },
+ "8dcc32f91fbe0336": {
+  "file": "8dcc32f91fbe0336.mp3",
+  "duration": 3.648,
+  "words": [
+   [
+    0.1,
+    "The square"
+   ],
+   [
+    0.525,
+    "of"
+   ],
+   [
+    0.6,
+    "the"
+   ],
+   [
+    0.637,
+    "year"
+   ],
+   [
+    1.262,
+    "grows"
+   ],
+   [
+    1.812,
+    "as"
+   ],
+   [
+    1.938,
+    "the"
+   ],
+   [
+    2.05,
+    "cube"
+   ],
+   [
+    2.5,
+    "of"
+   ],
+   [
+    2.575,
+    "the"
+   ],
+   [
+    2.65,
+    "distance"
+   ]
+  ],
+  "text": "The square of the year grows as the cube of the distance."
+ },
+ "c8ea5720d1e18a55": {
+  "file": "c8ea5720d1e18a55.mp3",
+  "duration": 4.68,
+  "words": [
+   [
+    0.125,
+    "Between"
+   ],
+   [
+    0.65,
+    "double"
+   ],
+   [
+    1.0,
+    "dollars"
+   ],
+   [
+    1.875,
+    "a"
+   ],
+   [
+    1.95,
+    "formula"
+   ],
+   [
+    2.525,
+    "stands"
+   ],
+   [
+    2.938,
+    "on"
+   ],
+   [
+    3.025,
+    "its"
+   ],
+   [
+    3.163,
+    "own"
+   ],
+   [
+    3.75,
+    "centered"
+   ]
+  ],
+  "text": "Between double dollars, a formula stands on its own, centered."
+ },
+ "8d2ea80c22ae86a0": {
+  "file": "8d2ea80c22ae86a0.mp3",
+  "duration": 3.504,
+  "words": [
+   [
+    0.087,
+    "MicroTeX"
+   ],
+   [
+    0.775,
+    "draws"
+   ],
+   [
+    1.175,
+    "it"
+   ],
+   [
+    1.587,
+    "inside"
+   ],
+   [
+    2.2,
+    "Dear"
+   ],
+   [
+    2.425,
+    "ImGui"
+   ]
+  ],
+  "text": "MicroTeX draws it, inside Dear ImGui."
+ },
+ "4aaec2422195761d": {
+  "file": "4aaec2422195761d.mp3",
+  "duration": 4.104,
+  "words": [
+   [
+    0.1,
+    "Code"
+   ],
+   [
+    0.55,
+    "goes"
+   ],
+   [
+    0.812,
+    "between"
+   ],
+   [
+    1.225,
+    "three"
+   ],
+   [
+    1.712,
+    "backquotes"
+   ],
+   [
+    2.8,
+    "with"
+   ],
+   [
+    2.938,
+    "its"
+   ],
+   [
+    3.038,
+    "language"
+   ]
+  ],
+  "text": "Code goes between three backquotes, with its language."
+ },
+ "4d70de7130cf8610": {
+  "file": "4d70de7130cf8610.mp3",
+  "duration": 4.176,
+  "words": [
+   [
+    0.125,
+    "Here"
+   ],
+   [
+    0.775,
+    "the"
+   ],
+   [
+    0.838,
+    "year"
+   ],
+   [
+    1.188,
+    "of"
+   ],
+   [
+    1.275,
+    "Mars"
+   ],
+   [
+    1.688,
+    "in"
+   ],
+   [
+    1.775,
+    "Python"
+   ],
+   [
+    2.6,
+    "colored"
+   ],
+   [
+    2.925,
+    "by"
+   ],
+   [
+    3.05,
+    "a"
+   ],
+   [
+    3.112,
+    "code"
+   ],
+   [
+    3.375,
+    "editor"
+   ]
+  ],
+  "text": "Here, the year of Mars in Python, colored by a code editor."
+ },
+ "c0a244272609318f": {
+  "file": "c0a244272609318f.mp3",
+  "duration": 5.952,
+  "words": [
+   [
+    0.075,
+    "A"
+   ],
+   [
+    0.138,
+    "link"
+   ],
+   [
+    0.325,
+    "can"
+   ],
+   [
+    0.525,
+    "lead"
+   ],
+   [
+    0.7,
+    "to"
+   ],
+   [
+    0.825,
+    "a"
+   ],
+   [
+    0.887,
+    "section"
+   ],
+   [
+    1.325,
+    "of"
+   ],
+   [
+    1.4,
+    "the"
+   ],
+   [
+    1.462,
+    "page"
+   ],
+   [
+    2.413,
+    "its"
+   ],
+   [
+    2.538,
+    "address"
+   ],
+   [
+    3.237,
+    "is"
+   ],
+   [
+    3.35,
+    "the"
+   ],
+   [
+    3.425,
+    "heading's"
+   ],
+   [
+    3.8,
+    "name"
+   ],
+   [
+    4.612,
+    "after"
+   ],
+   [
+    4.888,
+    "a"
+   ],
+   [
+    4.912,
+    "hash"
+   ],
+   [
+    5.25,
+    "sign"
+   ]
+  ],
+  "text": "A link can lead to a section of the page: its address is the heading's name, after a hash sign."
+ },
+ "aaeb897716019fcb": {
+  "file": "aaeb897716019fcb.mp3",
+  "duration": 6.84,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.15,
+    "diagram"
+   ],
+   [
+    0.963,
+    "is"
+   ],
+   [
+    1.087,
+    "code"
+   ],
+   [
+    1.45,
+    "too"
+   ],
+   [
+    2.413,
+    "a"
+   ],
+   [
+    2.475,
+    "block"
+   ],
+   [
+    2.85,
+    "of"
+   ],
+   [
+    2.962,
+    "language"
+   ],
+   [
+    3.413,
+    "Mermaid"
+   ],
+   [
+    4.2,
+    "with"
+   ],
+   [
+    4.312,
+    "the"
+   ],
+   [
+    4.388,
+    "type"
+   ],
+   [
+    4.638,
+    "of"
+   ],
+   [
+    4.688,
+    "the"
+   ],
+   [
+    4.763,
+    "diagram"
+   ],
+   [
+    5.575,
+    "on"
+   ],
+   [
+    5.688,
+    "its"
+   ],
+   [
+    5.8,
+    "first"
+   ],
+   [
+    6.175,
+    "line"
+   ]
+  ],
+  "text": "A diagram is code too: a block of language Mermaid, with the type of the diagram on its first line."
+ },
+ "6bdd3ee13c7813ee": {
+  "file": "6bdd3ee13c7813ee.mp3",
+  "duration": 2.64,
+  "words": [
+   [
+    0.087,
+    "Each"
+   ],
+   [
+    0.275,
+    "line"
+   ],
+   [
+    0.575,
+    "adds"
+   ],
+   [
+    0.812,
+    "a"
+   ],
+   [
+    0.85,
+    "node"
+   ],
+   [
+    1.613,
+    "or"
+   ],
+   [
+    1.712,
+    "an"
+   ],
+   [
+    1.825,
+    "arrow"
+   ]
+  ],
+  "text": "Each line adds a node or an arrow."
+ },
+ "7d868de10b61a53f": {
+  "file": "7d868de10b61a53f.mp3",
+  "duration": 5.712,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.175,
+    "diagram"
+   ],
+   [
+    1.075,
+    "lays"
+   ],
+   [
+    1.363,
+    "itself"
+   ],
+   [
+    1.863,
+    "out"
+   ],
+   [
+    2.038,
+    "again"
+   ],
+   [
+    2.775,
+    "and"
+   ],
+   [
+    2.85,
+    "its"
+   ],
+   [
+    2.962,
+    "colors"
+   ],
+   [
+    3.462,
+    "are"
+   ],
+   [
+    3.638,
+    "those"
+   ],
+   [
+    4.075,
+    "of"
+   ],
+   [
+    4.125,
+    "the"
+   ],
+   [
+    4.237,
+    "ImGui"
+   ],
+   [
+    4.812,
+    "style"
+   ]
+  ],
+  "text": "The diagram lays itself out again, and its colors are those of the ImGui style."
+ },
+ "0dee3ed9244f2d27": {
+  "file": "0dee3ed9244f2d27.mp3",
+  "duration": 5.472,
+  "words": [
+   [
+    0.087,
+    "No"
+   ],
+   [
+    0.263,
+    "web"
+   ],
+   [
+    0.463,
+    "view"
+   ],
+   [
+    1.1,
+    "no"
+   ],
+   [
+    1.387,
+    "JavaScript"
+   ],
+   [
+    2.6,
+    "it"
+   ],
+   [
+    2.663,
+    "is"
+   ],
+   [
+    2.775,
+    "drawn"
+   ],
+   [
+    3.138,
+    "with"
+   ],
+   [
+    3.225,
+    "the"
+   ],
+   [
+    3.3,
+    "draw"
+   ],
+   [
+    3.587,
+    "list"
+   ],
+   [
+    4.05,
+    "of"
+   ],
+   [
+    4.162,
+    "Dear"
+   ],
+   [
+    4.487,
+    "ImGui"
+   ]
+  ],
+  "text": "No web view, no JavaScript: it is drawn with the draw list of Dear ImGui."
+ },
+ "b4c1b3320a9616c3": {
+  "file": "b4c1b3320a9616c3.mp3",
+  "duration": 6.792,
+  "words": [
+   [
+    0.087,
+    "GitHub's"
+   ],
+   [
+    0.438,
+    "callouts"
+   ],
+   [
+    0.963,
+    "are"
+   ],
+   [
+    1.163,
+    "quotes"
+   ],
+   [
+    1.575,
+    "that"
+   ],
+   [
+    1.725,
+    "start"
+   ],
+   [
+    2.05,
+    "with"
+   ],
+   [
+    2.163,
+    "a"
+   ],
+   [
+    2.2,
+    "tag"
+   ],
+   [
+    3.212,
+    "note"
+   ],
+   [
+    3.812,
+    "tip"
+   ],
+   [
+    4.325,
+    "important"
+   ],
+   [
+    5.15,
+    "warning"
+   ],
+   [
+    5.825,
+    "or"
+   ],
+   [
+    5.925,
+    "caution"
+   ]
+  ],
+  "text": "GitHub's callouts are quotes that start with a tag: note, tip, important, warning or caution."
+ },
+ "09f9d2c1303aba1a": {
+  "file": "09f9d2c1303aba1a.mp3",
+  "duration": 3.816,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.125,
+    "task"
+   ],
+   [
+    0.5,
+    "list"
+   ],
+   [
+    0.887,
+    "is"
+   ],
+   [
+    0.975,
+    "a"
+   ],
+   [
+    1.012,
+    "list"
+   ],
+   [
+    1.3,
+    "with"
+   ],
+   [
+    1.425,
+    "boxes"
+   ],
+   [
+    2.312,
+    "checked"
+   ],
+   [
+    3.025,
+    "or"
+   ],
+   [
+    3.1,
+    "not"
+   ]
+  ],
+  "text": "A task list is a list with boxes, checked or not."
+ },
+ "48dc395075ba24d1": {
+  "file": "48dc395075ba24d1.mp3",
+  "duration": 5.376,
+  "words": [
+   [
+    0.1,
+    "And"
+   ],
+   [
+    0.2,
+    "an"
+   ],
+   [
+    0.312,
+    "HTML"
+   ],
+   [
+    1.0,
+    "details"
+   ],
+   [
+    1.562,
+    "tag"
+   ],
+   [
+    2.2,
+    "folds"
+   ],
+   [
+    2.575,
+    "a"
+   ],
+   [
+    2.625,
+    "passage"
+   ],
+   [
+    3.138,
+    "away"
+   ],
+   [
+    3.975,
+    "until"
+   ],
+   [
+    4.2,
+    "a"
+   ],
+   [
+    4.25,
+    "click"
+   ],
+   [
+    4.475,
+    "opens"
+   ],
+   [
+    4.812,
+    "it"
+   ]
+  ],
+  "text": "And an HTML details tag folds a passage away, until a click opens it."
+ },
+ "97568cc86d7f4d95": {
+  "file": "97568cc86d7f4d95.mp3",
+  "duration": 2.832,
+  "words": [
+   [
+    0.087,
+    "The"
+   ],
+   [
+    0.15,
+    "page"
+   ],
+   [
+    0.425,
+    "is"
+   ],
+   [
+    0.562,
+    "long"
+   ],
+   [
+    0.838,
+    "now"
+   ],
+   [
+    1.637,
+    "it"
+   ],
+   [
+    1.738,
+    "needs"
+   ],
+   [
+    1.962,
+    "a"
+   ],
+   [
+    2.0,
+    "map"
+   ]
+  ],
+  "text": "The page is long now: it needs a map."
+ },
+ "e0b8b467622230d5": {
+  "file": "e0b8b467622230d5.mp3",
+  "duration": 3.816,
+  "words": [
+   [
+    0.1,
+    "On"
+   ],
+   [
+    0.188,
+    "the"
+   ],
+   [
+    0.275,
+    "left"
+   ],
+   [
+    1.038,
+    "the"
+   ],
+   [
+    1.15,
+    "table"
+   ],
+   [
+    1.475,
+    "of"
+   ],
+   [
+    1.55,
+    "contents"
+   ],
+   [
+    2.175,
+    "lists"
+   ],
+   [
+    2.725,
+    "its"
+   ],
+   [
+    2.862,
+    "headings"
+   ]
+  ],
+  "text": "On the left, the table of contents lists its headings."
+ },
+ "faecf56955472b84": {
+  "file": "faecf56955472b84.mp3",
+  "duration": 3.408,
+  "words": [
+   [
+    0.1,
+    "It"
+   ],
+   [
+    0.175,
+    "marks"
+   ],
+   [
+    0.438,
+    "the"
+   ],
+   [
+    0.537,
+    "section"
+   ],
+   [
+    0.938,
+    "on"
+   ],
+   [
+    1.062,
+    "screen"
+   ],
+   [
+    1.962,
+    "and"
+   ],
+   [
+    2.013,
+    "follows"
+   ],
+   [
+    2.475,
+    "the"
+   ],
+   [
+    2.562,
+    "scroll"
+   ]
+  ],
+  "text": "It marks the section on screen, and follows the scroll."
+ },
+ "4f985272e29e5a5d": {
+  "file": "4f985272e29e5a5d.mp3",
+  "duration": 2.688,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.138,
+    "click"
+   ],
+   [
+    0.325,
+    "on"
+   ],
+   [
+    0.438,
+    "an"
+   ],
+   [
+    0.588,
+    "entry"
+   ],
+   [
+    1.025,
+    "scrolls"
+   ],
+   [
+    1.587,
+    "the"
+   ],
+   [
+    1.675,
+    "page"
+   ],
+   [
+    2.05,
+    "there"
+   ]
+  ],
+  "text": "A click on an entry scrolls the page there."
+ },
+ "178b07b3f602f871": {
+  "file": "178b07b3f602f871.mp3",
+  "duration": 4.224,
+  "words": [
+   [
+    0.062,
+    "A"
+   ],
+   [
+    0.125,
+    "link"
+   ],
+   [
+    0.35,
+    "to"
+   ],
+   [
+    0.5,
+    "a"
+   ],
+   [
+    0.588,
+    "section"
+   ],
+   [
+    1.125,
+    "does"
+   ],
+   [
+    1.312,
+    "the"
+   ],
+   [
+    1.4,
+    "same"
+   ],
+   [
+    2.425,
+    "here"
+   ],
+   [
+    3.025,
+    "back"
+   ],
+   [
+    3.25,
+    "to"
+   ],
+   [
+    3.325,
+    "the"
+   ],
+   [
+    3.4,
+    "table"
+   ]
+  ],
+  "text": "A link to a section does the same: here, back to the table."
+ },
+ "075d56f9900d7a5b": {
+  "file": "075d56f9900d7a5b.mp3",
+  "duration": 3.144,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.2,
+    "arrow"
+   ],
+   [
+    0.6,
+    "at"
+   ],
+   [
+    0.688,
+    "the"
+   ],
+   [
+    0.775,
+    "top"
+   ],
+   [
+    1.087,
+    "hides"
+   ],
+   [
+    1.5,
+    "the"
+   ],
+   [
+    1.6,
+    "table"
+   ],
+   [
+    1.938,
+    "of"
+   ],
+   [
+    2.013,
+    "contents"
+   ]
+  ],
+  "text": "The arrow at the top hides the table of contents."
+ },
+ "981917c912284e89": {
+  "file": "981917c912284e89.mp3",
+  "duration": 5.4,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.138,
+    "line"
+   ],
+   [
+    0.4,
+    "above"
+   ],
+   [
+    0.675,
+    "the"
+   ],
+   [
+    0.75,
+    "page"
+   ],
+   [
+    1.425,
+    "then"
+   ],
+   [
+    1.75,
+    "gives"
+   ],
+   [
+    2.038,
+    "the"
+   ],
+   [
+    2.15,
+    "current"
+   ],
+   [
+    2.487,
+    "section"
+   ],
+   [
+    3.425,
+    "with"
+   ],
+   [
+    3.525,
+    "the"
+   ],
+   [
+    3.6,
+    "whole"
+   ],
+   [
+    3.888,
+    "table"
+   ],
+   [
+    4.463,
+    "as"
+   ],
+   [
+    4.6,
+    "a"
+   ],
+   [
+    4.638,
+    "menu"
+   ]
+  ],
+  "text": "A line above the page then gives the current section, with the whole table as a menu."
+ },
+ "0badeb132f3a8729": {
+  "file": "0badeb132f3a8729.mp3",
+  "duration": 2.28,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.212,
+    "other"
+   ],
+   [
+    0.85,
+    "arrow"
+   ],
+   [
+    1.175,
+    "shows"
+   ],
+   [
+    1.5,
+    "it"
+   ],
+   [
+    1.55,
+    "again"
+   ]
+  ],
+  "text": "The other arrow shows it again."
+ },
+ "14bb0bc66fee2970": {
+  "file": "14bb0bc66fee2970.mp3",
+  "duration": 4.224,
+  "words": [
+   [
+    0.1,
+    "Control"
+   ],
+   [
+    0.875,
+    "F"
+   ],
+   [
+    1.225,
+    "opens"
+   ],
+   [
+    1.525,
+    "the"
+   ],
+   [
+    1.587,
+    "search"
+   ],
+   [
+    2.5,
+    "or"
+   ],
+   [
+    2.612,
+    "Command"
+   ],
+   [
+    3.025,
+    "F"
+   ],
+   [
+    3.275,
+    "on"
+   ],
+   [
+    3.375,
+    "a"
+   ],
+   [
+    3.413,
+    "Mac"
+   ]
+  ],
+  "text": "Control F opens the search, or Command F on a Mac."
+ },
+ "ba34f76a06d9646a": {
+  "file": "ba34f76a06d9646a.mp3",
+  "duration": 1.416,
+  "words": [
+   [
+    0.087,
+    "Let"
+   ],
+   [
+    0.15,
+    "us"
+   ],
+   [
+    0.25,
+    "look"
+   ],
+   [
+    0.388,
+    "for"
+   ],
+   [
+    0.512,
+    "Mars"
+   ]
+  ],
+  "text": "Let us look for Mars."
+ },
+ "183c30761172f1af": {
+  "file": "183c30761172f1af.mp3",
+  "duration": 2.04,
+  "words": [
+   [
+    0.087,
+    "Every"
+   ],
+   [
+    0.287,
+    "match"
+   ],
+   [
+    0.925,
+    "is"
+   ],
+   [
+    1.025,
+    "highlighted"
+   ]
+  ],
+  "text": "Every match is highlighted."
+ },
+ "7f071093e5203a4d": {
+  "file": "7f071093e5203a4d.mp3",
+  "duration": 2.112,
+  "words": [
+   [
+    0.087,
+    "Enter"
+   ],
+   [
+    0.662,
+    "goes"
+   ],
+   [
+    1.113,
+    "to"
+   ],
+   [
+    1.212,
+    "the"
+   ],
+   [
+    1.275,
+    "next"
+   ],
+   [
+    1.538,
+    "one"
+   ]
+  ],
+  "text": "Enter goes to the next one."
+ },
+ "2fbe0502f062228f": {
+  "file": "2fbe0502f062228f.mp3",
+  "duration": 4.104,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.175,
+    "search"
+   ],
+   [
+    0.45,
+    "also"
+   ],
+   [
+    0.775,
+    "looks"
+   ],
+   [
+    1.113,
+    "into"
+   ],
+   [
+    1.262,
+    "the"
+   ],
+   [
+    1.35,
+    "code"
+   ],
+   [
+    2.1,
+    "and"
+   ],
+   [
+    2.362,
+    "into"
+   ],
+   [
+    2.525,
+    "the"
+   ],
+   [
+    2.625,
+    "folded"
+   ],
+   [
+    3.025,
+    "passages"
+   ]
+  ],
+  "text": "The search also looks into the code, and into the folded passages."
+ },
+ "e570a9ab08139472": {
+  "file": "e570a9ab08139472.mp3",
+  "duration": 7.872,
+  "words": [
+   [
+    0.1,
+    "Shift"
+   ],
+   [
+    0.625,
+    "Enter"
+   ],
+   [
+    0.9,
+    "goes"
+   ],
+   [
+    1.188,
+    "back"
+   ],
+   [
+    1.962,
+    "and"
+   ],
+   [
+    2.038,
+    "past"
+   ],
+   [
+    2.45,
+    "the"
+   ],
+   [
+    2.525,
+    "first"
+   ],
+   [
+    2.925,
+    "match"
+   ],
+   [
+    3.663,
+    "to"
+   ],
+   [
+    3.75,
+    "the"
+   ],
+   [
+    3.85,
+    "last"
+   ],
+   [
+    4.25,
+    "one"
+   ],
+   [
+    4.912,
+    "in"
+   ],
+   [
+    4.987,
+    "the"
+   ],
+   [
+    5.062,
+    "passage"
+   ],
+   [
+    5.575,
+    "on"
+   ],
+   [
+    5.638,
+    "the"
+   ],
+   [
+    5.725,
+    "dwarf"
+   ],
+   [
+    6.112,
+    "planets"
+   ],
+   [
+    6.638,
+    "which"
+   ],
+   [
+    6.85,
+    "opens"
+   ]
+  ],
+  "text": "Shift Enter goes back, and past the first match, to the last one: in the passage on the dwarf planets, which opens."
+ },
+ "ec6b50c96fa929e9": {
+  "file": "ec6b50c96fa929e9.mp3",
+  "duration": 5.952,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.15,
+    "table"
+   ],
+   [
+    0.475,
+    "of"
+   ],
+   [
+    0.55,
+    "contents"
+   ],
+   [
+    1.25,
+    "counts"
+   ],
+   [
+    1.65,
+    "the"
+   ],
+   [
+    1.75,
+    "matches"
+   ],
+   [
+    2.438,
+    "of"
+   ],
+   [
+    2.763,
+    "each"
+   ],
+   [
+    2.95,
+    "section"
+   ],
+   [
+    3.925,
+    "and"
+   ],
+   [
+    3.975,
+    "the"
+   ],
+   [
+    4.037,
+    "scroll"
+   ],
+   [
+    4.388,
+    "bar"
+   ],
+   [
+    4.638,
+    "marks"
+   ],
+   [
+    4.987,
+    "where"
+   ],
+   [
+    5.1,
+    "they"
+   ],
+   [
+    5.263,
+    "are"
+   ]
+  ],
+  "text": "The table of contents counts the matches of each section, and the scroll bar marks where they are."
+ },
+ "88dff9185698abf7": {
+  "file": "88dff9185698abf7.mp3",
+  "duration": 2.04,
+  "words": [
+   [
+    0.1,
+    "Escape"
+   ],
+   [
+    0.575,
+    "closes"
+   ],
+   [
+    1.075,
+    "the"
+   ],
+   [
+    1.137,
+    "search"
+   ]
+  ],
+  "text": "Escape closes the search."
+ },
+ "29e3d97da6080ae2": {
+  "file": "29e3d97da6080ae2.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.087,
+    "Each"
+   ],
+   [
+    0.225,
+    "heading"
+   ],
+   [
+    0.45,
+    "folds"
+   ]
+  ],
+  "text": "Each heading folds."
+ },
+ "7a6e7149f1afdf50": {
+  "file": "7a6e7149f1afdf50.mp3",
+  "duration": 5.088,
+  "words": [
+   [
+    0.087,
+    "Under"
+   ],
+   [
+    0.263,
+    "the"
+   ],
+   [
+    0.325,
+    "mouse"
+   ],
+   [
+    1.312,
+    "an"
+   ],
+   [
+    1.475,
+    "arrow"
+   ],
+   [
+    1.837,
+    "appears"
+   ],
+   [
+    2.337,
+    "at"
+   ],
+   [
+    2.413,
+    "its"
+   ],
+   [
+    2.525,
+    "left"
+   ],
+   [
+    3.4,
+    "a"
+   ],
+   [
+    3.45,
+    "click"
+   ],
+   [
+    3.712,
+    "hides"
+   ],
+   [
+    4.1,
+    "its"
+   ],
+   [
+    4.2,
+    "section"
+   ]
+  ],
+  "text": "Under the mouse, an arrow appears at its left: a click hides its section."
+ },
+ "b196bca8ad20f130": {
+  "file": "b196bca8ad20f130.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.15,
+    "right"
+   ],
+   [
+    0.45,
+    "click"
+   ],
+   [
+    0.688,
+    "opens"
+   ],
+   [
+    0.95,
+    "a"
+   ],
+   [
+    0.975,
+    "menu"
+   ]
+  ],
+  "text": "A right click opens a menu."
+ },
+ "9499a248b62e7565": {
+  "file": "9499a248b62e7565.mp3",
+  "duration": 4.824,
+  "words": [
+   [
+    0.1,
+    "It"
+   ],
+   [
+    0.163,
+    "can"
+   ],
+   [
+    0.275,
+    "fold"
+   ],
+   [
+    1.075,
+    "all"
+   ],
+   [
+    1.325,
+    "the"
+   ],
+   [
+    1.4,
+    "headings"
+   ],
+   [
+    1.762,
+    "at"
+   ],
+   [
+    1.825,
+    "once"
+   ],
+   [
+    2.725,
+    "the"
+   ],
+   [
+    2.837,
+    "page"
+   ],
+   [
+    3.212,
+    "becomes"
+   ],
+   [
+    3.587,
+    "its"
+   ],
+   [
+    3.712,
+    "own"
+   ],
+   [
+    3.975,
+    "outline"
+   ]
+  ],
+  "text": "It can fold all the headings at once: the page becomes its own outline."
+ },
+ "f6034d67d6868093": {
+  "file": "f6034d67d6868093.mp3",
+  "duration": 2.16,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.163,
+    "same"
+   ],
+   [
+    0.45,
+    "menu"
+   ],
+   [
+    0.825,
+    "unfolds"
+   ],
+   [
+    1.387,
+    "them"
+   ],
+   [
+    1.512,
+    "all"
+   ]
+  ],
+  "text": "The same menu unfolds them all."
+ },
+ "e68e9cabd6ee8636": {
+  "file": "e68e9cabd6ee8636.mp3",
+  "duration": 3.024,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.188,
+    "text"
+   ],
+   [
+    0.5,
+    "can"
+   ],
+   [
+    0.588,
+    "be"
+   ],
+   [
+    0.7,
+    "selected"
+   ],
+   [
+    1.688,
+    "as"
+   ],
+   [
+    1.812,
+    "on"
+   ],
+   [
+    1.887,
+    "a"
+   ],
+   [
+    1.95,
+    "web"
+   ],
+   [
+    2.188,
+    "page"
+   ]
+  ],
+  "text": "The text can be selected, as on a web page."
+ },
+ "bf733a9b4748c41a": {
+  "file": "bf733a9b4748c41a.mp3",
+  "duration": 3.528,
+  "words": [
+   [
+    0.1,
+    "A"
+   ],
+   [
+    0.175,
+    "double"
+   ],
+   [
+    0.537,
+    "click"
+   ],
+   [
+    0.738,
+    "selects"
+   ],
+   [
+    1.1,
+    "a"
+   ],
+   [
+    1.163,
+    "word"
+   ],
+   [
+    2.013,
+    "and"
+   ],
+   [
+    2.138,
+    "a"
+   ],
+   [
+    2.188,
+    "drag"
+   ],
+   [
+    2.475,
+    "a"
+   ],
+   [
+    2.525,
+    "passage"
+   ]
+  ],
+  "text": "A double click selects a word, and a drag a passage."
+ },
+ "c94832f322fe12a7": {
+  "file": "c94832f322fe12a7.mp3",
+  "duration": 3.768,
+  "words": [
+   [
+    0.087,
+    "A"
+   ],
+   [
+    0.125,
+    "right"
+   ],
+   [
+    0.362,
+    "click"
+   ],
+   [
+    0.562,
+    "copies"
+   ],
+   [
+    0.988,
+    "it"
+   ],
+   [
+    1.538,
+    "as"
+   ],
+   [
+    1.65,
+    "plain"
+   ],
+   [
+    1.925,
+    "text"
+   ],
+   [
+    2.612,
+    "or"
+   ],
+   [
+    2.712,
+    "as"
+   ],
+   [
+    2.8,
+    "markdown"
+   ]
+  ],
+  "text": "A right click copies it, as plain text or as markdown."
+ },
+ "5f25fed4e9493850": {
+  "file": "5f25fed4e9493850.mp3",
+  "duration": 2.184,
+  "words": [
+   [
+    0.1,
+    "Let"
+   ],
+   [
+    0.163,
+    "us"
+   ],
+   [
+    0.263,
+    "paste"
+   ],
+   [
+    0.637,
+    "it"
+   ],
+   [
+    0.7,
+    "at"
+   ],
+   [
+    0.762,
+    "the"
+   ],
+   [
+    0.863,
+    "end"
+   ],
+   [
+    1.062,
+    "of"
+   ],
+   [
+    1.113,
+    "the"
+   ],
+   [
+    1.175,
+    "source"
+   ]
+  ],
+  "text": "Let us paste it at the end of the source."
+ },
+ "ec3053b10c5e21ca": {
+  "file": "ec3053b10c5e21ca.mp3",
+  "duration": 2.376,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.188,
+    "formula"
+   ],
+   [
+    0.613,
+    "came"
+   ],
+   [
+    0.838,
+    "back"
+   ],
+   [
+    1.15,
+    "as"
+   ],
+   [
+    1.288,
+    "LaTeX"
+   ]
+  ],
+  "text": "The formula came back as LaTeX."
+ },
+ "8b1db5d1e1c76c5b": {
+  "file": "8b1db5d1e1c76c5b.mp3",
+  "duration": 8.856,
+  "words": [
+   [
+    0.062,
+    "On"
+   ],
+   [
+    0.175,
+    "a"
+   ],
+   [
+    0.212,
+    "narrow"
+   ],
+   [
+    0.6,
+    "screen"
+   ],
+   [
+    1.6,
+    "as"
+   ],
+   [
+    1.712,
+    "a"
+   ],
+   [
+    1.762,
+    "phone's"
+   ],
+   [
+    2.625,
+    "the"
+   ],
+   [
+    2.725,
+    "table"
+   ],
+   [
+    3.075,
+    "of"
+   ],
+   [
+    3.15,
+    "contents"
+   ],
+   [
+    3.688,
+    "becomes"
+   ],
+   [
+    4.088,
+    "a"
+   ],
+   [
+    4.138,
+    "menu"
+   ],
+   [
+    5.125,
+    "in"
+   ],
+   [
+    5.213,
+    "the"
+   ],
+   [
+    5.3,
+    "line"
+   ],
+   [
+    5.662,
+    "above"
+   ],
+   [
+    5.938,
+    "the"
+   ],
+   [
+    6.025,
+    "page"
+   ],
+   [
+    6.838,
+    "with"
+   ],
+   [
+    6.975,
+    "a"
+   ],
+   [
+    7.013,
+    "magnifier"
+   ],
+   [
+    7.763,
+    "for"
+   ],
+   [
+    7.85,
+    "the"
+   ],
+   [
+    7.912,
+    "search"
+   ]
+  ],
+  "text": "On a narrow screen, as a phone's, the table of contents becomes a menu, in the line above the page, with a magnifier for the search."
+ },
+ "bab1daa62c19b834": {
+  "file": "bab1daa62c19b834.mp3",
+  "duration": 3.024,
+  "words": [
+   [
+    0.113,
+    "The"
+   ],
+   [
+    0.188,
+    "page"
+   ],
+   [
+    0.487,
+    "follows"
+   ],
+   [
+    0.838,
+    "the"
+   ],
+   [
+    0.912,
+    "style"
+   ],
+   [
+    1.325,
+    "of"
+   ],
+   [
+    1.438,
+    "Dear"
+   ],
+   [
+    2.075,
+    "ImGui"
+   ]
+  ],
+  "text": "The page follows the style of Dear ImGui."
+ },
+ "9b6803b8b9b0090a": {
+  "file": "9b6803b8b9b0090a.mp3",
+  "duration": 4.488,
+  "words": [
+   [
+    0.087,
+    "In"
+   ],
+   [
+    0.163,
+    "a"
+   ],
+   [
+    0.237,
+    "light"
+   ],
+   [
+    0.537,
+    "theme"
+   ],
+   [
+    1.387,
+    "the"
+   ],
+   [
+    1.475,
+    "diagram"
+   ],
+   [
+    2.312,
+    "and"
+   ],
+   [
+    2.375,
+    "the"
+   ],
+   [
+    2.45,
+    "code"
+   ],
+   [
+    3.138,
+    "turn"
+   ],
+   [
+    3.45,
+    "light"
+   ],
+   [
+    3.712,
+    "too"
+   ]
+  ],
+  "text": "In a light theme, the diagram and the code turn light too."
+ },
+ "7385457bd23eca90": {
+  "file": "7385457bd23eca90.mp3",
+  "duration": 6.144,
+  "words": [
+   [
+    0.087,
+    "Everything"
+   ],
+   [
+    0.512,
+    "here"
+   ],
+   [
+    1.025,
+    "is"
+   ],
+   [
+    1.188,
+    "drawn"
+   ],
+   [
+    1.7,
+    "by"
+   ],
+   [
+    1.863,
+    "the"
+   ],
+   [
+    1.962,
+    "GPU"
+   ],
+   [
+    2.925,
+    "every"
+   ],
+   [
+    3.237,
+    "frame"
+   ],
+   [
+    4.275,
+    "as"
+   ],
+   [
+    4.388,
+    "the"
+   ],
+   [
+    4.475,
+    "rest"
+   ],
+   [
+    4.938,
+    "of"
+   ],
+   [
+    4.987,
+    "the"
+   ],
+   [
+    5.05,
+    "interface"
+   ]
+  ],
+  "text": "Everything here is drawn by the GPU, every frame, as the rest of the interface."
+ },
+ "287681cbbcd94ae6": {
+  "file": "287681cbbcd94ae6.mp3",
+  "duration": 8.064,
+  "words": [
+   [
+    0.087,
+    "In"
+   ],
+   [
+    0.163,
+    "your"
+   ],
+   [
+    0.263,
+    "program"
+   ],
+   [
+    1.275,
+    "one"
+   ],
+   [
+    1.5,
+    "function"
+   ],
+   [
+    1.962,
+    "draws"
+   ],
+   [
+    2.375,
+    "a"
+   ],
+   [
+    2.413,
+    "markdown"
+   ],
+   [
+    3.05,
+    "text"
+   ],
+   [
+    3.95,
+    "another"
+   ],
+   [
+    4.25,
+    "draws"
+   ],
+   [
+    4.525,
+    "a"
+   ],
+   [
+    4.562,
+    "document"
+   ],
+   [
+    5.487,
+    "with"
+   ],
+   [
+    5.638,
+    "its"
+   ],
+   [
+    5.75,
+    "table"
+   ],
+   [
+    6.062,
+    "of"
+   ],
+   [
+    6.138,
+    "contents"
+   ],
+   [
+    6.912,
+    "and"
+   ],
+   [
+    7.037,
+    "its"
+   ],
+   [
+    7.15,
+    "search"
+   ]
+  ],
+  "text": "In your program, one function draws a markdown text; another draws a document, with its table of contents and its search."
+ },
+ "92f0af2b756be00d": {
+  "file": "92f0af2b756be00d.mp3",
+  "duration": 2.4,
+  "words": [
+   [
+    0.1,
+    "Their"
+   ],
+   [
+    0.275,
+    "code"
+   ],
+   [
+    0.85,
+    "is"
+   ],
+   [
+    0.988,
+    "under"
+   ],
+   [
+    1.2,
+    "Code"
+   ],
+   [
+    1.6,
+    "below"
+   ]
+  ],
+  "text": "Their code is under Code, below."
+ },
+ "6a89c0d283422613": {
+  "file": "6a89c0d283422613.mp3",
+  "duration": 2.28,
+  "words": [
+   [
+    0.1,
+    "The"
+   ],
+   [
+    0.15,
+    "source"
+   ],
+   [
+    0.412,
+    "on"
+   ],
+   [
+    0.5,
+    "the"
+   ],
+   [
+    0.588,
+    "left"
+   ],
+   [
+    1.225,
+    "is"
+   ],
+   [
+    1.35,
+    "yours"
+   ],
+   [
+    1.562,
+    "now"
+   ]
+  ],
+  "text": "The source on the left is yours now."
+ },
+ "15ab973d3f130efc": {
+  "file": "15ab973d3f130efc.mp3",
+  "duration": 2.136,
+  "words": [
+   [
+    0.062,
+    "Edit"
+   ],
+   [
+    0.275,
+    "it"
+   ],
+   [
+    0.7,
+    "and"
+   ],
+   [
+    0.812,
+    "watch"
+   ],
+   [
+    1.163,
+    "the"
+   ],
+   [
+    1.262,
+    "page"
+   ]
+  ],
+  "text": "Edit it, and watch the page."
+ },
+ "247c192ba243090e": {
+  "file": "247c192ba243090e.mp3",
+  "duration": 1.872,
+  "words": [
+   [
+    0.113,
+    "There"
+   ],
+   [
+    0.225,
+    "it"
+   ],
+   [
+    0.287,
+    "is"
+   ]
+  ],
+  "text": "There it is."
+ },
+ "256a0f827d1ecd73": {
+  "file": "256a0f827d1ecd73.mp3",
+  "duration": 4.152,
+  "words": [
+   [
+    0.1,
+    "Pluto"
+   ],
+   [
+    0.5,
+    "has"
+   ],
+   [
+    0.725,
+    "its"
+   ],
+   [
+    0.838,
+    "row"
+   ],
+   [
+    1.175,
+    "in"
+   ],
+   [
+    1.25,
+    "the"
+   ],
+   [
+    1.325,
+    "table"
+   ],
+   [
+    1.712,
+    "again"
+   ],
+   [
+    2.325,
+    "if"
+   ],
+   [
+    2.45,
+    "not"
+   ],
+   [
+    2.675,
+    "its"
+   ],
+   [
+    2.8,
+    "title"
+   ],
+   [
+    3.188,
+    "of"
+   ],
+   [
+    3.288,
+    "planet"
+   ]
+  ],
+  "text": "Pluto has its row in the table again, if not its title of planet."
+ }
+}
