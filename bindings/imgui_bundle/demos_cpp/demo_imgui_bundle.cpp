@@ -175,6 +175,10 @@ namespace
         ImGui::TextDisabled("Dear ImGui Bundle Explorer");
         ImGui::TextDisabled("v" IMGUI_BUNDLE_VERSION " build " IMGUI_BUNDLE_BUILD_NUMBER);
         ZoomButtons(HelloImGui::EmSize(1.5f));
+        ImGui::AlignTextToFramePadding();
+        ImGui::TextUnformatted("Theme");
+        ImGui::SameLine();
+        ThemeSwitch();  // here on a narrow screen, where the header has no room for it
         auto& params = *HelloImGui::GetRunnerParams();
         ImGui::Checkbox("Enable idling", &params.fpsIdling.enableIdling);
         ImGui::Text("FPS: %.1f%s", HelloImGui::FrameRate(), params.fpsIdling.isIdling ? " (Idling)" : "");
@@ -433,8 +437,11 @@ namespace
             // The cursor is set, not put on the same line (see above)
             ImGui::SetCursorPos(ImVec2(right - rightWidth, oneRow ? top + em * 0.5f : belowTitle));
             ImGui::BeginGroup();
-            ThemeSwitch();
-            ImGui::SameLine(0.f, em);
+            if (!StatusInMenu())  // on a narrow screen, it is in the "..." menu
+            {
+                ThemeSwitch();
+                ImGui::SameLine(0.f, em);
+            }
             // The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width
             // comes from the previous frame, and a wrapped group would measure too narrow forever), the state's in
             // the accent

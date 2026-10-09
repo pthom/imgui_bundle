@@ -91,6 +91,10 @@ def status_menu() -> None:
     imgui.text_disabled("Dear ImGui Bundle Explorer")
     imgui.text_disabled(f"v{__version__} build {__build_number__}")
     zoom_buttons(em_size(1.5))
+    imgui.align_text_to_frame_padding()
+    imgui.text("Theme")
+    imgui.same_line()
+    demo_immapp_launcher.theme_switch()  # here on a narrow screen, where the header has no room for it
     fps_idling = hello_imgui.get_runner_params().fps_idling
     _, fps_idling.enable_idling = imgui.checkbox("Enable idling", fps_idling.enable_idling)
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}{' (Idling)' if fps_idling.is_idling else ''}")
@@ -190,8 +194,9 @@ class Explorer:
         # The cursor is set, not put on the same line (see above)
         imgui.set_cursor_pos(ImVec2(right - self.right_width, top + em_size(0.5) if one_row else below_title))
         imgui.begin_group()
-        demo_immapp_launcher.theme_switch()
-        imgui.same_line(spacing=em_size(1.0))
+        if not status_in_menu():  # on a narrow screen, it is in the "..." menu
+            demo_immapp_launcher.theme_switch()
+            imgui.same_line(spacing=em_size(1.0))
         # The switch: two chips as the launcher's category chips (wider, and never wrapped: the group's width comes
         # from the previous frame, and a wrapped group would measure too narrow forever), the state's in the accent
         imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(em_size(0.8), 0))
