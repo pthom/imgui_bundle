@@ -43,9 +43,8 @@ def demo_assets(app_state: AppState):
     """A demo showcasing the assets usage in HelloImGui and ImmApp"""
     rich_md.render("# Demo Assets")
 
-    imgui.text("Here are some icons from Font Awesome: ")
+    imgui.text("Icons from Font Awesome:")
     imgui.same_line()
-    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
     imgui.text(
         icons_fontawesome.ICON_FA_INFO
         + " "
@@ -54,9 +53,8 @@ def demo_assets(app_state: AppState):
         + icons_fontawesome.ICON_FA_SAVE
     )
 
-    imgui.text("Here is an image that was loaded from the assets: ")
+    imgui.text("An image from the assets:")
     imgui.same_line()
-    imgui.set_cursor_pos_x(hello_imgui.em_size(40.0))
 
     # Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
     # Below, image_size is equivalent to the size of 3 lines of text
@@ -90,11 +88,11 @@ def demo_markdown(app_state: AppState):
     # Interactive demo
     imgui.separator()
     rich_md.render("*Try it yourself*")
-    imgui.same_line(hello_imgui.em_size(30.0))
+    imgui.same_line()
     if imgui.small_button("Edit the fortune markdown"):
         app_state.markdown_input = immapp.code_utils.unindent_markdown(markdown_demo)
     _, app_state.markdown_input = imgui.input_text_multiline(
-        "##Markdown Input", app_state.markdown_input, hello_imgui.em_to_vec2(40.0, 5.0)
+        "##Markdown Input", app_state.markdown_input, imgui.ImVec2(-1, hello_imgui.em_size(5.0))
     )
     rich_md.render(app_state.markdown_input)
     imgui.separator()

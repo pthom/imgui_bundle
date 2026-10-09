@@ -42,13 +42,13 @@ struct AppState
 void DemoAssets(AppState& appState)
 {
     RichMd::Render("# Demo Assets");
-    ImGui::Text("Here are some icons from Font Awesome: ");
-    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+    ImGui::Text("Icons from Font Awesome:");
+    ImGui::SameLine();
     ImGui::Text(ICON_FA_INFO " " ICON_FA_EXCLAMATION_TRIANGLE " " ICON_FA_SAVE);
 
 
-    ImGui::Text("Here is an image that was loaded from the assets: ");
-    ImGui::SameLine(); ImGui::SetCursorPosX(HelloImGui::EmSize(40.f));
+    ImGui::Text("An image from the assets:");
+    ImGui::SameLine();
 
     // Prefer to specify sizes using the "em" unit: see https://en.wikipedia.org/wiki/Em_(typography)
     //     Below, imageSize is equivalent to the size of 3 lines of text
@@ -83,10 +83,10 @@ void DemoMarkdown(AppState& appState)
     // Interactive demo
     ImGui::Separator();
     RichMd::Render("*Try it yourself*");
-    ImGui::SameLine(HelloImGui::EmSize(30.f));
+    ImGui::SameLine();
     if (ImGui::SmallButton("Edit the fortune markdown"))
         strcpy(appState.MarkdownInput, CodeUtils::UnindentMarkdown(markdownDemo).c_str());
-    ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), HelloImGui::EmToVec2(40.f, 5.f));
+    ImGui::InputTextMultiline("##Markdown Input", appState.MarkdownInput, sizeof(appState.MarkdownInput), ImVec2(-1.f, HelloImGui::EmSize(5.f)));
     RichMd::Render(appState.MarkdownInput);
     ImGui::Separator();
 
