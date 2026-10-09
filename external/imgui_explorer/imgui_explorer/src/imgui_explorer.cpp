@@ -605,6 +605,8 @@ namespace {
             mode.statusInMenu = show_status_bar && (mode.narrow || isShort);
         }
         GNarrowLayout_Active = mode.narrow;
+        // On a narrow screen, the code shows only after a tap: its source loads now, for the line labels
+        DemoCodeViewer_PreloadDemoFile();
         ShowLibraryToolbar(mode);
 
         // Use all space, except for a small margin at the bottom for the status bar

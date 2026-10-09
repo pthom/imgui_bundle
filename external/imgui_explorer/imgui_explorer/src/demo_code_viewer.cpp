@@ -2086,6 +2086,18 @@ void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* secti
     }
 }
 
+void DemoCodeViewer_PreloadDemoFile()
+{
+    auto files = GetCurrentLibraryFiles();
+    if (files.empty())
+        return;
+#ifdef __EMSCRIPTEN__
+    RequestFileLoad(files[0]);  // the demo's source comes first
+#else
+    LoadFile(files[0]);
+#endif
+}
+
 bool DemoCodeViewer_IsPythonOnlyMode()
 {
     return g_pythonOnlyMode;
