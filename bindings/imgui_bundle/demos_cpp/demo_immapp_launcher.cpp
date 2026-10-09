@@ -349,6 +349,61 @@ ImVec4 Lerp(ImVec4 a, ImVec4 b, float t)
     return ImVec4(a.x + (b.x - a.x) * t, a.y + (b.y - a.y) * t, a.z + (b.z - a.z) * t, a.w + (b.w - a.w) * t);
 }
 
+namespace
+{
+    const ImGuiTheme::ImGuiTheme_ DARK_THEME = ImGuiTheme::ImGuiTheme_DarculaDarker;  // Hello ImGui's default
+    const ImGuiTheme::ImGuiTheme_ LIGHT_THEME = ImGuiTheme::ImGuiTheme_WhiteIsWhite;
+
+    // The app takes this theme, keeping its tweaks (rounding, colors)
+    void ApplyThemeKeepingTweaks(ImGuiTheme::ImGuiTheme_ theme)
+    {
+        auto& tweakedTheme = HelloImGui::GetRunnerParams()->imGuiWindowParams.tweakedTheme;
+        tweakedTheme.Theme = theme;
+        ImGuiTheme::ApplyTweakedTheme(tweakedTheme);
+    }
+}
+
+void ThemeSwitch()
+{
+    auto theme = HelloImGui::GetRunnerParams()->imGuiWindowParams.tweakedTheme.Theme;
+    int current = theme == DARK_THEME ? 0 : theme == LIGHT_THEME ? 1 : 2;
+    int picked = SegmentedSwitch("theme", {ICON_FA_MOON, ICON_FA_SUN, ICON_FA_ELLIPSIS_H}, current);
+    if (picked == 0 && current != 0)
+        ApplyThemeKeepingTweaks(DARK_THEME);
+    else if (picked == 1 && current != 1)
+        ApplyThemeKeepingTweaks(LIGHT_THEME);
+    else if (picked == 2 && ImGui::IsItemDeactivated() && ImGui::IsItemHovered())  // "...", pressed again or not
+        ImGui::OpenPopup("##themes");
+    ImGui::SetItemTooltip("The theme: dark, light, or one of all the themes");
+    if (ImGui::BeginPopup("##themes"))
+    {
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        float em = HelloImGui::EmSize();
+        for (int i = 0; i < ImGuiTheme::ImGuiTheme_Count; ++i)
+        {
+            auto t = (ImGuiTheme::ImGuiTheme_)i;
+            // A swatch: the theme's window, a button and its accent on it
+            ImGuiStyle style = ImGuiTheme::ThemeToStyle(t);
+            ImVec2 p = ImGui::GetCursorScreenPos();
+            drawList->AddRectFilled(p, ImVec2(p.x + em * 2.2f, p.y + em),
+                                    ImGui::ColorConvertFloat4ToU32(style.Colors[ImGuiCol_WindowBg]), em * 0.2f);
+            const ImGuiCol cols[] = {ImGuiCol_Button, ImGuiCol_CheckMark};
+            for (int k = 0; k < 2; ++k)
+            {
+                float x = p.x + em * (0.3f + k * 0.85f);
+                drawList->AddRectFilled(ImVec2(x, p.y + em * 0.25f), ImVec2(x + em * 0.6f, p.y + em * 0.75f),
+                                        ImGui::ColorConvertFloat4ToU32(style.Colors[cols[k]]), em * 0.1f);
+            }
+            ImGui::SetCursorScreenPos(ImVec2(p.x + em * 2.6f, p.y));
+            std::string name = ImGuiTheme::ImGuiTheme_Name(t);
+            std::replace(name.begin(), name.end(), '_', ' ');
+            if (ImGui::Selectable(name.c_str(), t == theme))
+                ApplyThemeKeepingTweaks(t);
+        }
+        ImGui::EndPopup();
+    }
+}
+
 bool SmallScreen()
 {
     return ImGui::GetIO().DisplaySize.x < Em(50.f);

@@ -151,6 +151,7 @@ float Tween(const char* key, float target, float duration, std::optional<float> 
 void BigText(const char* text, float scale, std::optional<ImVec4> color = std::nullopt);
 ImVec4 Lerp(ImVec4 a, ImVec4 b, float t);
 bool SmallScreen();  // a phone or a small tablet (under about 800 px): the detail is a page, the header wraps
+void ThemeSwitch();  // a moon (dark), a sun (light), and "..." for a list of all of Hello ImGui's themes
 ImU32 Curtain(float alpha);  // the color of a veil that hides what is under it: the background, at this opacity
 std::string RepoFile(const std::string& repoRelative);  // a file of the repository, where this build can read it
 bool ExplorerPage(const DemoEntry& demo);  // its C++ version's page is the explorer's own (built beside it)
