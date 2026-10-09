@@ -671,6 +671,8 @@ def gui() -> None:
         state.graph, state.frame = None, 0
     previous_editor = ed.get_current_editor()
     ed.set_current_editor(editor())
+    # Its colors follow the theme, light or dark (immapp does it for its own editor only)
+    ed.update_node_editor_colors_from_imgui_colors()
     ed.begin("Image pipeline")
     if state.graph is None:
         state.graph = initial_graph()

@@ -6,7 +6,7 @@
 #if defined(IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR) && defined(IMGUI_BUNDLE_WITH_IMPLOT) && defined(IMMVISION_HAS_OPENCV)
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "imgui-node-editor/imgui_node_editor.h"
-#include "imgui_node_editor_immapp/node_editor_default_context.h"  // DisableUserInputThisFrame
+#include "imgui_node_editor_immapp/node_editor_default_context.h"  // DisableUserInputThisFrame, UpdateNodeEditorColorsFromImguiColors
 #include "imgui_rich_md/rich_md.h"
 #include "immapp/immapp.h"
 #include "immapp/immapp_widgets.h"  // ShowResizablePlotInNodeEditor_Em
@@ -910,6 +910,8 @@ void gui_demo_node_editor_image_pipeline()
     }
     ed::EditorContext* previousEditor = ed::GetCurrentEditor();
     ed::SetCurrentEditor(Editor());
+    // Its colors follow the theme, light or dark (immapp does it for its own editor only)
+    UpdateNodeEditorColorsFromImguiColors();
     ed::Begin("Image pipeline");
     if (!state.graph)
         state.graph = std::make_unique<Graph>(InitialGraph());
