@@ -6,10 +6,26 @@
 #include "implot3d/implot3d.h"
 #include "immapp/runner.h"
 #include "imgui_rich_md/rich_md.h"
+#include <algorithm>
 #include <vector>
 
 namespace
 {
+
+// An (i) at the right of the last widget: a click, or a tap, shows the text (a tooltip would need a mouse)
+void InfoButton(const char* text)
+{
+    ImGui::SameLine();
+    ImGui::PushID(text);
+    if (ImGui::SmallButton("(i)"))
+        ImGui::OpenPopup("info");
+    if (ImGui::BeginPopup("info"))
+    {
+        ImGui::TextUnformatted(text);
+        ImGui::EndPopup();
+    }
+    ImGui::PopID();
+}
 
 struct LorenzParams {
     float sigma = 10.0f;
@@ -60,19 +76,19 @@ public:
 
     void gui_params() {
         ImGui::SliderFloat("Sigma", &PARAMS.sigma, 0.0f, 100.0f);
-        ImGui::SetItemTooltip("Controls the rate of divergence between nearby points (chaos level).");
+        InfoButton("Controls the rate of divergence between nearby points (chaos level).");
 
         ImGui::SliderFloat("Rho", &PARAMS.rho, 0.0f, 100.0f);
-        ImGui::SetItemTooltip("Determines the size and shape of the attractor.");
+        InfoButton("Determines the size and shape of the attractor.");
 
         ImGui::SliderFloat("Beta", &PARAMS.beta, 0.0f, 10.0f);
-        ImGui::SetItemTooltip("A damping parameter affecting vertical movement.");
+        InfoButton("A damping parameter affecting vertical movement.");
 
         ImGui::SliderFloat("dt", &PARAMS.dt, 0.0f, 0.05f);
-        ImGui::SetItemTooltip("Time step size for numerical integration (smaller is smoother).");
+        InfoButton("Time step size for numerical integration (smaller is smoother).");
 
         ImGui::SliderFloat("Initial Delta", &initial_delta, 0.0f, 0.2f);
-        ImGui::SetItemTooltip("Initial difference between trajectories to demonstrate divergence.");
+        InfoButton("Initial difference between trajectories to demonstrate divergence.");
 
         if (ImGui::Button("Reset")) {
             init_trajectories();
@@ -80,7 +96,9 @@ public:
     }
 
     void gui_plot() {
-        if (ImPlot3D::BeginPlot("Lorenz Attractor", HelloImGui::EmToVec2(40, 40))) {
+        // A square, as wide as a phone at most
+        float side = std::min(HelloImGui::EmSize(40.f), ImGui::GetContentRegionAvail().x);
+        if (ImPlot3D::BeginPlot("Lorenz Attractor", ImVec2(side, side))) {
             ImPlot3D::SetupAxes("X", "Y", "Z",
                                 ImPlot3DAxisFlags_AutoFit,
                                 ImPlot3DAxisFlags_AutoFit,
@@ -91,19 +109,23 @@ public:
             ImPlot3D::EndPlot();
             HelloImGui::SetItemIsLive();  // the trajectories move on their own: no idling while they are visible
         }
+        bool touch = ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen;
+        ImGui::TextDisabled(touch ? "Drag with two fingers to rotate." : "Drag with the right button to rotate.");
         traj1->step();
         traj2->step();
     }
 
     void gui() {
-        RichMd::Render(R"(
-# Lorenz Attractor & Butterfly Effect
-This is a simple example of the Lorenz Attractor. It shows two trajectories that diverge
-because of a small initial difference, illustrating chaos theory in action.
+        RichMd::FoldingTextOptions about;
+        about.startFolded = true;  // its first paragraph; "More..." shows the rest
+        RichMd::RenderFolding("about", R"(
+# Lorenz attractor and the butterfly effect
+Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,
+then drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change
+the system's parameters and the gap between the two starting points; Reset starts them over.
 
-The term **butterfly effect** in popular media may stem from the real-world implications
-of the Lorenz attractor, namely that tiny changes in initial conditions evolve to
-completely different trajectories.)");
+The term **butterfly effect** in popular media may stem from the real-world implications of the Lorenz attractor,
+namely that tiny changes in initial conditions evolve to completely different trajectories.)", about);
         ImGui::SeparatorText("Parameters");
         gui_params();
         ImGui::SeparatorText("Plot");

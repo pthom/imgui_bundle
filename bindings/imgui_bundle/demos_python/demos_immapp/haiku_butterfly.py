@@ -10,8 +10,18 @@ namely that tiny changes in initial conditions evolve to completely different tr
 """
 
 import numpy as np
-from imgui_bundle import implot3d, immapp, imgui, rich_md, hello_imgui
+from imgui_bundle import implot3d, immapp, imgui, rich_md, hello_imgui, ImVec2
 from dataclasses import dataclass
+
+
+def info_button(text: str) -> None:
+    """An (i) at the right of the last widget: a click, or a tap, shows the text (a tooltip would need a mouse)"""
+    imgui.same_line()
+    if imgui.small_button(f"(i)##{text}"):
+        imgui.open_popup(f"info##{text}")
+    if imgui.begin_popup(f"info##{text}"):
+        imgui.text(text)
+        imgui.end_popup()
 
 
 @dataclass
@@ -61,36 +71,41 @@ class CompareLorenzTrajectories:
 
     def gui_params(self):
         _, PARAMS.sigma = imgui.slider_float("Sigma", PARAMS.sigma, 0.0, 100.0)
-        imgui.set_item_tooltip("Controls the rate of divergence between nearby points (chaos level).")
+        info_button("Controls the rate of divergence between nearby points (chaos level).")
 
         _, PARAMS.rho = imgui.slider_float("Rho", PARAMS.rho, 0.0, 100.0)
-        imgui.set_item_tooltip("Determines the size and shape of the attractor.")
+        info_button("Determines the size and shape of the attractor.")
 
         _, PARAMS.beta = imgui.slider_float("Beta", PARAMS.beta, 0.0, 10.0)
-        imgui.set_item_tooltip("A damping parameter affecting vertical movement.")
+        info_button("A damping parameter affecting vertical movement.")
 
         _, PARAMS.dt = imgui.slider_float("dt", PARAMS.dt, 0.0, 0.05)
-        imgui.set_item_tooltip("Time step size for numerical integration (smaller is smoother).")
+        info_button("Time step size for numerical integration (smaller is smoother).")
 
         _, self.initial_delta = imgui.slider_float("Initial Delta", self.initial_delta, 0.0, 0.2)
-        imgui.set_item_tooltip("Initial difference between trajectories to demonstrate divergence.")
+        info_button("Initial difference between trajectories to demonstrate divergence.")
 
         if imgui.button("Reset"):
             self.init_trajectories()
 
     def gui_plot(self):
-        if implot3d.begin_plot("Lorenz Attractor", hello_imgui.em_to_vec2(40, 40)):
+        side = min(hello_imgui.em_size(40), imgui.get_content_region_avail().x)  # a square, as wide as a phone at most
+        if implot3d.begin_plot("Lorenz Attractor", ImVec2(side, side)):
             implot3d.setup_axes("X", "Y", "Z",
                                 implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit, implot3d.AxisFlags_.auto_fit)
             implot3d.plot_line("Trajectory", self.traj1.xs, self.traj1.ys, self.traj1.zs)
             implot3d.plot_line("Trajectory2", self.traj2.xs, self.traj2.ys, self.traj2.zs)
             implot3d.end_plot()
             hello_imgui.set_item_is_live()  # the trajectories move on their own: no idling while they are visible
+        touch = imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen
+        imgui.text_disabled("Drag with two fingers to rotate." if touch else "Drag with the right button to rotate.")
         self.traj1.step()
         self.traj2.step()
 
     def gui(self):
-        rich_md.render(__doc__)
+        about = rich_md.FoldingTextOptions()
+        about.start_folded = True  # its first paragraph; "More..." shows the rest
+        rich_md.render_folding("about", __doc__, about)
         imgui.separator_text("Parameters")
         self.gui_params()
         imgui.separator_text("Plot")
