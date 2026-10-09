@@ -416,9 +416,11 @@
           "filename": "demo_imgui_md.py",
           "stem": "demo_imgui_md",
           "where": "both",
-          "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each\nsection shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.",
+          "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each\nsection shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold,\nand widgets between its renders (a live plot).",
           "summary": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more.",
-          "uses": [],
+          "uses": [
+            "ImPlot"
+          ],
           "python_file": "bindings/imgui_bundle/demos_python/demo_imgui_md.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html",
@@ -798,12 +800,12 @@
           "variants": []
         },
         {
-          "label": "Matplotlib figures",
+          "label": "Matplotlib: a phase portrait",
           "filename": "demo_matplotlib.py",
           "stem": "demo_matplotlib",
           "where": "both",
-          "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI. On the left, an animated\nsine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to\nreuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).",
-          "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI.",
+          "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI. Here, the phase portrait of a damped\npendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum\nstarts from there, and swings beside it.",
+          "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.",
           "uses": [
             "Matplotlib"
           ],

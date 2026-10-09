@@ -99,7 +99,8 @@ The libraries in the bundle: full demos, widget tours, showcases.
   Uses: knobs, toggles, spinners, cool bar, command palette, file dialogs
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_widgets.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_widgets.cpp
-- Markdown tour: Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
+- Markdown tour: Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold, and widgets between its renders (a live plot).
+  Uses: ImPlot
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp
 - Markdown: a document with a table of contents and a search: Markdown as a document: a table of contents beside it, links between its sections, and a search (Ctrl+F). Several renders and a section of widgets (a plot) share them, in one scroll area. The search also finds the text of the code blocks and of the collapsed sections. The headings fold.
@@ -178,7 +179,7 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
 - Control the GLFW window (desktop only): glfw_utils.glfw_window_hello_imgui() returns the GLFW window that Hello ImGui created. With it, any function of pyGLFW works on your app's window. Here, buttons maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in the taskbar.
   Uses: GLFW
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py
-- Matplotlib figures: imgui_fig.fig() shows a Matplotlib figure as an image in the GUI. On the left, an animated sine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to reuse existing Matplotlib code; for fast interactive plots, prefer ImPlot.
+- Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
   Uses: Matplotlib
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py
 - Pydantic models: Save and load your app's settings with Pydantic, ImVec2 and colors included. ImVec2_Pydantic, ImVec4_Pydantic and ImColor_Pydantic are the usual ImVec2, ImVec4 and ImColor, usable as fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that nothing was lost.

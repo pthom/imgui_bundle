@@ -469,8 +469,10 @@ They come from the libraries in the bundle: [imgui-knobs](https://github.com/alt
 Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more.
 
 :::{dropdown} More
-Each section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
+Each section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold, and widgets between its renders (a live plot).
 :::
+
+*Uses: ImPlot*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
@@ -887,15 +889,15 @@ With it, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works 
 
 ::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_matplotlib.jpg
-:alt: Matplotlib figures
+:alt: Matplotlib: a phase portrait
 :::
 
-### Matplotlib figures
+### Matplotlib: a phase portrait
 
-`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI.
+`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.
 
 :::{dropdown} More
-On the left, an animated sine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to reuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).
+Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
 :::
 
 *Uses: Matplotlib*

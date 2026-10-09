@@ -387,9 +387,12 @@ native ones ([portable-file-dialogs](https://github.com/samhocevar/portable-file
 :::
 
 Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each
-section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.
+section shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold,
+and widgets between its renders (a live plot).
 
 *Python, C++*
+
+*Uses: ImPlot*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_imgui_md.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_imgui_md.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_imgui_md.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_imgui_md.cpp)
 
@@ -733,16 +736,16 @@ the taskbar.
 
 [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py)
 
-### Matplotlib figures
+### Matplotlib: a phase portrait
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_matplotlib.jpg
-:alt: Matplotlib figures
+:alt: Matplotlib: a phase portrait
 :width: 400px
 :::
 
-`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI. On the left, an animated
-sine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to
-reuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).
+`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI. Here, the phase portrait of a damped
+pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum
+starts from there, and swings beside it.
 
 *Python*
 

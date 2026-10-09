@@ -533,7 +533,7 @@
             "where": "desktop"
         },
         {
-            "label": "Matplotlib figures",
+            "label": "Matplotlib: a phase portrait",
             "filename": "demo_matplotlib.py",
             "category": "Python specifics",
             "source": "demos_immapp",

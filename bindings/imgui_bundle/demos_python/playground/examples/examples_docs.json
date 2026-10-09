@@ -240,9 +240,11 @@
   },
   "demo_imgui_md.py": {
     "title": "Markdown: a tour of rich_md",
-    "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each\nsection shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold.",
+    "text": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more. Each\nsection shows its source, ready to copy. The page is a document: a table of contents, a search, headings that fold,\nand widgets between its renders (a live plot).",
     "summary": "Markdown rendered in an ImGui window: styled text, tables, code, images, math, diagrams, admonitions and more.",
-    "uses": [],
+    "uses": [
+      "ImPlot"
+    ],
     "cpp": true
   },
   "demo_imgui_md_document.py": {
@@ -465,9 +467,9 @@
     "cpp": false
   },
   "demo_matplotlib.py": {
-    "title": "Matplotlib figures inside an ImGui window.",
-    "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI. On the left, an animated\nsine wave, redrawn at each frame, with a slider for its amplitude. On the right, a static figure, drawn once. Handy to\nreuse existing Matplotlib code; for fast interactive plots, prefer [ImPlot](https://github.com/epezent/implot).",
-    "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure as an image in the GUI.",
+    "title": "Matplotlib: a pendulum's phase portrait",
+    "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI. Here, the phase portrait of a damped\npendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum\nstarts from there, and swings beside it.",
+    "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.",
     "uses": [
       "Matplotlib"
     ],
