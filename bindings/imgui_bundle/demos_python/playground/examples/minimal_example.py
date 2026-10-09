@@ -44,7 +44,10 @@ def gui(state: AppState) -> None:
     imgui.text_disabled(
         "(save as .html and open in a browser)")
 
-    # HTML source viewer with code font
+    # HTML source viewer with code font; its palette follows the theme (light on a light background)
+    bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    light = 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z > 0.5
+    state.editor.set_palette(ed.TextEditor.get_light_palette() if light else ed.TextEditor.get_dark_palette())
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
     avail = imgui.get_content_region_avail()

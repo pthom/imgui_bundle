@@ -16,6 +16,13 @@ TextEditor = ed.TextEditor
 TextDiff = ed.TextDiff
 
 
+def theme_palette() -> TextEditor.Palette:
+    """The editors' palette follows the app's theme: light on a light background"""
+    bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    light = 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z > 0.5
+    return TextEditor.get_light_palette() if light else TextEditor.get_dark_palette()
+
+
 # ============================================================================
 # Source display helper: shows the code of a demo function in a collapsible section
 # ============================================================================
@@ -27,7 +34,7 @@ _source_functions: dict[str, Callable[..., Any]] = {}
 
 def _show_source_toggle(func: Callable[..., Any]) -> None:
     """Show a 'Show source' checkbox. When checked, displays the function's source
-    (obtained via inspect.getsource) in a read-only editor with light theme."""
+    (obtained via inspect.getsource) in a read-only editor."""
     func_name = func.__name__
     if func_name not in _source_show_flags:
         _source_show_flags[func_name] = False
@@ -40,12 +47,12 @@ def _show_source_toggle(func: Callable[..., Any]) -> None:
             editor = TextEditor()
             editor.set_text(source)
             editor.set_language(TextEditor.Language.python())
-            editor.set_palette(TextEditor.get_light_palette())
             editor.set_read_only_enabled(True)
             editor.set_carets_visible(False)
             _source_editors[func_name] = editor
         code_font = rich_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
+        _source_editors[func_name].set_palette(theme_palette())
         _source_editors[func_name].render(f"##src_{func_name}", ImVec2(-1, imgui.get_text_line_height() * 15))
         imgui.pop_font()
         imgui.separator_text("Demo")
@@ -55,7 +62,7 @@ def _show_source_toggle(func: Callable[..., Any]) -> None:
 # Tab 1: Basic Editor
 # Demonstrates: text loading, language selection, palette switching
 # ============================================================================
-@static(initialized=False, editor=None, lang_idx=3)  # default: Python
+@static(initialized=False, editor=None, lang_idx=3, palette=None)  # default: Python, the theme's palette
 def demo_basic_editor():
     _show_source_toggle(demo_basic_editor)
     statics = demo_basic_editor
@@ -68,12 +75,13 @@ def demo_basic_editor():
         statics.initialized = True
     editor = statics.editor
 
-    # Palette buttons
+    # Palette buttons (until one is pressed, the palette follows the theme)
     if imgui.small_button("Dark"):
-        editor.set_palette(TextEditor.get_dark_palette())
+        statics.palette = TextEditor.get_dark_palette()
     imgui.same_line()
     if imgui.small_button("Light"):
-        editor.set_palette(TextEditor.get_light_palette())
+        statics.palette = TextEditor.get_light_palette()
+    editor.set_palette(statics.palette if statics.palette is not None else theme_palette())
 
     # Language selection
     imgui.same_line()
@@ -151,6 +159,7 @@ def demo_change_callback():
 
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
+    editor.set_palette(theme_palette())
     editor.render("##changes")
     imgui.pop_font()
 
@@ -189,6 +198,7 @@ def demo_filters():
 
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
+    editor.set_palette(theme_palette())
     editor.render("##filters")
     imgui.pop_font()
 
@@ -407,6 +417,7 @@ def demo_decorators_and_context_menus():
     imgui.new_line()
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
+    editor.set_palette(theme_palette())
     editor.render("##decorators_ctx", ImVec2(-1, imgui.get_text_line_height() * 30))
     imgui.pop_font()
 
@@ -463,6 +474,7 @@ def demo_text_diff():
 
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
+    statics.diff.set_palette(theme_palette())
     statics.diff.render("##diff")
     imgui.pop_font()
 
@@ -605,6 +617,7 @@ def demo_editor_with_menus():
 
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size)
+    editor.set_palette(theme_palette())
     editor.render("##editor_menus")
     imgui.pop_font()
 
@@ -663,6 +676,7 @@ def demo_multi_cursor():
         code_font = rich_md.get_code_font()
         imgui.push_font(code_font.font, code_font.size)
         editor_height = imgui.get_text_line_height() * 20
+        editor.set_palette(theme_palette())
         editor.render("##multi_cursor", size=ImVec2(0, editor_height))
         imgui.pop_font()
 

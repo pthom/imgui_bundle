@@ -15,6 +15,14 @@
 // ============================================================================
 namespace
 {
+    // The editors' palette follows the app's theme: light on a light background
+    const TextEditor::Palette& ThemePalette()
+    {
+        ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+        bool light = 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
+        return light ? TextEditor::GetLightPalette() : TextEditor::GetDarkPalette();
+    }
+
     std::string gCppContent;    // loaded once
     std::string gPythonContent; // loaded once
 
@@ -79,7 +87,6 @@ namespace
                 else
                     ed.SetText(ExtractFunctionSource(gPythonContent, std::string("def ") + pyFuncName + "(", "# ===="));
                 ed.SetLanguage(lang == 0 ? TextEditor::Language::Cpp() : TextEditor::Language::Python());
-                ed.SetPalette(TextEditor::GetLightPalette());
                 ed.SetReadOnlyEnabled(true);
                 ed.SetCaretsVisible(false);
             }
@@ -87,6 +94,7 @@ namespace
             auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size);
             std::string id = std::string("##src_") + editorKey;
+            sourceEditors[editorKey].SetPalette(ThemePalette());
             sourceEditors[editorKey].Render(id.c_str(), ImVec2(-1, ImGui::GetTextLineHeight() * 15));
             ImGui::PopFont();
             ImGui::SeparatorText("Demo");
@@ -112,12 +120,14 @@ void DemoBasicEditor()
         initialized = true;
     }
 
-    // Palette buttons
+    // Palette buttons (until one is pressed, the palette follows the theme)
+    static const TextEditor::Palette* palette = nullptr;
     if (ImGui::SmallButton("Dark"))
-        editor.SetPalette(TextEditor::GetDarkPalette());
+        palette = &TextEditor::GetDarkPalette();
     ImGui::SameLine();
     if (ImGui::SmallButton("Light"))
-        editor.SetPalette(TextEditor::GetLightPalette());
+        palette = &TextEditor::GetLightPalette();
+    editor.SetPalette(palette ? *palette : ThemePalette());
 
     // Language selection
     ImGui::SameLine();
@@ -207,6 +217,7 @@ void DemoChangeCallback()
 
     auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
+    editor.SetPalette(ThemePalette());
     editor.Render("##changes");
     ImGui::PopFont();
 }
@@ -261,6 +272,7 @@ void DemoFilters()
 
     auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
+    editor.SetPalette(ThemePalette());
     editor.Render("##filters");
     ImGui::PopFont();
 }
@@ -469,6 +481,7 @@ void DemoDecoratorsAndContextMenus()
     ImGui::NewLine();
     auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
+    editor.SetPalette(ThemePalette());
     editor.Render("##decorators_ctx", ImVec2(-1, ImGui::GetTextLineHeight() * 30));
     ImGui::PopFont();
 
@@ -533,6 +546,7 @@ void DemoTextDiff()
 
     auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
+    diff.SetPalette(ThemePalette());
     diff.Render("##diff");
     ImGui::PopFont();
 }
@@ -662,6 +676,7 @@ void DemoEditorWithMenus()
 
     auto codeFont = RichMd::GetCodeFont();
     ImGui::PushFont(codeFont.font, codeFont.size);
+    editor.SetPalette(ThemePalette());
     editor.Render("##editor_menus");
     ImGui::PopFont();
 
@@ -726,6 +741,7 @@ void DemoMultiCursor()
         auto codeFont = RichMd::GetCodeFont();
         ImGui::PushFont(codeFont.font, codeFont.size);
         float editorHeight = ImGui::GetTextLineHeight() * 20.0f;
+        editor.SetPalette(ThemePalette());
         editor.Render("##multi_cursor", ImVec2(0, editorHeight));
         ImGui::PopFont();
     }
