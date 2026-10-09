@@ -335,14 +335,19 @@ html, body {
     font-family: monospace;
     color: rgba(200, 200, 220, 0.6);
 }
-.gallery-tags {
+.gallery-tags {  /* at the bottom right; on a narrow card, the badges go on two lines (not their words) */
     position: absolute;
+    left: 6px;
     right: 6px;
     bottom: 6px;
     display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    align-items: flex-end;
     gap: 4px;
 }
 .gallery-tag {
+    white-space: nowrap;
     padding: 1px 7px;
     font-size: clamp(0.6em, 5cqi, 0.75em);
     color: #f0f5ff;
