@@ -72,7 +72,7 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
   Uses: ImPlot, toggles, spinners
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp
-- Chinese and other non-Latin fonts (desktop only): The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as ???. The fix: load a font that has the glyphs you need, first, so that it becomes the default font. This demo shows how, with Noto Sans SC: download it, and the demo's sample lines come alive.
+- Chinese and other non-Latin fonts: The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as ???. The fix: load a font that has the glyphs you need. This demo shows two ways, with Noto Sans SC:
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp
 - Drag and drop: Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode. Each button is both a drag source and a drop target. Adapted from the drag and drop section of the Dear ImGui demo.

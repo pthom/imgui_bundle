@@ -328,12 +328,10 @@ Content that changes on its own says so with `hello_imgui.set_item_is_live()`, a
 The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`.
 
 :::{dropdown} More
-The fix: load a font that has the glyphs you need, first, so that it becomes the default font. This demo shows how, with [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC): download it, and the demo's sample lines come alive.
+The fix: load a font that has the glyphs you need. This demo shows two ways, with [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC):
 :::
 
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py)\
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_chinese_font.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_chinese_font.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp)
 
 ::::

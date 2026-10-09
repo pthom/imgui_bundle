@@ -212,8 +212,7 @@
             "label": "Chinese and other non-Latin fonts",
             "filename": "demo_chinese_font.py",
             "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
+            "source": "demos_immapp"
         },
         {
             "label": "Drag and drop",

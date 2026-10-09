@@ -268,12 +268,11 @@ after 3 seconds, the live plot and the spinner become choppy. Content that chang
 :::
 
 The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`. The fix: load a font that has
-the glyphs you need, first, so that it becomes the default font. This demo shows how, with [Noto Sans
-SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC): download it, and the demo's sample lines come alive.
+the glyphs you need. This demo shows two ways, with [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC):
 
-*Python, C++, Desktop only*
+*Python, C++*
 
-[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_chinese_font.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_chinese_font.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_chinese_font.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp)
 
 ### Drag and drop
 

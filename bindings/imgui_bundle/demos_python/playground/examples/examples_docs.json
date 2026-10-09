@@ -182,7 +182,7 @@
   },
   "demo_chinese_font.py": {
     "title": "Non-Latin text: Chinese, Japanese, Korean, Hebrew, Arabic",
-    "text": "The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`. The fix: load a font that has\nthe glyphs you need, first, so that it becomes the default font. This demo shows how, with [Noto Sans\nSC](https://fonts.google.com/noto/specimen/Noto+Sans+SC): download it, and the demo's sample lines come alive.",
+    "text": "The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`. The fix: load a font that has\nthe glyphs you need. This demo shows two ways, with [Noto Sans SC](https://fonts.google.com/noto/specimen/Noto+Sans+SC):",
     "summary": "The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as `???`.",
     "uses": [],
     "cpp": true
