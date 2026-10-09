@@ -14,6 +14,8 @@ from imgui_bundle import immapp, imgui, imgui_fig, imgui_ctx, hello_imgui
 import numpy as np
 from numpy.typing import NDArray
 
+FIGURE_WIDTH = 640  # The figures' width, in pixels: Matplotlib's default (6.4 inches at 100 dpi)
+
 
 class AnimatedFigure:
     """A class that encapsulates a Matplotlib figure, and provides a method to animate it."""
@@ -61,18 +63,25 @@ def main():
     static_ax.plot(x, y)
 
     def gui():
+        # The figures side by side when they fit, else one under the other. In a window narrower than a figure
+        # (a phone), they take its width (a negative width).
+        avail_width = imgui.get_content_region_avail().x
+        fig_size = imgui.ImVec2(-1, 0) if avail_width < FIGURE_WIDTH else None
+
         # Show an animated figure
         with imgui_ctx.begin_group():
             animated_figure.animate()
-            imgui_fig.fig("Animated figure", animated_figure.fig, refresh_image=True, show_options_button=False)
+            imgui_fig.fig("Animated figure", animated_figure.fig, size=fig_size, refresh_image=True,
+                          show_options_button=False)
             hello_imgui.set_item_is_live()  # the figure moves on its own: no idling while it is visible
             imgui.set_next_item_width(immapp.em_size(20))
             _, animated_figure.amplitude = imgui.slider_float("amplitude", animated_figure.amplitude, 0.1, 2.0)
 
-        imgui.same_line()
+        if avail_width >= 2 * FIGURE_WIDTH:
+            imgui.same_line()
 
         # Show a static figure
-        imgui_fig.fig("Static figure", static_fig)
+        imgui_fig.fig("Static figure", static_fig, size=fig_size)
 
 
     runner_params = immapp.RunnerParams()
