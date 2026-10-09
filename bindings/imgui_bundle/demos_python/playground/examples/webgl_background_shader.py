@@ -842,13 +842,18 @@ def _docs_window():
 
 
 def gui(app_state: AppState):
-    """GUI for modifying shader parameters."""
+    """GUI for modifying shader parameters. On a phone, only the wave height shows at first: the sea stays visible."""
     global _show_docs
+    narrow = imgui.get_io().display_size.x < hello_imgui.em_size(50.0)
     imgui.set_next_window_pos(hello_imgui.em_to_vec2(0.0, 0.0), imgui.Cond_.appearing)
     # At most the width of the screen (a phone)
     width = min(hello_imgui.em_size(31.0), imgui.get_main_viewport().work_size.x)
-    imgui.set_next_window_size(ImVec2(width, hello_imgui.em_size(18.0)), imgui.Cond_.appearing)
-    imgui.begin("Shader parameters")
+    if narrow:  # as tall as its content
+        imgui.set_next_window_size_constraints(ImVec2(width, 0.0), ImVec2(width, imgui.get_main_viewport().work_size.y))
+        imgui.begin("Shader parameters", None, imgui.WindowFlags_.always_auto_resize)
+    else:
+        imgui.set_next_window_size(ImVec2(width, hello_imgui.em_size(19.5)), imgui.Cond_.appearing)
+        imgui.begin("Shader parameters")
 
     rich_md.render("""
         Shader: "Seascape" by Alexander Alekseev aka TDM - 2014 - [Shadertoy](https://www.shadertoy.com/view/Ms2SD1)
@@ -856,39 +861,42 @@ def gui(app_state: AppState):
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
     imgui.separator()
 
-    # Render-scale: lower = faster, blurrier. The seascape is ray-marched
-    # per pixel, so cost scales with the offscreen resolution.
-    _, app_state.render_scale = imgui.slider_float("Render scale", app_state.render_scale, 0.1, 1.0)
-    if app_state.offscreen is not None:
-        imgui.text(f"Shader resolution: {app_state.offscreen.w} x {app_state.offscreen.h}")
-
     # Modify the uniforms values
     uniforms = app_state.uniforms
+    imgui.push_item_width(-hello_imgui.em_size(7.5))  # room for the labels, on a phone too
 
     value = uniforms.get_uniform_value("SEA_HEIGHT")
     _, value = imgui.slider_float("SEA_HEIGHT", value, 0.1, 2.1)
     uniforms.set_uniform_value("SEA_HEIGHT", value)
 
-    value = uniforms.get_uniform_value("SEA_CHOPPY")
-    _, value = imgui.slider_float("SEA_CHOPPY", value, 0.1, 10.0)
-    uniforms.set_uniform_value("SEA_CHOPPY", value)
+    if not narrow or imgui.collapsing_header("More settings"):
+        value = uniforms.get_uniform_value("SEA_CHOPPY")
+        _, value = imgui.slider_float("SEA_CHOPPY", value, 0.1, 10.0)
+        uniforms.set_uniform_value("SEA_CHOPPY", value)
 
-    color_vec = uniforms.get_uniform_value("SEA_BASE")
-    color_list = ImVec4(color_vec.x, color_vec.y, color_vec.z, 1.0)
-    _, color_list = imgui.color_edit3("SEA_BASE", color_list)
-    color_vec = MyVec3(color_list[0], color_list[1], color_list[2])
-    uniforms.set_uniform_value("SEA_BASE", color_vec)
+        color_vec = uniforms.get_uniform_value("SEA_BASE")
+        color_list = ImVec4(color_vec.x, color_vec.y, color_vec.z, 1.0)
+        _, color_list = imgui.color_edit3("SEA_BASE", color_list)
+        color_vec = MyVec3(color_list[0], color_list[1], color_list[2])
+        uniforms.set_uniform_value("SEA_BASE", color_vec)
 
-    value = uniforms.get_uniform_value("SEA_SPEED")
-    _, value = imgui.slider_float("SEA_SPEED", value, 0.1, 3.0)
-    uniforms.set_uniform_value("SEA_SPEED", value)
+        value = uniforms.get_uniform_value("SEA_SPEED")
+        _, value = imgui.slider_float("SEA_SPEED", value, 0.1, 3.0)
+        uniforms.set_uniform_value("SEA_SPEED", value)
 
-    value = uniforms.get_uniform_value("SEA_FREQ")
-    _, value = imgui.slider_float("SEA_FREQ", value, 0.01, 0.5)
-    uniforms.set_uniform_value("SEA_FREQ", value)
+        value = uniforms.get_uniform_value("SEA_FREQ")
+        _, value = imgui.slider_float("SEA_FREQ", value, 0.01, 0.5)
+        uniforms.set_uniform_value("SEA_FREQ", value)
 
-    imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
+        imgui.separator()
+        # Render-scale: lower = faster, blurrier. The seascape is ray-marched
+        # per pixel, so cost scales with the offscreen resolution.
+        _, app_state.render_scale = imgui.slider_float("Render scale", app_state.render_scale, 0.1, 1.0)
+        if app_state.offscreen is not None:
+            imgui.text(f"Shader resolution: {app_state.offscreen.w} x {app_state.offscreen.h}")
+        imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
 
+    imgui.pop_item_width()
     imgui.end()
     _docs_window()
 
