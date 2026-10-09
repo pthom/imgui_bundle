@@ -10,6 +10,11 @@ The voice: `python narrator.py build scenario.md` synthesizes one clip per sente
 matter) into `scenario_audio/` beside the script, with the words' timings; only new sentences are synthesized. With
 the clips, the audio is the clock: a sentence lasts what its clip lasts, and a cue anchored to words fires on them.
 Without them (or with the voice off), the clock is estimated from the text.
+
+The gestures (`click`, `drag`, `press`, `type_keys`...): the test engine moves a visible cursor and types, for the
+moments where the gesture is the lesson. The program runs with `use_imgui_test_engine`, and names its targets with
+`lesson.target(name, resolver)`. The engine owns the inputs while a gesture plays (Esc aborts it). Without the engine
+(a browser without JSPI), the gestures are skipped.
 """
 import hashlib
 import inspect
@@ -88,10 +93,23 @@ class Chapter:
     end: float = 0.0
 
 
+Point = tuple[float, float]     # a point in a target's rectangle, in fractions of its size
+
+
+@dataclass
+class Gesture:
+    kind: str                    # click, double_click, right_click, hover, drag, press, type, menu
+    target: str = ""             # a target of the program (click, hover, drag...)
+    arg: str = ""                # passed to the target's resolver (a heading, an entry...)
+    point: Point = (0.5, 0.5)    # where in the target's rectangle; a drag's start
+    end: Point = (0.5, 0.5)      # a drag's end
+    text: str = ""               # press: the keys ("ctrl+f"); type: the characters; menu: the item's label
+
+
 @dataclass
 class Event:
     time: float
-    kind: str                    # set, animate, highlight, pause, challenge, call
+    kind: str                    # set, animate, highlight, pause, challenge, call, gesture
     param: str = ""
     value: Any = None
     over: float = 0.0
@@ -101,6 +119,7 @@ class Event:
     hint_after: float = 30.0
     action: str = ""
     args: tuple[Any, ...] = ()
+    gesture: Optional[Gesture] = None
     chapter: int = 0
     line: int = 0
     anchor: tuple[Optional["Paragraph"], Optional[str]] = (None, None)   # the paragraph and the words it waits for
@@ -333,13 +352,52 @@ class Parser:
                       at: Optional[str] = None) -> None:
             record("challenge", prompt=prompt, until=until, hint=hint, hint_after=hint_after, at=at)
 
+        # The gestures: a target and its argument (a heading, an entry...), a point in its rectangle
+        def gesture(kind: str, target: str = "", arg: Any = "", point: Point = (0.5, 0.5), end: Point = (0.5, 0.5),
+                    text: str = "", at: Optional[str] = None) -> None:
+            if target and lesson.strict and target not in lesson.targets:
+                raise LessonError(f"line {block.line}: unknown target {target!r} (declared: {list(lesson.targets)})")
+            record("gesture", gesture=Gesture(kind, target, str(arg), (float(point[0]), float(point[1])),
+                                              (float(end[0]), float(end[1])), text), at=at)
+
+        def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+            gesture("click", target, arg, point, at=at)
+
+        def double_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+            gesture("double_click", target, arg, point, at=at)
+
+        def right_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+            gesture("right_click", target, arg, point, at=at)
+
+        def hover(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+            gesture("hover", target, arg, point, at=at)
+
+        def drag(target: str, arg: Any = "", start: Point = (0.0, 0.5), end: Point = (1.0, 0.5),
+                 at: Optional[str] = None) -> None:
+            gesture("drag", target, arg, start, end, at=at)
+
+        def press(keys: str, at: Optional[str] = None) -> None:
+            try:
+                key_chord(keys)
+            except KeyError as e:
+                raise LessonError(f"line {block.line}: unknown key {e} in {keys!r}") from e
+            gesture("press", text=keys, at=at)
+
+        def type_keys(text: str, at: Optional[str] = None) -> None:
+            gesture("type", text=text, at=at)
+
+        def menu(label: str, at: Optional[str] = None) -> None:
+            gesture("menu", text=label, at=at)
+
         class Lenient(dict[str, Any]):           # the build step knows no actions: an unknown name records nothing
             def __missing__(self, key: str) -> Callable[..., None]:
                 return lambda *args, **kw: None
 
         namespace: dict[str, Any] = (dict if lesson.strict else Lenient)(
             {"set_value": set_value, "animate": animate, "highlight": highlight,
-             "pause": pause, "challenge": challenge, **lesson.constants})
+             "pause": pause, "challenge": challenge, "click": click, "double_click": double_click,
+             "right_click": right_click, "hover": hover, "drag": drag, "press": press, "type_keys": type_keys,
+             "menu": menu, **lesson.constants})
         for action_name in lesson.actions:
             def make_call(name: str) -> Callable[..., None]:
                 def call(*args: Any, at: Optional[str] = None) -> None:
@@ -424,6 +482,159 @@ class Param:
                 raise LessonError(f"line {line}: {self.name} = {value} is out of its range [{lo}, {hi}]")
         elif self.kind in (int, float) and not isinstance(value, (int, float)):
             raise LessonError(f"line {line}: {self.name} takes a number, not {value!r}")
+
+
+def typed(before: str, after: str, k: float) -> str:
+    """The text at k (0 to 1) of a typing from `before` to `after`: their common start and end are kept, the middle is
+    erased (from its end, as Backspace does), then typed, at a constant pace"""
+    n = min(len(before), len(after))
+    start = 0
+    while start < n and before[start] == after[start]:
+        start += 1
+    end = 0
+    while end < n - start and before[-1 - end] == after[-1 - end]:
+        end += 1
+    if start == len(before) - end and start > 0 and after[start - 1] == "\n" == after[len(after) - end - 1]:
+        start, end = start - 1, end + 1          # a line inserted: its newline first, the text after it keeps its line
+    erased, written = before[start:len(before) - end], after[start:len(after) - end]
+    keys = int(k * (len(erased) + len(written)))
+    tail = after[len(after) - end:]
+    if keys <= len(erased):
+        return before[:start + len(erased) - keys] + tail
+    return after[:start + keys - len(erased)] + tail
+
+
+# =============================================================================
+# The gestures: the test engine's cursor clicks and types
+# =============================================================================
+
+_NAMED_KEYS = {"enter": "enter", "escape": "escape", "esc": "escape", "tab": "tab", "space": "space",
+               "backspace": "backspace", "delete": "delete", "up": "up_arrow", "down": "down_arrow",
+               "left": "left_arrow", "right": "right_arrow", "home": "home", "end": "end",
+               "pageup": "page_up", "pagedown": "page_down", "/": "slash"}
+_MODIFIERS = {"ctrl": "mod_ctrl", "shift": "mod_shift", "alt": "mod_alt"}
+
+
+def key_chord(keys: str) -> int:
+    """"ctrl+f", "shift+enter", "escape": an ImGui key chord (Ctrl is Cmd on macOS, as ImGui's shortcuts)"""
+    chord = 0
+    for part in keys.lower().replace(" ", "").split("+"):
+        if part in _MODIFIERS:
+            chord |= int(getattr(imgui.Key, _MODIFIERS[part]))
+        elif part in _NAMED_KEYS:
+            chord |= int(getattr(imgui.Key, _NAMED_KEYS[part]))
+        elif len(part) == 1 and (part.isalpha() or part.isdigit()):
+            chord |= int(getattr(imgui.Key, part if part.isalpha() else f"_{part}"))
+        else:
+            raise KeyError(part)
+    return chord
+
+
+Rect = tuple[ImVec2, ImVec2]
+TargetResolver = Callable[[str, Any], Optional[Rect]]   # (argument, the test context) -> the target's rectangle
+
+
+class _GestureRunner:
+    """Plays the gestures with the test engine, one after the other, in a test that ends when none is left (the engine
+    owns the inputs while a test runs). A seek replays the chapter's gestures at the engine's fast speed."""
+
+    def __init__(self, lesson: "Lesson") -> None:
+        self.lesson = lesson
+        self.queue: list[tuple[Gesture, bool]] = []   # (gesture, fast)
+        self.test: Any = None
+        self.unavailable = False                         # no test engine: the gestures are skipped
+        self._aborting = False
+        self._clipboard = ""                             # the gestures' clipboard, from a test to the next
+
+    @staticmethod
+    def _engine() -> Any:
+        try:
+            return hello_imgui.get_imgui_test_engine()
+        except Exception:
+            return None
+
+    def push(self, gesture: Gesture, fast: bool) -> None:
+        if self._engine() is None:
+            self.unavailable = True
+            return
+        self.queue.append((gesture, fast))
+
+    def restart(self) -> None:
+        """A seek: the gestures waiting are dropped, the one playing is aborted"""
+        self.queue.clear()
+        engine = self._engine()
+        if engine is not None and not imgui.test_engine.is_test_queue_empty(engine):
+            self._aborting = True
+            imgui.test_engine.abort_current_test(engine)
+
+    def busy(self) -> bool:
+        engine = self._engine()
+        return bool(self.queue) or (engine is not None and not imgui.test_engine.is_test_queue_empty(engine))
+
+    def tick(self) -> None:
+        """Every frame: starts the test when gestures wait and none plays"""
+        engine = self._engine()
+        if not self.queue or engine is None or not imgui.test_engine.is_test_queue_empty(engine):
+            return
+        if self.test is None:
+            self.test = imgui.test_engine.register_test(engine, "narrator", "gestures")
+            self.test.test_func = self._run
+            # A gesture leaves the focus where it put it: a menu it opened stays open for the next one
+            imgui.test_engine.get_io(engine).config_restore_focus_after_tests = False
+        imgui.test_engine.queue_test(engine, self.test)
+
+    def _run(self, ctx: Any) -> None:
+        self._aborting = False
+        # Each test has a private clipboard, empty at its start: a copy made by a gesture is carried to the next ones
+        # (and the learner's own clipboard is left alone)
+        if self._clipboard:
+            imgui.set_clipboard_text(self._clipboard)
+        io = imgui.get_io()
+        start = io.mouse_pos                             # the cursor leaves from the learner's mouse, if it is in
+        if not imgui.is_mouse_pos_valid(start):
+            start = imgui.get_main_viewport().get_center()
+        ctx.mouse_teleport_to_pos(start)
+        engine_io = ctx.engine_io
+        while self.queue and not self._aborting and not ctx.is_error():
+            gesture, fast = self.queue.pop(0)
+            engine_io.config_run_speed = (imgui.test_engine.TestRunSpeed.fast if fast
+                                          else imgui.test_engine.TestRunSpeed.normal)
+            self._play(ctx, gesture)
+            self._clipboard = imgui.get_clipboard_text() or ""
+        engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.normal
+        if ctx.is_error():
+            self.queue.clear()                           # the engine ignores every operation after an error
+
+    def _play(self, ctx: Any, g: Gesture) -> None:
+        if g.kind == "press":
+            ctx.key_press(key_chord(g.text))
+            return
+        if g.kind == "type":
+            ctx.key_chars(g.text)
+            return
+        if g.kind == "menu":
+            ctx.item_click("//$FOCUSED/" + g.text)
+            return
+        resolver = self.lesson.targets.get(g.target)
+        rect = resolver(g.arg, ctx) if resolver is not None else None
+        if rect is None:
+            print(f"narrator: the target {g.target}({g.arg!r}) is not on screen: {g.kind} skipped", file=sys.stderr)
+            return
+
+        def point(f: tuple[float, float]) -> ImVec2:
+            return ImVec2(rect[0].x + (rect[1].x - rect[0].x) * f[0], rect[0].y + (rect[1].y - rect[0].y) * f[1])
+
+        ctx.mouse_move_to_pos(point(g.point))
+        if g.kind == "click":
+            ctx.mouse_click(0)
+        elif g.kind == "double_click":
+            ctx.mouse_double_click(0)
+        elif g.kind == "right_click":
+            ctx.mouse_click(1)
+        elif g.kind == "drag":
+            ctx.mouse_down(0)
+            ctx.mouse_move_to_pos(point(g.end))
+            ctx.mouse_up(0)
 
 
 # =============================================================================
@@ -545,6 +756,9 @@ class Lesson:
         self.derived: dict[str, Callable[[], Any]] = {}
         self.actions: dict[str, Callable[..., Any]] = {}
         self.constants: dict[str, Any] = {}
+        self.targets: dict[str, TargetResolver] = {}
+        self.gestures = _GestureRunner(self)
+        self._replaying = False                    # during a seek: the gestures replayed play fast
         self.script: Optional[Script] = None
         self.error: str = ""
         self.t = 0.0
@@ -591,6 +805,11 @@ class Lesson:
     def constant(self, name: str, value: Any) -> None:
         self.constants[name] = value
 
+    def target(self, name: str, resolver: TargetResolver) -> None:
+        """A target of the gestures: `resolver(arg, ctx)` gives its rectangle on screen (or None) when a gesture plays;
+        ctx is the test engine's context (e.g. to gather the items of a window)"""
+        self.targets[name] = resolver
+
     # ---- loading -------------------------------------------------------------------------------------------------
     def load(self) -> None:
         self.initial = {name: p.get() for name, p in self.params.items()}
@@ -632,6 +851,9 @@ class Lesson:
                 continue
             if event.kind == "animate" and event.over > 0 and t < event.time + event.over:
                 k = (t - event.time) / event.over
+                if isinstance(value, str):                # a text is typed
+                    value = typed(value, str(event.value), k)
+                    continue
                 k = 0.5 - 0.5 * math.cos(math.pi * k)     # ease in and out
                 value = value + (event.value - value) * k
             else:
@@ -673,10 +895,13 @@ class Lesson:
         self.waiting = None
         self.passed = {id(e) for e in self.script.events if e.kind in ("pause", "challenge") and e.time < self.t}
         chapter_start = self.script.chapters[self.current_chapter()].start
-        self.fired = {id(e) for e in self.script.events if e.kind == "call" and e.time < chapter_start}
+        self.fired = {id(e) for e in self.script.events if e.kind in ("call", "gesture") and e.time < chapter_start}
         for p in self.params.values():
             p.hold_until = -1.0
+        self.gestures.restart()
+        self._replaying = True                     # the chapter's actions and gestures before t: replayed, fast
         self._apply()
+        self._replaying = False
 
     def sentence_offset(self, delta: int) -> None:
         assert self.script is not None
@@ -700,6 +925,9 @@ class Lesson:
             if event.kind == "call" and id(event) not in self.fired:
                 self.fired.add(id(event))
                 self.actions[event.action](*event.args)
+            elif event.kind == "gesture" and id(event) not in self.fired and event.gesture is not None:
+                self.fired.add(id(event))
+                self.gestures.push(event.gesture, fast=self._replaying)
             elif event.kind == "highlight" and self.t - event.time < HIGHLIGHT_DURATION:
                 self.params[event.param].highlight_until = event.time + HIGHLIGHT_DURATION
 
@@ -729,8 +957,9 @@ class Lesson:
         if self.waiting is not None and self.waiting.kind == "challenge" and self._condition(self.waiting.until):
             self._resume()
         self._apply()
-        if self.playing and self.waiting is None:
-            hello_imgui.request_refresh()  # the lesson's clock runs: what it animates moves on its own
+        self.gestures.tick()
+        if (self.playing and self.waiting is None) or self.gestures.busy():
+            hello_imgui.request_refresh()  # the lesson's clock runs, or a gesture plays: the frames go on
 
     def _clock_next(self) -> float:
         """The lesson time after this frame: the clip's position while a sentence is spoken, else the frame's time"""
@@ -976,6 +1205,10 @@ class Lesson:
         title = chapters[now].title or f"Chapter {now + 1}"
         if imgui.button(f"{fa.ICON_FA_BARS}  {title}   {now + 1}/{len(chapters)}###menu", ImVec2(0, h)):
             imgui.open_popup("##lesson_menu")
+        if self.gestures.unavailable:
+            imgui.same_line()
+            imgui.align_text_to_frame_padding()
+            imgui.text_disabled("No test engine here: the gestures are skipped")
         if not imgui.begin_popup("##lesson_menu"):
             return
         imgui.push_style_var(imgui.StyleVar_.selectable_text_align, ImVec2(0.0, 0.5))
