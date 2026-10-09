@@ -464,14 +464,25 @@ class Launcher:
 
     # The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
     def title(self) -> None:
+        tagline = "Interactive apps in Python and C++, for desktop, web and mobile."
+        invite = "Pick a demo: see it, run it, and read its code: each demo is a documented quickstart."
+        avail = imgui.get_content_region_avail().x
         big_text("Dear ImGui Bundle", 2.0)
-        imgui.same_line()
-        y = imgui.get_cursor_pos_y() + em_size(0.75)  # the tagline sits on the title's baseline
-        imgui.set_cursor_pos_y(y)
-        imgui.text_disabled("   Interactive apps in Python and C++, for desktop, web and mobile.")
-        imgui.same_line()
-        imgui.set_cursor_pos_y(y)
-        imgui.text("Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.")
+        spacing = imgui.get_style().item_spacing.x
+        lines_width = imgui.calc_text_size("   " + tagline).x + spacing + imgui.calc_text_size(invite).x
+        if imgui.get_item_rect_size().x + spacing + lines_width <= avail:
+            imgui.same_line()
+            y = imgui.get_cursor_pos_y() + em_size(0.75)  # the tagline sits on the title's baseline
+            imgui.set_cursor_pos_y(y)
+            imgui.text_disabled("   " + tagline)
+            imgui.same_line()
+            imgui.set_cursor_pos_y(y)
+            imgui.text(invite)
+        else:  # a narrow window (a phone): under the title, wrapped
+            imgui.push_text_wrap_pos(0.0)
+            imgui.text_disabled(tagline)
+            imgui.text(invite)
+            imgui.pop_text_wrap_pos()
 
     def filters(self) -> None:
         """The category chips, the library filter and the search box, then a separator. On a phone, the chips are one

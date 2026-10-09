@@ -452,14 +452,30 @@ bool DemoLauncher::Chip(const std::string& label, float highlight, bool wrap)
 // The header: the name, what the bundle is, a chip per category that scrolls to it, and the library filter
 void DemoLauncher::Title()
 {
+    const char* tagline = "Interactive apps in Python and C++, for desktop, web and mobile.";
+    const char* invite = "Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.";
+    float avail = ImGui::GetContentRegionAvail().x;
     BigText("Dear ImGui Bundle", 2.f);
-    ImGui::SameLine();
-    float y = ImGui::GetCursorPosY() + Em(0.75f);  // the tagline sits on the title's baseline
-    ImGui::SetCursorPosY(y);
-    ImGui::TextDisabled("   Interactive apps in Python and C++, for desktop, web and mobile.");
-    ImGui::SameLine();
-    ImGui::SetCursorPosY(y);
-    ImGui::TextUnformatted("Pick a demo: see it, run it, and read its code: each demo is a documented quickstart.");
+    float spacing = ImGui::GetStyle().ItemSpacing.x;
+    float linesWidth = ImGui::CalcTextSize((std::string("   ") + tagline).c_str()).x + spacing
+                       + ImGui::CalcTextSize(invite).x;
+    if (ImGui::GetItemRectSize().x + spacing + linesWidth <= avail)
+    {
+        ImGui::SameLine();
+        float y = ImGui::GetCursorPosY() + Em(0.75f);  // the tagline sits on the title's baseline
+        ImGui::SetCursorPosY(y);
+        ImGui::TextDisabled("   %s", tagline);
+        ImGui::SameLine();
+        ImGui::SetCursorPosY(y);
+        ImGui::TextUnformatted(invite);
+    }
+    else  // a narrow window (a phone): under the title, wrapped
+    {
+        ImGui::PushTextWrapPos(0.f);
+        ImGui::TextDisabled("%s", tagline);
+        ImGui::TextUnformatted(invite);
+        ImGui::PopTextWrapPos();
+    }
 }
 
 void DemoLauncher::Filters()
