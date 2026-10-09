@@ -313,11 +313,19 @@ def gui(state: AppState):
         imgui.same_line()
         gui_animation(state, ImVec2(0, 0))
     else:
-        # A narrow screen (a phone): the text, the animation, then the controls, in a page that scrolls
-        rich_md.render(__doc__)
-        width = imgui.get_content_region_avail().x
-        gui_animation(state, ImVec2(width, width))
+        # A narrow screen (a phone): the animation at the top, always visible; below it, the text (folded at first)
+        # and the controls scroll
+        avail = imgui.get_content_region_avail()
+        side = min(avail.x, avail.y * 0.45)
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail.x - side) / 2)
+        gui_animation(state, ImVec2(side, side))
+        imgui.begin_child("text_and_controls")
+        about = rich_md.FoldingTextOptions()
+        about.start_folded = True
+        rich_md.render_folding("about", __doc__, about)
+        imgui.separator()
         gui_controls(state)
+        imgui.end_child()
 
     imgui.pop_style_var()
 
