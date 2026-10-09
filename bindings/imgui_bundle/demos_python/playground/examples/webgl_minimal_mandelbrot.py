@@ -171,7 +171,12 @@ def _docs_window():
     global _show_docs
     if not _show_docs:
         return
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
+    # Centered, and at most the size of the screen (a phone)
+    viewport = imgui.get_main_viewport()
+    size = imgui.ImVec2(min(hello_imgui.em_size(48), viewport.work_size.x),
+                        min(hello_imgui.em_size(32), viewport.work_size.y))
+    imgui.set_next_window_pos(viewport.get_work_center(), imgui.Cond_.first_use_ever, imgui.ImVec2(0.5, 0.5))
+    imgui.set_next_window_size(size, imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
         rich_md.render(__doc__ or "")
@@ -181,9 +186,12 @@ def _docs_window():
 def gui():
     global _show_docs
     imgui.set_next_window_pos(hello_imgui.em_to_vec2(2.0, 2.0), imgui.Cond_.appearing)
+    # 26 em wide, at most the width of the screen (a phone); its height fits the content (0)
+    width = min(hello_imgui.em_size(26), imgui.get_main_viewport().work_size.x - hello_imgui.em_size(4))
+    imgui.set_next_window_size(imgui.ImVec2(width, 0), imgui.Cond_.appearing)
     imgui.begin("Minimal Mandelbrot")
-    imgui.text("Animated Mandelbrot zoom rendered as the app background.")
-    imgui.text("Pyodide WebGL2 + hello_imgui custom_background callback.")
+    imgui.text_wrapped("Animated Mandelbrot zoom rendered as the app background. "
+                       "Pyodide WebGL2 + hello_imgui custom_background callback.")
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
     imgui.end()

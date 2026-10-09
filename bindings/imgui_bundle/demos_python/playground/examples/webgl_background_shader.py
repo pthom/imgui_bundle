@@ -829,7 +829,12 @@ def _docs_window():
     global _show_docs
     if not _show_docs:
         return
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
+    # Centered, and at most the size of the screen (a phone)
+    viewport = imgui.get_main_viewport()
+    size = imgui.ImVec2(min(hello_imgui.em_size(48), viewport.work_size.x),
+                        min(hello_imgui.em_size(32), viewport.work_size.y))
+    imgui.set_next_window_pos(viewport.get_work_center(), imgui.Cond_.first_use_ever, imgui.ImVec2(0.5, 0.5))
+    imgui.set_next_window_size(size, imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
         rich_md.render(__doc__ or "")
@@ -840,7 +845,9 @@ def gui(app_state: AppState):
     """GUI for modifying shader parameters."""
     global _show_docs
     imgui.set_next_window_pos(hello_imgui.em_to_vec2(0.0, 0.0), imgui.Cond_.appearing)
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(31.0, 18.0), imgui.Cond_.appearing)
+    # At most the width of the screen (a phone)
+    width = min(hello_imgui.em_size(31.0), imgui.get_main_viewport().work_size.x)
+    imgui.set_next_window_size(ImVec2(width, hello_imgui.em_size(18.0)), imgui.Cond_.appearing)
     imgui.begin("Shader parameters")
 
     rich_md.render("""

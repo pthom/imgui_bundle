@@ -270,7 +270,12 @@ def _docs_window():
     global _show_docs
     if not _show_docs:
         return
-    imgui.set_next_window_size(hello_imgui.em_to_vec2(48, 32), imgui.Cond_.first_use_ever)
+    # Centered, and at most the size of the screen (a phone)
+    viewport = imgui.get_main_viewport()
+    size = imgui.ImVec2(min(hello_imgui.em_size(48), viewport.work_size.x),
+                        min(hello_imgui.em_size(32), viewport.work_size.y))
+    imgui.set_next_window_pos(viewport.get_work_center(), imgui.Cond_.first_use_ever, imgui.ImVec2(0.5, 0.5))
+    imgui.set_next_window_size(size, imgui.Cond_.first_use_ever)
     expanded, _show_docs = imgui.begin("About this demo", _show_docs)  # type: ignore
     if expanded:
         rich_md.render(__doc__ or "")
@@ -282,14 +287,18 @@ def gui():
     render_cube_into_texture()
 
     imgui.set_next_window_pos(hello_imgui.em_to_vec2(2.0, 2.0), imgui.Cond_.appearing)
+    # At most the width of the screen (a phone): the texts wrap, the image shrinks
+    max_width = imgui.get_main_viewport().work_size.x - hello_imgui.em_size(4)
+    imgui.set_next_window_size_constraints(imgui.ImVec2(0, 0), imgui.ImVec2(max_width, imgui.FLT_MAX))
     imgui.begin("3D cube via WebGL (Pyodide)")
-    imgui.text("Python WebGL renders a depth-tested 3D cube into an FBO;")
-    imgui.text("imgui.image() displays the same texture, no readback.")
+    imgui.text_wrapped("Python WebGL renders a depth-tested 3D cube into an FBO; "
+                       "imgui.image() displays the same texture, no readback.")
     imgui.text(f"ImTextureID = {TEXTURE_ID} (constant across frames)")
     imgui.text(f"Texture: {TEX_W} x {TEX_H}")
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
     imgui.separator()
-    imgui.image(imgui.ImTextureRef(TEXTURE_ID), ImVec2(TEX_W, TEX_H))
+    side = min(TEX_W, max_width - hello_imgui.em_size(1))
+    imgui.image(imgui.ImTextureRef(TEXTURE_ID), ImVec2(side, side * TEX_H / TEX_W))
     hello_imgui.set_item_is_live()  # the cube rotates on its own: no idling while it is visible
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
     imgui.end()
