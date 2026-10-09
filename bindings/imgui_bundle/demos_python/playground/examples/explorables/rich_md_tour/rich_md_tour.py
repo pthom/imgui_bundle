@@ -1,7 +1,7 @@
 """Rich Markdown: a narrated tour
 
-Markdown drawn by Dear ImGui as you type: styles, tables, code, math, diagrams, callouts. Then a document, with its
-table of contents, its search, its folds and its selection. A voice tells, a cursor shows; take the mouse at any time.
+Markdown drawn by Dear ImGui as you type: styles, a table, math, code, a diagram. Then a document, with its table of
+contents, its search, its folds and its selection. A voice tells; the cursor of the test engine types and clicks.
 """
 import sys
 from pathlib import Path
@@ -16,36 +16,30 @@ import narrator  # noqa: E402
 SPLIT_BELOW_EM = 44.0          # a narrower stage stacks the source above the page
 SOURCE_SHARE = 0.42            # the source's share of the stage, beside or above the page
 FIRST_LINE_EM = 2.85           # from the top of a ## heading to the middle of the first line under it
+FOLLOW_END_CHARS = 300         # an edit closer than this to the end of the text: the page scrolls to its end
 DARK, LIGHT = hello_imgui.ImGuiTheme_.darcula_darker, hello_imgui.ImGuiTheme_.white_is_white
 
-# The document that the voice types, part by part. upto(name) is the document up to a part.
+# The document, part by part: the lesson types the short ones and pastes the long ones (part(name)); upto(name) is
+# the document from its start to a part, the state at a chapter's start
 PARTS: list[tuple[str, str]] = [
     ("title", "# The Solar System\n\n"),
-    ("intro", "Eight planets circle the Sun. The four inner ones are small and *rocky*; the four outer ones are "
-              "**giants** of gas and ice. ~~Pluto~~ is a dwarf planet since 2006.\n\n"),
-    ("list", "- **Mercury**, **Venus**, **Earth** and **Mars**: rock and metal\n"
-             "- **Jupiter** and **Saturn**: the gas giants\n"
-             "- **Uranus** and **Neptune**: the ice giants\n\n"),
-    ("quote", "> The Earth is the cradle of humanity, but one cannot live in a cradle forever.\n"
-              ">\n"
-              "> *Konstantin Tsiolkovsky, 1911*\n\n"),
-    ("link", "More on [NASA's site](https://science.nasa.gov/solar-system/).\n\n"),
+    ("intro", "Eight planets circle the Sun: four *rocky* ones, and four **giants** of gas and ice. "
+              "~~Pluto~~ was demoted in 2006.\n\n"),
     ("table", "## The planets\n\n"
               "| Planet  | Distance (AU) | Year (days) |\n"
-              "|---------|--------------:|------------:|\n"),
-    ("rows_inner", "| Mercury | 0.39 | 88 |\n"
-                   "| Venus   | 0.72 | 225 |\n"
-                   "| Earth   | 1.00 | 365 |\n"
-                   "| Mars    | 1.52 | 687 |\n"),
-    ("rows_outer", "| Jupiter | 5.20 | 4,333 |\n"
-                   "| Saturn  | 9.58 | 10,759 |\n"
-                   "| Uranus  | 19.2 | 30,687 |\n"
-                   "| Neptune | 30.1 | 60,190 |\n\n"),
-    ("au", "One AU (astronomical unit) is the distance from the Earth to the Sun: 150 million km.\n\n"),
+              "|---------|--------------:|------------:|\n"
+              "| Mercury | 0.39 | 88 |\n"
+              "| Venus   | 0.72 | 225 |\n"
+              "| Earth   | 1.00 | 365 |\n"
+              "| Mars    | 1.52 | 687 |\n"
+              "| Jupiter | 5.20 | 4,333 |\n"
+              "| Saturn  | 9.58 | 10,759 |\n"
+              "| Uranus  | 19.2 | 30,687 |\n"
+              "| Neptune | 30.1 | 60,190 |\n\n"),
     ("kepler", "## Kepler's law\n\n"
-               "The farther the planet, the longer its year. In 1619, Kepler found the rule: $T^2 = a^3$, with $T$ "
-               "in years and $a$ in AU. Newton later explained it with gravity:\n\n"),
-    ("newton", "$$\nT = 2\\pi \\sqrt{\\frac{a^3}{G M}}\n$$\n\n"),
+               "The farther the planet, the longer its year: $T^2 = a^3$, in years and AU.\n\n"),
+    ("newton", "Newton explained it with gravity:\n\n"
+               "$$\nT = 2\\pi \\sqrt{\\frac{a^3}{G M}}\n$$\n\n"),
     ("code", "The year of Mars, in Python:\n\n"
              "```python\n"
              "a = 1.524                  # the distance of Mars, in AU\n"
@@ -53,8 +47,7 @@ PARTS: list[tuple[str, str]] = [
              "print(f\"{T:.2f} years\")    # 1.88 years: 687 days\n"
              "```\n\n"),
     ("families", "## The families\n\n"
-                 "[The table](#the-planets) lists the planets from the Sun outwards. By what they are made of, "
-                 "they form three families:\n\n"
+                 "[The table](#the-planets) lists the planets from the Sun outwards. They form three families:\n\n"
                  "```mermaid\n"
                  "flowchart LR\n"),
     ("fam_sun", "    Sun((Sun)) --> Rocky[Rocky planets]\n"),
@@ -63,21 +56,25 @@ PARTS: list[tuple[str, str]] = [
     ("fam_examples", "    Rocky --> Earth\n"
                      "    Gas --> Jupiter\n"
                      "    Ice --> Neptune\n"),
-    ("families_end", "```\n\n"),
-    ("exploration", "## Exploration\n\n"),
-    ("note", "> [!NOTE]\n"
-             "> A spacecraft has visited every planet. People have walked on the Moon only.\n\n"),
-    ("tasks", "- [x] The Moon, 1969\n"
-              "- [x] A rover on Mars, 1997\n"
-              "- [x] Pluto, by New Horizons, 2015\n"
-              "- [ ] People on Mars\n\n"),
-    ("dwarfs", "<details>\n"
-               "<summary>The dwarf planets</summary>\n\n"
-               "Pluto, Eris, Haumea, Makemake and Ceres. Ceres orbits between Mars and Jupiter, in the asteroid "
-               "belt.\n\n"
-               "</details>\n"),
+    ("families_end", "```\n"),
+    ("exploration", "\n## Exploration\n\n"
+                    "> [!NOTE]\n"
+                    "> A spacecraft has visited every planet. People have walked on the Moon only.\n\n"
+                    "- [x] The Moon, 1969\n"
+                    "- [x] A rover on Mars, 1997\n"
+                    "- [x] Pluto, by New Horizons, 2015\n"
+                    "- [ ] People on Mars\n\n"
+                    "<details>\n"
+                    "<summary>The dwarf planets</summary>\n\n"
+                    "Pluto, Eris, Haumea, Makemake and Ceres. Ceres orbits between Mars and Jupiter, in the "
+                    "asteroid belt.\n\n"
+                    "</details>\n"),
 ]
 PART_NAMES = [name for name, _ in PARTS]
+
+
+def part(name: str) -> str:
+    return dict(PARTS)[name]
 
 
 def upto(name: str) -> str:
@@ -143,6 +140,8 @@ editor.set_language(ed.TextEditor.Language.markdown())
 editor.set_show_line_numbers_enabled(False)
 editor.set_show_whitespaces_enabled(False)
 editor.set_word_wrap_enabled(True)
+editor.set_auto_indent_enabled(False)          # the lesson types its text as it is
+editor.set_complete_paired_glyphs(False)
 _editor_text = ""                     # the text the editor shows
 
 
@@ -257,6 +256,7 @@ lesson.param(name="page_width", owner=app_state, range=(0.2, 1.0))
 lesson.param(name="theme", owner=app_state)
 lesson.action(name="reset_page", function=app_state.reset_page)
 lesson.constant(name="upto", value=upto)
+lesson.constant(name="part", value=part)
 lesson.constant(name="FULL", value=FULL)
 for _name, _resolver in (("heading", target_heading), ("fold", target_fold), ("line", target_line),
                          ("toc", target_toc), ("toc_hide", target_toc_hide), ("toc_show", target_toc_show),
@@ -268,6 +268,14 @@ for _name, _resolver in (("heading", target_heading), ("fold", target_fold), ("l
 # The stage
 # =============================================================================
 
+def _common_end(a: str, b: str) -> int:
+    """The length of the end that two texts share"""
+    n = 0
+    while n < min(len(a), len(b)) and a[len(a) - 1 - n] == b[len(b) - 1 - n]:
+        n += 1
+    return n
+
+
 def _doc_pos(text: str, index: int) -> ed.TextEditor.DocPos:
     line = text.count("\n", 0, index)
     return ed.TextEditor.DocPos(line, index - (text.rfind("\n", 0, index) + 1))
@@ -278,10 +286,7 @@ def gui_source(size: ImVec2) -> None:
     global _editor_text
     if app_state.source != _editor_text:          # typed by the lesson: the cursor at the end of the change
         before, after = _editor_text, app_state.source
-        end = 0
-        while end < min(len(before), len(after)) and before[len(before) - 1 - end] == after[len(after) - 1 - end]:
-            end += 1
-        cursor = _doc_pos(after, len(after) - end)
+        cursor = _doc_pos(after, len(after) - _common_end(before, after))
         editor.set_text(after)
         editor.set_cursor(cursor)
         editor.scroll_to_line(cursor.line, ed.TextEditor.Scroll.align_middle)
@@ -291,9 +296,10 @@ def gui_source(size: ImVec2) -> None:
     page.editor_rect = (imgui.get_item_rect_min(), imgui.get_item_rect_max())
     text = editor.get_text()
     if text != _editor_text:                      # edited by the learner: the lesson lets it be for a while
-        if text.startswith(_editor_text):         # added at the end (a paste): both panes show it
-            editor.scroll_to_line(text.count("\n"), ed.TextEditor.Scroll.align_middle)
+        if _common_end(_editor_text, text) < FOLLOW_END_CHARS:   # an edit near the end: the page shows it
             page.follow_end = True
+        if len(text) - len(_editor_text) > 1:                    # a paste: the editor shows where it landed
+            editor.scroll_to_line(editor.get_main_cursor_position().line, ed.TextEditor.Scroll.align_middle)
         app_state.source = _editor_text = text
         lesson.touched("source")
     lesson.widget("source")

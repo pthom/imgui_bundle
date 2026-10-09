@@ -7,239 +7,136 @@ defaults:
 ---
 # Rich Markdown
 
-## Markdown, drawn by Dear ImGui
+## Markdown, live
 
-[[The finished page alone, as a teaser]]
+[[The finished page alone, as a teaser; then an empty page beside an empty source]]
 ```cues
 reset_page()
 set_value("theme", "dark")
 set_value("page_width", 1.0)
 set_value("view", "page")
 set_value("source", FULL)
+set_value("view", "split", at="Let me start")
+set_value("source", "", at="Let me start")
 ```
-This page is markdown. A table, formulas, code, a diagram: Dear ImGui draws all of it, with no browser and no web view.
+This whole page is markdown, drawn live by Dear ImGui: no browser, no web view. Let me start again, from an empty page.
 
-[[Its source appears on the left]]
+[[The cursor of the test engine clicks in the editor and types: the page follows each key]]
 ```cues
-set_value("view", "split", at="Here is")
-highlight("source", at="Here is")
+click("editor", point=(0.5, 0.2))
+type_keys(part("title"))
 ```
-Here is its source. When the source changes, the page follows at once.
-
-The library is called Rich Markdown. It runs wherever Dear ImGui runs: on the desktop, on a phone, and in this web page. Let us write the page again, from the start.
-
-## Writing
+A hash sign, and a title.
 
 ```cues
-reset_page()
-set_value("view", "split")
-set_value("source", "")
-animate("source", upto("title"), over=1.5, at="A hash")
+type_keys(part("intro"))
 ```
-A hash sign makes a heading.
+Stars for italic and bold, two tildes to strike Pluto out. There is no preview button: the page follows every key.
 
 ```cues
-animate("source", upto("intro"), over=6)
+paste(part("table"), at="A table")
 ```
-A paragraph is plain text. Stars make a word italic or bold; two tildes strike it through.
-
-```cues
-animate("source", upto("list"), over=5)
-```
-A dash starts a list. The page wraps the long lines, and the bullets follow.
-
-```cues
-animate("source", upto("quote"), over=4)
-```
-A quote starts with a greater-than sign.
-
-```cues
-animate("source", upto("link"), over=3)
-```
-A link is its text in brackets, then its address.
-
-## Tables
-
-```cues
-reset_page()
-set_value("view", "split")
-set_value("source", upto("link"))
-animate("source", upto("table"), over=4)
-```
-A table is drawn with pipes and dashes. The colons on the second line align a column to the right.
-
-```cues
-animate("source", upto("rows_inner"), over=4)
-animate("source", upto("rows_outer"), over=4, at="the outer ones")
-```
-One line per row: the inner planets, then the outer ones, with their distance to the Sun and the length of their year.
-
-```cues
-animate("source", upto("au"), over=3)
-```
-The farther the planet, the longer its year.
+A table? Paste it. The colons under the header align the numbers to the right.
 
 ## Math and code
 
 ```cues
 reset_page()
 set_value("view", "split")
-set_value("source", upto("au"))
-animate("source", upto("kepler"), over=8)
+set_value("source", upto("table"))
+click("editor", point=(0.5, 0.9))
+press("ctrl+end")
+type_keys(part("kepler"))
 ```
-Formulas are written in LaTeX. Between single dollars, a formula sits in the text: here, Kepler's law. The square of the year grows as the cube of the distance.
+Formulas are LaTeX. Watch Kepler's law: it becomes a formula as soon as its second dollar sign closes it.
 
 ```cues
-animate("source", upto("newton"), over=3)
+paste(part("newton"), at="Between double")
+paste(part("code"), at="And code")
 ```
-Between double dollars, a formula stands on its own, centered. MicroTeX draws it, inside Dear ImGui.
+Between double dollars, a formula stands on its own line. And code gets its colors from a real code editor.
 
-```cues
-animate("source", upto("code"), over=6)
-```
-Code goes between three backquotes, with its language. Here, the year of Mars in Python, colored by a code editor.
+## A diagram that grows
 
-## Diagrams
-
+[[Each line is pasted whole: typed letter by letter, a line would not parse until its end, and the diagram would flash an error]]
 ```cues
 reset_page()
 set_value("view", "split")
 set_value("source", upto("code"))
-animate("source", upto("families"), over=5)
+click("editor", point=(0.5, 0.9))
+press("ctrl+end")
+paste(part("families") + part("families_end"))
+press("up")
+paste(part("fam_sun"), at="Each line")
+paste(part("fam_gas"), at="a node")
+paste(part("fam_ice"), at="an arrow")
+paste(part("fam_examples"), at="lays itself")
 ```
-A link can lead to a section of the page: its address is the heading's name, after a hash sign. A diagram is code too: a block of language Mermaid, with the type of the diagram on its first line.
+A Mermaid block is a diagram. Each line adds a node, or an arrow, and the diagram lays itself out again. No JavaScript here: it is drawn with the draw list of Dear ImGui.
 
-[[Each line appears whole: typed letter by letter, a line would not parse until its end, and the diagram would flash an error]]
-```cues
-set_value("source", upto("fam_sun"), at="Each line")
-set_value("source", upto("fam_gas"), at="The diagram")
-set_value("source", upto("fam_ice"), at="its colors")
-set_value("source", upto("fam_examples"), at="No web view")
-```
-Each line adds a node or an arrow. The diagram lays itself out again, and its colors are those of the ImGui style. No web view, no JavaScript: it is drawn with the draw list of Dear ImGui.
-
-## Callouts and tasks
-
-```cues
-reset_page()
-set_value("view", "split")
-set_value("source", upto("families_end"))
-animate("source", upto("note"), over=4)
-```
-GitHub's callouts are quotes that start with a tag: note, tip, important, warning or caution.
-
-```cues
-animate("source", upto("tasks"), over=4)
-```
-A task list is a list with boxes, checked or not.
-
-```cues
-animate("source", upto("dwarfs"), over=5)
-```
-And an HTML details tag folds a passage away, until a click opens it.
-
-## A document
+## Find anything
 
 ```cues
 reset_page()
 set_value("view", "page")
 set_value("source", FULL)
+click("toc", "The planets", at="a click")
 ```
-The page is long now: it needs a map. On the left, the table of contents lists its headings. It marks the section on screen, and follows the scroll.
+Here is the whole page, as a document. On the left, its table of contents: a click, and the page scrolls there.
 
 ```cues
-click("toc", "The families", at="A click")
-click("line", "The families", point=(0.03, 0.5), at="A link")
-```
-A click on an entry scrolls the page there. A link to a section does the same: here, back to the table.
-
-```cues
-click("toc_hide", at="The arrow")
-click("toc_show", at="The other arrow")
-```
-The arrow at the top hides the table of contents. A line above the page then gives the current section, with the whole table as a menu. The other arrow shows it again.
-
-## Search
-
-```cues
-reset_page()
-set_value("view", "page")
-set_value("source", FULL)
-click("page", point=(0.75, 0.2))
 press("ctrl+f", at="Control F")
-type_keys("Mars", at="Let us look")
+type_keys("Mars", at="Let us find")
 ```
-Control F opens the search, or Command F on a Mac. Let us look for Mars.
+Control F searches it, or Command F on a Mac. Let us find Mars.
 
 ```cues
-press("enter", at="Enter goes")
+press("enter", at="Enter jumps")
 ```
-Every match is highlighted. Enter goes to the next one.
+Every match lights up. The table of contents counts them, the scroll bar marks them, and Enter jumps to the next one.
 
 ```cues
 press("shift+enter", at="Shift Enter")
 press("shift+enter", at="past the first")
 ```
-The search also looks into the code, and into the folded passages. Shift Enter goes back, and past the first match, to the last one: in the passage on the dwarf planets, which opens.
-
-The table of contents counts the matches of each section, and the scroll bar marks where they are.
+Shift Enter goes back, past the first match, to the last one: inside a folded passage, which opens by itself.
 
 ```cues
 press("escape", at="Escape")
 ```
-Escape closes the search.
+Escape, and the search is gone.
 
-## Folds
-
-```cues
-reset_page()
-set_value("view", "page")
-set_value("source", FULL)
-hover("heading", "The planets", at="Each heading")
-click("fold", "The planets", at="a click")
-```
-Each heading folds. Under the mouse, an arrow appears at its left: a click hides its section.
-
-```cues
-right_click("page", point=(0.75, 0.3), at="A right click")
-menu("Fold All", at="fold all the headings")
-```
-A right click opens a menu. It can fold all the headings at once: the page becomes its own outline.
-
-```cues
-right_click("page", point=(0.75, 0.3), at="The same menu")
-menu("Unfold All", at="unfolds them")
-```
-The same menu unfolds them all.
-
-## Select and copy
+## Fold, select, copy
 
 ```cues
 reset_page()
 set_value("view", "page")
 set_value("source", FULL)
-click("toc", "Kepler's law")
-double_click("line", "Kepler's law", point=(0.12, 0.5), at="A double click")
-drag("line", "Kepler's law", start=(0.0, 0.5), end=(0.85, 0.5), at="a drag")
+right_click("heading", "The planets", point=(0.3, 0.5), at="A right click")
+menu("Fold All", at="every section")
 ```
-The text can be selected, as on a web page. A double click selects a word, and a drag a passage.
+A right click folds every section: the page becomes its own outline.
 
 ```cues
-right_click("line", "Kepler's law", point=(0.5, 0.5), at="A right click")
-menu("Copy as Markdown", at="as markdown")
+right_click("heading", "The planets", point=(0.3, 0.5), at="Unfold")
+menu("Unfold All", at="Unfold")
+click("toc", "Kepler's law", at="Unfold")
+drag("line", "Kepler's law", start=(0.0, 0.5), end=(0.9, 0.5), at="select a line")
 ```
-A right click copies it, as plain text or as markdown.
+Unfold it, and select a line, as on a web page.
 
 ```cues
-set_value("view", "split", at="Let us paste")
-click("editor", point=(0.5, 0.9), at="Let us paste")
-press("ctrl+end", at="at the end")
-press("enter", at="at the end")
-press("ctrl+v", at="at the end")
+right_click("line", "Kepler's law", at="Copy it")
+menu("Copy as Markdown", at="Copy it")
+set_value("view", "split", at="paste it")
+click("editor", point=(0.5, 0.9), at="paste it")
+press("ctrl+end", at="paste it")
+press("enter", at="paste it")
+press("ctrl+v", at="paste it")
 ```
-Let us paste it at the end of the source. The formula came back as LaTeX.
+Copy it as markdown, and paste it at the end of the source: the formula comes back as LaTeX.
 
-## Any screen, any theme
+## Anywhere, and yours
 
 ```cues
 reset_page()
@@ -247,39 +144,23 @@ set_value("view", "page")
 set_value("source", FULL)
 set_value("page_width", 1.0)
 click("toc", "The families")
-animate("page_width", 0.4, over=3, at="On a narrow")
-```
-On a narrow screen, as a phone's, the table of contents becomes a menu, in the line above the page, with a magnifier for the search.
-
-```cues
+animate("page_width", 0.4, over=3, at="On a phone")
 set_value("theme", "light", at="In a light")
 ```
-The page follows the style of Dear ImGui. In a light theme, the diagram and the code turn light too.
+On a phone, the table of contents folds into a menu above the page. In a light theme, the diagram and the code follow.
 
 ```cues
-set_value("theme", "dark")
-animate("page_width", 1.0, over=2)
+set_value("theme", "dark", at="In your program")
+set_value("page_width", 1.0, at="In your program")
+set_value("view", "split", at="In your program")
 ```
-Everything here is drawn by the GPU, every frame, as the rest of the interface.
-
-## In your code
-
-```cues
-set_value("view", "split")
-set_value("source", FULL)
-```
-In your program, one function draws a markdown text; another draws a document, with its table of contents and its search. Their code is under Code, below.
-
-```cues
-highlight("source", at="The source")
-```
-The source on the left is yours now. Edit it, and watch the page.
+In your program, it is one function call: the code is below, under Code. And now, the source is yours.
 
 [[The learner acts: a row for Pluto in the table]]
 ```cues
-challenge("Your turn: in the source, add a row for Pluto to the table. It orbits at 39.5 AU, in 90,560 days.", until="'| Pluto' in source", hint="A row is a line of cells between pipes, under the row of Neptune: | Pluto | 39.5 | 90,560 |", hint_after=40)
+challenge("Your turn: add a row for Pluto to the table, in the source. It orbits at 39.5 AU, in 90,560 days.", until="'| Pluto' in source", hint="A row is a line of cells between pipes, under the row of Neptune: | Pluto | 39.5 | 90,560 |", hint_after=40)
 ```
-There it is. Pluto has its row in the table again, if not its title of planet.
+There it is. Pluto is back in the table, if not among the planets.
 
 ### Code
 ```python
