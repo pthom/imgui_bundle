@@ -133,7 +133,7 @@ def main():
     runner_params.callbacks.enqueue_before_exit(lambda: app_state.release())
 
     def gui():
-        imgui.text("This image below is rendered by NanoVG, via a framebuffer.")
+        imgui.text_wrapped("This image below is rendered by NanoVG, via a framebuffer.")
 
         # Render our drawing to a framebuffer, and use it as a texture for ImGui
         assert app_state.vg is not None

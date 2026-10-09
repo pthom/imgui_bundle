@@ -152,7 +152,7 @@ void gui_demo_nanovg_heart()
         HelloImGui::GetRunnerParams()->callbacks.EnqueueBeforeExit([] { appState.Release(); });
     }
 
-    ImGui::Text("This image below is rendered by NanoVG, via a framebuffer.");
+    ImGui::TextWrapped("This image below is rendered by NanoVG, via a framebuffer.");
     // Render our drawing to a framebuffer, and use it as a texture for ImGui
     NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.nvgFramebuffer, DrawScene);
     // 50 em wide at most (the window's width on a phone), with the framebuffer's aspect ratio (1000 x 600)

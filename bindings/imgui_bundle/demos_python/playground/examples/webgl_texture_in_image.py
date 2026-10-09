@@ -293,7 +293,7 @@ def gui():
     imgui.begin("3D cube via WebGL (Pyodide)")
     imgui.text_wrapped("Python WebGL renders a depth-tested 3D cube into an FBO; "
                        "imgui.image() displays the same texture, no readback.")
-    imgui.text(f"ImTextureID = {TEXTURE_ID} (constant across frames)")
+    imgui.text_wrapped(f"ImTextureID = {TEXTURE_ID} (constant across frames)")
     imgui.text(f"Texture: {TEX_W} x {TEX_H}")
     _, _show_docs = imgui.checkbox("Show docs", _show_docs)
     imgui.separator()
