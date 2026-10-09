@@ -132,8 +132,13 @@ def playground_widget() -> None:
     if state.training:
         state.train()
 
+    # The loss beside the plane, or under it on a narrow screen (a phone)
+    em = hello_imgui.em_size()
+    side_by_side = imgui.get_content_region_avail().x >= em * 43
+    plane_side = min(em * 22, imgui.get_content_region_avail().x)
+
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text
-    if implot.begin_plot("##plane", em_to_vec2(22, 22), flags | implot.Flags_.equal):
+    if implot.begin_plot("##plane", imgui.ImVec2(plane_side, plane_side), flags | implot.Flags_.equal):
         implot.setup_axes_limits(-EXTENT, EXTENT, -EXTENT, EXTENT, imgui.Cond_.always)
         _, p = forward(state.net, GRID_POINTS)
         implot.push_colormap(answer_colormap())
@@ -148,8 +153,10 @@ def playground_widget() -> None:
                 marker_line_color=imgui.ImVec4(1, 1, 1, 1)))
         implot.end_plot()
     hello_imgui.set_item_is_live(state.training)  # the network learns on its own while it trains
-    imgui.same_line()
-    if implot.begin_plot("Loss", em_to_vec2(20, 22), flags):
+    if side_by_side:
+        imgui.same_line()
+    loss_size = em_to_vec2(20, 22) if side_by_side else imgui.ImVec2(plane_side, em * 10)
+    if implot.begin_plot("Loss", loss_size, flags):
         implot.setup_axes("step", "", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
         implot.plot_line("loss", np.array(state.losses), xscale=STEPS_PER_FRAME)
         implot.end_plot()
@@ -159,8 +166,13 @@ def playground_widget() -> None:
     imgui.same_line()
     if imgui.button("Reset"):
         state.reset()
-    imgui.same_line()
-    imgui.text(f"step {state.steps}  |  loss {state.losses[-1]:.3f}  |  {state.accuracy:.0%} of the points right  |  FPS:{hello_imgui.frame_rate():.1f}")
+    status = (f"step {state.steps}  |  loss {state.losses[-1]:.3f}  |  {state.accuracy:.0%} of the points right  |  "
+              f"FPS:{hello_imgui.frame_rate():.1f}")
+    if side_by_side:
+        imgui.same_line()
+        imgui.text(status)
+    else:
+        imgui.text_wrapped(status)
 
 
 def hidden_units_widget() -> None:

@@ -10,6 +10,8 @@ import time
 from imgui_bundle import imgui, implot, immapp, hello_imgui, rich_md, imgui_knobs
 from imgui_bundle import ImVec2, ImVec4
 
+NARROW_WIDTH_EM = 32  # Under this width (in em, a phone), the information goes under the knobs
+
 
 # =============================================================================
 # Lesson content (markdown + LaTeX)
@@ -276,37 +278,8 @@ def resonance_curve(w0: float, zeta: float, f0_over_m: float, n_points: int = 20
 # GUI
 # =============================================================================
 
-def gui(state: AppState):
-    state.update()
-    em = hello_imgui.em_size()
-
-    # Full-width scrollable lesson
-    imgui.begin_child("lesson", ImVec2(0, 0), imgui.ChildFlags_.none)
-
-    # ---- INTRODUCTION ----
-    rich_md.render(INTRO)
-    imgui.spacing()
-
-    # ---- INTERACTIVE: Free oscillation ----
-    imgui.separator()
-    imgui.spacing()
-
-    # Controls row
-    imgui.begin_horizontal("shm_controls", ImVec2(imgui.get_content_region_avail().x, 0))
-    _, state.k = imgui_knobs.knob("Stiffness k", state.k, 0.5, 20.0,
-                                   speed=0.05, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-                                   format="%.1f")
-    imgui.spring(0, em)
-    _, state.m = imgui_knobs.knob("Mass m", state.m, 0.1, 5.0,
-                                   speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
-                                   format="%.1f")
-    imgui.spring(0, em)
-    _, state.speed = imgui_knobs.knob("Speed", state.speed, 0.1, 3.0,
-                                       speed=0.01, variant=imgui_knobs.ImGuiKnobVariant_.stepped,
-                                       format="%.1fx")
-    imgui.spring(0, em)
-
-    # Natural frequency display
+def natural_frequency_info(state: AppState):
+    """The natural frequency, the period and the Reset button"""
     w0 = np.sqrt(state.k / state.m)
     period = 2 * np.pi / w0
 
@@ -320,8 +293,67 @@ def gui(state: AppState):
     imgui.spring()
     imgui.end_vertical()
 
+
+def resonance_ratio_info(state: AppState):
+    """The ratio of the driving frequency to the natural one"""
+    w0 = np.sqrt(state.k / state.m)
+    imgui.begin_vertical("ratio_info", ImVec2(0, 0))
     imgui.spring()
-    imgui.end_horizontal()
+    ratio = state.wd / w0
+    imgui.text(f"w_d / w_0 = {ratio:.2f}")
+    if 0.9 < ratio < 1.1:
+        imgui.text_colored(ImVec4(1, 0.3, 0.3, 1), "Near resonance!")
+    imgui.spring()
+    imgui.end_vertical()
+
+
+def knob_spacing(narrow: bool):
+    """Between two knobs: a spring of the horizontal layout, or the same line on a narrow screen"""
+    if narrow:
+        imgui.same_line()
+    else:
+        imgui.spring(0, hello_imgui.em_size())
+
+
+def gui(state: AppState):
+    state.update()
+    em = hello_imgui.em_size()
+    # On a narrow screen (a phone): no horizontal layout (its knobs show their label beside them, wider),
+    # and the information under the knobs
+    narrow = imgui.get_content_region_avail().x < em * NARROW_WIDTH_EM
+
+    # Full-width scrollable lesson
+    imgui.begin_child("lesson", ImVec2(0, 0), imgui.ChildFlags_.none)
+
+    # ---- INTRODUCTION ----
+    rich_md.render(INTRO)
+    imgui.spacing()
+
+    # ---- INTERACTIVE: Free oscillation ----
+    imgui.separator()
+    imgui.spacing()
+
+    # Controls row
+    if not narrow:
+        imgui.begin_horizontal("shm_controls", ImVec2(imgui.get_content_region_avail().x, 0))
+    _, state.k = imgui_knobs.knob("Stiffness k", state.k, 0.5, 20.0,
+                                   speed=0.05, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+                                   format="%.1f")
+    knob_spacing(narrow)
+    _, state.m = imgui_knobs.knob("Mass m", state.m, 0.1, 5.0,
+                                   speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
+                                   format="%.1f")
+    knob_spacing(narrow)
+    _, state.speed = imgui_knobs.knob("Speed", state.speed, 0.1, 3.0,
+                                       speed=0.01, variant=imgui_knobs.ImGuiKnobVariant_.stepped,
+                                       format="%.1fx")
+    if narrow:
+        natural_frequency_info(state)
+    else:
+        imgui.spring(0, em)
+        natural_frequency_info(state)
+        imgui.spring()
+        imgui.end_horizontal()
 
     imgui.spacing()
 
@@ -394,31 +426,27 @@ def gui(state: AppState):
         if not state.driving_enabled:
             imgui.begin_disabled()
 
-        imgui.begin_horizontal("drive_controls", ImVec2(imgui.get_content_region_avail().x, 0))
+        if not narrow:
+            imgui.begin_horizontal("drive_controls", ImVec2(imgui.get_content_region_avail().x, 0))
         _, state.f0 = imgui_knobs.knob("Force F0", state.f0, 0.1, 5.0,
                                         speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
                                         format="%.1f")
-        imgui.spring(0, em)
+        knob_spacing(narrow)
         _, state.wd = imgui_knobs.knob("Drive freq", state.wd, 0.1, 8.0,
                                         speed=0.02, variant=imgui_knobs.ImGuiKnobVariant_.wiper_dot,
                                         format="%.1f")
-        imgui.spring(0, em)
-
-        w0 = np.sqrt(state.k / state.m)
-        imgui.begin_vertical("ratio_info", ImVec2(0, 0))
-        imgui.spring()
-        ratio = state.wd / w0
-        imgui.text(f"w_d / w_0 = {ratio:.2f}")
-        if 0.9 < ratio < 1.1:
-            imgui.text_colored(ImVec4(1, 0.3, 0.3, 1), "Near resonance!")
-        imgui.spring()
-        imgui.end_vertical()
-        imgui.spring()
-        imgui.end_horizontal()
+        if narrow:
+            resonance_ratio_info(state)
+        else:
+            imgui.spring(0, em)
+            resonance_ratio_info(state)
+            imgui.spring()
+            imgui.end_horizontal()
 
         # Resonance curve
         imgui.spacing()
-        imgui.text("Resonance curve (amplitude vs driving frequency)")
+        imgui.text_wrapped("Resonance curve (amplitude vs driving frequency)")
+        w0 = np.sqrt(state.k / state.m)
         zeta = state.b / (2 * np.sqrt(state.m * state.k))
         f0_over_m = state.f0 / state.m
         wd_arr, amp_arr = resonance_curve(w0, zeta, f0_over_m)
