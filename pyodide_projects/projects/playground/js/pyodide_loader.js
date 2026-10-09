@@ -205,6 +205,7 @@ async function runEditorPythonCode() {
 // Stops the running demo, if any: before a new demo runs, or when a desktop-only demo is shown
 async function stopRunningDemo() {
     if (!pyodide) return;
+    settingsBeforeStop();  // a theme picked inside the demo becomes the page's (js/settings.js)
     // Stop any previous renderer *before* exec'ing the new demo's code.
     // Without this, the previous demo's animation lambda continues to
     // tick during the new module's exec (and during any awaits the new

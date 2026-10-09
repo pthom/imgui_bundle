@@ -520,6 +520,7 @@ async function loadDemoByFilename(filename, updateHistory = true) {
         return;
     }
     if (narrowScreen.matches) setPane('demo');  // a phone: the demo shows first, whatever pane showed before
+    settingsBeforeDemo(example);  // does it set a theme of its own? (js/settings.js)
     const packages = example ? example.packages : undefined;
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;

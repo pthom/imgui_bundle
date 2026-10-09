@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
     <!-- Custom styles -->
     <link rel="stylesheet" href="styles.css">
+    <!-- The theme and the font size (js/settings.js): in the head, so that a light page shows light from the start -->
+    <script src="js/settings.js"></script>
     <style>
         .emscripten {
             position: absolute;
@@ -33,20 +35,20 @@
             font-size: 0.8rem;
             font-weight: 600;
             margin: 0;
-            color: #eee;
+            color: var(--motto-title);
         }
 
         .motto-title-link {
             color: inherit;
             text-decoration: none;
-            border-bottom: 1px dotted #8cb4ff;
+            border-bottom: 1px dotted var(--link);
             padding-bottom: 1px;
             transition: color 0.15s, border-color 0.15s;
         }
 
         .motto-title-link:hover {
-            color: #aaccff;
-            border-bottom-color: #aaccff;
+            color: var(--link);
+            border-bottom-color: var(--link);
             border-bottom-style: solid;
         }
 
@@ -54,7 +56,7 @@
             font-size: 0.7rem;
             font-weight: 400;
             margin: 0.25rem 0 0 0;
-            color: #bbb;
+            color: var(--motto-subtitle);
         }
 
     </style>
@@ -91,6 +93,28 @@
             </div>
         </div>
         <div id="header-right">
+            <!-- The theme: dark, light, or one of Hello ImGui's themes (js/settings.js); on a phone, in the (i) -->
+            <div id="theme-switch" class="theme-switch" role="group" aria-label="Theme">
+                <button data-theme="dark" title="Dark theme" aria-label="Dark theme">
+                    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                        <path d="M10.5 1.8a6.3 6.3 0 1 0 3.7 10.4A5.2 5.2 0 0 1 10.5 1.8z"/>
+                    </svg>
+                </button>
+                <button data-theme="light" title="Light theme" aria-label="Light theme">
+                    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                        <circle cx="8" cy="8" r="3.2"/>
+                        <path d="M8 0.8v2.2M8 13v2.2M0.8 8H3M13 8h2.2M2.9 2.9l1.6 1.6M11.5 11.5l1.6 1.6M2.9 13.1l1.6-1.6
+                                 M11.5 4.5l1.6-1.6" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button data-theme="more" title="More themes" aria-label="More themes">&middot;&middot;&middot;</button>
+            </div>
+            <!-- The font size of the demos and of the code (js/settings.js): here on a desktop -->
+            <div class="font-size in-header" role="group" aria-label="Font size">
+                <button data-step="-1" title="Smaller text" aria-label="Smaller text">A&minus;</button>
+                <button data-step="1" title="Larger text" aria-label="Larger text">A+</button>
+                <span class="font-size-toast" aria-live="polite"></span>
+            </div>
             <!-- The gallery's button (the gallery itself is at the end of the body): js/examples.js -->
             <div id="examples-menu">
                 <button id="examples-button" aria-haspopup="true" aria-expanded="false">Demos &#9662;</button>
@@ -123,6 +147,12 @@
                     </div>
                     <span id="editor-modified">●</span><span id="editor-label">Welcome</span>
                     <div id="editor-toolbar-right">
+                        <!-- The font size of the demos and of the code (js/settings.js): here on a phone -->
+                        <div class="font-size in-toolbar" role="group" aria-label="Font size">
+                            <button data-step="-1" title="Smaller text" aria-label="Smaller text">A&minus;</button>
+                            <button data-step="1" title="Larger text" aria-label="Larger text">A+</button>
+                            <span class="font-size-toast" aria-live="polite"></span>
+                        </div>
                         <button id="run-button" disabled>&#9654; Run</button>
                         <span id="run-shortcut"></span>
                     </div>
@@ -181,6 +211,25 @@
             <p>Pick a demo, open its Code, edit it, then Run.</p>
             <p><a href="https://imgui-bundle.pages.dev" target="_blank">Dear ImGui Bundle</a>: interactive apps in Python
                and C++, for desktop, web and mobile.</p>
+            <!-- On a phone, the theme switch is here (the header has no room for it) -->
+            <div class="about-theme">Theme
+                <div class="theme-switch" role="group" aria-label="Theme">
+                    <button data-theme="dark" title="Dark theme" aria-label="Dark theme">
+                        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                            <path d="M10.5 1.8a6.3 6.3 0 1 0 3.7 10.4A5.2 5.2 0 0 1 10.5 1.8z"/>
+                        </svg>
+                    </button>
+                    <button data-theme="light" title="Light theme" aria-label="Light theme">
+                        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                            <circle cx="8" cy="8" r="3.2"/>
+                            <path d="M8 0.8v2.2M8 13v2.2M0.8 8H3M13 8h2.2M2.9 2.9l1.6 1.6M11.5 11.5l1.6 1.6
+                                     M2.9 13.1l1.6-1.6M11.5 4.5l1.6-1.6" stroke-width="1.5" stroke-linecap="round"/>
+                        </svg>
+                    </button>
+                    <button data-theme="more" title="More themes"
+                            aria-label="More themes">&middot;&middot;&middot;</button>
+                </div>
+            </div>
         </div>
     </template>
 

@@ -127,6 +127,7 @@
         {
             "label": "Simple harmonic motion",
             "filename": "explorables/lesson_harmonic_motion.py",
+            "own_theme": true,
             "category": "Interactive science"
         },
         {
@@ -284,6 +285,7 @@
         {
             "label": "Themes and theme tweaking",
             "filename": "themes.py",
+            "own_theme": true,
             "category": "Library tours"
         },
         {

@@ -112,7 +112,10 @@ document.addEventListener('DOMContentLoaded', () => {
                 document.body.appendChild(backdrop);
             },
             onMount(instance) {
+                if (instance.popper.dataset.wired) return;  // the note's elements stay from one show to the next
+                instance.popper.dataset.wired = 'true';
                 instance.popper.querySelector('.about-close').addEventListener('click', () => instance.hide());
+                wireThemeSwitch(instance.popper.querySelector('.theme-switch'));  // a phone's (js/settings.js)
             },
             onHide() {
                 const backdrop = document.getElementById('about-backdrop');
@@ -277,6 +280,7 @@ const loadingTips = [
 async function initialize() {
     await loadPyodideAndPackages();
     await passCanvasToPyodide();
+    await loadPlaygroundSettings();  // the theme and the font size, for each demo (js/settings.js)
     // Check if a specific demo was requested via ?demo= URL parameter
     const demoFromUrl = getDemoFromUrl();
     if (demoFromUrl) {

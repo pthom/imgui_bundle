@@ -1,3 +1,71 @@
+/* The page's colors: dark by default, light when the theme picked is (js/settings.js sets html.light) */
+:root {
+    --page-bg: #2d2d2d;          /* the header, and the canvas while it is empty */
+    --page-fg: #ffffff;
+    --panel-bg: #1e1e1e;         /* the gallery, the editor's toolbar, the inputs */
+    --bar-bg: #252526;           /* the gallery's bar */
+    --text: #ddd;
+    --text-strong: #fff;
+    --text-muted: #aaa;
+    --text-faint: #999;
+    --toolbar-text: #ccc;
+    --control-bg: #3a3a3a;       /* chips and small buttons */
+    --control-hover: #4a4a4a;
+    --control-border: #555;
+    --line: #444;
+    --accent: #73a6ff;
+    --chip-in-view: rgba(115, 166, 255, 0.55);
+    --category-title: #9cdcfe;
+    --link: #8cb4ff;
+    --card-bg: #292e3d;
+    --card-border: #40404d;
+    --card-hover-bg: #333b4f;
+    --card-hover-border: #999eb8;
+    --picture-bg: #2c2e44;
+    --fitted-bg: #14161a;
+    --no-picture: rgba(200, 200, 220, 0.6);
+    --banner-bg: rgba(40, 40, 40, 0.92);
+    --banner-fg: #f0f0f0;
+    --desktop-panel-bg: #262626;
+    --desktop-panel-fg: #e8e8e8;
+    --motto-title: #eee;
+    --motto-subtitle: #bbb;
+    color-scheme: dark;
+}
+html.light {
+    --page-bg: #ececec;
+    --page-fg: #1e1e1e;
+    --panel-bg: #ffffff;
+    --bar-bg: #f4f4f4;
+    --text: #2a2a2a;
+    --text-strong: #000;
+    --text-muted: #5f5f5f;
+    --text-faint: #777;
+    --toolbar-text: #333;
+    --control-bg: #e6e6e6;
+    --control-hover: #d8d8d8;
+    --control-border: #bdbdbd;
+    --line: #d0d0d0;
+    --accent: #2f6fdc;
+    --chip-in-view: rgba(47, 111, 220, 0.2);
+    --category-title: #1a62a8;
+    --link: #1a5fb4;
+    --card-bg: #ffffff;
+    --card-border: #d3d6de;
+    --card-hover-bg: #f1f4fa;
+    --card-hover-border: #8a93b0;
+    --picture-bg: #e4e6ee;
+    --fitted-bg: #eceef2;
+    --no-picture: rgba(80, 80, 100, 0.6);
+    --banner-bg: rgba(246, 246, 246, 0.95);
+    --banner-fg: #222;
+    --desktop-panel-bg: #f6f6f6;
+    --desktop-panel-fg: #222;
+    --motto-title: #1e1e1e;
+    --motto-subtitle: #555;
+    color-scheme: light;
+}
+
 /* Reset and basic styles */
 html, body {
     height: 100%;
@@ -9,8 +77,8 @@ html, body {
 /* Header styles */
 #header {
     height: 56px; /* Approximately 2 cm */
-    background-color: #2d2d2d;
-    color: #ffffff;
+    background-color: var(--page-bg);
+    color: var(--page-fg);
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -47,9 +115,9 @@ html, body {
     padding: 0;
     vertical-align: middle;
     font: italic 700 0.85em Georgia, serif;
-    color: #ddd;
+    color: var(--text);
     background: transparent;
-    border: 1px solid #999;
+    border: 1px solid var(--text-faint);
     border-radius: 50%;
     cursor: pointer;
 }
@@ -69,7 +137,7 @@ html, body {
     line-height: 1.2;
     color: inherit;
     background: transparent;
-    border: 1px solid #777;
+    border: 1px solid var(--text-faint);
     border-radius: 4px;
     cursor: pointer;
 }
@@ -79,7 +147,7 @@ html, body {
     z-index: 9998;  /* under the note (tippy's 9999), over the page and the gallery */
 }
 .about-popup a {
-    color: #8cb4ff;  /* the title link's color */
+    color: #8cb4ff;  /* the note is a tooltip's box, dark in both page themes */
 }
 
 
@@ -107,8 +175,8 @@ html, body {
     z-index: 1000;
     display: flex;
     flex-direction: column;
-    color: #ddd;
-    background-color: #1e1e1e;
+    color: var(--text);
+    background-color: var(--panel-bg);
     opacity: 0;
     transform: translateY(1.5em);
     transition: opacity 0.25s ease-out, transform 0.25s ease-out;  /* it fades in with a small slide */
@@ -127,8 +195,8 @@ html, body {
     align-items: center;
     gap: 6px;
     padding: 8px 56px 8px 16px;  /* room at the right for the close button */
-    background-color: #252526;
-    border-bottom: 1px solid #444;
+    background-color: var(--bar-bg);
+    border-bottom: 1px solid var(--line);
 }
 #gallery-chips {
     display: flex;
@@ -139,27 +207,27 @@ html, body {
     padding: 2px 10px;
     font: inherit;
     font-size: 0.85em;
-    color: #ddd;
-    background-color: #3a3a3a;
-    border: 1px solid #555;
+    color: var(--text);
+    background-color: var(--control-bg);
+    border: 1px solid var(--control-border);
     border-radius: 12px;
     cursor: pointer;
 }
 .gallery-chip:hover {
-    background-color: #4a4a4a;
+    background-color: var(--control-hover);
 }
 .gallery-chip.in-view {
-    color: #fff;
-    background-color: rgba(115, 166, 255, 0.55);  /* the launcher's accent */
-    border-color: #73a6ff;
+    color: var(--text-strong);
+    background-color: var(--chip-in-view);  /* the launcher's accent */
+    border-color: var(--accent);
 }
 #gallery-library, #gallery-search {
     padding: 3px 8px;
     font: inherit;
     font-size: 0.85em;
-    color: #ddd;
-    background-color: #1e1e1e;
-    border: 1px solid #555;
+    color: var(--text);
+    background-color: var(--panel-bg);
+    border: 1px solid var(--control-border);
     border-radius: 4px;
 }
 #gallery-library {
@@ -170,20 +238,20 @@ html, body {
 }
 #gallery-search:focus {
     outline: none;
-    border-color: #9cdcfe;
+    border-color: var(--category-title);
 }
 #gallery-size {  /* the label on two lines, then "-" and "+"; a vertical separator from the library */
     display: flex;
     align-items: center;
     gap: 4px;
     padding-left: 8px;
-    border-left: 1px solid #555;
+    border-left: 1px solid var(--control-border);
 }
 #gallery-size-label {
     margin-right: 2px;
     font-size: 0.7em;
     line-height: 1.1;
-    color: #aaa;
+    color: var(--text-muted);
 }
 #gallery-size button {
     width: 2em;
@@ -191,14 +259,14 @@ html, body {
     padding: 0;
     font: inherit;
     line-height: 1;
-    color: #ddd;
-    background-color: #3a3a3a;
-    border: 1px solid #555;
+    color: var(--text);
+    background-color: var(--control-bg);
+    border: 1px solid var(--control-border);
     border-radius: 12px;
     cursor: pointer;
 }
 #gallery-size button:hover:not(:disabled) {
-    background-color: #4a4a4a;
+    background-color: var(--control-hover);
 }
 #gallery-size button:disabled {
     opacity: 0.35;
@@ -208,14 +276,14 @@ html, body {
     padding: 2px 8px;
     font: inherit;
     font-size: 0.85em;
-    color: #ddd;
-    background-color: #3a3a3a;
-    border: 1px solid #555;
+    color: var(--text);
+    background-color: var(--control-bg);
+    border: 1px solid var(--control-border);
     border-radius: 12px;
     cursor: pointer;
 }
 #gallery-clear:hover {
-    background-color: #4a4a4a;
+    background-color: var(--control-hover);
 }
 #gallery-close {
     position: absolute;
@@ -224,14 +292,14 @@ html, body {
     padding: 0 10px;
     font-size: 1.4em;
     line-height: 1.2;
-    color: #ddd;
+    color: var(--text);
     background: none;
-    border: 1px solid #555;
+    border: 1px solid var(--control-border);
     border-radius: 4px;
     cursor: pointer;
 }
 #gallery-close:hover {
-    background-color: #3a3a3a;
+    background-color: var(--control-bg);
 }
 #gallery-body {
     flex: 1;
@@ -243,17 +311,17 @@ html, body {
 }
 #gallery-no-match {
     padding: 10px 0;
-    color: #999;
+    color: var(--text-faint);
 }
 .gallery-category-title {
     margin: 14px 0 2px;
     font-size: 1.45em;
     font-weight: normal;
-    color: #9cdcfe;
+    color: var(--category-title);
 }
 .gallery-category-about {
     font-size: 0.9em;
-    color: #999;
+    color: var(--text-faint);
 }
 .gallery-grid {
     display: grid;
@@ -265,22 +333,22 @@ html, body {
 .gallery-card {
     container-type: inline-size;  /* its texts follow its width (cqi): smaller thumbnails, smaller texts */
     overflow: hidden;
-    background-color: #292e3d;
-    border: 1px solid #40404d;
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
     border-radius: 8px;
     cursor: pointer;
     transition: transform 0.15s, box-shadow 0.15s, background-color 0.15s;
 }
 .gallery-card:hover, .gallery-card:focus {
-    background-color: #333b4f;
-    border-color: #999eb8;
+    background-color: var(--card-hover-bg);
+    border-color: var(--card-hover-border);
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.45);
     transform: translateY(-2px);
     outline: none;
 }
 .gallery-card.current {
-    border-color: #73a6ff;
-    box-shadow: inset 0 0 0 1px #73a6ff;
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px var(--accent);
 }
 /* The cards in view are dealt when the gallery opens: each one slides from below with a spin that settles, 50 ms
    after the previous one (js/examples.js sets --rank and --spin) */
@@ -309,7 +377,7 @@ html, body {
 .gallery-picture {
     position: relative;
     aspect-ratio: 16 / 10;
-    background-color: #2c2e44;
+    background-color: var(--picture-bg);
 }
 .gallery-picture img {
     display: block;
@@ -319,7 +387,7 @@ html, body {
     object-position: left top;  /* cropped, it keeps its top-left corner: the pictures are laid out from there */
 }
 .gallery-fitted {  /* a shape far from the card's: the whole picture, centered on a dark background */
-    background-color: #14161a;
+    background-color: var(--fitted-bg);
 }
 .gallery-fitted img {
     object-fit: contain;
@@ -333,7 +401,7 @@ html, body {
     align-items: center;
     justify-content: center;
     font-family: monospace;
-    color: rgba(200, 200, 220, 0.6);
+    color: var(--no-picture);
 }
 .gallery-tags {  /* at the bottom right; on a narrow card, the badges go on two lines (not their words) */
     position: absolute;
@@ -374,15 +442,15 @@ html, body {
     cursor: default;
 }
 .gallery-card.unavailable:hover, .gallery-card.unavailable:focus {
-    background-color: #292e3d;
-    border-color: #40404d;
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
     box-shadow: none;
     transform: none;
 }
 .gallery-title {
     padding: 8px 10px 0;
     font-size: clamp(0.75em, 7cqi, 1.05em);  /* 7% of the card's width: 1.05em on a card of the default width */
-    color: #fff;
+    color: var(--text-strong);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -394,7 +462,7 @@ html, body {
     overflow: hidden;
     margin: 2px 10px 10px;  /* a margin, not a padding: a clamped box paints its third line in its padding */
     font-size: clamp(0.7em, 6cqi, 0.9em);
-    color: #aaa;
+    color: var(--text-muted);
 }
 
 /* Run Button styles */
@@ -464,12 +532,12 @@ body {
     justify-content: space-between;
     height: 28px;
     padding: 0 8px;
-    background-color: #1e1e1e;
-    color: #ccc;
+    background-color: var(--panel-bg);
+    color: var(--toolbar-text);
     font-family: system-ui, sans-serif;
     font-size: 0.8rem;
     flex-shrink: 0;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--line);
 }
 
 #editor-label {
@@ -492,7 +560,7 @@ body {
     display: inline-block;
     width: 1em;
     text-align: center;
-    color: #ccc;
+    color: var(--toolbar-text);
     visibility: hidden;
 }
 
@@ -508,7 +576,7 @@ body {
 }
 
 #run-shortcut {
-    color: #777;
+    color: var(--text-faint);
     font-size: 0.75rem;
 }
 
@@ -516,7 +584,7 @@ body {
 #pane-switch {
     display: none;
     margin-right: 10px;
-    border: 1px solid #555;
+    border: 1px solid var(--control-border);
     border-radius: 4px;
     overflow: hidden;
     flex-shrink: 0;
@@ -524,7 +592,7 @@ body {
 #pane-switch button {
     padding: 5px 14px;
     font: inherit;
-    color: #ccc;
+    color: var(--toolbar-text);
     background: none;
     border: none;
     cursor: pointer;
@@ -532,6 +600,151 @@ body {
 #pane-switch button.active {
     color: #fff;
     background-color: #4a6fa5;
+}
+
+/* The theme switch (js/settings.js): a moon, a sun, and "..." for all the themes; the look of the pane switch */
+.theme-switch {
+    display: inline-flex;
+    margin-right: 12px;
+    border: 1px solid var(--control-border);
+    border-radius: 4px;
+    overflow: hidden;
+    vertical-align: middle;
+}
+.theme-switch button {
+    display: flex;
+    align-items: center;
+    padding: 4px 9px;
+    font: inherit;
+    font-weight: 700;
+    color: var(--toolbar-text);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+.theme-switch button + button {
+    border-left: 1px solid var(--control-border);
+}
+.theme-switch button:hover {
+    background-color: var(--control-hover);
+}
+.theme-switch button.active {
+    color: #fff;
+    background-color: #4a6fa5;
+}
+.theme-switch svg {
+    fill: currentColor;
+    stroke: currentColor;
+}
+.theme-switch button[data-theme="dark"] svg {
+    stroke: none;
+}
+/* The menu of all the themes: a swatch (the window, a button, the accent, the text) and the name */
+.theme-menu {
+    display: flex;
+    flex-direction: column;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 2px 0;
+}
+.theme-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 6px;
+    font: inherit;
+    font-size: 0.85rem;
+    text-align: left;
+    color: inherit;  /* in a tooltip's box (dark) */
+    background: none;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+.theme-menu-item:hover {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+.theme-menu-item.active {
+    font-weight: 700;
+    background-color: rgba(115, 166, 255, 0.35);
+}
+.theme-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 5px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 4px;
+}
+.theme-swatch i {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+}
+/* In the (i) note, on a phone */
+.about-theme {
+    display: none;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 8px;
+    border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+.about-theme .theme-switch {  /* the note is a tooltip's box, dark in both page themes */
+    --control-border: #666;
+    --control-hover: #4a4a4a;
+    --toolbar-text: #ddd;
+}
+
+/* The font size buttons (js/settings.js), and the value for a moment under them */
+.font-size {
+    position: relative;
+    display: inline-flex;
+    gap: 2px;
+    margin-right: 12px;
+    vertical-align: middle;
+}
+.font-size button {
+    padding: 3px 7px;
+    font: inherit;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--toolbar-text);
+    background-color: var(--control-bg);
+    border: 1px solid var(--control-border);
+    border-radius: 4px;
+    cursor: pointer;
+}
+.font-size button:hover:not(:disabled) {
+    background-color: var(--control-hover);
+}
+.font-size button:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+.font-size-toast {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 3px 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    color: #fff;
+    background-color: rgba(30, 30, 30, 0.9);
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    z-index: 20;
+}
+.font-size-toast.visible {
+    opacity: 1;
+}
+.font-size.in-toolbar {
+    display: none;
 }
 
 /* The code folds into a slim rail at the left, and unfolds from it (js/main.js) */
@@ -550,7 +763,7 @@ body {
     height: 20px;
     margin-left: -4px;
     padding: 0;
-    color: #999;
+    color: var(--text-faint);
     background: none;
     border: none;
     border-radius: 3px;
@@ -558,8 +771,8 @@ body {
     flex-shrink: 0;
 }
 #code-fold:hover {
-    color: #fff;
-    background-color: #3a3a3a;
+    color: var(--text-strong);
+    background-color: var(--control-bg);
 }
 #code-rail {
     display: none;
@@ -571,17 +784,17 @@ body {
     gap: 10px;
     height: 100%;
     padding: 7px 0 0;
-    color: #ccc;
-    background-color: #1e1e1e;
+    color: var(--toolbar-text);
+    background-color: var(--panel-bg);
     border: none;
-    border-right: 1px solid #333;
+    border-right: 1px solid var(--line);
     font-family: system-ui, sans-serif;
     font-size: 0.8rem;
     cursor: pointer;
 }
 .code-hidden #code-rail:hover {
-    color: #fff;
-    background-color: #2a2a2a;
+    color: var(--text-strong);
+    background-color: var(--control-hover);
 }
 #code-rail-label {
     writing-mode: vertical-rl;
@@ -669,8 +882,8 @@ body {
 #loading-banner {
     position: absolute;
     inset: 0;
-    background-color: rgba(40, 40, 40, 0.92);
-    color: #f0f0f0;
+    background-color: var(--banner-bg);
+    color: var(--banner-fg);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -693,13 +906,13 @@ body {
 #loading-banner .loading-subtitle {
     margin: 0;
     font-size: 0.85rem;
-    color: #ccc;
+    color: var(--toolbar-text);
     text-align: center;
 }
 
 #progress-container {
     width: min(360px, 80%);
-    background-color: #555;
+    background-color: var(--control-border);
     border-radius: 5px;
     margin: 12px 0;
 }
@@ -715,13 +928,13 @@ body {
 #progress-text {
     margin: 0;
     font-size: 0.9rem;
-    color: #ddd;
+    color: var(--text);
 }
 
 #loading-banner .loading-hint {
     margin-top: 16px;
     font-size: 0.8rem;
-    color: #aaa;
+    color: var(--text-muted);
     text-align: center;
 }
 
@@ -731,7 +944,7 @@ body {
     object-fit: contain;
     margin-top: 18px;
     border-radius: 6px;
-    border: 1px solid #444;
+    border: 1px solid var(--line);
     background: #000;
     display: block;
 }
@@ -739,7 +952,7 @@ body {
 #loading-banner .loading-tip {
     margin: 10px 0 0 0;
     font-size: 0.8rem;
-    color: #ccc;
+    color: var(--toolbar-text);
     text-align: center;
     min-height: 1.2em;
     transition: opacity 0.3s;
@@ -750,7 +963,7 @@ body {
     position: relative;
     height: 100%;
     width: 100%;
-    background-color: #2d2d2d;  /* what shows while the canvas is empty, between two demos (not the page's white) */
+    background-color: var(--page-bg);  /* what shows while the canvas is empty, between two demos (not the page's white) */
 }
 
 /* The hint on a demo meant to be hacked, over the canvas, shown once (js/examples.js) */
@@ -820,8 +1033,8 @@ body {
     justify-content: center;
     gap: 14px;
     padding: 20px;
-    background-color: #262626;
-    color: #e8e8e8;
+    background-color: var(--desktop-panel-bg);
+    color: var(--desktop-panel-fg);
     font-family: system-ui, sans-serif;
     z-index: 5;
 }
@@ -841,10 +1054,10 @@ body {
     text-align: center;
 }
 #desktop-panel code {
-    color: #fff;
+    color: var(--text-strong);
 }
 #desktop-panel a {
-    color: #9ecbff;
+    color: var(--link);
 }
 #desktop-panel-variants {
     display: flex;
@@ -854,7 +1067,7 @@ body {
 }
 #desktop-panel-variants .gallery-chip.current {
     background-color: #3b5a8a;
-    border-color: #73a6ff;
+    border-color: var(--accent);
 }
 
 #canvas {
@@ -923,20 +1136,20 @@ body {
         display: none;
         align-items: center;
         font-size: 1.3em;
-        color: #fff;
+        color: var(--text-strong);
         pointer-events: none;
     }
     #gallery-bar::before {
         content: '\2039';  /* a single left chevron */
         left: 10px;
         justify-content: flex-start;
-        background: linear-gradient(to right, #252526 40%, transparent);
+        background: linear-gradient(to right, var(--bar-bg) 40%, transparent);
     }
     #gallery-bar::after {
         content: '\203A';  /* a single right chevron */
         right: 10px;
         justify-content: flex-end;
-        background: linear-gradient(to left, #252526 40%, transparent);
+        background: linear-gradient(to left, var(--bar-bg) 40%, transparent);
     }
     #gallery-bar.chips-more-left::before, #gallery-bar.chips-more-right::after {
         display: flex;
@@ -983,8 +1196,19 @@ body {
         display: inline-flex;
     }
     /* A manual's demo: its own switch shows its code, and the playground's would read the same (js/examples.js) */
-    body.own-code-switch.pane-demo #pane-switch, body.own-code-switch.pane-demo #editor-toolbar-right {
+    body.own-code-switch.pane-demo #pane-switch, body.own-code-switch.pane-demo #run-button {
         display: none;
+    }
+    /* The header has no room for the theme switch and the font size: the (i) note and the toolbar take them */
+    #theme-switch, .font-size.in-header {
+        display: none;
+    }
+    .font-size.in-toolbar {
+        display: inline-flex;
+        margin-right: 0;
+    }
+    .about-theme {
+        display: flex;
     }
     body.pane-demo #editor, body.pane-demo #error-output {
         display: none;

@@ -24,6 +24,10 @@ def _log(msg: str) -> None:
 # Returns a JS promise, resolved at the next animation frame
 _next_animation_frame = run_js("() => new Promise(resolve => requestAnimationFrame(resolve))")
 
+# Functions called after each app's setup, before its first frame: the playground applies there the theme and the font
+# size chosen in its page (pyodide_projects/projects/playground/py/playground_settings.py)
+after_setup_callbacks: list[Callable[[], None]] = []
+
 
 class _JsAnimationRenderer:
     """Make it possible to call a python function to do rendering at each javascript frame.
@@ -248,6 +252,11 @@ class _ManualRenderJs:
             self.is_running = False
             self.render_lifecycle_functions = None
             raise
+        for callback in after_setup_callbacks:
+            try:
+                callback()
+            except Exception:
+                traceback.print_exc()
         render_frame = self.render_lifecycle_functions.render
         render = render_frame
         if hello_imgui.get_runner_params().use_imgui_test_engine:
@@ -363,6 +372,11 @@ class _ManualRenderJs:
 
 
 _MANUAL_RENDER_JS: _ManualRenderJs | None = None
+
+
+def is_renderer_running() -> bool:
+    """True while an app runs (between its setup and its teardown)"""
+    return _MANUAL_RENDER_JS is not None and _MANUAL_RENDER_JS.is_running
 
 
 def stop_active_renderer() -> None:
