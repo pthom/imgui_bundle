@@ -26,8 +26,8 @@ def gui():
     # Render an animated plot
     if implot.begin_plot(
             title_id="Plot",
-            # size in em units (1em = height of a character)
-            size=hello_imgui.em_to_vec2(40, 20)):
+            # the window's width (-1), and 20 em high (1 em = the height of a character)
+            size=imgui.ImVec2(-1, hello_imgui.em_size(20))):
         x = np.arange(0, np.pi * 4, 0.01)
         y = np.cos(x + imgui.get_time())
         implot.plot_line("y1", x, y)
