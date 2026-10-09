@@ -190,7 +190,7 @@ void DemoToggle()
 
     RichMd::Render(R"(
         # Toggle Switch
-        [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui."""
+        [imgui_toggle](https://github.com/cmdwtf/imgui_toggle) provides toggle switches for ImGui.
     )");
 
     bool changed = false;
