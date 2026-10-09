@@ -254,7 +254,7 @@ void py_init_module_rich_md(nb::module_& m)
             return RenderFolding_adapt_mutable_param_with_default_value(id, markdown, options);
         },
         nb::arg("id"), nb::arg("markdown"), nb::arg("options").none() = nb::none(),
-        " Renders a markdown text, folded to its first paragraph (the headings before it stay), or open; a link at its end\n folds or unfolds it. id: keeps its state, in the current window. Returns whether it is open.\n\nPython bindings defaults:\n    If options is None, then its default value will be: FoldingTextOptions()");
+        " Renders a markdown text, folded to its first paragraph (the headings before it stay) or to a line <!--more-->,\n or open; a link at its end folds or unfolds it. id: keeps its state, in the current window. Returns whether it\n is open.\n\nPython bindings defaults:\n    If options is None, then its default value will be: FoldingTextOptions()");
 
 
     auto pyClassMarkdownFontOptions =

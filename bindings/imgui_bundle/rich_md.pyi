@@ -392,9 +392,10 @@ def document_heading(level: int, text: str, draw_title: bool = True) -> bool:
 # =================================================================================================================
 #                                        Folding text
 # =================================================================================================================
-#    A text that folds to its first paragraph: an introduction above a demo, which leaves the room to the demo once
-#    read. A link at its end folds or unfolds it, with a short slide. With `foldOnClickElsewhere`, it folds as soon as
-#    the user clicks (or taps) elsewhere in the window: on the demo below it.
+#    A text that folds to its first paragraph, or to a line `<!--more-->` (as Jekyll and Hugo mark an excerpt: an HTML
+#    comment, which other renderers show as nothing): an introduction above a demo, which leaves the room to the demo
+#    once read. A link at its end folds or unfolds it, with a short slide. With `foldOnClickElsewhere`, it folds as soon
+#    as the user clicks (or taps) elsewhere in the window: on the demo below it.
 
 # struct FoldingTextOptions    /* original C++ signature */
 class FoldingTextOptions:
@@ -419,8 +420,9 @@ class FoldingTextOptions:
 def render_folding(
     id: str, markdown: str, options: Optional[FoldingTextOptions] = None
 ) -> bool:
-    """Renders a markdown text, folded to its first paragraph (the headings before it stay), or open; a link at its end
-     folds or unfolds it. id: keeps its state, in the current window. Returns whether it is open.
+    """Renders a markdown text, folded to its first paragraph (the headings before it stay) or to a line <!--more-->,
+     or open; a link at its end folds or unfolds it. id: keeps its state, in the current window. Returns whether it
+     is open.
 
     Python bindings defaults:
         If options is None, then its default value will be: FoldingTextOptions()
