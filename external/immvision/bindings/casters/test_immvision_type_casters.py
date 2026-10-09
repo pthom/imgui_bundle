@@ -160,6 +160,40 @@ def test_non_contiguous_rejected():
 
 
 # =========================================================================
+# Read-only arrays (np.asarray of a Pillow image, np.frombuffer...): accepted,
+# without a copy, since ImmVision only reads the images it receives
+# =========================================================================
+
+def test_read_only_array_accepted():
+    """An array whose write flag is cleared"""
+    img = np.arange(60, dtype=np.uint8).reshape(4, 5, 3)
+    img.setflags(write=False)
+    assert th.image_info(img) == (5, 4, 3, 0)
+
+
+def test_read_only_buffer_accepted():
+    """An array over read-only memory (bytes), as wordcloud's to_array() gives"""
+    img = np.frombuffer(bytes(range(60)), dtype=np.uint8).reshape(4, 5, 3)
+    assert not img.flags.writeable
+    assert th.image_info(img) == (5, 4, 3, 0)
+
+
+def test_read_only_array_zero_copy():
+    """A read-only array is not copied"""
+    img = np.zeros((4, 5, 3), dtype=np.uint8)
+    img.setflags(write=False)
+    assert th.data_pointer(img) == img.ctypes.data
+
+
+def test_pillow_image_accepted():
+    """np.asarray of a Pillow image is read-only"""
+    image_module = pytest.importorskip("PIL.Image")
+    img = np.asarray(image_module.new("RGBA", (5, 4)))
+    assert not img.flags.writeable
+    assert th.image_info(img) == (5, 4, 4, 0)
+
+
+# =========================================================================
 # Point / Point2d / Size / Matrix33d direct round-trips
 # =========================================================================
 

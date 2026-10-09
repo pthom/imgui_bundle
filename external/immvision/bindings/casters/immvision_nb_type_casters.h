@@ -69,11 +69,13 @@ struct type_caster<ImmVision::ImageBuffer>
 
     bool from_python(handle src, uint8_t flags, cleanup_list *cleanup) noexcept
     {
-        if (!isinstance<ndarray<>>(src))
+        // ndarray<ro>: read-only arrays too (np.asarray of a Pillow image, np.frombuffer...), which a plain ndarray<>
+        // refuses. ImmVision only reads the images it receives (its API takes const ImageBuffer&).
+        if (!isinstance<ndarray<ro>>(src))
             return false;
         try
         {
-            auto a = nanobind::cast<ndarray<>>(src);
+            auto a = nanobind::cast<ndarray<ro>>(src);
 
             if (a.ndim() < 2 || a.ndim() > 3)
                 return false;
@@ -109,7 +111,7 @@ struct type_caster<ImmVision::ImageBuffer>
                     (int)a.dtype().code, (int)a.dtype().bits, e.what());
                 return false;
             }
-            value.data     = (void*)a.data();
+            value.data     = const_cast<void*>(a.data());  // never written: see ndarray<ro> above
             // a.stride(0) is in elements; step is in bytes
             size_t elem_bytes = a.dtype().bits / 8;
             value.step     = (size_t)a.stride(0) * elem_bytes;

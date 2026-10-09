@@ -58,7 +58,8 @@ def word_cloud(text: str, shape: str, colormap: str, max_words: int, seed: int, 
     cloud = WordCloud(width=width, height=height, scale=scale, mask=mask(shape, width, height), mode="RGBA",
                       background_color=None, colormap=colormap, max_words=max_words, random_state=seed,
                       stopwords=STOPWORDS | MORE_STOPWORDS)
-    return np.array(cloud.generate(text).to_array())  # a copy: to_array() is read only, which ImmVision refuses
+    image: np.ndarray = cloud.generate(text).to_array()
+    return image
 
 
 @dataclass
