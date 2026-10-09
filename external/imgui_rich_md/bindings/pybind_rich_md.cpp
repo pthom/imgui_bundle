@@ -224,6 +224,39 @@ void py_init_module_rich_md(nb::module_& m)
         " Starts a section of the document that is not markdown (widgets, a plot): a heading of the document, with its slug\n (an anchor for `[text](#slug)` links). drawTitle: draws the text as a markdown heading of that level; False when\n the title is drawn by other means (an ImGui text, a plot's own title), or not at all. Returns whether the section\n shows: False when a fold hides it (MarkdownOptions::foldableHeadings), and the application skips its widgets.");
 
 
+    auto pyClassFoldingTextOptions =
+        nb::class_<RichMd::FoldingTextOptions>
+            (m, "FoldingTextOptions", "The options of a folding text")
+        .def(nb::init<>()) // implicit default constructor
+        .def_rw("start_folded", &RichMd::FoldingTextOptions::startFolded, "folded at first (else open, until the user folds it)")
+        .def_rw("fold_on_click_elsewhere", &RichMd::FoldingTextOptions::foldOnClickElsewhere, "it folds when the user clicks or taps elsewhere in the window")
+        .def_rw("animation_seconds", &RichMd::FoldingTextOptions::animationSeconds, "the slide (none when the system asks for reduced motion)")
+        ;
+
+
+    m.def("render_folding",
+        [](const char * id, const std::string & markdown, const std::optional<const RichMd::FoldingTextOptions> & options = std::nullopt) -> bool
+        {
+            auto RenderFolding_adapt_mutable_param_with_default_value = [](const char * id, const std::string & markdown, const std::optional<const RichMd::FoldingTextOptions> & options = std::nullopt) -> bool
+            {
+
+                const RichMd::FoldingTextOptions& options_or_default = [&]() -> const RichMd::FoldingTextOptions {
+                    if (options.has_value())
+                        return options.value();
+                    else
+                        return RichMd::FoldingTextOptions();
+                }();
+
+                auto lambda_result = RichMd::RenderFolding(id, markdown, options_or_default);
+                return lambda_result;
+            };
+
+            return RenderFolding_adapt_mutable_param_with_default_value(id, markdown, options);
+        },
+        nb::arg("id"), nb::arg("markdown"), nb::arg("options").none() = nb::none(),
+        " Renders a markdown text, folded to its first paragraph (the headings before it stay), or open; a link at its end\n folds or unfolds it. id: keeps its state, in the current window. Returns whether it is open.\n\nPython bindings defaults:\n    If options is None, then its default value will be: FoldingTextOptions()");
+
+
     auto pyClassMarkdownFontOptions =
         nb::class_<RichMd::MarkdownFontOptions>
             (m, "MarkdownFontOptions", "")

@@ -21,7 +21,7 @@ notice how each widget is just one line, and state is just plain Python variable
 - [Immediate Mode Explained](https://imgui-bundle.pages.dev/doc/intro/imm-gui/)
 - [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer)
 """
-from imgui_bundle import imgui, immapp, hello_imgui
+from imgui_bundle import imgui, immapp, hello_imgui, rich_md
 
 
 AVAILABLE_ITEMS = ["Apple", "Banana", "Cherry", "Date"]
@@ -42,8 +42,11 @@ class AppState:
 
 
 def gui(state: AppState) -> None:
-    # First, render the documentation
-    immapp.render_markdown_doc_panel(__doc__, height_em=23)
+    # First, the documentation: open at first, it folds to its first paragraph as soon as the user tries the widgets
+    intro_options = rich_md.FoldingTextOptions()
+    intro_options.fold_on_click_elsewhere = True
+    rich_md.render_folding("intro", __doc__, intro_options)
+    imgui.separator()
 
     # s will contain the state (that is modified directly by the widgets)
     s = state

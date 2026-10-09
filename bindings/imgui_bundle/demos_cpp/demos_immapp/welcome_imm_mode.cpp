@@ -24,14 +24,17 @@ struct AppState
 
 void Gui(AppState& s)
 {
-    RichMd::Render(R"(# What is an Immediate GUI
+    // First, the documentation: open at first, it folds to its first paragraph as soon as the user tries the widgets
+    RichMd::FoldingTextOptions introOptions;
+    introOptions.foldOnClickElsewhere = true;
+    RichMd::RenderFolding("intro", R"(# What is an Immediate GUI
 With [Dear ImGui](https://github.com/ocornut/imgui), your GUI code is **simple and direct**: no widget trees, no
 callbacks, no state synchronization. You call functions to create widgets, and they return the current value.
 The function is called every frame: the UI is rebuilt from scratch each time. This is the **immediate mode** paradigm.
 
 **Try it:** edit any value below and see the result update instantly. Then look at the code: each widget is one line,
 and the state is plain variables.
-)");
+)", introOptions);
     ImGui::Separator();
     float em = ImGui::GetFontSize();  // em <=> equivalent to the em CSS unit
 
