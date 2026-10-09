@@ -277,16 +277,12 @@ def draw_epicycles(state: AppState, center: ImVec2, scale: float):
 FA_PLAY = icons_fontawesome_4.ICON_FA_PLAY
 FA_PAUSE = icons_fontawesome_4.ICON_FA_PAUSE
 FA_UNDO = icons_fontawesome_4.ICON_FA_UNDO
+NARROW_WIDTH_EM = 36  # Under this width (in em, a phone), the animation goes above the controls
 
-def gui(state: AppState):
-    state.update()
+
+def gui_controls(state: AppState):
+    """The shape, the knobs, the buttons, the toggles and the spectrum"""
     em = hello_imgui.em_size()
-
-    # Controls (left column)
-    imgui.begin_child("controls", ImVec2(em * 18, 0))
-
-    rich_md.render(__doc__)
-    imgui.spacing()
 
     # Shape selector
     imgui.text("Shape")
@@ -332,11 +328,7 @@ def gui(state: AppState):
 
     # Toggles for display options
     _, state.show_circles = imgui_toggle.toggle("Circles##tog", state.show_circles)
-    imgui.same_line()
-    imgui.text("Circles")
     _, state.show_radii = imgui_toggle.toggle("Radii##tog", state.show_radii)
-    imgui.same_line()
-    imgui.text("Radii")
 
     imgui.spacing()
     imgui.separator()
@@ -361,12 +353,10 @@ def gui(state: AppState):
 
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
 
-    imgui.end_child()
 
-    imgui.same_line()
-
-    # Animation (right area)
-    imgui.begin_child("animation", ImVec2(0, 0))
+def gui_animation(state: AppState, size: ImVec2):
+    """The epicycles and the shape they draw, in a child window of the given size"""
+    imgui.begin_child("animation", size)
     avail = imgui.get_content_region_avail()
     center = imgui.get_cursor_screen_pos()
     center = ImVec2(center.x + avail.x * 0.5, center.y + avail.y * 0.5)
@@ -395,6 +385,27 @@ def gui(state: AppState):
 
     imgui.end_child()
     hello_imgui.set_item_is_live(not state.paused)  # the animation moves on its own, unless paused
+
+
+def gui(state: AppState):
+    state.update()
+    em = hello_imgui.em_size()
+
+    if imgui.get_content_region_avail().x >= NARROW_WIDTH_EM * em:
+        # The controls at the left, the animation at the right
+        imgui.begin_child("controls", ImVec2(em * 18, 0))
+        rich_md.render(__doc__)
+        imgui.spacing()
+        gui_controls(state)
+        imgui.end_child()
+        imgui.same_line()
+        gui_animation(state, ImVec2(0, 0))
+    else:
+        # A narrow screen (a phone): the text, the animation, then the controls, in a page that scrolls
+        rich_md.render(__doc__)
+        width = imgui.get_content_region_avail().x
+        gui_animation(state, ImVec2(width, width))
+        gui_controls(state)
 
 
 def main():

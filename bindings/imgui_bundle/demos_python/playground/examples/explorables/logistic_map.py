@@ -8,8 +8,7 @@ map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n)
 
 **Try this**
 * Drag **r** or click the diagram to set its value
-* Scroll to zoom into the bifurcation diagram (at the right): each fork splits again in the same way, however far you
-  zoom
+* Scroll to zoom into the bifurcation diagram: each fork splits again in the same way, however far you zoom
 """
 
 import numpy as np
@@ -203,6 +202,7 @@ FA_PLAY = icons_fontawesome_4.ICON_FA_PLAY
 FA_PAUSE = icons_fontawesome_4.ICON_FA_PAUSE
 FA_UNDO = icons_fontawesome_4.ICON_FA_UNDO
 FA_INFO = icons_fontawesome_4.ICON_FA_INFO_CIRCLE
+NARROW_WIDTH_EM = 44  # Under this width (in em, a phone), the diagrams go above the controls
 
 ACCENT = ImVec4(1.0, 0.85, 0.25, 1.0)
 MARKER = ImVec4(1.0, 1.0, 1.0, 0.85)
@@ -358,20 +358,10 @@ def draw_lyapunov(state: AppState, size: ImVec2):
         implot.end_plot()
 
 
-def gui(state: AppState):
-    state.maybe_recompute()
-    state.tick()
-    state.refresh_analysis()
-
+def gui_controls(state: AppState):
+    """The buttons, the parameters, the cobweb and the options of the bifurcation diagram"""
     em = hello_imgui.em_size()
     btn = ImVec2(em * 2.5, em * 2.0)
-    imgui.push_style_var(imgui.StyleVar_.frame_rounding, em * 0.5)
-
-    # ---- Controls + cobweb (left column) ---------------------------------
-    imgui.begin_child("controls", ImVec2(em * 24, 0))
-
-    rich_md.render(__doc__)
-    imgui.separator()
 
     if imgui.button(FA_PAUSE if not state.paused else FA_PLAY, btn):
         state.paused = not state.paused
@@ -388,11 +378,11 @@ def gui(state: AppState):
         state.show_tips = not state.show_tips
 
     imgui.separator_text("Parameter")
-    imgui.set_next_item_width(em * 22)
+    imgui.set_next_item_width(-em * 2)
     ch_r, r = imgui.slider_float("r", state.r, R_MIN, R_MAX, "%.5f")
     if ch_r:
         state.set_r(r)
-    imgui.set_next_item_width(em * 22)
+    imgui.set_next_item_width(-em * 2)
     ch_x, x0 = imgui.slider_float("x0", state.x0, 0.0, 1.0, "%.3f")
     if ch_x:
         state.set_x0(x0)
@@ -418,17 +408,41 @@ def gui(state: AppState):
         state.force_view = DEF_VIEW
     imgui.text_disabled("scroll = zoom · drag = pan · click = pick r")
 
-    imgui.pop_style_var()
-    imgui.end_child()
 
-    imgui.same_line()
-
-    # ---- Bifurcation + Lyapunov (right column) ---------------------------
-    imgui.begin_child("viz", ImVec2(0, 0))
+def gui_diagrams(state: AppState, size: ImVec2):
+    """The bifurcation diagram above the Lyapunov exponent, in a child window of the given size"""
+    imgui.begin_child("viz", size)
     avail = imgui.get_content_region_avail()
     draw_bifurcation(state, ImVec2(-1, avail.y * 0.68))
     draw_lyapunov(state, ImVec2(-1, 0))
     imgui.end_child()
+
+
+def gui(state: AppState):
+    state.maybe_recompute()
+    state.tick()
+    state.refresh_analysis()
+
+    em = hello_imgui.em_size()
+    imgui.push_style_var(imgui.StyleVar_.frame_rounding, em * 0.5)
+
+    if imgui.get_content_region_avail().x >= NARROW_WIDTH_EM * em:
+        # ---- Controls + cobweb (left column), Bifurcation + Lyapunov (right column)
+        imgui.begin_child("controls", ImVec2(em * 24, 0))
+        rich_md.render(__doc__)
+        imgui.separator()
+        gui_controls(state)
+        imgui.end_child()
+        imgui.same_line()
+        gui_diagrams(state, ImVec2(0, 0))
+    else:
+        # A narrow screen (a phone): the text, the diagrams, then the controls, in a page that scrolls
+        rich_md.render(__doc__)
+        width = imgui.get_content_region_avail().x
+        gui_diagrams(state, ImVec2(width, width * 1.2))
+        gui_controls(state)
+
+    imgui.pop_style_var()
 
     # ---- Hideable background panel ---------------------------------------
     if state.show_about:

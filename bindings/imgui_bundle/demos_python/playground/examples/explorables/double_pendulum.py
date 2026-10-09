@@ -218,21 +218,13 @@ def draw_pendulum(draw_list, p: Pendulum, pivot: ImVec2, scale: float,
 FA_PLAY = icons_fontawesome_4.ICON_FA_PLAY
 FA_PAUSE = icons_fontawesome_4.ICON_FA_PAUSE
 FA_UNDO = icons_fontawesome_4.ICON_FA_UNDO
+NARROW_WIDTH_EM = 40  # Under this width (in em, a phone), the animation goes above the controls
 
 
-def gui(state: AppState):
-    state.update()
+def gui_controls(state: AppState):
+    """The buttons, the knobs, the toggles and the energy plot"""
     em = hello_imgui.em_size()
-    rounding = em * 0.5
     btn_size = ImVec2(em * 2.5, em * 2.0)
-    imgui.push_style_var(imgui.StyleVar_.frame_rounding, rounding)
-
-    # Controls (left column)
-    imgui.begin_child("controls", ImVec2(em * 20, 0))
-
-    # Show doc (Double Pendulum. A chaotic system where ...)        ===>
-    rich_md.render(__doc__)
-    imgui.separator()
 
     # Play/Pause + Reset
     if imgui.button(FA_PAUSE if not state.paused else FA_PLAY, btn_size):
@@ -277,13 +269,10 @@ def gui(state: AppState):
 
     imgui.text(f"FPS: {hello_imgui.frame_rate():.1f}")
 
-    imgui.pop_style_var()
-    imgui.end_child()
 
-    imgui.same_line()
-
-    # Animation (right area)
-    imgui.begin_child("animation", ImVec2(0, 0))
+def gui_animation(state: AppState, size: ImVec2):
+    """The pendulums, in a child window of the given size"""
+    imgui.begin_child("animation", size)
     avail = imgui.get_content_region_avail()
     # Pivot at top-center
     pivot = imgui.get_cursor_screen_pos()
@@ -306,6 +295,31 @@ def gui(state: AppState):
 
     imgui.end_child()
     hello_imgui.set_item_is_live(not state.paused)  # the animation moves on its own, unless paused
+
+
+def gui(state: AppState):
+    state.update()
+    em = hello_imgui.em_size()
+    imgui.push_style_var(imgui.StyleVar_.frame_rounding, em * 0.5)
+
+    if imgui.get_content_region_avail().x >= NARROW_WIDTH_EM * em:
+        # The controls at the left, the animation at the right
+        imgui.begin_child("controls", ImVec2(em * 20, 0))
+        # Show doc (Double Pendulum. A chaotic system where ...)        ===>
+        rich_md.render(__doc__)
+        imgui.separator()
+        gui_controls(state)
+        imgui.end_child()
+        imgui.same_line()
+        gui_animation(state, ImVec2(0, 0))
+    else:
+        # A narrow screen (a phone): the text, the animation, then the controls, in a page that scrolls
+        rich_md.render(__doc__)
+        width = imgui.get_content_region_avail().x
+        gui_animation(state, ImVec2(width, width))
+        gui_controls(state)
+
+    imgui.pop_style_var()
 
 
 def main():
