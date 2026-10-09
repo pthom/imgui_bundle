@@ -326,22 +326,25 @@ def fit(text: str, width: float, lines: int) -> str:
     return " ".join(words) + "…"
 
 
-def draw_tags(tags: list[str], bottom_right: ImVec2, draw_list: Optional[imgui.ImDrawList] = None,
+def draw_tags(tags: list[str], bottom_right: ImVec2, width: float, draw_list: Optional[imgui.ImDrawList] = None,
               scale: float = 1.0) -> None:
-    """Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)"""
+    """Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part); wider than
+    width, they go on more rows, upward"""
     if draw_list is None:
         draw_list = imgui.get_window_draw_list()
     imgui.push_font(None, imgui.get_style().font_size_base * 0.85 * scale)
-    pad = ImVec2(em_size(0.4), em_size(0.1))
-    x = bottom_right.x
+    pad, gap = ImVec2(em_size(0.4), em_size(0.1)), em_size(0.25)
+    x, bottom = bottom_right.x, bottom_right.y
     for tag in reversed(tags):
         size = imgui.calc_text_size(tag)
-        top = bottom_right.y - size.y - 2 * pad.y
-        x -= size.x + 2 * pad.x
-        draw_list.add_rect_filled(ImVec2(x, top), ImVec2(x + size.x + 2 * pad.x, bottom_right.y), TAG_COLORS[tag],
+        pill = ImVec2(size.x + 2 * pad.x, size.y + 2 * pad.y)
+        if x < bottom_right.x and x - pill.x < bottom_right.x - width:  # no room left on this row
+            x, bottom = bottom_right.x, bottom - pill.y - gap
+        x -= pill.x
+        draw_list.add_rect_filled(ImVec2(x, bottom - pill.y), ImVec2(x + pill.x, bottom), TAG_COLORS[tag],
                                   em_size(0.6))
-        draw_list.add_text(ImVec2(x + pad.x, top + pad.y), IM_COL32(240, 245, 255, 255), tag)
-        x -= em_size(0.25)
+        draw_list.add_text(ImVec2(x + pad.x, bottom - pill.y + pad.y), IM_COL32(240, 245, 255, 255), tag)
+        x -= gap
     imgui.pop_font()
 
 
@@ -650,7 +653,7 @@ class Launcher:
         self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
-                  scale=text_scale)
+                  width - em_size(0.8), scale=text_scale)
         imgui.set_cursor_pos(ImVec2(padding, imgui.get_cursor_pos_y() + em_size(0.4)))
         imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
         imgui.text(fit(demo.label, width - 2 * padding, 1))
@@ -749,8 +752,8 @@ class Launcher:
         self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
                               imgui.ImDrawFlags_.round_corners_top.value)
         picture_bottom = top_left.y + width / PICTURE_ASPECT
-        draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)), draw_list,
-                  text_scale)
+        draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)),
+                  width - em_size(0.8), draw_list, text_scale)
         font, font_size = imgui.get_font(), imgui.get_font_size() * text_scale
         imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
         title = fit(demo.label, width - 2 * padding, 1)
@@ -814,7 +817,8 @@ class Launcher:
         width = imgui.get_content_region_avail().x
         self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_corners_all.value)
         picture_bottom_right = imgui.get_item_rect_max()
-        draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)))
+        draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
+                  width - em_size(0.8))
         imgui.dummy(ImVec2(0, em_size(0.4)))
         rich_md.render(f"## {demo.label}\n\n{demo.text}")
         if demo.uses:

@@ -109,23 +109,29 @@ namespace
     }
 
     // Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)
-    void DrawTags(const std::vector<std::string>& tags, ImVec2 bottomRight, ImDrawList* drawList = nullptr,
-                  float scale = 1.f)
+    void DrawTags(const std::vector<std::string>& tags, ImVec2 bottomRight, float width,
+                  ImDrawList* drawList = nullptr, float scale = 1.f)
     {
         if (drawList == nullptr)
             drawList = ImGui::GetWindowDrawList();
         ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * 0.85f * scale);
         ImVec2 pad(Em(0.4f), Em(0.1f));
-        float x = bottomRight.x;
+        float gap = Em(0.25f);
+        float x = bottomRight.x, bottom = bottomRight.y;
         for (auto it = tags.rbegin(); it != tags.rend(); ++it)
         {
             ImVec2 size = ImGui::CalcTextSize(it->c_str());
-            float top = bottomRight.y - size.y - 2 * pad.y;
-            x -= size.x + 2 * pad.x;
-            drawList->AddRectFilled(ImVec2(x, top), ImVec2(x + size.x + 2 * pad.x, bottomRight.y),
-                                    TAG_COLORS.at(*it), Em(0.6f));
-            drawList->AddText(ImVec2(x + pad.x, top + pad.y), IM_COL32(240, 245, 255, 255), it->c_str());
-            x -= Em(0.25f);
+            ImVec2 pill(size.x + 2 * pad.x, size.y + 2 * pad.y);
+            if (x < bottomRight.x && x - pill.x < bottomRight.x - width)  // no room left on this row
+            {
+                x = bottomRight.x;
+                bottom -= pill.y + gap;
+            }
+            x -= pill.x;
+            drawList->AddRectFilled(ImVec2(x, bottom - pill.y), ImVec2(x + pill.x, bottom), TAG_COLORS.at(*it),
+                                    Em(0.6f));
+            drawList->AddText(ImVec2(x + pad.x, bottom - pill.y + pad.y), IM_COL32(240, 245, 255, 255), it->c_str());
+            x -= gap;
         }
         ImGui::PopFont();
     }
@@ -820,8 +826,8 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.8f),
                 ImDrawFlags_RoundCornersTop);
     ImVec2 pictureBottomRight = ImGui::GetItemRectMax();
-    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)), nullptr,
-             textScale);
+    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)),
+             width - Em(0.8f), nullptr, textScale);
     ImGui::SetCursorPos(ImVec2(padding, ImGui::GetCursorPosY() + Em(0.4f)));
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
     ImGui::TextUnformatted(Fit(demo.label, width - 2 * padding, 1).c_str());
@@ -935,7 +941,8 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     drawList->AddRectFilled(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BG), rounding);
     DrawPicture(drawList, demo.stem, topLeft, width, PICTURE_ASPECT, Em(0.8f), ImDrawFlags_RoundCornersTop);
     float pictureBottom = topLeft.y + width / PICTURE_ASPECT;
-    DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), drawList, textScale);
+    DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), width - Em(0.8f), drawList,
+             textScale);
     ImFont* font = ImGui::GetFont();
     float fontSize = ImGui::GetFontSize() * textScale;
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
@@ -1064,7 +1071,8 @@ void DemoLauncher::Detail()
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.5f),
                 ImDrawFlags_RoundCornersAll);
     ImVec2 pictureBottomRight = ImGui::GetItemRectMax();
-    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)));
+    DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)),
+             width - Em(0.8f));
     ImGui::Dummy(ImVec2(0, Em(0.4f)));
     RichMd::Render("## " + demo.label + "\n\n" + demo.text);
     if (!demo.uses.empty())
