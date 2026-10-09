@@ -282,6 +282,17 @@ def _manual_teaser(text: str, demo: str) -> None:
     _manual_picture(demo, width)
 
 
+def is_light_theme() -> bool:
+    """True when the window background is light (a light theme)"""
+    bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    return 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z > 0.5
+
+
+def code_palette_follows_theme(editor: ed.TextEditor) -> None:
+    """A code editor's palette follows the theme, as rich_md's code blocks: light on a light background"""
+    editor.set_palette(ed.TextEditor.get_light_palette() if is_light_theme() else ed.TextEditor.get_dark_palette())
+
+
 def panel_bg(top_left: ImVec2, size: ImVec2, alpha_bg: float = 0.08, alpha_border: float = 0.3) -> None:
     """A rounded rectangle in the accent color, behind a part of a slide"""
     em = hello_imgui.em_size()
@@ -1916,7 +1927,6 @@ def _init_markdown_editor():
     _markdown_text_editor = ed.TextEditor()
     _markdown_text_editor.set_text(_MARKDOWN_SAMPLE)
     _markdown_text_editor.set_language(ed.TextEditor.Language.markdown())
-    _markdown_text_editor.set_palette(ed.TextEditor.get_dark_palette())
     _markdown_editor_initialized = True
 
 
@@ -1926,6 +1936,7 @@ def _markdown_source(size: ImVec2):
     imgui.begin_child("##md_source", size, False, imgui.WindowFlags_.no_background)
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.9)
+    code_palette_follows_theme(_markdown_text_editor)
     _markdown_text_editor.render("##md_editor", ImVec2(size.x - em * 0.2, size.y))
     imgui.pop_font()
     imgui.end_child()
@@ -2082,7 +2093,6 @@ def _haiku_init() -> None:
         editor = ed.TextEditor()
         editor.set_text(code)
         editor.set_language(language)
-        editor.set_palette(ed.TextEditor.get_dark_palette())
         editor.set_read_only_enabled(True)
         editor.set_show_whitespaces_enabled(False)  # a page of code, to be read
         _haiku_editors.append(editor)
@@ -2093,6 +2103,7 @@ def _haiku_code(index: int, size: ImVec2) -> None:
     imgui.begin_child("##haiku_code", size, False, imgui.WindowFlags_.no_background)
     code_font = rich_md.get_code_font()
     imgui.push_font(code_font.font, code_font.size * 0.85)
+    code_palette_follows_theme(_haiku_editors[index])
     _haiku_editors[index].render("##haiku_editor", size)
     imgui.pop_font()
     imgui.end_child()
@@ -2245,7 +2256,6 @@ def _init_gallery():
             editor = ed.TextEditor()
             editor.set_text(code)
             editor.set_language(lang_def)
-            editor.set_palette(ed.TextEditor.get_dark_palette())
             _gallery_editors[lang_idx].append(editor)
     _gallery_initialized = True
 
@@ -2331,6 +2341,7 @@ def _gallery_render_cell(idx: int, w: float, h: float, em: float, gui_func, stac
     copied_recently = (imgui.get_time() - _gallery_render_cell._copy_times.get(idx, -1.0)) < 0.7
     imgui.set_item_tooltip("Copied!" if copied_recently else "Copy")
     imgui.push_font(code_font.font, code_font_size)
+    code_palette_follows_theme(editor)
     editor.render(f"##ed_gallery_{idx}", ImVec2(-1, -1))
     imgui.pop_font()
     imgui.end_child()
@@ -2725,7 +2736,7 @@ def slides() -> list[CarouselSlide]:
 def _slides_bg_color() -> int:
     """The slides' background: the page's, a little darker (more so in a dark theme), so that they stand out"""
     bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
-    k = 0.75 if 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z < 0.5 else 0.93
+    k = 0.93 if is_light_theme() else 0.75
     return imgui.color_convert_float4_to_u32(ImVec4(bg.x * k, bg.y * k, bg.z * k, 1.0))
 
 

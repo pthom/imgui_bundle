@@ -204,6 +204,19 @@ namespace
         return current + (target - current) * (1.f - std::exp(-speed * dt));
     }
 
+    // True when the window background is light (a light theme)
+    bool IsLightTheme()
+    {
+        ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+        return 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
+    }
+
+    // A code editor's palette follows the theme, as rich_md's code blocks: light on a light background
+    void CodePaletteFollowsTheme(TextEditor& editor)
+    {
+        editor.SetPalette(IsLightTheme() ? TextEditor::GetLightPalette() : TextEditor::GetDarkPalette());
+    }
+
     // A rounded rectangle in the accent color, behind a part of a slide
     void PanelBg(ImVec2 topLeft, ImVec2 size, float alphaBg = 0.08f, float alphaBorder = 0.3f)
     {
@@ -2034,7 +2047,6 @@ void main(){
         auto editor = std::make_unique<TextEditor>();
         editor->SetText(code);
         editor->SetLanguage(language);
-        editor->SetPalette(TextEditor::GetDarkPalette());
         return editor;
     }
 
@@ -2096,6 +2108,7 @@ flowchart LR
             ImGui::BeginChild("##md_source", size, false, ImGuiWindowFlags_NoBackground);
             auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size * 0.9f);
+            CodePaletteFollowsTheme(*editor);
             editor->Render("##md_editor", ImVec2(size.x - em * 0.2f, size.y));
             ImGui::PopFont();
             ImGui::EndChild();
@@ -2309,6 +2322,7 @@ int main() {
             ImGui::BeginChild("##haiku_code", size, false, ImGuiWindowFlags_NoBackground);
             auto codeFont = RichMd::GetCodeFont();
             ImGui::PushFont(codeFont.font, codeFont.size * 0.85f);
+            CodePaletteFollowsTheme(*editors[index]);
             editors[index]->Render("##haiku_editor", size);
             ImGui::PopFont();
             ImGui::EndChild();
@@ -2531,6 +2545,7 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
             }
             ImGui::SetItemTooltip(ImGui::GetTime() - copyTimes[idx] < 0.7 ? "Copied!" : "Copy");
             ImGui::PushFont(codeFont.font, codeFontSize);
+            CodePaletteFollowsTheme(*editors[lang][idx]);
             editors[lang][idx]->Render(("##ed_gallery_" + std::to_string(idx)).c_str(), ImVec2(-1, -1));
             ImGui::PopFont();
             ImGui::EndChild();
@@ -2942,7 +2957,7 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
     ImU32 SlidesBgColor()
     {
         ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
-        float k = 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z < 0.5f ? 0.75f : 0.93f;
+        float k = IsLightTheme() ? 0.93f : 0.75f;
         return ImGui::ColorConvertFloat4ToU32(ImVec4(bg.x * k, bg.y * k, bg.z * k, 1.f));
     }
 
