@@ -87,7 +87,12 @@
             </a>
             <!-- Motto -->
             <div id="motto">
-                <h1 class="motto-title"><a href="/playground" class="motto-title-link"><span class="motto-title-long">Dear ImGui Bundle </span>Playground</a><button id="about-button" aria-label="About the playground">i</button></h1>
+                <h1 class="motto-title"><a href="/playground" class="motto-title-link"><span class="motto-title-long">Dear ImGui Bundle </span>Playground</a><button id="about-button" aria-label="About the playground">i</button><!--
+                 the theme, on a phone (js/settings.js) --><button id="theme-button" aria-label="Theme" title="Theme">
+                    <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+                        <circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.4"/>
+                        <path d="M8 1.5a6.5 6.5 0 0 1 0 13z" fill="currentColor"/>
+                    </svg></button></h1>
                 <!-- What the playground is; the bundle's own tagline is in the canvas (the welcome) -->
                 <p class="motto-subtitle">Live Python in your browser: pick a demo, edit it, run it.</p>
             </div>
@@ -211,24 +216,27 @@
             <p>Pick a demo, open its Code, edit it, then Run.</p>
             <p><a href="https://imgui-bundle.pages.dev" target="_blank">Dear ImGui Bundle</a>: interactive apps in Python
                and C++, for desktop, web and mobile.</p>
-            <!-- On a phone, the theme switch is here (the header has no room for it) -->
-            <div class="about-theme">Theme
-                <div class="theme-switch" role="group" aria-label="Theme">
-                    <button data-theme="dark" title="Dark theme" aria-label="Dark theme">
-                        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
-                            <path d="M10.5 1.8a6.3 6.3 0 1 0 3.7 10.4A5.2 5.2 0 0 1 10.5 1.8z"/>
-                        </svg>
-                    </button>
-                    <button data-theme="light" title="Light theme" aria-label="Light theme">
-                        <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
-                            <circle cx="8" cy="8" r="3.2"/>
-                            <path d="M8 0.8v2.2M8 13v2.2M0.8 8H3M13 8h2.2M2.9 2.9l1.6 1.6M11.5 11.5l1.6 1.6
-                                     M2.9 13.1l1.6-1.6M11.5 4.5l1.6-1.6" stroke-width="1.5" stroke-linecap="round"/>
-                        </svg>
-                    </button>
-                    <button data-theme="more" title="More themes"
-                            aria-label="More themes">&middot;&middot;&middot;</button>
-                </div>
+        </div>
+    </template>
+
+    <!-- On a phone, the theme switch is in a bubble, from the button beside the (i) (js/settings.js) -->
+    <template id="theme-bubble-content">
+        <div class="theme-bubble">
+            <div class="theme-switch" role="group" aria-label="Theme">
+                <button data-theme="dark" title="Dark theme" aria-label="Dark theme">
+                    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                        <path d="M10.5 1.8a6.3 6.3 0 1 0 3.7 10.4A5.2 5.2 0 0 1 10.5 1.8z"/>
+                    </svg>
+                </button>
+                <button data-theme="light" title="Light theme" aria-label="Light theme">
+                    <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
+                        <circle cx="8" cy="8" r="3.2"/>
+                        <path d="M8 0.8v2.2M8 13v2.2M0.8 8H3M13 8h2.2M2.9 2.9l1.6 1.6M11.5 11.5l1.6 1.6
+                                 M2.9 13.1l1.6-1.6M11.5 4.5l1.6-1.6" stroke-width="1.5" stroke-linecap="round"/>
+                    </svg>
+                </button>
+                <button data-theme="more" title="More themes"
+                        aria-label="More themes">&middot;&middot;&middot;</button>
             </div>
         </div>
     </template>

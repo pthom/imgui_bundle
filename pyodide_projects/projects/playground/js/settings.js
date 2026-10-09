@@ -135,6 +135,21 @@ function wireThemeSwitch(container) {
 
 document.addEventListener('DOMContentLoaded', () => {
     wireThemeSwitch(document.getElementById('theme-switch'));
+    // On a phone, the header has no room for the switch: a button beside the (i) shows it in a bubble
+    const bubble = document.getElementById('theme-bubble-content').content.firstElementChild.cloneNode(true);
+    wireThemeSwitch(bubble.querySelector('.theme-switch'));
+    const [bubbleTip] = tippy('#theme-button', {
+        content: bubble,
+        trigger: 'click',
+        interactive: true,
+        appendTo: () => document.body,
+        placement: 'bottom',
+        theme: 'light-border',
+    });
+    // The moon or the sun picked: the bubble closes ("..." keeps it, under its list)
+    bubble.addEventListener('click', (e) => {
+        if (e.target.closest('button[data-theme="dark"], button[data-theme="light"]')) bubbleTip.hide();
+    });
     for (const button of document.querySelectorAll('.font-size button'))
         button.addEventListener('click', () => stepFontScale(parseInt(button.dataset.step)));
     showFontScale();
@@ -157,6 +172,13 @@ async function loadPlaygroundSettings() {
 // Before a demo runs: does it set a theme of its own?
 function settingsBeforeDemo(example) {
     if (pySettings) pySettings.next_demo(!!(example && example.own_theme));
+}
+
+// A theme picked inside the running demo (py/playground_settings.py): the page follows it at once
+function onDemoThemeChanged(name) {
+    currentTheme = name;
+    writeSetting('theme', name);
+    showTheme();
 }
 
 // Before a demo stops: a theme picked inside it (the themes demo, a menu) becomes the page's

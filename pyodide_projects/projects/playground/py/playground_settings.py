@@ -24,12 +24,32 @@ def _apply_theme(theme_name: str) -> None:
     hello_imgui.apply_tweaked_theme(tweaked_theme)
 
 
+def _on_theme_changed() -> None:
+    """A theme picked inside the demo (the themes demo, a menu): the page follows it at once, and the next demos"""
+    global _theme_name, _theme_at_start
+    theme_name = current_theme()
+    if theme_name == _theme_name:
+        return
+    _theme_name = _theme_at_start = theme_name
+    import js  # type: ignore
+    js.onDemoThemeChanged(theme_name)  # js/settings.js
+
+
 def _after_setup() -> None:
     global _theme_at_start
     if _theme_name and not _demo_has_own_theme:
         _apply_theme(_theme_name)
     imgui.get_style().font_scale_main = _font_scale
     _theme_at_start = current_theme()
+    # Hello ImGui calls it when its theme selector changes the theme; the demo's own callback, if any, still runs
+    callbacks = hello_imgui.get_runner_params().callbacks
+    demo_callback = callbacks.theme_changed
+
+    def theme_changed() -> None:
+        if demo_callback is not None:
+            demo_callback()
+        _on_theme_changed()
+    callbacks.theme_changed = theme_changed
 
 
 pyodide_patch_runners.after_setup_callbacks.append(_after_setup)

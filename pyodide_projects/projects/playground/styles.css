@@ -546,6 +546,25 @@ body {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    text-align: center;
+}
+#editor-label.cut {  /* its title does not fit: a tap shows it whole (js/main.js) */
+    cursor: pointer;
+}
+#editor-label-toast {  /* the whole title, for a moment, under the toolbar */
+    position: fixed;
+    max-width: calc(100vw - 32px);
+    padding: 6px 12px;
+    font-size: 0.9rem;
+    color: #fff;
+    background-color: rgba(30, 30, 30, 0.92);
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
+    z-index: 30;
+    transition: opacity 0.4s;
+}
+#editor-label-toast.fading {
+    opacity: 0;
 }
 #editor-label.two-lines {  /* too long for one line (js/main.js, fitEditorLabel) */
     display: -webkit-box;
@@ -683,16 +702,26 @@ body {
     height: 9px;
     border-radius: 2px;
 }
-/* In the (i) note, on a phone */
-.about-theme {
+/* On a phone: a button beside the (i), and the switch in its bubble (js/settings.js) */
+#theme-button {
     display: none;
-    align-items: center;
-    gap: 8px;
-    margin-top: 10px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.2);
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 0.4em;
+    padding: 0;
+    vertical-align: middle;
+    font-size: 0.85em;
+    color: var(--text);
+    background: transparent;
+    border: 1px solid var(--text-faint);
+    border-radius: 50%;
+    cursor: pointer;
 }
-.about-theme .theme-switch {  /* the note is a tooltip's box, dark in both page themes */
+#theme-button svg {
+    display: block;
+    margin: auto;
+}
+.theme-bubble .theme-switch {  /* the bubble is a tooltip's box, dark in both page themes */
     --control-border: #666;
     --control-hover: #4a4a4a;
     --toolbar-text: #ddd;
@@ -1207,8 +1236,8 @@ body {
         display: inline-flex;
         margin-right: 0;
     }
-    .about-theme {
-        display: flex;
+    #theme-button {
+        display: inline-block;
     }
     body.pane-demo #editor, body.pane-demo #error-output {
         display: none;

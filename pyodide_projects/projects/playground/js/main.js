@@ -115,7 +115,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (instance.popper.dataset.wired) return;  // the note's elements stay from one show to the next
                 instance.popper.dataset.wired = 'true';
                 instance.popper.querySelector('.about-close').addEventListener('click', () => instance.hide());
-                wireThemeSwitch(instance.popper.querySelector('.theme-switch'));  // a phone's (js/settings.js)
             },
             onHide() {
                 const backdrop = document.getElementById('about-backdrop');
@@ -193,12 +192,29 @@ function setEditorLabel(label) {
     fitEditorLabel();
 }
 
-// A label too long for one line goes on two, a little smaller; checked again when the toolbar's width changes
+// A label too long for one line goes on two, a little smaller; checked again when the toolbar's width changes. Still
+// cut, a tap shows it whole for a moment.
 function fitEditorLabel() {
     const label = document.getElementById('editor-label');
     label.classList.remove('two-lines');
     if (label.scrollWidth > label.clientWidth) label.classList.add('two-lines');
+    label.classList.toggle('cut', label.scrollHeight > label.clientHeight + 1 || label.scrollWidth > label.clientWidth);
 }
+document.getElementById('editor-label').addEventListener('click', () => {
+    const label = document.getElementById('editor-label');
+    if (!label.classList.contains('cut')) return;
+    document.getElementById('editor-label-toast')?.remove();
+    const toast = document.createElement('div');
+    toast.id = 'editor-label-toast';
+    toast.textContent = label.textContent;
+    document.body.appendChild(toast);
+    const rect = label.getBoundingClientRect();  // under the label, centered on it, inside the screen
+    const left = rect.left + rect.width / 2 - toast.offsetWidth / 2;
+    toast.style.left = Math.max(16, Math.min(left, window.innerWidth - toast.offsetWidth - 16)) + 'px';
+    toast.style.top = (rect.bottom + 6) + 'px';
+    setTimeout(() => toast.classList.add('fading'), 2000);
+    toast.addEventListener('transitionend', () => toast.remove(), {once: true});
+});
 new ResizeObserver(fitEditorLabel).observe(document.getElementById('editor-toolbar'));
 
 // The panel over the canvas for a desktop-only demo (its code is in the editor, it does not run here): its picture,
