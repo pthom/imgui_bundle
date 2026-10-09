@@ -243,24 +243,6 @@ menus and a theme chooser. Your settings are saved, and restored at the next sta
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_docking.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_docking.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp)
 
-### Custom 3D background (OpenGL)
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_custom_background.jpg
-:alt: Custom 3D background (OpenGL)
-:width: 400px
-:::
-
-Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape
-shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls
-`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL
-([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).
-
-*Python, C++, Desktop only*
-
-*Uses: OpenGL*
-
-[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_custom_background.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp)
-
 ### Power save when idle
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_powersave.jpg
@@ -804,9 +786,82 @@ is no Hello ImGui here: no DPI handling, themes or assets.
 
 [Python code GLFW](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py) · [Python code SDL2](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py) · [Python code SDL3](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py) · [Python code pyglet](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py) · [Python code pygame](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py) · [Python code wgpu](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py)
 
+## 3D and shaders
+
+Draw behind the GUI or into a texture with OpenGL and WebGL shaders, from Python.
+
+### Shader background, minimal
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_minimal_mandelbrot.jpg
+:alt: Shader background, minimal
+:width: 400px
+:::
+
+The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.
+**Pyodide only:** this demo calls the browser's
+[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`
+interop. On desktop, you would use PyOpenGL instead.
+
+*Python, Browser only*
+
+*Uses: browser APIs*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_minimal_mandelbrot.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py)
+
+### Shader background: a 3D sea
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_background_shader.jpg
+:alt: Shader background: a 3D sea
+:width: 400px
+:::
+
+One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The
+shader is the famous "Seascape" from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander
+Alekseev. In the browser, the app runs with [Pyodide](https://pyodide.org).
+
+*Python*
+
+*Uses: OpenGL, browser APIs*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_background_shader.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py)
+
+### 3D sea in OpenGL (desktop)
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_custom_background.jpg
+:alt: 3D sea in OpenGL (desktop)
+:width: 400px
+:::
+
+Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape
+shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls
+`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL
+([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).
+
+*Python, C++, Desktop only*
+
+*Uses: OpenGL*
+
+[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_custom_background.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp)
+
+### 3D cube in a texture
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_texture_in_image.jpg
+:alt: 3D cube in a texture
+:width: 400px
+:::
+
+A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and
+shown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.
+
+*Python, Browser only*
+
+*Uses: browser APIs*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_texture_in_image.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py)
+
 ## In the browser
 
-Deploy to the web, and use the browser's WebGL and WebAudio from Python.
+Deploy to the web, and use the browser's WebAudio and WebGL from Python.
 
 ### Minimal HTML page
 
@@ -840,57 +895,6 @@ appears next to a text field.
 *Uses: ImPlot, ImmVision*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
-
-### WebGL shader as background
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_minimal_mandelbrot.jpg
-:alt: WebGL shader as background
-:width: 400px
-:::
-
-The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.
-**Pyodide only:** this demo calls the browser's
-[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`
-interop. On desktop, you would use PyOpenGL instead.
-
-*Python, Browser only*
-
-*Uses: browser APIs*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_minimal_mandelbrot.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py)
-
-### WebGL / OpenGL custom background
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_background_shader.jpg
-:alt: WebGL / OpenGL custom background
-:width: 400px
-:::
-
-One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The
-shader is the famous "Seascape" from [Shadertoy](https://www.shadertoy.com/view/Ms2SD1), by Alexander
-Alekseev. In the browser, the app runs with [Pyodide](https://pyodide.org).
-
-*Python*
-
-*Uses: OpenGL, browser APIs*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_background_shader.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py)
-
-### WebGL 3D cube rendered to a texture
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/webgl_texture_in_image.jpg
-:alt: WebGL 3D cube rendered to a texture
-:width: 400px
-:::
-
-A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and
-shown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.
-
-*Python, Browser only*
-
-*Uses: browser APIs*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_texture_in_image.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py)
 
 ### WebAudio synthesizer
 

@@ -169,15 +169,6 @@
     "uses": [],
     "cpp": true
   },
-  "demo_custom_background.py": {
-    "title": "A 3D sea behind the GUI: a custom OpenGL background.",
-    "text": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape\nshader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls\n`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL\n([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).",
-    "summary": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune.",
-    "uses": [
-      "OpenGL"
-    ],
-    "cpp": true
-  },
   "demo_powersave.py": {
     "title": "Power save: the app slows down when you don't use it.",
     "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nafter 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with\n`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.",
@@ -505,25 +496,6 @@
     ],
     "cpp": false
   },
-  "minimal_example.py": {
-    "title": "Deploy to the Web: Minimal HTML Example",
-    "text": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org). The HTML file below is a **complete, self-contained app** in about 80 lines - no server, no build step.",
-    "summary": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org).",
-    "uses": [
-      "code editor"
-    ],
-    "cpp": false
-  },
-  "demo_touch_screen.py": {
-    "title": "On a touch screen: the gestures of a phone, in the browser",
-    "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button\nappears next to a text field.",
-    "summary": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.",
-    "uses": [
-      "ImPlot",
-      "ImmVision"
-    ],
-    "cpp": true
-  },
   "webgl_minimal_mandelbrot.py": {
     "title": "Minimal WebGL fragment shader as the application background.",
     "text": "The [Mandelbrot set](https://en.wikipedia.org/wiki/Mandelbrot_set), drawn by a fragment shader behind the GUI.\n**Pyodide only:** this demo calls the browser's\n[WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) API directly, through Python's `js`\ninterop. On desktop, you would use PyOpenGL instead.",
@@ -543,6 +515,15 @@
     ],
     "cpp": false
   },
+  "demo_custom_background.py": {
+    "title": "A 3D sea behind the GUI: a custom OpenGL background.",
+    "text": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The [Seascape\nshader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 2014). Hello ImGui calls\n`runner_params.callbacks.custom_background` at each frame, before the GUI: that is where it draws, with OpenGL\n([PyOpenGL](https://pypi.org/project/PyOpenGL/) in Python).",
+    "summary": "Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune.",
+    "uses": [
+      "OpenGL"
+    ],
+    "cpp": true
+  },
   "webgl_texture_in_image.py": {
     "title": "Render a 3D cube with WebGL from Python, and display it in an ImGui window",
     "text": "A 3D cube drawn with [WebGL2](https://developer.mozilla.org/en-US/docs/Web/API/WebGL_API) into a texture, and\nshown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each frame.",
@@ -551,6 +532,25 @@
       "browser APIs"
     ],
     "cpp": false
+  },
+  "minimal_example.py": {
+    "title": "Deploy to the Web: Minimal HTML Example",
+    "text": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org). The HTML file below is a **complete, self-contained app** in about 80 lines - no server, no build step.",
+    "summary": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org).",
+    "uses": [
+      "code editor"
+    ],
+    "cpp": false
+  },
+  "demo_touch_screen.py": {
+    "title": "On a touch screen: the gestures of a phone, in the browser",
+    "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button\nappears next to a text field.",
+    "summary": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.",
+    "uses": [
+      "ImPlot",
+      "ImmVision"
+    ],
+    "cpp": true
   },
   "webaudio_synth.py": {
     "title": "WebAudio synthesizer: a piano, four tunes, and a scope.",

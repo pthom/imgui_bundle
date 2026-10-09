@@ -35,8 +35,12 @@
             "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends."
         },
         {
+            "name": "3D and shaders",
+            "about": "Draw behind the GUI or into a texture with OpenGL and WebGL shaders, from Python."
+        },
+        {
             "name": "In the browser",
-            "about": "Deploy to the web, and use the browser's WebGL and WebAudio from Python."
+            "about": "Deploy to the web, and use the browser's WebAudio and WebGL from Python."
         },
         {
             "name": "Interactive science",
@@ -197,13 +201,6 @@
             "bundle_folders": [
                 "../demos_assets"
             ]
-        },
-        {
-            "label": "Custom 3D background (OpenGL)",
-            "filename": "demo_custom_background.py",
-            "category": "Build an app",
-            "source": "demos_immapp",
-            "where": "desktop"
         },
         {
             "label": "Power save when idle",
@@ -589,6 +586,30 @@
             ]
         },
         {
+            "label": "Shader background, minimal",
+            "filename": "webgl_minimal_mandelbrot.py",
+            "category": "3D and shaders",
+            "where": "browser"
+        },
+        {
+            "label": "Shader background: a 3D sea",
+            "filename": "webgl_background_shader.py",
+            "category": "3D and shaders"
+        },
+        {
+            "label": "3D sea in OpenGL (desktop)",
+            "filename": "demo_custom_background.py",
+            "category": "3D and shaders",
+            "source": "demos_immapp",
+            "where": "desktop"
+        },
+        {
+            "label": "3D cube in a texture",
+            "filename": "webgl_texture_in_image.py",
+            "category": "3D and shaders",
+            "where": "browser"
+        },
+        {
             "label": "Minimal HTML page",
             "filename": "minimal_example.py",
             "category": "In the browser"
@@ -602,23 +623,6 @@
                 "../demos_assets"
             ],
             "in_place": true
-        },
-        {
-            "label": "WebGL shader as background",
-            "filename": "webgl_minimal_mandelbrot.py",
-            "category": "In the browser",
-            "where": "browser"
-        },
-        {
-            "label": "WebGL / OpenGL custom background",
-            "filename": "webgl_background_shader.py",
-            "category": "In the browser"
-        },
-        {
-            "label": "WebGL 3D cube rendered to a texture",
-            "filename": "webgl_texture_in_image.py",
-            "category": "In the browser",
-            "where": "browser"
         },
         {
             "label": "WebAudio synthesizer",

@@ -68,10 +68,6 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
 - A full app: docking, fonts, logs: A template for a real application, built with Hello ImGui: copy it and start from there. Dockable windows with several layouts, colored fonts and emojis, a log window, a status bar, toolbars, menus and a theme chooser. Your settings are saved, and restored at the next start. The code is heavily commented.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
-- Custom 3D background (OpenGL) (desktop only): Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The Seascape shader is by Alexander Alekseev (TDM, 2014). Hello ImGui calls runner_params.callbacks.custom_background at each frame, before the GUI: that is where it draws, with OpenGL (PyOpenGL in Python).
-  Uses: OpenGL
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
-  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
 - Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with hello_imgui.set_item_is_live(), and keeps the full speed while it is visible. The idling settings are global.
   Uses: ImPlot, toggles, spinners
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py
@@ -197,9 +193,27 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
   Python (pygame): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py
   Python (wgpu): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py
 
+## 3D and shaders
+
+Draw behind the GUI or into a texture with OpenGL and WebGL shaders, from Python.
+
+- Shader background, minimal (browser only): The Mandelbrot set, drawn by a fragment shader behind the GUI. Pyodide only: this demo calls the browser's WebGL2 API directly, through Python's js interop. On desktop, you would use PyOpenGL instead.
+  Uses: browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py
+- Shader background: a 3D sea: One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The shader is the famous "Seascape" from Shadertoy, by Alexander Alekseev. In the browser, the app runs with Pyodide.
+  Uses: OpenGL, browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py
+- 3D sea in OpenGL (desktop) (desktop only): Draw anything behind your GUI with OpenGL: here, an animated sea whose waves and colors you can tune. The Seascape shader is by Alexander Alekseev (TDM, 2014). Hello ImGui calls runner_params.callbacks.custom_background at each frame, before the GUI: that is where it draws, with OpenGL (PyOpenGL in Python).
+  Uses: OpenGL
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
+- 3D cube in a texture (browser only): A 3D cube drawn with WebGL2 into a texture, and shown in the GUI by imgui.image(). No copy between the GPU and the CPU at each frame.
+  Uses: browser APIs
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py
+
 ## In the browser
 
-Deploy to the web, and use the browser's WebGL and WebAudio from Python.
+Deploy to the web, and use the browser's WebAudio and WebGL from Python.
 
 - Minimal HTML page: Dear ImGui Bundle apps can run entirely in the browser using Pyodide. The HTML file below is a complete, self-contained app in about 80 lines - no server, no build step.
   Uses: code editor
@@ -208,15 +222,6 @@ Deploy to the web, and use the browser's WebGL and WebAudio from Python.
   Uses: ImPlot, ImmVision
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp
-- WebGL shader as background (browser only): The Mandelbrot set, drawn by a fragment shader behind the GUI. Pyodide only: this demo calls the browser's WebGL2 API directly, through Python's js interop. On desktop, you would use PyOpenGL instead.
-  Uses: browser APIs
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_minimal_mandelbrot.py
-- WebGL / OpenGL custom background: One source file, two platforms: a shader behind the GUI, with OpenGL on desktop and WebGL in the browser. The shader is the famous "Seascape" from Shadertoy, by Alexander Alekseev. In the browser, the app runs with Pyodide.
-  Uses: OpenGL, browser APIs
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_background_shader.py
-- WebGL 3D cube rendered to a texture (browser only): A 3D cube drawn with WebGL2 into a texture, and shown in the GUI by imgui.image(). No copy between the GPU and the CPU at each frame.
-  Uses: browser APIs
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py
 - WebAudio synthesizer (browser only): A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add some echo, and watch the scope. Pyodide only: it plays through the browser's WebAudio API, via Pyodide's js interop.
   Uses: knobs, browser APIs
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webaudio_synth.py
