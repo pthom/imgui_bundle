@@ -405,7 +405,8 @@
                 "demo_nanovg_full",
                 "../demos_assets"
             ],
-            "category": "Library tours"
+            "category": "Library tours",
+            "where": "desktop"
         },
         {
             "label": "NanoVG: a beating heart",

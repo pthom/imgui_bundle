@@ -611,11 +611,11 @@ The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing libr
 Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a
 checkbox blows it up.
 
-*Python, C++*
+*Python, C++, Desktop only*
 
 *Uses: NanoVG*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_nanovg_full.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_nanovg_full.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp)
+[C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_nanovg_full.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp)
 
 ### NanoVG: a beating heart
 

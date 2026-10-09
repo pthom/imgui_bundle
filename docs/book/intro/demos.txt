@@ -148,7 +148,7 @@ The libraries in the bundle: full demos, widget tours, showcases.
   Uses: ImGuizmo
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imguizmo/demo_gizmo.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_imguizmo/demo_gizmo.cpp
-- NanoVG: the full demo: The demo of NanoVG, a vector drawing library: shapes, gradients, text, images. Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a checkbox blows it up.
+- NanoVG: the full demo (desktop only): The demo of NanoVG, a vector drawing library: shapes, gradients, text, images. Drawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a checkbox blows it up.
   Uses: NanoVG
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_nanovg/demo_nanovg_full.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_nanovg/demo_nanovg_full.cpp

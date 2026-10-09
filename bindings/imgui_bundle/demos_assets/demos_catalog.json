@@ -652,7 +652,7 @@
           "label": "NanoVG: the full demo",
           "filename": "demo_nanovg_full.py",
           "stem": "demo_nanovg_full",
-          "where": "both",
+          "where": "desktop",
           "text": "The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.\nDrawn each frame behind the GUI, or into a framebuffer that an ImGui image shows. The scene follows the mouse, and a\ncheckbox blows it up.",
           "summary": "The demo of [NanoVG](https://github.com/memononen/nanovg), a vector drawing library: shapes, gradients, text, images.",
           "uses": [
