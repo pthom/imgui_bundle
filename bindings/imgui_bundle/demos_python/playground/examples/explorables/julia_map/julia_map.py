@@ -547,7 +547,6 @@ def widget_block(name: str) -> None:
 
 
 def gui() -> None:
-    imgui.text(f"FPS: {hello_imgui.frame_rate():.2f}")
     rich_md.register_fenced_block_renderer("widget", widget_block)  # the story's ```widget blocks
 
     # The line below renders the whole GUI of the app!
