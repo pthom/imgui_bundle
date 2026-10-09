@@ -8,7 +8,8 @@ shader](https://www.shadertoy.com/view/Ms2SD1) is by Alexander Alekseev (TDM, 20
 
 ## In the browser
 
-PyOpenGL does not run in Pyodide. The playground example `webgl_background_shader.py` does the same with WebGL.
+PyOpenGL does not run in Pyodide: this file stays on the desktop. Its twin, "Shader background: a 3D sea"
+(`webgl_background_shader.py`), draws the same sea from one file, with OpenGL on the desktop and WebGL in the browser.
 """
 
 # Workaround for PyOpenGL 3.1.6+ on Wayland: GLFW (used by immapp / hello_imgui)
