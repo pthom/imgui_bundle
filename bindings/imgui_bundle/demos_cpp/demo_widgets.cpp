@@ -222,6 +222,7 @@ void DemoPortableFileDialogs()
         # Portable File Dialogs
         [portable-file-dialogs](https://github.com/samhocevar/portable-file-dialogs) provides file dialogs
         as well as notifications and messages. They will use the native dialogs and notifications on each platform.
+        **On the desktop only**: in a browser, they do nothing.
     )");
 
 #ifdef __EMSCRIPTEN__
