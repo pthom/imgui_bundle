@@ -29,17 +29,31 @@ async function prepareWelcome() {
     if (!narrowScreen.matches) setCodeFolded(true);
 }
 
-// A demo meant to be hacked (the Start here category): a hint, once, that the code at the left is the point
-let hackHintShown = false;
+// A demo meant to be hacked ("hack" in examples.json): each time it opens, a hint that its code is the point, with an
+// arrow toward the code: the editor at the left on a desktop, the "Code" button above the canvas on a phone
+const HACK_HINT_DURATION_MS = 7000;
 function showHackHint(example) {
-    if (hackHintShown || !example || example.category !== 'Start here' || example.filename === WELCOME_FILENAME) return;
-    hackHintShown = true;
+    const previous = document.getElementById('hack-hint');
+    if (previous) previous.remove();
+    if (!example || !example.hack) return;
+    const container = document.getElementById('canvas-container');
     const hint = document.createElement('div');
     hint.id = 'hack-hint';
-    hint.textContent = narrowScreen.matches ? 'Try it: open the Code, edit it, then Run'
-                                            : 'Try it: edit the code at the left, then click Run';
-    document.getElementById('canvas-container').appendChild(hint);
-    setTimeout(() => hint.classList.add('fading'), 6000);
+    container.appendChild(hint);
+    if (narrowScreen.matches) {
+        hint.className = 'toward-code-button';
+        hint.textContent = 'Try it: open the Code, edit it, then Run';
+        // Its left edge a little before the button, its arrow at the button's middle
+        const button = document.querySelector('#pane-switch button[data-pane="code"]').getBoundingClientRect();
+        const buttonMiddle = button.left + button.width / 2 - container.getBoundingClientRect().left;
+        const left = Math.max(8, buttonMiddle - 30);
+        hint.style.left = left + 'px';
+        hint.style.setProperty('--arrow-x', (buttonMiddle - left) + 'px');
+    } else {
+        hint.className = 'toward-editor';
+        hint.textContent = 'Try it: edit the code at the left, then click Run';
+    }
+    setTimeout(() => hint.classList.add('fading'), HACK_HINT_DURATION_MS);
     hint.addEventListener('transitionend', () => hint.remove(), {once: true});
 }
 

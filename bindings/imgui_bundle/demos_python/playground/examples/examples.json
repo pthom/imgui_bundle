@@ -57,6 +57,7 @@
         {
             "label": "What is an Immediate GUI",
             "filename": "welcome_imm_mode.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp",
             "in_place": true
@@ -64,12 +65,14 @@
         {
             "label": "Hello world, in two lines",
             "filename": "demo_hello_world.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp"
         },
         {
             "label": "A parametric curve",
             "filename": "demo_parametric_curve.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp",
             "in_place": true
@@ -77,6 +80,7 @@
         {
             "label": "A plot and markdown, in a few lines",
             "filename": "demo_implot_markdown.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp",
             "in_place": true
@@ -84,12 +88,14 @@
         {
             "label": "Assets and add-ons",
             "filename": "demo_assets_addons.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp"
         },
         {
             "label": "A beating heart",
             "filename": "haiku_implot_heart.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp",
             "in_place": true
@@ -97,6 +103,7 @@
         {
             "label": "Butterfly effect, in a few lines",
             "filename": "haiku_butterfly.py",
+            "hack": true,
             "category": "Start here",
             "source": "demos_immapp",
             "in_place": true
@@ -169,6 +176,7 @@
         {
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
+            "hack": true,
             "category": "Build an app",
             "source": "demos_immapp",
             "in_place": true
@@ -176,6 +184,7 @@
         {
             "label": "Dockable windows",
             "filename": "layout_docking.py",
+            "hack": true,
             "category": "Build an app",
             "source": "demos_immapp"
         },
@@ -211,6 +220,7 @@
         {
             "label": "Drag and drop",
             "filename": "demo_drag_and_drop.py",
+            "hack": true,
             "category": "Build an app",
             "source": "demos_immapp",
             "in_place": true

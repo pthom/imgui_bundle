@@ -754,21 +754,56 @@ body {
 }
 
 /* The hint on a demo meant to be hacked, over the canvas, shown once (js/examples.js) */
+/* "Try it": a hint toward the code, with an arrow (js/examples.js, showHackHint) */
 #hack-hint {
     position: absolute;
-    top: 12px;
-    left: 50%;
-    transform: translateX(-50%);
+    max-width: calc(100% - 16px);
     padding: 8px 16px;
     border-radius: 999px;
-    background-color: rgba(76, 175, 80, 0.92);
+    background-color: rgba(76, 175, 80, 0.95);
     color: #fff;
     font-family: system-ui, sans-serif;
     font-size: 0.9rem;
-    white-space: nowrap;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
     z-index: 6;
     transition: opacity 0.6s;
+}
+#hack-hint::before {  /* the arrow: a triangle of the hint's color */
+    content: '';
+    position: absolute;
+    border: 9px solid transparent;
+}
+#hack-hint.toward-editor {  /* at the left of the canvas, pointing left, to the editor */
+    left: 16px;
+    top: 30%;
+    white-space: nowrap;
+    animation: hack-hint-nudge-left 1.2s ease-in-out 3;
+}
+#hack-hint.toward-editor::before {
+    left: -17px;
+    top: 50%;
+    transform: translateY(-50%);
+    border-right-color: rgba(76, 175, 80, 0.95);
+}
+#hack-hint.toward-code-button {  /* at the top of the canvas, pointing up, to the "Code" button */
+    top: 14px;
+    animation: hack-hint-nudge-up 1.2s ease-in-out 3;
+}
+#hack-hint.toward-code-button::before {
+    top: -17px;
+    left: calc(var(--arrow-x, 30px) - 9px);
+    border-bottom-color: rgba(76, 175, 80, 0.95);
+}
+@keyframes hack-hint-nudge-left {
+    50% { transform: translateX(-6px); }
+}
+@keyframes hack-hint-nudge-up {
+    50% { transform: translateY(-5px); }
+}
+@media (prefers-reduced-motion: reduce) {
+    #hack-hint {
+        animation: none;
+    }
 }
 #hack-hint.fading {
     opacity: 0;
