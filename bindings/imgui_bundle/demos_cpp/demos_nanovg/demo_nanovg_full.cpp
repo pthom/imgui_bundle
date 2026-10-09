@@ -5,6 +5,7 @@
 #include "nvg_imgui/nvg_imgui.h"
 
 #include "demo_nanovg_full/demo_nanovg_full_impl.h"
+#include <algorithm>
 
 
 struct MyNvgDemo
@@ -83,7 +84,11 @@ int main(int, char**)
             ImGui::GetIO().MousePos.x - ImGui::GetMainViewport()->Pos.x,
             ImGui::GetIO().MousePos.y - ImGui::GetMainViewport()->Pos.y
             );
-        appState.myNvgDemo->Render(width, height, (int)mousePos.x, (int)mousePos.y, (float)now);
+        // The scene is laid out for a width of 1000 pixels: narrower (a phone), it is scaled down
+        float scale = (std::min)(1.f, width / 1000.f);
+        nvgScale(vg, scale, scale);
+        appState.myNvgDemo->Render(
+            width / scale, height / scale, (int)(mousePos.x / scale), (int)(mousePos.y / scale), (float)now);
     };
 
 #ifndef HELLOIMGUI_HAS_METAL
@@ -101,7 +106,9 @@ int main(int, char**)
         if (appState.DisplayInFrameBuffer)
         {
             NvgImgui::RenderNvgToFrameBuffer(appState.vg, *appState.myFramebuffer, nvgDrawingFunction, appState.ClearColor);
-            ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(1000, 600));
+            // 1000 pixels wide at most (the screen's width on a phone), with the framebuffer's aspect ratio
+            float width = (std::min)(1000.f, ImGui::GetMainViewport()->WorkSize.x - HelloImGui::EmSize(2.f));
+            ImGui::Image(appState.myFramebuffer->TextureId, ImVec2(width, width * 0.6f));
         }
 
         ImGui::Button("?##Note");

@@ -140,9 +140,9 @@ def main():
         assert app_state.nvg_framebuffer is not None
         nvg_imgui.render_nvg_to_frame_buffer(app_state.vg, app_state.nvg_framebuffer, draw_scene)
         assert app_state.nvg_framebuffer is not None
-        imgui.image(
-            imgui.ImTextureRef(app_state.nvg_framebuffer.texture_id),
-            hello_imgui.em_to_vec2(50, 30))
+        # 50 em wide at most (the window's width on a phone), with the framebuffer's aspect ratio (1000 x 600)
+        width = min(hello_imgui.em_size(50), imgui.get_content_region_avail().x)
+        imgui.image(imgui.ImTextureRef(app_state.nvg_framebuffer.texture_id), ImVec2(width, width * 0.6))
         hello_imgui.set_item_is_live()  # the heart beats on its own: no idling while the image is visible
 
         _, gDrawingState.heart_color = imgui.color_edit4("Heart color", gDrawingState.heart_color)
