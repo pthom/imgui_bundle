@@ -82,7 +82,7 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
 - Drag and drop: Drag a name onto another button to copy it, move it, or swap the two: the radio buttons pick the mode. Each button is both a drag source and a drop target. Adapted from the drag and drop section of the Dear ImGui demo.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_drag_and_drop.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_drag_and_drop.cpp
-- Command palette: A searchable list of commands, as in VS Code: press Ctrl+Shift+P (Cmd+Shift+P on macOS). Type a few letters to filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register commands and their callbacks with imgui-command-palette.
+- Command palette: A searchable list of commands, as in VS Code: press Ctrl+Shift+P (Cmd+Shift+P on macOS), or its button. Type a few letters to filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register commands and their callbacks with imgui-command-palette.
   Uses: command palette
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_command_palette.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_command_palette.cpp

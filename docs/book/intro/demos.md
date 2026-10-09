@@ -386,7 +386,7 @@ Each button is both a drag source and a drop target. Adapted from the drag and d
 
 ### Command palette
 
-A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS).
+A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), or its button.
 
 :::{dropdown} More
 Type a few letters to filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register commands and their callbacks with [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).

@@ -205,8 +205,8 @@
   },
   "demo_command_palette.py": {
     "title": "A command palette, as in VS Code or Sublime Text.",
-    "text": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS). Type a few letters\nto filter it. One command changes the theme in two steps, another writes to the log below. Learn how to register\ncommands and their callbacks with [imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).",
-    "summary": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS).",
+    "text": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), or its button. Type\na few letters to filter it. One command changes the theme in two steps, another writes to the log below. Learn how\nto register commands and their callbacks with\n[imgui-command-palette](https://github.com/hnOsmium0001/imgui-command-palette).",
+    "summary": "A searchable list of commands, as in VS Code: press **Ctrl+Shift+P** (**Cmd+Shift+P** on macOS), or its button.",
     "uses": [
       "command palette"
     ],
