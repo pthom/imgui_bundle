@@ -198,7 +198,7 @@ async function runEditorPythonCode() {
 
     } catch (err) {
         console.error('Caught PythonError:', err);
-        displayError(err.toString());
+        displayError(err.toString(), true);
     }
 }
 

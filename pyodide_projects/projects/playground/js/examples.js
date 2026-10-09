@@ -505,6 +505,7 @@ async function loadDemoByFilename(filename, updateHistory = true) {
         if (tab) tab.opener = null; else window.location.assign(example.page);
         return;
     }
+    if (narrowScreen.matches) setPane('demo');  // a phone: the demo shows first, whatever pane showed before
     const packages = example ? example.packages : undefined;
     const label = example ? example.label : filename;
     const bundleFolders = example ? example.bundle_folders : undefined;

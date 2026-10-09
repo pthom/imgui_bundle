@@ -43,7 +43,8 @@ function hideLoadingModal() {
 // Each message is appended (Python's stderr arrives line by line: a traceback is many messages),
 // the window keeps the last lines, and scrolls to the newest.
 const ERROR_OUTPUT_MAX_LINES = 400;
-function displayError(message) {
+// showCode: on a phone, switch to the code pane (an exception, read with its code); a warning or a log leaves the pane
+function displayError(message, showCode = false) {
     console.log('Displaying error:', message); // Debug log
     const container = document.getElementById('error-output');
     const errorOutput = container.querySelector('pre');
@@ -52,8 +53,8 @@ function displayError(message) {
     errorOutput.textContent = lines.slice(-ERROR_OUTPUT_MAX_LINES).join('\n'); // Use textContent for plain text
     container.classList.remove('hidden');
     container.scrollTop = container.scrollHeight;
-    // A phone shows one pane at a time (js/main.js): an error is read with the code
-    if (typeof setPane === 'function' && window.matchMedia('(max-width: 768px)').matches)
+    // A phone shows one pane at a time (js/main.js): an exception is read with the code
+    if (showCode && typeof setPane === 'function' && window.matchMedia('(max-width: 768px)').matches)
         setPane('code');
 }
 
