@@ -62,7 +62,6 @@ namespace
     // The ImPlot manual and the ImPlot3D manual, each alone (as in Python)
     void manual_implot()
     {
-        ShowManualIntro("ImPlot");
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot, false);
 #else
@@ -72,7 +71,6 @@ namespace
 
     void manual_implot3d()
     {
-        ShowManualIntro("ImPlot3D");
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D, false);
 #else

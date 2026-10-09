@@ -7,15 +7,14 @@ it. Lines, scatter, bars, heatmaps, histograms, real-time plots and more, in Pyt
 from imgui_bundle import immapp, implot
 
 try:
-    from imgui_bundle.demos_python.manuals.manual_common import show_intro, show_manual
+    from imgui_bundle.demos_python.manuals.manual_common import show_manual
 except ImportError:  # a script: the module is beside this file
-    from manual_common import show_intro, show_manual  # type: ignore[import-not-found, no-redef]
+    from manual_common import show_manual  # type: ignore[import-not-found, no-redef]
 
 FPS_IDLE = 30.0  # when idle: its demos animate, and they are not ours to mark as live (set_item_is_live)
 
 
 def gui() -> None:
-    show_intro("ImPlot")
     show_manual("implot", fallback=lambda: implot.show_demo_window())
 
 
