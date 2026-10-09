@@ -11,7 +11,7 @@ matter) into `scenario_audio/` beside the script, with the words' timings; only 
 the clips, the audio is the clock: a sentence lasts what its clip lasts, and a cue anchored to words fires on them.
 Without them (or with the voice off), the clock is estimated from the text.
 
-The gestures (`click`, `drag`, `press`, `type_keys`...): the test engine moves a visible cursor and types, for the
+The gestures (`click`, `drag`, `press`, `type_keys`, `paste`...): the test engine moves a visible cursor and types, for the
 moments where the gesture is the lesson. The program runs with `use_imgui_test_engine`, and names its targets with
 `lesson.target(name, resolver)`. The engine owns the inputs while a gesture plays (Esc aborts it). Without the engine
 (a browser without JSPI), the gestures are skipped.
@@ -98,12 +98,12 @@ Point = tuple[float, float]     # a point in a target's rectangle, in fractions 
 
 @dataclass
 class Gesture:
-    kind: str                    # click, double_click, right_click, hover, drag, press, type, menu
+    kind: str                    # click, double_click, right_click, hover, drag, press, type, paste, menu
     target: str = ""             # a target of the program (click, hover, drag...)
     arg: str = ""                # passed to the target's resolver (a heading, an entry...)
     point: Point = (0.5, 0.5)    # where in the target's rectangle; a drag's start
     end: Point = (0.5, 0.5)      # a drag's end
-    text: str = ""               # press: the keys ("ctrl+f"); type: the characters; menu: the item's label
+    text: str = ""               # press: the keys ("ctrl+f"); type, paste: the text; menu: the item's label
 
 
 @dataclass
@@ -386,6 +386,9 @@ class Parser:
         def type_keys(text: str, at: Optional[str] = None) -> None:
             gesture("type", text=text, at=at)
 
+        def paste(text: str, at: Optional[str] = None) -> None:
+            gesture("paste", text=text, at=at)
+
         def menu(label: str, at: Optional[str] = None) -> None:
             gesture("menu", text=label, at=at)
 
@@ -397,7 +400,7 @@ class Parser:
             {"set_value": set_value, "animate": animate, "highlight": highlight,
              "pause": pause, "challenge": challenge, "click": click, "double_click": double_click,
              "right_click": right_click, "hover": hover, "drag": drag, "press": press, "type_keys": type_keys,
-             "menu": menu, **lesson.constants})
+             "paste": paste, "menu": menu, **lesson.constants})
         for action_name in lesson.actions:
             def make_call(name: str) -> Callable[..., None]:
                 def call(*args: Any, at: Optional[str] = None) -> None:
@@ -409,6 +412,8 @@ class Parser:
         except LessonError:
             raise
         except Exception as e:
+            if not lesson.strict:                # the build step needs only the sentences, and knows no constants
+                return
             raise LessonError(f"line {block.line}: {e}") from e
 
     def _time_everything(self) -> None:
@@ -612,19 +617,30 @@ class _GestureRunner:
         if g.kind == "type":
             ctx.key_chars(g.text)
             return
+        if g.kind == "paste":
+            imgui.set_clipboard_text(g.text)
+            ctx.key_press(key_chord("ctrl+v"))
+            return
         if g.kind == "menu":
             ctx.item_click("//$FOCUSED/" + g.text)
             return
         resolver = self.lesson.targets.get(g.target)
         rect = resolver(g.arg, ctx) if resolver is not None else None
-        if rect is None:
+        if resolver is None or rect is None:
             print(f"narrator: the target {g.target}({g.arg!r}) is not on screen: {g.kind} skipped", file=sys.stderr)
             return
 
         def point(f: tuple[float, float]) -> ImVec2:
+            assert rect is not None
             return ImVec2(rect[0].x + (rect[1].x - rect[0].x) * f[0], rect[0].y + (rect[1].y - rect[0].y) * f[1])
 
-        ctx.mouse_move_to_pos(point(g.point))
+        for _ in range(3):                               # the target may move meanwhile (a scroll still animated)
+            goal = point(g.point)
+            ctx.mouse_move_to_pos(goal)
+            rect = resolver(g.arg, ctx) or rect
+            moved = point(g.point) - goal
+            if abs(moved.x) + abs(moved.y) < 2:
+                break
         if g.kind == "click":
             ctx.mouse_click(0)
         elif g.kind == "double_click":
