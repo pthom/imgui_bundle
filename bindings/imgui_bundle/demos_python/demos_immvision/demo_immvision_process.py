@@ -136,13 +136,14 @@ class AppState:
         self.was_narrow: Optional[bool] = None  # the layout of the last frame
 
     def fit_layout(self, narrow: bool):
-        """The images side by side, 22 em wide; on a narrow screen (a phone), at the window's width (a negative width),
-        and the options of the filtered image in a window of their own. Set when the layout changes only: the user may
-        resize the images in between."""
+        """The images side by side, 22 em wide; on a narrow screen (a phone), half the window's width each, and the
+        options of the filtered image in a window of their own. Set when the layout changes only: the user may resize
+        the images in between."""
         if narrow == self.was_narrow:
             return
         self.was_narrow = narrow
-        size = (-1, 0) if narrow else (int(immapp.em_size(22)), 0)
+        half_width = (imgui.get_content_region_avail().x - imgui.get_style().item_spacing.x) / 2
+        size = (int(half_width - imgui.get_frame_height()), 0) if narrow else (int(immapp.em_size(22)), 0)
         self.immvision_params.image_display_size = size
         self.immvision_params_sobel.image_display_size = size
         self.immvision_params_sobel.show_options_in_tooltip = narrow
@@ -171,13 +172,18 @@ def gui():
     if static.app_state is None:
         static.app_state = AppState(hello_imgui.asset_file_full_path("images/house.jpg"))
 
-    rich_md.render(
+    # Open at first, it folds to its first paragraph as soon as the user touches the controls or the images
+    intro_options = rich_md.FoldingTextOptions()
+    intro_options.fold_on_click_elsewhere = True
+    rich_md.render_folding(
+        "intro",
         """
         An image processing pipeline (a Sobel filter): adjust its parameters, and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel
         * Apply Colormaps to the filtered image in the options tab.
-        """
+        """,
+        intro_options,
     )
     imgui.separator()
 
@@ -200,8 +206,7 @@ def gui():
     immvision.image(
         "Original", static.app_state.image, static.app_state.immvision_params
     )
-    if not narrow:
-        imgui.same_line()
+    imgui.same_line()
     immvision.image(
         "Deriv", static.app_state.image_sobel, static.app_state.immvision_params_sobel
     )

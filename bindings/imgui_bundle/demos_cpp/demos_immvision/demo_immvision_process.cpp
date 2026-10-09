@@ -144,15 +144,17 @@ struct AppStateProcess {
         immvisionParamsSobel.ShowOptionsPanel = true;
     }
 
-    // The images side by side, 22 em wide; on a narrow screen (a phone), at the window's width (a negative width), and
-    // the options of the filtered image in a window of their own. Set when the layout changes only: the user may
-    // resize the images in between.
+    // The images side by side, 22 em wide; on a narrow screen (a phone), half the window's width each, and the options
+    // of the filtered image in a window of their own. Set when the layout changes only: the user may resize the images
+    // in between.
     void FitLayout(bool narrow)
     {
         if (wasNarrow == narrow)
             return;
         wasNarrow = narrow;
-        ImmVision::Size size = narrow ? ImmVision::Size(-1, 0) : ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
+        float halfWidth = (ImGui::GetContentRegionAvail().x - ImGui::GetStyle().ItemSpacing.x) / 2.f;
+        ImmVision::Size size = narrow ? ImmVision::Size(int(halfWidth - ImGui::GetFrameHeight()), 0)
+                                      : ImmVision::Size(int(ImmApp::EmSize(22.f)), 0);
         immvisionParams.ImageDisplaySize = size;
         immvisionParamsSobel.ImageDisplaySize = size;
         immvisionParamsSobel.ShowOptionsInTooltip = narrow;
@@ -168,12 +170,15 @@ void gui_demo_immvision_process()
 {
     static AppStateProcess appState(DemosAssetsFolder() + "/images/house.jpg");
 
-    RichMd::Render(R"(
+    // Open at first, it folds to its first paragraph as soon as the user touches the controls or the images
+    RichMd::FoldingTextOptions introOptions;
+    introOptions.foldOnClickElsewhere = true;
+    RichMd::RenderFolding("intro", R"(
         An image processing pipeline (a Sobel filter): adjust its parameters, and see their effect in real time.
 
         * Pan and zoom the image with the mouse and the mouse wheel
         * Apply Colormaps to the filtered image in the options tab.
-    )");
+    )", introOptions);
     ImGui::Separator();
 
     bool narrow = ImGui::GetContentRegionAvail().x < ImmApp::EmSize(kNarrowWidthEm);
@@ -183,8 +188,7 @@ void gui_demo_immvision_process()
     }
     appState.FitLayout(narrow);
     ImmVision::Image("Original", appState.image, &appState.immvisionParams);
-    if (!narrow)
-        ImGui::SameLine();
+    ImGui::SameLine();
     ImmVision::Image("Deriv", appState.imageSobel, &appState.immvisionParamsSobel);
 }
 
