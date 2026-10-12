@@ -757,7 +757,7 @@
           "uses": [
             "ImPlot"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/demo_python_context_manager.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_python_context_manager.html",
           "in_place": false,
@@ -773,7 +773,7 @@
           "text": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps\ncomputing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop\nworks in short slices, and yields between them with `await asyncio.sleep(...)` to share the event loop. See [async\nsupport](https://imgui-bundle.pages.dev/doc/python/python-async/).",
           "summary": "The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) task, while a Python loop keeps computing.",
           "uses": [],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/demo_run_async.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_run_async.html",
           "in_place": false,
@@ -809,7 +809,7 @@
           "uses": [
             "GLFW"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/demo_glfw_window_manip.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_glfw_window_manip.html",
           "in_place": false,
@@ -827,7 +827,7 @@
           "uses": [
             "Matplotlib"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_matplotlib.html",
           "in_place": false,
@@ -846,7 +846,7 @@
             "Matplotlib",
             "seaborn"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_seaborn.html",
           "in_place": false,
@@ -864,7 +864,7 @@
           "uses": [
             "Pydantic"
           ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py",
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/demo_pydantic.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_pydantic.html",
           "in_place": false,

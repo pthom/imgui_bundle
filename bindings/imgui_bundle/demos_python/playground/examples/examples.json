@@ -2,6 +2,8 @@
     "sources": {
         "examples": ".",
         "demos_immapp": "../../demos_immapp",
+        "demos_python_specifics": "../../demos_python_specifics",
+        "demos_python_plotting": "../../demos_python_specifics/plotting",
         "demos_python": "../..",
         "python_backends": "../../../python_backends/examples",
         "demos_assets": "../../../demos_assets",
@@ -527,13 +529,13 @@
             "label": "Context managers (imgui_ctx)",
             "filename": "demo_python_context_manager.py",
             "category": "Python specifics",
-            "source": "demos_immapp"
+            "source": "demos_python_specifics"
         },
         {
             "label": "Async: compute beside the GUI",
             "filename": "demo_run_async.py",
             "category": "Python specifics",
-            "source": "demos_immapp"
+            "source": "demos_python_specifics"
         },
         {
             "label": "A GUI beside a Jupyter notebook",
@@ -548,14 +550,14 @@
             "label": "Control the GLFW window",
             "filename": "demo_glfw_window_manip.py",
             "category": "Python specifics",
-            "source": "demos_immapp",
+            "source": "demos_python_specifics",
             "where": "desktop"
         },
         {
             "label": "Matplotlib: a phase portrait",
             "filename": "demo_matplotlib.py",
             "category": "Python specifics",
-            "source": "demos_immapp",
+            "source": "demos_python_plotting",
             "packages": [
                 "matplotlib"
             ]
@@ -564,7 +566,7 @@
             "label": "Seaborn: a joint plot",
             "filename": "demo_seaborn.py",
             "category": "Python specifics",
-            "source": "demos_immapp",
+            "source": "demos_python_plotting",
             "packages": [
                 "seaborn"
             ]
@@ -573,7 +575,7 @@
             "label": "Pydantic models",
             "filename": "demo_pydantic.py",
             "category": "Python specifics",
-            "source": "demos_immapp",
+            "source": "demos_python_specifics",
             "packages": [
                 "pydantic"
             ]

@@ -705,7 +705,7 @@ tips](https://imgui-bundle.pages.dev/doc/python/python-tips/).
 
 *Uses: ImPlot*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_python_context_manager.py)
 
 ### Async: compute beside the GUI
 
@@ -721,7 +721,7 @@ support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 
 *Python*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_run_async.py)
 
 ### A GUI beside a Jupyter notebook
 
@@ -750,7 +750,7 @@ the taskbar.
 
 *Uses: GLFW*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py)
+[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_glfw_window_manip.py)
 
 ### Matplotlib: a phase portrait
 
@@ -767,9 +767,14 @@ starts from there, and swings beside it.
 
 *Uses: Matplotlib*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py)
 
 ### Seaborn: a joint plot
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_seaborn.jpg
+:alt: Seaborn: a joint plot
+:width: 400px
+:::
 
 [Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them
 as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each
@@ -779,7 +784,7 @@ on its side. Move the correlation: the cloud stretches along a line.
 
 *Uses: Matplotlib, seaborn*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
 
 ### Pydantic models
 
@@ -797,7 +802,7 @@ nothing was lost.
 
 *Uses: Pydantic*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_pydantic.py)
 
 ### Python backends: GLFW, SDL, pyglet, pygame, wgpu
 

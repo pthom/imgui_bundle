@@ -65,7 +65,7 @@ if __name__ == "__main__":
 ```
 
 Also see
-[`demos_immapp/demo_run_async.py`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
+[`demos_python_specifics/demo_run_async.py`](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_run_async.py)
 
 
 ## Automatic FPS Optimization

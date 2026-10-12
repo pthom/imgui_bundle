@@ -846,7 +846,7 @@ The same exists for child windows, menus, popups, tables, tabs, fonts and styles
 
 *Uses: ImPlot*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_python_context_manager.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_python_context_manager.py)
 
 ::::
 
@@ -864,7 +864,7 @@ The GUI runs as an [asyncio](https://docs.python.org/3/library/asyncio.html) tas
 The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop works in short slices, and yields between them with `await asyncio.sleep(...)` to share the event loop. See [async support](https://imgui-bundle.pages.dev/doc/python/python-async/).
 :::
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_run_async.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_run_async.py)
 
 ::::
 
@@ -903,7 +903,7 @@ With it, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works 
 
 *Uses: GLFW*
 
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py)
+{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_glfw_window_manip.py)
 
 ::::
 
@@ -922,11 +922,16 @@ Here, the phase portrait of a damped pendulum: the flow of its motion (a stream 
 
 *Uses: Matplotlib*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py)
 
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_seaborn.jpg
+:alt: Seaborn: a joint plot
+:class: demo-fit
+:::
+
 ### Seaborn: a joint plot
 
 [Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.
@@ -937,7 +942,7 @@ Here, a joint plot of two correlated variables: their scatter plot in the middle
 
 *Uses: Matplotlib, seaborn*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
 
 ::::
 
@@ -956,7 +961,7 @@ Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), Im
 
 *Uses: Pydantic*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_pydantic.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_pydantic.py)
 
 ::::
 

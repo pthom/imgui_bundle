@@ -20,7 +20,7 @@ imgui.end()
 ```
 
 * See [imgui_ctx](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py)
-* See [demo_python_context_manager.py](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py)
+* See [demo_python_context_manager.py](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_python_context_manager.py)
 
 
 # Advanced glfw callbacks
@@ -58,7 +58,7 @@ It is important to import glfw after imgui_bundle, since - upon import - imgui_b
 
 [imgui_fig.py](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/imgui_fig.py) is a small utility to display Matplotlib plots in ImGui.
 
-See [demo_matplotlib.py](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py) for an example.
+See [demo_matplotlib.py](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py) for an example.
 
 
 # Read the libraries doc as a Python developer

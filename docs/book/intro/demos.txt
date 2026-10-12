@@ -173,25 +173,25 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
 
 - Context managers (imgui_ctx): In Python, with imgui_ctx.begin("Window"): replaces a begin() / end() pair, and the end() can no longer be forgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with implot_ctx. Open a section to try it and read its code. See the Python tips.
   Uses: ImPlot
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_python_context_manager.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_python_context_manager.py
 - Async: compute beside the GUI: The GUI runs as an asyncio task, while a Python loop keeps computing. The window shows both rates: the GUI's frames per second, and the loop's computations per second. The loop works in short slices, and yields between them with await asyncio.sleep(...) to share the event loop. See async support.
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_run_async.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_run_async.py
 - A GUI beside a Jupyter notebook (desktop only): At 60 or 120 frames per second, a live GUI beside your Jupyter notebook while the cells run. In async mode (immapp.nb.start()), another cell keeps computing, as fast as it can, between the frames: stream data into a plot, or train a model and tune it while it learns. The page explains both modes; its video trains a neural network live, its learning rate on a slider.
   Uses: ImPlot
   Page: https://imgui-bundle.pages.dev/doc/python/notebook-runners/
   Video: https://www.youtube.com/watch?v=VqLz5F_bk60
 - Control the GLFW window (desktop only): glfw_utils.glfw_window_hello_imgui() returns the GLFW window that Hello ImGui created. With it, any function of pyGLFW works on your app's window. Here, buttons maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in the taskbar.
   Uses: GLFW
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_glfw_window_manip.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_glfw_window_manip.py
 - Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
   Uses: Matplotlib
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_matplotlib.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py
 - Seaborn: a joint plot: Seaborn draws statistics figures on top of Matplotlib, so imgui_fig.fig() shows them as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
   Uses: Matplotlib, seaborn
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_seaborn.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py
 - Pydantic models: Save and load your app's settings with Pydantic, ImVec2 and colors included. ImVec2_Pydantic, ImVec4_Pydantic and ImColor_Pydantic are the usual ImVec2, ImVec4 and ImColor, usable as fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that nothing was lost.
   Uses: Pydantic
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_pydantic.py
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_pydantic.py
 - Python backends: GLFW, SDL, pyglet, pygame, wgpu (desktop only): With a pure Python backend, you drive the full app loop. See Pure Python backends. Unlike immapp.run(), there is no Hello ImGui here: no DPI handling, themes or assets.
   Uses: OpenGL, GLFW, SDL, pyglet, pygame, wgpu
   Python (GLFW): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py
