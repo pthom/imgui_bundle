@@ -597,7 +597,7 @@ Carol,4,3
 ```python
 def render_csv(code: str) -> None:
     rows = [row.split(",") for row in code.strip().splitlines()]
-    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders.value):
+    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders):
         for row in rows:
             imgui.table_next_row()
             for cell in row:
@@ -684,7 +684,7 @@ host provides.
 def _render_csv(code: str) -> None:
     """Renders a ```csv fenced block as a table (see register_fenced_block_renderer below)."""
     rows = [row.split(",") for row in code.strip().splitlines()]
-    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders.value):
+    if imgui.begin_table("csv", len(rows[0]), imgui.TableFlags_.borders):
         for row in rows:
             imgui.table_next_row()
             for cell in row:

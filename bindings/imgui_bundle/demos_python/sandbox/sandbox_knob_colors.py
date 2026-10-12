@@ -126,7 +126,7 @@ def gui():
             imgui.same_line()
         changed, knob_value = imgui_knobs.knob(
             name, knob_value, 0.0, 1.0, 0.0, "%.2f",
-            variant, em * 4, imgui_knobs.ImGuiKnobFlags_.no_input.value)
+            variant, em * 4, imgui_knobs.ImGuiKnobFlags_.no_input)
 
     imgui.spacing()
     imgui.text("Int knob:")

@@ -17,14 +17,14 @@ class PygletMixin(object):
     _gui_time = None
 
     MOUSE_CURSORS = {
-        imgui.MouseCursor_.arrow.value: Window.CURSOR_DEFAULT,
-        imgui.MouseCursor_.text_input.value: Window.CURSOR_TEXT,
-        imgui.MouseCursor_.resize_all.value: Window.CURSOR_SIZE,
-        imgui.MouseCursor_.resize_ns.value: Window.CURSOR_SIZE_UP_DOWN,
-        imgui.MouseCursor_.resize_ew.value: Window.CURSOR_SIZE_LEFT_RIGHT,
-        imgui.MouseCursor_.resize_nesw.value: Window.CURSOR_SIZE_DOWN_LEFT,
-        imgui.MouseCursor_.resize_nwse.value: Window.CURSOR_SIZE_DOWN_RIGHT,
-        imgui.MouseCursor_.hand.value: Window.CURSOR_HAND,
+        imgui.MouseCursor_.arrow: Window.CURSOR_DEFAULT,
+        imgui.MouseCursor_.text_input: Window.CURSOR_TEXT,
+        imgui.MouseCursor_.resize_all: Window.CURSOR_SIZE,
+        imgui.MouseCursor_.resize_ns: Window.CURSOR_SIZE_UP_DOWN,
+        imgui.MouseCursor_.resize_ew: Window.CURSOR_SIZE_LEFT_RIGHT,
+        imgui.MouseCursor_.resize_nesw: Window.CURSOR_SIZE_DOWN_LEFT,
+        imgui.MouseCursor_.resize_nwse: Window.CURSOR_SIZE_DOWN_RIGHT,
+        imgui.MouseCursor_.hand: Window.CURSOR_HAND,
     }
 
     def __init__(self):
@@ -195,7 +195,7 @@ class PygletMixin(object):
         )
 
     def _handle_mouse_cursor(self):
-        if self.io.config_flags & imgui.ConfigFlags_.no_mouse_cursor_change.value:
+        if self.io.config_flags & imgui.ConfigFlags_.no_mouse_cursor_change:
             return
 
         mouse_cursor = imgui.get_mouse_cursor()

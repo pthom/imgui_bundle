@@ -504,7 +504,7 @@ def demo_editor_with_menus():
         statics.initialized = True
     editor = statics.editor
 
-    imgui.begin_child("editor_with_menus", ImVec2(0, 0), 0, imgui.WindowFlags_.menu_bar.value)
+    imgui.begin_child("editor_with_menus", ImVec2(0, 0), 0, imgui.WindowFlags_.menu_bar)
 
     import platform
     _shortcut = "Cmd-" if platform.system() == "Darwin" else "Ctrl-"

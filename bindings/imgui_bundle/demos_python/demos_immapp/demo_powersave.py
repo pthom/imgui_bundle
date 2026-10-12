@@ -38,7 +38,7 @@ def sample_signal() -> None:
 def switch(label: str, v: bool) -> bool:
     """An animated on/off switch (imgui_toggle), in the colors of the theme"""
     config = imgui_toggle.default_style()
-    config.flags |= imgui_toggle.ToggleFlags_.animated.value
+    config.flags |= imgui_toggle.ToggleFlags_.animated
     config.size = hello_imgui.em_to_vec2(2.2, 1.2)
     _, v = imgui_toggle.toggle(label, v, config)
     return v

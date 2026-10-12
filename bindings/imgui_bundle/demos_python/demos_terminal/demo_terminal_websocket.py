@@ -120,7 +120,7 @@ def gui() -> None:
     imgui.text_disabled(f"Terminal over a websocket -> {BRIDGE_URL} "
                         "(same widget, remote bytes)")
     with imgui_ctx.push_font(mono_font, 0.0):
-        view.render_in_child("terminal", child_flags=imgui.ChildFlags_.borders.value)
+        view.render_in_child("terminal", child_flags=imgui.ChildFlags_.borders)
 
 
 def on_exit() -> None:

@@ -40,7 +40,7 @@ Adjust $N$ to add more harmonics.
     if implot.begin_plot("Square wave approximation", size=(-1, 400)):
         implot.setup_axes("x", "f(x)")
         implot.setup_axes_limits(-2*np.pi, 2*np.pi, -1.5, 1.5,
-                                 cond=implot.Cond_.once.value)
+                                 cond=implot.Cond_.once)
         implot.plot_line("square wave", x, y_true)
         implot.plot_line(f"approx N={n}", x, y_approx)
 

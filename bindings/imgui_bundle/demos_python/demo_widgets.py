@@ -191,7 +191,7 @@ def demo_toggle():
     imgui.same_line()
 
     _changed, static.flag = imgui_toggle.toggle(
-        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated.value
+        "Animated Toggle", static.flag, imgui_toggle.ToggleFlags_.animated
     )
     imgui.same_line()
 

@@ -283,7 +283,7 @@ def make_params() -> tuple[hello_imgui.RunnerParams, immapp.AddOnsParams]:
         runner_params.use_imgui_test_engine = True
 
     def setup_imgui_config() -> None:
-        imgui.get_io().config_flags |= imgui.ConfigFlags_.nav_enable_keyboard.value
+        imgui.get_io().config_flags |= imgui.ConfigFlags_.nav_enable_keyboard
 
     runner_params.callbacks.setup_imgui_config = setup_imgui_config
 

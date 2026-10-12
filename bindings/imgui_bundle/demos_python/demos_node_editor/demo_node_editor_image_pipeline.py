@@ -231,7 +231,7 @@ class Colorize(Node):
     def draw_params(self) -> bool:
         imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
         # A color picker: its popup opens from inside the node
-        changed, self.color = imgui.color_edit4("##color", self.color, imgui.ColorEditFlags_.no_alpha.value)
+        changed, self.color = imgui.color_edit4("##color", self.color, imgui.ColorEditFlags_.no_alpha)
         return changed
 
     def compute(self, inputs: list[Image]) -> Image:
@@ -255,11 +255,11 @@ class Levels(Node):
 
         def plot_histogram() -> None:
             nonlocal changed
-            implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels.value, implot.AxisFlags_.no_decorations.value)
+            implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, implot.AxisFlags_.no_decorations)
             # The square root of the counts: a few very frequent values (a white sky) would flatten the others
             heights = [np.sqrt(histogram) for histogram in self.histograms]
             implot.setup_axes_limits(0, 255, 0, max((h.max() for h in heights), default=1) * 1.05,
-                                     implot.Cond_.always.value)
+                                     implot.Cond_.always)
             x = np.arange(256, dtype=np.float64)
             for height, name, color in zip(heights, "RGB", CHANNEL_COLORS, strict=True):
                 implot.plot_shaded(name, x, height, 0, implot.Spec(fill_color=color, fill_alpha=0.3))
@@ -272,7 +272,7 @@ class Levels(Node):
             changed = changed or changed_black or changed_white
 
         # A plot inside a node, with a handle at its bottom right corner to resize it
-        flags = implot.Flags_.no_legend.value | implot.Flags_.no_menus.value | implot.Flags_.no_box_select.value
+        flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_box_select
         self.histogram_size_em = immapp.show_resizable_plot_in_node_editor_em(
             "##histogram", self.histogram_size_em, plot_histogram, flags)
         imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))

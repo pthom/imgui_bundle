@@ -152,8 +152,8 @@ Python
 def demo_input_text_decimal() -> None:
    static = demo_input_text_decimal
    flags:imgui.InputTextFlags = (
-   imgui.InputTextFlags_.chars_uppercase.value
-   | imgui.InputTextFlags_.chars_no_blank.value
+   imgui.InputTextFlags_.chars_uppercase
+   | imgui.InputTextFlags_.chars_no_blank
    )
    changed, static.text = imgui.input_text("Upper case, no spaces", static.text, flags)
 ```

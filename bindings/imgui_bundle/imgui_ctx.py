@@ -827,7 +827,7 @@ class _WithPushButtonRepeat:
     _enter_callback: _EnterCallback
 
     def __init__(self, repeat: bool = True) -> None:
-        self._enter_callback = lambda: imgui.push_item_flag(imgui.ItemFlags_.button_repeat.value, True)
+        self._enter_callback = lambda: imgui.push_item_flag(imgui.ItemFlags_.button_repeat, True)
 
     def __enter__(self) -> "_WithPushButtonRepeat":
         self._enter_callback()

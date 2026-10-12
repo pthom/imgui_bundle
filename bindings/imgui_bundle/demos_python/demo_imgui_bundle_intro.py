@@ -406,7 +406,7 @@ def _implot_subplot3_shaded():
 
 def _implot_flags() -> int:
     """No legends on a phone: they would cover the small plots"""
-    return implot.Flags_.no_legend.value if is_small_screen() else 0
+    return implot.Flags_.no_legend if is_small_screen() else 0
 
 
 def _implot_slide_gui(content_size: ImVec2):
@@ -740,7 +740,7 @@ void main(){
         overlay_w = em * 13.0 if narrow else em * 18.0
         overlay_x = imgui.get_item_rect_max().x - overlay_w - pad
         overlay_y = imgui.get_item_rect_min().y + pad
-        imgui.set_next_window_pos(ImVec2(overlay_x, overlay_y), imgui.Cond_.always.value)
+        imgui.set_next_window_pos(ImVec2(overlay_x, overlay_y), imgui.Cond_.always)
         imgui.set_next_window_bg_alpha(0.45)
         imgui.push_style_var(imgui.StyleVar_.window_rounding, em * 0.5)
         # No focus when it appears: the slide comes into view during a swipe, and a focused window would end the swipe
@@ -962,7 +962,7 @@ _stream: Optional[_StreamState] = None
 def _stream_plot(state: _StreamState, size: ImVec2) -> None:
     flags = implot.Flags_.no_menus | implot.Flags_.no_mouse_text | _implot_flags()
     if implot.begin_plot("##stream", size, flags):
-        implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels.value, 0)
+        implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, 0)
         implot.setup_axis_limits(implot.ImAxis_.x1, state.t_end - STREAM_WINDOW, state.t_end, imgui.Cond_.always)
         implot.setup_axis_limits(implot.ImAxis_.y1, -1.7, 1.7, imgui.Cond_.always)
         if len(state.t) > 1:  # (none yet at the first frame)
@@ -980,7 +980,7 @@ def _stream_stats(state: _StreamState) -> list[str]:
 def _stream_rate_slider(state: _StreamState, width: float) -> None:
     imgui.set_next_item_width(width)
     _, state.rate = imgui.slider_float("##rate", state.rate, STREAM_RATES[0], STREAM_RATES[1], "%.0f samples / s",
-                                       imgui.SliderFlags_.logarithmic.value)
+                                       imgui.SliderFlags_.logarithmic)
 
 
 def _stream_side() -> None:
@@ -2877,7 +2877,7 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
     imgui.dummy(ImVec2(1, 0))
 
     # Navigation via mouse wheel
-    if imgui.shortcut(imgui.Key.mod_shift | imgui.Key.mouse_wheel_x, imgui.InputFlags_.route_global.value):
+    if imgui.shortcut(imgui.Key.mod_shift | imgui.Key.mouse_wheel_x, imgui.InputFlags_.route_global):
         now = imgui.get_time()
         if not hasattr(static, "_time_last_trigger"):
             static._time_last_trigger = -1.0

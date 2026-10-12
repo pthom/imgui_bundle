@@ -387,10 +387,10 @@ def segmented_switch(str_id: str, labels: list[str], current: int) -> int:
     draw_list, rounding = imgui.get_window_draw_list(), (p1.y - p0.y) * 0.5
 
     def fill(i: int, color: int) -> None:
-        corners = ((imgui.ImDrawFlags_.round_left.value if i == 0 else 0)
-                   | (imgui.ImDrawFlags_.round_right.value if i == len(labels) - 1 else 0))
+        corners = ((imgui.ImDrawFlags_.round_left if i == 0 else 0)
+                   | (imgui.ImDrawFlags_.round_right if i == len(labels) - 1 else 0))
         draw_list.add_rect_filled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
-                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_none.value)
+                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_none)
 
     draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
     if imgui.is_item_hovered() and part_at(imgui.get_mouse_pos().x) != current:
@@ -535,7 +535,7 @@ class Launcher:
         row that scrolls sideways (as in the playground), the chip of the category in view in its middle"""
         strip = small_screen()
         if strip:
-            imgui.begin_child("##chips", ImVec2(0, imgui.get_font_size() + 2), 0, imgui.WindowFlags_.no_scrollbar.value)
+            imgui.begin_child("##chips", ImVec2(0, imgui.get_font_size() + 2), 0, imgui.WindowFlags_.no_scrollbar)
         for category in self.categories:
             highlight = tween(f"chip {category.name}", 1.0 if category.name == self.category_in_view else 0.0, 0.25)
             if self.chip(self.chip_label(category), highlight, wrap=not strip) and self.code_view is None:
@@ -683,8 +683,8 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.5))
         imgui.push_style_var(imgui.StyleVar_.child_border_size, 2.0 if is_selected else 1.0)
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
-        imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders.value,
-                          imgui.WindowFlags_.no_scrollbar.value | imgui.WindowFlags_.no_scroll_with_mouse.value)
+        imgui.begin_child(f"##card {demo.filename}", ImVec2(width, height), imgui.ChildFlags_.borders,
+                          imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse)
         # The card is one item, under its contents: its hover and click go through ImGui's active id (a touch swipe
         # that starts on it holds the id, so its release is not a click), and the test engine can find it
         picture_top_left = imgui.get_cursor_screen_pos()
@@ -693,7 +693,7 @@ class Launcher:
         imgui.set_cursor_screen_pos(picture_top_left)
         # Rounded more than the card: the border is stroked inside the card's rect with the card's radius, so a
         # picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
-        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_top.value)
+        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_top)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
                   width - em_size(0.8), scale=text_scale)
@@ -706,8 +706,8 @@ class Launcher:
         imgui.push_font(None, imgui.get_style().font_size_base * text_scale)
         shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.text_disabled(shown)
-        summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip.value
-                                                | imgui.HoveredFlags_.allow_when_overlapped_by_item.value)
+        summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip
+                                                | imgui.HoveredFlags_.allow_when_overlapped_by_item)
         imgui.pop_font()
         imgui.pop_text_wrap_pos()
         if self.deal_order is not None and demo.filename not in self.deal_order and self.dealing():
@@ -793,7 +793,7 @@ class Launcher:
         text_scale = card_text_scale(width)
         draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BG), rounding)
         self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
-                              imgui.ImDrawFlags_.round_top.value)
+                              imgui.ImDrawFlags_.round_top)
         picture_bottom = top_left.y + width / PICTURE_ASPECT
         draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)),
                   width - em_size(0.8), draw_list, text_scale)
@@ -858,7 +858,7 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.alpha, appear)
         imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + (1.0 - appear) * em_size(1.0))  # it slides in a little
         width = imgui.get_content_region_avail().x
-        self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_all.value)
+        self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_all)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
                   width - em_size(0.8))
@@ -973,7 +973,7 @@ class Launcher:
         avail = imgui.get_content_region_avail()
         imgui.begin_child("detail", avail)
         imgui.begin_child("detail content", ImVec2(avail.x - imgui.get_style().scrollbar_size, 0),
-                          imgui.ChildFlags_.auto_resize_y.value)
+                          imgui.ChildFlags_.auto_resize_y)
         self.detail()
         imgui.end_child()
         imgui.end_child()
@@ -1010,7 +1010,7 @@ class Launcher:
         # picture and markdown take the child's width, so the pane's scrollbar, which comes and goes with that height,
         # never changes their width (it did: narrower, then shorter, then wider again, every frame)
         imgui.begin_child("detail content", ImVec2(detail_width - imgui.get_style().scrollbar_size, 0),
-                          imgui.ChildFlags_.auto_resize_y.value)
+                          imgui.ChildFlags_.auto_resize_y)
         self.detail()
         imgui.end_child()
         imgui.end_child()

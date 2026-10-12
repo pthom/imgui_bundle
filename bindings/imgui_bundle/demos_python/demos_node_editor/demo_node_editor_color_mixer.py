@@ -185,7 +185,7 @@ def draw_node(graph: Graph, node: Node) -> None:
     # The widgets of the node. A color picker opens its popup from inside the node, as it would anywhere else.
     if node.kind == "Color":
         imgui.set_next_item_width(width)
-        _, node.color = imgui.color_edit4("##color", node.color, imgui.ColorEditFlags_.no_alpha.value)
+        _, node.color = imgui.color_edit4("##color", node.color, imgui.ColorEditFlags_.no_alpha)
     elif node.kind == "Mix":
         imgui.set_next_item_width(width)
         _, node.mix = imgui.slider_float("##mix", node.mix, 0.0, 1.0, "t = %.2f")

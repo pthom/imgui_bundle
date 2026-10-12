@@ -372,7 +372,7 @@ def tune_card(state: State, tune: Tune, size: ImVec2) -> None:
     imgui.push_style_color(imgui.Col_.border, tune_color if playing else imgui.get_style_color_vec4(imgui.Col_.border))
     imgui.push_style_color(imgui.Col_.child_bg, ImVec4(tune_color.x, tune_color.y, tune_color.z, 0.12 if playing else 0))
     imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.5))
-    imgui.begin_child(tune.name, size, imgui.ChildFlags_.borders.value)
+    imgui.begin_child(tune.name, size, imgui.ChildFlags_.borders)
 
     imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
     imgui.text(tune.name)
@@ -480,7 +480,7 @@ def knobs(state: State, size: float, spread: bool) -> bool:
     changed1, state.echo = knob("Echo", state.echo, 0.0, 1.0, "%.2f", size)
     imgui.spring(*gap)
     changed2, state.brightness = knob("Brightness", state.brightness, 200.0, 12000.0, "%.0f Hz", size,
-                                      imgui_knobs.ImGuiKnobFlags_.logarithmic.value)
+                                      imgui_knobs.ImGuiKnobFlags_.logarithmic)
     imgui.spring(*gap)
     changed3, state.volume = knob("Volume", state.volume, 0.0, 1.0, "%.2f", size)
     imgui.spring(*gap)
@@ -543,7 +543,7 @@ def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
     """A key, with the shadow of the felt at its top, its front face, and its labels"""
     draw_list = imgui.get_window_draw_list()
     rounding = em_size(0.25)
-    bottom_corners = imgui.ImDrawFlags_.round_bottom.value
+    bottom_corners = imgui.ImDrawFlags_.round_bottom
     black = is_black(note)
     front = em_size(0.9 if black else 0.5)
     draw_list.add_rect_filled(p_min, p_max, color, rounding, bottom_corners)
@@ -651,7 +651,7 @@ def synth_panel(state: State) -> None:
     imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.6))
     imgui.push_style_var(imgui.StyleVar_.window_padding, em_to_vec2(1.0, 0.8))
     imgui.begin_child("synth", ImVec2(0, 0),
-                      imgui.ChildFlags_.auto_resize_y.value | imgui.ChildFlags_.always_use_window_padding.value)
+                      imgui.ChildFlags_.auto_resize_y | imgui.ChildFlags_.always_use_window_padding)
     controls(state)
     imgui.dummy(em_to_vec2(0, 0.3))
     piano(state)
@@ -724,7 +724,7 @@ def sound_status(state: State) -> None:
         return
     color = imgui.color_convert_u32_to_float4(TUNE_KEY)
     if state.synth is None:  # browsers wait for a gesture
-        touch = imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen.value
+        touch = imgui.get_io().config_flags & imgui.ConfigFlags_.is_touch_screen
         text = ("Tap" if touch else "Click") + " anywhere to start the sound"
     else:  # a phone takes a moment: the text pulses meanwhile
         text = "Starting the sound..."

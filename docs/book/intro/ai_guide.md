@@ -78,7 +78,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   ```
   ```python
   # Python (text is a str)
-  changed, text = imgui.input_text("Input", text, imgui.InputTextFlags_.chars_uppercase.value)
+  changed, text = imgui.input_text("Input", text, imgui.InputTextFlags_.chars_uppercase)
   ```
 
 ### 4. Module Structure and Imports

@@ -204,12 +204,12 @@ def demo_triangle_plots():
         static.ys = np.array(ys, dtype=np.float32)
         static.zs = np.array(zs, dtype=np.float32)
         # Initialize triangle flags
-        static.flags = implot3d.TriangleFlags_.none.value
+        static.flags = implot3d.TriangleFlags_.none
 
     # Triangle flags UI
-    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_lines.value, "NoLines")
-    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_fill.value, "NoFill")
-    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_markers.value, "NoMarkers")
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_lines, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_fill, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.TriangleFlags_.no_markers, "NoMarkers")
 
     if implot3d.begin_plot("Triangle Plots"):
         implot3d.setup_axes_limits(-1, 1, -1, 1, -0.5, 1.5)
@@ -279,11 +279,11 @@ def demo_quad_plots():
             -1, -1, -1, -1
         ], dtype=np.float32)
 
-        static.flags = implot3d.QuadFlags_.none.value
+        static.flags = implot3d.QuadFlags_.none
 
-    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_lines.value, "NoLines")
-    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_fill.value, "NoFill")
-    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_markers.value, "NoMarkers")
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_lines, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_fill, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.QuadFlags_.no_markers, "NoMarkers")
 
     if implot3d.begin_plot("Quad Plots"):
         implot3d.setup_axes_limits(-1.5, 1.5, -1.5, 1.5, -1.5, 1.5)
@@ -362,11 +362,11 @@ def demo_surface_plots():
         static.custom_range = False
         static.range_min = -1.0
         static.range_max = 1.0
-        static.flags = implot3d.SurfaceFlags_.none.value
+        static.flags = implot3d.SurfaceFlags_.none
 
-    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_lines.value, "NoLines")
-    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_fill.value, "NoFill")
-    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_markers.value, "NoMarkers")
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_lines, "NoLines")
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_fill, "NoFill")
+    _, static.flags = checkbox_flag(static.flags, implot3d.SurfaceFlags_.no_markers, "NoMarkers")
 
     # Update time-dependent Z values
     static.t += imgui.get_io().delta_time
@@ -680,7 +680,7 @@ def demo_plot_flags():
     static = demo_plot_flags
 
     if not hasattr(static, "flags"):
-        static.flags = implot3d.Flags_.none.value
+        static.flags = implot3d.Flags_.none
 
     flag_info = [
         (implot3d.Flags_.no_title, "Hide plot title"),
@@ -777,26 +777,26 @@ def demo_legend_options():
     static = demo_legend_options
 
     if not hasattr(static, "loc"):
-        static.loc = implot3d.Location_.east.value
+        static.loc = implot3d.Location_.east
         static.flags = 0
 
-    _, static.loc = imgui.checkbox_flags("North", static.loc, implot3d.Location_.north.value)
+    _, static.loc = imgui.checkbox_flags("North", static.loc, implot3d.Location_.north)
     imgui.same_line()
-    _, static.loc = imgui.checkbox_flags("South", static.loc, implot3d.Location_.south.value)
+    _, static.loc = imgui.checkbox_flags("South", static.loc, implot3d.Location_.south)
     imgui.same_line()
-    _, static.loc = imgui.checkbox_flags("West", static.loc, implot3d.Location_.west.value)
+    _, static.loc = imgui.checkbox_flags("West", static.loc, implot3d.Location_.west)
     imgui.same_line()
-    _, static.loc = imgui.checkbox_flags("East", static.loc, implot3d.Location_.east.value)
+    _, static.loc = imgui.checkbox_flags("East", static.loc, implot3d.Location_.east)
 
-    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_Horizontal", static.flags, implot3d.LegendFlags_.horizontal.value)
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_Horizontal", static.flags, implot3d.LegendFlags_.horizontal)
     imgui.same_line()
     help_marker("Legend entries will be displayed horizontally")
 
-    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoButtons", static.flags, implot3d.LegendFlags_.no_buttons.value)
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoButtons", static.flags, implot3d.LegendFlags_.no_buttons)
     imgui.same_line()
     help_marker("Legend icons will not function as hide/show buttons")
 
-    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoHighlightItem", static.flags, implot3d.LegendFlags_.no_highlight_item.value)
+    _, static.flags = imgui.checkbox_flags("ImPlot3DLegendFlags_NoHighlightItem", static.flags, implot3d.LegendFlags_.no_highlight_item)
     imgui.same_line()
     help_marker("Plot items will not be highlighted when their legend entry is hovered")
 
@@ -1310,7 +1310,7 @@ def demo_axis_constraints():
     changed, val = imgui.drag_float2("Zoom Constraints", static.zoom_constraints, 0.01)
     if changed:
         static.zoom_constraints = [val[0], val[1]]
-    _, static.flags = imgui.checkbox_flags("ImPlot3DAxisFlags_PanStretch", static.flags, implot3d.AxisFlags_.pan_stretch.value)
+    _, static.flags = imgui.checkbox_flags("ImPlot3DAxisFlags_PanStretch", static.flags, implot3d.AxisFlags_.pan_stretch)
 
     if implot3d.begin_plot("##AxisConstraints", size=(-1, 0)):
         implot3d.setup_axes("X", "Y", "Z", static.flags, static.flags, static.flags)
@@ -1336,13 +1336,13 @@ def demo_equal_axes():
         static.helix_xs = 0.5 * np.cos(angles)
         static.helix_ys = 0.5 * np.sin(angles)
         static.helix_zs = np.linspace(-1, 1, 360)
-        static.flags = implot3d.Flags_.equal.value
+        static.flags = implot3d.Flags_.equal
 
     square_xs = np.array([-0.5, 0.5, 0.5, -0.5, -0.5], dtype=np.float32)
     square_ys = np.array([-0.5, -0.5, 0.5, 0.5, -0.5], dtype=np.float32)
     square_zs = np.array([-0.5, -0.5, -0.5, -0.5, -0.5], dtype=np.float32)
 
-    _, static.flags = imgui.checkbox_flags("ImPlot3DFlags_Equal", static.flags, implot3d.Flags_.equal.value)
+    _, static.flags = imgui.checkbox_flags("ImPlot3DFlags_Equal", static.flags, implot3d.Flags_.equal)
 
     if implot3d.begin_plot("##EqualAxes", size=(-1, 0), flags=static.flags):
         implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
@@ -1361,24 +1361,24 @@ def demo_auto_fitting_data():
     imgui.bullet_text("Disable AutoFit on an axis to fix its range.")
 
     if not hasattr(static, "xflags"):
-        static.xflags = implot3d.AxisFlags_.none.value
-        static.yflags = implot3d.AxisFlags_.none.value
-        static.zflags = implot3d.AxisFlags_.auto_fit.value
+        static.xflags = implot3d.AxisFlags_.none
+        static.yflags = implot3d.AxisFlags_.none
+        static.zflags = implot3d.AxisFlags_.auto_fit
         static.data_x = np.arange(101) * 0.1
         static.data_y = np.arange(101) * 0.1
         static.data_z = 1 + np.sin(np.arange(101) / 10.0)
 
     imgui.text_unformatted("X: ")
     imgui.same_line()
-    _, static.xflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##X", static.xflags, implot3d.AxisFlags_.auto_fit.value)
+    _, static.xflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##X", static.xflags, implot3d.AxisFlags_.auto_fit)
 
     imgui.text_unformatted("Y: ")
     imgui.same_line()
-    _, static.yflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Y", static.yflags, implot3d.AxisFlags_.auto_fit.value)
+    _, static.yflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Y", static.yflags, implot3d.AxisFlags_.auto_fit)
 
     imgui.text_unformatted("Z: ")
     imgui.same_line()
-    _, static.zflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Z", static.zflags, implot3d.AxisFlags_.auto_fit.value)
+    _, static.zflags = imgui.checkbox_flags("ImPlot3DAxisFlags_AutoFit##Z", static.zflags, implot3d.AxisFlags_.auto_fit)
 
     if implot3d.begin_plot("##AutoFitting"):
         implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis", static.xflags, static.yflags, static.zflags)
@@ -1397,23 +1397,23 @@ def demo_mouse_picking():
     if not hasattr(static, "points"):
         static.points = []  # : list[implot3d.Point]
         static.rays = []  # : list[implot3d.Ray]
-        static.selected_plane = implot3d.ImPlane3D_.xy.value
+        static.selected_plane = implot3d.ImPlane3D_.xy
         static.mask_plane = True
 
     imgui.bullet_text("Click anywhere in the plot to place points/rays.")
 
-    _, static.selected_plane = imgui.radio_button("XY-Plane", static.selected_plane, implot3d.ImPlane3D_.xy.value)
+    _, static.selected_plane = imgui.radio_button("XY-Plane", static.selected_plane, implot3d.ImPlane3D_.xy)
     imgui.same_line()
-    _, static.selected_plane = imgui.radio_button("XZ-Plane", static.selected_plane, implot3d.ImPlane3D_.xz.value)
+    _, static.selected_plane = imgui.radio_button("XZ-Plane", static.selected_plane, implot3d.ImPlane3D_.xz)
     imgui.same_line()
-    _, static.selected_plane = imgui.radio_button("YZ-Plane", static.selected_plane, implot3d.ImPlane3D_.yz.value)
+    _, static.selected_plane = imgui.radio_button("YZ-Plane", static.selected_plane, implot3d.ImPlane3D_.yz)
 
     _, static.mask_plane = imgui.checkbox("Mask Plane", static.mask_plane)
     if imgui.button("Clear"):
         static.points.clear()
         static.rays.clear()
 
-    if implot3d.begin_plot("Mouse Picking", size=(-1, 0), flags=implot3d.Flags_.no_clip.value):
+    if implot3d.begin_plot("Mouse Picking", size=(-1, 0), flags=implot3d.Flags_.no_clip):
         implot3d.setup_axes("X-Axis", "Y-Axis", "Z-Axis")
         implot3d.setup_axes_limits(-1, 1, -1, 1, -1, 1)
 
@@ -1619,7 +1619,7 @@ def demo_custom_per_point_style():
 
     if not hasattr(static, "marker_size"):
         static.marker_size = 4.0
-        static.cmap = implot3d.Colormap_.viridis.value
+        static.cmap = implot3d.Colormap_.viridis
 
     _, static.marker_size = imgui.slider_float("Marker Size", static.marker_size, 2.0, 10.0)
     if imgui.begin_combo("Colormap", implot3d.get_colormap_name(static.cmap)):

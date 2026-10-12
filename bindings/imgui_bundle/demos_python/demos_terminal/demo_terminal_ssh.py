@@ -105,7 +105,7 @@ def gui() -> None:
                            "(needs an SSH server you can log into).")
         return
     with imgui_ctx.push_font(mono_font, 0.0):
-        view.render_in_child("terminal", child_flags=imgui.ChildFlags_.borders.value)
+        view.render_in_child("terminal", child_flags=imgui.ChildFlags_.borders)
 
 
 def on_exit() -> None:

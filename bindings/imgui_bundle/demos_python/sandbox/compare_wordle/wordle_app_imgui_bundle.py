@@ -14,9 +14,9 @@ COLORS = {
 def colored_button(label: str, letter_state: wordle.LetterState, size: ImVec2) -> bool:
     """Button with Wordle-colored background."""
     color = COLORS[letter_state]
-    imgui.push_style_color(imgui.Col_.button.value, color)
-    imgui.push_style_color(imgui.Col_.button_hovered.value, color)
-    imgui.push_style_color(imgui.Col_.button_active.value, color)
+    imgui.push_style_color(imgui.Col_.button, color)
+    imgui.push_style_color(imgui.Col_.button_hovered, color)
+    imgui.push_style_color(imgui.Col_.button_active, color)
     pressed = imgui.button(label, size)
     imgui.pop_style_color(3)
     return pressed

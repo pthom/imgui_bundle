@@ -69,7 +69,7 @@ def gui() -> None:
         return
     with imgui_ctx.push_font(_mono_font, 0.0):
         _view.render_in_child("terminal", hello_imgui.em_to_vec2(0, TERMINAL_HEIGHT_EM),
-                              imgui.ChildFlags_.borders.value)
+                              imgui.ChildFlags_.borders)
 
 
 def main() -> None:

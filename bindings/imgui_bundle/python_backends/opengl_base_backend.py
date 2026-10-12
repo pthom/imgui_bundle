@@ -21,7 +21,7 @@ class BaseOpenGLRenderer(object):
 
         # Honor RendererHasTextures
         # cf https://github.com/ocornut/imgui/commit/ff3f471ab2af25f1cc11c20356711aaa4e6833f8
-        imgui.get_io().backend_flags |= imgui.BackendFlags_.renderer_has_textures.value
+        imgui.get_io().backend_flags |= imgui.BackendFlags_.renderer_has_textures
         max_texture_size = gl.glGetIntegerv(gl.GL_MAX_TEXTURE_SIZE)
         imgui.get_platform_io().renderer_texture_max_width = max_texture_size
         imgui.get_platform_io().renderer_texture_max_height = max_texture_size
@@ -148,7 +148,7 @@ class BaseOpenGLRenderer(object):
 
     def shutdown(self) -> None:
         self._destroy_all_textures()
-        imgui.get_io().backend_flags &= ~imgui.BackendFlags_.renderer_has_textures.value
+        imgui.get_io().backend_flags &= ~imgui.BackendFlags_.renderer_has_textures
         self._invalidate_device_objects()
 
 

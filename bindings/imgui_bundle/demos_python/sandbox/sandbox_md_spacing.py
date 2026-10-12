@@ -150,7 +150,7 @@ End paragraph.
 
 def gui():
     for title, md in SECTIONS.items():
-        if imgui.collapsing_header(title, imgui.TreeNodeFlags_.default_open.value):
+        if imgui.collapsing_header(title, imgui.TreeNodeFlags_.default_open):
             rich_md.render(md)
             imgui.dummy(imgui.ImVec2(0, 12))
 
