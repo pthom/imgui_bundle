@@ -101,15 +101,18 @@ void py_init_module_imgui_internal(nb::module_& m)
         "return previous UTF-8 code-point.",
         nb::rv_policy::reference);
 
-    m.def("im_text_find_valid_utf8_codepoint_end",
-        ImTextFindValidUtf8CodepointEnd,
-        nb::arg("in_text_start"), nb::arg("in_text_end"), nb::arg("in_p"),
-        "return previous UTF-8 code-point if 'in_p' is not the end of a valid one.",
-        nb::rv_policy::reference);
-
     m.def("im_text_count_lines",
-        ImTextCountLines,
-        nb::arg("in_text"), nb::arg("in_text_end"),
+        [](const char * in_text) -> int
+        {
+            auto ImTextCountLines_adapt_text_end_params = [](const char * in_text) -> int
+            {
+                auto lambda_result = ImTextCountLines(in_text, in_text ? in_text + strlen(in_text) : nullptr);
+                return lambda_result;
+            };
+
+            return ImTextCountLines_adapt_text_end_params(in_text);
+        },
+        nb::arg("in_text"),
         "return number of lines taken by text. trailing carriage return doesn't count as an extra line.");
 
 
@@ -122,14 +125,17 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     m.def("im_font_calc_word_wrap_position_ex",
-        ImFontCalcWordWrapPositionEx,
-        nb::arg("font"), nb::arg("size"), nb::arg("text"), nb::arg("text_end"), nb::arg("wrap_width"), nb::arg("flags") = 0,
-        nb::rv_policy::reference);
+        [](ImFont * font, float size, const char * text, float wrap_width, ImDrawTextFlags flags = 0) -> const char *
+        {
+            auto ImFontCalcWordWrapPositionEx_adapt_text_end_params = [](ImFont * font, float size, const char * text, float wrap_width, ImDrawTextFlags flags = 0) -> const char *
+            {
+                auto lambda_result = ImFontCalcWordWrapPositionEx(font, size, text, text ? text + strlen(text) : nullptr, wrap_width, flags);
+                return lambda_result;
+            };
 
-    m.def("im_text_calc_word_wrap_next_line_start",
-        ImTextCalcWordWrapNextLineStart,
-        nb::arg("text"), nb::arg("text_end"), nb::arg("flags") = 0,
-        "trim trailing space and find beginning of next line",
+            return ImFontCalcWordWrapPositionEx_adapt_text_end_params(font, size, text, wrap_width, flags);
+        },
+        nb::arg("font"), nb::arg("size"), nb::arg("text"), nb::arg("wrap_width"), nb::arg("flags") = 0,
         nb::rv_policy::reference);
 
 
@@ -3087,21 +3093,17 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def(nb::init<ImGuiContext *, const char *>(),
             nb::arg("context"), nb::arg("name"))
         .def("get_id",
-            [](ImGuiWindow & self, const char * str, std::optional<std::string> str_end = std::nullopt) -> ImGuiID
+            [](ImGuiWindow & self, const char * str) -> ImGuiID
             {
-                auto GetID_adapt_const_char_pointer_with_default_null = [&self](const char * str, std::optional<std::string> str_end = std::nullopt) -> ImGuiID
+                auto GetID_adapt_text_end_params = [&self](const char * str) -> ImGuiID
                 {
-                    const char * str_end_adapt_default_null = nullptr;
-                    if (str_end.has_value())
-                        str_end_adapt_default_null = str_end.value().c_str();
-
-                    auto lambda_result = self.GetID(str, str_end_adapt_default_null);
+                    auto lambda_result = self.GetID(str, NULL);
                     return lambda_result;
                 };
 
-                return GetID_adapt_const_char_pointer_with_default_null(str, str_end);
+                return GetID_adapt_text_end_params(str);
             },
-            nb::arg("str"), nb::arg("str_end").none() = nb::none(),
+            nb::arg("str"),
             "(private API)")
         .def("get_id",
             nb::overload_cast<const void *>(&ImGuiWindow::GetID),
@@ -4134,7 +4136,16 @@ void py_init_module_imgui_internal(nb::module_& m)
         "Push given value as-is at the top of the ID stack (whereas PushID combines old and new hashes)");
 
     m.def("get_id_with_seed",
-        nb::overload_cast<const char *, const char *, ImGuiID>(ImGui::GetIDWithSeed), nb::arg("str_id_begin"), nb::arg("str_id_end"), nb::arg("seed"));
+        [](const char * str_id_begin, ImGuiID seed) -> ImGuiID
+        {
+            auto GetIDWithSeed_adapt_text_end_params = [](const char * str_id_begin, ImGuiID seed) -> ImGuiID
+            {
+                auto lambda_result = ImGui::GetIDWithSeed(str_id_begin, str_id_begin ? str_id_begin + strlen(str_id_begin) : nullptr, seed);
+                return lambda_result;
+            };
+
+            return GetIDWithSeed_adapt_text_end_params(str_id_begin, seed);
+        },     nb::arg("str_id_begin"), nb::arg("seed"));
 
     m.def("get_id_with_seed",
         nb::overload_cast<int, ImGuiID>(ImGui::GetIDWithSeed), nb::arg("n"), nb::arg("seed"));
@@ -4213,19 +4224,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         "Start logging/capturing to internal buffer");
 
     m.def("log_rendered_text",
-        [](const ImVec2 * ref_pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+        [](const ImVec2 * ref_pos, const char * text)
         {
-            auto LogRenderedText_adapt_const_char_pointer_with_default_null = [](const ImVec2 * ref_pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+            auto LogRenderedText_adapt_text_end_params = [](const ImVec2 * ref_pos, const char * text)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImGui::LogRenderedText(ref_pos, text, text_end_adapt_default_null);
+                ImGui::LogRenderedText(ref_pos, text, NULL);
             };
 
-            LogRenderedText_adapt_const_char_pointer_with_default_null(ref_pos, text, text_end);
-        },     nb::arg("ref_pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none());
+            LogRenderedText_adapt_text_end_params(ref_pos, text);
+        },     nb::arg("ref_pos"), nb::arg("text"));
 
     m.def("log_set_next_text_decoration",
         ImGui::LogSetNextTextDecoration, nb::arg("prefix"), nb::arg("suffix"));
@@ -4917,25 +4924,29 @@ void py_init_module_imgui_internal(nb::module_& m)
         },     nb::arg("draw_list"), nb::arg("bb"), nb::arg("flags"), nb::arg("frame_padding"), nb::arg("label"), nb::arg("tab_id"), nb::arg("close_button_id"), nb::arg("is_contents_visible"), nb::arg("out_just_closed"), nb::arg("out_text_clipped"));
 
     m.def("render_text",
-        [](ImVec2 pos, const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_hash = true)
+        [](ImVec2 pos, const char * text, bool hide_text_after_hash = true)
         {
-            auto RenderText_adapt_const_char_pointer_with_default_null = [](ImVec2 pos, const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_hash = true)
+            auto RenderText_adapt_text_end_params = [](ImVec2 pos, const char * text, bool hide_text_after_hash = true)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImGui::RenderText(pos, text, text_end_adapt_default_null, hide_text_after_hash);
+                ImGui::RenderText(pos, text, NULL, hide_text_after_hash);
             };
 
-            RenderText_adapt_const_char_pointer_with_default_null(pos, text, text_end, hide_text_after_hash);
-        },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("hide_text_after_hash") = true);
+            RenderText_adapt_text_end_params(pos, text, hide_text_after_hash);
+        },     nb::arg("pos"), nb::arg("text"), nb::arg("hide_text_after_hash") = true);
 
     m.def("render_text_wrapped",
-        ImGui::RenderTextWrapped, nb::arg("pos"), nb::arg("text"), nb::arg("text_end"), nb::arg("wrap_width"));
+        [](ImVec2 pos, const char * text, float wrap_width)
+        {
+            auto RenderTextWrapped_adapt_text_end_params = [](ImVec2 pos, const char * text, float wrap_width)
+            {
+                ImGui::RenderTextWrapped(pos, text, text ? text + strlen(text) : nullptr, wrap_width);
+            };
+
+            RenderTextWrapped_adapt_text_end_params(pos, text, wrap_width);
+        },     nb::arg("pos"), nb::arg("text"), nb::arg("wrap_width"));
 
     m.def("render_text_clipped",
-        [](const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const char * text_end, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
+        [](const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
         {
             auto RenderTextClipped_adapt_mutable_param_with_default_value = [](const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const char * text_end, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
             {
@@ -4949,14 +4960,18 @@ void py_init_module_imgui_internal(nb::module_& m)
 
                 ImGui::RenderTextClipped(pos_min, pos_max, text, text_end, text_size_if_known, align_or_default, clip_rect);
             };
+            auto RenderTextClipped_adapt_text_end_params = [&RenderTextClipped_adapt_mutable_param_with_default_value](const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
+            {
+                RenderTextClipped_adapt_mutable_param_with_default_value(pos_min, pos_max, text, text ? text + strlen(text) : nullptr, text_size_if_known, align, clip_rect);
+            };
 
-            RenderTextClipped_adapt_mutable_param_with_default_value(pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
+            RenderTextClipped_adapt_text_end_params(pos_min, pos_max, text, text_size_if_known, align, clip_rect);
         },
-        nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
+        nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
         "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_clipped_ex",
-        [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const char * text_end, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
+        [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
         {
             auto RenderTextClippedEx_adapt_mutable_param_with_default_value = [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const char * text_end, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
             {
@@ -4970,14 +4985,26 @@ void py_init_module_imgui_internal(nb::module_& m)
 
                 ImGui::RenderTextClippedEx(draw_list, pos_min, pos_max, text, text_end, text_size_if_known, align_or_default, clip_rect);
             };
+            auto RenderTextClippedEx_adapt_text_end_params = [&RenderTextClippedEx_adapt_mutable_param_with_default_value](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, const char * text, const ImVec2 * text_size_if_known, const std::optional<const ImVec2> & align = std::nullopt, const ImRect * clip_rect = NULL)
+            {
+                RenderTextClippedEx_adapt_mutable_param_with_default_value(draw_list, pos_min, pos_max, text, text ? text + strlen(text) : nullptr, text_size_if_known, align, clip_rect);
+            };
 
-            RenderTextClippedEx_adapt_mutable_param_with_default_value(draw_list, pos_min, pos_max, text, text_end, text_size_if_known, align, clip_rect);
+            RenderTextClippedEx_adapt_text_end_params(draw_list, pos_min, pos_max, text, text_size_if_known, align, clip_rect);
         },
-        nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("text"), nb::arg("text_size_if_known"), nb::arg("align").none() = nb::none(), nb::arg("clip_rect") = nb::none(),
         "Python bindings defaults:\n    If align is None, then its default value will be: ImVec2(0, 0)");
 
     m.def("render_text_ellipsis",
-        ImGui::RenderTextEllipsis, nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("ellipsis_max_x"), nb::arg("text"), nb::arg("text_end"), nb::arg("text_size_if_known"));
+        [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, float ellipsis_max_x, const char * text, const ImVec2 * text_size_if_known)
+        {
+            auto RenderTextEllipsis_adapt_text_end_params = [](ImDrawList * draw_list, const ImVec2 & pos_min, const ImVec2 & pos_max, float ellipsis_max_x, const char * text, const ImVec2 * text_size_if_known)
+            {
+                ImGui::RenderTextEllipsis(draw_list, pos_min, pos_max, ellipsis_max_x, text, text ? text + strlen(text) : nullptr, text_size_if_known);
+            };
+
+            RenderTextEllipsis_adapt_text_end_params(draw_list, pos_min, pos_max, ellipsis_max_x, text, text_size_if_known);
+        },     nb::arg("draw_list"), nb::arg("pos_min"), nb::arg("pos_max"), nb::arg("ellipsis_max_x"), nb::arg("text"), nb::arg("text_size_if_known"));
 
     m.def("render_frame",
         ImGui::RenderFrame, nb::arg("p_min"), nb::arg("p_max"), nb::arg("fill_col"), nb::arg("borders") = true, nb::arg("rounding") = 0.0f);
@@ -4995,25 +5022,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::RenderNavCursor,
         nb::arg("bb"), nb::arg("id_"), nb::arg("flags") = ImGuiNavRenderCursorFlags_None, nb::arg("rounding") = -1.0f,
         "Navigation highlight");
-
-    m.def("find_rendered_text_end",
-        [](const char * text, std::optional<std::string> text_end = std::nullopt) -> const char *
-        {
-            auto FindRenderedTextEnd_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt) -> const char *
-            {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                auto lambda_result = ImGui::FindRenderedTextEnd(text, text_end_adapt_default_null);
-                return lambda_result;
-            };
-
-            return FindRenderedTextEnd_adapt_const_char_pointer_with_default_null(text, text_end);
-        },
-        nb::arg("text"), nb::arg("text_end").none() = nb::none(),
-        "Find the optional ## from which we stop displaying text.",
-        nb::rv_policy::reference);
 
     m.def("render_mouse_cursor",
         ImGui::RenderMouseCursor, nb::arg("pos"), nb::arg("scale"), nb::arg("mouse_cursor"), nb::arg("col_fill"), nb::arg("col_border"), nb::arg("col_shadow"));
@@ -5043,19 +5051,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::CalcRoundingFlagsForRectInRect, nb::arg("r_in"), nb::arg("r_outer"), nb::arg("threshold"));
 
     m.def("text_ex",
-        [](const char * text, std::optional<std::string> text_end = std::nullopt, ImGuiTextFlags flags = 0)
+        [](const char * text, ImGuiTextFlags flags = 0)
         {
-            auto TextEx_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt, ImGuiTextFlags flags = 0)
+            auto TextEx_adapt_text_end_params = [](const char * text, ImGuiTextFlags flags = 0)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImGui::TextEx(text, text_end_adapt_default_null, flags);
+                ImGui::TextEx(text, NULL, flags);
             };
 
-            TextEx_adapt_const_char_pointer_with_default_null(text, text_end, flags);
-        },     nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("flags") = 0);
+            TextEx_adapt_text_end_params(text, flags);
+        },     nb::arg("text"), nb::arg("flags") = 0);
 
     m.def("text_aligned",
         [](float align_x, float width, const char * fmt)
@@ -5173,20 +5177,16 @@ void py_init_module_imgui_internal(nb::module_& m)
         },     nb::arg("bb"), nb::arg("id_"), nb::arg("axis"), nb::arg("size1"), nb::arg("size2"), nb::arg("min_size1"), nb::arg("min_size2"), nb::arg("hover_extend") = 0.0f, nb::arg("hover_visibility_delay") = 0.0f, nb::arg("bg_col") = 0);
 
     m.def("tree_node_behavior",
-        [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label, std::optional<std::string> label_end = std::nullopt) -> bool
+        [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label) -> bool
         {
-            auto TreeNodeBehavior_adapt_const_char_pointer_with_default_null = [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label, std::optional<std::string> label_end = std::nullopt) -> bool
+            auto TreeNodeBehavior_adapt_text_end_params = [](ImGuiID id, ImGuiTreeNodeFlags flags, const char * label) -> bool
             {
-                const char * label_end_adapt_default_null = nullptr;
-                if (label_end.has_value())
-                    label_end_adapt_default_null = label_end.value().c_str();
-
-                auto lambda_result = ImGui::TreeNodeBehavior(id, flags, label, label_end_adapt_default_null);
+                auto lambda_result = ImGui::TreeNodeBehavior(id, flags, label, NULL);
                 return lambda_result;
             };
 
-            return TreeNodeBehavior_adapt_const_char_pointer_with_default_null(id, flags, label, label_end);
-        },     nb::arg("id_"), nb::arg("flags"), nb::arg("label"), nb::arg("label_end").none() = nb::none());
+            return TreeNodeBehavior_adapt_text_end_params(id, flags, label);
+        },     nb::arg("id_"), nb::arg("flags"), nb::arg("label"));
 
     m.def("tree_node_draw_line_to_child_node",
         ImGui::TreeNodeDrawLineToChildNode, nb::arg("target_pos"));
@@ -5301,7 +5301,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::DebugDrawItemRect, nb::arg("col") = IM_COL32(255, 0, 0, 255));
 
     m.def("debug_text_unformatted_with_locate_item",
-        ImGui::DebugTextUnformattedWithLocateItem, nb::arg("line_begin"), nb::arg("line_end"));
+        [](const char * line_begin)
+        {
+            auto DebugTextUnformattedWithLocateItem_adapt_text_end_params = [](const char * line_begin)
+            {
+                ImGui::DebugTextUnformattedWithLocateItem(line_begin, line_begin ? line_begin + strlen(line_begin) : nullptr);
+            };
+
+            DebugTextUnformattedWithLocateItem_adapt_text_end_params(line_begin);
+        },     nb::arg("line_begin"));
 
     m.def("debug_locate_item",
         ImGui::DebugLocateItem,

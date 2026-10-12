@@ -23,6 +23,8 @@ def litgen_options_implot() -> LitgenOptions:
 
     options.fn_params_exclude_names__regex = code_utils.append_regex(options.fn_params_exclude_names__regex, "^stride$")
     options.fn_exclude_by_param_type__regex = "ImPlotFormatter|ImPlotTransform"
+    # The end of a text must point inside the text, which a Python string cannot do (see litgen_options_imgui.py)
+    options.fn_params_text_end_names__regex = r"_end$"
 
     # Patches for wrapping of BeginSubplots (cf https://github.com/pthom/imgui_bundle/issues/207)
     options.fn_params_exclude_types__regex = code_utils.append_regex(options.fn_params_exclude_types__regex, r"^float\s*\*$")

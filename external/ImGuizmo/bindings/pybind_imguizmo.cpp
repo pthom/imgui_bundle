@@ -131,11 +131,6 @@ void py_init_module_imguizmo(nb::module_& m)
             "push string into the ID stack (will hash string).");
 
         pyNsImGuizmo.def("push_id",
-            nb::overload_cast<const char *, const char *>(ImGuizmo::PushID),
-            nb::arg("str_id_begin"), nb::arg("str_id_end"),
-            "push string into the ID stack (will hash string).");
-
-        pyNsImGuizmo.def("push_id",
             nb::overload_cast<const void *>(ImGuizmo::PushID),
             nb::arg("ptr_id"),
             "push pointer into the ID stack (will hash pointer).");
@@ -152,9 +147,6 @@ void py_init_module_imguizmo(nb::module_& m)
             nb::overload_cast<const char *>(ImGuizmo::GetID),
             nb::arg("str_id"),
             "calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself");
-
-        pyNsImGuizmo.def("get_id",
-            nb::overload_cast<const char *, const char *>(ImGuizmo::GetID), nb::arg("str_id_begin"), nb::arg("str_id_end"));
 
         pyNsImGuizmo.def("get_id",
             nb::overload_cast<const void *>(ImGuizmo::GetID), nb::arg("ptr_id"));

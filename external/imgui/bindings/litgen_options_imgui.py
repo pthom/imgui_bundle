@@ -209,6 +209,10 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"^ImFontAtlasBuild",
             r"^ImText\w*To",
             r"^ImText\w*From",
+            # They take or return other pointers into the text, which a Python string cannot hold
+            r"^ImTextFindValidUtf8CodepointEnd$",
+            r"^ImTextCalcWordWrapNextLineStart$",
+            r"^FindRenderedTextEnd$",
             r"^DataType",
             # r"^InputTextEx$",
             r"^TempInputScalar",
@@ -402,6 +406,10 @@ def _options_adaptations(options: LitgenOptions) -> None:
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
 
     options.fn_params_replace_c_array_modifiable_by_boxed__regex = ""
+
+    # The end of a text (`const char* text, const char* text_end`) must point inside the text, which a Python string
+    # cannot do: it leaves the Python signature, and receives its default value or the end of the text (discussion #498)
+    options.fn_params_text_end_names__regex = r"_end$"
 
 
 
@@ -1417,6 +1425,10 @@ def litgen_options_imgui(options_type: ImguiOptionsType, docking_branch: bool) -
 
     if options_type == ImguiOptionsType.imgui_h:
         options.fn_exclude_by_name__regex = code_utils.append_regex(options.fn_exclude_by_name__regex, "^InputText")  # InputText comes from imgui_stdlib.h (std::string version)
+        # Without their end (fn_params_text_end_names__regex), the two-string overloads equal the one-string ones.
+        # Here only: ImGuiWindow::GetID (imgui_internal.h) has the same signature, and keeps it.
+        options.fn_exclude_by_name_and_signature["PushID"] = "const char *, const char *"
+        options.fn_exclude_by_name_and_signature["GetID"] = "const char *, const char *"
     elif options_type == ImguiOptionsType.imgui_test_engine:
         add_imgui_test_engine_options(options)
 

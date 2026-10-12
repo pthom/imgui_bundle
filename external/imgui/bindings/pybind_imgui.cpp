@@ -872,11 +872,6 @@ void py_init_module_imgui_main(nb::module_& m)
         "push string into the ID stack (will hash string).");
 
     m.def("push_id",
-        nb::overload_cast<const char *, const char *>(ImGui::PushID),
-        nb::arg("str_id_begin"), nb::arg("str_id_end"),
-        "push string into the ID stack (will hash string).");
-
-    m.def("push_id",
         nb::overload_cast<const void *>(ImGui::PushID),
         nb::arg("ptr_id"),
         "push pointer into the ID stack (will hash pointer).");
@@ -895,29 +890,22 @@ void py_init_module_imgui_main(nb::module_& m)
         "calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself");
 
     m.def("get_id",
-        nb::overload_cast<const char *, const char *>(ImGui::GetID), nb::arg("str_id_begin"), nb::arg("str_id_end"));
-
-    m.def("get_id",
         nb::overload_cast<const void *>(ImGui::GetID), nb::arg("ptr_id"));
 
     m.def("get_id",
         nb::overload_cast<int>(ImGui::GetID), nb::arg("int_id"));
 
     m.def("text_unformatted",
-        [](const char * text, std::optional<std::string> text_end = std::nullopt)
+        [](const char * text)
         {
-            auto TextUnformatted_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt)
+            auto TextUnformatted_adapt_text_end_params = [](const char * text)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImGui::TextUnformatted(text, text_end_adapt_default_null);
+                ImGui::TextUnformatted(text, NULL);
             };
 
-            TextUnformatted_adapt_const_char_pointer_with_default_null(text, text_end);
+            TextUnformatted_adapt_text_end_params(text);
         },
-        nb::arg("text"), nb::arg("text_end").none() = nb::none(),
+        nb::arg("text"),
         "raw text without formatting. Practically equivalent to 'Text(\"%s\", text)' but doesn't require null terminated string if 'text_end' is specified.");
 
     m.def("text",
@@ -2801,21 +2789,17 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::GetStateStorage, nb::rv_policy::reference);
 
     m.def("calc_text_size",
-        [](const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
+        [](const char * text, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
         {
-            auto CalcTextSize_adapt_const_char_pointer_with_default_null = [](const char * text, std::optional<std::string> text_end = std::nullopt, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
+            auto CalcTextSize_adapt_text_end_params = [](const char * text, bool hide_text_after_double_hash = false, float wrap_width = -1.0f) -> ImVec2
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                auto lambda_result = ImGui::CalcTextSize(text, text_end_adapt_default_null, hide_text_after_double_hash, wrap_width);
+                auto lambda_result = ImGui::CalcTextSize(text, NULL, hide_text_after_double_hash, wrap_width);
                 return lambda_result;
             };
 
-            return CalcTextSize_adapt_const_char_pointer_with_default_null(text, text_end, hide_text_after_double_hash, wrap_width);
+            return CalcTextSize_adapt_text_end_params(text, hide_text_after_double_hash, wrap_width);
         },
-        nb::arg("text"), nb::arg("text_end").none() = nb::none(), nb::arg("hide_text_after_double_hash") = false, nb::arg("wrap_width") = -1.0f,
+        nb::arg("text"), nb::arg("hide_text_after_double_hash") = false, nb::arg("wrap_width") = -1.0f,
         "Text Utilities");
 
     m.def("color_convert_u32_to_float4",
@@ -6406,19 +6390,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("delete_chars",
             &ImGuiInputTextCallbackData::DeleteChars, nb::arg("pos"), nb::arg("bytes_count"))
         .def("insert_chars",
-            [](ImGuiInputTextCallbackData & self, int pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+            [](ImGuiInputTextCallbackData & self, int pos, const char * text)
             {
-                auto InsertChars_adapt_const_char_pointer_with_default_null = [&self](int pos, const char * text, std::optional<std::string> text_end = std::nullopt)
+                auto InsertChars_adapt_text_end_params = [&self](int pos, const char * text)
                 {
-                    const char * text_end_adapt_default_null = nullptr;
-                    if (text_end.has_value())
-                        text_end_adapt_default_null = text_end.value().c_str();
-
-                    self.InsertChars(pos, text, text_end_adapt_default_null);
+                    self.InsertChars(pos, text, NULL);
                 };
 
-                InsertChars_adapt_const_char_pointer_with_default_null(pos, text, text_end);
-            },     nb::arg("pos"), nb::arg("text"), nb::arg("text_end").none() = nb::none())
+                InsertChars_adapt_text_end_params(pos, text);
+            },     nb::arg("pos"), nb::arg("text"))
         .def("select_all",
             &ImGuiInputTextCallbackData::SelectAll, "(private API)")
         .def("set_selection",
@@ -6518,20 +6498,16 @@ void py_init_module_imgui_main(nb::module_& m)
         .def(nb::init<const char *>(),
             nb::arg("default_filter") = "")
         .def("pass_filter",
-            [](const ImGuiTextFilter & self, const char * text, std::optional<std::string> text_end = std::nullopt) -> bool
+            [](const ImGuiTextFilter & self, const char * text) -> bool
             {
-                auto PassFilter_adapt_const_char_pointer_with_default_null = [&self](const char * text, std::optional<std::string> text_end = std::nullopt) -> bool
+                auto PassFilter_adapt_text_end_params = [&self](const char * text) -> bool
                 {
-                    const char * text_end_adapt_default_null = nullptr;
-                    if (text_end.has_value())
-                        text_end_adapt_default_null = text_end.value().c_str();
-
-                    auto lambda_result = self.PassFilter(text, text_end_adapt_default_null);
+                    auto lambda_result = self.PassFilter(text, NULL);
                     return lambda_result;
                 };
 
-                return PassFilter_adapt_const_char_pointer_with_default_null(text, text_end);
-            },     nb::arg("text"), nb::arg("text_end").none() = nb::none())
+                return PassFilter_adapt_text_end_params(text);
+            },     nb::arg("text"))
         .def("build",
             &ImGuiTextFilter::Build, "Update internal data when filter changes")
         .def("clear",
@@ -6592,19 +6568,15 @@ void py_init_module_imgui_main(nb::module_& m)
             "(private API)",
             nb::rv_policy::reference)
         .def("append",
-            [](ImGuiTextBuffer & self, const char * str, std::optional<std::string> str_end = std::nullopt)
+            [](ImGuiTextBuffer & self, const char * str)
             {
-                auto append_adapt_const_char_pointer_with_default_null = [&self](const char * str, std::optional<std::string> str_end = std::nullopt)
+                auto append_adapt_text_end_params = [&self](const char * str)
                 {
-                    const char * str_end_adapt_default_null = nullptr;
-                    if (str_end.has_value())
-                        str_end_adapt_default_null = str_end.value().c_str();
-
-                    self.append(str, str_end_adapt_default_null);
+                    self.append(str, NULL);
                 };
 
-                append_adapt_const_char_pointer_with_default_null(str, str_end);
-            },     nb::arg("str"), nb::arg("str_end").none() = nb::none())
+                append_adapt_text_end_params(str);
+            },     nb::arg("str"))
         .def("appendf",
             [](ImGuiTextBuffer & self, const char * fmt)
             {
@@ -7152,33 +7124,25 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("add_ellipse_filled",
             &ImDrawList::AddEllipseFilled, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("rot") = 0.0f, nb::arg("num_segments") = 0)
         .def("add_text",
-            [](ImDrawList & self, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            [](ImDrawList & self, const ImVec2 & pos, ImU32 col, const char * text_begin)
             {
-                auto AddText_adapt_const_char_pointer_with_default_null = [&self](const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+                auto AddText_adapt_text_end_params = [&self](const ImVec2 & pos, ImU32 col, const char * text_begin)
                 {
-                    const char * text_end_adapt_default_null = nullptr;
-                    if (text_end.has_value())
-                        text_end_adapt_default_null = text_end.value().c_str();
-
-                    self.AddText(pos, col, text_begin, text_end_adapt_default_null);
+                    self.AddText(pos, col, text_begin, NULL);
                 };
 
-                AddText_adapt_const_char_pointer_with_default_null(pos, col, text_begin, text_end);
-            },     nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none())
+                AddText_adapt_text_end_params(pos, col, text_begin);
+            },     nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"))
         .def("add_text",
-            [](ImDrawList & self, ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
+            [](ImDrawList & self, ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
             {
-                auto AddText_adapt_const_char_pointer_with_default_null = [&self](ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
+                auto AddText_adapt_text_end_params = [&self](ImFont * font, float font_size, const ImVec2 & pos, ImU32 col, const char * text_begin, float wrap_width = 0.0f, const ImVec4 * cpu_fine_clip_rect = NULL)
                 {
-                    const char * text_end_adapt_default_null = nullptr;
-                    if (text_end.has_value())
-                        text_end_adapt_default_null = text_end.value().c_str();
-
-                    self.AddText(font, font_size, pos, col, text_begin, text_end_adapt_default_null, wrap_width, cpu_fine_clip_rect);
+                    self.AddText(font, font_size, pos, col, text_begin, NULL, wrap_width, cpu_fine_clip_rect);
                 };
 
-                AddText_adapt_const_char_pointer_with_default_null(font, font_size, pos, col, text_begin, text_end, wrap_width, cpu_fine_clip_rect);
-            },     nb::arg("font"), nb::arg("font_size"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip_rect") = nb::none())
+                AddText_adapt_text_end_params(font, font_size, pos, col, text_begin, wrap_width, cpu_fine_clip_rect);
+            },     nb::arg("font"), nb::arg("font_size"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip_rect") = nb::none())
         .def("add_bezier_cubic",
             &ImDrawList::AddBezierCubic,
             nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0, nb::arg("flags") = 0,
@@ -7609,20 +7573,16 @@ void py_init_module_imgui_main(nb::module_& m)
             nb::arg("c"),
             "(private API)\n\n Add character")
         .def("add_text",
-            [](ImFontGlyphRangesBuilder & self, const char * text, std::optional<std::string> text_end = std::nullopt)
+            [](ImFontGlyphRangesBuilder & self, const char * text)
             {
-                auto AddText_adapt_const_char_pointer_with_default_null = [&self](const char * text, std::optional<std::string> text_end = std::nullopt)
+                auto AddText_adapt_text_end_params = [&self](const char * text)
                 {
-                    const char * text_end_adapt_default_null = nullptr;
-                    if (text_end.has_value())
-                        text_end_adapt_default_null = text_end.value().c_str();
-
-                    self.AddText(text, text_end_adapt_default_null);
+                    self.AddText(text, NULL);
                 };
 
-                AddText_adapt_const_char_pointer_with_default_null(text, text_end);
+                AddText_adapt_text_end_params(text);
             },
-            nb::arg("text"), nb::arg("text_end").none() = nb::none(),
+            nb::arg("text"),
             "Add string (each character of the UTF-8 string are added)")
         .def("build_ranges",
             &ImFontGlyphRangesBuilder::BuildRanges,
@@ -7826,7 +7786,15 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("render_char",
             &ImFont::RenderChar, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("c"), nb::arg("cpu_fine_clip") = nb::none())
         .def("render_text",
-            &ImFont::RenderText, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("text_end"), nb::arg("wrap_width") = 0.0f, nb::arg("flags") = 0)
+            [](ImFont & self, ImDrawList * draw_list, float size, const ImVec2 & pos, ImU32 col, const ImVec4 & clip_rect, const char * text_begin, float wrap_width = 0.0f, ImDrawTextFlags flags = 0)
+            {
+                auto RenderText_adapt_text_end_params = [&self](ImDrawList * draw_list, float size, const ImVec2 & pos, ImU32 col, const ImVec4 & clip_rect, const char * text_begin, float wrap_width = 0.0f, ImDrawTextFlags flags = 0)
+                {
+                    self.RenderText(draw_list, size, pos, col, clip_rect, text_begin, text_begin ? text_begin + strlen(text_begin) : nullptr, wrap_width, flags);
+                };
+
+                RenderText_adapt_text_end_params(draw_list, size, pos, col, clip_rect, text_begin, wrap_width, flags);
+            },     nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("wrap_width") = 0.0f, nb::arg("flags") = 0)
         .def("clear_output_data",
             &ImFont::ClearOutputData)
         .def("add_remap_codepoint",

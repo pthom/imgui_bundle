@@ -885,20 +885,16 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             nb::arg("level"), nb::arg("flags"), nb::arg("fmt"),
             "(private API)")
         .def("log_to_tty",
-            [](ImGuiTestContext & self, ImGuiTestVerboseLevel level, const char * message, std::optional<std::string> message_end = std::nullopt)
+            [](ImGuiTestContext & self, ImGuiTestVerboseLevel level, const char * message)
             {
-                auto LogToTTY_adapt_const_char_pointer_with_default_null = [&self](ImGuiTestVerboseLevel level, const char * message, std::optional<std::string> message_end = std::nullopt)
+                auto LogToTTY_adapt_text_end_params = [&self](ImGuiTestVerboseLevel level, const char * message)
                 {
-                    const char * message_end_adapt_default_null = nullptr;
-                    if (message_end.has_value())
-                        message_end_adapt_default_null = message_end.value().c_str();
-
-                    self.LogToTTY(level, message, message_end_adapt_default_null);
+                    self.LogToTTY(level, message, nullptr);
                 };
 
-                LogToTTY_adapt_const_char_pointer_with_default_null(level, message, message_end);
+                LogToTTY_adapt_text_end_params(level, message);
             },
-            nb::arg("level"), nb::arg("message"), nb::arg("message_end").none() = nb::none(),
+            nb::arg("level"), nb::arg("message"),
             "(private API)")
         .def("log_to_debugger",
             &ImGuiTestContext::LogToDebugger,
@@ -1281,8 +1277,17 @@ void py_init_module_imgui_test_engine(nb::module_& m)
             nb::arg("ref"), nb::arg("flags") = ImGuiTestOpFlags_None,
             "(private API)")
         .def("item_info_handle_wildcard_search",
-            &ImGuiTestContext::ItemInfoHandleWildcardSearch,
-            nb::arg("wildcard_prefix_start"), nb::arg("wildcard_prefix_end"), nb::arg("wildcard_suffix_start"),
+            [](ImGuiTestContext & self, const char * wildcard_prefix_start, const char * wildcard_suffix_start) -> ImGuiID
+            {
+                auto ItemInfoHandleWildcardSearch_adapt_text_end_params = [&self](const char * wildcard_prefix_start, const char * wildcard_suffix_start) -> ImGuiID
+                {
+                    auto lambda_result = self.ItemInfoHandleWildcardSearch(wildcard_prefix_start, wildcard_prefix_start ? wildcard_prefix_start + strlen(wildcard_prefix_start) : nullptr, wildcard_suffix_start);
+                    return lambda_result;
+                };
+
+                return ItemInfoHandleWildcardSearch_adapt_text_end_params(wildcard_prefix_start, wildcard_suffix_start);
+            },
+            nb::arg("wildcard_prefix_start"), nb::arg("wildcard_suffix_start"),
             "(private API)")
         .def("item_info_null",
             &ImGuiTestContext::ItemInfoNull, "(private API)")

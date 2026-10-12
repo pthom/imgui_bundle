@@ -1609,11 +1609,11 @@ def get_style_color_u32(idx: Col) -> ImU32:
     pass
 
 # IMPLOT_API void AddTextVertical(ImDrawList *DrawList, ImVec2 pos, ImU32 col, const char* text_begin, const char* text_end = nullptr);    /* original C++ signature */
-def add_text_vertical(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
+def add_text_vertical(draw_list: ImDrawList, pos: ImVec2Like, col: ImU32, text_begin: str) -> None:
     """ Draws vertical text. The position is the bottom left of the text rect."""
     pass
 # IMPLOT_API void AddTextCentered(ImDrawList* DrawList, ImVec2 top_center, ImU32 col, const char* text_begin, const char* text_end = nullptr);    /* original C++ signature */
-def add_text_centered(draw_list: ImDrawList, top_center: ImVec2Like, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
+def add_text_centered(draw_list: ImDrawList, top_center: ImVec2Like, col: ImU32, text_begin: str) -> None:
     """ Draws multiline horizontal text centered."""
     pass
 # static inline ImVec2 CalcTextSizeVertical(const char *text);    /* original C++ signature */

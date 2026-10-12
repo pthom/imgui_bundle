@@ -2584,7 +2584,7 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     link_size = (imgui.calc_text_size(link) * (link_font_size / font_size) + badge_pad * 2) if link else ImVec2(0, 0)
     title_size = imgui.calc_text_size(slide.title)
     title_h = title_size.y * (title_font_size / font_size)
-    desc_size = ImVec2(0, 0) if narrow else imgui.calc_text_size(slide.description, None, False, slide_width - em * 2.0)
+    desc_size = ImVec2(0, 0) if narrow else imgui.calc_text_size(slide.description, False, slide_width - em * 2.0)
 
     card_pad_x = em * (0.6 if narrow else 1.0)
     card_pad_y = em * (0.25 if narrow else 0.4)
@@ -2609,7 +2609,7 @@ def _draw_slide_motto_card(slide: CarouselSlide, slide_width: float, host: Host)
     dl.add_text(font, title_font_size, ImVec2(card_x + card_pad_x, card_y + card_pad_y), title_col, slide.title)
     if not narrow:
         dl.add_text(font, font_size, ImVec2(card_x + card_pad_x, card_y + card_pad_y + title_h + em * 0.3),
-                    desc_col, slide.description, None, slide_width - em * 2.0)
+                    desc_col, slide.description, slide_width - em * 2.0)
 
     total_h = card_h + em * 0.4
     cursor = imgui.get_cursor_screen_pos()

@@ -1212,37 +1212,29 @@ void py_init_module_implot_internal(nb::module_& m)
         "(private API)");
 
     m.def("add_text_vertical",
-        [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+        [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin)
         {
-            auto AddTextVertical_adapt_const_char_pointer_with_default_null = [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            auto AddTextVertical_adapt_text_end_params = [](ImDrawList * DrawList, ImVec2 pos, ImU32 col, const char * text_begin)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImPlot::AddTextVertical(DrawList, pos, col, text_begin, text_end_adapt_default_null);
+                ImPlot::AddTextVertical(DrawList, pos, col, text_begin, nullptr);
             };
 
-            AddTextVertical_adapt_const_char_pointer_with_default_null(DrawList, pos, col, text_begin, text_end);
+            AddTextVertical_adapt_text_end_params(DrawList, pos, col, text_begin);
         },
-        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"),
         "Draws vertical text. The position is the bottom left of the text rect.");
 
     m.def("add_text_centered",
-        [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+        [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin)
         {
-            auto AddTextCentered_adapt_const_char_pointer_with_default_null = [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            auto AddTextCentered_adapt_text_end_params = [](ImDrawList * DrawList, ImVec2 top_center, ImU32 col, const char * text_begin)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImPlot::AddTextCentered(DrawList, top_center, col, text_begin, text_end_adapt_default_null);
+                ImPlot::AddTextCentered(DrawList, top_center, col, text_begin, nullptr);
             };
 
-            AddTextCentered_adapt_const_char_pointer_with_default_null(DrawList, top_center, col, text_begin, text_end);
+            AddTextCentered_adapt_text_end_params(DrawList, top_center, col, text_begin);
         },
-        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
+        nb::arg("draw_list"), nb::arg("top_center"), nb::arg("col"), nb::arg("text_begin"),
         "Draws multiline horizontal text centered.");
 
     m.def("calc_text_size_vertical",

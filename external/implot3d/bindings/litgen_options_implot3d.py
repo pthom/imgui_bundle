@@ -28,6 +28,8 @@ def litgen_options_implot3d() -> LitgenOptions:
 
     options.fn_exclude_by_name__regex = "Formatter_Default|SetupAxisTicks"
     options.fn_exclude_by_param_type__regex = "ImPlot3DFormatter"
+    # The end of a text must point inside the text, which a Python string cannot do (see litgen_options_imgui.py)
+    options.fn_params_text_end_names__regex = r"_end$"
     options.fn_force_lambda__regex = "PlotMesh|SetupAxisScale"
     options.class_exclude_by_name__regex = "ImDrawList3D"
     options.member_exclude_by_type__regex = r"^ImVector|TextBuffer|Storage|ImPool|ImPlot3DFormatter|ImPlot3DLocator|ImDrawList3D|ImPlot3DTransform"

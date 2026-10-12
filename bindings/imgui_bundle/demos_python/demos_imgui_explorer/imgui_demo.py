@@ -3638,7 +3638,7 @@ def show_demo_window_layout():
             elif n == 2:
                 clip_rect = ImVec4(p0.x, p0.y, p1.x, p1.y)
                 draw_list.add_rect_filled(p0, p1, bg)
-                draw_list.add_text(imgui.get_font(), imgui.get_font_size(), text_pos, white, text_str, None, 0.0, clip_rect)
+                draw_list.add_text(imgui.get_font(), imgui.get_font_size(), text_pos, white, text_str, 0.0, clip_rect)
 
         imgui.tree_pop()
 

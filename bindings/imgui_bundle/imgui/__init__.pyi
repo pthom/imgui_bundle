@@ -1367,12 +1367,6 @@ def push_id(str_id: str) -> None:
     """push string into the ID stack (will hash string)."""
     pass
 
-# IMGUI_API void          PushID(const char* str_id_begin, const char* str_id_end);           /* original C++ signature */
-@overload
-def push_id(str_id_begin: str, str_id_end: str) -> None:
-    """push string into the ID stack (will hash string)."""
-    pass
-
 # IMGUI_API void          PushID(const void* ptr_id);                                         /* original C++ signature */
 @overload
 def push_id(ptr_id: Any) -> None:
@@ -1396,11 +1390,6 @@ def get_id(str_id: str) -> ID:
     """calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
     pass
 
-# IMGUI_API ImGuiID       GetID(const char* str_id_begin, const char* str_id_end);    /* original C++ signature */
-@overload
-def get_id(str_id_begin: str, str_id_end: str) -> ID:
-    pass
-
 # IMGUI_API ImGuiID       GetID(const void* ptr_id);    /* original C++ signature */
 @overload
 def get_id(ptr_id: Any) -> ID:
@@ -1414,7 +1403,7 @@ def get_id(int_id: int) -> ID:
 # Widgets: Text
 # - Note that all functions taking format strings in the API may be passed ("%s", text) or ("%.*s", text_len, text): which will automatically bypass the formatter.
 # IMGUI_API void          TextUnformatted(const char* text, const char* text_end = NULL);     /* original C++ signature */
-def text_unformatted(text: str, text_end: Optional[str] = None) -> None:
+def text_unformatted(text: str) -> None:
     """raw text without formatting. Practically equivalent to 'Text("%s", text)' but doesn't require null terminated string if 'text_end' is specified."""
     pass
 
@@ -2833,9 +2822,7 @@ def get_state_storage() -> Storage:
     pass
 
 # IMGUI_API ImVec2        CalcTextSize(const char* text, const char* text_end = NULL, bool hide_text_after_double_hash = false, float wrap_width = -1.0f);    /* original C++ signature */
-def calc_text_size(
-    text: str, text_end: Optional[str] = None, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0
-) -> ImVec2:
+def calc_text_size(text: str, hide_text_after_double_hash: bool = False, wrap_width: float = -1.0) -> ImVec2:
     """Text Utilities"""
     pass
 
@@ -9312,7 +9299,7 @@ class InputTextCallbackData:
     def delete_chars(self, pos: int, bytes_count: int) -> None:
         pass
     # IMGUI_API void      InsertChars(int pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
-    def insert_chars(self, pos: int, text: str, text_end: Optional[str] = None) -> None:
+    def insert_chars(self, pos: int, text: str) -> None:
         pass
     # void                SelectAll();    /* original C++ signature */
     def select_all(self) -> None:
@@ -9470,7 +9457,7 @@ class TextFilter:
     def __init__(self, default_filter: str = "") -> None:
         pass
     # IMGUI_API bool      PassFilter(const char* text, const char* text_end = NULL) const;    /* original C++ signature */
-    def pass_filter(self, text: str, text_end: Optional[str] = None) -> bool:
+    def pass_filter(self, text: str) -> bool:
         pass
     # IMGUI_API void      Build();                                            /* original C++ signature */
     def build(self) -> None:
@@ -9564,7 +9551,7 @@ class TextBuffer:
         """(private API)"""
         pass
     # IMGUI_API void      append(const char* str, const char* str_end = NULL);    /* original C++ signature */
-    def append(self, str: str, str_end: Optional[str] = None) -> None:
+    def append(self, str: str) -> None:
         pass
     # IMGUI_API void      appendf(const char* fmt, ...) ;    /* original C++ signature */
     def appendf(self, fmt: str) -> None:
@@ -10624,7 +10611,7 @@ class ImDrawList:
         pass
     # IMGUI_API void  AddText(const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL);    /* original C++ signature */
     @overload
-    def add_text(self, pos: ImVec2Like, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
+    def add_text(self, pos: ImVec2Like, col: ImU32, text_begin: str) -> None:
         pass
     # IMGUI_API void  AddText(ImFont* font, float font_size, const ImVec2& pos, ImU32 col, const char* text_begin, const char* text_end = NULL, float wrap_width = 0.0f, const ImVec4* cpu_fine_clip_rect = NULL);    /* original C++ signature */
     @overload
@@ -10635,7 +10622,6 @@ class ImDrawList:
         pos: ImVec2Like,
         col: ImU32,
         text_begin: str,
-        text_end: Optional[str] = None,
         wrap_width: float = 0.0,
         cpu_fine_clip_rect: Optional[ImVec4Like] = None,
     ) -> None:
@@ -11304,7 +11290,7 @@ class ImFontGlyphRangesBuilder:
         """
         pass
     # IMGUI_API void  AddText(const char* text, const char* text_end = NULL);         /* original C++ signature */
-    def add_text(self, text: str, text_end: Optional[str] = None) -> None:
+    def add_text(self, text: str) -> None:
         """Add string (each character of the UTF-8 string are added)"""
         pass
     # IMGUI_API void  BuildRanges(ImVector<ImWchar>* out_ranges);                     /* original C++ signature */
@@ -11717,7 +11703,6 @@ class ImFont:
         col: ImU32,
         clip_rect: ImVec4Like,
         text_begin: str,
-        text_end: str,
         wrap_width: float = 0.0,
         flags: ImDrawTextFlags = 0,
     ) -> None:

@@ -1411,7 +1411,7 @@ class TestContext:
         """(private API)"""
         pass
     # void        LogToTTY(ImGuiTestVerboseLevel level, const char* message, const char* message_end = nullptr);    /* original C++ signature */
-    def log_to_tty(self, level: TestVerboseLevel, message: str, message_end: Optional[str] = None) -> None:
+    def log_to_tty(self, level: TestVerboseLevel, message: str) -> None:
         """(private API)"""
         pass
     # void        LogToDebugger(ImGuiTestVerboseLevel level, const char* message);    /* original C++ signature */
@@ -1902,9 +1902,7 @@ class TestContext:
         """(private API)"""
         pass
     # ImGuiID             ItemInfoHandleWildcardSearch(const char* wildcard_prefix_start, const char* wildcard_prefix_end, const char* wildcard_suffix_start);    /* original C++ signature */
-    def item_info_handle_wildcard_search(
-        self, wildcard_prefix_start: str, wildcard_prefix_end: str, wildcard_suffix_start: str
-    ) -> ID:
+    def item_info_handle_wildcard_search(self, wildcard_prefix_start: str, wildcard_suffix_start: str) -> ID:
         """(private API)"""
         pass
     # ImGuiTestItemInfo   ItemInfoNull();    /* original C++ signature */

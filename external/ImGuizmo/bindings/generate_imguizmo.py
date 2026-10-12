@@ -61,6 +61,10 @@ def main() -> None:
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_by_param_type__regex = r"float[ ]*\*"
     options.fn_exclude_by_name__regex = r"^SetID$"  # deprecated function
+    # The end of a text must point inside the text, which a Python string cannot do (see litgen_options_imgui.py)
+    options.fn_params_text_end_names__regex = r"_end$"
+    # Without their end, the two-string overloads equal the one-string ones
+    options.fn_exclude_by_name_and_signature = {"PushID": "const char *, const char *", "GetID": "const char *, const char *"}
     options.fn_force_overload__regex = "DecomposeMatrixToComponents|RecomposeMatrixFromComponents|DrawCubes|DrawGrid|Manipulate"
     amalgamation = make_amalgamated_header()
     generator.process_cpp_code(code=amalgamation, filename="ImGuizmoPure.h")

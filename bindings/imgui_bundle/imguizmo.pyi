@@ -279,12 +279,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     def push_id(str_id: str) -> None:
         """ push string into the ID stack (will hash string)."""
         pass
-    # IMGUI_API void          PushID(const char* str_id_begin, const char* str_id_end);           /* original C++ signature */
-    @staticmethod
-    @overload
-    def push_id(str_id_begin: str, str_id_end: str) -> None:
-        """ push string into the ID stack (will hash string)."""
-        pass
     # IMGUI_API void          PushID(const void* ptr_id);                                         /* original C++ signature */
     @staticmethod
     @overload
@@ -307,11 +301,6 @@ class im_guizmo:  # Proxy class that introduces typings for the *submodule* im_g
     @overload
     def get_id(str_id: str) -> ImGuiID:
         """ calculate unique ID (hash of whole ID stack + given parameter). e.g. if you want to query into ImGuiStorage yourself"""
-        pass
-    # IMGUI_API ImGuiID       GetID(const char* str_id_begin, const char* str_id_end);    /* original C++ signature */
-    @staticmethod
-    @overload
-    def get_id(str_id_begin: str, str_id_end: str) -> ImGuiID:
         pass
     # IMGUI_API ImGuiID       GetID(const void* ptr_id);    /* original C++ signature */
     @staticmethod

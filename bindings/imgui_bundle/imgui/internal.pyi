@@ -468,13 +468,8 @@ def im_text_find_previous_utf8_codepoint(in_text_start: str, in_p: str) -> str:
     """return previous UTF-8 code-point."""
     pass
 
-# IMGUI_API const char*   ImTextFindValidUtf8CodepointEnd(const char* in_text_start, const char* in_text_end, const char* in_p);      /* original C++ signature */
-def im_text_find_valid_utf8_codepoint_end(in_text_start: str, in_text_end: str, in_p: str) -> str:
-    """return previous UTF-8 code-point if 'in_p' is not the end of a valid one."""
-    pass
-
 # IMGUI_API int           ImTextCountLines(const char* in_text, const char* in_text_end);                                             /* original C++ signature */
-def im_text_count_lines(in_text: str, in_text_end: str) -> int:
+def im_text_count_lines(in_text: str) -> int:
     """return number of lines taken by text. trailing carriage return doesn't count as an extra line."""
     pass
 
@@ -496,13 +491,8 @@ class ImDrawTextFlags_(enum.IntFlag):
 
 # IMGUI_API const char*   ImFontCalcWordWrapPositionEx(ImFont* font, float size, const char* text, const char* text_end, float wrap_width, ImDrawTextFlags flags = 0);    /* original C++ signature */
 def im_font_calc_word_wrap_position_ex(
-    font: ImFont, size: float, text: str, text_end: str, wrap_width: float, flags: ImDrawTextFlags = 0
+    font: ImFont, size: float, text: str, wrap_width: float, flags: ImDrawTextFlags = 0
 ) -> str:
-    pass
-
-# IMGUI_API const char*   ImTextCalcWordWrapNextLineStart(const char* text, const char* text_end, ImDrawTextFlags flags = 0);     /* original C++ signature */
-def im_text_calc_word_wrap_next_line_start(text: str, text_end: str, flags: ImDrawTextFlags = 0) -> str:
-    """trim trailing space and find beginning of next line"""
     pass
 
 # enum ImWcharClass    /* original C++ signature */
@@ -5234,7 +5224,7 @@ class Window:
         pass
     # ImGuiID     GetID(const char* str, const char* str_end = NULL);    /* original C++ signature */
     @overload
-    def get_id(self, str: str, str_end: Optional[str] = None) -> ID:
+    def get_id(self, str: str) -> ID:
         """(private API)"""
         pass
     # ImGuiID     GetID(const void* ptr);    /* original C++ signature */
@@ -6769,7 +6759,7 @@ def push_override_id(id_: ID) -> None:
 
 # IMGUI_API ImGuiID       GetIDWithSeed(const char* str_id_begin, const char* str_id_end, ImGuiID seed);    /* original C++ signature */
 @overload
-def get_id_with_seed(str_id_begin: str, str_id_end: str, seed: ID) -> ID:
+def get_id_with_seed(str_id_begin: str, seed: ID) -> ID:
     pass
 
 # IMGUI_API ImGuiID       GetIDWithSeed(int n, ImGuiID seed);    /* original C++ signature */
@@ -6859,7 +6849,7 @@ def log_to_buffer(auto_open_depth: int = -1) -> None:
     pass
 
 # IMGUI_API void          LogRenderedText(const ImVec2* ref_pos, const char* text, const char* text_end = NULL);    /* original C++ signature */
-def log_rendered_text(ref_pos: ImVec2Like, text: str, text_end: Optional[str] = None) -> None:
+def log_rendered_text(ref_pos: ImVec2Like, text: str) -> None:
     pass
 
 # IMGUI_API void          LogSetNextTextDecoration(const char* prefix, const char* suffix);    /* original C++ signature */
@@ -7701,11 +7691,11 @@ def tab_item_label_and_close_button(
 # AVOID USING OUTSIDE OF IMGUI.CPP! NOT FOR PUBLIC CONSUMPTION. THOSE FUNCTIONS ARE A MESS. THEIR SIGNATURE AND BEHAVIOR WILL CHANGE, THEY NEED TO BE REFACTORED INTO SOMETHING DECENT.
 # NB: All position are in absolute pixels coordinates (we are never using window coordinates internally)
 # IMGUI_API void          RenderText(ImVec2 pos, const char* text, const char* text_end = NULL, bool hide_text_after_hash = true);    /* original C++ signature */
-def render_text(pos: ImVec2Like, text: str, text_end: Optional[str] = None, hide_text_after_hash: bool = True) -> None:
+def render_text(pos: ImVec2Like, text: str, hide_text_after_hash: bool = True) -> None:
     pass
 
 # IMGUI_API void          RenderTextWrapped(ImVec2 pos, const char* text, const char* text_end, float wrap_width);    /* original C++ signature */
-def render_text_wrapped(pos: ImVec2Like, text: str, text_end: str, wrap_width: float) -> None:
+def render_text_wrapped(pos: ImVec2Like, text: str, wrap_width: float) -> None:
     pass
 
 # IMGUI_API void          RenderTextClipped(const ImVec2& pos_min, const ImVec2& pos_max, const char* text, const char* text_end, const ImVec2* text_size_if_known, const ImVec2& align = ImVec2(0, 0), const ImRect* clip_rect = NULL);    /* original C++ signature */
@@ -7713,7 +7703,6 @@ def render_text_clipped(
     pos_min: ImVec2Like,
     pos_max: ImVec2Like,
     text: str,
-    text_end: str,
     text_size_if_known: ImVec2Like,
     align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
@@ -7729,7 +7718,6 @@ def render_text_clipped_ex(
     pos_min: ImVec2Like,
     pos_max: ImVec2Like,
     text: str,
-    text_end: str,
     text_size_if_known: ImVec2Like,
     align: Optional[ImVec2Like] = None,
     clip_rect: Optional[ImRect] = None,
@@ -7746,7 +7734,6 @@ def render_text_ellipsis(
     pos_max: ImVec2Like,
     ellipsis_max_x: float,
     text: str,
-    text_end: str,
     text_size_if_known: ImVec2Like,
 ) -> None:
     pass
@@ -7784,11 +7771,6 @@ def render_nav_cursor(
     bb: ImRect, id_: ID, flags: NavRenderCursorFlags = NavRenderCursorFlags_None, rounding: float = -1.0
 ) -> None:
     """Navigation highlight"""
-    pass
-
-# IMGUI_API const char*   FindRenderedTextEnd(const char* text, const char* text_end = NULL);     /* original C++ signature */
-def find_rendered_text_end(text: str, text_end: Optional[str] = None) -> str:
-    """Find the optional ## from which we stop displaying text."""
     pass
 
 # IMGUI_API void          RenderMouseCursor(ImVec2 pos, float scale, ImGuiMouseCursor mouse_cursor, ImU32 col_fill, ImU32 col_border, ImU32 col_shadow);    /* original C++ signature */
@@ -7838,7 +7820,7 @@ def calc_rounding_flags_for_rect_in_rect(r_in: ImRect, r_outer: ImRect, threshol
 
 # Widgets: Text
 # IMGUI_API void          TextEx(const char* text, const char* text_end = NULL, ImGuiTextFlags flags = 0);    /* original C++ signature */
-def text_ex(text: str, text_end: Optional[str] = None, flags: TextFlags = 0) -> None:
+def text_ex(text: str, flags: TextFlags = 0) -> None:
     pass
 
 # IMGUI_API void          TextAligned(float align_x, float width, const char* fmt, ...) ;     /* original C++ signature */
@@ -7975,7 +7957,7 @@ def splitter_behavior(
 
 # Widgets: Tree Nodes
 # IMGUI_API bool          TreeNodeBehavior(ImGuiID id, ImGuiTreeNodeFlags flags, const char* label, const char* label_end = NULL);    /* original C++ signature */
-def tree_node_behavior(id_: ID, flags: TreeNodeFlags, label: str, label_end: Optional[str] = None) -> bool:
+def tree_node_behavior(id_: ID, flags: TreeNodeFlags, label: str) -> bool:
     pass
 
 # IMGUI_API void          TreeNodeDrawLineToChildNode(const ImVec2& target_pos);    /* original C++ signature */
@@ -8161,7 +8143,7 @@ def debug_draw_item_rect(col: ImU32 = IM_COL32(255, 0, 0, 255)) -> None:
     pass
 
 # IMGUI_API void          DebugTextUnformattedWithLocateItem(const char* line_begin, const char* line_end);    /* original C++ signature */
-def debug_text_unformatted_with_locate_item(line_begin: str, line_end: str) -> None:
+def debug_text_unformatted_with_locate_item(line_begin: str) -> None:
     pass
 
 # IMGUI_API void          DebugLocateItem(ImGuiID target_id);                         /* original C++ signature */

@@ -629,20 +629,16 @@ void py_init_module_implot3d_internal(nb::module_& m)
         ImPlot3D::BustItemCache, "Busts the cache for every item for every plot in the current context");
 
     m.def("add_text_rotated",
-        [](ImDrawList * draw_list, ImVec2 pos, float angle, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+        [](ImDrawList * draw_list, ImVec2 pos, float angle, ImU32 col, const char * text_begin)
         {
-            auto AddTextRotated_adapt_const_char_pointer_with_default_null = [](ImDrawList * draw_list, ImVec2 pos, float angle, ImU32 col, const char * text_begin, std::optional<std::string> text_end = std::nullopt)
+            auto AddTextRotated_adapt_text_end_params = [](ImDrawList * draw_list, ImVec2 pos, float angle, ImU32 col, const char * text_begin)
             {
-                const char * text_end_adapt_default_null = nullptr;
-                if (text_end.has_value())
-                    text_end_adapt_default_null = text_end.value().c_str();
-
-                ImPlot3D::AddTextRotated(draw_list, pos, angle, col, text_begin, text_end_adapt_default_null);
+                ImPlot3D::AddTextRotated(draw_list, pos, angle, col, text_begin, nullptr);
             };
 
-            AddTextRotated_adapt_const_char_pointer_with_default_null(draw_list, pos, angle, col, text_begin, text_end);
+            AddTextRotated_adapt_text_end_params(draw_list, pos, angle, col, text_begin);
         },
-        nb::arg("draw_list"), nb::arg("pos"), nb::arg("angle"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(),
+        nb::arg("draw_list"), nb::arg("pos"), nb::arg("angle"), nb::arg("col"), nb::arg("text_begin"),
         "TODO move to another place");
 
     m.def("get_current_plot",

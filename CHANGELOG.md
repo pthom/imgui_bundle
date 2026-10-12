@@ -173,6 +173,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 ## Breaking changes
 
 - C++: `ed::Config::SettingsFile` is a `const char*` again (see the imgui-node-editor section above).
+- The C++ "text end" parameters leave the Python API: `text_end` (`imgui.text_unformatted(text)`, `imgui.calc_text_size(text, hide_text_after_double_hash, wrap_width)`, `ImDrawList.add_text()`, `TextFilter.pass_filter()`, `TextBuffer.append()`, and the internal API), and the two-string overloads of `push_id()` and `get_id()`. In C++, the end must point inside its text, which a Python string cannot do: a string passed there made C++ read from an unrelated address ([#498](https://github.com/pthom/imgui_bundle/discussions/498)). A call that passed `None` as the end must drop it.
 - `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
   Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
 - Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).

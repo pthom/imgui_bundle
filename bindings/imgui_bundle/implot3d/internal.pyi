@@ -898,7 +898,7 @@ def bust_item_cache() -> None:
     pass
 
 # IMPLOT3D_API void AddTextRotated(ImDrawList* draw_list, ImVec2 pos, float angle, ImU32 col, const char* text_begin, const char* text_end = nullptr);    /* original C++ signature */
-def add_text_rotated(draw_list: ImDrawList, pos: ImVec2Like, angle: float, col: ImU32, text_begin: str, text_end: Optional[str] = None) -> None:
+def add_text_rotated(draw_list: ImDrawList, pos: ImVec2Like, angle: float, col: ImU32, text_begin: str) -> None:
     """ TODO move to another place"""
     pass
 
