@@ -387,10 +387,10 @@ def segmented_switch(str_id: str, labels: list[str], current: int) -> int:
     draw_list, rounding = imgui.get_window_draw_list(), (p1.y - p0.y) * 0.5
 
     def fill(i: int, color: int) -> None:
-        corners = ((imgui.ImDrawFlags_.round_corners_left.value if i == 0 else 0)
-                   | (imgui.ImDrawFlags_.round_corners_right.value if i == len(labels) - 1 else 0))
+        corners = ((imgui.ImDrawFlags_.round_left.value if i == 0 else 0)
+                   | (imgui.ImDrawFlags_.round_right.value if i == len(labels) - 1 else 0))
         draw_list.add_rect_filled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
-                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_corners_none.value)
+                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_none.value)
 
     draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
     if imgui.is_item_hovered() and part_at(imgui.get_mouse_pos().x) != current:
@@ -693,7 +693,7 @@ class Launcher:
         imgui.set_cursor_screen_pos(picture_top_left)
         # Rounded more than the card: the border is stroked inside the card's rect with the card's radius, so a
         # picture with that radius pokes out of the border's curve at the corner (visible on a high-DPI screen)
-        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_corners_top.value)
+        self.pictures.draw(demo.stem, width, PICTURE_ASPECT, em_size(0.8), imgui.ImDrawFlags_.round_top.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
                   width - em_size(0.8), scale=text_scale)
@@ -793,7 +793,7 @@ class Launcher:
         text_scale = card_text_scale(width)
         draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BG), rounding)
         self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
-                              imgui.ImDrawFlags_.round_corners_top.value)
+                              imgui.ImDrawFlags_.round_top.value)
         picture_bottom = top_left.y + width / PICTURE_ASPECT
         draw_tags(demo.tags(), ImVec2(bottom_right.x - em_size(0.4), picture_bottom - em_size(0.4)),
                   width - em_size(0.8), draw_list, text_scale)
@@ -858,7 +858,7 @@ class Launcher:
         imgui.push_style_var(imgui.StyleVar_.alpha, appear)
         imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + (1.0 - appear) * em_size(1.0))  # it slides in a little
         width = imgui.get_content_region_avail().x
-        self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_corners_all.value)
+        self.pictures.draw(demo.stem, width, rounding=em_size(0.5), corners=imgui.ImDrawFlags_.round_all.value)
         picture_bottom_right = imgui.get_item_rect_max()
         draw_tags(demo.tags(), ImVec2(picture_bottom_right.x - em_size(0.4), picture_bottom_right.y - em_size(0.4)),
                   width - em_size(0.8))

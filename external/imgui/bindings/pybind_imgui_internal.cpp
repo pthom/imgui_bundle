@@ -150,6 +150,34 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImTextClassifierSetCharClass, nb::arg("bits"), nb::arg("codepoint_min"), nb::arg("codepoint_end"), nb::arg("char_class"), nb::arg("c"));
 
     m.def("im_min",
+        [](int lhs, int rhs) -> int
+        {
+            auto ImMin_adapt_force_lambda = [](int lhs, int rhs) -> int
+            {
+                auto lambda_result = ImMin(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_min",
+        [](float lhs, float rhs) -> float
+        {
+            auto ImMin_adapt_force_lambda = [](float lhs, float rhs) -> float
+            {
+                auto lambda_result = ImMin(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_min",
         [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
         {
             auto ImMin_adapt_force_lambda = [](const ImVec2 & lhs, const ImVec2 & rhs) -> ImVec2
@@ -159,6 +187,34 @@ void py_init_module_imgui_internal(nb::module_& m)
             };
 
             return ImMin_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_max",
+        [](int lhs, int rhs) -> int
+        {
+            auto ImMax_adapt_force_lambda = [](int lhs, int rhs) -> int
+            {
+                auto lambda_result = ImMax(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMax_adapt_force_lambda(lhs, rhs);
+        },
+        nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_max",
+        [](float lhs, float rhs) -> float
+        {
+            auto ImMax_adapt_force_lambda = [](float lhs, float rhs) -> float
+            {
+                auto lambda_result = ImMax(lhs, rhs);
+                return lambda_result;
+            };
+
+            return ImMax_adapt_force_lambda(lhs, rhs);
         },
         nb::arg("lhs"), nb::arg("rhs"),
         "(private API)");
@@ -175,6 +231,34 @@ void py_init_module_imgui_internal(nb::module_& m)
             return ImMax_adapt_force_lambda(lhs, rhs);
         },
         nb::arg("lhs"), nb::arg("rhs"),
+        "(private API)");
+
+    m.def("im_clamp",
+        [](int v, int mn, int mx) -> int
+        {
+            auto ImClamp_adapt_force_lambda = [](int v, int mn, int mx) -> int
+            {
+                auto lambda_result = ImClamp(v, mn, mx);
+                return lambda_result;
+            };
+
+            return ImClamp_adapt_force_lambda(v, mn, mx);
+        },
+        nb::arg("v"), nb::arg("mn"), nb::arg("mx"),
+        "(private API)");
+
+    m.def("im_clamp",
+        [](float v, float mn, float mx) -> float
+        {
+            auto ImClamp_adapt_force_lambda = [](float v, float mn, float mx) -> float
+            {
+                auto lambda_result = ImClamp(v, mn, mx);
+                return lambda_result;
+            };
+
+            return ImClamp_adapt_force_lambda(v, mn, mx);
+        },
+        nb::arg("v"), nb::arg("mn"), nb::arg("mx"),
         "(private API)");
 
     m.def("im_clamp",
@@ -278,15 +362,20 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("f"),
         "(private API)");
 
-    m.def("im_round64",
-        ImRound64,
+    m.def("im_round_positive64",
+        ImRoundPositive64,
         nb::arg("f"),
-        "(private API)\n\n FIXME: Positive values only.");
+        "(private API)\n\n Positive values only.");
+
+    m.def("im_round_signed64",
+        ImRoundSigned64,
+        nb::arg("f"),
+        "(private API)");
 
     m.def("im_ceil_fast",
         ImCeilFast,
         nb::arg("f"),
-        "(private API)\n\n Consider using the the bit-hack version (search for \"0x1p120f\").");
+        "(private API)\n\n Consider using the bit-hack version (search for \"0x1p120f\").");
 
     m.def("im_mod_positive",
         ImModPositive,
@@ -326,6 +415,11 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("im_exponential_moving_average",
         ImExponentialMovingAverage,
         nb::arg("avg"), nb::arg("sample"), nb::arg("n"),
+        "(private API)");
+
+    m.def("im_is_truncated",
+        ImIsTruncated,
+        nb::arg("x"),
         "(private API)");
 
     m.def("im_bezier_cubic_calc",
@@ -640,6 +734,18 @@ void py_init_module_imgui_internal(nb::module_& m)
         ;
 
 
+    auto pyClassImGuiTextFilterItem =
+        nb::class_<ImGuiTextFilterItem>
+            (m, "TextFilterItem", "[Internal] Types")
+        .def_ro("begin", &ImGuiTextFilterItem::Begin, "Pointer within parent's buffer")
+        .def_rw("len", &ImGuiTextFilterItem::Len, "Length of text (non-zero terminated)")
+        .def_rw("count_include", &ImGuiTextFilterItem::CountInclude, "Number of consecutive items forming an end chain. >0 when beginning of an AND chain, =0 otherwise.")
+        .def_rw("match_includes_mask", &ImGuiTextFilterItem::MatchIncludesMask, "Storage for multi-sources versions of PassFilter(). Unused by core library.")
+        .def(nb::init<const char *, const char *>(),
+            nb::arg("b"), nb::arg("e"))
+        ;
+
+
     auto pyClassImGuiPackedDate =
         nb::class_<ImGuiPackedDate>
             (m, "PackedDate", " Helper: ImGuiPackedDate (sizeof() == 2)\n Store a date in a way that is efficient to read/write in text form. If we stored e.g. number of days since Epoch we'd need costlier back and forth.\n This is specifically designed to be able to prune old .ini data.")
@@ -669,14 +775,15 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::class_<ImDrawListSharedData>
             (m, "ImDrawListSharedData", " Data shared between all ImDrawList instances\n Conceptually this could have been called e.g. ImDrawListSharedContext\n Typically one ImGui context would create and maintain one of this.\n You may want to create your own instance of you try to ImDrawList completely without ImGui. In that case, watch out for future changes to this structure.")
         .def_rw("tex_uv_white_pixel", &ImDrawListSharedData::TexUvWhitePixel, "UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)")
-        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines)")
+        .def_ro("tex_uv_lines", &ImDrawListSharedData::TexUvLines, "UV of anti-aliased lines in the atlas (== FontAtlas->Builder->TexUvLines)")
+        .def_ro("tex_uv_corners", &ImDrawListSharedData::TexUvCorners, "UV of rounded corner (== FontAtlas->Builder->TexUvCorners)")
         .def_rw("font_atlas", &ImDrawListSharedData::FontAtlas, "Current font atlas")
         .def_rw("font", &ImDrawListSharedData::Font, "Current font (used for simplified AddText overload)")
-        .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current font size (used for for simplified AddText overload)")
+        .def_rw("font_size", &ImDrawListSharedData::FontSize, "Current font size (used for simplified AddText overload)")
         .def_rw("font_scale", &ImDrawListSharedData::FontScale, "Current font scale (== FontSize / Font->FontSize)")
         .def_rw("curve_tessellation_max_error", &ImDrawListSharedData::CurveTessellationMaxError, "Tessellation tolerance when using PathBezierCurveTo()")
         .def_rw("circle_tessellation_max_error", &ImDrawListSharedData::CircleTessellationMaxError, "Number of circle segments to use per pixel of radius for AddCircle() etc")
-        .def_rw("initial_flags", &ImDrawListSharedData::InitialFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
+        .def_rw("initial_draw_flags", &ImDrawListSharedData::InitialDrawFlags, "Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)")
         .def_rw("clip_rect_fullscreen", &ImDrawListSharedData::ClipRectFullscreen, "Value for PushClipRectFullscreen()")
         .def_rw("temp_buffer", &ImDrawListSharedData::TempBuffer, "Temporary write buffer")
         .def_rw("draw_lists", &ImDrawListSharedData::DrawLists, "All draw lists associated to this ImDrawListSharedData")
@@ -2547,6 +2654,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_just_moved_to_focus_scope_id", &ImGuiContext::NavJustMovedToFocusScopeId, "Just navigated to this focus scope id (result of a successfully MoveRequest).")
         .def_rw("nav_just_moved_to_key_mods", &ImGuiContext::NavJustMovedToKeyMods, "")
         .def_rw("nav_just_moved_to_is_tabbing", &ImGuiContext::NavJustMovedToIsTabbing, "Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.")
+        .def_rw("nav_just_moved_to_is_init", &ImGuiContext::NavJustMovedToIsInit, "Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.")
         .def_rw("nav_just_moved_to_has_selection_data", &ImGuiContext::NavJustMovedToHasSelectionData, "Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.")
         .def_rw("config_nav_enable_tabbing", &ImGuiContext::ConfigNavEnableTabbing, "= True. Enable tabbing (Tab, Shift+Tab). PLEASE LET ME KNOW IF YOU USE THIS.")
         .def_rw("config_nav_windowing_with_gamepad", &ImGuiContext::ConfigNavWindowingWithGamepad, "= True. Enable Ctrl+Tab by holding ImGuiKey_GamepadFaceLeft (== ImGuiKey_NavGamepadMenu). When False, the button may still be used to toggle Menu layer.")
@@ -3301,9 +3409,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("draw_splitter", &ImGuiTable::DrawSplitter, "Shortcut to TempData->DrawSplitter while in table. Isolate draw commands per columns to avoid switching clip rect constantly")
         .def_rw("instance_data_first", &ImGuiTable::InstanceDataFirst, "")
         .def_rw("instance_data_extra", &ImGuiTable::InstanceDataExtra, "FIXME-OPT: Using a small-vector pattern would be good.")
-        .def_rw("sort_specs_single", &ImGuiTable::SortSpecsSingle, "")
-        .def_rw("sort_specs_multi", &ImGuiTable::SortSpecsMulti, "FIXME-OPT: Using a small-vector pattern would be good.")
         .def_rw("sort_specs", &ImGuiTable::SortSpecs, "Public facing sorts specs, this is what we return in TableGetSortSpecs()")
+        .def_rw("sort_specs_multi", &ImGuiTable::SortSpecsMulti, "FIXME-OPT: Using a small-vector pattern would be good.")
+        .def_rw("sort_specs_single", &ImGuiTable::SortSpecsSingle, "")
         .def_rw("sort_specs_count", &ImGuiTable::SortSpecsCount, "")
         .def_rw("columns_enabled_count", &ImGuiTable::ColumnsEnabledCount, "Number of enabled columns (<= ColumnsCount)")
         .def_rw("columns_enabled_fixed_count", &ImGuiTable::ColumnsEnabledFixedCount, "Number of enabled columns using fixed width (<= ColumnsCount)")
@@ -3335,6 +3443,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("nav_layer", &ImGuiTable::NavLayer, "ImGuiNavLayer at the time of BeginTable().")
         .def_rw("is_layout_locked", &ImGuiTable::IsLayoutLocked, "Set by TableUpdateLayout() which is called when beginning the first row.")
         .def_rw("is_inside_row", &ImGuiTable::IsInsideRow, "Set when inside TableBeginRow()/TableEndRow().")
+        .def_rw("is_new_table", &ImGuiTable::IsNewTable, "")
         .def_rw("is_initializing", &ImGuiTable::IsInitializing, "")
         .def_rw("is_reconcile_mode", &ImGuiTable::IsReconcileMode, "")
         .def_rw("is_sort_specs_dirty", &ImGuiTable::IsSortSpecsDirty, "")
@@ -3674,7 +3783,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::rv_policy::reference);
 
     m.def("get_scale",
-        ImGui::GetScale, "(private API)\n\n FIXME-DPI: I don't want to formalize this just yet. Because reasons. Please don't use.");
+        ImGui::GetScale, "(private API)\n\n FIXME-DPI: PLEASE DO NOT USE. I don't want to formalize this just yet. Because reasons.");
 
     m.def("get_current_window_read",
         ImGui::GetCurrentWindowRead,
@@ -4629,6 +4738,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("render_drag_drop_target_rect_for_item",
         ImGui::RenderDragDropTargetRectForItem, nb::arg("bb"));
 
+    m.def("render_drag_drop_target_rect_for_viewport",
+        ImGui::RenderDragDropTargetRectForViewport, nb::arg("viewport_id"), nb::arg("bb"));
+
     m.def("render_drag_drop_target_rect_ex",
         ImGui::RenderDragDropTargetRectEx, nb::arg("draw_list"), nb::arg("bb"), nb::arg("rounding"));
 
@@ -4735,6 +4847,9 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::TabBarGetTabName,
         nb::arg("tab_bar"), nb::arg("tab"),
         nb::rv_policy::reference);
+
+    m.def("tab_bar_get_tab_pos",
+        ImGui::TabBarGetTabPos, nb::arg("tab_bar"), nb::arg("tab"));
 
     m.def("tab_bar_add_tab",
         ImGui::TabBarAddTab, nb::arg("tab_bar"), nb::arg("tab_flags"), nb::arg("window"));
@@ -5377,6 +5492,8 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("baked_discarded_count", &ImFontAtlasBuilder::BakedDiscardedCount, "")
         .def_rw("pack_id_mouse_cursors", &ImFontAtlasBuilder::PackIdMouseCursors, "White pixel + mouse cursors. Also happen to be fallback in case of packing failure.")
         .def_rw("pack_id_lines_tex_data", &ImFontAtlasBuilder::PackIdLinesTexData, "")
+        .def_rw("pack_id_line_fract_tex_data", &ImFontAtlasBuilder::PackIdLineFractTexData, "")
+        .def_rw("pack_id_corners_tex_data", &ImFontAtlasBuilder::PackIdCornersTexData, "")
         ;
 
 

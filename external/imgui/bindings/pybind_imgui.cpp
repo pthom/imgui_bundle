@@ -6062,9 +6062,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("docking_node_has_close_button", &ImGuiStyle::DockingNodeHasCloseButton, "Docking node has their own CloseButton() to close all docked windows.")
         .def_rw("docking_separator_size", &ImGuiStyle::DockingSeparatorSize, "Thickness of resizing border between docked windows")
         .def_rw("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale, "Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.")
-        .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
-        .def_rw("anti_aliased_lines_use_tex", &ImGuiStyle::AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).")
-        .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).")
+        .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Used at the beginning of the frame to set ImDrawFlags_AALines in all draw-lists.")
+        .def_rw("anti_aliased_line_ends", &ImGuiStyle::AntiAliasedLineEnds, "Enable anti-aliased lines/borders ends. Nicer for thick lines but more expensive. Used at the beginning of the frame to set ImDrawFlags_AALineEnds in all draw-lists.")
+        .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Used at the beginning of the frame to set ImDrawFlags_AAFill in all draw-lists.")
         .def_rw("curve_tessellation_max_error", &ImGuiStyle::CurveTessellationMaxError, "Maximum error (in pixels) when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.")
         .def_rw("circle_tessellation_max_error", &ImGuiStyle::CircleTessellationMaxError, "Maximum error (in pixels) allowed when using AddCircle()/AddCircleFilled() or drawing rounded corner rectangles with no explicit segment count specified. Decrease for higher quality but more geometry.")
         .def_rw("hover_stationary_delay", &ImGuiStyle::HoverStationaryDelay, "Delay for IsItemHovered(ImGuiHoveredFlags_Stationary). Time required to consider mouse stationary.")
@@ -6183,6 +6183,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("config_debug_begin_return_value_once", &ImGuiIO::ConfigDebugBeginReturnValueOnce, "= False          // First-time calls to Begin()/BeginChild() will return False. NEEDS TO BE SET AT APPLICATION BOOT TIME if you don't want to miss windows.")
         .def_rw("config_debug_begin_return_value_loop", &ImGuiIO::ConfigDebugBeginReturnValueLoop, "= False          // Some calls to Begin()/BeginChild() will return False. Will cycle through window depths then repeat. Suggested use: add \"io.ConfigDebugBeginReturnValue = io.KeyShift\" in your main loop then occasionally press SHIFT. Windows should be flickering while running.")
         .def_rw("config_debug_ignore_focus_loss", &ImGuiIO::ConfigDebugIgnoreFocusLoss, "= False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys()/io.ClearInputMouse() in input processing.")
+        .def_rw("config_debug_draw_list_defaults_to_stroke_legacy", &ImGuiIO::ConfigDebugDrawListDefaultsToStrokeLegacy, "False // Default all ImDrawList to ImDrawList_StrokeLegacy mode, mimicking pre-1.93.0 rendering.")
         .def_ro("backend_platform_name", &ImGuiIO::BackendPlatformName, "= None")
         .def_ro("backend_renderer_name", &ImGuiIO::BackendRendererName, "= None")
         .def_rw("backend_platform_user_data", &ImGuiIO::BackendPlatformUserData, "= None           // User data for platform backend")
@@ -6513,29 +6514,9 @@ void py_init_module_imgui_main(nb::module_& m)
 
     auto pyClassImGuiTextFilter =
         nb::class_<ImGuiTextFilter>
-            (m, "TextFilter", "Helper: Parse and apply text filters. In format \"aaaaa[,bbbb][,ccccc]\"");
-
-    { // inner classes & enums of TextFilter
-        auto pyClassImGuiTextFilter_ClassImGuiTextRange =
-            nb::class_<ImGuiTextFilter::ImGuiTextRange>
-                (pyClassImGuiTextFilter, "TextRange", "[Internal]")
-            .def_ro("b", &ImGuiTextFilter::ImGuiTextRange::b, "")
-            .def_ro("e", &ImGuiTextFilter::ImGuiTextRange::e, "")
-            .def(nb::init<>())
-            .def(nb::init<const char *, const char *>(),
-                nb::arg("_b"), nb::arg("_e"))
-            .def("empty",
-                &ImGuiTextFilter::ImGuiTextRange::empty, "(private API)")
-            ;
-    } // end of inner classes & enums of TextFilter
-
-    pyClassImGuiTextFilter
+            (m, "TextFilter", "")
         .def(nb::init<const char *>(),
             nb::arg("default_filter") = "")
-        .def("draw",
-            &ImGuiTextFilter::Draw,
-            nb::arg("label") = "Filter (inc,-exc)", nb::arg("width") = 0.0f,
-            "Helper calling InputText+Build")
         .def("pass_filter",
             [](const ImGuiTextFilter & self, const char * text, std::optional<std::string> text_end = std::nullopt) -> bool
             {
@@ -6552,12 +6533,16 @@ void py_init_module_imgui_main(nb::module_& m)
                 return PassFilter_adapt_const_char_pointer_with_default_null(text, text_end);
             },     nb::arg("text"), nb::arg("text_end").none() = nb::none())
         .def("build",
-            &ImGuiTextFilter::Build)
+            &ImGuiTextFilter::Build, "Update internal data when filter changes")
         .def("clear",
-            &ImGuiTextFilter::Clear, "(private API)")
+            &ImGuiTextFilter::Clear, "(private API)\n\n Clear filter")
         .def("is_active",
-            &ImGuiTextFilter::IsActive, "(private API)")
-        .def_rw("count_grep", &ImGuiTextFilter::CountGrep, "")
+            &ImGuiTextFilter::IsActive, "(private API)\n\n Useful if you need e.g. an alternative code-path when there are no filters")
+        .def("draw",
+            &ImGuiTextFilter::Draw, nb::arg("label") = "Filter")
+        .def("draw_with_hint",
+            &ImGuiTextFilter::DrawWithHint, nb::arg("label") = "Filter", nb::arg("hint") = "incl -excl")
+        .def_rw("_count_exclude", &ImGuiTextFilter::_CountExclude, "[Internal] >= 0 count of leading exclude")
         ;
 
     pyClassImGuiTextFilter.def_prop_rw("input_buf",
@@ -7044,30 +7029,36 @@ void py_init_module_imgui_main(nb::module_& m)
     auto pyEnumImDrawFlags_ =
         nb::enum_<ImDrawFlags_>(m, "ImDrawFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for ImDrawList functions")
             .value("none", ImDrawFlags_None, "")
-            .value("round_corners_top_left", ImDrawFlags_RoundCornersTopLeft, "Round top-left corner only (when rounding > 0.0, we default to all corners).")
-            .value("round_corners_top_right", ImDrawFlags_RoundCornersTopRight, "Round top-right corner only (when rounding > 0.0, we default to all corners).")
-            .value("round_corners_bottom_left", ImDrawFlags_RoundCornersBottomLeft, "Round bottom-left corner only (when rounding > 0.0, we default to all corners).")
-            .value("round_corners_bottom_right", ImDrawFlags_RoundCornersBottomRight, "Round bottom-right corner only (when rounding > 0.0, we default to all corners).")
-            .value("round_corners_none", ImDrawFlags_RoundCornersNone, "Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag!")
-            .value("round_corners_all", ImDrawFlags_RoundCornersAll, "(Default!!)")
-            .value("round_corners_default_", ImDrawFlags_RoundCornersDefault_, "Default to ALL corners if none of the _RoundCornersXX flags are specified!")
-            .value("round_corners_top", ImDrawFlags_RoundCornersTop, "")
-            .value("round_corners_bottom", ImDrawFlags_RoundCornersBottom, "")
-            .value("round_corners_left", ImDrawFlags_RoundCornersLeft, "")
-            .value("round_corners_right", ImDrawFlags_RoundCornersRight, "")
-            .value("round_corners_mask_", ImDrawFlags_RoundCornersMask_, "")
-            .value("closed", ImDrawFlags_Closed, "PathStroke(), AddPolyline(): specify that shape should be closed.")
-            .value("invalid_mask_", ImDrawFlags_InvalidMask_, "== 0x8000000F,");
-
-
-    auto pyEnumImDrawListFlags_ =
-        nb::enum_<ImDrawListFlags_>(m, "ImDrawListFlags_", nb::is_arithmetic(), nb::is_flag(), " Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.\n It is however possible to temporarily alter flags between calls to ImDrawList:: functions.")
-            .value("none", ImDrawListFlags_None, "")
-            .value("anti_aliased_lines", ImDrawListFlags_AntiAliasedLines, "Enable anti-aliased lines/borders (*2 the number of triangles for 1.0 wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)")
-            .value("anti_aliased_lines_use_tex", ImDrawListFlags_AntiAliasedLinesUseTex, "Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering (NOT point/nearest filtering).")
-            .value("anti_aliased_fill", ImDrawListFlags_AntiAliasedFill, "Enable anti-aliased edge around filled shapes (rounded rectangles, circles).")
-            .value("allow_vtx_offset", ImDrawListFlags_AllowVtxOffset, "Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.")
-            .value("text_no_pixel_snap", ImDrawListFlags_TextNoPixelSnap, "Disable automatically snapping AddText() calls to pixel boundaries.");
+            .value("round_top_left", ImDrawFlags_RoundTopLeft, "OK   --    // Round top-left corner only (when 'rounding > 0.0', we default to all corners).")
+            .value("round_top_right", ImDrawFlags_RoundTopRight, "OK   --    // Round top-right corner only (when 'rounding > 0.0', we default to all corners).")
+            .value("round_bottom_left", ImDrawFlags_RoundBottomLeft, "OK   --    // Round bottom-left corner only (when 'rounding > 0.0', we default to all corners).")
+            .value("round_bottom_right", ImDrawFlags_RoundBottomRight, "OK   --    // Round bottom-right corner only (when 'rounding > 0.0', we default to all corners).")
+            .value("round_none", ImDrawFlags_RoundNone, "OK   --    // Disable rounding even when 'rounding > 0.0'. This value is NOT zero, it is NOT an implicit flag!")
+            .value("round_all", ImDrawFlags_RoundAll, "(Default!!)")
+            .value("round_top", ImDrawFlags_RoundTop, "")
+            .value("round_bottom", ImDrawFlags_RoundBottom, "")
+            .value("round_left", ImDrawFlags_RoundLeft, "")
+            .value("round_right", ImDrawFlags_RoundRight, "")
+            .value("closed", ImDrawFlags_Closed, "OK   --     // PathStroke(), AddPolyline(): specify that shape should be closed.")
+            .value("join_miter", ImDrawFlags_JoinMiter, "OK   --     // PathStroke(), AddPolyline(): use miter joins/corners only. This assumes that the input polyline does not have corners sharper than 90 degrees. Slightly faster.")
+            .value("cap_square", ImDrawFlags_CapSquare, "OK   --     // PathStroke(), AddPolyline(): use square cap line ends.")
+            .value("aa_fill", ImDrawFlags_AAFill, "OK*  OK(1)  // Enable anti-aliasing for Filled shapes.")
+            .value("aa_lines", ImDrawFlags_AALines, "OK*  OK(1)  // Enable anti-aliasing for Strokes (lines, borders).")
+            .value("aa_line_ends", ImDrawFlags_AALineEnds, "OK   OK(0)  // Enable anti-aliasing for Strokes Ends. Requires AALines to also be enabled. Useful on thick strokes or for precise continuity of multiple lines. A little more costly.")
+            .value("stroke_inside", ImDrawFlags_StrokeInside, "OK   --     // Draw stroke inside of the shape outline (default for closed shapes and AddLineH, AddLineV functions)")
+            .value("stroke_center", ImDrawFlags_StrokeCenter, "OK   --     // Draw stroke at the center of the shape outline (default for paths, bezier, and AddLine functions)")
+            .value("stroke_center_biased", ImDrawFlags_StrokeCenterBiased, "OK   --     // Draw stroke at the center of the shape outline, so that half thickness rounded down will be outside, and the rest inside the shape outline. Useful for axis-aligned shapes: AddLineH, AddLineV, AddRect. Does not animate well!")
+            .value("stroke_outside", ImDrawFlags_StrokeOutside, "OK   --     // Draw stroke outside of the shape outline")
+            .value("stroke_legacy", ImDrawFlags_StrokeLegacy, "OK   OK(0)  // Use legacy positioning + enable JoinMiter + disable AALineEnds. Must be all bits set.")
+            .value("text_no_pixel_snap", ImDrawFlags_TextNoPixelSnap, "OK   OK(0)  // Disable automatically snapping AddText() calls to pixel boundaries.")
+            .value("use_tex_for_round_corners", ImDrawFlags_UseTexForRoundCorners, "--   OK(1)  // Enable using textures instead of strokes to draw rounded corners/circles where possible (faster). Used by default unless 'ImFontAtlasFlags_NoBakedRoundCorners' is enabled in the font atlas.")
+            .value("use_vtx_offset", ImDrawFlags_UseVtxOffset, "--   OK(1)  // Can emit 'VtxOffset > 0' to allow large meshes with 16-bit ImDrawIdx. Used by default when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled by the backend.")
+            .value("allow_tex_for_round_corners_", ImDrawFlags_AllowTexForRoundCorners_, "--   OK(1)  // [Internal]")
+            .value("round_mask_", ImDrawFlags_RoundMask_, "[Internal]")
+            .value("allow_in_push_scope_", ImDrawFlags_AllowInPushScope_, "[Internal] Values allowed in PushDrawFlag() scope.")
+            .value("allow_in_frame_scope_", ImDrawFlags_AllowInFrameScope_, "")
+            .value("stroke_mask_", ImDrawFlags_StrokeMask_, "[Internal]")
+            .value("invalid_mask_", ImDrawFlags_InvalidMask_, "[Internal] == 0x8000000F. Reserved to detect misuses.");
 
 
     auto pyClassImDrawList =
@@ -7076,7 +7067,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("cmd_buffer", &ImDrawList::CmdBuffer, "Draw commands. Typically 1 command = 1 GPU draw call, unless the command is a callback.")
         .def_rw("idx_buffer", &ImDrawList::IdxBuffer, "Index buffer. Each command consume ImDrawCmd::ElemCount of those")
         .def_rw("vtx_buffer", &ImDrawList::VtxBuffer, "Vertex buffer.")
-        .def_rw("flags", &ImDrawList::Flags, "Flags, you may poke into these to adjust anti-aliasing settings per-primitive.")
+        .def_rw("flags", &ImDrawList::Flags, "Current flags for drawing primitives.  Alter with PushDrawFlag()/PopDrawFlags() to adjust defaults to a given scope.")
         .def_rw("_vtx_current_idx", &ImDrawList::_VtxCurrentIdx, "[Internal] generally == VtxBuffer.Size unless we are past 64K vertices, in which case this gets reset to 0.")
         .def_rw("_data", &ImDrawList::_Data, "Pointer to shared draw data (you can use ImGui::GetDrawListSharedData() to get the one from current ImGui context)")
         .def_rw("_vtx_write_ptr", &ImDrawList::_VtxWritePtr, "[Internal] point within VtxBuffer.Data after each add command (to avoid using the ImVector<> operators too much)")
@@ -7087,8 +7078,9 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("_clip_rect_stack", &ImDrawList::_ClipRectStack, "[Internal]")
         .def_rw("_texture_stack", &ImDrawList::_TextureStack, "[Internal]")
         .def_rw("_callbacks_data_buf", &ImDrawList::_CallbacksDataBuf, "[Internal]")
-        .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content.")
+        .def_rw("_fringe_scale", &ImDrawList::_FringeScale, "[Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content")
         .def_rw("_inv_fringe_scale", &ImDrawList::_InvFringeScale, "[internal] 1.0 / _FringeScale // FIXME: Consider renaming to _PixelDensity.")
+        .def_rw("_fringe_scale_is_integer", &ImDrawList::_FringeScaleIsInteger, "[Internal] True if 1/_FringeScale is a whole number, used to select fast path for rendering")
         .def_ro("_owner_name", &ImDrawList::_OwnerName, "Pointer to owner window's name for debugging")
         .def(nb::init<ImDrawListSharedData *>(),
             nb::arg("shared_data"),
@@ -7105,14 +7097,22 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::PushTexture, nb::arg("tex_ref"))
         .def("pop_texture",
             &ImDrawList::PopTexture)
+        .def("push_draw_flag",
+            &ImDrawList::PushDrawFlag,
+            nb::arg("flags"), nb::arg("enabled"),
+            "[BETA] Please notify me if you are using this.")
+        .def("pop_draw_flag",
+            &ImDrawList::PopDrawFlag)
         .def("get_clip_rect_min",
             &ImDrawList::GetClipRectMin, "(private API)")
         .def("get_clip_rect_max",
             &ImDrawList::GetClipRectMax, "(private API)")
         .def("add_line",
-            &ImDrawList::AddLine, nb::arg("p1"), nb::arg("p2"), nb::arg("col"), nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddLine, nb::arg("p1"), nb::arg("p2"), nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_line_h",
-            &ImDrawList::AddLineH, nb::arg("min_x"), nb::arg("max_x"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddLineH, nb::arg("min_x"), nb::arg("max_x"), nb::arg("y"), nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
+        .def("add_line_v",
+            &ImDrawList::AddLineV, nb::arg("x"), nb::arg("min_y"), nb::arg("max_y"), nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_rect",
             [](ImDrawList & self, const ImVec2 & p_min, const ImVec2 & p_max, ImU32 col, float rounding = 0.0f, float thickness = 1.0f, ImDrawFlags flags = 0)
             {
@@ -7132,23 +7132,23 @@ void py_init_module_imgui_main(nb::module_& m)
         .def("add_rect_filled_multi_color",
             &ImDrawList::AddRectFilledMultiColor, nb::arg("p_min"), nb::arg("p_max"), nb::arg("col_upr_left"), nb::arg("col_upr_right"), nb::arg("col_bot_right"), nb::arg("col_bot_left"))
         .def("add_quad",
-            &ImDrawList::AddQuad, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddQuad, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_quad_filled",
             &ImDrawList::AddQuadFilled, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"))
         .def("add_triangle",
-            &ImDrawList::AddTriangle, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddTriangle, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_triangle_filled",
             &ImDrawList::AddTriangleFilled, nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"))
         .def("add_circle",
-            &ImDrawList::AddCircle, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments") = 0, nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddCircle, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments") = 0, nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_circle_filled",
             &ImDrawList::AddCircleFilled, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments") = 0)
         .def("add_ngon",
-            &ImDrawList::AddNgon, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments"), nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddNgon, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments"), nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_ngon_filled",
             &ImDrawList::AddNgonFilled, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("num_segments"))
         .def("add_ellipse",
-            &ImDrawList::AddEllipse, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("rot") = 0.0f, nb::arg("num_segments") = 0, nb::arg("thickness") = 1.0f)
+            &ImDrawList::AddEllipse, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("rot") = 0.0f, nb::arg("num_segments") = 0, nb::arg("thickness") = 1.0f, nb::arg("flags") = 0)
         .def("add_ellipse_filled",
             &ImDrawList::AddEllipseFilled, nb::arg("center"), nb::arg("radius"), nb::arg("col"), nb::arg("rot") = 0.0f, nb::arg("num_segments") = 0)
         .def("add_text",
@@ -7181,11 +7181,11 @@ void py_init_module_imgui_main(nb::module_& m)
             },     nb::arg("font"), nb::arg("font_size"), nb::arg("pos"), nb::arg("col"), nb::arg("text_begin"), nb::arg("text_end").none() = nb::none(), nb::arg("wrap_width") = 0.0f, nb::arg("cpu_fine_clip_rect") = nb::none())
         .def("add_bezier_cubic",
             &ImDrawList::AddBezierCubic,
-            nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
+            nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("p4"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0, nb::arg("flags") = 0,
             "Cubic Bezier (4 control points)")
         .def("add_bezier_quadratic",
             &ImDrawList::AddBezierQuadratic,
-            nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0,
+            nb::arg("p1"), nb::arg("p2"), nb::arg("p3"), nb::arg("col"), nb::arg("thickness"), nb::arg("num_segments") = 0, nb::arg("flags") = 0,
             "Quadratic Bezier (3 control points)")
         .def("add_image",
             [](ImDrawList & self, ImTextureRef tex_ref, const ImVec2 & p_min, const ImVec2 & p_max, const std::optional<const ImVec2> & uv_min = std::nullopt, const std::optional<const ImVec2> & uv_max = std::nullopt, ImU32 col = IM_COL32_WHITE)
@@ -7269,7 +7269,7 @@ void py_init_module_imgui_main(nb::module_& m)
             "(private API)")
         .def("path_fill_convex",
             &ImDrawList::PathFillConvex,
-            nb::arg("col"),
+            nb::arg("col"), nb::arg("flags") = 0,
             "(private API)")
         .def("path_fill_concave",
             &ImDrawList::PathFillConcave,
@@ -7373,6 +7373,31 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImDrawList::_PathArcToFastEx, nb::arg("center"), nb::arg("radius"), nb::arg("a_min_sample"), nb::arg("a_max_sample"), nb::arg("a_step"))
         .def("_path_arc_to_n",
             &ImDrawList::_PathArcToN, nb::arg("center"), nb::arg("radius"), nb::arg("a_min"), nb::arg("a_max"), nb::arg("num_segments"))
+        .def("_add_rect_filled_baked",
+            &ImDrawList::_AddRectFilledBaked, nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("r"), nb::arg("tex_uvs"), nb::arg("flags"))
+        .def("_add_rect_baked",
+            &ImDrawList::_AddRectBaked, nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("r"), nb::arg("t"), nb::arg("tex_uvs"), nb::arg("flags"))
+        .def("_add_line",
+            &ImDrawList::_AddLine, nb::arg("p1"), nb::arg("p2"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"))
+        .def("_add_rect_tiny_rounding",
+            &ImDrawList::_AddRectTinyRounding, nb::arg("p_min"), nb::arg("p_max"), nb::arg("col"), nb::arg("rounding"), nb::arg("thickness"), nb::arg("flags"))
+        .def("_select_line_texture",
+            [](ImDrawList & self, float screen_thickness, ImVec2 * out_uv0, ImVec2 * out_uv1, float out_fringe, ImDrawFlags flags) -> float
+            {
+                auto _SelectLineTexture_adapt_modifiable_immutable_to_return = [&self](float screen_thickness, ImVec2 * out_uv0, ImVec2 * out_uv1, float out_fringe, ImDrawFlags flags) -> float
+                {
+                    float * out_fringe_adapt_modifiable = & out_fringe;
+
+                    self._SelectLineTexture(screen_thickness, out_uv0, out_uv1, out_fringe_adapt_modifiable, flags);
+                    return out_fringe;
+                };
+
+                return _SelectLineTexture_adapt_modifiable_immutable_to_return(screen_thickness, out_uv0, out_uv1, out_fringe, flags);
+            },     nb::arg("screen_thickness"), nb::arg("out_uv0"), nb::arg("out_uv1"), nb::arg("out_fringe"), nb::arg("flags"))
+        .def("_calculate_center_biased_offset",
+            &ImDrawList::_CalculateCenterBiasedOffset, nb::arg("thickness"))
+        .def("_add_polyline",
+            &ImDrawList::_AddPolyline, nb::arg("points"), nb::arg("num_points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"), nb::arg("max_inner_offset"))
         ;
 
     pyClassImDrawList.def("add_polyline",
@@ -7380,9 +7405,9 @@ void py_init_module_imgui_main(nb::module_& m)
             self.AddPolyline(points.data(), (int)points.size(), col, thickness, flags); },
         nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"));
     pyClassImDrawList.def("add_convex_poly_filled",
-        [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
-            self.AddConvexPolyFilled(points.data(), (int)points.size(), col); },
-        nb::arg("points"), nb::arg("col"));
+        [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags) {
+            self.AddConvexPolyFilled(points.data(), (int)points.size(), col, flags); },
+        nb::arg("points"), nb::arg("col"), nb::arg("flags") = 0);
     pyClassImDrawList.def("add_concave_poly_filled",
         [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
             self.AddConcavePolyFilled(points.data(), (int)points.size(), col); },
@@ -7624,7 +7649,8 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("none", ImFontAtlasFlags_None, "")
             .value("no_power_of_two_height", ImFontAtlasFlags_NoPowerOfTwoHeight, "Don't round the height to next power of two")
             .value("no_mouse_cursors", ImFontAtlasFlags_NoMouseCursors, "Don't build software mouse cursors into the atlas (save a little texture memory)")
-            .value("no_baked_lines", ImFontAtlasFlags_NoBakedLines, "Don't build thick line textures into the atlas (save a little texture memory, allow support for point/nearest filtering). The AntiAliasedLinesUseTex features uses them, otherwise they will be rendered using polygons (more expensive for CPU/GPU).");
+            .value("no_baked_lines", ImFontAtlasFlags_NoBakedLines, "Don't build anti-aliased line textures into the atlas (save a little texture memory). SINCE 1.93.0 THIS PREVENTS ANTI-ALIASED LINES FROM WORKING AND WILL DISABLE THEM.")
+            .value("no_baked_round_corners", ImFontAtlasFlags_NoBakedRoundCorners, "Don't build round corners into the atlas.");
 
 
     auto pyClassImFontAtlas =
@@ -7682,7 +7708,7 @@ void py_init_module_imgui_main(nb::module_& m)
             "Get rectangle coordinates for current texture. Valid immediately, never store this (read above)!")
         .def_rw("flags", &ImFontAtlas::Flags, "Build flags (see ImFontAtlasFlags_)")
         .def_rw("tex_desired_format", &ImFontAtlas::TexDesiredFormat, "Desired texture format (default to ImTextureFormat_RGBA32 but may be changed to ImTextureFormat_Alpha8).")
-        .def_rw("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "FIXME: Should be called \"TexPackPadding\". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).")
+        .def_rw("tex_glyph_padding", &ImFontAtlas::TexGlyphPadding, "FIXME: Should be called \"TexPackPadding\". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method never relies on bilinear filtering you may set this to 0.")
         .def_rw("tex_min_width", &ImFontAtlas::TexMinWidth, "Minimum desired texture width. Must be a power of two. Default to 512.")
         .def_rw("tex_min_height", &ImFontAtlas::TexMinHeight, "Minimum desired texture height. Must be a power of two. Default to 128.")
         .def_rw("tex_max_width", &ImFontAtlas::TexMaxWidth, "Maximum desired texture width. Must be a power of two. Default to 8192.")
@@ -7781,7 +7807,7 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("ellipsis_char", &ImFont::EllipsisChar, "2-4   // out // Character used for ellipsis rendering ('...'). If you ever want to temporarily swap this for an alternative/dummy char, make sure to clear EllipsisAutoBake.")
         .def_rw("fallback_char", &ImFont::FallbackChar, "2-4   // out // Character used if a glyph isn't found (U+FFFD, '?')")
         .def_rw("ellipsis_auto_bake", &ImFont::EllipsisAutoBake, "1     //     // Mark when the \"...\" glyph (== EllipsisChar) needs to be generated by combining multiple '.'.")
-        .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.")
+        .def_rw("remap_pairs", &ImFont::RemapPairs, "16    //     // Remapping pairs when using AddRemapCodepointXXX().")
         .def(nb::init<>(),
             "Methods")
         .def("is_glyph_in_font",
@@ -7803,10 +7829,12 @@ void py_init_module_imgui_main(nb::module_& m)
             &ImFont::RenderText, nb::arg("draw_list"), nb::arg("size"), nb::arg("pos"), nb::arg("col"), nb::arg("clip_rect"), nb::arg("text_begin"), nb::arg("text_end"), nb::arg("wrap_width") = 0.0f, nb::arg("flags") = 0)
         .def("clear_output_data",
             &ImFont::ClearOutputData)
-        .def("add_remap_char",
-            &ImFont::AddRemapChar,
+        .def("add_remap_codepoint",
+            &ImFont::AddRemapCodepoint,
             nb::arg("from_codepoint"), nb::arg("to_codepoint"),
             "Makes 'from_codepoint' character points to 'to_codepoint' glyph.")
+        .def("add_remap_codepoint_to_glyph_index",
+            &ImFont::AddRemapCodepointToGlyphIndex, nb::arg("from_codepoint"), nb::arg("font_src_idx"), nb::arg("glyph_idx"))
         .def("is_glyph_range_unused",
             &ImFont::IsGlyphRangeUnused, nb::arg("c_begin"), nb::arg("c_last"))
         ;

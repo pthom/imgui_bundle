@@ -3956,7 +3956,9 @@ def final_app_window_screenshot_framebuffer_scale() -> float:
 
 # ============================== Image decoding =============================
 
-def load_image_data_from_encoded_data(file_bytes: bytes, desired_channels: int = 4) -> np.ndarray:
+def load_image_data_from_encoded_data(
+    file_bytes: bytes, desired_channels: int = 4
+) -> np.ndarray:
     """Decodes an image file's bytes (PNG, JPEG, BMP, GIF, TGA...; the format is detected) with stb_image.
     desired_channels: 0 = as in the file, 1 = gray, 3 = RGB, 4 = RGBA.
     Returns a numpy array of uint8: (height, width, channels), or (height, width) for one channel.

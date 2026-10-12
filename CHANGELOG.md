@@ -100,6 +100,14 @@ target_link_libraries(my_app PRIVATE opencv_core)
 Dear ImGui is updated to the tip of its `docking` branch (v1.93.0 WIP), and ImGui Test Engine to the tip of its `main` branch.
 See upstream's [changelog](https://github.com/ocornut/imgui/blob/docking/docs/CHANGELOG.txt).
 
+### The reworked draw list ([ocornut/imgui#9504](https://github.com/ocornut/imgui/issues/9504))
+
+Dear ImGui's own widgets look the same or crisper. Custom drawing can move by half a pixel: `add_line()` lost its half pixel offset, and closed shapes (rectangles, circles...) are stroked inside by default. #9504 explains how to migrate.
+
+- Breaking: `ImDrawFlags_.round_corners_xxx` become `ImDrawFlags_.round_xxx`, and `ImDrawListFlags_` is merged into `ImDrawFlags_` (`aa_lines`, `aa_fill`, `use_vtx_offset`). In C++, the old names stay unless `IMGUI_DISABLE_OBSOLETE_FUNCTIONS` is defined.
+- Breaking: `TextFilter.draw()` lost its width: call `imgui.set_next_item_width()` before it. `style.anti_aliased_lines_use_tex` is removed. `ImFont.add_remap_char()` becomes `add_remap_codepoint()`.
+- New: `add_line_h()` and `add_line_v()` for straight lines; stroke flags (`stroke_inside`, `stroke_center`, `stroke_outside`, `stroke_legacy`, `join_miter`, `cap_square`...), also for a scope with `push_draw_flag()` / `pop_draw_flag()`; `io.config_debug_draw_list_defaults_to_stroke_legacy` draws everything as before, to compare.
+
 ### Breaking change: `style.curve_tessellation_tol` becomes `style.curve_tessellation_max_error`
 
 The new field is expressed in pixels (the old one was in squared pixels), so that it can scale with the screen density:

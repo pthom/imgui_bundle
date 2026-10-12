@@ -202,10 +202,6 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"ImFormatStringToTempBuffer",
             r"ImTextStrFromUtf8",
             "appendfv",
-            # Exclude function whose name ends with V, like for example
-            #       IMGUI_API void          TextV(const char* fmt, va_list args)                            IM_FMTLIST(1);
-            # which are utilities for variadic print format
-            r"[a-z0-9]V$",
             # Low level utility functions from imgui_internal.h
             r"^ImStr",
             r"^ImFormat",
@@ -243,7 +239,7 @@ def _options_exclusions(options: LitgenOptions) -> None:
         "MenuItem": "const char *, const char *, bool, bool",
         # Pointer-based versions of the polygon functions: replaced by versions accepting a list of points
         "AddPolyline": "const ImVec2 *, int, ImU32, float, ImDrawFlags",
-        "AddConvexPolyFilled": "const ImVec2 *, int, ImU32",
+        "AddConvexPolyFilled": "const ImVec2 *, int, ImU32, ImDrawFlags",
         "AddConcavePolyFilled": "const ImVec2 *, int, ImU32",
         # Output params (imgui_internal.h): replaced by a version returning DockBuilderSplitNodeResult
         "DockBuilderSplitNode": "ImGuiID, ImGuiDir, float, ImGuiID *, ImGuiID *",
@@ -297,6 +293,7 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"unsigned char\s*\*",
             r"unsigned int\s*\*",
             r"^ImPool",
+            r"^ImSmallStack_",  # a template litgen skips (ImDrawList::_DrawFlagsStack, internal)
             r"^ImChunkStream",
             r"^ImSpan",
             r"^ImBitArray",
@@ -394,8 +391,9 @@ def _options_adaptations(options: LitgenOptions) -> None:
     # Exclude functions with those param types:
     # - any function using a double pointer (like char **): see \* \* below
     # - char, const ImWchar *, ImGuiErrorLogCallback
+    # - va_list: the variants of the printf-like functions, e.g. TextV(const char* fmt, va_list args)
     options.fn_exclude_by_param_type__regex = (
-        r"^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$|\* \*"
+        r"^char$|^const ImWchar \*$|^ImGuiErrorLogCallback$|\* \*|^va_list$"
     )
 
     # Version where we use Boxed types everywhere:
@@ -1269,7 +1267,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         stub_code='''
         def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
             pass
-        def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+        def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32, flags: ImDrawFlags = 0) -> None:
             pass
         def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
             pass
@@ -1280,9 +1278,9 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
                 self.AddPolyline(points.data(), (int)points.size(), col, thickness, flags); },
             nb::arg("points"), nb::arg("col"), nb::arg("thickness"), nb::arg("flags"));
         LG_CLASS.def("add_convex_poly_filled",
-            [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
-                self.AddConvexPolyFilled(points.data(), (int)points.size(), col); },
-            nb::arg("points"), nb::arg("col"));
+            [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col, ImDrawFlags flags) {
+                self.AddConvexPolyFilled(points.data(), (int)points.size(), col, flags); },
+            nb::arg("points"), nb::arg("col"), nb::arg("flags") = 0);
         LG_CLASS.def("add_concave_poly_filled",
             [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
                 self.AddConcavePolyFilled(points.data(), (int)points.size(), col); },

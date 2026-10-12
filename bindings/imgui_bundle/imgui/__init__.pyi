@@ -151,7 +151,6 @@ typedef int ImGuiSortDirection;     // -> enum ImGuiSortDirection_   // Enum: A 
 typedef int ImGuiStyleVar;          // -> enum ImGuiStyleVar_        // Enum: A variable identifier for styling
 typedef int ImGuiTableBgTarget;     // -> enum ImGuiTableBgTarget_   // Enum: A color target for TableSetBgColor()
 typedef int ImDrawFlags;            // -> enum ImDrawFlags_          // Flags: for ImDrawList functions
-typedef int ImDrawListFlags;        // -> enum ImDrawListFlags_      // Flags: for ImDrawList instance
 typedef int ImFontAtlasFlags;       // -> enum ImFontAtlasFlags_     // Flags: for ImFontAtlas build
 typedef int ImGuiBackendFlags;      // -> enum ImGuiBackendFlags_    // Flags: for io.BackendFlags
 typedef int ImGuiButtonFlags;       // -> enum ImGuiButtonFlags_     // Flags: for InvisibleButton()
@@ -193,8 +192,6 @@ StyleVar = int  # -> enum StyleVar_        # Enum: A variable identifier for sty
 TableBgTarget = int  # -> enum TableBgTarget_   # Enum: A color target for TableSetBgColor()
 # typedef int ImDrawFlags;    /* original C++ signature */
 ImDrawFlags = int  # -> enum ImDrawFlags_          # Flags: for ImDrawList functions
-# typedef int ImDrawListFlags;    /* original C++ signature */
-ImDrawListFlags = int  # -> enum ImDrawListFlags_      # Flags: for ImDrawList instance
 # typedef int ImFontAtlasFlags;    /* original C++ signature */
 ImFontAtlasFlags = int  # -> enum ImFontAtlasFlags_     # Flags: for ImFontAtlas build
 # typedef int ImGuiBackendFlags;    /* original C++ signature */
@@ -480,7 +477,7 @@ class Vec4Protocol(Protocol):
 # // [SECTION] Misc data structures (ImGuiInputTextCallbackData, ImGuiSizeCallbackData, ImGuiWindowClass, ImGuiPayload)
 # // [SECTION] Helpers (ImGuiOnceUponAFrame, ImGuiTextFilter, ImGuiTextBuffer, ImGuiStorage, ImGuiListClipper, Math Operators, ImColor)
 # // [SECTION] Multi-Select API flags and structures (ImGuiMultiSelectFlags, ImGuiMultiSelectIO, ImGuiSelectionRequest, ImGuiSelectionBasicStorage, ImGuiSelectionExternalStorage)
-# // [SECTION] Drawing API (ImDrawCallback, ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawFlags, ImDrawListFlags, ImDrawList, ImDrawData)
+# // [SECTION] Drawing API (ImDrawCallback, ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawFlags, ImDrawList, ImDrawData)
 # // [SECTION] Texture API (ImTextureFormat, ImTextureStatus, ImTextureRect, ImTextureData)
 # // [SECTION] Font API (ImFontConfig, ImFontGlyph, ImFontGlyphRangesBuilder, ImFontAtlasFlags, ImFontAtlas, ImFontBaked, ImFont)
 # // [SECTION] Viewports (ImGuiViewportFlags, ImGuiViewport)
@@ -8705,11 +8702,11 @@ class Style:
 
     # Rendering & Tessellation
     # bool        AntiAliasedLines;    /* original C++ signature */
-    anti_aliased_lines: bool  # Enable anti-aliased lines/borders. Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
-    # bool        AntiAliasedLinesUseTex;    /* original C++ signature */
-    anti_aliased_lines_use_tex: bool  # Enable anti-aliased lines/borders using textures where possible. Require backend to render with bilinear filtering (NOT point/nearest filtering). Latched at the beginning of the frame (copied to ImDrawList).
+    anti_aliased_lines: bool  # Enable anti-aliased lines/borders. Used at the beginning of the frame to set ImDrawFlags_AALines in all draw-lists.
+    # bool        AntiAliasedLineEnds;    /* original C++ signature */
+    anti_aliased_line_ends: bool  # Enable anti-aliased lines/borders ends. Nicer for thick lines but more expensive. Used at the beginning of the frame to set ImDrawFlags_AALineEnds in all draw-lists.
     # bool        AntiAliasedFill;    /* original C++ signature */
-    anti_aliased_fill: bool  # Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Disable if you are really tight on CPU/GPU. Latched at the beginning of the frame (copied to ImDrawList).
+    anti_aliased_fill: bool  # Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Used at the beginning of the frame to set ImDrawFlags_AAFill in all draw-lists.
     # float       CurveTessellationMaxError;    /* original C++ signature */
     curve_tessellation_max_error: float  # Maximum error (in pixels) when using PathBezierCurveTo() without a specific number of segments. Decrease for highly tessellated curves (higher quality, more polygons), increase to reduce quality.
     # float       CircleTessellationMaxError;    /* original C++ signature */
@@ -8966,7 +8963,7 @@ class IO:
     # Tools to detect code submitting items with conflicting/duplicate IDs
     # - Code should use PushID()/PopID() in loops, or append "##xx" to same-label identifiers.
     # - Empty label e.g. Button("") == same ID as parent widget/node. Use Button("##xx") instead!
-    # - See FAQ https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-about-the-id-stack-system
+    # - See FAQ https://github.com/ocornut/imgui/blob/master/docs/FAQ.md         #q-about-the-id-stack-system
     # bool        ConfigDebugHighlightIdConflicts;    /* original C++ signature */
     config_debug_highlight_id_conflicts: bool  # = True           // Highlight and show an error message popup when multiple items have conflicting identifiers.
     # bool        ConfigDebugHighlightIdConflictsShowItemPicker;    /* original C++ signature */
@@ -8988,6 +8985,14 @@ class IO:
     # - Backends may have other side-effects on focus loss, so this will reduce side-effects but not necessary remove all of them.
     # bool        ConfigDebugIgnoreFocusLoss;    /* original C++ signature */
     config_debug_ignore_focus_loss: bool  # = False          // Ignore io.AddFocusEvent(False), consequently not calling io.ClearInputKeys()/io.ClearInputMouse() in input processing.
+
+    # Option to compare < 1.93.0 rendering details vs 1.93.0 rendering details. (#9504)
+    # - Equivalent to calling PushDrawFlag(ImDrawList_StrokeLegacy,True) on every draw list instances.
+    # - Suggested use, e.g. io.ConfigDebugDrawListDefaultsToStrokeLegacy = io.KeyShift; // Map to SHIFT modifier
+    # bool        ConfigDebugDrawListDefaultsToStrokeLegacy;    /* original C++ signature */
+    config_debug_draw_list_defaults_to_stroke_legacy: (
+        bool  # False // Default all ImDrawList to ImDrawList_StrokeLegacy mode, mimicking pre-1.93.0 rendering.
+    )
 
     # ------------------------------------------------------------------
     # Platform Identifiers
@@ -9461,54 +9466,40 @@ class OnceUponAFrame:
 
 # struct ImGuiTextFilter    /* original C++ signature */
 class TextFilter:
-    """Helper: Parse and apply text filters. In format "aaaaa[,bbbb][,ccccc]" """
-
     # IMGUI_API           ImGuiTextFilter(const char* default_filter = "");    /* original C++ signature */
     def __init__(self, default_filter: str = "") -> None:
-        pass
-    # IMGUI_API bool      Draw(const char* label = "Filter (inc,-exc)", float width = 0.0f);      /* original C++ signature */
-    def draw(self, label: str = "Filter (inc,-exc)", width: float = 0.0) -> bool:
-        """Helper calling InputText+Build"""
         pass
     # IMGUI_API bool      PassFilter(const char* text, const char* text_end = NULL) const;    /* original C++ signature */
     def pass_filter(self, text: str, text_end: Optional[str] = None) -> bool:
         pass
-    # IMGUI_API void      Build();    /* original C++ signature */
+    # IMGUI_API void      Build();                                            /* original C++ signature */
     def build(self) -> None:
+        """Update internal data when filter changes"""
         pass
-    # void                Clear();    /* original C++ signature */
+    # inline void         Clear();    /* original C++ signature */
     def clear(self) -> None:
-        """(private API)"""
+        """(private API)
+
+        Clear filter
+        """
         pass
-    # bool                IsActive() const;    /* original C++ signature */
+    # inline bool         IsActive() const;    /* original C++ signature */
     def is_active(self) -> bool:
-        """(private API)"""
+        """(private API)
+
+        Useful if you need e.g. an alternative code-path when there are no filters
+        """
         pass
-
-    # struct ImGuiTextRange    /* original C++ signature */
-    class TextRange:
-        """[Internal]"""
-
-        # const char*     b;    /* original C++ signature */
-        b: str  # (const)
-        # const char*     e;    /* original C++ signature */
-        e: str  # (const)
-
-        # ImGuiTextRange();    /* original C++ signature */
-        @overload
-        def __init__(self) -> None:
-            pass
-        # ImGuiTextRange(const char* _b, const char* _e);    /* original C++ signature */
-        @overload
-        def __init__(self, _b: str, _e: str) -> None:
-            pass
-        # bool            empty() const;    /* original C++ signature */
-        def empty(self) -> bool:
-            """(private API)"""
-            pass
-
-    # int                     CountGrep;    /* original C++ signature */
-    count_grep: int
+    # Helper to call InputText() + Build() when buffer is changed.
+    # IMGUI_API bool      Draw(const char* label = "Filter");    /* original C++ signature */
+    def draw(self, label: str = "Filter") -> bool:
+        pass
+    # IMGUI_API bool      DrawWithHint(const char* label = "Filter", const char* hint = "incl -excl");    /* original C++ signature */
+    def draw_with_hint(self, label: str = "Filter", hint: str = "incl -excl") -> bool:
+        pass
+    # Members
+    # int                 _CountExclude;    /* original C++ signature */
+    _count_exclude: int  # [Internal] >= 0 count of leading exclude
 
     @property
     def input_buf(self) -> str:
@@ -10121,11 +10112,9 @@ class SelectionExternalStorage:
         pass
 
 # -----------------------------------------------------------------------------
-# [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawListFlags, ImDrawList, ImDrawData)
+# [SECTION] Drawing API (ImDrawCmd, ImDrawIdx, ImDrawVert, ImDrawChannel, ImDrawListSplitter, ImDrawFlags, ImDrawList, ImDrawData)
 # Hold a series of drawing commands. The user provides a renderer for ImDrawData which essentially contains an array of ImDrawList.
 # -----------------------------------------------------------------------------
-
-# The maximum line width to bake anti-aliased textures for. Build atlas with ImFontAtlasFlags_NoBakedLines to disable baking.
 
 # ImDrawIdx: vertex index. [Compile-time configurable type]
 # - To use 16-bit indices + allow large meshes: backend need to set 'io.BackendFlags |= ImGuiBackendFlags_RendererHasVtxOffset' and handle ImDrawCmd::VtxOffset (recommended).
@@ -10285,90 +10274,136 @@ class ImDrawListSplitter:
 class ImDrawFlags_(enum.IntFlag):
     """Flags for ImDrawList functions"""
 
-    # ImDrawFlags_None                        = 0,    /* original C++ signature */
+    # ImDrawFlags_None                    = 0,    /* original C++ signature */
     none = enum.auto()  # (= 0)
+    # ImDrawFlags_Closed                = 1,        // -> FLAG MOVED BELOW. Prior to 1.92.8 (May 2026): ImDrawFlags_Closed was guaranteed to be == (1<<0) == 1, for legacy compatibility reason. Hardcoded use of 1 or True should be replaced with 'ImDrawFlags_Closed'.
 
-    # Rounding for AddRect(), AddRectFilled(), PathRect()
-    # - When not specified, we defaults to ImDrawFlags_RoundCornersAll! So you only need to use those flags if you want another configuration.
-    # ImDrawFlags_RoundCornersTopLeft         = 1 << 4,     /* original C++ signature */
-    round_corners_top_left = (
-        enum.auto()
-    )  # (= 1 << 4)  # Round top-left corner only (when rounding > 0.0, we default to all corners).
-    # ImDrawFlags_RoundCornersTopRight        = 1 << 5,     /* original C++ signature */
-    round_corners_top_right = (
-        enum.auto()
-    )  # (= 1 << 5)  # Round top-right corner only (when rounding > 0.0, we default to all corners).
-    # ImDrawFlags_RoundCornersBottomLeft      = 1 << 6,     /* original C++ signature */
-    round_corners_bottom_left = (
-        enum.auto()
-    )  # (= 1 << 6)  # Round bottom-left corner only (when rounding > 0.0, we default to all corners).
-    # ImDrawFlags_RoundCornersBottomRight     = 1 << 7,     /* original C++ signature */
-    round_corners_bottom_right = (
-        enum.auto()
-    )  # (= 1 << 7)  # Round bottom-right corner only (when rounding > 0.0, we default to all corners).
-    # ImDrawFlags_RoundCornersNone            = 1 << 8,     /* original C++ signature */
-    round_corners_none = (
-        enum.auto()
-    )  # (= 1 << 8)  # Disable rounding even if `float rounding > 0.0`. This is NOT zero, NOT an implicit flag!
-    # ImDrawFlags_RoundCornersAll             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight | ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,     /* original C++ signature */
-    round_corners_all = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right | ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_bottom_right)  # (Default!!)
-    # ImDrawFlags_RoundCornersDefault_        = ImDrawFlags_RoundCornersAll,     /* original C++ signature */
-    round_corners_default_ = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_all)  # Default to ALL corners if none of the _RoundCornersXX flags are specified!
-    # ImDrawFlags_RoundCornersTop             = ImDrawFlags_RoundCornersTopLeft | ImDrawFlags_RoundCornersTopRight,    /* original C++ signature */
-    round_corners_top = enum.auto()  # (= ImDrawFlags_.round_corners_top_left | ImDrawFlags_.round_corners_top_right)
-    # ImDrawFlags_RoundCornersBottom          = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersBottomRight,    /* original C++ signature */
-    round_corners_bottom = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_bottom_right)
-    # ImDrawFlags_RoundCornersLeft            = ImDrawFlags_RoundCornersBottomLeft | ImDrawFlags_RoundCornersTopLeft,    /* original C++ signature */
-    round_corners_left = enum.auto()  # (= ImDrawFlags_.round_corners_bottom_left | ImDrawFlags_.round_corners_top_left)
-    # ImDrawFlags_RoundCornersRight           = ImDrawFlags_RoundCornersBottomRight | ImDrawFlags_RoundCornersTopRight,    /* original C++ signature */
-    round_corners_right = (
-        enum.auto()
-    )  # (= ImDrawFlags_.round_corners_bottom_right | ImDrawFlags_.round_corners_top_right)
-    # ImDrawFlags_RoundCornersMask_           = ImDrawFlags_RoundCornersAll | ImDrawFlags_RoundCornersNone,    /* original C++ signature */
-    round_corners_mask_ = enum.auto()  # (= ImDrawFlags_.round_corners_all | ImDrawFlags_.round_corners_none)
+    # About usage of flags:
+    # - "Prim" column:  'OK' = flag can be used to configure an individual AddXXX() call.
+    # - "Scope" column: 'OK' = initialized by ImGui based on Style options (e.g. whether anti-aliased is enabled) + may be modified using ImDrawList::PushDrawFlag().
+    #                          OK(0)/OK(1) indicates whether this flag is set in the default ImGui Style settings.
 
-    # Stroke options
-    # ImDrawFlags_Closed                      = 1 << 9,     /* original C++ signature */
-    closed = enum.auto()  # (= 1 << 9)  # PathStroke(), AddPolyline(): specify that shape should be closed.
-    # ImDrawFlags_Closed                    = 1,      // Prior to 1.92.8 (May 2026), ImDrawFlags_Closed was guaranteed to be == 1<<0 == 1 for legacy compatibility reason. Hardcoded use of 1 or True should be replaced.
+    # - Rounding default to ImDrawFlags_RoundAll when 'rounding > 0'.
+    # - So you only need to use the ImDrawFlags_RoundXXX flags if you want a special configuration (e.g. a rectangle with one rounded corner).
+    # Rounding for AddRectXXX(), PathRect() ------ // Prim/Scope?
+    # ImDrawFlags_RoundTopLeft            = 1 << 4,       /* original C++ signature */
+    round_top_left = (
+        enum.auto()
+    )  # (= 1 << 4)  # OK   --    // Round top-left corner only (when 'rounding > 0.0', we default to all corners).
+    # ImDrawFlags_RoundTopRight           = 1 << 5,       /* original C++ signature */
+    round_top_right = (
+        enum.auto()
+    )  # (= 1 << 5)  # OK   --    // Round top-right corner only (when 'rounding > 0.0', we default to all corners).
+    # ImDrawFlags_RoundBottomLeft         = 1 << 6,       /* original C++ signature */
+    round_bottom_left = (
+        enum.auto()
+    )  # (= 1 << 6)  # OK   --    // Round bottom-left corner only (when 'rounding > 0.0', we default to all corners).
+    # ImDrawFlags_RoundBottomRight        = 1 << 7,       /* original C++ signature */
+    round_bottom_right = (
+        enum.auto()
+    )  # (= 1 << 7)  # OK   --    // Round bottom-right corner only (when 'rounding > 0.0', we default to all corners).
+    # ImDrawFlags_RoundNone               = 1 << 8,       /* original C++ signature */
+    round_none = (
+        enum.auto()
+    )  # (= 1 << 8)  # OK   --    // Disable rounding even when 'rounding > 0.0'. This value is NOT zero, it is NOT an implicit flag!
+    # ImDrawFlags_RoundAll                = ImDrawFlags_RoundTopLeft | ImDrawFlags_RoundTopRight | ImDrawFlags_RoundBottomLeft | ImDrawFlags_RoundBottomRight,     /* original C++ signature */
+    round_all = (
+        enum.auto()
+    )  # (= ImDrawFlags_.round_top_left | ImDrawFlags_.round_top_right | ImDrawFlags_.round_bottom_left | ImDrawFlags_.round_bottom_right)  # (Default!!)
+    # ImDrawFlags_RoundTop                = ImDrawFlags_RoundTopLeft | ImDrawFlags_RoundTopRight,    /* original C++ signature */
+    round_top = enum.auto()  # (= ImDrawFlags_.round_top_left | ImDrawFlags_.round_top_right)
+    # ImDrawFlags_RoundBottom             = ImDrawFlags_RoundBottomLeft | ImDrawFlags_RoundBottomRight,    /* original C++ signature */
+    round_bottom = enum.auto()  # (= ImDrawFlags_.round_bottom_left | ImDrawFlags_.round_bottom_right)
+    # ImDrawFlags_RoundLeft               = ImDrawFlags_RoundBottomLeft | ImDrawFlags_RoundTopLeft,    /* original C++ signature */
+    round_left = enum.auto()  # (= ImDrawFlags_.round_bottom_left | ImDrawFlags_.round_top_left)
+    # ImDrawFlags_RoundRight              = ImDrawFlags_RoundBottomRight | ImDrawFlags_RoundTopRight,    /* original C++ signature */
+    round_right = enum.auto()  # (= ImDrawFlags_.round_bottom_right | ImDrawFlags_.round_top_right)
 
-    # ImDrawFlags_InvalidMask_                = ~0x7FFFFFF0,     /* original C++ signature */
-    invalid_mask_ = enum.auto()  # (= ~0x7FFFFFF0)  # == 0x8000000F,
+    # Stroke Options ----------------------------- // Prim/Scope?
+    # ImDrawFlags_Closed                  = 1 << 9,       /* original C++ signature */
+    closed = (
+        enum.auto()
+    )  # (= 1 << 9)  # OK   --     // PathStroke(), AddPolyline(): specify that shape should be closed.
+    # ImDrawFlags_JoinMiter               = 1 << 10,      /* original C++ signature */
+    join_miter = (
+        enum.auto()
+    )  # (= 1 << 10)  # OK   --     // PathStroke(), AddPolyline(): use miter joins/corners only. This assumes that the input polyline does not have corners sharper than 90 degrees. Slightly faster.
+    # ImDrawFlags_CapSquare               = 1 << 11,      /* original C++ signature */
+    cap_square = enum.auto()  # (= 1 << 11)  # OK   --     // PathStroke(), AddPolyline(): use square cap line ends.
 
-# enum ImDrawListFlags_    /* original C++ signature */
-class ImDrawListFlags_(enum.IntFlag):
-    """Flags for ImDrawList instance. Those are set automatically by ImGui:: functions from ImGuiIO settings, and generally not manipulated directly.
-    It is however possible to temporarily alter flags between calls to ImDrawList:: functions.
-    """
+    # About Stroke Ends:
+    # - Rendering is optimized for fast pixel-perfect UI, so line ends are not anti-aliased by default. It's cheaper (we can emit less vertices).
+    # - For more free-form drawings, light graphs and markers, or when using thick strokes: you can turn them on using the ImDrawFlags_AALineEnds flag.
+    # - See 'Demo->Examples->Custom Rendering' to interactively toy with those flags.
+    # - 'OK*' indicates using this at the AddXXX() call site is unlikely: it would only makes sense if (1) the option is disabled in style/scope and (2) you want to forcefully enable it for a single primitives. Possible but unlikely! Only supported for functions taking flags inputs.
+    # Stroke/Fill Anti-aliasing ------------------ // Prim/Scope?
+    # ImDrawFlags_AAFill                  = 1 << 12,      /* original C++ signature */
+    aa_fill = enum.auto()  # (= 1 << 12)  # OK*  OK(1)  // Enable anti-aliasing for Filled shapes.
+    # ImDrawFlags_AALines                 = 1 << 13,      /* original C++ signature */
+    aa_lines = enum.auto()  # (= 1 << 13)  # OK*  OK(1)  // Enable anti-aliasing for Strokes (lines, borders).
+    # ImDrawFlags_AALineEnds              = 1 << 14,      /* original C++ signature */
+    aa_line_ends = (
+        enum.auto()
+    )  # (= 1 << 14)  # OK   OK(0)  // Enable anti-aliasing for Strokes Ends. Requires AALines to also be enabled. Useful on thick strokes or for precise continuity of multiple lines. A little more costly.
+    # ImDrawFlags_NoAA                  = 1 << 15,  // OK   --     // Disable anti-aliasing for a given primitive.
+    # ImDrawFlags_NoAALineEnds          = 1 << 16,  // OK   --     // Disable anti-aliasing ends for a given primitive.
 
-    # ImDrawListFlags_None                    = 0,    /* original C++ signature */
-    none = enum.auto()  # (= 0)
-    # ImDrawListFlags_AntiAliasedLines        = 1 << 0,      /* original C++ signature */
-    anti_aliased_lines = (
+    # About Stroke Position:
+    # - Read https://github.com/ocornut/imgui/wiki/Draw-List (this guide includes a precise list of differences between 1.92.9 and 1.93.0)
+    # - Read https://github.com/ocornut/imgui/wiki/Pixel-Perfect-Rendering
+    # Stroke Position relative to shape outline -- // Prim/Scope?
+    # ImDrawFlags_StrokeInside            = 1 << 17,      /* original C++ signature */
+    stroke_inside = (
         enum.auto()
-    )  # (= 1 << 0)  # Enable anti-aliased lines/borders (*2 the number of triangles for 1.0 wide line or lines thin enough to be drawn using textures, otherwise *3 the number of triangles)
-    # ImDrawListFlags_AntiAliasedLinesUseTex  = 1 << 1,      /* original C++ signature */
-    anti_aliased_lines_use_tex = (
+    )  # (= 1 << 17)  # OK   --     // Draw stroke inside of the shape outline (default for closed shapes and AddLineH, AddLineV functions)
+    # ImDrawFlags_StrokeCenter            = 2 << 17,      /* original C++ signature */
+    stroke_center = (
         enum.auto()
-    )  # (= 1 << 1)  # Enable anti-aliased lines/borders using textures when possible. Require backend to render with bilinear filtering (NOT point/nearest filtering).
-    # ImDrawListFlags_AntiAliasedFill         = 1 << 2,      /* original C++ signature */
-    anti_aliased_fill = (
+    )  # (= 2 << 17)  # OK   --     // Draw stroke at the center of the shape outline (default for paths, bezier, and AddLine functions)
+    # ImDrawFlags_StrokeCenterBiased      = 3 << 17,      /* original C++ signature */
+    stroke_center_biased = (
         enum.auto()
-    )  # (= 1 << 2)  # Enable anti-aliased edge around filled shapes (rounded rectangles, circles).
-    # ImDrawListFlags_AllowVtxOffset          = 1 << 3,      /* original C++ signature */
-    allow_vtx_offset = (
+    )  # (= 3 << 17)  # OK   --     // Draw stroke at the center of the shape outline, so that half thickness rounded down will be outside, and the rest inside the shape outline. Useful for axis-aligned shapes: AddLineH, AddLineV, AddRect. Does not animate well!
+    # ImDrawFlags_StrokeOutside           = 4 << 17,      /* original C++ signature */
+    stroke_outside = enum.auto()  # (= 4 << 17)  # OK   --     // Draw stroke outside of the shape outline
+    # ImDrawFlags_StrokeLegacy            = 7 << 17,      /* original C++ signature */
+    stroke_legacy = (
         enum.auto()
-    )  # (= 1 << 3)  # Can emit 'VtxOffset > 0' to allow large meshes. Set when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled.
-    # ImDrawListFlags_TextNoPixelSnap         = 1 << 4,      /* original C++ signature */
+    )  # (= 7 << 17)  # OK   OK(0)  // Use legacy positioning + enable JoinMiter + disable AALineEnds. Must be all bits set.
+
+    # Other Options ------------------------------ // Prim/Scope?
+    # ImDrawFlags_TextNoPixelSnap         = 1 << 20,      /* original C++ signature */
     text_no_pixel_snap = (
         enum.auto()
-    )  # (= 1 << 4)  # Disable automatically snapping AddText() calls to pixel boundaries.
+    )  # (= 1 << 20)  # OK   OK(0)  // Disable automatically snapping AddText() calls to pixel boundaries.
+    # ImDrawFlags_UseTexForRoundCorners   = 1 << 21,      /* original C++ signature */
+    use_tex_for_round_corners = (
+        enum.auto()
+    )  # (= 1 << 21)  # --   OK(1)  // Enable using textures instead of strokes to draw rounded corners/circles where possible (faster). Used by default unless 'ImFontAtlasFlags_NoBakedRoundCorners' is enabled in the font atlas.
+    # ImDrawFlags_UseVtxOffset            = 1 << 22,      /* original C++ signature */
+    use_vtx_offset = (
+        enum.auto()
+    )  # (= 1 << 22)  # --   OK(1)  // Can emit 'VtxOffset > 0' to allow large meshes with 16-bit ImDrawIdx. Used by default when 'ImGuiBackendFlags_RendererHasVtxOffset' is enabled by the backend.
+    # ImDrawFlags_AllowTexForRoundCorners_= 1 << 23,      /* original C++ signature */
+    allow_tex_for_round_corners_ = enum.auto()  # (= 1 << 23)  # --   OK(1)  // [Internal]
+
+    # [Internal]
+    # ImDrawFlags_RoundMask_              = ImDrawFlags_RoundAll | ImDrawFlags_RoundNone,     /* original C++ signature */
+    round_mask_ = enum.auto()  # (= ImDrawFlags_.round_all | ImDrawFlags_.round_none)  # [Internal]
+    # ImDrawFlags_AllowInPushScope_       = ImDrawFlags_AAFill | ImDrawFlags_AALines | ImDrawFlags_AALineEnds | ImDrawFlags_StrokeLegacy | ImDrawFlags_TextNoPixelSnap | ImDrawFlags_UseTexForRoundCorners | ImDrawFlags_UseVtxOffset | ImDrawFlags_RoundMask_,     /* original C++ signature */
+    allow_in_push_scope_ = (
+        enum.auto()
+    )  # (= ImDrawFlags_.aa_fill | ImDrawFlags_.aa_lines | ImDrawFlags_.aa_line_ends | ImDrawFlags_.stroke_legacy | ImDrawFlags_.text_no_pixel_snap | ImDrawFlags_.use_tex_for_round_corners | ImDrawFlags_.use_vtx_offset | ImDrawFlags_.round_mask_)  # [Internal] Values allowed in PushDrawFlag() scope.
+    # ImDrawFlags_AllowInFrameScope_      = ImDrawFlags_AllowInPushScope_ | ImDrawFlags_AllowTexForRoundCorners_,    /* original C++ signature */
+    allow_in_frame_scope_ = (
+        enum.auto()
+    )  # (= ImDrawFlags_.allow_in_push_scope_ | ImDrawFlags_.allow_tex_for_round_corners_)
+    # ImDrawFlags_StrokeMask_             = 0x07 << 17,                  /* original C++ signature */
+    stroke_mask_ = enum.auto()  # (= 0x07 << 17)  # [Internal]
+    # ImDrawFlags_InvalidMask_            = ~0x7FFFFFF0,                 /* original C++ signature */
+    invalid_mask_ = enum.auto()  # (= ~0x7FFFFFF0)  # [Internal] == 0x8000000F. Reserved to detect misuses.
+
+    # Obsolete names
 
 # struct ImDrawList    /* original C++ signature */
 class ImDrawList:
@@ -10392,8 +10427,8 @@ class ImDrawList:
     idx_buffer: ImVector_ImDrawIdx  # Index buffer. Each command consume ImDrawCmd::ElemCount of those
     # ImVector<ImDrawVert>    VtxBuffer;    /* original C++ signature */
     vtx_buffer: ImVector_ImDrawVert  # Vertex buffer.
-    # ImDrawListFlags         Flags;    /* original C++ signature */
-    flags: ImDrawListFlags  # Flags, you may poke into these to adjust anti-aliasing settings per-primitive.
+    # ImDrawFlags             Flags;    /* original C++ signature */
+    flags: ImDrawFlags  # Current flags for drawing primitives.  Alter with PushDrawFlag()/PopDrawFlags() to adjust defaults to a given scope.
 
     # [Internal, used while building lists]
     # unsigned int            _VtxCurrentIdx;    /* original C++ signature */
@@ -10419,9 +10454,13 @@ class ImDrawList:
     # ImVector<ImU8>          _CallbacksDataBuf;    /* original C++ signature */
     _callbacks_data_buf: ImVector_ImU8  # [Internal]
     # float                   _FringeScale;    /* original C++ signature */
-    _fringe_scale: float  # [Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content.
+    _fringe_scale: float  # [Internal] anti-alias fringe is scaled by this value, this helps to keep things sharp while zooming at vertex buffer content
     # float                   _InvFringeScale;    /* original C++ signature */
     _inv_fringe_scale: float  # [internal] 1.0 / _FringeScale // FIXME: Consider renaming to _PixelDensity.
+    # bool                    _FringeScaleIsInteger;    /* original C++ signature */
+    _fringe_scale_is_integer: (
+        bool  # [Internal] True if 1/_FringeScale is a whole number, used to select fast path for rendering
+    )
     # const char*             _OwnerName;    /* original C++ signature */
     _owner_name: str  # Pointer to owner window's name for debugging # (const)
 
@@ -10449,6 +10488,13 @@ class ImDrawList:
     # IMGUI_API void  PopTexture();    /* original C++ signature */
     def pop_texture(self) -> None:
         pass
+    # IMGUI_API void  PushDrawFlag(ImDrawFlags flags, bool enabled);     /* original C++ signature */
+    def push_draw_flag(self, flags: ImDrawFlags, enabled: bool) -> None:
+        """[BETA] Please notify me if you are using this."""
+        pass
+    # IMGUI_API void  PopDrawFlag();    /* original C++ signature */
+    def pop_draw_flag(self) -> None:
+        pass
     # inline ImVec2   GetClipRectMin() const;    /* original C++ signature */
     def get_clip_rect_min(self) -> ImVec2:
         """(private API)"""
@@ -10464,11 +10510,20 @@ class ImDrawList:
     #   In older versions (until Dear ImGui 1.77) the AddCircle functions defaulted to num_segments == 12.
     #   In future versions we will use textures to provide cheaper and higher-quality circles.
     #   Use AddNgon() and AddNgonFilled() functions if you need to guarantee a specific number of sides.
-    # IMGUI_API void  AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_line(self, p1: ImVec2Like, p2: ImVec2Like, col: ImU32, thickness: float = 1.0) -> None:
+    # IMGUI_API void  AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
+    def add_line(
+        self, p1: ImVec2Like, p2: ImVec2Like, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0
+    ) -> None:
         pass
-    # IMGUI_API void  AddLineH(float min_x, float max_x, float y, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_line_h(self, min_x: float, max_x: float, y: float, col: ImU32, thickness: float = 1.0) -> None:
+    # IMGUI_API void  AddLineH(float min_x, float max_x, float y, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
+    def add_line_h(
+        self, min_x: float, max_x: float, y: float, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0
+    ) -> None:
+        pass
+    # IMGUI_API void  AddLineV(float x, float min_y, float max_y, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
+    def add_line_v(
+        self, x: float, min_y: float, max_y: float, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0
+    ) -> None:
         pass
     # IMGUI_API void  AddRect(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding = 0.0f, float thickness = 1.0f, ImDrawFlags flags = 0);       /* original C++ signature */
     def add_rect(
@@ -10499,37 +10554,58 @@ class ImDrawList:
         col_bot_left: ImU32,
     ) -> None:
         pass
-    # IMGUI_API void  AddQuad(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
+    # IMGUI_API void  AddQuad(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_quad(
-        self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, col: ImU32, thickness: float = 1.0
+        self,
+        p1: ImVec2Like,
+        p2: ImVec2Like,
+        p3: ImVec2Like,
+        p4: ImVec2Like,
+        col: ImU32,
+        thickness: float = 1.0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         pass
     # IMGUI_API void  AddQuadFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col);    /* original C++ signature */
     def add_quad_filled(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, p4: ImVec2Like, col: ImU32) -> None:
         pass
-    # IMGUI_API void  AddTriangle(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f);    /* original C++ signature */
-    def add_triangle(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float = 1.0) -> None:
+    # IMGUI_API void  AddTriangle(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
+    def add_triangle(
+        self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float = 1.0, flags: ImDrawFlags = 0
+    ) -> None:
         pass
     # IMGUI_API void  AddTriangleFilled(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col);    /* original C++ signature */
     def add_triangle_filled(self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32) -> None:
         pass
-    # IMGUI_API void  AddCircle(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
+    # IMGUI_API void  AddCircle(const ImVec2& center, float radius, ImU32 col, int num_segments = 0, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_circle(
-        self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int = 0, thickness: float = 1.0
+        self,
+        center: ImVec2Like,
+        radius: float,
+        col: ImU32,
+        num_segments: int = 0,
+        thickness: float = 1.0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         pass
     # IMGUI_API void  AddCircleFilled(const ImVec2& center, float radius, ImU32 col, int num_segments = 0);    /* original C++ signature */
     def add_circle_filled(self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int = 0) -> None:
         pass
-    # IMGUI_API void  AddNgon(const ImVec2& center, float radius, ImU32 col, int num_segments, float thickness = 1.0f);    /* original C++ signature */
+    # IMGUI_API void  AddNgon(const ImVec2& center, float radius, ImU32 col, int num_segments, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_ngon(
-        self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int, thickness: float = 1.0
+        self,
+        center: ImVec2Like,
+        radius: float,
+        col: ImU32,
+        num_segments: int,
+        thickness: float = 1.0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         pass
     # IMGUI_API void  AddNgonFilled(const ImVec2& center, float radius, ImU32 col, int num_segments);    /* original C++ signature */
     def add_ngon_filled(self, center: ImVec2Like, radius: float, col: ImU32, num_segments: int) -> None:
         pass
-    # IMGUI_API void  AddEllipse(const ImVec2& center, const ImVec2& radius, ImU32 col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f);    /* original C++ signature */
+    # IMGUI_API void  AddEllipse(const ImVec2& center, const ImVec2& radius, ImU32 col, float rot = 0.0f, int num_segments = 0, float thickness = 1.0f, ImDrawFlags flags = 0);    /* original C++ signature */
     def add_ellipse(
         self,
         center: ImVec2Like,
@@ -10538,6 +10614,7 @@ class ImDrawList:
         rot: float = 0.0,
         num_segments: int = 0,
         thickness: float = 1.0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         pass
     # IMGUI_API void  AddEllipseFilled(const ImVec2& center, const ImVec2& radius, ImU32 col, float rot = 0.0f, int num_segments = 0);    /* original C++ signature */
@@ -10563,7 +10640,7 @@ class ImDrawList:
         cpu_fine_clip_rect: Optional[ImVec4Like] = None,
     ) -> None:
         pass
-    # IMGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0);     /* original C++ signature */
+    # IMGUI_API void  AddBezierCubic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, const ImVec2& p4, ImU32 col, float thickness, int num_segments = 0, ImDrawFlags flags = 0);     /* original C++ signature */
     def add_bezier_cubic(
         self,
         p1: ImVec2Like,
@@ -10573,19 +10650,23 @@ class ImDrawList:
         col: ImU32,
         thickness: float,
         num_segments: int = 0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         """Cubic Bezier (4 control points)"""
         pass
-    # IMGUI_API void  AddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness, int num_segments = 0);                   /* original C++ signature */
+    # IMGUI_API void  AddBezierQuadratic(const ImVec2& p1, const ImVec2& p2, const ImVec2& p3, ImU32 col, float thickness, int num_segments = 0, ImDrawFlags flags = 0);                   /* original C++ signature */
     def add_bezier_quadratic(
-        self, p1: ImVec2Like, p2: ImVec2Like, p3: ImVec2Like, col: ImU32, thickness: float, num_segments: int = 0
+        self,
+        p1: ImVec2Like,
+        p2: ImVec2Like,
+        p3: ImVec2Like,
+        col: ImU32,
+        thickness: float,
+        num_segments: int = 0,
+        flags: ImDrawFlags = 0,
     ) -> None:
         """Quadratic Bezier (3 control points)"""
         pass
-    # General polygon
-    # - Only simple polygons are supported by filling functions (no self-intersections, no holes).
-    # - Concave polygon fill is more expensive than convex one: it has O(N^2) complexity. Provided as a convenience for the user but not used by the main library.
-
     # Image primitives
     # - Read FAQ to understand what ImTextureID/ImTextureRef are.
     # - "p_min" and "p_max" represent the upper-left and lower-right corners of the rectangle.
@@ -10656,8 +10737,8 @@ class ImDrawList:
     def path_line_to_merge_duplicate(self, pos: ImVec2Like) -> None:
         """(private API)"""
         pass
-    # inline    void  PathFillConvex(ImU32 col);    /* original C++ signature */
-    def path_fill_convex(self, col: ImU32) -> None:
+    # inline    void  PathFillConvex(ImU32 col, ImDrawFlags flags = 0);    /* original C++ signature */
+    def path_fill_convex(self, col: ImU32, flags: ImDrawFlags = 0) -> None:
         """(private API)"""
         pass
     # inline    void  PathFillConcave(ImU32 col);    /* original C++ signature */
@@ -10815,11 +10896,55 @@ class ImDrawList:
     # IMGUI_API void  _PathArcToN(const ImVec2& center, float radius, float a_min, float a_max, int num_segments);    /* original C++ signature */
     def _path_arc_to_n(self, center: ImVec2Like, radius: float, a_min: float, a_max: float, num_segments: int) -> None:
         pass
+    # IMGUI_API void  _AddRectFilledBaked(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float r, const ImVec4& tex_uvs, ImDrawFlags flags);    /* original C++ signature */
+    def _add_rect_filled_baked(
+        self, p_min: ImVec2Like, p_max: ImVec2Like, col: ImU32, r: float, tex_uvs: ImVec4Like, flags: ImDrawFlags
+    ) -> None:
+        pass
+    # IMGUI_API void  _AddRectBaked(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float r, float t, const ImVec4& tex_uvs, ImDrawFlags flags);    /* original C++ signature */
+    def _add_rect_baked(
+        self,
+        p_min: ImVec2Like,
+        p_max: ImVec2Like,
+        col: ImU32,
+        r: float,
+        t: float,
+        tex_uvs: ImVec4Like,
+        flags: ImDrawFlags,
+    ) -> None:
+        pass
+    # IMGUI_API void  _AddLine(const ImVec2& p1, const ImVec2& p2, ImU32 col, float thickness, ImDrawFlags flags);    /* original C++ signature */
+    def _add_line(self, p1: ImVec2Like, p2: ImVec2Like, col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
+        pass
+    # IMGUI_API void  _AddRectTinyRounding(const ImVec2& p_min, const ImVec2& p_max, ImU32 col, float rounding, float thickness, ImDrawFlags flags);    /* original C++ signature */
+    def _add_rect_tiny_rounding(
+        self, p_min: ImVec2Like, p_max: ImVec2Like, col: ImU32, rounding: float, thickness: float, flags: ImDrawFlags
+    ) -> None:
+        pass
+    # IMGUI_API void  _SelectLineTexture(float screen_thickness, ImVec2* out_uv0, ImVec2* out_uv1, float* out_fringe, ImDrawFlags flags);    /* original C++ signature */
+    def _select_line_texture(
+        self, screen_thickness: float, out_uv0: ImVec2Like, out_uv1: ImVec2Like, out_fringe: float, flags: ImDrawFlags
+    ) -> float:
+        pass
+    # IMGUI_API float _CalculateCenterBiasedOffset(float thickness);    /* original C++ signature */
+    def _calculate_center_biased_offset(self, thickness: float) -> float:
+        pass
+    # IMGUI_API void  _AddPolyline(const ImVec2* points, int num_points, ImU32 col, float thickness, ImDrawFlags flags, float max_inner_offset);    /* original C++ signature */
+    def _add_polyline(
+        self,
+        points: ImVec2Like,
+        num_points: int,
+        col: ImU32,
+        thickness: float,
+        flags: ImDrawFlags,
+        max_inner_offset: float,
+    ) -> None:
+        pass
 
     def add_polyline(self, points: List[ImVec2Like], col: ImU32, thickness: float, flags: ImDrawFlags) -> None:
         pass
 
-    def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
+    def add_convex_poly_filled(self, points: List[ImVec2Like], col: ImU32, flags: ImDrawFlags = 0) -> None:
         pass
 
     def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
@@ -11226,7 +11351,9 @@ class ImFontAtlasFlags_(enum.IntFlag):
     # ImFontAtlasFlags_NoBakedLines       = 1 << 2,       /* original C++ signature */
     no_baked_lines = (
         enum.auto()
-    )  # (= 1 << 2)  # Don't build thick line textures into the atlas (save a little texture memory, allow support for point/nearest filtering). The AntiAliasedLinesUseTex features uses them, otherwise they will be rendered using polygons (more expensive for CPU/GPU).
+    )  # (= 1 << 2)  # Don't build anti-aliased line textures into the atlas (save a little texture memory). SINCE 1.93.0 THIS PREVENTS ANTI-ALIASED LINES FROM WORKING AND WILL DISABLE THEM.
+    # ImFontAtlasFlags_NoBakedRoundCorners= 1 << 3,       /* original C++ signature */
+    no_baked_round_corners = enum.auto()  # (= 1 << 3)  # Don't build round corners into the atlas.
 
 # struct ImFontAtlas    /* original C++ signature */
 class ImFontAtlas:
@@ -11350,7 +11477,7 @@ class ImFontAtlas:
     # ImTextureFormat             TexDesiredFormat;    /* original C++ signature */
     tex_desired_format: ImTextureFormat  # Desired texture format (default to ImTextureFormat_RGBA32 but may be changed to ImTextureFormat_Alpha8).
     # int                         TexGlyphPadding;    /* original C++ signature */
-    tex_glyph_padding: int  # FIXME: Should be called "TexPackPadding". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method doesn't rely on bilinear filtering you may set this to 0 (will also need to set AntiAliasedLinesUseTex = False).
+    tex_glyph_padding: int  # FIXME: Should be called "TexPackPadding". Padding between glyphs within texture in pixels. Defaults to 1. If your rendering method never relies on bilinear filtering you may set this to 0.
     # int                         TexMinWidth;    /* original C++ signature */
     tex_min_width: int  # Minimum desired texture width. Must be a power of two. Default to 512.
     # int                         TexMinHeight;    /* original C++ signature */
@@ -11543,7 +11670,7 @@ class ImFont:
     # bool                        EllipsisAutoBake;    /* original C++ signature */
     ellipsis_auto_bake: bool  # 1     //     // Mark when the "..." glyph (== EllipsisChar) needs to be generated by combining multiple '.'.
     # ImGuiStorage                RemapPairs;    /* original C++ signature */
-    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapChar(), otherwise empty.
+    remap_pairs: Storage  # 16    //     // Remapping pairs when using AddRemapCodepointXXX().
 
     # IMGUI_API ImFont();    /* original C++ signature */
     def __init__(self) -> None:
@@ -11599,13 +11726,17 @@ class ImFont:
     # IMGUI_API void              ClearOutputData();    /* original C++ signature */
     def clear_output_data(self) -> None:
         pass
-    # IMGUI_API void              AddRemapChar(ImWchar from_codepoint, ImWchar to_codepoint);     /* original C++ signature */
-    def add_remap_char(self, from_codepoint: ImWchar, to_codepoint: ImWchar) -> None:
+    # IMGUI_API void              AddRemapCodepoint(ImWchar from_codepoint, ImWchar to_codepoint);     /* original C++ signature */
+    def add_remap_codepoint(self, from_codepoint: ImWchar, to_codepoint: ImWchar) -> None:
         """Makes 'from_codepoint' character points to 'to_codepoint' glyph."""
+        pass
+    # IMGUI_API void              AddRemapCodepointToGlyphIndex(ImWchar from_codepoint, int font_src_idx, int glyph_idx);    /* original C++ signature */
+    def add_remap_codepoint_to_glyph_index(self, from_codepoint: ImWchar, font_src_idx: int, glyph_idx: int) -> None:
         pass
     # IMGUI_API bool              IsGlyphRangeUnused(unsigned int c_begin, unsigned int c_last);    /* original C++ signature */
     def is_glyph_range_unused(self, c_begin: int, c_last: int) -> bool:
         pass
+    # inline None               AddRemapChar(ImWchar from_codepoint, ImWchar to_codepoint) { AddRemapCodepoint(from_codepoint, to_codepoint); } // Renamed in 1.93.0 (Sep 2026)
 
     def calc_word_wrap_position_python(self, size: float, text: str, wrap_width: float) -> int:
         """Python API for CalcWordWrapPosition: returns an index in the text (text[:index] is what fits), not a pointer"""

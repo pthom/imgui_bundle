@@ -543,7 +543,7 @@ def draw_key(note: int, p_min: ImVec2, p_max: ImVec2, color: int) -> None:
     """A key, with the shadow of the felt at its top, its front face, and its labels"""
     draw_list = imgui.get_window_draw_list()
     rounding = em_size(0.25)
-    bottom_corners = imgui.ImDrawFlags_.round_corners_bottom.value
+    bottom_corners = imgui.ImDrawFlags_.round_bottom.value
     black = is_black(note)
     front = em_size(0.9 if black else 0.5)
     draw_list.add_rect_filled(p_min, p_max, color, rounding, bottom_corners)

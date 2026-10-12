@@ -40,7 +40,6 @@ from imgui_bundle.imgui import (
     ImDrawData,
     ImDrawFlags,
     ImDrawList,
-    ImDrawListFlags,
     ImDrawListSplitter,
     ImFont,
     ImFontAtlas,
@@ -403,6 +402,7 @@ KeyRoutingIndex = int
 # - Helper: ImPool<>
 # - Helper: ImChunkStream<>
 # - Helper: ImGuiTextIndex
+# - Helper: ImGuiTextFilterItem
 # - Helper: ImGuiStorage
 # -----------------------------------------------------------------------------
 
@@ -534,20 +534,60 @@ def im_text_classifier_set_char_class(
 # Helpers: File System
 
 # - Wrapper for standard libs functions. (Note that imgui_demo.cpp does _not_ use them to keep the code easy to copy)
+
 # - ImMin/ImMax/ImClamp/ImLerp/ImSwap are used by widgets which support variety of types: signed/unsigned int/long long float/double
-# (Exceptionally using templates here but we could also redefine them for those types)
+# (Specialized version ensure that runtime-check pragmas/macros are applied with caller settings. Template version are less reliable in this regards)
+# inline int             ImMin(int lhs, int rhs);    /* original C++ signature */
+@overload
+def im_min(lhs: int, rhs: int) -> int:
+    """(private API)"""
+    pass
+
+# inline float           ImMin(float lhs, float rhs);    /* original C++ signature */
+@overload
+def im_min(lhs: float, rhs: float) -> float:
+    """(private API)"""
+    pass
+
 # - Misc maths helpers
 # inline ImVec2 ImMin(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
+@overload
 def im_min(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
+# inline int             ImMax(int lhs, int rhs);    /* original C++ signature */
+@overload
+def im_max(lhs: int, rhs: int) -> int:
+    """(private API)"""
+    pass
+
+# inline float           ImMax(float lhs, float rhs);    /* original C++ signature */
+@overload
+def im_max(lhs: float, rhs: float) -> float:
+    """(private API)"""
+    pass
+
 # inline ImVec2 ImMax(const ImVec2& lhs, const ImVec2& rhs);    /* original C++ signature */
+@overload
 def im_max(lhs: ImVec2Like, rhs: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
 
+# inline int             ImClamp(int v, int mn, int mx);    /* original C++ signature */
+@overload
+def im_clamp(v: int, mn: int, mx: int) -> int:
+    """(private API)"""
+    pass
+
+# inline float           ImClamp(float v, float mn, float mx);    /* original C++ signature */
+@overload
+def im_clamp(v: float, mn: float, mx: float) -> float:
+    """(private API)"""
+    pass
+
 # inline ImVec2 ImClamp(const ImVec2& v, const ImVec2&mn, const ImVec2&mx);    /* original C++ signature */
+@overload
 def im_clamp(v: ImVec2Like, mn: ImVec2Like, mx: ImVec2Like) -> ImVec2:
     """(private API)"""
     pass
@@ -624,19 +664,24 @@ def im_trunc64(f: float) -> float:
     """(private API)"""
     pass
 
-# inline float  ImRound64(float f);    /* original C++ signature */
-def im_round64(f: float) -> float:
+# inline float  ImRoundPositive64(float f);    /* original C++ signature */
+def im_round_positive64(f: float) -> float:
     """(private API)
 
-    FIXME: Positive values only.
+    Positive values only.
     """
+    pass
+
+# inline float  ImRoundSigned64(float f);    /* original C++ signature */
+def im_round_signed64(f: float) -> float:
+    """(private API)"""
     pass
 
 # inline float  ImCeilFast(float f);    /* original C++ signature */
 def im_ceil_fast(f: float) -> float:
     """(private API)
 
-    Consider using the the bit-hack version (search for "0x1p120f").
+    Consider using the bit-hack version (search for "0x1p120f").
     """
     pass
 
@@ -677,6 +722,11 @@ def im_is_float_above_guaranteed_integer_precision(f: float) -> bool:
 
 # inline float  ImExponentialMovingAverage(float avg, float sample, int n);    /* original C++ signature */
 def im_exponential_moving_average(avg: float, sample: float, n: int) -> float:
+    """(private API)"""
+    pass
+
+# inline bool   ImIsTruncated(float x);    /* original C++ signature */
+def im_is_truncated(x: float) -> bool:
     """(private API)"""
     pass
 
@@ -1053,6 +1103,24 @@ class TextIndex:
         """
         pass
 
+# struct ImGuiTextFilterItem    /* original C++ signature */
+class TextFilterItem:
+    """[Internal] Types"""
+
+    # const char*     Begin;    /* original C++ signature */
+    begin: str  # Pointer within parent's buffer # (const)
+    # int             Len;    /* original C++ signature */
+    len: int  # Length of text (non-zero terminated)
+    # short           CountInclude;    /* original C++ signature */
+    count_include: (
+        int  # Number of consecutive items forming an end chain. >0 when beginning of an AND chain, =0 otherwise.
+    )
+    # unsigned short  MatchIncludesMask;    /* original C++ signature */
+    match_includes_mask: int  # Storage for multi-sources versions of PassFilter(). Unused by core library.
+    # ImGuiTextFilterItem(const char* b, const char* e);    /* original C++ signature */
+    def __init__(self, b: str, e: str) -> None:
+        pass
+
 # struct ImGuiPackedDate    /* original C++ signature */
 class PackedDate:
     """Helper: ImGuiPackedDate (sizeof() == 2)
@@ -1110,7 +1178,7 @@ def im_lower_bound(in_begin: StoragePair, in_end: StoragePair, key: ID) -> Stora
 
 # Raw equation from IM_DRAWLIST_CIRCLE_AUTO_SEGMENT_CALC rewritten for 'r' and 'error'.
 
-# ImDrawList: Lookup table size for adaptive arc drawing, cover full circle.
+# ImDrawList: Lookup tables
 
 # struct ImDrawListSharedData    /* original C++ signature */
 class ImDrawListSharedData:
@@ -1123,21 +1191,23 @@ class ImDrawListSharedData:
     # ImVec2          TexUvWhitePixel;    /* original C++ signature */
     tex_uv_white_pixel: ImVec2  # UV of white pixel in the atlas (== FontAtlas->TexUvWhitePixel)
     # const ImVec4*   TexUvLines;    /* original C++ signature */
-    tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas (== FontAtlas->TexUvLines) # (const)
+    tex_uv_lines: ImVec4  # UV of anti-aliased lines in the atlas (== FontAtlas->Builder->TexUvLines) # (const)
+    # const ImVec4*   TexUvCorners;    /* original C++ signature */
+    tex_uv_corners: ImVec4  # UV of rounded corner (== FontAtlas->Builder->TexUvCorners) # (const)
     # ImFontAtlas*    FontAtlas;    /* original C++ signature */
     font_atlas: ImFontAtlas  # Current font atlas
     # ImFont*         Font;    /* original C++ signature */
     font: ImFont  # Current font (used for simplified AddText overload)
     # float           FontSize;    /* original C++ signature */
-    font_size: float  # Current font size (used for for simplified AddText overload)
+    font_size: float  # Current font size (used for simplified AddText overload)
     # float           FontScale;    /* original C++ signature */
     font_scale: float  # Current font scale (== FontSize / Font->FontSize)
     # float           CurveTessellationMaxError;    /* original C++ signature */
     curve_tessellation_max_error: float  # Tessellation tolerance when using PathBezierCurveTo()
     # float           CircleTessellationMaxError;    /* original C++ signature */
     circle_tessellation_max_error: float  # Number of circle segments to use per pixel of radius for AddCircle() etc
-    # ImDrawListFlags InitialFlags;    /* original C++ signature */
-    initial_flags: ImDrawListFlags  # Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)
+    # ImDrawFlags     InitialDrawFlags;    /* original C++ signature */
+    initial_draw_flags: ImDrawFlags  # Initial flags at the beginning of the frame (it is possible to alter flags on a per-drawlist basis afterwards)
     # ImVec4          ClipRectFullscreen;    /* original C++ signature */
     clip_rect_fullscreen: ImVec4  # Value for PushClipRectFullscreen()
     # ImVector<ImVec2> TempBuffer;    /* original C++ signature */
@@ -4335,6 +4405,8 @@ class Context:
     nav_just_moved_to_key_mods: KeyChord
     # bool                    NavJustMovedToIsTabbing;    /* original C++ signature */
     nav_just_moved_to_is_tabbing: bool  # Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.
+    # bool                    NavJustMovedToIsInit;    /* original C++ signature */
+    nav_just_moved_to_is_init: bool  # Copy of ImGuiNavMoveFlags_IsTabbing. Maybe we should store whole flags.
     # bool                    NavJustMovedToHasSelectionData;    /* original C++ signature */
     nav_just_moved_to_has_selection_data: bool  # Copy of move result's ItemFlags & ImGuiItemFlags_HasSelectionUserData). Maybe we should just store ImGuiNavItemData.
 
@@ -5694,12 +5766,12 @@ class Table:
     instance_data_first: TableInstanceData
     # ImVector<ImGuiTableInstanceData>    InstanceDataExtra;    /* original C++ signature */
     instance_data_extra: ImVector_TableInstanceData  # FIXME-OPT: Using a small-vector pattern would be good.
-    # ImGuiTableColumnSortSpecs   SortSpecsSingle;    /* original C++ signature */
-    sort_specs_single: TableColumnSortSpecs
-    # ImVector<ImGuiTableColumnSortSpecs> SortSpecsMulti;    /* original C++ signature */
-    sort_specs_multi: ImVector_TableColumnSortSpecs  # FIXME-OPT: Using a small-vector pattern would be good.
     # ImGuiTableSortSpecs         SortSpecs;    /* original C++ signature */
     sort_specs: TableSortSpecs  # Public facing sorts specs, this is what we return in TableGetSortSpecs()
+    # ImVector<ImGuiTableColumnSortSpecs> SortSpecsMulti;    /* original C++ signature */
+    sort_specs_multi: ImVector_TableColumnSortSpecs  # FIXME-OPT: Using a small-vector pattern would be good.
+    # ImGuiTableColumnSortSpecs   SortSpecsSingle;    /* original C++ signature */
+    sort_specs_single: TableColumnSortSpecs
     # ImGuiTableColumnIdx         SortSpecsCount;    /* original C++ signature */
     sort_specs_count: TableColumnIdx
     # ImGuiTableColumnIdx         ColumnsEnabledCount;    /* original C++ signature */
@@ -5768,6 +5840,8 @@ class Table:
     is_layout_locked: bool  # Set by TableUpdateLayout() which is called when beginning the first row.
     # bool                        IsInsideRow;    /* original C++ signature */
     is_inside_row: bool  # Set when inside TableBeginRow()/TableEndRow().
+    # bool                        IsNewTable;    /* original C++ signature */
+    is_new_table: bool
     # bool                        IsInitializing;    /* original C++ signature */
     is_initializing: bool
     # bool                        IsReconcileMode;    /* original C++ signature */
@@ -6249,7 +6323,7 @@ def get_platform_io(ctx: Context) -> PlatformIO:
 def get_scale() -> float:
     """(private API)
 
-    FIXME-DPI: I don't want to formalize this just yet. Because reasons. Please don't use.
+    FIXME-DPI: PLEASE DO NOT USE. I don't want to formalize this just yet. Because reasons.
     """
     pass
 
@@ -7447,6 +7521,10 @@ def is_drag_drop_payload_being_accepted() -> bool:
 def render_drag_drop_target_rect_for_item(bb: ImRect) -> None:
     pass
 
+# IMGUI_API void          RenderDragDropTargetRectForViewport(ImGuiID viewport_id, const ImRect& bb);    /* original C++ signature */
+def render_drag_drop_target_rect_for_viewport(viewport_id: ID, bb: ImRect) -> None:
+    pass
+
 # IMGUI_API void          RenderDragDropTargetRectEx(ImDrawList* draw_list, const ImRect& bb, float rounding);    /* original C++ signature */
 def render_drag_drop_target_rect_ex(draw_list: ImDrawList, bb: ImRect, rounding: float) -> None:
     pass
@@ -7540,6 +7618,10 @@ def tab_bar_get_tab_order(tab_bar: TabBar, tab: TabItem) -> int:
 
 # IMGUI_API const char*   TabBarGetTabName(ImGuiTabBar* tab_bar, ImGuiTabItem* tab);    /* original C++ signature */
 def tab_bar_get_tab_name(tab_bar: TabBar, tab: TabItem) -> str:
+    pass
+
+# IMGUI_API ImVec2        TabBarGetTabPos(ImGuiTabBar* tab_bar, ImGuiTabItem* tab);    /* original C++ signature */
+def tab_bar_get_tab_pos(tab_bar: TabBar, tab: TabItem) -> ImVec2:
     pass
 
 # IMGUI_API void          TabBarAddTab(ImGuiTabBar* tab_bar, ImGuiTabItemFlags tab_flags, ImGuiWindow* window);    /* original C++ signature */
@@ -8363,6 +8445,12 @@ class ImFontAtlasBuilder:
     )
     # ImFontAtlasRectId           PackIdLinesTexData;    /* original C++ signature */
     pack_id_lines_tex_data: ImFontAtlasRectId
+    # ImFontAtlasRectId           PackIdLineFractTexData;    /* original C++ signature */
+    pack_id_line_fract_tex_data: ImFontAtlasRectId
+    # ImFontAtlasRectId           PackIdCornersTexData;    /* original C++ signature */
+    pack_id_corners_tex_data: ImFontAtlasRectId
+
+    # Cached UV coordinates
 
 # IMGUI_API ImTextureData*    ImFontAtlasTextureAdd(ImFontAtlas* atlas, int w, int h);    /* original C++ signature */
 def im_font_atlas_texture_add(atlas: ImFontAtlas, w: int, h: int) -> ImTextureData:

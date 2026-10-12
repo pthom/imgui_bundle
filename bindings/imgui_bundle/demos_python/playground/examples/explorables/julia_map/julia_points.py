@@ -180,7 +180,8 @@ class Community:
         if self.admin_token:
             imgui.text_colored(imgui.ImVec4(1.0, 0.7, 0.2, 1.0), "Admin mode: the hidden points are greyed")
         label = "filter"
-        self.filter.draw(label, width - imgui.calc_text_size(label).x - imgui.get_style().item_inner_spacing.x)
+        imgui.set_next_item_width(width - imgui.calc_text_size(label).x - imgui.get_style().item_inner_spacing.x)
+        self.filter.draw(label)
         self.table(width, go_to)
         self.details(width)
 

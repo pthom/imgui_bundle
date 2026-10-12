@@ -363,10 +363,10 @@ namespace
         {
             if (codeHalf)
                 drawList->AddRectFilled(ImVec2(xMid, p0.y), p1, ImGui::GetColorU32(col), rounding,
-                                        ImDrawFlags_RoundCornersRight);
+                                        ImDrawFlags_RoundRight);
             else
                 drawList->AddRectFilled(p0, ImVec2(xMid, p1.y), ImGui::GetColorU32(col), rounding,
-                                        ImDrawFlags_RoundCornersLeft);
+                                        ImDrawFlags_RoundLeft);
         };
         drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
         if (ImGui::IsItemHovered())

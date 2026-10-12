@@ -182,10 +182,10 @@ namespace
         ImDrawList* drawList = ImGui::GetWindowDrawList();
         float rounding = (p1.y - p0.y) * 0.5f;
         auto fill = [&](int i, ImU32 color) {
-            ImDrawFlags corners = (i == 0 ? ImDrawFlags_RoundCornersLeft : 0)
-                                  | (i == (int)labels.size() - 1 ? ImDrawFlags_RoundCornersRight : 0);
+            ImDrawFlags corners = (i == 0 ? ImDrawFlags_RoundLeft : 0)
+                                  | (i == (int)labels.size() - 1 ? ImDrawFlags_RoundRight : 0);
             drawList->AddRectFilled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
-                                    corners ? rounding : 0.f, corners ? corners : ImDrawFlags_RoundCornersNone);
+                                    corners ? rounding : 0.f, corners ? corners : ImDrawFlags_RoundNone);
         };
         drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
         if (ImGui::IsItemHovered() && partAt(ImGui::GetMousePos().x) != current)
@@ -879,7 +879,7 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     ImGui::SetCursorScreenPos(pictureTopLeft);
     ImGui::Dummy(ImVec2(width, width / PICTURE_ASPECT));
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.8f),
-                ImDrawFlags_RoundCornersTop);
+                ImDrawFlags_RoundTop);
     ImVec2 pictureBottomRight = ImGui::GetItemRectMax();
     DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)),
              width - Em(0.8f), nullptr, textScale);
@@ -994,7 +994,7 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     const float titleScale = 1.1f;
     float textScale = CardTextScale(width);
     drawList->AddRectFilled(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BG), rounding);
-    DrawPicture(drawList, demo.stem, topLeft, width, PICTURE_ASPECT, Em(0.8f), ImDrawFlags_RoundCornersTop);
+    DrawPicture(drawList, demo.stem, topLeft, width, PICTURE_ASPECT, Em(0.8f), ImDrawFlags_RoundTop);
     float pictureBottom = topLeft.y + width / PICTURE_ASPECT;
     DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), width - Em(0.8f), drawList,
              textScale);
@@ -1124,7 +1124,7 @@ void DemoLauncher::Detail()
     ImVec2 pictureTopLeft = ImGui::GetCursorScreenPos();
     ImGui::Dummy(ImVec2(width, width / PICTURE_ASPECT));
     DrawPicture(ImGui::GetWindowDrawList(), demo.stem, pictureTopLeft, width, PICTURE_ASPECT, Em(0.5f),
-                ImDrawFlags_RoundCornersAll);
+                ImDrawFlags_RoundAll);
     ImVec2 pictureBottomRight = ImGui::GetItemRectMax();
     DrawTags(demo.Tags(), ImVec2(pictureBottomRight.x - Em(0.4f), pictureBottomRight.y - Em(0.4f)),
              width - Em(0.8f));

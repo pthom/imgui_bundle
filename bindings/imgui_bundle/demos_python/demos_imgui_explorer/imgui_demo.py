@@ -6420,7 +6420,8 @@ class ExampleAppLog:
         imgui.same_line()
         copy_pressed = imgui.button("Copy")
         imgui.same_line()
-        self.filter.draw("Filter", -100.0)
+        imgui.set_next_item_width(-100.0)
+        self.filter.draw("Filter")
 
         imgui.separator()
 
@@ -6627,7 +6628,8 @@ class ExampleAppConsole:
             imgui.open_popup("Options")
         imgui.same_line()
         self.filter = getattr(self, "filter", imgui.TextFilter())
-        self.filter.draw('Filter ("incl,-excl") ("error")', 180)
+        imgui.set_next_item_width(180)
+        self.filter.draw('Filter ("incl,-excl") ("error")')
         imgui.separator()
 
         footer_height = imgui.get_style().item_spacing.y + imgui.get_frame_height_with_spacing()
@@ -6774,7 +6776,7 @@ def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[
             p = imgui.get_cursor_screen_pos()
             col = imgui.color_convert_float4_to_u32(static.colf)
             spacing = 10.0
-            corners_tl_br = imgui.ImDrawFlags_.round_corners_top_left.value | imgui.ImDrawFlags_.round_corners_bottom_right.value
+            corners_tl_br = imgui.ImDrawFlags_.round_top_left.value | imgui.ImDrawFlags_.round_bottom_right.value
             rounding = static.sz / 5.0
             circle_segments = static.circle_segments_override_v if static.circle_segments_override else 0
             curve_segments = static.curve_segments_override_v if static.curve_segments_override else 0
