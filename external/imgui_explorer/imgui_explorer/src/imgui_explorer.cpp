@@ -38,7 +38,8 @@ namespace
 
     // Below this width (in em), the explorer shows one pane at a time, the demo or the code (an upright phone)
     constexpr float kNarrowWidthEm = 50.f;
-    // Below this height (in em), the status bar goes to the "..." menu (a sideways phone)
+    // Below this height (in em), the status bar goes to the "..." menu, and a touch screen shows one pane at a time
+    // (a sideways phone)
     constexpr float kShortHeightEm = 36.f;
 
     // How the explorer fits the space it has
@@ -600,8 +601,11 @@ namespace {
         LayoutMode mode;
         {
             ImVec2 availableSize = ImGui::GetContentRegionAvail();
-            mode.narrow = availableSize.x < HelloImGui::EmSize(kNarrowWidthEm);
             bool isShort = availableSize.y < HelloImGui::EmSize(kShortHeightEm);
+            // A sideways phone (a short touch screen) also shows one pane at a time: two panes would each be as narrow
+            // as an upright phone, and short too
+            bool isTouchScreen = (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen) != 0;
+            mode.narrow = availableSize.x < HelloImGui::EmSize(kNarrowWidthEm) || (isShort && isTouchScreen);
             mode.statusInMenu = show_status_bar && (mode.narrow || isShort);
         }
         GNarrowLayout_Active = mode.narrow;
