@@ -295,7 +295,7 @@ narrator_audio lesson:
     clips_dir=docs/clone_website_resources/imgui-bundle.pages.dev/resources/explorables/{{lesson}}/scenario_audio
     (cd "$lesson_dir" && python ../grokking/narrator.py build scenario.md)
     mkdir -p "$clips_dir"
-    rsync -a --include='*.mp3' --exclude='*' "$lesson_dir/scenario_audio/" "$clips_dir/"
+    rsync -a --delete --include='*.mp3' --exclude='*' "$lesson_dir/scenario_audio/" "$clips_dir/"  # stale clips go
 
 # Clean pyodide build artifacts
 [group('pyodide')]
