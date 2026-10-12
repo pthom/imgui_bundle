@@ -197,7 +197,7 @@ Async, Pydantic, context managers, the GLFW window, and pure Python backends.
 
 ## Plotting with Python
 
-Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.
+Python's plotting libraries in the GUI: Matplotlib, seaborn and Cartopy figures, beside ImPlot's real-time plots.
 
 - Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
   Uses: Matplotlib
@@ -205,6 +205,9 @@ Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside I
 - Seaborn: a joint plot: Seaborn draws statistics figures on top of Matplotlib, so imgui_fig.fig() shows them as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
   Uses: Matplotlib, seaborn
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py
+- Cartopy: the shortest route around the globe: Cartopy draws maps with Matplotlib, in many projections. Here, two routes between two cities: the shortest one (in red, an arc of a great circle), and the straight line that a ruler draws on a flat map (dashed). Pick the cities and the projection: on a flat map, the shortest route looks curved.
+  Uses: Matplotlib
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_cartopy.py
 
 ## 3D and shaders
 

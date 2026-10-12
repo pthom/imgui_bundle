@@ -494,6 +494,15 @@
     ],
     "cpp": false
   },
+  "demo_cartopy.py": {
+    "title": "Cartopy: the shortest route around the globe",
+    "text": "[Cartopy](https://scitools.org.uk/cartopy) draws maps with Matplotlib, in many projections. Here, two routes between\ntwo cities: the shortest one (in red, an arc of a great circle), and the straight line that a ruler draws on a flat\nmap (dashed). Pick the cities and the projection: on a flat map, the shortest route looks curved.",
+    "summary": "[Cartopy](https://scitools.org.uk/cartopy) draws maps with Matplotlib, in many projections.",
+    "uses": [
+      "Matplotlib"
+    ],
+    "cpp": false
+  },
   "demo_pydantic.py": {
     "title": "ImVec2 and ImVec4 in Pydantic models.",
     "text": "Save and load your app's settings with [Pydantic](https://docs.pydantic.dev), ImVec2 and colors included.\n`ImVec2_Pydantic`, `ImVec4_Pydantic` and `ImColor_Pydantic` are the usual `ImVec2`, `ImVec4` and `ImColor`, usable as\nfields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that\nnothing was lost.",

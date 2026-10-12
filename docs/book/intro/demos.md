@@ -951,7 +951,7 @@ See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python
 
 ## Plotting with Python
 
-Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.
+Python's plotting libraries in the GUI: Matplotlib, seaborn and Cartopy figures, beside ImPlot's real-time plots.
 
 :::::{grid} 1 2 3 3
 
@@ -991,6 +991,26 @@ Here, a joint plot of two correlated variables: their scatter plot in the middle
 *Uses: Matplotlib, seaborn*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_cartopy.jpg
+:alt: Cartopy: the shortest route around the globe
+:class: demo-fit
+:::
+
+### Cartopy: the shortest route around the globe
+
+[Cartopy](https://scitools.org.uk/cartopy) draws maps with Matplotlib, in many projections.
+
+:::{dropdown} More
+Here, two routes between two cities: the shortest one (in red, an arc of a great circle), and the straight line that a ruler draws on a flat map (dashed). Pick the cities and the projection: on a flat map, the shortest route looks curved.
+:::
+
+*Uses: Matplotlib*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_cartopy.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_cartopy.py)
 
 ::::
 

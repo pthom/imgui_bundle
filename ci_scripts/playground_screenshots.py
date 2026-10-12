@@ -240,6 +240,7 @@ SHOTS: dict[str, Shot] = {
     "demo_glfw_window_manip.py": Shot(crop=(0.0, 0.0, 0.6, 0.22)),
     "demo_matplotlib.py": Shot(frames=60, crop=(0.0, 0.0, 1.0, 0.8224)),  # 1000 x 625: 16:10
     "demo_seaborn.py": Shot(frames=30, crop=(0.012, 0.23, 0.745, 0.848)),  # the joint plot (square: the cards fit it)
+    "demo_cartopy.py": Shot(frames=60, crop=(0.0, 0.24, 0.80, 0.87)),  # the globe, its two routes and their lengths
     "demo_pydantic.py": Shot(crop=(0.0, 0.0, 1.0, 0.62)),
     "haiku_implot_heart.py": Shot(frames=90, crop=(0.0, 0.0, 0.93, 0.96)),
     "haiku_butterfly.py": Shot(frames=300, crop=(0.08, 0.43, 0.92, 0.706)),  # 16:10, as the launcher's cards

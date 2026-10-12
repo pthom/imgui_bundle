@@ -14,6 +14,17 @@ but inflates the poles. The plain grid of longitudes and latitudes is the "flat 
 Cartopy reprojects anything given a `transform`: the routes are lists of longitudes and latitudes
 (`transform=ccrs.Geodetic()`), the background is its bundled image of the Earth (`ax.stock_img()`): no download.
 
+The same with [geopandas](https://geopandas.org), when the map shows data per region. geopandas is pandas with
+shapes: each row of a table has a geometry.
+
+- `world = gpd.read_file(url)` reads the countries (e.g. [Natural Earth](https://www.naturalearthdata.com)'s, as
+  GeoJSON), and `world.to_crs("EPSG:8857")` reprojects them (Equal Earth; Mercator is `"EPSG:3857"`);
+- `world.plot(column="POP_EST", ax=ax)` draws them with Matplotlib, colored by a column, into the figure that
+  `imgui_fig.fig()` shows;
+- a route is a `GeoSeries` of one `LineString` through points of the great circle (`pyproj.Geod().npts(...)`),
+  reprojected and drawn the same way;
+- `world[world.contains(Point(x, y))]` finds the country under a click.
+
 Needs Cartopy: `pip install cartopy`.
 """
 from dataclasses import dataclass

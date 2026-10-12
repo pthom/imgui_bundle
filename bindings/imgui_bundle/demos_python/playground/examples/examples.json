@@ -38,7 +38,7 @@
         },
         {
             "name": "Plotting with Python",
-            "about": "Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots."
+            "about": "Python's plotting libraries in the GUI: Matplotlib, seaborn and Cartopy figures, beside ImPlot's real-time plots."
         },
         {
             "name": "3D and shaders",
@@ -573,6 +573,15 @@
             "source": "demos_python_plotting",
             "packages": [
                 "seaborn"
+            ]
+        },
+        {
+            "label": "Cartopy: the shortest route around the globe",
+            "filename": "demo_cartopy.py",
+            "category": "Plotting with Python",
+            "source": "demos_python_plotting",
+            "packages": [
+                "cartopy"
             ]
         },
         {

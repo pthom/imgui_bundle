@@ -789,7 +789,7 @@ is no Hello ImGui here: no DPI handling, themes or assets.
 
 ## Plotting with Python
 
-Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.
+Python's plotting libraries in the GUI: Matplotlib, seaborn and Cartopy figures, beside ImPlot's real-time plots.
 
 ### Matplotlib: a phase portrait
 
@@ -824,6 +824,23 @@ on its side. Move the correlation: the cloud stretches along a line.
 *Uses: Matplotlib, seaborn*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
+
+### Cartopy: the shortest route around the globe
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_cartopy.jpg
+:alt: Cartopy: the shortest route around the globe
+:width: 400px
+:::
+
+[Cartopy](https://scitools.org.uk/cartopy) draws maps with Matplotlib, in many projections. Here, two routes between
+two cities: the shortest one (in red, an arc of a great circle), and the straight line that a ruler draws on a flat
+map (dashed). Pick the cities and the projection: on a flat map, the shortest route looks curved.
+
+*Python*
+
+*Uses: Matplotlib*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_cartopy.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_cartopy.py)
 
 ## 3D and shaders
 
