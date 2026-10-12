@@ -285,6 +285,18 @@ api_pages:
 playground_screenshots *names:
     python ci_scripts/playground_screenshots.py {{names}}
 
+# The narration clips of an explorable (`just narrator_audio rich_md_tour`): synthesized beside its scenario (git ignores
+# them), then copied into the website resources, where the site serves them (commit them there)
+[group('pyodide')]
+narrator_audio lesson:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    lesson_dir=bindings/imgui_bundle/demos_python/playground/examples/explorables/{{lesson}}
+    clips_dir=docs/clone_website_resources/imgui-bundle.pages.dev/resources/explorables/{{lesson}}/scenario_audio
+    (cd "$lesson_dir" && python ../grokking/narrator.py build scenario.md)
+    mkdir -p "$clips_dir"
+    rsync -a --include='*.mp3' --exclude='*' "$lesson_dir/scenario_audio/" "$clips_dir/"
+
 # Clean pyodide build artifacts
 [group('pyodide')]
 pyodide_clean:

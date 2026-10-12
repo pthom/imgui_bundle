@@ -7,9 +7,11 @@ widgets that show the parameters, and calls `lesson.gui(stage)`: the player lays
 with the narration and the controls), and `stage` draws the program's figures in the region it gets.
 
 The voice: `python narrator.py build scenario.md` synthesizes one clip per sentence (edge-tts, the voice of the front
-matter) into `scenario_audio/` beside the script, with the words' timings; only new sentences are synthesized. With
-the clips, the audio is the clock: a sentence lasts what its clip lasts, and a cue anchored to words fires on them.
-Without them (or with the voice off), the clock is estimated from the text.
+matter) into `scenario_audio/` beside the script, with the words' timings (`index.json`); only new sentences are
+synthesized. The clips are not in the bundle's repository: `just narrator_audio <lesson>` builds them and copies them
+into the website resources, and the browser plays them from the site. With the clips, the audio is the clock: a
+sentence lasts what its clip lasts, and a cue anchored to words fires on them. Without them (or with the voice off), the
+clock is estimated from the text, or taken from the timings.
 
 The gestures (`click`, `drag`, `press`, `type_keys`, `paste`...): the test engine moves a visible cursor and types, for the
 moments where the gesture is the lesson. The program runs with `use_imgui_test_engine`, and names its targets with
@@ -44,6 +46,7 @@ PARAGRAPH_ESTIMATE_SCALE = 1.3   # rich_md's paragraphs are taller than imgui's 
 PROMPT_COLOR = ImVec4(1.0, 0.75, 0.3, 1.0)
 RESERVED_SECTIONS = ("More", "Code", "References")
 IN_BROWSER = sys.platform == "emscripten"
+CLIPS_URL = "/resources/explorables"  # the clips on the site (the website resources), by lesson folder
 DEFAULT_VOICE = "en-US-AndrewMultilingualNeural"
 _SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
 
@@ -141,6 +144,15 @@ class _CuesBlock:
 
 def audio_folder(script_file: str) -> Path:
     return Path(script_file).with_name(Path(script_file).stem + "_audio")
+
+
+def clip_source(folder: Path, file: str) -> str:
+    """The clip's file; in the browser, its URL on the site when the lesson's files do not carry it; else "" (silent)"""
+    if (folder / file).is_file():
+        return str(folder / file)
+    if IN_BROWSER:
+        return f"{CLIPS_URL}/{folder.parent.name}/{folder.name}/{file}"
+    return ""
 
 
 def clip_key(voice: str, text: str) -> str:
@@ -430,7 +442,7 @@ class Parser:
                     sentence.start = t
                     entry = audio.get(clip_key(self.lesson.voice, sentence.text))
                     if entry:
-                        sentence.clip = str(folder / entry["file"])
+                        sentence.clip = clip_source(folder, entry["file"])
                         sentence.duration = float(entry["duration"])
                         sentence.words = [(float(o), str(w)) for o, w in entry.get("words", [])]
                     else:
@@ -710,9 +722,13 @@ class _MiniaudioBackend:
     def done(self) -> bool:
         return self.samples is None or self.frame >= self.total
 
+    def failed(self) -> bool:
+        return False
+
 
 class _WebBackend:
-    """The browser: an <audio> element plays the clip from a blob URL (the clip came with the lesson's files)"""
+    """The browser: an <audio> element plays the clip from the site (CLIPS_URL), or from a blob URL when the clip came
+    with the lesson's files"""
 
     def __init__(self) -> None:
         import js  # type: ignore[import-not-found]
@@ -724,20 +740,28 @@ class _WebBackend:
 
     def play(self, path: str, offset: float) -> None:
         if path not in self.urls:
-            data = Path(path).read_bytes()
-            blob = self.js.Blob.new(self.to_js([self.js.Uint8Array.new(data)]), self.to_js({"type": "audio/mpeg"}))
-            self.urls[path] = self.js.URL.createObjectURL(blob)
+            if path.startswith(CLIPS_URL):
+                self.urls[path] = path
+            else:
+                data = Path(path).read_bytes()
+                blob = self.js.Blob.new(self.to_js([self.js.Uint8Array.new(data)]), self.to_js({"type": "audio/mpeg"}))
+                self.urls[path] = self.js.URL.createObjectURL(blob)
         self.audio.src = self.urls[path]
         self.audio.currentTime = offset
-        self.audio.play()
+        self._start()
         self.active = True
+
+    def _start(self) -> None:
+        # play() returns a future; a clip that cannot play rejects it. Its outcome is read here, so that the
+        # playground does not report it as an error: failed() tells the player
+        self.audio.play().add_done_callback(lambda future: future.exception())
 
     def pause(self) -> None:
         self.audio.pause()
 
     def resume(self) -> None:
         if self.active and not self.audio.ended:
-            self.audio.play()
+            self._start()
 
     def stop(self) -> None:
         self.audio.pause()
@@ -748,6 +772,10 @@ class _WebBackend:
 
     def done(self) -> bool:
         return not self.active or bool(self.audio.ended)
+
+    def failed(self) -> bool:
+        """The clip could not load (offline, or not deployed): its position would never move"""
+        return self.active and bool(getattr(self.audio.error, "code", 0))  # null arrives as jsnull, not None
 
 
 def make_audio_backend() -> Any:
@@ -988,6 +1016,8 @@ class Lesson:
         if self._speaking is not sentence:
             self.audio.play(sentence.clip, max(0.0, self.t - sentence.start))
             self._speaking = sentence
+        if self.audio.failed():  # silent: the clock runs on the frames' time
+            return self.t + delta
         if self.audio.done():
             return max(self.t, sentence.start + sentence.duration) + delta
         return float(sentence.start + self.audio.position())
