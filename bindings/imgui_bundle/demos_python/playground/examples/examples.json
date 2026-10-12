@@ -34,7 +34,11 @@
         },
         {
             "name": "Python specifics",
-            "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends."
+            "about": "Async, Pydantic, context managers, the GLFW window, and pure Python backends."
+        },
+        {
+            "name": "Plotting with Python",
+            "about": "Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots."
         },
         {
             "name": "3D and shaders",
@@ -556,7 +560,7 @@
         {
             "label": "Matplotlib: a phase portrait",
             "filename": "demo_matplotlib.py",
-            "category": "Python specifics",
+            "category": "Plotting with Python",
             "source": "demos_python_plotting",
             "packages": [
                 "matplotlib"
@@ -565,7 +569,7 @@
         {
             "label": "Seaborn: a joint plot",
             "filename": "demo_seaborn.py",
-            "category": "Python specifics",
+            "category": "Plotting with Python",
             "source": "demos_python_plotting",
             "packages": [
                 "seaborn"

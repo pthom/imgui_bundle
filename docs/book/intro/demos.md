@@ -827,7 +827,7 @@ The demo starts the bridge (`pty_bridge_server.py`); replace it by a shell on a 
 
 ## Python specifics
 
-Async, Matplotlib, Pydantic, context managers, and pure Python backends.
+Async, Pydantic, context managers, the GLFW window, and pure Python backends.
 
 :::::{grid} 1 2 3 3
 
@@ -908,45 +908,6 @@ With it, any function of [pyGLFW](https://github.com/FlorianRhiem/pyGLFW) works 
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_matplotlib.jpg
-:alt: Matplotlib: a phase portrait
-:::
-
-### Matplotlib: a phase portrait
-
-`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.
-
-:::{dropdown} More
-Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
-:::
-
-*Uses: Matplotlib*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_seaborn.jpg
-:alt: Seaborn: a joint plot
-:class: demo-fit
-:::
-
-### Seaborn: a joint plot
-
-[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.
-
-:::{dropdown} More
-Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
-:::
-
-*Uses: Matplotlib, seaborn*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
-
-::::
-
-::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_pydantic.jpg
 :alt: Pydantic models
 :::
@@ -983,6 +944,53 @@ See [Pure Python backends](https://imgui-bundle.pages.dev/doc/python/pure-python
 *Uses: OpenGL, GLFW, SDL, pyglet, pygame, wgpu*
 
 {span .demo-lang}`Python:` [Code GLFW](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py) · [Code SDL2](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py) · [Code SDL3](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl3.py) · [Code pyglet](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py) · [Code pygame](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py) · [Code wgpu](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py)
+
+::::
+
+:::::
+
+## Plotting with Python
+
+Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.
+
+:::::{grid} 1 2 3 3
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_matplotlib.jpg
+:alt: Matplotlib: a phase portrait
+:::
+
+### Matplotlib: a phase portrait
+
+`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.
+
+:::{dropdown} More
+Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
+:::
+
+*Uses: Matplotlib*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_matplotlib.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_seaborn.jpg
+:alt: Seaborn: a joint plot
+:class: demo-fit
+:::
+
+### Seaborn: a joint plot
+
+[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.
+
+:::{dropdown} More
+Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
+:::
+
+*Uses: Matplotlib, seaborn*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_seaborn.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py)
 
 ::::
 

@@ -169,7 +169,7 @@ The libraries in the bundle: full demos, widget tours, showcases.
 
 ## Python specifics
 
-Async, Matplotlib, Pydantic, context managers, and pure Python backends.
+Async, Pydantic, context managers, the GLFW window, and pure Python backends.
 
 - Context managers (imgui_ctx): In Python, with imgui_ctx.begin("Window"): replaces a begin() / end() pair, and the end() can no longer be forgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with implot_ctx. Open a section to try it and read its code. See the Python tips.
   Uses: ImPlot
@@ -183,12 +183,6 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
 - Control the GLFW window (desktop only): glfw_utils.glfw_window_hello_imgui() returns the GLFW window that Hello ImGui created. With it, any function of pyGLFW works on your app's window. Here, buttons maximize, restore, minimize or center it, a slider sets its opacity, and another button makes it ask for attention in the taskbar.
   Uses: GLFW
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_glfw_window_manip.py
-- Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
-  Uses: Matplotlib
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py
-- Seaborn: a joint plot: Seaborn draws statistics figures on top of Matplotlib, so imgui_fig.fig() shows them as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
-  Uses: Matplotlib, seaborn
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py
 - Pydantic models: Save and load your app's settings with Pydantic, ImVec2 and colors included. ImVec2_Pydantic, ImVec4_Pydantic and ImColor_Pydantic are the usual ImVec2, ImVec4 and ImColor, usable as fields of a Pydantic model. The demo shows such a model, turns it into JSON, validates it back, and checks that nothing was lost.
   Uses: Pydantic
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/demo_pydantic.py
@@ -200,6 +194,17 @@ Async, Matplotlib, Pydantic, context managers, and pure Python backends.
   Python (pyglet): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pyglet.py
   Python (pygame): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_pygame.py
   Python (wgpu): https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py
+
+## Plotting with Python
+
+Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.
+
+- Matplotlib: a phase portrait: imgui_fig.fig() shows a Matplotlib figure in the GUI. Here, the phase portrait of a damped pendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum starts from there, and swings beside it.
+  Uses: Matplotlib
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py
+- Seaborn: a joint plot: Seaborn draws statistics figures on top of Matplotlib, so imgui_fig.fig() shows them as they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each on its side. Move the correlation: the cloud stretches along a line.
+  Uses: Matplotlib, seaborn
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py
 
 ## 3D and shaders
 

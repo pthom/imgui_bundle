@@ -744,7 +744,7 @@
     },
     {
       "name": "Python specifics",
-      "about": "Async, Matplotlib, Pydantic, context managers, and pure Python backends.",
+      "about": "Async, Pydantic, context managers, the GLFW window, and pure Python backends.",
       "tip": "",
       "demos": [
         {
@@ -818,43 +818,6 @@
           "variants": []
         },
         {
-          "label": "Matplotlib: a phase portrait",
-          "filename": "demo_matplotlib.py",
-          "stem": "demo_matplotlib",
-          "where": "both",
-          "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI. Here, the phase portrait of a damped\npendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum\nstarts from there, and swings beside it.",
-          "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.",
-          "uses": [
-            "Matplotlib"
-          ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py",
-          "cpp_file": null,
-          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_matplotlib.html",
-          "in_place": false,
-          "page": "",
-          "video": "",
-          "variants": []
-        },
-        {
-          "label": "Seaborn: a joint plot",
-          "filename": "demo_seaborn.py",
-          "stem": "demo_seaborn",
-          "where": "both",
-          "text": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them\nas they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each\non its side. Move the correlation: the cloud stretches along a line.",
-          "summary": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.",
-          "uses": [
-            "Matplotlib",
-            "seaborn"
-          ],
-          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py",
-          "cpp_file": null,
-          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_seaborn.html",
-          "in_place": false,
-          "page": "",
-          "video": "",
-          "variants": []
-        },
-        {
           "label": "Pydantic models",
           "filename": "demo_pydantic.py",
           "stem": "demo_pydantic",
@@ -919,6 +882,50 @@
               "python_file": "bindings/imgui_bundle/python_backends/examples/example_python_backend_wgpu.py"
             }
           ]
+        }
+      ]
+    },
+    {
+      "name": "Plotting with Python",
+      "about": "Python's plotting libraries in the GUI: Matplotlib and seaborn figures, beside ImPlot's real-time plots.",
+      "tip": "",
+      "demos": [
+        {
+          "label": "Matplotlib: a phase portrait",
+          "filename": "demo_matplotlib.py",
+          "stem": "demo_matplotlib",
+          "where": "both",
+          "text": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI. Here, the phase portrait of a damped\npendulum: the flow of its motion (a stream plot) over its energy (filled contours). Click in the portrait: the pendulum\nstarts from there, and swings beside it.",
+          "summary": "`imgui_fig.fig()` shows a [Matplotlib](https://matplotlib.org) figure in the GUI.",
+          "uses": [
+            "Matplotlib"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_matplotlib.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_matplotlib.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
+          "label": "Seaborn: a joint plot",
+          "filename": "demo_seaborn.py",
+          "stem": "demo_seaborn",
+          "where": "both",
+          "text": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them\nas they are. Here, a joint plot of two correlated variables: their scatter plot in the middle, the distribution of each\non its side. Move the correlation: the cloud stretches along a line.",
+          "summary": "[Seaborn](https://seaborn.pydata.org) draws statistics figures on top of Matplotlib, so `imgui_fig.fig()` shows them as they are.",
+          "uses": [
+            "Matplotlib",
+            "seaborn"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demos_python_specifics/plotting/demo_seaborn.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_seaborn.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
         }
       ]
     },
