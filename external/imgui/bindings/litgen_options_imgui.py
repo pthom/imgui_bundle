@@ -250,6 +250,9 @@ def _options_exclusions(options: LitgenOptions) -> None:
         # char* buffers (imgui_internal.h): replaced by versions using std::string
         "InputTextEx": "const char *, const char *, char *, int, const ImVec2 &, ImGuiInputTextFlags, ImGuiInputTextCallback, void *",
         "TempInputText": "const ImRect &, ImGuiID, const char *, char *, size_t, ImGuiInputTextFlags, ImGuiInputTextCallback, void *",
+        # label_end must point inside label, which a Python string cannot do (imgui_internal.h): replaced by a version
+        # that computes it (discussion #498)
+        "SeparatorTextEx": "ImGuiID, const char *, const char *, float",
     }
 
     # Exclude some members and methods, per class
@@ -377,7 +380,7 @@ def _options_adaptations(options: LitgenOptions) -> None:
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
         ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode",
-         "^AddRect$", "^PathStroke$"]
+         "^AddRect$", "^PathStroke$", "^SeparatorTextEx$"]
     )
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"

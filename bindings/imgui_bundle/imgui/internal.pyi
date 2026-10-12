@@ -7793,10 +7793,6 @@ def image_button_ex(
 def separator_ex(flags: SeparatorFlags, thickness: float = 1.0) -> None:
     pass
 
-# IMGUI_API void          SeparatorTextEx(ImGuiID id, const char* label, const char* label_end, float extra_width);    /* original C++ signature */
-def separator_text_ex(id_: ID, label: str, label_end: str, extra_width: float) -> None:
-    pass
-
 # IMGUI_API bool          CheckboxFlags(const char* label, ImS64* flags, ImS64 flags_value);    /* original C++ signature */
 @overload
 def checkbox_flags(label: str, flags: ImS64, flags_value: ImS64) -> bool:
@@ -8747,8 +8743,15 @@ def input_text_ex(
     pass
 
 # IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, std::string* s, ImGuiInputTextFlags flags);    /* original C++ signature */
-# }
 def temp_input_text(bb: ImRect, id_: ID, label: str, s: str, flags: InputTextFlags) -> Tuple[bool, str]:
+    pass
+
+# IMGUI_API void          SeparatorTextEx(ImGuiID id, const char* label, float extra_width);    /* original C++ signature */
+# }
+def separator_text_ex(id_: ID, label: str, extra_width: float) -> None:
+    """Python version of SeparatorTextEx(): the label is shown up to its "##" (as in SeparatorText()).
+    extra_width reserves room after the label: same_line() then places an item there (e.g. an icon).
+    """
     pass
 
 ####################    </generated_from:imgui_internal_pywrappers.h>    ####################

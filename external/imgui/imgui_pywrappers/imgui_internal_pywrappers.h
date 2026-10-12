@@ -23,4 +23,8 @@ namespace ImGui
     // Python versions of InputTextEx() and TempInputText(): the text buffer is a string (returned modified)
     IMGUI_API bool          InputTextEx(const char* label, const char* hint, std::string* s, const ImVec2& size_arg, ImGuiInputTextFlags flags, ImGuiInputTextCallback callback = NULL);
     IMGUI_API bool          TempInputText(const ImRect& bb, ImGuiID id, const char* label, std::string* s, ImGuiInputTextFlags flags);
+
+    // Python version of SeparatorTextEx(): the label is shown up to its "##" (as in SeparatorText()).
+    // extra_width reserves room after the label: same_line() then places an item there (e.g. an icon).
+    IMGUI_API void          SeparatorTextEx(ImGuiID id, const char* label, float extra_width);
 }

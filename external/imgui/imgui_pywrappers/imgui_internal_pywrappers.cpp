@@ -43,4 +43,10 @@ namespace ImGui
         *s = buffer;
         return result;
     }
+
+    // The C++ version's label_end must point inside label: a Python string cannot (it would be another buffer)
+    void SeparatorTextEx(ImGuiID id, const char* label, float extra_width)
+    {
+        SeparatorTextEx(id, label, FindRenderedTextEnd(label), extra_width);
+    }
 }
