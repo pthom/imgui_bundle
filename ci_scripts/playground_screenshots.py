@@ -187,6 +187,7 @@ SHOTS: dict[str, Shot] = {
     "demo_imgui_md.py": Shot(crop=(0.0, 0.0, 1.0, 0.625)),
     "demo_imgui_md_document.py": Shot(test=_document_search, crop=(0.0, 0.0, 1.0, 0.78125)),  # 1000 x 800: 16:10
     "demo_text_edit.py": Shot(crop=(0.0, 0.0, 0.85, 0.664)),
+    "demo_markdown_editor.py": Shot(crop=(0.0, 0.0, 1.0, 0.9375)),  # 1200 x 800: 16:10, the source and the preview
     "demo_logger.py": Shot(crop=(0.0, 0.0, 0.8, 0.667)),
     "demo_terminal.py": Shot(setup=_neutral_shell, test=_shell_commands, crop=(0.0, 0.0, 0.6, 0.5625)),
     "demo_touch_screen.py": Shot(crop=(0.0, 0.0, 1.0, 0.41)),

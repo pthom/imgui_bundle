@@ -430,6 +430,22 @@ Each tab shows one feature, and a checkbox shows its source. The editor is
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_text_edit.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_text_edit.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp)
 
+### Markdown editor: the source and its live preview
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_markdown_editor.jpg
+:alt: Markdown editor: the source and its live preview
+:width: 400px
+:::
+
+A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow
+screen (a phone), two tabs show one of them at a time.
+
+*Python, C++*
+
+*Uses: code editor*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_markdown_editor.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_markdown_editor.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_markdown_editor.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_markdown_editor.cpp)
+
 ### Log window
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_logger.jpg

@@ -1,6 +1,7 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
-// A markdown editor: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow screen (a phone),
-// two tabs show one of them at a time.
+// Markdown editor: the source and its live preview.
+// A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow
+// screen (a phone), two tabs show one of them at a time.
 #include "ImGuiColorTextEdit/TextEditor.h"
 #include "demo_utils/api_demos.h"
 #include "hello_imgui/hello_imgui.h"

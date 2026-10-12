@@ -520,6 +520,26 @@ Each tab shows one feature, and a checkbox shows its source. The editor is [ImGu
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_markdown_editor.jpg
+:alt: Markdown editor: the source and its live preview
+:::
+
+### Markdown editor: the source and its live preview
+
+A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type.
+
+:::{dropdown} More
+On a narrow screen (a phone), two tabs show one of them at a time.
+:::
+
+*Uses: code editor*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_markdown_editor.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_markdown_editor.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_markdown_editor.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_markdown_editor.cpp)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_logger.jpg
 :alt: Log window
 :::

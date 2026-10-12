@@ -111,6 +111,10 @@ The libraries in the bundle: full demos, widget tours, showcases.
   Uses: code editor
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_text_edit.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_text_edit.cpp
+- Markdown editor: the source and its live preview: A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow screen (a phone), two tabs show one of them at a time.
+  Uses: code editor
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_markdown_editor.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_markdown_editor.cpp
 - Log window: A log window for your app, with four levels: debug, info, warning and error. Call hello_imgui.log() anywhere, and show the window with hello_imgui.log_gui(). Its colors follow the theme. Adapted from ImGuiAl.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demo_logger.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demo_logger.cpp

@@ -44,6 +44,7 @@ void gui_demo_widgets();
 void gui_demo_imgui_md();
 void gui_demo_imgui_md_document();
 void gui_demo_text_edit();
+void gui_demo_markdown_editor();
 void gui_demo_logger();
 void gui_demo_node_editor_color_mixer();
 void gui_demo_node_editor_image_pipeline();
@@ -221,7 +222,8 @@ namespace
 #endif
                 {"demo_widgets", gui_demo_widgets}, {"demo_imgui_md", gui_demo_imgui_md},
                 {"demo_imgui_md_document", gui_demo_imgui_md_document},
-                {"demo_text_edit", gui_demo_text_edit}, {"demo_logger", gui_demo_logger},
+                {"demo_text_edit", gui_demo_text_edit}, {"demo_markdown_editor", gui_demo_markdown_editor},
+                {"demo_logger", gui_demo_logger},
                 {"demo_node_editor_color_mixer", gui_demo_node_editor_color_mixer},
                 {"demo_node_editor_image_pipeline", gui_demo_node_editor_image_pipeline},
                 {"manual_imgui", gui_demo_imgui_show_demo_window},

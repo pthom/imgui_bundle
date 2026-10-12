@@ -265,6 +265,15 @@
     ],
     "cpp": true
   },
+  "demo_markdown_editor.py": {
+    "title": "Markdown editor: the source and its live preview",
+    "text": "A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow\nscreen (a phone), two tabs show one of them at a time.",
+    "summary": "A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type.",
+    "uses": [
+      "code editor"
+    ],
+    "cpp": true
+  },
   "demo_logger.py": {
     "title": "Logger: a log window for your app",
     "text": "A log window for your app, with four levels: debug, info, warning and error. Call `hello_imgui.log()` anywhere, and\nshow the window with `hello_imgui.log_gui()`. Its colors follow the theme. Adapted from\n[ImGuiAl](https://github.com/leiradel/ImGuiAl).",

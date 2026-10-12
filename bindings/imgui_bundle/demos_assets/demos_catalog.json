@@ -466,6 +466,24 @@
           "variants": []
         },
         {
+          "label": "Markdown editor: the source and its live preview",
+          "filename": "demo_markdown_editor.py",
+          "stem": "demo_markdown_editor",
+          "where": "both",
+          "text": "A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type. On a narrow\nscreen (a phone), two tabs show one of them at a time.",
+          "summary": "A markdown editor in a few lines: ImGuiColorTextEdit edits the source, rich_md previews it as you type.",
+          "uses": [
+            "code editor"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/demo_markdown_editor.py",
+          "cpp_file": "bindings/imgui_bundle/demos_cpp/demo_markdown_editor.cpp",
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_markdown_editor.html",
+          "in_place": true,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
           "label": "Log window",
           "filename": "demo_logger.py",
           "stem": "demo_logger",

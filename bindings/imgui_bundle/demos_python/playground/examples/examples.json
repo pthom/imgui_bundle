@@ -325,6 +325,13 @@
             "in_place": true
         },
         {
+            "label": "Markdown editor: the source and its live preview",
+            "filename": "demo_markdown_editor.py",
+            "category": "Library tours",
+            "source": "demos_python",
+            "in_place": true
+        },
+        {
             "label": "Log window",
             "filename": "demo_logger.py",
             "category": "Library tours",
