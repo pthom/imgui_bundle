@@ -17,6 +17,9 @@ Explorer](https://pthom.github.io/imgui_explorer/?lib=imgui).
 # mypy: disable_error_code=no-untyped-call
 
 # Originally ported from imgui_demo.cpp, v1.90
+# Last synced with imgui_demo.cpp at ocornut/imgui 778992fac (docking, 2026-10-07, v1.93.0 WIP): to sync again,
+# port the diff of imgui_demo.cpp since that commit. Its IMGUI_DEMO_MARKER names must stay those of the C++ demo:
+# the ImGui Explorer finds the Python code of a section by its C++ marker.
 # noqa: E701
 # noqa: E702
 # noqa: E501
@@ -361,6 +364,29 @@ class indented_block:
         pass
 
 
+EXAMPLE_NAMES = [
+    "Artichoke", "Arugula", "Asparagus", "Avocado", "Bamboo Shoots", "Bean Sprouts", "Beans", "Beet",
+    "Belgian Endive", "Bell Pepper", "Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts",
+    "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
+    "Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber",
+]
+
+
+def edit_tab_bar_fitting_policy_flags(flags: int) -> int:
+    if (flags & imgui.TabBarFlags_.fitting_policy_mask_) == 0:
+        flags |= imgui.TabBarFlags_.fitting_policy_default_
+    changed, flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyMixed", flags, imgui.TabBarFlags_.fitting_policy_mixed)
+    if changed:
+        flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_mixed)
+    changed, flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyShrink", flags, imgui.TabBarFlags_.fitting_policy_shrink)
+    if changed:
+        flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_shrink)
+    changed, flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", flags, imgui.TabBarFlags_.fitting_policy_scroll)
+    if changed:
+        flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)
+    return flags
+
+
 def help_marker(desc: str) -> None:
     imgui.text_disabled("(?)")
     if imgui.begin_item_tooltip():
@@ -675,6 +701,8 @@ def show_demo_window_maybe_docked(create_window: bool, p_open: Optional[bool] = 
             imgui.same_line(); help_marker("Some calls to Begin()/BeginChild() will return false.\n\nWill cycle through window depths then repeat. Windows should be flickering while running.")
             _, io.config_debug_ignore_focus_loss = imgui.checkbox("io.ConfigDebugIgnoreFocusLoss", io.config_debug_ignore_focus_loss)
             imgui.same_line(); help_marker("Option to deactivate io.AddFocusEvent(false) handling. May facilitate interactions with a debugger when focus loss leads to clearing inputs data.")
+            _, io.config_debug_draw_list_defaults_to_stroke_legacy = imgui.checkbox("io.ConfigDebugDrawListDefaultsToStrokeLegacy", io.config_debug_draw_list_defaults_to_stroke_legacy)
+            imgui.same_line(); help_marker("Option to default all ImDrawList to ImDrawFlags_StrokeLegacy mode, mimicking pre-1.93.0 rendering.")
             _, io.config_debug_ini_settings = imgui.checkbox("io.ConfigDebugIniSettings", io.config_debug_ini_settings)
             imgui.same_line(); help_marker("Option to save .ini data with extra comments (particularly helpful for Docking, but makes saving slower).")
 
@@ -1072,7 +1100,7 @@ def show_demo_window_widgets():
     if imgui.tree_node("Tree Nodes"):
         IMGUI_DEMO_MARKER("Widgets/Tree Nodes")
         if imgui.tree_node("Basic trees"):
-            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Basic trees")
+            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Basic Trees")
             for i in range(5):
                 # Use SetNextItemOpen() to set the default state of a node to be open. We could
                 # also use TreeNodeEx() with the ImGuiTreeNodeFlags_DefaultOpen flag to achieve the same thing!
@@ -1088,7 +1116,7 @@ def show_demo_window_widgets():
             imgui.tree_pop()
 
         if imgui.tree_node("Advanced, with Selectable nodes"):
-            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Advanced, with Selectable nodes")
+            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Advanced")
             # Help marker with explanation
             help_marker(
                 "This is a more typical looking tree with selectable nodes.\n"
@@ -1157,7 +1185,7 @@ def show_demo_window_widgets():
             imgui.tree_pop()
 
         if imgui.tree_node("Hierarchy lines"):
-            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Hierarchy lines")
+            IMGUI_DEMO_MARKER("Widgets/Tree Nodes/Hierarchy Lines")
             if not hasattr(static, "tree_lines_flags"):
                 static.tree_lines_flags = imgui.TreeNodeFlags_.draw_lines_full | imgui.TreeNodeFlags_.default_open
             help_marker("Default option for DrawLinesXXX is stored in style.TreeLinesFlags")
@@ -1505,7 +1533,7 @@ def show_demo_window_widgets():
         imgui.tree_pop()
 
     if imgui.tree_node("Live Edit Flags"):
-        IMGUI_DEMO_MARKER("Widgets/Live Edit Flgs")
+        IMGUI_DEMO_MARKER("Widgets/Live Edit Flags")
 
         imgui.text_wrapped("Select whether to apply keyboard edits to backing variables _while_ typing.")
 
@@ -1530,6 +1558,56 @@ def show_demo_window_widgets():
         imgui.text(f"Backing value: {static.le_int}")
         _, static.le_float = imgui.slider_float("float", static.le_float, 0.0, 100.0)
         imgui.text(f"Backing value: {static.le_float:.6f}")
+
+        imgui.tree_pop()
+
+    if imgui.tree_node("Mixed Values"):
+        IMGUI_DEMO_MARKER("Widgets/Mixed Values")
+        # This is designed for advanced property editors which are generally reusable and data-driven.
+        help_marker("Using ImGuiItemFlags_MixedValue.")
+
+        if not hasattr(static, "mixed_items"):
+            static.mixed_use_liveedit = False
+            static.mixed_items = [12.0, 0.0, 0.0]
+        items = static.mixed_items
+        _, static.mixed_use_liveedit = imgui.checkbox("ImGuiItemFlags_LiveEditOnInput", static.mixed_use_liveedit)
+
+        imgui.separator_text("Scalar/Text Widgets")
+        is_mixed = items[0] != items[1] or items[0] != items[2]
+
+        # Demonstrate Drags, Sliders, Inputs
+        imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input, static.mixed_use_liveedit)
+        imgui.push_item_flag(imgui.ItemFlags_.mixed_value, is_mixed)
+        edited = False
+        changed, items[0] = imgui.drag_float("DragFloat", items[0])
+        edited = edited or changed
+        changed, items[0] = imgui.slider_float("SliderFloat", items[0], 0.0, 100.0)
+        edited = edited or changed
+        changed, items[0] = imgui.input_float("InputFloat", items[0], 1.0)
+        edited = edited or changed
+        if edited:
+            items[1] = items[2] = items[0]
+        imgui.pop_item_flag()
+
+        imgui.text("Underlying data:")
+        _, items[0] = imgui.input_float("item 0 (ref)", items[0])
+        _, items[1] = imgui.input_float("item 1", items[1])
+        _, items[2] = imgui.input_float("item 2", items[2])
+        imgui.pop_item_flag()
+
+        # Demonstrate checkbox(), radio_button(), combo(), color_edit4()
+        imgui.separator_text("Others Widgets")
+        imgui.text("(note: edits are not applied in this demo)")  # <-- Would need more state tracking.
+        imgui.checkbox("Checkbox On", True)
+        imgui.checkbox("Checkbox Off", False)
+        imgui.push_item_flag(imgui.ItemFlags_.mixed_value, True)
+        imgui.checkbox("Checkbox Mixed", False)
+        imgui.radio_button("RadioButton Mixed", True)
+        imgui.same_line()
+        imgui.radio_button("RadioButton Mixed##2", True)  # Showing 2 radio buttons makes the example more clear
+        imgui.combo("Combo", 0, ["One", "Two", "Three"])
+        imgui.color_edit4("ColorEdit4", ImVec4(0.5, 0.5, 0.5, 0.5))
+        imgui.pop_item_flag()
 
         imgui.tree_pop()
 
@@ -1691,13 +1769,6 @@ def show_demo_window_widgets():
         imgui.bullet_text("Wiki page:")
         imgui.same_line()
         imgui.text_link_open_url("imgui/wiki/Multi-Select", "https://github.com/ocornut/imgui/wiki/Multi-Select")
-
-        EXAMPLE_NAMES = [
-            "Artichoke", "Arugula", "Asparagus", "Avocado", "Bamboo Shoots", "Bean Sprouts", "Beans", "Beet",
-            "Belgian Endive", "Bell Pepper", "Bitter Gourd", "Bok Choy", "Broccoli", "Brussels Sprouts",
-            "Burdock Root", "Cabbage", "Calabash", "Capers", "Carrot", "Cassava",
-            "Cauliflower", "Celery", "Celery Root", "Celcuce", "Chayote", "Chinese Broccoli", "Corn", "Cucumber",
-        ]
 
         # Without any fancy API: manage single-selection yourself.
         if imgui.tree_node("Single-Select"):
@@ -2135,18 +2206,17 @@ def show_demo_window_widgets():
             _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_AutoSelectNewTabs", static.adv_tab_bar_flags, imgui.TabBarFlags_.auto_select_new_tabs)
             _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_TabListPopupButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
             _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_NoCloseWithMiddleMouseButton", static.adv_tab_bar_flags, imgui.TabBarFlags_.no_close_with_middle_mouse_button)
-            if (static.adv_tab_bar_flags & imgui.TabBarFlags_.fitting_policy_mask_) == 0:
-                static.adv_tab_bar_flags |= imgui.TabBarFlags_.fitting_policy_default_
-            if imgui.checkbox_flags("ImGuiTabBarFlags_DrawSelectedOverline", static.adv_tab_bar_flags, imgui.TabBarFlags_.draw_selected_overline):
-                static.adv_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.draw_selected_overline)
+            _, static.adv_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_DrawSelectedOverline", static.adv_tab_bar_flags, imgui.TabBarFlags_.draw_selected_overline)
+            static.adv_tab_bar_flags = edit_tab_bar_fitting_policy_flags(static.adv_tab_bar_flags)
 
             # Tab Bar
+            imgui.align_text_to_frame_padding()
+            imgui.text("Opened:")
             names = ["Artichoke", "Beetroot", "Celery", "Daikon"]
             if not hasattr(static, "opened"):
                 static.opened = [True, True, True, True]  # Persistent user state
             for n in range(len(static.opened)):
-                if n > 0:
-                    imgui.same_line()
+                imgui.same_line()
                 _, static.opened[n] = imgui.checkbox(names[n], static.opened[n])
 
             # Passing a bool* to begin_tab_item() is similar to passing one to begin():
@@ -2180,23 +2250,20 @@ def show_demo_window_widgets():
                 static.show_leading_button = True
             if not hasattr(static, "show_trailing_button"):
                 static.show_trailing_button = True
+            if not hasattr(static, "show_leading_trailing_tabs"):
+                static.show_leading_trailing_tabs = False
             _, static.show_leading_button = imgui.checkbox("Show Leading TabItemButton()", static.show_leading_button)
             _, static.show_trailing_button = imgui.checkbox("Show Trailing TabItemButton()", static.show_trailing_button)
+            _, static.show_leading_trailing_tabs = imgui.checkbox("Show Leading+Trailing TabItem()", static.show_leading_trailing_tabs)
 
             # Expose some other flags which are useful to showcase how they interact with Leading/Trailing tabs
             if not hasattr(static, "lead_trail_tab_bar_flags"):
                 static.lead_trail_tab_bar_flags = (
                         imgui.TabBarFlags_.auto_select_new_tabs
                         | imgui.TabBarFlags_.reorderable
-                        | imgui.TabBarFlags_.fitting_policy_shrink
+                        | imgui.TabBarFlags_.fitting_policy_mixed
                 )
-            _, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("tab_list_popup_button", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.tab_list_popup_button)
-            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("fitting_policy_shrink", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_shrink)
-            if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_shrink)
-            changed, static.lead_trail_tab_bar_flags = imgui.checkbox_flags("ImGuiTabBarFlags_FittingPolicyScroll", static.lead_trail_tab_bar_flags, imgui.TabBarFlags_.fitting_policy_scroll)
-            if changed:
-                static.lead_trail_tab_bar_flags &= ~(imgui.TabBarFlags_.fitting_policy_mask_ ^ imgui.TabBarFlags_.fitting_policy_scroll)
+            static.lead_trail_tab_bar_flags = edit_tab_bar_fitting_policy_flags(static.lead_trail_tab_bar_flags)
 
             if imgui.begin_tab_bar("MyTabBar", static.lead_trail_tab_bar_flags):
                 # Demo a Leading TabItemButton(): click the "?" button to open a menu
@@ -2206,6 +2273,13 @@ def show_demo_window_widgets():
                 if imgui.begin_popup("MyHelpMenu"):
                     imgui.selectable("Hello!", False)
                     imgui.end_popup()
+
+                # Demo Leading/Trailing Tabs
+                if static.show_leading_trailing_tabs:
+                    if imgui.begin_tab_item("Leading", None, imgui.TabItemFlags_.leading)[0]:
+                        imgui.end_tab_item()
+                    if imgui.begin_tab_item("Trailing", None, imgui.TabItemFlags_.trailing)[0]:
+                        imgui.end_tab_item()
 
                 # Demo Trailing Tabs: click the "+" button to add a new tab (in your app you may want to use a font icon instead of the "+")
                 # Note that we submit it before the regular tabs, but because of the ImGuiTabItemFlags_Trailing flag it will always appear at the end.
@@ -2689,14 +2763,19 @@ def show_demo_window_widgets():
         if not hasattr(static, "text_filter"): static.text_filter = imgui.TextFilter()
         imgui.text("Filter usage:\n"
                    "  \"\"         display all lines\n"
-                   "  \"xxx\"      display lines containing \"xxx\"\n"
-                   "  \"xxx,yyy\"  display lines containing \"xxx\" or \"yyy\"\n"
-                   "  \"-xxx\"     hide lines containing \"xxx\"")
-        static.text_filter.draw()
-        lines = ["aaa1.c", "bbb1.c", "ccc1.c", "aaa2.cpp", "bbb2.cpp", "ccc2.cpp", "abc.h", "hello, world"]
-        for line in lines:
-            if static.text_filter.pass_filter(line):
-                imgui.bullet_text("%s" % line)
+                   "  xxx        display lines containing \"xxx\"\n"
+                   "  xxx yyy    display lines containing \"xxx\" and \"yyy\"\n"
+                   "  \"xxx yyy\"  display lines containing \"xxx yyy\"\n"
+                   "  xxx,yyy    display lines containing \"xxx\" or \"yyy\"\n"
+                   "  -xxx       hide lines containing \"xxx\"")
+        imgui.set_next_item_width(-imgui.FLT_MIN)
+        static.text_filter.draw_with_hint("##Filter", "Filter (incl -excl)")
+        if imgui.begin_child("##items", ImVec2(-imgui.FLT_MIN, imgui.get_text_line_height_with_spacing() * 15), imgui.ChildFlags_.frame_style):
+            lines = ["aaa1.c", "bbb1.c", "ccc1.c", "aaa2.cpp", "bbb2.cpp", "ccc2.cpp", "abc.h", "hello, world"]
+            for item in lines + EXAMPLE_NAMES:
+                if static.text_filter.pass_filter(item):
+                    imgui.text_unformatted(item)
+        imgui.end_child()
         imgui.tree_pop()
 
     if imgui.tree_node("Fonts"):
@@ -2791,6 +2870,7 @@ def show_demo_window_widgets():
         ]
         if not hasattr(static, "qi_item_type"): static.qi_item_type = 4
         if not hasattr(static, "qi_item_disabled"): static.qi_item_disabled = False
+        if not hasattr(static, "qi_item_mixedvalue"): static.qi_item_mixedvalue = False
         if not hasattr(static, "qi_b"): static.qi_b = False
         if not hasattr(static, "qi_col4f"): static.qi_col4f = [1.0, 0.5, 0.0, 1.0]
         if not hasattr(static, "qi_str"): static.qi_str = ""
@@ -2799,6 +2879,7 @@ def show_demo_window_widgets():
         imgui.same_line()
         help_marker("Testing how various types of items are interacting with the IsItemXXX functions. Note that the bool return value of most ImGui function is generally equivalent to calling ImGui::IsItemHovered().")
         _, static.qi_item_disabled = imgui.checkbox("Item Disabled", static.qi_item_disabled)
+        _, static.qi_item_mixedvalue = imgui.checkbox("Item MixedValue", static.qi_item_mixedvalue)
         if not hasattr(static, "qi_liveedit_flags_override"): static.qi_liveedit_flags_override = False
         if not hasattr(static, "qi_liveedit_flags"): static.qi_liveedit_flags = 0
         _, static.qi_liveedit_flags_override = imgui.checkbox("Override LiveEdit:", static.qi_liveedit_flags_override)
@@ -2820,6 +2901,8 @@ def show_demo_window_widgets():
         ret = False
         if static.qi_item_disabled:
             imgui.begin_disabled(True)
+        if static.qi_item_mixedvalue:
+            imgui.push_item_flag(imgui.ItemFlags_.mixed_value, True)
         if static.qi_item_type == 0: imgui.text("ITEM: Text")
         if static.qi_item_type == 1: ret = imgui.button("ITEM: Button")
         if static.qi_item_type == 2:
@@ -2884,6 +2967,8 @@ def show_demo_window_widgets():
 
         if static.qi_liveedit_flags_override:
             imgui.pop_item_flag()
+            imgui.pop_item_flag()
+        if static.qi_item_mixedvalue:
             imgui.pop_item_flag()
         if static.qi_item_disabled:
             imgui.end_disabled()
@@ -5958,11 +6043,11 @@ def show_example_menu_file():
 def _show_example_app_main_menu_bar_impl():
     if imgui.begin_main_menu_bar():
         if imgui.begin_menu("File"):
-            IMGUI_DEMO_MARKER("ShowExampleAppMainMenuBar - Menu File")
+            IMGUI_DEMO_MARKER("Menu/File")
             show_example_menu_file()
             imgui.end_menu()
         if imgui.begin_menu("Edit"):
-            IMGUI_DEMO_MARKER("ShowExampleAppMainMenuBar - Menu Edit")
+            IMGUI_DEMO_MARKER("Menu/Edit")
             if imgui.menu_item_simple("Undo", "Ctrl+Z"):
                 pass
             if imgui.menu_item("Redo", "Ctrl+Y", False, False)[0]:  # Disabled item
@@ -5990,7 +6075,7 @@ def _show_example_app_auto_resize_impl(p_open: Optional[bool]) -> Optional[bool]
     if not visible:
         imgui.end()
         return p_open
-    IMGUI_DEMO_MARKER("ShowExampleAppAutoResize")
+    IMGUI_DEMO_MARKER("Examples/Auto-resizing window")
 
     if not hasattr(static, "lines"):
         static.lines = 10
@@ -6014,7 +6099,6 @@ show_example_app_auto_resize = _show_example_app_auto_resize_impl
 
 def _show_example_app_constrained_resize_impl(p_open: Optional[bool]) -> Optional[bool]:
     static = _show_example_app_constrained_resize_impl
-    IMGUI_DEMO_MARKER("ShowExampleAppConstrainedResize")
 
     if not hasattr(static, "auto_resize"):
         static.auto_resize = False
@@ -6078,7 +6162,7 @@ def _show_example_app_constrained_resize_impl(p_open: Optional[bool]) -> Optiona
     if not static.window_padding:
         imgui.pop_style_var()
     if window_open:
-        IMGUI_DEMO_MARKER("ShowExampleAppConstrainedResize")
+        IMGUI_DEMO_MARKER("Examples/Constrained Resizing window")
         if imgui.get_io().key_shift:
             avail_size = imgui.get_content_region_avail()
             pos = imgui.get_cursor_screen_pos()
@@ -6159,7 +6243,7 @@ def _show_example_app_simple_overlay_impl(p_open: Optional[bool]) -> Optional[bo
     imgui.set_next_window_bg_alpha(0.35)
     visible, p_open = imgui.begin("Example: Simple overlay", p_open, window_flags)
     if visible:
-        IMGUI_DEMO_MARKER("ShowExampleAppSimpleOverlay")
+        IMGUI_DEMO_MARKER("Examples/Simple overlay")
         imgui.text("Simple overlay\n(right-click to change position)")
         imgui.separator()
         if imgui.is_mouse_pos_valid():
@@ -6204,7 +6288,7 @@ def _show_example_app_fullscreen_impl(p_open: Optional[bool]) -> Optional[bool]:
 
     visible, p_open = imgui.begin("Example: Fullscreen window", p_open, static.flags)
     if visible:
-        IMGUI_DEMO_MARKER("ShowExampleAppFullscreen")
+        IMGUI_DEMO_MARKER("Examples/Fullscreen window")
         _, static.use_work_area = imgui.checkbox("Use work area instead of main area", static.use_work_area)
         imgui.same_line()
         help_marker(
@@ -6239,13 +6323,13 @@ def _show_example_app_window_titles_impl(p_open: Optional[bool]) -> Optional[boo
 
     imgui.set_next_window_pos(ImVec2(base_pos.x + 100, base_pos.y + 100), imgui.Cond_.first_use_ever)
     imgui.begin("Same title as another window##1")
-    IMGUI_DEMO_MARKER("ShowExampleAppWindowTitles - window##1")
+    IMGUI_DEMO_MARKER("Examples/Manipulating window titles##1")
     imgui.text("This is window 1.\nMy title is the same as window 2, but my identifier is unique.")
     imgui.end()
 
     imgui.set_next_window_pos(ImVec2(base_pos.x + 100, base_pos.y + 200), imgui.Cond_.first_use_ever)
     imgui.begin("Same title as another window##2")
-    IMGUI_DEMO_MARKER("ShowExampleAppWindowTitles - window##2")
+    IMGUI_DEMO_MARKER("Examples/Manipulating window titles##2")
     imgui.text("This is window 2.\nMy title is the same as window 1, but my identifier is unique.")
     imgui.end()
 
@@ -6254,7 +6338,7 @@ def _show_example_app_window_titles_impl(p_open: Optional[bool]) -> Optional[boo
     buf = f"Animated title {chars[idx]} {imgui.get_frame_count()}###AnimatedTitle"
     imgui.set_next_window_pos(ImVec2(base_pos.x + 100, base_pos.y + 300), imgui.Cond_.first_use_ever)
     imgui.begin(buf)
-    IMGUI_DEMO_MARKER("ShowExampleAppWindowTitles - window##3")
+    IMGUI_DEMO_MARKER("Examples/Manipulating window titles##3")
     imgui.text("This window has a changing title.")
     imgui.end()
     return p_open
@@ -6274,7 +6358,7 @@ def _show_example_app_long_text_impl(p_open: Optional[bool]) -> Optional[bool]:
     if not visible:
         imgui.end()
         return p_open
-    IMGUI_DEMO_MARKER("ShowExampleAppLongText")
+    IMGUI_DEMO_MARKER("Examples/Long text display")
 
     if not hasattr(static, "test_type"):
         static.test_type = 0
@@ -6331,7 +6415,7 @@ def _show_example_app_layout_impl(p_open: Optional[bool]) -> Optional[bool]:
     imgui.set_next_window_size(ImVec2(500, 440), imgui.Cond_.first_use_ever)
     visible, p_open = imgui.begin("Example: Simple layout", p_open, imgui.WindowFlags_.menu_bar)
     if visible:
-        IMGUI_DEMO_MARKER("ShowExampleAppLayout")
+        IMGUI_DEMO_MARKER("Examples/Simple layout")
         if imgui.begin_menu_bar():
             if imgui.begin_menu("File"):
                 if imgui.menu_item_simple("Close", "Ctrl+W"):
@@ -6420,8 +6504,8 @@ class ExampleAppLog:
         imgui.same_line()
         copy_pressed = imgui.button("Copy")
         imgui.same_line()
-        imgui.set_next_item_width(-100.0)
-        self.filter.draw("Filter")
+        imgui.set_next_item_width(-imgui.FLT_MIN)
+        self.filter.draw_with_hint("##Filter", "Filter (incl -excl)")
 
         imgui.separator()
 
@@ -6460,7 +6544,7 @@ def _show_example_app_log_impl(p_open: Optional[bool]) -> Optional[bool]:
     # Add a debug button BEFORE the normal log window contents
     imgui.set_next_window_size(ImVec2(500, 400), imgui.Cond_.first_use_ever)
     _, p_open = imgui.begin("Example: Log", p_open)
-    IMGUI_DEMO_MARKER("ShowExampleAppLog")
+    IMGUI_DEMO_MARKER("Examples/Log")
     if imgui.small_button("[Debug] Add 5 entries"):
         categories = ["info", "warn", "error"]
         words = ["Bumfuzzled", "Cattywampus", "Snickersnee", "Abibliophobia", "Absquatulate", "Nincompoop", "Pauciloquent"]
@@ -6595,7 +6679,7 @@ class ExampleAppConsole:
                 p_open = False
             imgui.end_popup()
 
-        IMGUI_DEMO_MARKER("ExamplesAppConsole::Draw")
+        IMGUI_DEMO_MARKER("Examples/Console")
 
         imgui.text_wrapped(
             "This example implements a console with basic coloring, completion (TAB key) and history (Up/Down keys). "
@@ -6628,8 +6712,9 @@ class ExampleAppConsole:
             imgui.open_popup("Options")
         imgui.same_line()
         self.filter = getattr(self, "filter", imgui.TextFilter())
-        imgui.set_next_item_width(180)
-        self.filter.draw('Filter ("incl,-excl") ("error")')
+        imgui.set_next_item_shortcut(imgui.Key.mod_ctrl | imgui.Key.f, imgui.InputFlags_.tooltip)
+        imgui.set_next_item_width(-imgui.FLT_MIN)
+        self.filter.draw_with_hint("##Filter", "Filter (incl -excl)")
         imgui.separator()
 
         footer_height = imgui.get_style().item_spacing.y + imgui.get_frame_height_with_spacing()
@@ -6709,13 +6794,12 @@ show_example_app_console = _show_example_app_console_impl
 # [SECTION] Example App: Custom Rendering using ImDrawList API / ShowExampleAppCustomRendering()
 # -----------------------------------------------------------------------------
 
-def _path_concave_shape(draw_list, x: float, y: float, sz: float):
-    """Add a |_| looking shape."""
-    pos_norms = [(0.0, 0.0), (0.3, 0.0), (0.3, 0.7), (0.7, 0.7), (0.7, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
-    for px, py in pos_norms:
-        draw_list.path_line_to(ImVec2(x + 0.5 + int(sz * px), y + 0.5 + int(sz * py)))
+# See our Wiki guides:
+# - ImDrawList Vector Rendering Reference: https://github.com/ocornut/imgui/wiki/Draw-List
+# - Pixel Perfect Anti-aliased Rendering: https://github.com/ocornut/imgui/wiki/Pixel-Perfect-Rendering
+# - How Anti-aliased Polyline Rendering is Implemented: https://github.com/ocornut/imgui/wiki/Polyline-Rendering
 
-
+# Demonstrate using the low-level ImDrawList to draw custom shapes.
 def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[bool]:
     static = _show_example_app_custom_rendering_impl
 
@@ -6723,142 +6807,274 @@ def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[
     if not visible:
         imgui.end()
         return p_open
-    IMGUI_DEMO_MARKER("ShowExampleAppCustomRendering")
+    IMGUI_DEMO_MARKER("Examples/Custom rendering")
 
     if imgui.begin_tab_bar("##TabBar"):
         if imgui.begin_tab_item("Primitives")[0]:
-            IMGUI_DEMO_MARKER("ShowExampleAppCustomRendering - Primitives")
+            IMGUI_DEMO_MARKER("Examples/Custom rendering/Primitives")
             imgui.push_item_width(-imgui.get_font_size() * 15)
+            imgui.push_item_flag(imgui.ItemFlags_.live_edit_on_input, True)
             draw_list = imgui.get_window_draw_list()
 
+            # Draw gradients
+            # (note that those are currently exacerbating our sRGB/Linear issues)
+            # Calling imgui.get_color_u32() multiplies the given colors by the current Style Alpha, but you may pass
+            # the IM_COL32() directly as well..
+            imgui.text("Gradients")
+            gradient_size = ImVec2(imgui.calc_item_width(), imgui.get_frame_height())
+            imgui.invisible_button("##gradient1", gradient_size)
+            col_a = imgui.get_color_u32(imgui.IM_COL32(0, 0, 0, 255))
+            col_b = imgui.get_color_u32(imgui.IM_COL32(255, 255, 255, 255))
+            draw_list.add_rect_filled_multi_color(imgui.get_item_rect_min(), imgui.get_item_rect_max(), col_a, col_b, col_b, col_a)
+            imgui.invisible_button("##gradient2", gradient_size)
+            col_a = imgui.get_color_u32(imgui.IM_COL32(0, 255, 0, 255))
+            col_b = imgui.get_color_u32(imgui.IM_COL32(255, 0, 0, 255))
+            draw_list.add_rect_filled_multi_color(imgui.get_item_rect_min(), imgui.get_item_rect_max(), col_a, col_b, col_b, col_a)
+
+            # Draw a bunch of primitives
+            imgui.text("All primitives")
             if not hasattr(static, "sz"):
-                static.sz = 36.0
-                static.thickness = 3.0
-                static.ngon_sides = 6
+                static.sz = 42.0
+                static.base_rounding = 8.0
+                static.base_thickness = 3.0
+                static.animate_rounding = False
+                static.animate_thickness = False
+                static.ngon_segments = 6
                 static.circle_segments_override = False
                 static.circle_segments_override_v = 12
                 static.curve_segments_override = False
                 static.curve_segments_override_v = 8
-                static.colf = ImVec4(1.0, 1.0, 0.4, 1.0)
+                static.colf_stroke = ImVec4(1.000, 0.384, 0.169, 1.000)
+                static.colf_fill = ImVec4(0.416, 0.378, 0.420, 1.000)
+                static.prim_stroke_flags = imgui.ImDrawFlags_.none
+                static.prim_other_flags = imgui.ImDrawFlags_.aa_line_ends
+                static.scope_flags = draw_list.flags & imgui.ImDrawFlags_.allow_in_push_scope_  # First init copy current state.
 
-            # Draw gradients
-            imgui.text("Gradients")
-            gradient_size = ImVec2(imgui.calc_item_width(), imgui.get_frame_height())
-            p0 = imgui.get_cursor_screen_pos()
-            p1 = ImVec2(p0.x + gradient_size.x, p0.y + gradient_size.y)
-            col_a = imgui.get_color_u32(imgui.IM_COL32(0, 0, 0, 255))
-            col_b = imgui.get_color_u32(imgui.IM_COL32(255, 255, 255, 255))
-            draw_list.add_rect_filled_multi_color(p0, p1, col_a, col_b, col_b, col_a)
-            imgui.invisible_button("##gradient1", gradient_size)
+            _, static.sz = imgui.drag_float("Size", static.sz, 0.2, 0.2, 100.0, "%.0f")
+            sz = static.sz
 
-            p0 = imgui.get_cursor_screen_pos()
-            p1 = ImVec2(p0.x + gradient_size.x, p0.y + gradient_size.y)
-            col_a = imgui.get_color_u32(imgui.IM_COL32(0, 255, 0, 255))
-            col_b = imgui.get_color_u32(imgui.IM_COL32(255, 0, 0, 255))
-            draw_list.add_rect_filled_multi_color(p0, p1, col_a, col_b, col_b, col_a)
-            imgui.invisible_button("##gradient2", gradient_size)
+            rounding_anim_period = 3.0
+            rounding_wave = 1.0 - abs(math.fmod(imgui.get_time(), rounding_anim_period) * (2.0 / rounding_anim_period) - 1.0)
+            # Sub-integer rounding works but has discontinuities in small values, so best disable we
+            rounding = int(rounding_wave * static.base_rounding * 10.0) / 10.0 if static.animate_rounding else static.base_rounding
+            _, static.base_rounding = imgui.drag_float("Rounding", static.base_rounding, 0.02, 0.0, 32.0, "%.1f")
+            imgui.same_line()
+            _, static.animate_rounding = imgui.checkbox("Animate##rounding", static.animate_rounding)
+            imgui.same_line()
+            imgui.text(f"{rounding:.2f}")
 
-            # Draw a bunch of primitives
-            imgui.text("All primitives")
-            _, static.sz = imgui.drag_float("Size", static.sz, 0.2, 2.0, 100.0, "%.0f")
-            _, static.thickness = imgui.drag_float("Thickness", static.thickness, 0.05, 1.0, 8.0, "%.02f")
-            _, static.ngon_sides = imgui.slider_int("N-gon sides", static.ngon_sides, 3, 12)
-            _, static.circle_segments_override = imgui.checkbox("##circlesegmentoverride", static.circle_segments_override)
+            thickness_anim_period = 5.0
+            thickness_wave = 1.0 - abs(math.fmod(imgui.get_time(), thickness_anim_period) * (2.0 / thickness_anim_period) - 1.0)
+            thickness = thickness_wave * static.base_thickness if static.animate_thickness else static.base_thickness
+            _, static.base_thickness = imgui.drag_float("Thickness", static.base_thickness, 0.02, 0.0, 32.0, "%.02f")
+            imgui.same_line()
+            _, static.animate_thickness = imgui.checkbox("Animate##thickness", static.animate_thickness)
+            imgui.same_line()
+            imgui.text(f"{thickness:.2f}")
+
+            _, static.ngon_segments = imgui.slider_int("N-gon sides", static.ngon_segments, 3, 12)
+            _, static.circle_segments_override = imgui.checkbox("##CircleSegmentOverride", static.circle_segments_override)
             imgui.same_line(0.0, imgui.get_style().item_inner_spacing.x)
-            changed_cs, static.circle_segments_override_v = imgui.slider_int("Circle segments override", static.circle_segments_override_v, 3, 40)
-            static.circle_segments_override = static.circle_segments_override or changed_cs
-            _, static.curve_segments_override = imgui.checkbox("##curvessegmentoverride", static.curve_segments_override)
+            changed, static.circle_segments_override_v = imgui.slider_int("Circle segments override", static.circle_segments_override_v, 3, 30)
+            static.circle_segments_override = static.circle_segments_override or changed
+            _, static.curve_segments_override = imgui.checkbox("##CurvesSegmentOverride", static.curve_segments_override)
             imgui.same_line(0.0, imgui.get_style().item_inner_spacing.x)
-            changed_cv, static.curve_segments_override_v = imgui.slider_int("Curves segments override", static.curve_segments_override_v, 3, 40)
-            static.curve_segments_override = static.curve_segments_override or changed_cv
-            _, static.colf = imgui.color_edit4("Color", static.colf)
+            changed, static.curve_segments_override_v = imgui.slider_int("Curves segments override", static.curve_segments_override_v, 3, 30)
+            static.curve_segments_override = static.curve_segments_override or changed
+            _, static.colf_stroke = imgui.color_edit4("Stroke Color", static.colf_stroke)
+            _, static.colf_fill = imgui.color_edit4("Fill Color", static.colf_fill)
 
-            p = imgui.get_cursor_screen_pos()
-            col = imgui.color_convert_float4_to_u32(static.colf)
-            spacing = 10.0
+            imgui.separator_text("Per primitive flags (AddXXX functions)")
+            for label, value in [("Default", imgui.ImDrawFlags_.none), ("Inside", imgui.ImDrawFlags_.stroke_inside),
+                                 ("Center", imgui.ImDrawFlags_.stroke_center), ("CenterBiased", imgui.ImDrawFlags_.stroke_center_biased),
+                                 ("Outside", imgui.ImDrawFlags_.stroke_outside)]:
+                _, static.prim_stroke_flags = imgui.radio_button(label, static.prim_stroke_flags, value)
+                imgui.same_line()
+            _, static.prim_stroke_flags = imgui.radio_button("Legacy", static.prim_stroke_flags, imgui.ImDrawFlags_.stroke_legacy)
+            # Note: AAFill and AALines are only for the functions taking flags.
+            for label, value in [("AAFill", imgui.ImDrawFlags_.aa_fill), ("AALines", imgui.ImDrawFlags_.aa_lines),
+                                 ("AALineEnds", imgui.ImDrawFlags_.aa_line_ends), ("JoinMiter", imgui.ImDrawFlags_.join_miter)]:
+                _, static.prim_other_flags = imgui.checkbox_flags(label, static.prim_other_flags, value)
+                imgui.same_line()
+            _, static.prim_other_flags = imgui.checkbox_flags("CapSquare", static.prim_other_flags, imgui.ImDrawFlags_.cap_square)
+
+            imgui.separator_text("Current ImDrawList flags (e.g. PushDrawFlag function)")
+            imgui.push_id("ScopeFlags")
+            for label, value in [("AAFill", imgui.ImDrawFlags_.aa_fill), ("AALines", imgui.ImDrawFlags_.aa_lines),
+                                 ("AALineEnds", imgui.ImDrawFlags_.aa_line_ends)]:
+                _, static.scope_flags = imgui.checkbox_flags(label, static.scope_flags, value)
+                imgui.same_line()
+            _, static.scope_flags = imgui.checkbox_flags("StrokeLegacy", static.scope_flags, imgui.ImDrawFlags_.stroke_legacy)
+            imgui.pop_id()
+            imgui.spacing()
+
+            draw_list.push_draw_flag(imgui.ImDrawFlags_.allow_in_push_scope_, False)  # Reset all existing (very unusual: done for this demo)
+            draw_list.push_draw_flag(static.scope_flags, True)
+            flags = static.prim_stroke_flags | static.prim_other_flags
+
+            start_pos = imgui.get_cursor_screen_pos()
+            pi = 3.141592
+            step = sz + 10.0
             corners_tl_br = imgui.ImDrawFlags_.round_top_left | imgui.ImDrawFlags_.round_bottom_right
-            rounding = static.sz / 5.0
+            half_sz = sz * 0.5
             circle_segments = static.circle_segments_override_v if static.circle_segments_override else 0
             curve_segments = static.curve_segments_override_v if static.curve_segments_override else 0
-            sz = static.sz
-            cp3 = [ImVec2(0.0, sz * 0.6), ImVec2(sz * 0.5, -sz * 0.4), ImVec2(sz, sz)]
+            cp3 = [ImVec2(0.0, sz * 0.6), ImVec2(sz * 0.5, -sz * 0.4), ImVec2(sz, sz)]  # Control points for curves
             cp4 = [ImVec2(0.0, 0.0), ImVec2(sz * 1.3, sz * 0.3), ImVec2(sz - sz * 1.3, sz - sz * 0.3), ImVec2(sz, sz)]
+            # |_| looking shape. Normalized.
+            concave_shape = [(0.0, 0.0), (0.3, 0.0), (0.3, 0.7), (0.7, 0.7), (0.7, 0.0), (1.0, 0.0), (1.0, 1.0), (0.0, 1.0)]
+            zigzag_shape = [(0.0, 0.0), (0.9, 0.0), (1.0, 0.1), (1.0, 0.9), (0.9, 1.0), (0.3, 1.0), (0.3, 0.4), (0.9, 0.4)]
+            rotating_square = []
+            for side in range(4):
+                t = imgui.get_time() * 0.1 + side * pi * 0.5
+                rotating_square.append(ImVec2(math.cos(t) * half_sz, math.sin(t) * half_sz))
 
-            x = p.x + 4.0
-            y = p.y + 4.0
-            for n in range(2):
-                th = 1.0 if n == 0 else static.thickness
-                draw_list.add_ngon(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, static.ngon_sides, th); x += sz + spacing
-                draw_list.add_circle(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, circle_segments, th); x += sz + spacing
-                draw_list.add_ellipse(ImVec2(x + sz*0.5, y + sz*0.5), ImVec2(sz*0.5, sz*0.3), col, -0.3, circle_segments, th); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 0.0, th, imgui.ImDrawFlags_.none); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, imgui.ImDrawFlags_.none); x += sz + spacing
-                draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, corners_tl_br); x += sz + spacing
-                draw_list.add_triangle(ImVec2(x+sz*0.5, y), ImVec2(x+sz, y+sz-0.5), ImVec2(x, y+sz-0.5), col, th); x += sz + spacing
-                _path_concave_shape(draw_list, x, y, sz); draw_list.path_stroke(col, th, imgui.ImDrawFlags_.closed); x += sz + spacing
-                draw_list.add_line(ImVec2(x, y), ImVec2(x + sz, y), col, th); x += sz + spacing
-                draw_list.add_line(ImVec2(x, y), ImVec2(x, y + sz), col, th); x += spacing
-                draw_list.add_line(ImVec2(x, y), ImVec2(x + sz, y + sz), col, th); x += sz + spacing
+            x = start_pos.x
+            y = start_pos.y
+            for row in range(4):
+                x = start_pos.x
+                draw_fill = row == 2 or row == 3
+                draw_strokes = row == 0 or row == 1 or row == 3
+                if draw_fill:
+                    # FILLED SHAPES
+                    col = imgui.color_convert_float4_to_u32(static.colf_fill)
+                    draw_list.add_ngon_filled(ImVec2(x + half_sz, y + half_sz), half_sz, col, static.ngon_segments); x += step  # N-gon
+                    draw_list.add_circle_filled(ImVec2(x + half_sz, y + half_sz), half_sz, col, circle_segments); x += step  # Circle
+                    draw_list.add_ellipse_filled(ImVec2(x + half_sz, y + half_sz), ImVec2(half_sz, sz * 0.3), col, -0.3, circle_segments); x += step  # Ellipse
+                    draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 0.0, flags); x += step  # Square
+                    draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, flags); x += step  # Square with all rounded corners
+                    draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, flags | corners_tl_br); x += step  # Square with two rounded corners
+                    draw_list.add_triangle_filled(ImVec2(x + sz * 0.5, y), ImVec2(x + sz, y + sz), ImVec2(x, y + sz), col); x += step  # Triangle
+                    draw_list.add_triangle_filled(ImVec2(x + sz * 0.2, y), ImVec2(x + sz * 0.4, y + sz), ImVec2(x, y + sz), col); x += step - int(sz * 0.6)  # Thin triangle
 
-                # Path arc
-                draw_list.path_arc_to(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, 3.141592, 3.141592 * -0.5)
-                draw_list.path_stroke(col, th, imgui.ImDrawFlags_.none)
-                x += sz + spacing
+                    # Concave shape: U
+                    for px, py in concave_shape:
+                        draw_list.path_line_to(ImVec2(x + int(sz * px), y + int(sz * py)))
+                    draw_list.path_fill_concave(col)
+                    x += step
 
-                # Quadratic Bezier
-                draw_list.add_bezier_quadratic(
-                    ImVec2(x + cp3[0].x, y + cp3[0].y), ImVec2(x + cp3[1].x, y + cp3[1].y),
-                    ImVec2(x + cp3[2].x, y + cp3[2].y), col, th, curve_segments
-                )
-                x += sz + spacing
+                    # Concave shape: Zig-Zag with sharp angles (see difference with/without JoinMiter)
+                    for px, py in zigzag_shape:
+                        draw_list.path_line_to(ImVec2(x + int(sz * px), y + int(sz * py)))
+                    draw_list.path_fill_concave(col)
+                    x += step
 
-                # Cubic Bezier
-                draw_list.add_bezier_cubic(
-                    ImVec2(x + cp4[0].x, y + cp4[0].y), ImVec2(x + cp4[1].x, y + cp4[1].y),
-                    ImVec2(x + cp4[2].x, y + cp4[2].y), ImVec2(x + cp4[3].x, y + cp4[3].y),
-                    col, th, curve_segments
-                )
+                    # Horizontal/Vertical lines
+                    # (here for consistency with the strokes section. add_rect_filled() is roughly close to add_line_h(), add_line_v()
+                    draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + thickness), col); x += step
+                    draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + thickness, y + sz), col); x += step - int(half_sz)
+                    if not (draw_fill and draw_strokes):
+                        block_sz, off = 1, 0
+                        while block_sz < 16 and off + block_sz <= sz:
+                            draw_list.add_rect_filled(ImVec2(x, y + off), ImVec2(x + block_sz, y + off + block_sz), col)
+                            off += block_sz + 1
+                            block_sz += 1
+                    x += step - int(half_sz)
 
-                x = p.x + 4
-                y += sz + spacing
+                    # Rotating square
+                    for n in range(4):
+                        draw_list.path_line_to(ImVec2(x + half_sz + rotating_square[n].x, y + half_sz + rotating_square[n].y))
+                    draw_list.path_fill_convex(col, flags)
+                    x += step
 
-            # Filled shapes
-            draw_list.add_ngon_filled(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, static.ngon_sides); x += sz + spacing
-            draw_list.add_circle_filled(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, col, circle_segments); x += sz + spacing
-            draw_list.add_ellipse_filled(ImVec2(x + sz*0.5, y + sz*0.5), ImVec2(sz*0.5, sz*0.3), col, -0.3, circle_segments); x += sz + spacing
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col); x += sz + spacing
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 10.0); x += sz + spacing
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 10.0, corners_tl_br); x += sz + spacing
-            draw_list.add_triangle_filled(ImVec2(x+sz*0.5, y), ImVec2(x+sz, y+sz-0.5), ImVec2(x, y+sz-0.5), col); x += sz + spacing
-            _path_concave_shape(draw_list, x, y, sz); draw_list.path_fill_concave(col); x += sz + spacing
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + sz, y + static.thickness), col); x += sz + spacing
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + static.thickness, y + sz), col); x += spacing * 2.0
-            draw_list.add_rect_filled(ImVec2(x, y), ImVec2(x + 1, y + 1), col); x += sz
+                    # Path
+                    draw_list.path_arc_to(ImVec2(x + half_sz, y + half_sz), half_sz, pi * -0.5, pi * 1.1)
+                    draw_list.path_fill_convex(col)
+                    x += step
 
-            # Path arc filled
-            draw_list.path_arc_to(ImVec2(x + sz*0.5, y + sz*0.5), sz*0.5, 3.141592 * -0.5, 3.141592)
-            draw_list.path_fill_convex(col)
-            x += sz + spacing
+                    # Quadratic Bezier Curve (3 control points)
+                    draw_list.path_line_to(ImVec2(x + cp3[0].x, y + cp3[0].y))
+                    draw_list.path_bezier_quadratic_curve_to(ImVec2(x + cp3[1].x, y + cp3[1].y), ImVec2(x + cp3[2].x, y + cp3[2].y), curve_segments)
+                    draw_list.path_fill_convex(col)
+                    x += step
 
-            # Quadratic Bezier filled
-            draw_list.path_line_to(ImVec2(x + cp3[0].x, y + cp3[0].y))
-            draw_list.path_bezier_quadratic_curve_to(ImVec2(x + cp3[1].x, y + cp3[1].y), ImVec2(x + cp3[2].x, y + cp3[2].y), curve_segments)
-            draw_list.path_fill_convex(col)
-            x += sz + spacing
+                    if not (draw_fill and draw_strokes):
+                        draw_list.add_rect_filled_multi_color(
+                            ImVec2(x, y), ImVec2(x + sz, y + sz),
+                            imgui.IM_COL32(0, 0, 0, 255), imgui.IM_COL32(255, 0, 0, 255),
+                            imgui.IM_COL32(255, 255, 0, 255), imgui.IM_COL32(0, 255, 0, 255),
+                        )
+                        x += step
+                if draw_fill and draw_strokes:
+                    x = start_pos.x
+                if draw_strokes:
+                    # STROKES
+                    # First row uses a thickness of 1.0, second row uses the configurable thickness
+                    col = imgui.color_convert_float4_to_u32(static.colf_stroke)
+                    th = 1.0 if row == 0 else thickness
+                    draw_list.add_ngon(ImVec2(x + half_sz, y + half_sz), half_sz, col, static.ngon_segments, th, flags); x += step  # N-gon
+                    draw_list.add_circle(ImVec2(x + half_sz, y + half_sz), half_sz, col, circle_segments, th, flags); x += step  # Circle
+                    draw_list.add_ellipse(ImVec2(x + half_sz, y + half_sz), ImVec2(half_sz, sz * 0.3), col, -0.3, circle_segments, th, flags); x += step  # Ellipse
+                    draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, 0.0, th, flags); x += step  # Square
+                    draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, flags); x += step  # Square with all rounded corners
+                    draw_list.add_rect(ImVec2(x, y), ImVec2(x + sz, y + sz), col, rounding, th, flags | corners_tl_br); x += step  # Square with two rounded corners
+                    draw_list.add_triangle(ImVec2(x + sz * 0.5, y), ImVec2(x + sz, y + sz), ImVec2(x, y + sz), col, th, flags); x += step  # Triangle
+                    draw_list.add_triangle(ImVec2(x + sz * 0.2, y), ImVec2(x + sz * 0.4, y + sz), ImVec2(x, y + sz), col, th, flags); x += step - int(sz * 0.6)  # Thin triangle
 
-            draw_list.add_rect_filled_multi_color(
-                ImVec2(x, y), ImVec2(x + sz, y + sz),
-                imgui.IM_COL32(0, 0, 0, 255), imgui.IM_COL32(255, 0, 0, 255),
-                imgui.IM_COL32(255, 255, 0, 255), imgui.IM_COL32(0, 255, 0, 255),
-            )
-            x += sz + spacing
+                    # Concave shape: U
+                    for px, py in concave_shape:
+                        draw_list.path_line_to(ImVec2(x + int(sz * px), y + int(sz * py)))
+                    draw_list.path_stroke(col, th, flags | imgui.ImDrawFlags_.closed)
+                    x += step
 
-            imgui.dummy(ImVec2((sz + spacing) * 13.2, (sz + spacing) * 3.0))
+                    # Concave shape: Zig-Zag with sharp angles (see difference with/without JoinMiter)
+                    for px, py in zigzag_shape:
+                        draw_list.path_line_to(ImVec2(x + int(sz * px), y + int(sz * py)))
+                    draw_list.path_stroke(col, th, flags | imgui.ImDrawFlags_.closed)
+                    x += step
+
+                    # Horizontal/Vertical/Diagonal lines
+                    off = int(sz * 0.4)
+                    draw_list.add_line_h(x, x + sz, y, col, th, flags)
+                    draw_list.add_line(ImVec2(x, y + off), ImVec2(x + sz, y + off), col, th, flags)
+                    x += step
+                    draw_list.add_line_v(x, y, y + sz, col, th, flags)
+                    draw_list.add_line(ImVec2(x + off, y + sz), ImVec2(x + off, y), col, th, flags)
+                    x += step - int(half_sz)
+                    if not (draw_fill and draw_strokes):
+                        draw_list.add_line(ImVec2(x, y), ImVec2(x + half_sz, y + sz), col, th, flags)
+                        draw_list.add_line(ImVec2(x, y + sz), ImVec2(x + half_sz, y), col, th, flags)
+                    x += step - int(half_sz)
+
+                    # Rotating square
+                    for n in range(4):
+                        draw_list.path_line_to(ImVec2(x + half_sz + rotating_square[n].x, y + half_sz + rotating_square[n].y))
+                    draw_list.path_stroke(col, th, flags | imgui.ImDrawFlags_.closed)
+                    x += step
+
+                    # Path
+                    draw_list.path_arc_to(ImVec2(x + half_sz, y + half_sz), half_sz, pi * -0.5, pi * 1.1)
+                    draw_list.path_stroke(col, th, flags)
+                    x += step
+
+                    # Quadratic Bezier Curve (3 control points)
+                    draw_list.add_bezier_quadratic(
+                        ImVec2(x + cp3[0].x, y + cp3[0].y), ImVec2(x + cp3[1].x, y + cp3[1].y), ImVec2(x + cp3[2].x, y + cp3[2].y),
+                        col, th, curve_segments, flags)
+                    x += step
+
+                    # Cubic Bezier Curve (4 control points)
+                    if not (draw_fill and draw_strokes):
+                        draw_list.add_bezier_cubic(
+                            ImVec2(x + cp4[0].x, y + cp4[0].y), ImVec2(x + cp4[1].x, y + cp4[1].y),
+                            ImVec2(x + cp4[2].x, y + cp4[2].y), ImVec2(x + cp4[3].x, y + cp4[3].y),
+                            col, th, curve_segments, flags)
+                        x += step
+                y += step
+
+            imgui.dummy(ImVec2(step * 15.5, step * 4.0))
+            draw_list.pop_draw_flag()
+            draw_list.pop_draw_flag()
+
+            imgui.text("ImDrawList Vector Rendering Reference:")
+            imgui.text_link_open_url("https://github.com/ocornut/imgui/wiki/Draw-List")
+
+            imgui.pop_item_flag()
             imgui.pop_item_width()
             imgui.end_tab_item()
 
         if imgui.begin_tab_item("Canvas")[0]:
-            IMGUI_DEMO_MARKER("ShowExampleAppCustomRendering - Canvas")
+            IMGUI_DEMO_MARKER("Examples/Custom rendering/Canvas")
             if not hasattr(static, "canvas_points"):
                 static.canvas_points = []  # list[ImVec2]
                 static.canvas_scrolling = ImVec2(0.0, 0.0)
@@ -6943,7 +7159,7 @@ def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[
             imgui.end_tab_item()
 
         if imgui.begin_tab_item("BG/FG draw lists")[0]:
-            IMGUI_DEMO_MARKER("ShowExampleAppCustomRendering - BG/FG draw lists")
+            IMGUI_DEMO_MARKER("Examples/Custom rendering/BG & FG draw lists")
             if not hasattr(static, "draw_bg"):
                 static.draw_bg = True
                 static.draw_fg = True
@@ -6963,7 +7179,7 @@ def _show_example_app_custom_rendering_impl(p_open: Optional[bool]) -> Optional[
             imgui.end_tab_item()
 
         if imgui.begin_tab_item("Draw Channels")[0]:
-            IMGUI_DEMO_MARKER("ShowExampleAppCustomRendering - Draw Channels")
+            IMGUI_DEMO_MARKER("Examples/Custom rendering/Draw Channels")
             draw_list = imgui.get_window_draw_list()
 
             imgui.text("Blue shape is drawn first: appears in back")
@@ -7012,7 +7228,7 @@ def _show_example_app_dock_space_impl(p_open: Optional[bool]) -> Optional[bool]:
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0.0, 0.0))
     imgui.set_next_window_size(ImVec2(400, 600), imgui.Cond_.once)
     _, p_open = imgui.begin("Window with a DockSpace", p_open, window_flags)
-    IMGUI_DEMO_MARKER("Using Dockspace")
+    IMGUI_DEMO_MARKER("Using Dockspace (Read note below)")
     #
     # Here we are creating a dockspace in a window.
     #
@@ -7183,7 +7399,7 @@ def _show_example_app_documents_impl(p_open: Optional[bool]) -> Optional[bool]:
         imgui.end()
         return p_open
 
-    IMGUI_DEMO_MARKER("ShowExampleAppDocuments")
+    IMGUI_DEMO_MARKER("Examples/Documents")
 
     # Menu
     if imgui.begin_menu_bar():
