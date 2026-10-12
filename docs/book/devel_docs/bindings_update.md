@@ -14,6 +14,7 @@ just libs_check_upstream    # Check which forks have new upstream changes
 just libs_log <name>        # Show new upstream commits for a library
 just libs_rebase <name>     # Tag current state, then rebase fork on upstream
 just libs_tag <name>        # Push a date tag to a fork
+just libs_check_pushed      # Before pushing the bundle: are all its submodule commits on a server?
 just libs_bindings <name>   # Regenerate bindings for one library
 just libs_bindings_all      # Regenerate all bindings
 just libs_reattach          # Reattach all submodules to their branches

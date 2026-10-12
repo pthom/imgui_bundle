@@ -9,7 +9,7 @@ The fork model (remotes `official` and `fork`, branch `imgui_bundle`, rebase rat
 
 ## Entry points
 
-- Recipes (group `libs` of `just --list`): `libs_info` (remotes and branches), `libs_check_upstream` (which forks have new upstream commits), `libs_log <lib>`, `libs_rebase <lib>` (tags the current state, then rebases on `official`), `libs_tag <lib>`, `libs_reattach`, `libs_fetch`, `libs_pull`. After a rebase: `libs_bindings <lib>`.
+- Recipes (group `libs` of `just --list`): `libs_info` (remotes and branches), `libs_check_upstream` (which forks have new upstream commits), `libs_log <lib>`, `libs_rebase <lib>` (tags the current state, then rebases on `official`), `libs_tag <lib>`, `libs_check_pushed` (before pushing the bundle: every submodule commit it points to is on a remote branch), `libs_reattach`, `libs_fetch`, `libs_pull`. After a rebase: `libs_bindings <lib>`.
 - Docs: `docs/book/devel_docs/bindings_forks.md` (the fork model), `bindings_update.md` (the update procedure, with these recipes).
 
 ## Generic commits first

@@ -252,6 +252,7 @@ The `justfile` at the repo root wraps the Python tooling into convenient command
 | `just libs_check_upstream` | Check which forked libraries have new upstream changes |
 | `just libs_log <name>` | Show new upstream commits not yet in a fork |
 | `just libs_tag <name>` | Push a dated tag (`bundle_YYYYMMDD`) to a fork |
+| `just libs_check_pushed` | Check that every submodule commit the bundle points to is on a remote branch (before pushing the bundle) |
 | `just libs_rebase <name>` | Tag current state, then rebase fork branch on upstream |
 | `just libs_bindings <name>` | Regenerate Python bindings for one library |
 | `just libs_bindings_all` | Regenerate all Python bindings |

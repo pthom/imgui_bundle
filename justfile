@@ -54,6 +54,20 @@ libs_rebase lib:
 libs_tag lib:
     {{ _pycmd }} "from bundle_libs_tooling.all_external_libraries import tag_lib; tag_lib('{{ lib }}')"
 
+# Check that every submodule commit the bundle points to is on a remote branch (run before pushing the bundle)
+[group('libs')]
+libs_check_pushed:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    unpushed=$(git submodule foreach --quiet --recursive \
+        'git branch -r --contains "$sha1" 2>/dev/null | grep -q . || echo "  $displaypath $sha1"')
+    if [ -n "$unpushed" ]; then
+        echo "Submodule commits on no remote branch (push them before the bundle):" >&2
+        echo "$unpushed" >&2
+        exit 1
+    fi
+    echo "All submodule commits are on a remote branch."
+
 # Regenerate Python bindings for a single library (usage: just libs_bindings <name>)
 [group('libs')]
 libs_bindings lib:
