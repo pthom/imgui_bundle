@@ -191,6 +191,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 
 ## Fixes
 
+- The pure Python pyglet backend: the mouse wheel scrolled the wrong way, and the horizontal scroll was lost (its handler did not match pyglet's `on_mouse_scroll(x, y, scroll_x, scroll_y)`).
 - `imgui.internal.separator_text_ex(id, label, extra_width)` no longer takes a `label_end`: it shows the label up to its `##`, as `separator_text()` does. In C++, `label_end` points inside `label`; a Python string could not, so the call printed garbage, then crashed ([#498](https://github.com/pthom/imgui_bundle/discussions/498)).
 - Hello ImGui: `hello_imgui.load_user_pref()` gives back the value as saved by `save_user_pref()`. It came back with a trailing newline from the second run on: each write of the ini file added a newline to its last part.
 - `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had

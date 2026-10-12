@@ -257,8 +257,8 @@ class PygletMixin(object):
         self._on_mouse_button(button, True)
         self.on_mouse_motion(x, y, dx, dy)
 
-    def on_mouse_scroll(self, x, y, mods, scroll):
-        self.io.add_mouse_wheel_event(0, -scroll)
+    def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
+        self.io.add_mouse_wheel_event(scroll_x, scroll_y)
 
     def on_resize(self, width, height):
         self._set_pixel_ratio(self._window)
