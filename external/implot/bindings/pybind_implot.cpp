@@ -1070,7 +1070,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotLine_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1154,7 +1154,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotLine_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1162,7 +1162,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1268,7 +1268,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1352,7 +1352,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotScatter_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1360,7 +1360,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1466,7 +1466,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotBubbles_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, nb::ndarray<nb::ro> & szs, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1474,7 +1474,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t values_count = values.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (szs.ndim() == 1 && szs.stride(0) == 1))
+                if (szs.ndim() != 1 || (szs.shape(0) > 1 && szs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1580,7 +1580,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotBubbles_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & szs, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1588,7 +1588,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1596,7 +1596,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t ys_count = ys.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (szs.ndim() == 1 && szs.stride(0) == 1))
+                if (szs.ndim() != 1 || (szs.shape(0) > 1 && szs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1710,7 +1710,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotPolygon_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1718,7 +1718,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1824,7 +1824,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1908,7 +1908,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotStairs_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -1916,7 +1916,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2022,7 +2022,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double yref = 0, double xscale = 1, double xstart = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2106,7 +2106,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double yref = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2114,7 +2114,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2220,7 +2220,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotShaded_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys1, nb::ndarray<nb::ro> & ys2, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2228,7 +2228,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys1.ndim() == 1 && ys1.stride(0) == 1))
+                if (ys1.ndim() != 1 || (ys1.shape(0) > 1 && ys1.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2236,7 +2236,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t ys1_count = ys1.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys2.ndim() == 1 && ys2.stride(0) == 1))
+                if (ys2.ndim() != 1 || (ys2.shape(0) > 1 && ys2.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2350,7 +2350,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double bar_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2434,7 +2434,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double bar_size, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2442,7 +2442,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2550,7 +2550,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotBarGroups_adapt_c_buffers = [](const std::vector<std::string> & label_ids, nb::ndarray<nb::ro> & values, double group_size = 0.67, double shift = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2636,7 +2636,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & err, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2644,7 +2644,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2652,7 +2652,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t ys_count = ys.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (err.ndim() == 1 && err.stride(0) == 1))
+                if (err.ndim() != 1 || (err.shape(0) > 1 && err.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2766,7 +2766,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotErrorBars_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, nb::ndarray<nb::ro> & neg, nb::ndarray<nb::ro> & pos, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2774,7 +2774,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2782,7 +2782,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t ys_count = ys.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (neg.ndim() == 1 && neg.stride(0) == 1))
+                if (neg.ndim() != 1 || (neg.shape(0) > 1 && neg.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2790,7 +2790,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t neg_count = neg.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (pos.ndim() == 1 && pos.stride(0) == 1))
+                if (pos.ndim() != 1 || (pos.shape(0) > 1 && pos.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2912,7 +2912,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotStems_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, double ref = 0, double scale = 1, double start = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -2996,7 +2996,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotStems_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, double ref = 0, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3004,7 +3004,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3110,7 +3110,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotInfLines_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3194,7 +3194,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotPieChart_adapt_c_buffers = [](const char * const label_ids[], nb::ndarray<nb::ro> & values, double x, double y, double radius, const char * label_fmt = "%.1f", double angle0 = 90, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3287,7 +3287,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotHistogram_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & values, int bins = ImPlotBin_Sturges, double bar_scale = 1.0, ImPlotRange range = ImPlotRange(), const ImPlotSpec & spec = ImPlotSpec()) -> double
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (values.ndim() == 1 && values.stride(0) == 1))
+                if (values.ndim() != 1 || (values.shape(0) > 1 && values.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3379,7 +3379,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotHistogram2D_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, int x_bins = ImPlotBin_Sturges, int y_bins = ImPlotBin_Sturges, ImPlotRect range = ImPlotRect(), const ImPlotSpec & spec = ImPlotSpec()) -> double
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3387,7 +3387,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3501,7 +3501,7 @@ void py_init_module_implot(nb::module_& m)
             auto PlotDigital_adapt_c_buffers = [](const char * label_id, nb::ndarray<nb::ro> & xs, nb::ndarray<nb::ro> & ys, const ImPlotSpec & spec = ImPlotSpec())
             {
                 // Check if the array is 1D and C-contiguous
-                if (! (xs.ndim() == 1 && xs.stride(0) == 1))
+                if (xs.ndim() != 1 || (xs.shape(0) > 1 && xs.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
@@ -3509,7 +3509,7 @@ void py_init_module_implot(nb::module_& m)
                 size_t xs_count = xs.shape(0);
 
                 // Check if the array is 1D and C-contiguous
-                if (! (ys.ndim() == 1 && ys.stride(0) == 1))
+                if (ys.ndim() != 1 || (ys.shape(0) > 1 && ys.stride(0) != 1))
                     throw std::runtime_error("The array must be 1D and contiguous");
 
                 // convert nb::ndarray to C standard buffer (const)
