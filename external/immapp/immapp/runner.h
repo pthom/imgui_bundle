@@ -58,9 +58,9 @@ namespace ImmApp
         // You can tweak NodeEditorConfig (but this is optional)
         std::optional<NodeEditorConfig> withNodeEditorConfig = std::nullopt;
 
-        // If true, the node editor colors will be updated from the ImGui colors
+        // If true, the colors of every node editor follow the ImGui colors
         // (i.e. if using a light theme, the node editor will use a light theme, etc.)
-        // This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.
+        // They are set at the start of each ed::Begin(): push your own colors (ed::PushStyleColor) after it.
         // If you set this to false, you can set the node editor style manually.
         // (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)
         bool updateNodeEditorColorsFromImguiColors = true;

@@ -100,9 +100,9 @@ class AddOnsParams:
     with_node_editor_config: Optional[NodeEditorConfig] = None
 
     # bool updateNodeEditorColorsFromImguiColors = true;    /* original C++ signature */
-    # If True, the node editor colors will be updated from the ImGui colors
+    # If True, the colors of every node editor follow the ImGui colors
     # (i.e. if using a light theme, the node editor will use a light theme, etc.)
-    # This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.
+    # They are set at the start of each ed::Begin(): push your own colors (ed::PushStyleColor) after it.
     # If you set this to False, you can set the node editor style manually.
     # (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)
     update_node_editor_colors_from_imgui_colors: bool = True

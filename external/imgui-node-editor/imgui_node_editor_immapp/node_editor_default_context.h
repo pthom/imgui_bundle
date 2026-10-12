@@ -14,6 +14,6 @@ IMGUI_NODE_EDITOR_API void ResumeNodeEditorCanvas_Immapp(); // Same as ax::NodeE
 // Ignores the user's input in the current editor this frame: e.g. the wheel over an image zooms it, not the canvas
 IMGUI_NODE_EDITOR_API void DisableUserInputThisFrame();
 
-// Sets the colors of the current editor from Dear ImGui's colors (ImmApp does it at each frame, unless disabled
-// with updateNodeEditorColorsFromImguiColors = false)
+// Sets the colors of the current editor from Dear ImGui's colors (ImmApp does it for every editor, at the start of
+// ed::Begin(), unless disabled with updateNodeEditorColorsFromImguiColors = false)
 IMGUI_NODE_EDITOR_API void UpdateNodeEditorColorsFromImguiColors();

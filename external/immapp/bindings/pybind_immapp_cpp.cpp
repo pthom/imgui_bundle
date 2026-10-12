@@ -101,7 +101,7 @@ void py_init_module_immapp_cpp(nb::module_& m)
         // #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
         //
         .def_rw("with_node_editor_config", &ImmApp::AddOnsParams::withNodeEditorConfig, "You can tweak NodeEditorConfig (but this is optional)")
-        .def_rw("update_node_editor_colors_from_imgui_colors", &ImmApp::AddOnsParams::updateNodeEditorColorsFromImguiColors, " If True, the node editor colors will be updated from the ImGui colors\n (i.e. if using a light theme, the node editor will use a light theme, etc.)\n This is called after runnerParams.callbacks.SetupImGuiStyle, in which you can set the ImGui style.\n If you set this to False, you can set the node editor style manually.\n (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)")
+        .def_rw("update_node_editor_colors_from_imgui_colors", &ImmApp::AddOnsParams::updateNodeEditorColorsFromImguiColors, " If True, the colors of every node editor follow the ImGui colors\n (i.e. if using a light theme, the node editor will use a light theme, etc.)\n They are set at the start of each ed::Begin(): push your own colors (ed::PushStyleColor) after it.\n If you set this to False, you can set the node editor style manually.\n (Note: you can also the theme via RunnerParams.imguiParams.tweakedTheme)")
         // #endif
         //
         .def_rw("with_markdown_options", &ImmApp::AddOnsParams::withMarkdownOptions, "You can tweak MarkdownOptions (but this is optional)")

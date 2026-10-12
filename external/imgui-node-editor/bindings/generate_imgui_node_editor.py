@@ -60,7 +60,8 @@ def main() -> None:
     )
     # ed::InputTextMultiline() edits a char buffer. It is not needed in Python: inside a node,
     # imgui.input_text_multiline() is redirected to it (see ImGuiContext::InputTextMultilineOverride)
-    options.fn_exclude_by_name__regex = "^InputTextMultiline$"
+    # ed::SetBeginHook() takes a C function pointer: ImmApp sets it (the node editor's colors follow the theme)
+    options.fn_exclude_by_name__regex = "^InputTextMultiline$|^SetBeginHook$"
 
     # Functions that fill an array provided by the caller: replaced by versions returning a list
     # (see imgui_node_editor_pywrappers.h)

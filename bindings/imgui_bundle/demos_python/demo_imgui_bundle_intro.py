@@ -1608,23 +1608,6 @@ def _pipe_random_picture(node: _PipeNode, width: float) -> None:
         imgui.text_disabled(node.download_error)
 
 
-def _pipe_push_theme_colors() -> int:
-    """The editor's colors from the ImGui theme: its own are dark, and its text unreadable under a light theme.
-    Returns how many colors were pushed"""
-    window = imgui.get_style_color_vec4(imgui.Col_.window_bg)
-    text = imgui.get_style_color_vec4(imgui.Col_.text)
-
-    def towards_text(t: float, alpha: float = 1.0) -> ImVec4:
-        return ImVec4(window.x + (text.x - window.x) * t, window.y + (text.y - window.y) * t,
-                      window.z + (text.z - window.z) * t, alpha)
-
-    colors = [(node_ed.StyleColor.bg, towards_text(0.04)), (node_ed.StyleColor.grid, towards_text(0.5, 0.12)),
-              (node_ed.StyleColor.node_bg, towards_text(0.10)), (node_ed.StyleColor.node_border, towards_text(0.5))]
-    for index, color in colors:
-        node_ed.push_style_color(index, color)
-    return len(colors)
-
-
 def _pipe_new_links(graph: _PipeGraph) -> None:
     """A link dragged from a pin to another: accepted from an output to an input, unless it makes a loop"""
     if node_ed.begin_create(PIPE_LINK_COLOR, 2.0):
@@ -1665,7 +1648,6 @@ def _pipeline_slide_gui(content_size: ImVec2):
     node_ed.set_current_editor(_pipe_editor)
     hint_h = em * (2.8 if is_small_screen() else 1.5)
     editor_size = ImVec2(content_size.x, content_size.y - hint_h)
-    nb_colors = _pipe_push_theme_colors()
     node_ed.begin("##pipeline", editor_size)
     if _pipe_graph is None:
         _pipe_graph = _PipeGraph()
@@ -1678,7 +1660,6 @@ def _pipeline_slide_gui(content_size: ImVec2):
     _pipe_new_links(_pipe_graph)
     _pipe_deletions(_pipe_graph)
     node_ed.end()
-    node_ed.pop_style_color(nb_colors)
     # Fit the graph in the view once the editor knows the size of the nodes (the third frame), and when the slide's
     # size changes (a phone turned). The navigation functions work after end().
     size_changed = abs(_pipe_size.x - editor_size.x) > 1.0 or abs(_pipe_size.y - editor_size.y) > 1.0

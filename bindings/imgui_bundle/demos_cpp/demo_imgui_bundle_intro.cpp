@@ -1769,22 +1769,6 @@ void main(){
             ed::EndNode();
         }
 
-        // The editor's colors from the ImGui theme: its own are dark, and its text unreadable under a light theme.
-        // Returns how many colors were pushed
-        int PushThemeColors()
-        {
-            ImVec4 window = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg), text = ImGui::GetStyleColorVec4(ImGuiCol_Text);
-            auto towardsText = [&](float t, float alpha = 1.f) {
-                return ImVec4(window.x + (text.x - window.x) * t, window.y + (text.y - window.y) * t,
-                              window.z + (text.z - window.z) * t, alpha);
-            };
-            ed::PushStyleColor(ed::StyleColor_Bg, towardsText(0.04f));
-            ed::PushStyleColor(ed::StyleColor_Grid, towardsText(0.5f, 0.12f));
-            ed::PushStyleColor(ed::StyleColor_NodeBg, towardsText(0.10f));
-            ed::PushStyleColor(ed::StyleColor_NodeBorder, towardsText(0.5f));
-            return 4;
-        }
-
         // A link dragged from a pin to another: accepted from an output to an input, unless it makes a loop
         void NewLinks()
         {
@@ -1840,7 +1824,6 @@ void main(){
             ed::SetCurrentEditor(editor);
             float hintH = em * (IsSmallScreen() ? 2.8f : 1.5f);
             ImVec2 editorSize(contentSize.x, contentSize.y - hintH);
-            int nbColors = PushThemeColors();
             ed::Begin("##pipeline", editorSize);
             if (!graph)
                 graph = std::make_unique<Graph>();
@@ -1853,7 +1836,6 @@ void main(){
             NewLinks();
             Deletions();
             ed::End();
-            ed::PopStyleColor(nbColors);
             // Fit the graph in the view once the editor knows the size of the nodes (the third frame), and when the
             // slide's size changes (a phone turned). The navigation functions work after End().
             bool sizeChanged = std::fabs(lastSize.x - editorSize.x) > 1.f || std::fabs(lastSize.y - editorSize.y) > 1.f;

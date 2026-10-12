@@ -1368,8 +1368,8 @@ def disable_user_input_this_frame() -> None:
 
 # IMGUI_NODE_EDITOR_API void UpdateNodeEditorColorsFromImguiColors();    /* original C++ signature */
 def update_node_editor_colors_from_imgui_colors() -> None:
-    """Sets the colors of the current editor from Dear ImGui's colors (ImmApp does it at each frame, unless disabled
-    with updateNodeEditorColorsFromImguiColors = False)
+    """Sets the colors of the current editor from Dear ImGui's colors (ImmApp does it for every editor, at the start of
+    ed::Begin(), unless disabled with updateNodeEditorColorsFromImguiColors = False)
     """
     pass
 

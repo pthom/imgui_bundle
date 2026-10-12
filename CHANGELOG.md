@@ -200,6 +200,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 
 ## Fixes
 
+- imgui-node-editor: every editor follows the theme (light or dark), also the editors that the app creates itself, with or without `with_node_editor`. ImmApp used to recolor only the current editor: the others kept dark nodes, with unreadable text in a light theme. Colors pushed with `ed.push_style_color()` before `ed.begin()` are now overwritten: push them after it.
 - imgui-node-editor on Dear ImGui 1.93: the hover and selection outlines show again (1.93 drew them inside the node, under its background), and the grid lines stay sharp with one pixel per point.
 - imgui-node-editor: at 100% zoom, text and borders stay sharp on screens with one pixel per point (most Windows screens). After a resize or a navigation, the canvas could land on half a pixel, which blurred them ([#497](https://github.com/pthom/imgui_bundle/issues/497)).
 - The pure Python pyglet backend: the mouse wheel scrolled the wrong way, and the horizontal scroll was lost (its handler did not match pyglet's `on_mouse_scroll(x, y, scroll_x, scroll_y)`).
