@@ -148,3 +148,6 @@ hello_imgui.ini
 
 # The API pages, written by ci_scripts/api_pages.py at each doc build (just api_pages)
 docs/book/api/
+
+# The narration clips of the explorables (narrator build): stored in the website resources, resources/explorables/
+bindings/imgui_bundle/demos_python/playground/examples/explorables/*/scenario_audio/*.mp3
