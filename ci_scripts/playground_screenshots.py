@@ -10,6 +10,7 @@ Usage:
     python ci_scripts/playground_screenshots.py                 # all the examples of SHOTS
     python ci_scripts/playground_screenshots.py julia_map boids  # some of them
     python ci_scripts/playground_screenshots.py --raw DIR        # full windows as PNG, in DIR (to choose the crops)
+    python ci_scripts/playground_screenshots.py --light --raw DIR  # the same, in the light theme (a visual check)
     python ci_scripts/playground_screenshots.py --browser DIR    # the examples of BROWSER_SHOTS, from Chrome pictures
     python ci_scripts/playground_screenshots.py --stale          # the examples whose file changed since their picture
     python ci_scripts/playground_screenshots.py --mark-fresh julia_map  # its picture is still right (all if no name)
@@ -51,6 +52,7 @@ EXAMPLES_DIR = REPO / "bindings/imgui_bundle/demos_python/playground/examples"
 OUTPUT_DIR = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/playground"
 HASHES = OUTPUT_DIR / "picture_hashes.json"  # for each picture: the hash of the example's file it was taken from
 WIDTH = 640  # the width of the pictures, in pixels
+LIGHT_THEME_ENV = "PLAYGROUND_SCREENSHOTS_LIGHT"  # set by --light: the child processes switch to the light theme
 TIMEOUT = 45  # seconds: an example still running by then is killed (its window closes), and reported
 
 Box = tuple[float, float, float, float]  # a crop: left, top, right, bottom, as fractions of the window
@@ -304,7 +306,7 @@ def _code_picture(filename: str, output: str, raw: bool) -> None:
 def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
     """In a child process: runs the example (a copy of it, at path), then saves its picture"""
     from PIL import Image
-    from imgui_bundle import hello_imgui, immapp
+    from imgui_bundle import hello_imgui, immapp, imgui
 
     if filename in CODE_SHOTS:
         _code_picture(filename, output, raw)
@@ -320,6 +322,8 @@ def _run_one(filename: str, output: str, raw: bool, path: Path) -> None:
 
     def on_frame() -> None:
         frame[0] += 1
+        if frame[0] == 1 and os.environ.get(LIGHT_THEME_ENV):
+            imgui.style_colors_light()
         if shot.action is not None:
             shot.action(namespace, frame[0])
         if shot.frames and frame[0] >= shot.frames:
@@ -482,6 +486,9 @@ def main() -> None:
                 print(f"ok           {filename} -> {output}")
         _record(cropped)
         return
+    if args[:1] == ["--light"]:
+        os.environ[LIGHT_THEME_ENV] = "1"
+        args = args[1:]
     raw_dir = None
     if args[:1] == ["--raw"]:
         raw_dir, args = Path(args[1]), args[2:]
