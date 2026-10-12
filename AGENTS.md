@@ -143,7 +143,7 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
   * When sibling call sites pass different values of an enum or flag, pass it explicitly at every site, even where it equals the default.
 
 * Python:
-  * Silence a ruff rule with `# noqa: <code>` on the offending line. Use the per-file-ignores of `bindings/imgui_bundle/ruff.toml` only when the rule does not apply to the whole file.
+  * Silence a ruff rule with `# noqa: <code>` on the offending line. Use the per-file-ignores of the nearest `ruff.toml` (`bindings/imgui_bundle/ruff.toml`; the demos have their own, in `demos_python/`) only when the rule does not apply to the whole file.
   * After editing Python, run mypy on the touched files, from the repo root: mypy writes `.mypy_cache/` in the current folder, and a cache left in a demo folder gets packed into the web explorer's data.
 
 * Demos: a flat `main()` with sensible defaults, tunables as constants at the top (with a one-line comment), a 1-2 line docstring. No argparse, no modes: the reader edits the code.

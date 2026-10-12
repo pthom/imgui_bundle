@@ -113,8 +113,8 @@ def gui():
 
     if implot.begin_plot("Energy", imgui.ImVec2(-1, 200)):
         implot.setup_axes("frame", "energy",
-                          implot.AxisFlags_.auto_fit.value,
-                          implot.AxisFlags_.auto_fit.value)
+                          implot.AxisFlags_.auto_fit,
+                          implot.AxisFlags_.auto_fit)
         if len(energy_t) > 1:
             implot.plot_line("KE", np.asarray(energy_t, float), np.asarray(energy_ke),
                              implot.Spec(line_color=imgui.ImVec4(0.25, 0.41, 0.88, 1.0)))

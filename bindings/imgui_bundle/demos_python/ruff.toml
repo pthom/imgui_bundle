@@ -3,3 +3,7 @@ lint.select = ["E", "F", "B", "W"]
 lint.ignore = [
     "E501", # Never enforce `E501` (line length violations).
 ]
+
+[lint.per-file-ignores]
+# The pendulum comparison keeps the code compact, as its counterparts in the other libraries do
+"sandbox/compare_pendulum/*.py" = ["E702"]
