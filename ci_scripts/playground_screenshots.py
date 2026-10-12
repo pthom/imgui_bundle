@@ -491,7 +491,7 @@ def main() -> None:
         args = args[1:]
     raw_dir = None
     if args[:1] == ["--raw"]:
-        raw_dir, args = Path(args[1]), args[2:]
+        raw_dir, args = Path(args[1]).resolve(), args[2:]  # absolute: each example runs in a temporary folder
         raw_dir.mkdir(parents=True, exist_ok=True)
     names = [f for f in [*SHOTS, *CODE_SHOTS] if not args or Path(f).stem in args]
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
