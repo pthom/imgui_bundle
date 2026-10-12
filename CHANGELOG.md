@@ -200,6 +200,7 @@ changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 
 
 ## Fixes
 
+- imgui-node-editor on Dear ImGui 1.93: the hover and selection outlines show again (1.93 drew them inside the node, under its background), and the grid lines stay sharp with one pixel per point.
 - imgui-node-editor: at 100% zoom, text and borders stay sharp on screens with one pixel per point (most Windows screens). After a resize or a navigation, the canvas could land on half a pixel, which blurred them ([#497](https://github.com/pthom/imgui_bundle/issues/497)).
 - The pure Python pyglet backend: the mouse wheel scrolled the wrong way, and the horizontal scroll was lost (its handler did not match pyglet's `on_mouse_scroll(x, y, scroll_x, scroll_y)`).
 - `imgui.internal.separator_text_ex(id, label, extra_width)` no longer takes a `label_end`: it shows the label up to its `##`, as `separator_text()` does. In C++, `label_end` points inside `label`; a Python string could not, so the call printed garbage, then crashed ([#498](https://github.com/pthom/imgui_bundle/discussions/498)).
