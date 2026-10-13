@@ -142,6 +142,8 @@ hello_imgui.ini
 
 # Cloudflare files staging (before upload)
 /_cf_staging
+# Unlisted previews, put back into the staging by `just cf_stage`
+/_cf_previews
 
 # Cloned on demand by `just cf_resources_sync` (was a submodule)
 /docs/clone_website_resources/

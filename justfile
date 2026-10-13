@@ -458,6 +458,11 @@ cf_stage:
     # 8. generate sitemap.xml
     # ------------------------------------------------------------
     python docs/clone_website_resources/tools/generate_sitemap.py
+    #
+    # 9. Put back the unlisted previews (after the sitemap, which must not list them)
+    # ------------------------------------------------------------
+    # _cf_previews/ (gitignored) mirrors the site's tree: _cf_previews/explorer/<name>/ is served at /explorer/<name>/
+    if [ -d _cf_previews ]; then rsync -a _cf_previews/ {{_CF_STAGING}}/; fi
 
 
 # Upload the current staging dir to Cloudflare Pages (does not build the elements, you shall do it yourself before)

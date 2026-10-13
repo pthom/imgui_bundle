@@ -31,6 +31,14 @@ The trade-off: on every deploy the other subparts must already be present
 - Ibex binaries: `just ibex_build` must have run (output in `build_ibex_ems/bin/`).
 - Jupyter-book docs: `just doc_build_cf` must have run (output in `docs/book/_build/html/`).
 
+### Unlisted previews
+
+A preview is a build shown to a few people before its public deploy, at an unlisted address (e.g. `/explorer/<name>/`).
+- Put it in `_cf_previews/` (gitignored), which mirrors the site's tree: `_cf_previews/explorer/<name>/` is served at `/explorer/<name>/`.
+- `cf_stage` copies it back into the staging after everything else, so a local deploy keeps it. It is not in the sitemap.
+- A deploy from CI (below) has no `_cf_previews/`: it removes the previews from the site.
+- Remove a preview's folder once it is public.
+
 
 ## One-time setup
 
