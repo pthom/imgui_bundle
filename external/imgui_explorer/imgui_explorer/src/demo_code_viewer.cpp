@@ -770,6 +770,7 @@ namespace
     }
 
     std::map<std::string, int> g_editorReadingLine;  // per file and language: a quarter down the visible code
+    TextEditor* g_shownEditor = nullptr;  // the editor drawn at the last frame (none on the API tab)
 
     // The section of the cursor's line when it is on screen (the reader clicked there), else of the reading line. Null
     // before the first section
@@ -2319,6 +2320,7 @@ void DemoCodeViewer_Show()
     ApiIndex_Load(GetDemoCodeDir(), apiModules);
     ResolvePendingDeclaration();
 
+    g_shownEditor = nullptr;
     if (g_currentFileIndex == (int)files.size())
     {
         ShowApiTab();
@@ -2679,8 +2681,7 @@ void DemoCodeViewer_Show()
         if (ImGui::Button((crumb + "##crumb").c_str()))
             ImGui::OpenPopup("##outline");
         ImGui::PopStyleColor(3);
-        ImGui::SetItemTooltip("Search the demo's sections, or browse them as a tree: a click shows one in the code "
-                              "and in the demo");
+        ImGui::SetItemTooltip("Search or browse the demo's sections");
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x, bandMax.y + style.ItemSpacing.y));
         ImGui::Dummy(ImVec2(0.f, 0.f));  // the band's height, for the layout
         ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
@@ -2749,6 +2750,7 @@ void DemoCodeViewer_Show()
     std::string editorId = std::string("##code_") + displayName;
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
     editor.Render(editorId.c_str(), editorSize, false);
+    g_shownEditor = &editor;
     {
         // The reading line, for the breadcrumb (drawn above the editor: at the next frame): a quarter down the visible
         // code, so that a section that starts near the top is the current one
@@ -2846,6 +2848,37 @@ void DemoCodeViewer_Show()
 void DemoCodeViewer_NoteSectionInView(const char* section)
 {
     g_sectionInViewFrame[section] = ImGui::GetFrameCount();
+}
+
+ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text)
+{
+    ImGuiExplorerCodeTextRect rect;
+    if (g_shownEditor == nullptr || text.empty())
+        return rect;
+    TextEditor& editor = *g_shownEditor;
+    // From the first visible row: a line is at that row or below (folded lines take no row)
+    for (size_t line = editor.GetFirstVisibleRow(); line < editor.GetLineCount(); ++line)
+    {
+        if (editor.DocPos2VisPos(TextEditor::DocPos(line, 0)).row >= editor.GetLastVisibleRow())
+            break;
+        std::string lineText = editor.GetLineText(line);
+        size_t byte = lineText.find(text);
+        if (byte == std::string::npos)
+            continue;
+        auto glyphs = [&](size_t end) {  // a position counts glyphs, not bytes (UTF-8)
+            return (size_t)std::count_if(lineText.begin(), lineText.begin() + (std::ptrdiff_t)end,
+                                         [](char c) { return ((unsigned char)c & 0xC0) != 0x80; });
+        };
+        TextEditor::DocPos first(line, glyphs(byte)), last(line, glyphs(byte + text.size()));
+        if (!editor.IsDocPosVisible(first))
+            continue;
+        rect.visible = true;
+        rect.min = editor.DocPos2ScreenPos(first);
+        rect.max = editor.DocPos2ScreenPos(last);
+        rect.max.y += editor.GetLineHeight();
+        return rect;
+    }
+    return rect;
 }
 
 void DemoCodeViewer_NoteDemoShown()

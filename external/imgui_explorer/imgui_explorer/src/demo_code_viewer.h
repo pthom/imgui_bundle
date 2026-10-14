@@ -1,4 +1,5 @@
 #pragma once
+#include "imgui_explorer.h"
 #include <string>
 
 // Render the code viewer window (call from a dockable window's GuiFunction)
@@ -34,6 +35,8 @@ bool DemoCodeViewer_TakeShowDemoRequest();
 void DemoCodeViewer_NoteSectionInView(const char* section);
 // The explorer reports each frame when it shows the demo: beside the code, or in the other pane of a narrow layout
 void DemoCodeViewer_NoteDemoShown();
+// The screen rectangle of a text in the code shown at the last frame: its first occurrence on screen
+ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text);
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();

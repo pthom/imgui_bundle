@@ -382,7 +382,11 @@ namespace
         float em = ImGui::GetFontSize();
         float height = em * 1.7f, pad = em * 0.2f;
         ImVec2 size(height * imageSize.x / imageSize.y + 2.f * pad, height + 2.f * pad);
-        bool clicked = ImGui::InvisibleButton(asset, size);
+        // Its ID: the asset's name, without its folder (a test engine reads a "/" as a path: "**/##logo_cpp")
+        std::string id = asset;
+        id = id.substr(id.find_last_of('/') + 1);
+        id = "##" + id.substr(0, id.find('.'));
+        bool clicked = ImGui::InvisibleButton(id.c_str(), size);
         bool hovered = ImGui::IsItemHovered();
         ImVec2 p0 = ImGui::GetItemRectMin(), p1 = ImGui::GetItemRectMax();
         ImDrawList* drawList = ImGui::GetWindowDrawList();
@@ -778,6 +782,11 @@ namespace {
 
 } // anonymous namespace
 
+
+ImGuiExplorerCodeTextRect GetImGuiExplorerCodeTextRect(const std::string& text)
+{
+    return DemoCodeViewer_TextRectOnScreen(text);
+}
 
 void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library,
                               bool show_status_bar)

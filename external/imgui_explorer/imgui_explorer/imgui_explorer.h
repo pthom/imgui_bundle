@@ -1,4 +1,5 @@
 #pragma once
+#include "imgui.h"
 #include <optional>
 #include <string>
 #include <vector>
@@ -17,3 +18,13 @@ void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library = std:
 // (used to locate .py demos and .pyi stubs).
 void ShowImGuiExplorerGui_Python(std::optional<ImGuiExplorerLibrary> library = std::nullopt,
                                  const std::string& pythonPackagePath = "");
+
+// A rectangle on the screen; visible is false when there is none
+struct ImGuiExplorerCodeTextRect
+{
+    bool visible = false;
+    ImVec2 min, max;
+};
+// The screen rectangle of a text in the code shown: its first occurrence on screen. For tours and tests, which point
+// at a word of the code
+ImGuiExplorerCodeTextRect GetImGuiExplorerCodeTextRect(const std::string& text);
