@@ -623,6 +623,27 @@ namespace
         return path;
     }
 
+    // The outline's sections whose path holds every word of the search (lower case, separated by spaces), in order
+    void FindOutlineMatches(const OutlineNode& node, const std::string& search,
+                            std::vector<const OutlineNode*>& matches)
+    {
+        for (const OutlineNode& child : node.children)
+        {
+            std::string path = Lowered(child.path);
+            bool all = true;
+            for (size_t start = 0; start < search.size() && all;)
+            {
+                size_t end = search.find(' ', start);
+                end = end == std::string::npos ? search.size() : end;
+                all = end == start || path.find(search.substr(start, end - start)) != std::string::npos;
+                start = end + 1;
+            }
+            if (all)
+                matches.push_back(&child);
+            FindOutlineMatches(child, search, matches);
+        }
+    }
+
     std::map<std::string, int> g_editorReadingLine;  // per file and language: a quarter down the visible code
     bool g_showDemoRequested = false;            // a narrow layout then shows the demo pane
 
@@ -2418,8 +2439,34 @@ void DemoCodeViewer_Show()
                                             ImVec2(screen.x, screen.y * 0.7f));
         if (ImGui::BeginPopup("##outline"))
         {
+            // The search: the sections whose path holds every word (ignoring case), as a list; Enter takes the
+            // first. It has the keyboard at once, except on a touch screen (the phone's keyboard would cover the tree)
+            static char search[128] = "";
+            bool appearing = ImGui::IsWindowAppearing();
+            if (appearing)
+            {
+                search[0] = '\0';
+                if (!(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen))
+                    ImGui::SetKeyboardFocusHere();
+            }
+            ImGui::SetNextItemWidth(-FLT_MIN);
+            bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " a section", search,
+                                                  sizeof(search), ImGuiInputTextFlags_EnterReturnsTrue);
             const OutlineNode* clicked = nullptr;
-            ShowOutlineNodes(outline, clicked, section ? section->path : "", ImGui::IsWindowAppearing());
+            if (search[0] != '\0')
+            {
+                std::vector<const OutlineNode*> matches;
+                FindOutlineMatches(outline, Lowered(search), matches);
+                for (const OutlineNode* m : matches)
+                    if (ImGui::Selectable((SectionCrumb(m->path, FLT_MAX) + "##" + m->path).c_str()))
+                        clicked = m;
+                if (enter && !matches.empty())
+                    clicked = matches.front();
+                if (matches.empty())
+                    ImGui::TextDisabled("No section matches");
+            }
+            else
+                ShowOutlineNodes(outline, clicked, section ? section->path : "", appearing);
             if (clicked != nullptr)
             {
                 g_pendingScrollFile = currentFile.cppDisplayName();
@@ -2428,7 +2475,7 @@ void DemoCodeViewer_Show()
                 g_pendingScrollPython = showingPython;
                 if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
                     RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
-                if (clicked->children.empty())  // a section that unfolds keeps the outline open
+                if (clicked->children.empty() || search[0] != '\0')  // a section that unfolds keeps the tree open
                     ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
