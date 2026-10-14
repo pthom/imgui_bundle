@@ -17,6 +17,7 @@ import narrator  # noqa: E402
 WINDOW_SIZE = (960, 540)       # in points: 1920 x 1080 pixels on a Retina screen
 SCENARIO = "cut_demo_code.md"  # the cut played when none is given
 URL = "pthom.github.io/imgui_explorer"
+LIBRARIES = ["imgui", "implot", "implot3_d"]   # the toolbar's libraries, as in the online explorer
 PHONE_FONT_SCALE = 0.7         # the phone's text, against the desktop's (a real phone shows about 24 em across)
 PHONE_HEIGHT = 0.92            # the phone's height, in the stage's
 PHONE_ASPECT = 402 / 874       # an iPhone's screen (width / height)
@@ -230,8 +231,8 @@ def target_button(name: str, ctx: Any) -> Optional[narrator.Rect]:
 
 
 def target_show_in_demo(_: str, ctx: Any) -> Optional[narrator.Rect]:
-    """The breadcrumb's button that shows the section in the demo (shorter when the code's pane is narrow)"""
-    for label in (" Show in the demo", " Demo"):
+    """The breadcrumb's button that shows the section in the demo (its labels, as the explorer changed them)"""
+    for label in (" Show demo", " Show in the demo", " Demo"):
         rect = _rect(ctx.item_info("**/" + fa.ICON_FA_PLAY + label, NO_ERROR))
         if rect is not None:
             return rect
@@ -287,6 +288,7 @@ def main() -> None:
     params.ini_disable = True
     params.use_imgui_test_engine = True          # the gestures: the engine's cursor clicks and types
     params.callbacks.show_gui = gui
+    imgui_explorer.set_imgui_explorer_libraries([imgui_explorer.ImGuiExplorerLibrary[name] for name in LIBRARIES])
     lesson.video(params, _video_output())
     immapp.run(params, immapp.AddOnsParams(with_markdown=True, with_implot=True, with_implot3d=True))
 
