@@ -185,6 +185,20 @@ namespace
 
     bool IsIdentifierChar(char c) { return std::isalnum((unsigned char)c) || c == '_'; }
 
+    // A dot that closes an abbreviation ("e.g. xs", "i.e. the"), not a sentence
+    bool IsAbbreviationDot(const std::string& text, size_t dot)
+    {
+        for (const std::string abbreviation : {"e.g", "i.e", "etc", "vs", "cf"})
+        {
+            size_t n = abbreviation.size();
+            if (dot < n || text.compare(dot - n, n, abbreviation) != 0)
+                continue;
+            if (dot == n || !std::isalpha((unsigned char)text[dot - n - 1]))  // a whole word: not "vs" in "canvas"
+                return true;
+        }
+        return false;
+    }
+
     // The parts of a qualified name; a selection is cut at its first other character ("ImGui::Button(" -> ImGui, Button)
     std::vector<std::string> SplitQualified(const std::string& identifier)
     {
@@ -387,6 +401,8 @@ std::string ApiIndex_FirstSentence(const std::string& doc)
     for (char c : doc)
         text += (c == '\n' || c == '\t') ? ' ' : c;
     size_t dot = text.find(". ");
+    while (dot != std::string::npos && IsAbbreviationDot(text, dot))
+        dot = text.find(". ", dot + 2);
     if (dot != std::string::npos)
         text = text.substr(0, dot + 1);
     if (text.size() > 160)

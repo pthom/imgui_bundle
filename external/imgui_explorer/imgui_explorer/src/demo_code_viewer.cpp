@@ -1159,24 +1159,6 @@ namespace
         g_pendingApiTabSelect = true;
     }
 
-    void ShowCode(const std::string& text, bool muted, float wrapWidth = 0.f)
-    {
-        auto codeFont = RichMd::GetCodeFont();
-        if (codeFont.font)
-            ImGui::PushFont(codeFont.font, codeFont.size);
-        if (muted)
-            ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
-        if (wrapWidth > 0.f)
-            ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrapWidth);
-        ImGui::TextWrapped("%s", text.c_str());
-        if (wrapWidth > 0.f)
-            ImGui::PopTextWrapPos();
-        if (muted)
-            ImGui::PopStyleColor();
-        if (codeFont.font)
-            ImGui::PopFont();
-    }
-
     // A signature wrapped at the card's width: a break after a comma, the continuation indented (the snippet's editor
     // does not wrap)
     std::string WrapSignature(const std::string& text, size_t maxChars)
@@ -1321,6 +1303,35 @@ namespace
     }
 
     // The hover tooltip: the signature in the shown language, in Python the C++ name, the first sentence of the doc
+    // A signature in a tooltip, as the card shows it: highlighted, wrapped after its commas (a tooltip cannot scroll).
+    // As wide as its longest line: a snippet otherwise takes the available width, which a tooltip takes from it
+    void ShowTooltipSignature(const std::string& signature, bool python, float maxWidth)
+    {
+        auto codeFont = RichMd::GetCodeFont();
+        if (codeFont.font)
+            ImGui::PushFont(codeFont.font, codeFont.size);
+        float glyph = ImGui::CalcTextSize("M").x;
+        if (codeFont.font)
+            ImGui::PopFont();
+        std::string code = WrapSignature(signature, (size_t)(maxWidth / glyph));
+        size_t longest = 0;
+        for (size_t start = 0; start <= code.size();)
+        {
+            size_t end = code.find('\n', start);
+            end = end == std::string::npos ? code.size() : end;
+            longest = std::max(longest, end - start);
+            start = end + 1;
+        }
+        Snippets::SnippetData data;
+        data.Code = code;
+        data.Language = python ? Snippets::SnippetLanguage::Python : Snippets::SnippetLanguage::Cpp;
+        data.ShowCopyButton = false;
+        data.ShowCursorPosition = false;
+        data.MaxHeightInLines = 0;
+        data.DeIndentCode = false;
+        Snippets::ShowCodeSnippet(data, (float)(longest + 8) * glyph);  // the snippet's margins: 7 glyphs, and one
+    }
+
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount)
     {
         const ApiEntry& e = *ref.entry;
@@ -1328,7 +1339,7 @@ namespace
         std::string signature = python ? e.py : e.cpp;
         if (!e.typedefCpp.empty())  // an enum: the type of its values in the API, as on its card
             signature = python ? e.typedefPy : e.cpp + "\n" + e.typedefCpp;
-        ShowCode(signature.empty() ? (python ? ref.PyName() : ref.CppName()) : signature, false, wrap);
+        ShowTooltipSignature(signature.empty() ? (python ? ref.PyName() : ref.CppName()) : signature, python, wrap);
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrap);
         if (python)
             ImGui::TextDisabled("C++: %s", ref.CppName().c_str());

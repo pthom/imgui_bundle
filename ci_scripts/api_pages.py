@@ -663,10 +663,14 @@ def _safe_markdown(text: str) -> str:
     return "\n".join(out).strip("\n")
 
 
+# litgen's notes for Python users, in the docstrings: the parameters' defaults, the arrays' dtype. None applies to C++
+_BINDINGS_NOTES = ("Python bindings defaults:", "Note: all array arguments must share the same dtype")
+
+
 def _split_bindings_notes(doc: str) -> tuple[str, str]:
-    """A docstring, and litgen's notes for Python users apart (the "Python bindings defaults" paragraphs)"""
+    """A docstring, and litgen's notes for Python users apart (_BINDINGS_NOTES)"""
     paragraphs = doc.split("\n\n")
-    notes = [p for p in paragraphs if p.lstrip().startswith("Python bindings defaults:")]
+    notes = [p for p in paragraphs if p.lstrip().startswith(_BINDINGS_NOTES)]
     return "\n\n".join(p for p in paragraphs if p not in notes), "\n\n".join(notes)
 
 
@@ -915,9 +919,9 @@ def _cpp_name(entry: Entry, namespace: str, owner: str = "") -> str:
 
 
 def _cpp_doc(doc: str) -> str:
-    """A docstring without litgen's notes for Python users (the "Python bindings defaults" paragraph)"""
+    """A docstring without litgen's notes for Python users (_BINDINGS_NOTES)"""
     paragraphs = doc.split("\n\n")
-    return "\n\n".join(p for p in paragraphs if not p.lstrip().startswith("Python bindings defaults:"))
+    return "\n\n".join(p for p in paragraphs if not p.lstrip().startswith(_BINDINGS_NOTES))
 
 
 def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, owner: str = "") -> list[str]:
