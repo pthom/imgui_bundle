@@ -255,8 +255,10 @@ namespace
             DemoCodeViewer_NoteSectionInView(last.section.c_str());
         if (section != nullptr)
             last = {section, window, ImGui::GetCursorScreenPos().y < top, frame};
+        // (Its own position: SetScrollHereY would take the line before, the plot of the previous section when a
+        // function holds several)
         if (section != nullptr && DemoCodeViewer_TakeRevealTarget(section))
-            ImGui::SetScrollHereY(0.1f);
+            ImGui::SetScrollFromPosY(ImGui::GetCursorScreenPos().y - window->Pos.y, 0.1f);
         else if (section != nullptr && ImGui::IsRectVisible(ImVec2(1.f, ImGui::GetTextLineHeight())))
             DemoCodeViewer_NoteSectionInView(section);
 

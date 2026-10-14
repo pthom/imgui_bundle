@@ -25,8 +25,8 @@ void DemoCodeViewer_PreloadDemoFile();
 // cppFilename: e.g. "imgui_demo.cpp". Returns -1 if not found or no Python available.
 int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* section);
 
-// The demo's marker callback asks whether its section is the one an outline click reveals: true once, then the caller
-// scrolls the demo window to it (spike)
+// The demo's marker callback asks whether its section is the one "Show demo" reveals: true at its first few frames,
+// then the caller scrolls the demo window to it
 bool DemoCodeViewer_TakeRevealTarget(const char* section);
 // True once after "Show demo" (the breadcrumb's button, the code's menu): a narrow layout shows the demo pane
 bool DemoCodeViewer_TakeShowDemoRequest();

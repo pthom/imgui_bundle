@@ -35,6 +35,7 @@ struct LibraryConfig {
     std::vector<DemoFileInfo> files;            // Demo files for this library
     std::function<void()> frameSetup;           // Called each frame (e.g., iam_update_begin_frame)
     std::function<void(ImVec2 windowPos, ImVec2 windowSize)> showDemoWindow; // Shows the demo content
+    std::string demoWindowName;                 // Its window: "Show demo" opens a section there (empty: no reveal)
     std::string introText;                                       // Plain text intro for the library (e.g. "Dear ImGui")
     std::vector<std::pair<std::string, std::string>> links;      // {label, url} pairs shown in the top toolbar
     std::vector<std::string> apiModules;                         // The modules of the API index (demo_code/api_index/<module>.json)

@@ -109,6 +109,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = ShowImGuiDemoWindow_AutoReopen;
+        cfg.demoWindowName = "Dear ImGui Demo";
         cfg.introText = "Dear ImGui";
         cfg.apiModules = {"imgui", "imgui.internal"};
         cfg.links = {
@@ -142,6 +143,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImPlot::ShowDemoWindow_MaybeDocked(true, nullptr,
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
+        cfg.demoWindowName = "ImPlot Demo";
         cfg.introText = "ImPlot - Immediate Mode Plotting for Dear ImGui";
         cfg.apiModules = {"implot", "implot.internal"};
         cfg.links = {
@@ -172,6 +174,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
             ImPlot3D::ShowDemoWindow_MaybeDocked(true, nullptr,
                 ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize, pos, size);
         };
+        cfg.demoWindowName = "ImPlot3D Demo";
         cfg.introText = "ImPlot3D - Immediate Mode 3D Plotting for Dear ImGui";
         cfg.apiModules = {"implot3d", "implot3d.internal"};
         cfg.links = {

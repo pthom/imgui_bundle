@@ -27,6 +27,8 @@
 // U+F08E, external-link in Font Awesome 4 (and 6). hello_imgui's ICON_FA_EXTERNAL_LINK_ALT is U+F35D, a Font Awesome 5
 // code that the FA4 font lacks
 #define ICON_FA4_EXTERNAL_LINK "\xef\x82\x8e"
+// U+F09B, github in Font Awesome 4 (a brand icon: not in hello_imgui's header)
+#define ICON_FA4_GITHUB "\xef\x82\x9b"
 
 
 namespace
@@ -348,6 +350,8 @@ namespace
         std::string label;      // empty: none
         bool pushesId = false;  // TreeNode, TreeNodeEx; not CollapsingHeader
         bool opens = true;      // false: a PushID("label") (it changes the ID of what follows, opens nothing)
+        bool tabBar = false;    // a BeginTabBar: the tab after it is selected there
+        bool tab = false;       // a BeginTabItem
     };
 
     TreeCall TreeCallOn(const std::string& line)
@@ -409,6 +413,7 @@ namespace
     {
         std::vector<TreeCall> chain;
         const OutlineNode* node = &root;
+        size_t nodeIndent = std::string::npos;  // of the last node's call
         for (size_t start = 0, level = 0; start <= path.size(); ++level)
         {
             size_t slash = path.find('/', start);
@@ -453,12 +458,19 @@ namespace
                 if (!call.pushesId)
                     continue;
             }
+            // A call not indented under the last node's is beside it, not inside (the marker "Configuration/Backend
+            // Flags" is in the header "Configuration", beside the node "Configuration##2")
+            size_t indent = lines[(size_t)callLine].find_first_not_of(' ');
+            if (nodeIndent != std::string::npos && indent <= nodeIndent)
+                chain.pop_back();
             chain.push_back(call);
+            nodeIndent = indent;
         }
         return chain;
     }
 
     std::string g_revealTarget;  // the section whose marker scrolls the demo window to it, when it runs
+    int g_revealScrolls = 0;     // at as many frames: the first scroll may be clamped to the content of before (a tab)
     double g_revealTime = -10.;  // when the last reveal started: "Show demo" flashes
     std::map<std::string, int> g_sectionInViewFrame;  // per section: the last frame when its zone was in view
     int g_demoShownFrame = -1;                        // the last frame when the explorer showed the demo
@@ -466,31 +478,118 @@ namespace
     // "Show demo" blinks when the reader settles on a section that the demo does not show
     struct ShowDemoBlink
     {
-        std::string path;     // the section, and whether the demo shows it: the state that settles
+        std::string path;   // the section, and whether the demo shows it: the state that settles
         bool inView = false;
-        double since = 0.;    // when that state started
-        int revealable = -1;  // whether a click can show it, checked once when it settles (-1: not yet)
+        double since = 0.;  // when that state started
     };
     ShowDemoBlink g_showDemoBlink;
 
-    // Opens the nodes of a section in the demo window; its marker, when it runs, scrolls there. False when the
-    // demo window or a level is not found
+    // The string literal after `call` on a line (e.g. the label of `DemoHeader("`), or empty
+    std::string LiteralAfter(const std::string& line, const char* call)
+    {
+        size_t pos = line.find(call);
+        if (pos == std::string::npos)
+            return {};
+        size_t start = pos + strlen(call), end = line.find('"', start);
+        return end == std::string::npos ? std::string() : line.substr(start, end - start);
+    }
+
+    // The outline's node of a section, or null
+    const OutlineNode* FindOutlineNode(const OutlineNode& root, const std::string& path)
+    {
+        const OutlineNode* node = &root;
+        for (size_t start = 0; start <= path.size();)
+        {
+            size_t end = std::min(path.find('/', start), path.size());
+            std::string part = path.substr(start, end - start);
+            auto child = std::find_if(node->children.begin(), node->children.end(),
+                                      [&](const OutlineNode& c) { return c.name == part; });
+            if (child == node->children.end())
+                return nullptr;
+            node = &*child;
+            start = end + 1;
+        }
+        return node;
+    }
+
+    // The plot demos (ImPlot, ImPlot3D) have a function per demo, which DemoHeader("label", function) calls in a
+    // tree node, in a tab. The calls to open for a section come from the function around its marker: the tab bar, the
+    // tab, the node (none for a function called alone in its tab: the config). Empty when a level is not found
+    std::vector<TreeCall> TabRevealChain(const std::vector<std::string>& lines, const OutlineNode& root,
+                                         const std::string& path)
+    {
+        const OutlineNode* node = FindOutlineNode(root, path);
+        if (node == nullptr || !node->hasMarker)
+            return {};
+        std::string function;  // from its definition: "void Demo_LinePlots() {"
+        for (int i = node->line - 1; i >= 0 && function.empty(); --i)
+            if (lines[(size_t)i].rfind("void ", 0) == 0 && lines[(size_t)i].find('(') != std::string::npos)
+                function = lines[(size_t)i].substr(5, lines[(size_t)i].find('(') - 5);
+        int callLine = -1;
+        std::string header;
+        for (int i = 0; i < (int)lines.size() && callLine < 0 && !function.empty(); ++i)
+        {
+            const std::string& line = lines[(size_t)i];
+            if (line.find(", " + function + ")") != std::string::npos)
+                header = LiteralAfter(line, "DemoHeader(\"");
+            if (!header.empty() || line.find(" " + function + "();") != std::string::npos)
+                callLine = i;
+        }
+        std::string tab, tabBar;
+        int tabLine = callLine;
+        for (; tabLine >= 0 && tab.empty(); --tabLine)
+            tab = LiteralAfter(lines[(size_t)tabLine], "BeginTabItem(\"");
+        for (int i = tabLine; i >= 0 && tabBar.empty(); --i)
+            tabBar = LiteralAfter(lines[(size_t)i], "BeginTabBar(\"");
+        if (tab.empty() || tabBar.empty())
+            return {};
+        // BeginTabBar and BeginTabItem push their IDs, for what they hold
+        std::vector<TreeCall> chain = {{tabBar, true, false, true, false}, {tab, true, false, false, true}};
+        if (!header.empty())
+            chain.push_back({header, true, true});
+        return chain;
+    }
+
+    // The calls to open for a section: in the Dear ImGui demo, its nested tree nodes; in the plot demos, a tab and a
+    // node. Empty when not found
+    std::vector<TreeCall> SectionChain(const std::vector<std::string>& lines, const OutlineNode& root,
+                                       const std::string& path)
+    {
+        return GetCurrentLibrary().name == "ImGui" ? RevealChain(lines, root, path)
+                                                   : TabRevealChain(lines, root, path);
+    }
+
+    // The window of the current library's demo, or null (no reveal there)
+    ImGuiWindow* DemoWindow()
+    {
+        const std::string& name = GetCurrentLibrary().demoWindowName;
+        return name.empty() ? nullptr : ImGui::FindWindowByName(name.c_str());
+    }
+
+    // Opens the nodes of a section in the demo window, and selects its tab; its marker, when it runs, scrolls there.
+    // False when the demo window or a level is not found
     bool RevealInDemo(const std::vector<std::string>& lines, const OutlineNode& root, const std::string& path)
     {
-        ImGuiWindow* demo = ImGui::FindWindowByName("Dear ImGui Demo");
-        std::vector<TreeCall> chain = RevealChain(lines, root, path);
+        ImGuiWindow* demo = DemoWindow();
+        std::vector<TreeCall> chain = SectionChain(lines, root, path);
         if (demo == nullptr || chain.empty())
             return false;
         ImGuiID seed = demo->ID;
+        ImGuiTabBar* tabBar = nullptr;
         for (const TreeCall& call : chain)
         {
             ImGuiID id = ImHashStr(call.label.c_str(), 0, seed);
+            if (call.tabBar && (tabBar = ImGui::GetCurrentContext()->TabBars.GetByKey(id)) == nullptr)
+                return false;  // never shown
+            if (call.tab && tabBar != nullptr)
+                tabBar->NextSelectedTabId = id;
             if (call.opens)
                 demo->StateStorage.SetInt(id, 1);
             if (call.pushesId)
                 seed = id;
         }
         g_revealTarget = path;
+        g_revealScrolls = 3;
         g_revealTime = ImGui::GetTime();
         return true;
     }
@@ -527,7 +626,7 @@ namespace
 #else
             bool asked = std::getenv("IMGUI_EXPLORER_REVEAL_SELFTEST") != nullptr;
 #endif
-            if (!asked || cppContent.empty() || ImGui::FindWindowByName("Dear ImGui Demo") == nullptr)
+            if (!asked || cppContent.empty() || DemoWindow() == nullptr)
                 return;
             t.started = t.active = true;
             CollectLivePaths(OutlineOf(cppContent), t.paths);
@@ -549,7 +648,7 @@ namespace
         const std::string& path = t.paths[t.index];
         if (t.frames == 0)
         {
-            ImGui::FindWindowByName("Dear ImGui Demo")->StateStorage.Clear();
+            DemoWindow()->StateStorage.Clear();
             t.fired = false;
             if (!RevealInDemo(SplitLines(cppContent), OutlineOf(cppContent), path))
             {
@@ -680,11 +779,21 @@ namespace
         g_showDemoRequested = true;
     }
 
-    // Whether "Show demo" can open a section: the reveal follows the tree calls of the Dear ImGui demo only
+    // Whether "Show demo" can open a section: its calls are found in the demo's source (checked once per section)
     bool CanRevealInDemo(const CodeFile& cf, const std::string& path)
     {
-        return GetCurrentLibrary().name == "ImGui"
-               && !RevealChain(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), path).empty();
+        if (GetCurrentLibrary().demoWindowName.empty())
+            return false;
+        static std::map<const std::string*, std::vector<std::string>> lines;  // per demo source
+        static std::map<std::pair<const std::string*, std::string>, bool> known;
+        auto key = std::make_pair(&cf.cppContent, path);
+        auto found = known.find(key);
+        if (found != known.end())
+            return found->second;
+        std::vector<std::string>& sourceLines = lines[&cf.cppContent];
+        if (sourceLines.empty())
+            sourceLines = SplitLines(cf.cppContent);
+        return known[key] = !SectionChain(sourceLines, OutlineOf(cf.cppContent), path).empty();
     }
 
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
@@ -1082,6 +1191,17 @@ namespace
     float ButtonWidth(const char* label)
     {
         return ImGui::CalcTextSize(label, nullptr, true).x + 2.f * ImGui::GetStyle().FramePadding.x;
+    }
+
+    // The text, cut at its end with "..." to fit a width
+    std::string ElidedToWidth(const std::string& text, float maxWidth)
+    {
+        if (ImGui::CalcTextSize(text.c_str()).x <= maxWidth)
+            return text;
+        std::string cut = text;
+        while (!cut.empty() && ImGui::CalcTextSize((cut + "...").c_str()).x > maxWidth)
+            cut.pop_back();
+        return cut + "...";
     }
 
     // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height;
@@ -2096,7 +2216,11 @@ void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; g_userPrefPy
 void DemoCodeViewer_Show()
 {
     bool pythonOnly = DemoCodeViewer_IsPythonOnlyMode();
-    RevealSelfTestStep(g_codeFiles["imgui_demo"].cppContent);
+    {
+        static const std::string none;
+        std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();  // its demo first (e.g. with ?lib=ImPlot)
+        RevealSelfTestStep(files.empty() ? none : g_codeFiles[files[0].baseName].cppContent);
+    }
 
     // In Python-only mode, force Python display
     if (pythonOnly)
@@ -2292,13 +2416,14 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        if (ImGui::SmallButton(compact ? "GitHub" : "View on github at this line"))
+        if (ImGui::SmallButton(ICON_FA4_GITHUB " GitHub"))
         {
             auto pos = editor.GetMainCursorPosition();
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
             if (!githubUrl.empty())
                 ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(pos.line + 1)).c_str());
         }
+        ImGui::SetItemTooltip("View this file on GitHub, at the cursor's line");
 
         ImGui::SameLine();
 
@@ -2316,42 +2441,60 @@ void DemoCodeViewer_Show()
         }
         ImGui::SetItemTooltip("Search (Ctrl+F).\n You may also right click in the editor below.");
 
+        // What follows the API button: the line info (not when compact: the gutter shows the line numbers, the tab
+        // names the file), then the checkboxes, which stay together
+        char lineInfo[256] = "";
+        if (!compact)
+            snprintf(lineInfo, sizeof(lineInfo), "%6zu / %6zu  | %s", editor.GetMainCursorPosition().line + 1,
+                     editor.GetLineCount(), displayName.c_str());
+        float spacing = ImGui::GetStyle().ItemSpacing.x;
+        float checkboxesWidth = CheckboxWidth("Wrap") + spacing + CheckboxWidth("API tooltips")
+                                + (compact ? 0.f : spacing + CheckboxWidth("Minimap"));
+        float restWidth = (compact ? 0.f : spacing + ImGui::CalcTextSize(lineInfo).x) + spacing + checkboxesWidth;
+
         ImGui::SameLine();
 
         // The API button: the entry of the identifier at the cursor, in the API tab; its label names the entry, so
-        // that the user knows what a click will open
-        std::string apiLabel = ICON_FA_BOOK;
+        // that the user knows what a click will open. The label is cut to the room it has, so that what follows
+        // does not move with the cursor: on the same line when it fits there beside a short label, else below
+        float room = ImGui::GetContentRegionAvail().x;
+        bool restBeside = room - restWidth >= ButtonWidth(ICON_FA_BOOK " ") + HelloImGui::EmSize(7.f);
+        std::string apiLabel = ICON_FA_BOOK, cutName;  // the name, when the label cuts it
         if (!apiHits.empty())
-            apiLabel += " " + (showingPython ? apiHits[0].PyName() : apiHits[0].CppName()) + (apiHits.size() > 1 ? " ..." : "");
+        {
+            std::string more = apiHits.size() > 1 ? " ..." : "";
+            std::string name = showingPython ? apiHits[0].PyName() : apiHits[0].CppName();
+            float nameRoom = (restBeside ? room - restWidth : room) - ButtonWidth((apiLabel + " " + more).c_str());
+            std::string shown = ElidedToWidth(name, nameRoom);
+            apiLabel += " " + shown + more;
+            if (shown != name)
+                cutName = name + "\n\n";
+        }
         ImGui::BeginDisabled(apiHits.empty());
         if (ImGui::SmallButton((apiLabel + "###searchapi").c_str()))
             OpenApi(apiHits);
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-            ImGui::SetTooltip("The API of the identifier at the cursor (Ctrl+Shift+F): click a name in the code, "
-                              "then here.\nIts signatures in Python and C++, its doc, where the demo uses it.");
+            ImGui::SetTooltip("%sThe API of the identifier at the cursor (Ctrl+Shift+F): click a name in the code, "
+                              "then here.\nIts signatures in Python and C++, its doc, where the demo uses it.",
+                              cutName.c_str());
         ImGui::EndDisabled();
 
-        // Compact: no line info (the gutter shows the line numbers, the tab names the file)
+        if (restBeside)
+            ImGui::SameLine();
         if (!compact)
         {
-            auto pos = editor.GetMainCursorPosition();
-            char lineInfo[256];
-            snprintf(lineInfo, sizeof(lineInfo), "%6zu / %6zu  | %s", pos.line + 1, editor.GetLineCount(),
-                     displayName.c_str());
-            SameLineIfFits(ImGui::CalcTextSize(lineInfo).x);
             ImGui::TextUnformatted(lineInfo);
+            SameLineIfFits(checkboxesWidth);
         }
-
-        SameLineIfFits(CheckboxWidth("Wrap"));
         ImGui::Checkbox("Wrap", &g_wordWrap);
         ImGui::SetItemTooltip("Wrap long lines to the editor width");
         if (!compact)
         {
-            SameLineIfFits(CheckboxWidth("Minimap"));
+            ImGui::SameLine();
             ImGui::Checkbox("Minimap", &g_showMinimap);
             ImGui::SetItemTooltip("Show minimap on the right side of the editor");
         }
-        SameLineIfFits(CheckboxWidth("API tooltips"));
+        ImGui::SameLine();
         ImGui::Checkbox("API tooltips", &g_apiTooltips);
         ImGui::SetItemTooltip("A tooltip with the API of the identifier under the mouse");
     }
@@ -2452,7 +2595,8 @@ void DemoCodeViewer_Show()
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x + pad, bandMin.y + pad));
         // Full-size buttons, colored, to be seen: "play" in green, the search in blue. "Show demo" is always there
         // when the reveal can work (it reads the C++ demo: not in Python-only mode), so that the search keeps its
-        // place; disabled before the first section, and while the demo beside the code shows the section
+        // place; disabled before the first section, on a section that it cannot open, and while the demo beside the
+        // code shows the section
         if (cf.cppState == LoadState::Loaded)
         {
             // Wide, the demo is beside the code (shown at each frame, before it); narrow, in the other pane, as the
@@ -2461,21 +2605,22 @@ void DemoCodeViewer_Show()
             bool demoBeside = g_demoShownFrame == frame;
             auto shown = section ? g_sectionInViewFrame.find(section->path) : g_sectionInViewFrame.end();
             bool inView = shown != g_sectionInViewFrame.end() && shown->second >= ImMin(g_demoShownFrame, frame - 1);
+            bool revealable = section != nullptr && CanRevealInDemo(cf, section->path);
 
-            // A blink when the reader settles on a section that the demo does not show, if a click can show it (not
-            // while the path changes with the scroll): two pulses. A flash after a reveal
+            // A blink when the reader settles on a section that the demo does not show (not while the path changes
+            // with the scroll): two pulses. A flash after a reveal
             double now = ImGui::GetTime();
             ShowDemoBlink& blink = g_showDemoBlink;
             std::string path = section ? section->path : "";
             if (path != blink.path || inView != blink.inView)
-                blink = {path, inView, now, -1};
+                blink = {path, inView, now};
             float blinkTime = (float)(now - blink.since) - 0.4f;
-            if (section != nullptr && !inView && blinkTime > 0.f && blink.revealable < 0)
-                blink.revealable = CanRevealInDemo(cf, path) ? 1 : 0;
-            float pulse = blink.revealable == 1 && blinkTime < 1.f ? 0.5f - 0.5f * ImCos(blinkTime * 4.f * IM_PI) : 0.f;
+            float pulse = revealable && !inView && blinkTime > 0.f && blinkTime < 1.f
+                              ? 0.5f - 0.5f * ImCos(blinkTime * 4.f * IM_PI)
+                              : 0.f;
             float flash = ImClamp(1.f - (float)(now - g_revealTime) / 0.8f, 0.f, 1.f);
 
-            ImGui::BeginDisabled(section == nullptr || (demoBeside && inView && flash <= 0.f));
+            ImGui::BeginDisabled(!revealable || (demoBeside && inView && flash <= 0.f));
             ImVec4 green(0.16f, 0.42f, 0.26f, 1.f);
             PushButtonColors(ImLerp(green, ImVec4(0.45f, 0.85f, 0.55f, 1.f), ImMax(pulse, flash)),
                              ImVec4(0.22f, 0.55f, 0.34f, 1.f), ImVec4(0.26f, 0.63f, 0.39f, 1.f));
@@ -2483,8 +2628,14 @@ void DemoCodeViewer_Show()
                 ShowSectionInDemo(cf, section->path);
             ImGui::PopStyleColor(3);
             ImGui::EndDisabled();
+            // The Dear ImGui demo's menus open windows and menu items, not tree nodes
+            bool inMenus = GetCurrentLibrary().name == "ImGui"
+                           && (path.rfind("Menu/", 0) == 0 || path.rfind("Examples/", 0) == 0
+                               || path.rfind("Tools/", 0) == 0 || path.rfind("Using Dockspace", 0) == 0);
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled | ImGuiHoveredFlags_ForTooltip))
                 ImGui::SetTooltip("%s", section == nullptr     ? "Scroll to a section of the demo, or search one"
+                                        : inMenus              ? "This demo opens from the demo's menu bar"
+                                        : !revealable          ? "This section cannot be opened from here"
                                         : demoBeside && inView ? "You are viewing this demo: it is on the left"
                                         : demoBeside           ? "Run this demo, on the left"
                                         : inView               ? "Back to this demo, in the Demo pane"
@@ -2623,7 +2774,7 @@ void DemoCodeViewer_Show()
         {
             std::string label = ICON_FA_PLAY " Show demo: "
                                 + SectionCrumb(rightClickSection, ImGui::GetFontSize() * 20.f);
-            if (ImGui::MenuItem(label.c_str()))
+            if (ImGui::MenuItem(label.c_str(), nullptr, false, CanRevealInDemo(cf, rightClickSection)))
                 ShowSectionInDemo(cf, rightClickSection);
             ImGui::Separator();
         }
@@ -2685,7 +2836,8 @@ bool DemoCodeViewer_TakeRevealTarget(const char* section)
 {
     if (g_revealTarget.empty() || g_revealTarget != section)
         return false;
-    g_revealTarget.clear();
+    if (--g_revealScrolls <= 0)
+        g_revealTarget.clear();
     g_revealSelfTest.fired = true;
     return true;
 }
