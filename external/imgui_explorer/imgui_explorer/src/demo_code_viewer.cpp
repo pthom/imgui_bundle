@@ -103,6 +103,12 @@ namespace
     bool g_showMinimap = true;
     // Below this width (in em), the code viewer is compact (a phone): no line info, no minimap, a shorter label
     constexpr float kCompactWidthEm = 35.f;
+    // One pane at a time (a phone): no line numbers, and a jump scrolls sideways past the indentation (set each frame)
+    bool g_narrowLayout = false;
+    // A jump's line at the top of an editor (a jump moves both languages' editors): in a narrow layout, the editor then
+    // scrolls sideways (jumped: the jump was drawn; it scrolled back to the first column, the sideways scroll follows)
+    struct PendingDedent { int topLine = 0; bool jumped = false; };
+    std::map<const TextEditor*, PendingDedent> g_pendingDedents;
 
     // The API tab (after the files' tabs): the entry shown, or the candidates of an ambiguous lookup
     ApiRef g_apiCurrent;
@@ -841,13 +847,34 @@ namespace
         return markers;
     }
 
+    // Scrolls an editor to a line at its top, when it is next drawn; a narrow layout then also scrolls it sideways
+    void ScrollLineToTop(TextEditor& editor, int topLine)
+    {
+        editor.ScrollToLine(topLine, TextEditor::Scroll::alignTop);
+        g_pendingDedents[&editor] = {topLine, false};
+    }
+
+    // The indentation (in columns) that the lines from `first` share, over `count` lines; blank lines do not count
+    int CommonIndent(const TextEditor& editor, int first, int count)
+    {
+        int indent = -1;
+        for (int line = ImMax(first, 0); line < first + count && line < (int)editor.GetLineCount(); ++line)
+        {
+            std::string text = editor.GetLineText((size_t)line);
+            size_t spaces = text.find_first_not_of(' ');
+            if (spaces != std::string::npos)
+                indent = indent < 0 ? (int)spaces : ImMin(indent, (int)spaces);
+        }
+        return ImMax(indent, 0);
+    }
+
     // Shows a line: the cursor on it, scrolled near the top, highlighted by a line marker (not a selection: a selection
     // would feed the copy button and the search)
     void MarkLine(TextEditor& editor, int line)
     {
         editor.AddMarker((size_t)line, IM_COL32(255, 220, 100, 110), IM_COL32(255, 220, 100, 36), "", "");
         editor.SetCursor(TextEditor::DocPos(line, 0));
-        editor.ScrollToLine(line - 2, TextEditor::Scroll::alignTop);  // applied when the editor is next drawn
+        ScrollLineToTop(editor, line - 2);
     }
     // The same in one language (the other loses its marker)
     void ShowLine(CodeFile& cf, bool python, int line)
@@ -2393,7 +2420,7 @@ void DemoCodeViewer_Show()
         if (target != nullptr && target->hasMarker && (shown == nullptr || shown->path != cf.readingSection))
         {
             shownEditor.SetCursor(TextEditor::DocPos(target->line - 1, 0));
-            shownEditor.ScrollToLine(ImMax(target->line - 3, 0), TextEditor::Scroll::alignTop);
+            ScrollLineToTop(shownEditor, ImMax(target->line - 3, 0));
         }
     }
     cf.shownPython = showingPython;
@@ -2703,6 +2730,12 @@ void DemoCodeViewer_Show()
             bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " a section", search,
                                                   sizeof(search), ImGuiInputTextFlags_EnterReturnsTrue);
             const OutlineNode* clicked = nullptr;
+            // The tree, or the matches, in a child: its scroll to the current section keeps the search in view
+            const ImGuiStyle& popupStyle = ImGui::GetStyle();
+            float listHeight = screen.y * 0.7f - ImGui::GetFrameHeightWithSpacing() - 2.f * popupStyle.WindowPadding.y;
+            ImGui::SetNextWindowSizeConstraints(ImVec2(0.f, 0.f), ImVec2(FLT_MAX, listHeight));
+            ImGui::BeginChild("##outline_list", ImVec2(0.f, 0.f),
+                              ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
             if (search[0] != '\0')
             {
                 std::vector<const OutlineNode*> matches;
@@ -2717,6 +2750,7 @@ void DemoCodeViewer_Show()
             }
             else
                 ShowOutlineNodes(outline, clicked, section ? section->path : "", appearing);
+            ImGui::EndChild();
             if (clicked != nullptr)
             {
                 g_pendingScrollFile = currentFile.cppDisplayName();
@@ -2728,6 +2762,15 @@ void DemoCodeViewer_Show()
                 if (clicked->children.empty() || search[0] != '\0')  // a section that unfolds keeps the tree open
                     ImGui::CloseCurrentPopup();
             }
+            // Within the screen (a phone): Dear ImGui places a popup when it appears, before the list's width is known
+            const ImGuiViewport* viewport = ImGui::GetMainViewport();
+            ImVec2 popupPos = ImGui::GetWindowPos(), popupSize = ImGui::GetWindowSize();
+            ImVec2 maxPos(viewport->WorkPos.x + viewport->WorkSize.x - popupSize.x,
+                          viewport->WorkPos.y + viewport->WorkSize.y - popupSize.y);
+            ImVec2 inside(ImMax(viewport->WorkPos.x, ImMin(popupPos.x, maxPos.x)),
+                          ImMax(viewport->WorkPos.y, ImMin(popupPos.y, maxPos.y)));
+            if (inside.x != popupPos.x || inside.y != popupPos.y)
+                ImGui::SetWindowPos(inside);
             ImGui::EndPopup();
         }
     }
@@ -2745,10 +2788,29 @@ void DemoCodeViewer_Show()
     editor.SetPalette(IsLightTheme() ? TextEditor::GetLightPalette() : TextEditor::GetDarkPalette());
     editor.SetWordWrapEnabled(g_wordWrap);
     editor.SetShowMiniMapEnabled(g_showMinimap && !compact);
+    // A phone: the line numbers and a wide margin would take a quarter of the width (the breadcrumb says where it is)
+    editor.SetShowLineNumbersEnabled(!g_narrowLayout);
+    editor.SetTextLeftMargin(g_narrowLayout ? 1 : 2);
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
+    // A phone: a jump also scrolls sideways past the indentation that all the lines in view share (none is cut). At the
+    // frame after the jump's: the editor's jump sets its scroll back to the first column
+    if (auto dedent = g_pendingDedents.find(&editor); dedent != g_pendingDedents.end())
+    {
+        if (!g_narrowLayout)
+            g_pendingDedents.erase(dedent);
+        else if (!dedent->second.jumped)
+            dedent->second.jumped = true;
+        else
+        {
+            int rows = (int)(editorSize.y / ImGui::GetFontSize());
+            int indent = CommonIndent(editor, dedent->second.topLine, rows);
+            ImGui::SetNextWindowScroll(ImVec2((float)indent * ImGui::CalcTextSize("#").x, -1.f));
+            g_pendingDedents.erase(dedent);
+        }
+    }
     editor.Render(editorId.c_str(), editorSize, false);
     g_shownEditor = &editor;
     {
@@ -2884,6 +2946,11 @@ ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& tex
 void DemoCodeViewer_NoteDemoShown()
 {
     g_demoShownFrame = ImGui::GetFrameCount();
+}
+
+void DemoCodeViewer_NoteNarrowLayout(bool narrow)
+{
+    g_narrowLayout = narrow;
 }
 
 bool DemoCodeViewer_TakeShowDemoRequest()
