@@ -543,8 +543,10 @@ namespace
             if (mode.narrow)
                 GuiDemoCodeSwitch();
             GuiSelectLibrary(mode.narrow);
-            // One pane at a time (a phone): the search of the demos, over both panes
-            if (mode.narrow && DemoCodeViewer_SearchButton(!GNarrowLayout_ShowsCode))
+            // One pane at a time (a phone): the search of the demos, over both panes, up to the "..." menu
+            float searchWidth =
+                ImGui::GetContentRegionAvail().x - HelloImGui::EmSize(2.2f) - ImGui::GetStyle().ItemSpacing.x;
+            if (mode.narrow && DemoCodeViewer_SearchField(searchWidth, !GNarrowLayout_ShowsCode))
                 GNarrowLayout_ShowsCode = true;
             ImGui::Spring();
             if (!mode.narrow)
@@ -736,7 +738,7 @@ namespace {
                                        "shows its source.");
                 // Both panes shown (a desktop): the search of the demos, under the hint (a phone has it in its top bar)
                 if (!mode.narrow)
-                    DemoCodeViewer_SearchField();
+                    DemoCodeViewer_SearchField(-FLT_MIN, true);
                 DemoMarker_ShowShortInfo();
                 lastCursorPos = ImGui::GetCursorScreenPos();
                 ImGui::EndChild();

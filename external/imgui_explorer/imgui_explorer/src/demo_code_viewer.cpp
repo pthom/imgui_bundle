@@ -2935,57 +2935,47 @@ void DemoCodeViewer_NoteSectionInView(const char* section)
     g_sectionInViewFrame[section] = ImGui::GetFrameCount();
 }
 
-bool DemoCodeViewer_SearchButton(bool demoPaneShown)
+bool DemoCodeViewer_SearchField(float width, bool demoShown)
 {
     std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();  // the demo first
     if (files.empty())
         return false;
     CodeFile& cf = g_codeFiles[files[0].baseName];
     bool python = g_showPython && cf.pyState == LoadState::Loaded;
-    ImGui::BeginDisabled((python ? cf.pyState : cf.cppState) != LoadState::Loaded);  // DemoCodeViewer_PreloadDemoFile
-    PushButtonColors(ImVec4(0.18f, 0.32f, 0.52f, 1.f), ImVec4(0.25f, 0.42f, 0.66f, 1.f),
-                     ImVec4(0.29f, 0.48f, 0.74f, 1.f));  // the breadcrumb's search
-    if (ImGui::Button(ICON_FA_SEARCH "##search_demos"))
-        ImGui::OpenPopup("##outline");
-    ImGui::PopStyleColor(3);
-    ImGui::EndDisabled();
-    ImGui::SetItemTooltip("Search the demos");
-    // The current section: the one the code shows, or will show (a tap in the demo moved it)
-    const std::string& current = !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
-    const OutlineNode* clicked = OutlinePopup(cf, files[0], python, current);
-    return clicked != nullptr && demoPaneShown && !CanRevealInDemo(cf, clicked->path);
-}
-
-void DemoCodeViewer_SearchField()
-{
-    std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();  // the demo first
-    if (files.empty())
-        return;
-    CodeFile& cf = g_codeFiles[files[0].baseName];
-    bool python = g_showPython && cf.pyState == LoadState::Loaded;
-    bool loaded = (python ? cf.pyState : cf.cppState) == LoadState::Loaded;
+    bool loaded = (python ? cf.pyState : cf.cppState) == LoadState::Loaded;  // DemoCodeViewer_PreloadDemoFile
     if (loaded && OutlineOf(python ? cf.pyContent : cf.cppContent).children.empty())
-        return;  // a demo without sections
-    // A button that looks like a text field, with its placeholder: a field says "search" in a still frame
+        return false;  // a demo without sections
+    // A button that looks like a text field, with its placeholder: a field says "search" in a still frame (a
+    // magnifier alone could mean a zoom). The label as long as the width allows
+    float available = width > 0.f ? width : ImGui::GetContentRegionAvail().x + width;
+    const char* label = ICON_FA_SEARCH " Search the demos";
+    if (ButtonWidth(label) > available)
+        label = ICON_FA_SEARCH " Search";
+    if (ButtonWidth(label) > available)
+        label = ICON_FA_SEARCH;
     ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
     ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
     ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.f, 0.5f));
-    ImGui::BeginDisabled(!loaded);  // the demo's source loads at the start
-    if (ImGui::Button(ICON_FA_SEARCH " Search the demos##search_demos", ImVec2(-FLT_MIN, 0.f)))
+    ImGui::BeginDisabled(!loaded);
+    if (ImGui::Button((std::string(label) + "##search_demos").c_str(), ImVec2(width, 0.f)))
         ImGui::OpenPopup("##outline");
     ImGui::EndDisabled();
     ImGui::PopStyleVar();
     ImGui::PopStyleColor(4);
+    ImGui::SetItemTooltip("Search the demos");
     // The popup over the field: its own search field takes the place of this one, with the keyboard
     const ImGuiStyle& style = ImGui::GetStyle();
     ImVec2 fieldMin = ImGui::GetItemRectMin();
     float fieldWidth = ImGui::GetItemRectSize().x;
     ImGui::SetNextWindowPos(ImVec2(fieldMin.x - style.WindowPadding.x, fieldMin.y - style.WindowPadding.y),
                             ImGuiCond_Appearing);
+    // The current section: the one the code shows, or will show (a tap in the demo moved it)
     const std::string& current = !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
-    OutlinePopup(cf, files[0], python, current, fieldWidth + 2.f * style.WindowPadding.x);
+    float popupWidth = fieldWidth + 2.f * style.WindowPadding.x;
+    const OutlineNode* clicked = OutlinePopup(cf, files[0], python, current, popupWidth);
+    return clicked != nullptr && demoShown && !CanRevealInDemo(cf, clicked->path);
 }
 
 ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text)
