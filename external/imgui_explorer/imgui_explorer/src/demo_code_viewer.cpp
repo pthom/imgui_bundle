@@ -2382,8 +2382,11 @@ void DemoCodeViewer_Show()
     const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
     if (!outline.children.empty())
     {
+        // The section of the cursor's line when it is on screen (the reader clicked there), else of the reading line
         const OutlineNode* section = nullptr;
-        FindSectionAt(outline, g_editorReadingLine[displayName], section);
+        TextEditor::DocPos cursor = editor.GetMainCursorPosition();  // on screen at the previous frame
+        int line = editor.IsDocPosVisible(cursor) ? (int)cursor.line + 1 : g_editorReadingLine[displayName];
+        FindSectionAt(outline, line, section);
         const char* showLabel = compact ? ICON_FA_PLAY " Demo" : ICON_FA_PLAY " Show in the demo";
         const ImGuiStyle& style = ImGui::GetStyle();
 
