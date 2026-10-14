@@ -71,7 +71,7 @@ In C++, or in Python.
 
 ## In 3D
 
-[[ImPlot3D; the outline's search: the surfaces; the demo scrolls to the surface]]
+[[ImPlot3D; the outline's search: the surfaces; the demo scrolls to the whole surface (3 lines, for this window's size)]]
 ```cues
 click("item", "**/ImPlot3D")
 click("crumb")
@@ -79,8 +79,8 @@ type_keys("surf")
 wait(0.3)
 press("enter")
 wait(0.6)
-wheel("item", "//ImPlot3D Demo/**/Custom range", lines=-10)
-wait(0.6)
+wheel("item", "//ImPlot3D Demo/**/Custom range", lines=-3)
+wait(1.2)
 ```
 And in 3D?
 
