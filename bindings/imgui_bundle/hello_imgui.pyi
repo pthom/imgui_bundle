@@ -3835,6 +3835,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
 
 # </submodule manual_render>
 
+# <custom_bindings>
 def image_and_size_from_encoded_data(data: bytes, cache_key: str = "") -> ImageAndSize:
     """Create a texture from encoded image data (PNG, JPEG, BMP, GIF, etc.).
     - data: bytes containing the encoded image
@@ -3875,6 +3876,7 @@ def create_texture_gpu_from_rgba_data(rgba: np.ndarray) -> TextureGpu:
     """
     pass
 
+# </custom_bindings>
 ####################    </generated_from:hello_imgui_amalgamation.h>    ####################
 
 # </litgen_stub>

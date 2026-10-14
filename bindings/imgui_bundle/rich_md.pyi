@@ -111,6 +111,7 @@ class MarkdownDownloadResult:
 
 # Sets the host services (call before CreateContext). Empty fields keep their default.
 
+# <custom_bindings>
 class Context:
     """A markdown context (its options, its fonts, its caches): made by create_context, destroyed by
     destroy_context. Opaque."""
@@ -127,6 +128,7 @@ def set_download_function(
     """
     pass
 
+# </custom_bindings>
 ####################    </generated_from:rich_md_host.h>    ####################
 
 ####################    <generated_from:narrative_programming.h>    ####################
