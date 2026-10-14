@@ -127,7 +127,8 @@ class Gesture:
     point: Point = (0.5, 0.5)    # where in the target's rectangle; a drag's start
     end: Point = (0.5, 0.5)      # a drag's end
     text: str = ""               # press: the keys ("ctrl+f"); type, paste: the text; menu: the item's label;
-                                 # wheel: the lines (negative: down); wait: the seconds
+                                 # wait: the seconds
+    delta: Point = (0.0, 0.0)    # wheel: the columns and the lines (negative: right, down)
     fast: bool = False           # played at the engine's fast speed: a setup the viewer does not see (under a card)
 
 
@@ -390,11 +391,12 @@ class Parser:
         # The gestures: a target and its argument (a heading, an entry...), a point in its rectangle. The mouse's ones
         # may be `fast`: a setup the viewer does not see (under a card)
         def gesture(kind: str, target: str = "", arg: Any = "", point: Point = (0.5, 0.5), end: Point = (0.5, 0.5),
-                    text: str = "", at: At = None, fast: bool = False) -> None:
+                    text: str = "", at: At = None, fast: bool = False, delta: Point = (0.0, 0.0)) -> None:
             if target and lesson.strict and target not in lesson.targets:
                 raise LessonError(f"line {block.line}: unknown target {target!r} (declared: {list(lesson.targets)})")
             record("gesture", gesture=Gesture(kind, target, str(arg), (float(point[0]), float(point[1])),
-                                              (float(end[0]), float(end[1])), text, fast), at=at)
+                                              (float(end[0]), float(end[1])), text=text, fast=fast,
+                                              delta=(float(delta[0]), float(delta[1]))), at=at)
 
         def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None, fast: bool = False) -> None:
             gesture("click", target, arg, point, at=at, fast=fast)
@@ -414,9 +416,9 @@ class Parser:
                  at: At = None, fast: bool = False) -> None:
             gesture("drag", target, arg, start, end, at=at, fast=fast)
 
-        def wheel(target: str, arg: Any = "", lines: float = -5.0, point: Point = (0.5, 0.5),
+        def wheel(target: str, arg: Any = "", lines: float = -5.0, columns: float = 0.0, point: Point = (0.5, 0.5),
                   at: At = None, fast: bool = False) -> None:
-            gesture("wheel", target, arg, point, text=str(float(lines)), at=at, fast=fast)
+            gesture("wheel", target, arg, point, at=at, fast=fast, delta=(columns, lines))
 
         def wait(seconds: float, at: At = None) -> None:
             gesture("wait", text=str(float(seconds)), at=at)
@@ -736,7 +738,7 @@ class _GestureRunner:
             ctx.mouse_move_to_pos(point(g.end))
             ctx.mouse_up(0)
         elif g.kind == "wheel":
-            ctx.mouse_wheel_y(float(g.text))
+            ctx.mouse_wheel(ImVec2(g.delta[0], g.delta[1]))
         if g.kind in ("click", "double_click", "right_click"):
             self.lesson.ripple()
 

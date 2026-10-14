@@ -3,7 +3,6 @@
 Every demo of Dear ImGui beside its code. The cursor of the test engine hovers, clicks and scrolls; subtitles tell.
 `python imgui_explorer_tour.py cut_demo_code.md` plays a cut; add `--video out.mp4` to record it.
 """
-import re
 import sys
 from pathlib import Path
 from typing import Any, Optional
@@ -19,7 +18,8 @@ SCENARIO = "cut_demo_code.md"  # the cut played when none is given
 URL = "pthom.github.io/imgui_explorer"
 LIBRARIES = ["imgui", "implot", "implot3_d"]   # the toolbar's libraries, as in the online explorer
 PHONE_LIBRARY = "imgui"        # the phone shows this library's manual alone: the main one, to end with
-PHONE_FONT_SCALE = 0.7         # the phone's text, against the desktop's (a real phone shows about 24 em across)
+PHONE_FONT_SCALE = 0.6         # the app's zoom in the phone, against the desktop's: its code shows more
+PHONE_EM = 0.7                 # the phone's own sizes (its bars), in the desktop's em
 PHONE_HEIGHT = 0.92            # the phone's height, in the stage's
 PHONE_ASPECT = 402 / 874       # an iPhone's screen (width / height)
 PHONE_CENTER_X = 0.68          # the phone's place, in the stage's width; its caption is at the left
@@ -33,8 +33,6 @@ CARDS: dict[str, Lines] = {
     "end": [("Dear ImGui Explorer", 2.6, WHITE), ("C++ and Python, in your browser", 1.4, GRAY), (URL, 1.5, ACCENT)],
 }
 PHONE_CAPTION: Lines = [("On a phone too", 2.4, WHITE), ("in the browser, nothing to install", 1.3, GRAY)]
-# The sources the explorer shows, as this build copied them (IEX_DEMO_CODE_DIR): a word's place in the code is computed
-DEMO_CODE_DIR = Path(__file__).resolve().parents[7] / "builds/python_bindings/bin/demo_code"
 
 
 class AppState:
@@ -46,8 +44,7 @@ class AppState:
 
 
 app_state = AppState()
-item_ids: dict[str, int] = {}  # "cpp", "python", "switch": invisible buttons' ids, recorded each frame
-code_glyph = ImVec2(0, 0)      # a glyph of the code's font (its advance, its line height), recorded each frame
+switch_id = [0]                # the phone's "Demo | Code" switch: its id, recorded each frame
 
 
 # =============================================================================
@@ -80,13 +77,10 @@ def int_id(id_: int) -> int:
     return id_ if id_ < 2**31 else id_ - 2**32
 
 
-def record_toolbar_ids() -> None:
-    """The ids of the toolbar's invisible buttons (the logos, the "Demo | Code" switch): the toolbar's layout pushes
-    its id as an int"""
+def record_switch_id() -> None:
+    """The id of the "Demo | Code" switch, an invisible button: the toolbar's layout pushes its id as an int"""
     imgui.push_id(int_id(imgui.get_id("tools")))
-    for name, label in (("cpp", "images/logo_cpp.png"), ("python", "images/logo_python.png"),
-                        ("switch", "##demo_code_switch")):
-        item_ids[name] = imgui.get_id(label)
+    switch_id[0] = imgui.get_id("##demo_code_switch")
     imgui.pop_id()
 
 
@@ -120,16 +114,19 @@ def gui_phone() -> None:
     size = ImVec2(height * PHONE_ASPECT, height)
     screen = ImVec2(pos.x + avail.x * PHONE_CENTER_X - size.x / 2, pos.y + (avail.y - size.y) / 2)
     em = hello_imgui.em_size()
-    gui_phone_bars(screen, size, PHONE_FONT_SCALE * em)
-    status, home = PHONE_STATUS_BAR_EM * PHONE_FONT_SCALE * em, PHONE_HOME_BAR_EM * PHONE_FONT_SCALE * em
+    gui_phone_bars(screen, size, PHONE_EM * em)
+    status, home = PHONE_STATUS_BAR_EM * PHONE_EM * em, PHONE_HOME_BAR_EM * PHONE_EM * em
     imgui.set_cursor_screen_pos(ImVec2(screen.x, screen.y + status))
-    imgui.push_font(None, imgui.get_style().font_size_base * PHONE_FONT_SCALE)
+    # The explorer's own zoom (FontScaleMain), which also scales its code: it pushes the code font at its own size
+    style = imgui.get_style()
+    desktop_scale = style.font_scale_main
+    style.font_scale_main = desktop_scale * PHONE_FONT_SCALE
     imgui.begin_child("##phone", ImVec2(size.x, size.y - status - home), 0,
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse)
-    record_toolbar_ids()
+    record_switch_id()
     imgui_explorer.show_imgui_explorer_gui_cpp(imgui_explorer.ImGuiExplorerLibrary[PHONE_LIBRARY])
+    style.font_scale_main = desktop_scale      # before the child ends: the stage's font size is computed then
     imgui.end_child()
-    imgui.pop_font()
     # The bezel, over the demo's window too: a thick ring whose inner edge rounds the screen's corners
     bezel, rounding = 0.55 * em, 0.16 * size.x
     fg = imgui.get_foreground_draw_list()
@@ -160,20 +157,10 @@ def gui_card() -> None:
     draw_lines(lines, viewport.pos + viewport.size * 0.5, app_state.card_alpha)
 
 
-def record_code_glyph() -> None:
-    global code_glyph
-    font = rich_md.get_code_font()
-    imgui.push_font(font.font, font.size)
-    code_glyph = ImVec2(imgui.calc_text_size("#").x, imgui.get_font_size())
-    imgui.pop_font()
-
-
 def gui_stage() -> None:
-    record_code_glyph()
     if app_state.scene == "phone":
         gui_phone()
     else:
-        record_toolbar_ids()
         imgui_explorer.show_imgui_explorer_gui_cpp()
     gui_card()
     viewport = imgui.get_main_viewport()
@@ -227,8 +214,10 @@ def target_code(_: str, ctx: Any) -> Optional[narrator.Rect]:
 
 
 def target_button(name: str, ctx: Any) -> Optional[narrator.Rect]:
-    """An invisible button of the toolbar: "cpp", "python" (the logos), "switch" ("Demo | Code", on a phone)"""
-    return _rect(ctx.item_info(imgui.test_engine.TestRef(item_ids[name]), NO_ERROR)) if name in item_ids else None
+    """A button of the toolbar: "cpp", "python" (the logos), "switch" ("Demo | Code", on a phone)"""
+    if name == "switch":
+        return _rect(ctx.item_info(imgui.test_engine.TestRef(switch_id[0]), NO_ERROR))
+    return _rect(ctx.item_info(f"**/##logo_{name}", NO_ERROR))
 
 
 def target_show_in_demo(_: str, ctx: Any) -> Optional[narrator.Rect]:
@@ -254,22 +243,9 @@ def target_crumb(_: str, ctx: Any) -> Optional[narrator.Rect]:
 
 
 def target_code_word(word: str, ctx: Any) -> Optional[narrator.Rect]:
-    """A word of the visible code (its first visible occurrence). The editor's layout: a row per line, the text after
-    the line numbers and the fold arrows ((digits + 4) glyphs); its child window has no padding"""
-    window = _window("/##code_")
-    match = re.search(r"##code_(.+)_[0-9A-F]{8}$", window.name) if window is not None else None
-    if window is None or match is None or code_glyph.y <= 0:
-        return None
-    lines = (DEMO_CODE_DIR / match.group(1)).read_text(encoding="utf-8").splitlines()
-    first = int(window.scroll.y // code_glyph.y)
-    visible = int(window.inner_rect.get_height() // code_glyph.y)
-    row = next((r for r in range(first, min(first + visible, len(lines))) if word in lines[r]), None)
-    if row is None:
-        return None
-    text_left = (len(str(len(lines) + 1)) + 4) * code_glyph.x
-    x = window.pos.x - window.scroll.x + text_left + lines[row].index(word) * code_glyph.x
-    y = window.pos.y - window.scroll.y + row * code_glyph.y
-    return ImVec2(x, y), ImVec2(x + len(word) * code_glyph.x, y + code_glyph.y)
+    """A word of the code on screen (its first occurrence), as the explorer finds it"""
+    rect = imgui_explorer.get_imgui_explorer_code_text_rect(word)
+    return (rect.min, rect.max) if rect.visible else None
 
 
 for _name, _resolver in (("code", target_code), ("code_word", target_code_word), ("button", target_button), ("show_in_demo", target_show_in_demo),

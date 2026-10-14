@@ -86,7 +86,7 @@ And in 3D?
 
 ## Phone
 
-[[A fade to the phone, Dear ImGui's manual; under the veil, its Basic widgets open (fast). A finger ticks the checkbox, drags a slider, taps "Code": the slider's code]]
+[[A fade to the phone, Dear ImGui's manual; under the veil, its Basic widgets open (fast). A finger ticks the checkbox, drags a slider, taps "Code" (fast: a finger lifts, it does not slide over the demo): the slider's code, scrolled past its indentation]]
 ```cues
 animate("veil", 1.0, over=0.25)
 set_value("scene", "phone", at=0.25)
@@ -97,8 +97,10 @@ animate("veil", 0.0, over=0.3, at=1.0)
 wait(0.5)
 click("item", "//Dear ImGui Demo/**/checkbox")
 drag("item", "//Dear ImGui Demo/**/slider float", start=(0.15, 0.5), end=(0.85, 0.5))
-click("button", "switch", point=(0.75, 0.5))
-wait(0.7)
+click("button", "switch", point=(0.75, 0.5), fast=True)
+wait(0.4)
+wheel("code", lines=0, columns=-2, point=(0.5, 0.45))
+wait(0.6)
 ```
 
 ## End
