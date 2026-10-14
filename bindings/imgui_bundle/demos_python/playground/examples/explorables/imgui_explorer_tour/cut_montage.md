@@ -36,7 +36,7 @@ click("item", "**/ImPlot")
 click("crumb")
 type_keys("color")
 wait(0.5)
-click("item", "//$FOCUSED/Colorful Bubbles##Colorful Bubbles")
+click("item", "**/Colorful Bubbles##Colorful Bubbles")
 wait(0.8)
 ```
 How do I plot with colors?
@@ -86,7 +86,7 @@ And in 3D?
 
 ## Phone
 
-[[A fade to the phone, Dear ImGui's manual; under the veil, its Basic widgets open (fast). A finger ticks the checkbox, drags a slider, taps "Code" (fast: a finger lifts, it does not slide over the demo): the slider's code, scrolled past its indentation]]
+[[A fade to the phone, Dear ImGui's manual; under the veil, its Basic widgets open (fast). A finger ticks the checkbox, drags a slider, taps "Code" (fast: a finger lifts, it does not slide over the demo): the slider's code]]
 ```cues
 animate("veil", 1.0, over=0.25)
 set_value("scene", "phone", at=0.25)
@@ -98,9 +98,7 @@ wait(0.5)
 click("item", "//Dear ImGui Demo/**/checkbox")
 drag("item", "//Dear ImGui Demo/**/slider float", start=(0.15, 0.5), end=(0.85, 0.5))
 click("button", "switch", point=(0.75, 0.5), fast=True)
-wait(0.4)
-wheel("code", lines=0, columns=-2, point=(0.5, 0.45))
-wait(0.6)
+wait(1.0)
 ```
 
 ## End
