@@ -15,8 +15,13 @@ clock is estimated from the text, or taken from the timings.
 
 The gestures (`click`, `drag`, `press`, `type_keys`, `paste`...): the test engine moves a visible cursor and types, for the
 moments where the gesture is the lesson. The program runs with `use_imgui_test_engine`, and names its targets with
-`lesson.target(name, resolver)`. The engine owns the inputs while a gesture plays (Esc aborts it). Without the engine
-(a browser without JSPI), the gestures are skipped.
+`lesson.target(name, resolver)`, or reaches any widget through the built-in target `item` (a test engine reference). The
+engine owns the inputs while a gesture plays (Esc aborts it). Without the engine (a browser without JSPI), the gestures
+are skipped.
+
+The video (`lesson.video(runner_params, output)`, desktop): the stage fills the window, the sentences show as subtitles,
+a click leaves a ripple, and a subtitle stays until its gestures end. With an output file, the frames go to ffmpeg at a
+fixed clock (whatever a frame takes to capture), the subtitles to an .srt beside it, and the app quits at the end.
 """
 import hashlib
 import inspect
@@ -24,11 +29,12 @@ import json
 import math
 import os
 import re
+import subprocess
 import sys
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Any, Callable, Optional
+from typing import Any, Callable, Optional, Union
 
 from imgui_bundle import hello_imgui, imgui, rich_md, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4
@@ -49,6 +55,19 @@ IN_BROWSER = sys.platform == "emscripten"
 CLIPS_URL = "/resources/explorables"  # the clips on the site (the website resources), by lesson folder
 DEFAULT_VOICE = "en-US-AndrewMultilingualNeural"
 _SENTENCE_END = re.compile(r"(?<=[.!?])\s+")
+# The video
+VIDEO_WIDTH = 1920               # the recorded video's width; its height keeps the window's aspect
+VIDEO_WARMUP_FRAMES = 20         # frames before the play: the program lays itself out, its files load
+VIDEO_TAIL = 1.5                 # seconds recorded after the lesson's end
+VIDEO_MOUSE_SPEED = 1100.0       # the engine's cursor, in points per second (its default, 600, is slow in a video)
+VIDEO_ACTION_DELAYS = (0.08, 0.2)  # the engine's pauses between actions, short and standard (default: 0.15, 0.4)
+VIDEO_CURSOR_SCALE = 1.6         # the drawn cursor's size
+SUBTITLE_EM = 1.6                # the subtitles' size
+SUBTITLE_BOTTOM_EM = 1.2         # their distance to the window's bottom
+SUBTITLE_MAX_WIDTH = 0.8         # their lines' width, at most, in the window's width
+SUBTITLE_FADE = 0.15             # seconds: a subtitle fades in
+RIPPLE_DURATION = 0.5            # seconds: the ring a click leaves
+RIPPLE_COLOR = ImVec4(1.0, 0.75, 0.3, 1.0)
 
 
 class LessonError(Exception):
@@ -97,16 +116,18 @@ class Chapter:
 
 
 Point = tuple[float, float]     # a point in a target's rectangle, in fractions of its size
+At = Optional[Union[str, float]]   # when a cue fires: words of its paragraph, or seconds after its start
 
 
 @dataclass
 class Gesture:
-    kind: str                    # click, double_click, right_click, hover, drag, press, type, paste, menu
+    kind: str                    # click, double_click, right_click, hover, drag, wheel, press, type, paste, menu, wait
     target: str = ""             # a target of the program (click, hover, drag...)
     arg: str = ""                # passed to the target's resolver (a heading, an entry...)
     point: Point = (0.5, 0.5)    # where in the target's rectangle; a drag's start
     end: Point = (0.5, 0.5)      # a drag's end
-    text: str = ""               # press: the keys ("ctrl+f"); type, paste: the text; menu: the item's label
+    text: str = ""               # press: the keys ("ctrl+f"); type, paste: the text; menu: the item's label;
+                                 # wheel: the lines (negative: down); wait: the seconds
 
 
 @dataclass
@@ -125,7 +146,7 @@ class Event:
     gesture: Optional[Gesture] = None
     chapter: int = 0
     line: int = 0
-    anchor: tuple[Optional["Paragraph"], Optional[str]] = (None, None)   # the paragraph and the words it waits for
+    anchor: tuple[Optional["Paragraph"], At] = (None, None)   # the paragraph, and the words or seconds it waits
 
 
 @dataclass
@@ -297,6 +318,7 @@ class Parser:
         self._attach_pending_to_chapter_start()
         self._time_everything()
         duration = self.chapters[-1].end if self.chapters else 0.0
+        duration = max([duration] + [e.time + e.over for e in self.events if e.kind == "animate"])  # the last ones end
         return Script(front_matter, self.chapters, sorted(self.events, key=lambda e: e.time),
                       "\n".join(self.lines[start:]), duration)
 
@@ -343,65 +365,72 @@ class Parser:
             if name in lesson.params:
                 lesson.params[name].check(value, block.line)
 
-        def set_value(name: str, value: Any, at: Optional[str] = None) -> None:
+        def set_value(name: str, value: Any, at: At = None) -> None:
             check_param(name)
             check_value(name, value)
             record("set", param=name, value=value, at=at)
 
-        def animate(name: str, value: Any, over: Optional[float] = None, at: Optional[str] = None) -> None:
+        def animate(name: str, value: Any, over: Optional[float] = None, at: At = None) -> None:
             check_param(name)
             check_value(name, value)
             record("animate", param=name, value=value, over=lesson.default_over if over is None else over, at=at)
 
-        def highlight(name: str, at: Optional[str] = None) -> None:
+        def highlight(name: str, at: At = None) -> None:
             check_param(name)
             record("highlight", param=name, at=at)
 
-        def pause(prompt: str, at: Optional[str] = None) -> None:
+        def pause(prompt: str, at: At = None) -> None:
             record("pause", prompt=prompt, at=at)
 
         def challenge(prompt: str, until: str, hint: str = "", hint_after: float = 30.0,
-                      at: Optional[str] = None) -> None:
+                      at: At = None) -> None:
             record("challenge", prompt=prompt, until=until, hint=hint, hint_after=hint_after, at=at)
 
         # The gestures: a target and its argument (a heading, an entry...), a point in its rectangle
         def gesture(kind: str, target: str = "", arg: Any = "", point: Point = (0.5, 0.5), end: Point = (0.5, 0.5),
-                    text: str = "", at: Optional[str] = None) -> None:
+                    text: str = "", at: At = None) -> None:
             if target and lesson.strict and target not in lesson.targets:
                 raise LessonError(f"line {block.line}: unknown target {target!r} (declared: {list(lesson.targets)})")
             record("gesture", gesture=Gesture(kind, target, str(arg), (float(point[0]), float(point[1])),
                                               (float(end[0]), float(end[1])), text), at=at)
 
-        def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+        def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
             gesture("click", target, arg, point, at=at)
 
-        def double_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+        def double_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
             gesture("double_click", target, arg, point, at=at)
 
-        def right_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+        def right_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
             gesture("right_click", target, arg, point, at=at)
 
-        def hover(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: Optional[str] = None) -> None:
+        def hover(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
             gesture("hover", target, arg, point, at=at)
 
         def drag(target: str, arg: Any = "", start: Point = (0.0, 0.5), end: Point = (1.0, 0.5),
-                 at: Optional[str] = None) -> None:
+                 at: At = None) -> None:
             gesture("drag", target, arg, start, end, at=at)
 
-        def press(keys: str, at: Optional[str] = None) -> None:
+        def wheel(target: str, arg: Any = "", lines: float = -5.0, point: Point = (0.5, 0.5),
+                  at: At = None) -> None:
+            gesture("wheel", target, arg, point, text=str(float(lines)), at=at)
+
+        def wait(seconds: float, at: At = None) -> None:
+            gesture("wait", text=str(float(seconds)), at=at)
+
+        def press(keys: str, at: At = None) -> None:
             try:
                 key_chord(keys)
             except KeyError as e:
                 raise LessonError(f"line {block.line}: unknown key {e} in {keys!r}") from e
             gesture("press", text=keys, at=at)
 
-        def type_keys(text: str, at: Optional[str] = None) -> None:
+        def type_keys(text: str, at: At = None) -> None:
             gesture("type", text=text, at=at)
 
-        def paste(text: str, at: Optional[str] = None) -> None:
+        def paste(text: str, at: At = None) -> None:
             gesture("paste", text=text, at=at)
 
-        def menu(label: str, at: Optional[str] = None) -> None:
+        def menu(label: str, at: At = None) -> None:
             gesture("menu", text=label, at=at)
 
         class Lenient(dict[str, Any]):           # the build step knows no actions: an unknown name records nothing
@@ -411,11 +440,11 @@ class Parser:
         namespace: dict[str, Any] = (dict if lesson.strict else Lenient)(
             {"set_value": set_value, "animate": animate, "highlight": highlight,
              "pause": pause, "challenge": challenge, "click": click, "double_click": double_click,
-             "right_click": right_click, "hover": hover, "drag": drag, "press": press, "type_keys": type_keys,
-             "paste": paste, "menu": menu, **lesson.constants})
+             "right_click": right_click, "hover": hover, "drag": drag, "wheel": wheel, "wait": wait, "press": press,
+             "type_keys": type_keys, "paste": paste, "menu": menu, **lesson.constants})
         for action_name in lesson.actions:
             def make_call(name: str) -> Callable[..., None]:
-                def call(*args: Any, at: Optional[str] = None) -> None:
+                def call(*args: Any, at: At = None) -> None:
                     record("call", action=name, args=args, at=at)
                 return call
             namespace[action_name] = make_call(action_name)
@@ -452,10 +481,11 @@ class Parser:
             chapter.end = t
         for event in self.events:
             target, at = event.anchor
-            if target is None:
-                event.time = self.chapters[event.chapter].start
-            elif at is None:
-                event.time = target.start
+            start = target.start if target is not None else self.chapters[event.chapter].start
+            if isinstance(at, (int, float)):           # seconds after the paragraph's start (or the chapter's)
+                event.time = start + float(at)
+            elif target is None or at is None:
+                event.time = start
             else:
                 event.time = self._anchor_time(target, at, event.line)
 
@@ -551,13 +581,29 @@ Rect = tuple[ImVec2, ImVec2]
 TargetResolver = Callable[[str, Any], Optional[Rect]]   # (argument, the test context) -> the target's rectangle
 
 
+def item_target(ref: str, ctx: Any) -> Optional[Rect]:
+    """The built-in target `item`: a widget by its test engine reference ("//Dear ImGui Demo/**/Button"), scrolled
+    into view first if it is clipped (a scroll moves the engine's cursor to the window)"""
+    no_error = imgui.test_engine.TestOpFlags_.no_error
+    info = ctx.item_info(ref, no_error)
+    if info.id_ == 0:
+        return None
+    full, clipped = info.rect_full, info.rect_clipped
+    if clipped.max.y - clipped.min.y < full.max.y - full.min.y - 1.0:
+        ctx.scroll_to_item(ref, imgui.internal.Axis.y, no_error)
+        info = ctx.item_info(ref, no_error)
+    return (info.rect_full.min, info.rect_full.max) if info.id_ != 0 else None
+
+
 class _GestureRunner:
     """Plays the gestures with the test engine, one after the other, in a test that ends when none is left (the engine
-    owns the inputs while a test runs). A seek replays the chapter's gestures at the engine's fast speed."""
+    owns the inputs while a test runs). A seek replays the chapter's gestures at the engine's fast speed. In a video,
+    the test lasts the whole video: the cursor stays drawn, and the real mouse stays out."""
 
     def __init__(self, lesson: "Lesson") -> None:
         self.lesson = lesson
         self.queue: list[tuple[Gesture, bool]] = []   # (gesture, fast)
+        self.playing: Optional[Gesture] = None
         self.test: Any = None
         self.unavailable = False                         # no test engine: the gestures are skipped
         self._aborting = False
@@ -585,13 +631,21 @@ class _GestureRunner:
             imgui.test_engine.abort_current_test(engine)
 
     def busy(self) -> bool:
+        if self.lesson.video_look:                       # its test runs all along: only the gestures count
+            return bool(self.queue) or self.playing is not None
         engine = self._engine()
         return bool(self.queue) or (engine is not None and not imgui.test_engine.is_test_queue_empty(engine))
 
+    def _video_running(self) -> bool:
+        return self.lesson.video_look and self.lesson.playing_video()
+
     def tick(self) -> None:
-        """Every frame: starts the test when gestures wait and none plays"""
+        """Every frame: starts the test when gestures wait and none plays (in a video, when the video starts)"""
         engine = self._engine()
-        if not self.queue or engine is None or not imgui.test_engine.is_test_queue_empty(engine):
+        if self.lesson.video_look and not self.lesson.playing_video():   # the warm-up: the first gestures wait
+            return
+        if not (self.queue or self._video_running()) or engine is None \
+                or not imgui.test_engine.is_test_queue_empty(engine):
             return
         if self.test is None:
             self.test = imgui.test_engine.register_test(engine, "narrator", "gestures")
@@ -608,21 +662,30 @@ class _GestureRunner:
             imgui.set_clipboard_text(self._clipboard)
         io = imgui.get_io()
         start = io.mouse_pos                             # the cursor leaves from the learner's mouse, if it is in
-        if not imgui.is_mouse_pos_valid(start):
+        if not imgui.is_mouse_pos_valid(start) or self.lesson.video_look:
             start = imgui.get_main_viewport().get_center()
         ctx.mouse_teleport_to_pos(start)
         engine_io = ctx.engine_io
-        while self.queue and not self._aborting and not ctx.is_error():
+        while (self.queue or self._video_running()) and not self._aborting and not ctx.is_error():
+            if not self.queue:                           # a video: the test waits for the next gestures
+                ctx.yield_()
+                continue
             gesture, fast = self.queue.pop(0)
+            self.playing = gesture
             engine_io.config_run_speed = (imgui.test_engine.TestRunSpeed.fast if fast
                                           else imgui.test_engine.TestRunSpeed.normal)
             self._play(ctx, gesture)
+            self.playing = None
             self._clipboard = imgui.get_clipboard_text() or ""
+        self.playing = None
         engine_io.config_run_speed = imgui.test_engine.TestRunSpeed.normal
         if ctx.is_error():
             self.queue.clear()                           # the engine ignores every operation after an error
 
     def _play(self, ctx: Any, g: Gesture) -> None:
+        if g.kind == "wait":
+            ctx.sleep(float(g.text))
+            return
         if g.kind == "press":
             ctx.key_press(key_chord(g.text))
             return
@@ -635,6 +698,7 @@ class _GestureRunner:
             return
         if g.kind == "menu":
             ctx.item_click("//$FOCUSED/" + g.text)
+            self.lesson.ripple()
             return
         resolver = self.lesson.targets.get(g.target)
         rect = resolver(g.arg, ctx) if resolver is not None else None
@@ -663,6 +727,10 @@ class _GestureRunner:
             ctx.mouse_down(0)
             ctx.mouse_move_to_pos(point(g.end))
             ctx.mouse_up(0)
+        elif g.kind == "wheel":
+            ctx.mouse_wheel_y(float(g.text))
+        if g.kind in ("click", "double_click", "right_click"):
+            self.lesson.ripple()
 
 
 # =============================================================================
@@ -787,6 +855,68 @@ def make_audio_backend() -> Any:
 
 
 # =============================================================================
+# The video: the frames piped to ffmpeg, the subtitles written beside
+# =============================================================================
+
+class _VideoRecorder:
+    """Reads each frame before the swap (OpenGL) and pipes it to ffmpeg; notes the subtitle of each frame"""
+
+    def __init__(self, output: str, fps: int) -> None:
+        self.output, self.fps = output, fps
+        self.recording = False
+        self.frames = 0
+        self.size = (0, 0)
+        self.process: Optional[subprocess.Popen[bytes]] = None
+        self.subtitles: list[list[Any]] = []     # [first frame, last frame, text]
+
+    def note_subtitle(self, text: str) -> None:
+        """The subtitle shown in the frame being drawn"""
+        if not self.recording or not text:
+            return
+        if self.subtitles and self.subtitles[-1][2] == text and self.subtitles[-1][1] == self.frames - 1:
+            self.subtitles[-1][1] = self.frames
+        else:
+            self.subtitles.append([self.frames, self.frames, text])
+
+    def capture(self) -> None:
+        if not self.recording:
+            return
+        from OpenGL import GL  # type: ignore[import-untyped]
+        io = imgui.get_io()
+        w = int(io.display_size.x * io.display_framebuffer_scale.x)
+        h = int(io.display_size.y * io.display_framebuffer_scale.y)
+        if self.process is None:
+            self.size = (w, h)
+            self.process = subprocess.Popen(
+                ["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{w}x{h}",
+                 "-r", str(self.fps), "-i", "-", "-vf", f"vflip,scale={VIDEO_WIDTH}:-2:flags=lanczos",
+                 "-c:v", "libx264", "-preset", "slow", "-crf", "18", "-pix_fmt", "yuv420p", "-movflags", "+faststart",
+                 self.output], stdin=subprocess.PIPE)
+        if (w, h) != self.size:                  # the window changed its size: the frame would not fit the video
+            return
+        GL.glPixelStorei(GL.GL_PACK_ALIGNMENT, 1)
+        data = GL.glReadPixels(0, 0, w, h, GL.GL_RGB, GL.GL_UNSIGNED_BYTE)
+        assert self.process.stdin is not None
+        self.process.stdin.write(bytes(data))          # bytes, or a numpy array: its buffer
+        self.frames += 1
+
+    def finish(self) -> None:
+        self.recording = False
+        if self.process is not None and self.process.stdin is not None:
+            self.process.stdin.close()
+            self.process.wait()
+
+        def stamp(frame: int) -> str:
+            ms = round(frame * 1000 / self.fps)
+            return f"{ms // 3600000:02d}:{ms // 60000 % 60:02d}:{ms // 1000 % 60:02d},{ms % 1000:03d}"
+
+        srt = [f"{i + 1}\n{stamp(first)} --> {stamp(last + 1)}\n{text}\n"
+               for i, (first, last, text) in enumerate(self.subtitles)]
+        Path(self.output).with_suffix(".srt").write_text("\n".join(srt), encoding="utf-8")
+        print(f"narrator: {self.output}, {self.frames / self.fps:.1f} s, {len(self.subtitles)} subtitles")
+
+
+# =============================================================================
 # The player
 # =============================================================================
 
@@ -800,7 +930,7 @@ class Lesson:
         self.derived: dict[str, Callable[[], Any]] = {}
         self.actions: dict[str, Callable[..., Any]] = {}
         self.constants: dict[str, Any] = {}
-        self.targets: dict[str, TargetResolver] = {}
+        self.targets: dict[str, TargetResolver] = {"item": item_target}
         self.gestures = _GestureRunner(self)
         self._replaying = False                    # during a seek: the gestures replayed play fast
         self.script: Optional[Script] = None
@@ -829,6 +959,12 @@ class Lesson:
         self._mtime = 0.0
         self._last_check = 0.0
         self._loaded = False
+        self.video_look = False                    # video(): the stage alone, subtitles, ripples
+        self._recorder: Optional[_VideoRecorder] = None
+        self._video_frames = 0                     # the frames drawn as a video: the warm-up, then the play
+        self._video_end = -1.0                     # imgui's time at the lesson's end (the tail follows)
+        self._video_finished = False
+        self._ripples: list[tuple[ImVec2, float]] = []   # (where, imgui's time)
 
     @staticmethod
     def from_this_file(section: str = "Lesson") -> "Lesson":
@@ -853,6 +989,34 @@ class Lesson:
         """A target of the gestures: `resolver(arg, ctx)` gives its rectangle on screen (or None) when a gesture plays;
         ctx is the test engine's context (e.g. to gather the items of a window)"""
         self.targets[name] = resolver
+
+    def video(self, runner_params: Any, output: str = "", fps: int = 30) -> None:
+        """Plays the lesson as a video (call it before running the app, which needs the test engine): the stage fills
+        the window, the sentences show as subtitles. With `output` (an .mp4, ffmpeg in the PATH), records it at a fixed
+        clock, writes the subtitles beside it (.srt), and quits at the end"""
+        self.video_look = True
+        self.voice_on = False
+        if not output:
+            return
+        recorder = self._recorder = _VideoRecorder(output, fps)
+        runner_params.fps_idling.enable_idling = False
+        previous = runner_params.callbacks.before_swap
+
+        def before_swap() -> None:
+            if previous is not None:              # None when the program set none
+                previous()
+            recorder.capture()
+        runner_params.callbacks.before_swap = before_swap
+
+    def playing_video(self) -> bool:
+        """A video plays: its warm-up is over, its tail not"""
+        return self.video_look and self._video_frames >= VIDEO_WARMUP_FRAMES and not self._video_finished
+
+    def ripple(self) -> None:
+        """A gesture clicked: a ring grows where the mouse is (in a video)"""
+        if self.video_look:
+            mouse = imgui.get_io().mouse_pos
+            self._ripples.append((ImVec2(mouse.x, mouse.y), imgui.get_time()))
 
     # ---- loading -------------------------------------------------------------------------------------------------
     def load(self) -> None:
@@ -982,10 +1146,14 @@ class Lesson:
         self._reload_if_changed()
         if self.script is None or self.error:
             return
+        if self.video_look:
+            self._video_course()
         if self.playing:
             self.started = True
         if self.playing and self.waiting is None:
             t_next = self._clock_next()
+            if self.video_look and self.gestures.busy():   # a subtitle stays until its gestures end
+                t_next = min(t_next, max(self.t, self._next_start() - 1e-4))
             stop = next((e for e in self.script.events if e.kind in ("pause", "challenge")
                          and id(e) not in self.passed and self.t - 1e-6 <= e.time <= t_next), None)
             if stop is not None:
@@ -1026,6 +1194,37 @@ class Lesson:
         if self.audio is not None and self._speaking is not None:
             self.audio.stop()
         self._speaking = None
+
+    def _next_start(self) -> float:
+        """The start of the next sentence or chapter, or the lesson's end"""
+        assert self.script is not None
+        chapters = self.script.chapters
+        starts = [c.start for c in chapters] + [s.start for c in chapters for p in c.paragraphs for s in p.sentences]
+        return min((s for s in starts if s > self.t + 1e-6), default=self.script.duration)
+
+    def _video_course(self) -> None:
+        """A video: a warm-up (the program lays itself out), the play, a tail after the end, then the end"""
+        self._video_frames += 1
+        if self._video_frames == 1:
+            engine_io = imgui.test_engine.get_io(hello_imgui.get_imgui_test_engine())
+            engine_io.config_watchdog_warning = engine_io.config_watchdog_kill_test = 3600.0   # one test, all along
+            engine_io.mouse_speed = VIDEO_MOUSE_SPEED
+            engine_io.action_delay_short, engine_io.action_delay_standard = VIDEO_ACTION_DELAYS
+            imgui.get_style().mouse_cursor_scale = VIDEO_CURSOR_SCALE
+            if self._recorder is not None:                 # the video's clock: a frame lasts 1/fps, however long
+                engine_io.config_fixed_delta_time = 1.0 / self._recorder.fps
+        if self._video_frames == VIDEO_WARMUP_FRAMES:
+            self.playing = True
+            if self._recorder is not None:
+                self._recorder.recording = True
+        ended = self._video_frames > VIDEO_WARMUP_FRAMES and not self.playing and not self.gestures.busy()
+        if ended and self._video_end < 0:
+            self._video_end = imgui.get_time()
+        if self._video_end >= 0 and imgui.get_time() - self._video_end > VIDEO_TAIL and not self._video_finished:
+            self._video_finished = True
+            if self._recorder is not None:
+                self._recorder.finish()
+                hello_imgui.get_runner_params().app_shall_exit = True
 
     def _condition(self, expression: str) -> bool:
         names: dict[str, Any] = {"abs": abs, "min": min, "max": max}
@@ -1080,7 +1279,11 @@ class Lesson:
             self._gui_stage_child(stage, imgui.get_content_region_avail())
             return
         imgui.push_id("narrator")                  # the player's widgets may share labels with the program's
-        if landscape:
+        if self.video_look:
+            self._gui_stage_child(stage, avail)
+            self._gui_subtitle()
+            self._gui_ripples()
+        elif landscape:
             strip_width = max(STRIP_MIN_WIDTH_EM * em, 0.4 * avail.x)
             self._gui_stage(stage, ImVec2(avail.x - strip_width - spacing.x, avail.y))
             imgui.same_line()
@@ -1147,6 +1350,53 @@ class Lesson:
             rich_md.render_file(self.program or self.file, "")
         imgui.end_child()
         imgui.end_child()
+
+    # ---- the video's subtitles and ripples ------------------------------------------------------------------------
+    def _gui_subtitle(self) -> None:
+        """The sentence being read: centered lines on a dark band, at the bottom of the window, over everything"""
+        sentence = self.current_sentence() if self._video_frames >= VIDEO_WARMUP_FRAMES else None
+        text = re.sub(r"\*+|`", "", sentence.text) if sentence is not None else ""   # markdown's marks: not shown
+        if self._recorder is not None:
+            self._recorder.note_subtitle(text)
+        if sentence is None or not text:
+            return
+        em = hello_imgui.em_size()
+        viewport = imgui.get_main_viewport()
+        imgui.push_font(None, imgui.get_style().font_size_base * SUBTITLE_EM)
+        font, size, line_height = imgui.get_font(), imgui.get_font_size(), imgui.get_text_line_height()
+        lines: list[str] = []
+        for word in text.split():
+            if lines and imgui.calc_text_size(lines[-1] + " " + word).x <= SUBTITLE_MAX_WIDTH * viewport.size.x:
+                lines[-1] += " " + word
+            else:
+                lines.append(word)
+        widths = [imgui.calc_text_size(line).x for line in lines]
+        alpha = min(1.0, (self.t - sentence.start) / SUBTITLE_FADE)
+        pad = ImVec2(0.6 * size, 0.25 * size)
+        center_x = viewport.pos.x + viewport.size.x / 2
+        top = viewport.pos.y + viewport.size.y - SUBTITLE_BOTTOM_EM * em - pad.y - line_height * len(lines)
+        draw_list = imgui.get_foreground_draw_list()
+        draw_list.add_rect_filled(ImVec2(center_x - max(widths) / 2 - pad.x, top - pad.y),
+                                  ImVec2(center_x + max(widths) / 2 + pad.x, top + line_height * len(lines) + pad.y),
+                                  imgui.color_convert_float4_to_u32(ImVec4(0.0, 0.0, 0.0, 0.72 * alpha)),
+                                  rounding=0.3 * size)
+        white = imgui.color_convert_float4_to_u32(ImVec4(1.0, 1.0, 1.0, alpha))
+        for i, line in enumerate(lines):
+            draw_list.add_text(font, size, ImVec2(center_x - widths[i] / 2, top + i * line_height), white, line)
+        imgui.pop_font()
+
+    def _gui_ripples(self) -> None:
+        """A ring that grows and fades where a gesture clicked (with the cursor: the program may hide both)"""
+        now = imgui.get_time()
+        self._ripples = [(p, t0) for p, t0 in self._ripples if now - t0 < RIPPLE_DURATION]
+        if not imgui.get_io().mouse_draw_cursor:
+            return
+        em = hello_imgui.em_size()
+        for p, t0 in self._ripples:
+            k = (now - t0) / RIPPLE_DURATION
+            color = ImVec4(RIPPLE_COLOR.x, RIPPLE_COLOR.y, RIPPLE_COLOR.z, RIPPLE_COLOR.w * (1.0 - k))
+            imgui.get_foreground_draw_list().add_circle(p, em * (0.3 + 1.2 * k), imgui.color_convert_float4_to_u32(color),
+                                                        thickness=1.0 + 0.2 * em * (1.0 - k))
 
     # ---- the strip -----------------------------------------------------------------------------------------------
     def _strip_height(self, width: float) -> float:
