@@ -44,6 +44,9 @@ ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& tex
 // when the demo pane is shown, in the code otherwise. True when the code pane should be shown: a result that the demo
 // cannot open
 bool DemoCodeViewer_SearchButton(bool demoPaneShown);
+// The same search as a field across the width (the demo pane's, on a desktop): a click opens the popup over it. A
+// result opens in the demo, and in the code
+void DemoCodeViewer_SearchField();
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();

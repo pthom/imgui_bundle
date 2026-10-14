@@ -734,6 +734,9 @@ namespace {
                 if (!mode.narrow && GDemoMarker_FlagFollowSource && IsFollowSourceApplicable())
                     ImGui::TextWrapped("Open a section of the demo, or hover a widget in it: the code at the right "
                                        "shows its source.");
+                // Both panes shown (a desktop): the search of the demos, under the hint (a phone has it in its top bar)
+                if (!mode.narrow)
+                    DemoCodeViewer_SearchField();
                 DemoMarker_ShowShortInfo();
                 lastCursorPos = ImGui::GetCursorScreenPos();
                 ImGui::EndChild();

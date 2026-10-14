@@ -820,10 +820,11 @@ namespace
     // The outline's popup, opened by OpenPopup("##outline") in the same ID scope: a search of the demo's sections, or
     // their tree, unfolded at the current one. A click shows the section in the code (at its next display) and in the
     // demo window. Returns the clicked section, or null
-    const OutlineNode* OutlinePopup(CodeFile& cf, const DemoFileInfo& file, bool python, const std::string& current)
+    const OutlineNode* OutlinePopup(CodeFile& cf, const DemoFileInfo& file, bool python, const std::string& current,
+                                    float minWidth = 0.f)
     {
         ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
-        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f),
+        ImGui::SetNextWindowSizeConstraints(ImVec2(ImMax(ImGui::GetFontSize() * 14.f, minWidth), 0.f),
                                             ImVec2(screen.x, screen.y * 0.7f));
         if (!ImGui::BeginPopup("##outline"))
             return nullptr;
@@ -839,7 +840,7 @@ namespace
                 ImGui::SetKeyboardFocusHere();
         }
         ImGui::SetNextItemWidth(-FLT_MIN);
-        bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " a section", search,
+        bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " Search the demos", search,
                                               sizeof(search), ImGuiInputTextFlags_EnterReturnsTrue);
         const OutlineNode* clicked = nullptr;
         // The tree, or the matches, in a child: its scroll to the current section keeps the search in view
@@ -2784,7 +2785,7 @@ void DemoCodeViewer_Show()
         // The path, as the search's door: the outline and its search open on a click
         float crumbWidth = ImGui::GetContentRegionAvail().x - ButtonWidth(ICON_FA_SEARCH " ") - pad;
         std::string crumb = std::string(ICON_FA_SEARCH " ")
-                            + (section ? SectionCrumb(section->path, crumbWidth) : "Search the demo");
+                            + (section ? SectionCrumb(section->path, crumbWidth) : "Search the demos");
         PushButtonColors(ImVec4(0.18f, 0.32f, 0.52f, 1.f), ImVec4(0.25f, 0.42f, 0.66f, 1.f),
                          ImVec4(0.29f, 0.48f, 0.74f, 1.f));
         if (ImGui::Button((crumb + "##crumb").c_str()))
@@ -2953,6 +2954,38 @@ bool DemoCodeViewer_SearchButton(bool demoPaneShown)
     const std::string& current = !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
     const OutlineNode* clicked = OutlinePopup(cf, files[0], python, current);
     return clicked != nullptr && demoPaneShown && !CanRevealInDemo(cf, clicked->path);
+}
+
+void DemoCodeViewer_SearchField()
+{
+    std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();  // the demo first
+    if (files.empty())
+        return;
+    CodeFile& cf = g_codeFiles[files[0].baseName];
+    bool python = g_showPython && cf.pyState == LoadState::Loaded;
+    bool loaded = (python ? cf.pyState : cf.cppState) == LoadState::Loaded;
+    if (loaded && OutlineOf(python ? cf.pyContent : cf.cppContent).children.empty())
+        return;  // a demo without sections
+    // A button that looks like a text field, with its placeholder: a field says "search" in a still frame
+    ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_FrameBg));
+    ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgHovered));
+    ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImGui::GetStyleColorVec4(ImGuiCol_FrameBgActive));
+    ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+    ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.f, 0.5f));
+    ImGui::BeginDisabled(!loaded);  // the demo's source loads at the start
+    if (ImGui::Button(ICON_FA_SEARCH " Search the demos##search_demos", ImVec2(-FLT_MIN, 0.f)))
+        ImGui::OpenPopup("##outline");
+    ImGui::EndDisabled();
+    ImGui::PopStyleVar();
+    ImGui::PopStyleColor(4);
+    // The popup over the field: its own search field takes the place of this one, with the keyboard
+    const ImGuiStyle& style = ImGui::GetStyle();
+    ImVec2 fieldMin = ImGui::GetItemRectMin();
+    float fieldWidth = ImGui::GetItemRectSize().x;
+    ImGui::SetNextWindowPos(ImVec2(fieldMin.x - style.WindowPadding.x, fieldMin.y - style.WindowPadding.y),
+                            ImGuiCond_Appearing);
+    const std::string& current = !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
+    OutlinePopup(cf, files[0], python, current, fieldWidth + 2.f * style.WindowPadding.x);
 }
 
 ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text)
