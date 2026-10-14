@@ -293,6 +293,7 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"^ImGuiContextHookCallback$",
             r"^InputTextMultilineOverride$",  # C function pointer (see ImGuiContext::InputTextMultilineOverride)
             r"^ImGuiInputTextMultilineOverride$",
+            r"^ImGuiBeginEndWindowCallback$",  # C function pointer (see ImGuiContext::BeginWindowCallback)
             r"const ImWchar\s*\*",
             r"unsigned char\s*\*",
             r"unsigned int\s*\*",

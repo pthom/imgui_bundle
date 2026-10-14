@@ -3943,11 +3943,6 @@ class IDStackTool:
 
 # enum ImGuiContextHookType    /* original C++ signature */
 class ContextHookType(enum.IntFlag):
-    """[ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow (called at the start of Begin() and at the end of End())
-    They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is begun from inside it.
-    cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764
-    """
-
     # ImGuiContextHookType_NewFramePre,     /* original C++ signature */
     new_frame_pre = enum.auto()  # (= 0)
     # ImGuiContextHookType_NewFramePost,     /* original C++ signature */
@@ -3962,12 +3957,8 @@ class ContextHookType(enum.IntFlag):
     render_post = enum.auto()  # (= 5)
     # ImGuiContextHookType_Shutdown,     /* original C++ signature */
     shutdown = enum.auto()  # (= 6)
-    # ImGuiContextHookType_PendingRemoval_,     /* original C++ signature */
+    # ImGuiContextHookType_PendingRemoval_ }    /* original C++ signature */
     pending_removal_ = enum.auto()  # (= 7)
-    # ImGuiContextHookType_BeginWindow,     /* original C++ signature */
-    begin_window = enum.auto()  # (= 8)
-    # ImGuiContextHookType_EndWindow }    /* original C++ signature */
-    end_window = enum.auto()  # (= 9)
 
 # struct ImGuiContextHook    /* original C++ signature */
 class ContextHook:
@@ -4663,6 +4654,13 @@ class Context:
     # Hooks
     # ImGuiID                             HookIdNext;    /* original C++ signature */
     hook_id_next: ID  # Next available HookId
+    # [ADAPT_IMGUI_BUNDLE]: when set, Begin() calls BeginWindowCallback at its start, and End() calls EndWindowCallback at its end.
+    # They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is
+    # begun from inside it. One slot: a library saves the previous values when it sets them, and restores them when it is done.
+    # Both run while the parent window is current. They get no window name or flags: BeginWindowCallback reads g.NextWindowData.
+    # cf https://github.com/thedmd/imgui-node-editor/issues/242                                                                                                                                                                 #issuecomment-1681806764
+    # void*                               BeginEndWindowCallbackUserData = NULL;    /* original C++ signature */
+    begin_end_window_callback_user_data: Optional[Any] = None
 
     # Capture/Logging
     # bool                    LogEnabled;    /* original C++ signature */

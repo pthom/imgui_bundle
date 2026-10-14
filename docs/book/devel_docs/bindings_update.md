@@ -194,7 +194,7 @@ cmake --build builds/ci_automation_tests --target ci_node_editor_tests -j
 ```
 
 Then, in the node editor fork (`external/imgui-node-editor/imgui-node-editor`):
-- refresh the patch files of `misc/imgui_patches/` from the two rebased imgui commits ("Context hooks..." and
+- refresh the patch files of `misc/imgui_patches/` from the two rebased imgui commits ("ImGuiContext::BeginWindowCallback..." and
   "ImGuiContext::InputTextMultilineOverride"). The command is in its `docs/fork_imgui_bundle.md`, chapter 3.
   Check them with `git apply --check` against the new upstream tags (docking and master); rebuild the `master` variant of the
   first patch by hand if its check fails.

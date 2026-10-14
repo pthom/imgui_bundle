@@ -2463,7 +2463,7 @@ void py_init_module_imgui_internal(nb::module_& m)
 
 
     auto pyEnumContextHookType =
-        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), nb::is_flag(), " [ADAPT_IMGUI_BUNDLE]: added ImGuiContextHookType_BeginWindow, ImGuiContextHookType_EndWindow (called at the start of Begin() and at the end of End())\n They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is begun from inside it.\n cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764")
+        nb::enum_<ImGuiContextHookType>(m, "ContextHookType", nb::is_arithmetic(), nb::is_flag(), "")
             .value("new_frame_pre", ImGuiContextHookType_NewFramePre, "")
             .value("new_frame_post", ImGuiContextHookType_NewFramePost, "")
             .value("end_frame_pre", ImGuiContextHookType_EndFramePre, "")
@@ -2471,9 +2471,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("render_pre", ImGuiContextHookType_RenderPre, "")
             .value("render_post", ImGuiContextHookType_RenderPost, "")
             .value("shutdown", ImGuiContextHookType_Shutdown, "")
-            .value("pending_removal_", ImGuiContextHookType_PendingRemoval_, "")
-            .value("begin_window", ImGuiContextHookType_BeginWindow, "")
-            .value("end_window", ImGuiContextHookType_EndWindow, "");
+            .value("pending_removal_", ImGuiContextHookType_PendingRemoval_, "");
 
 
     auto pyClassImGuiContextHook =
@@ -2764,6 +2762,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("settings_ini_data", &ImGuiContext::SettingsIniData, "In memory .ini settings")
         .def_rw("settings_handlers", &ImGuiContext::SettingsHandlers, "List of .ini settings handlers")
         .def_rw("hook_id_next", &ImGuiContext::HookIdNext, "Next available HookId")
+        .def_rw("begin_end_window_callback_user_data", &ImGuiContext::BeginEndWindowCallbackUserData, "")
         .def_rw("log_enabled", &ImGuiContext::LogEnabled, "Currently capturing")
         .def_rw("log_line_first_item", &ImGuiContext::LogLineFirstItem, "")
         .def_rw("log_flags", &ImGuiContext::LogFlags, "Capture flags/type")
