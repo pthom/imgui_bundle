@@ -2385,23 +2385,31 @@ void DemoCodeViewer_Show()
         const OutlineNode* section = nullptr;
         FindSectionAt(outline, g_editorReadingLine[displayName], section);
         const char* showLabel = compact ? ICON_FA_PLAY " Demo" : ICON_FA_PLAY " Show in the demo";
-        float showWidth = section ? ButtonWidth(showLabel) + ImGui::GetStyle().ItemSpacing.x : 0.f;
-        float crumbWidth = ImGui::GetContentRegionAvail().x - showWidth - ButtonWidth(ICON_FA_LIST_UL " ");
+        const ImGuiStyle& style = ImGui::GetStyle();
+
+        // A tinted band: the two buttons belong together, apart from the toolbar. The button comes first: it keeps
+        // its place while the path changes with the scroll
+        ImVec2 bandMin = ImGui::GetCursorScreenPos();
+        float pad = style.FramePadding.y, bandWidth = ImGui::GetContentRegionAvail().x;
+        ImVec2 bandMax(bandMin.x + bandWidth, bandMin.y + ImGui::GetTextLineHeight() + 2.f * pad);
+        ImGui::GetWindowDrawList()->AddRectFilled(bandMin, bandMax, ImGui::GetColorU32(ImGuiCol_Header, 0.6f),
+                                                  style.FrameRounding);
+        ImGui::SetCursorScreenPos(ImVec2(bandMin.x + pad, bandMin.y + pad));
+        if (section && cf.cppState == LoadState::Loaded)  // the reveal reads the C++ demo (not in Python-only mode)
+        {
+            if (ImGui::SmallButton(showLabel))
+                ShowSectionInDemo(cf, section->path);
+            ImGui::SetItemTooltip("Show this section in the demo: it opens there");
+            ImGui::SameLine();
+        }
+        float crumbWidth = ImGui::GetContentRegionAvail().x - ButtonWidth(ICON_FA_LIST_UL " ") - pad;
         std::string crumb = std::string(ICON_FA_LIST_UL " ")
                             + (section ? SectionCrumb(section->path, crumbWidth) : "Outline");
         if (ImGui::SmallButton((crumb + "##crumb").c_str()))
             ImGui::OpenPopup("##outline");
         ImGui::SetItemTooltip("The demo's sections, as a tree: a click shows one in the code and in the demo");
-        if (section)
-        {
-            ImGui::SameLine();
-            float rest = ImGui::GetContentRegionAvail().x - ButtonWidth(showLabel);
-            if (rest > 0.f)
-                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + rest);
-            if (ImGui::SmallButton(showLabel))
-                ShowSectionInDemo(cf, section->path);
-            ImGui::SetItemTooltip("Show this section in the demo: it opens there");
-        }
+        ImGui::SetCursorScreenPos(ImVec2(bandMin.x, bandMax.y + style.ItemSpacing.y));
+        ImGui::Dummy(ImVec2(0.f, 0.f));  // the band's height, for the layout
         ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
         ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f),
                                             ImVec2(screen.x, screen.y * 0.7f));
@@ -2491,7 +2499,7 @@ void DemoCodeViewer_Show()
         if (codeFont.font)
             ImGui::PopFont(); // restore font for menu
 
-        if (!rightClickSection.empty())
+        if (!rightClickSection.empty() && cf.cppState == LoadState::Loaded)
         {
             std::string label = ICON_FA_PLAY " Show in the demo: "
                                 + SectionCrumb(rightClickSection, ImGui::GetFontSize() * 20.f);
