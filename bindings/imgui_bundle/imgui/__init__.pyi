@@ -8950,7 +8950,7 @@ class IO:
     # Tools to detect code submitting items with conflicting/duplicate IDs
     # - Code should use PushID()/PopID() in loops, or append "##xx" to same-label identifiers.
     # - Empty label e.g. Button("") == same ID as parent widget/node. Use Button("##xx") instead!
-    # - See FAQ https://github.com/ocornut/imgui/blob/master/docs/FAQ.md         #q-about-the-id-stack-system
+    # - See FAQ https://github.com/ocornut/imgui/blob/master/docs/FAQ.md#q-about-the-id-stack-system
     # bool        ConfigDebugHighlightIdConflicts;    /* original C++ signature */
     config_debug_highlight_id_conflicts: bool  # = True           // Highlight and show an error message popup when multiple items have conflicting identifiers.
     # bool        ConfigDebugHighlightIdConflictsShowItemPicker;    /* original C++ signature */

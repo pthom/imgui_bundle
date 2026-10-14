@@ -242,11 +242,11 @@ class Config:
     #         , NavigateButtonIndex(1)
     #         , ContextMenuButtonIndex(1)
     #         , EnableSmoothZoom(true)
-    #                                 # ifdef __APPLE__
+    # # ifdef __APPLE__
     #         , SmoothZoomPower(1.1f)
-    #                                 # else
+    # # else
     #         , SmoothZoomPower(1.3f)
-    #                                 # endif
+    # # endif
     #         , ForceWindowContentWidthToNodeWidth(false);
     def __init__(self) -> None:
         pass

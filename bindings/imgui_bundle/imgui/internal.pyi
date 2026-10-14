@@ -1962,7 +1962,7 @@ class InputTextState:
     def select_all(self) -> None:
         """(private API)"""
         pass
-    # Reload user buf (WIP               #2890)
+    # Reload user buf (WIP #2890)
     # If you modify underlying user-passed const char* while active you need to call this (InputText V2 may lift this)
     #   strcpy(my_buf, "hello");
     #   if (ImGuiInputTextState* state = ImGui::GetInputTextState(id)) // id may be ImGui::GetItemID() is last item
@@ -4658,7 +4658,7 @@ class Context:
     # They let a library that changes the coordinate space (e.g. the zoomable canvas of imgui-node-editor) know when a window is
     # begun from inside it. One slot: a library saves the previous values when it sets them, and restores them when it is done.
     # Both run while the parent window is current. They get no window name or flags: BeginWindowCallback reads g.NextWindowData.
-    # cf https://github.com/thedmd/imgui-node-editor/issues/242                                                                                                                                                                 #issuecomment-1681806764
+    # cf https://github.com/thedmd/imgui-node-editor/issues/242#issuecomment-1681806764
     # void*                               BeginEndWindowCallbackUserData = NULL;    /* original C++ signature */
     begin_end_window_callback_user_data: Optional[Any] = None
 

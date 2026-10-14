@@ -1337,7 +1337,7 @@ class TextEditor:
         break_before: str = "."
 
         # unicode line breaking options
-        # based on the unicode standard annex       #14 which identifies break
+        # based on the unicode standard annex #14 which identifies break
         # opportunities expressed as rules which can be (de)activated below
         # see https://www.unicode.org/reports/tr14 for details
         # bool lb2 = true;    /* original C++ signature */

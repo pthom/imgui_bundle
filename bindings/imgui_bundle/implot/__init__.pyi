@@ -1230,7 +1230,7 @@ class Style:
     digital_spacing: float  # = 4,      digital plot spacing gap in pixels
 
     # [ADAPT_IMGUI_BUNDLE]
-    #                             #ifdef IMGUI_BUNDLE_PYTHON_API
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # python adapter for ImPlotStyle::Colors[ImPlotCol_COUNT]
     # You can query and modify those values (0 <= idxColor < implot.Col_.count)
@@ -1243,7 +1243,7 @@ class Style:
     def set_color_(self, idx_color: int, color: ImVec4Like) -> None:
         """Array of styling colors (index from implot.Col_.xxx)"""
         pass
-    #                             #endif
+    # #endif
     #
     # [/ADAPT_IMGUI_BUNDLE]
 

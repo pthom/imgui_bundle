@@ -615,7 +615,7 @@ class TestEngineIO:
     # ImGuiTestEngineExportFormat ExportResultsFormat = (ImGuiTestEngineExportFormat)0;    /* original C++ signature */
     export_results_format: TestEngineExportFormat = TestEngineExportFormat.j_unit_xml
 
-    #                                                     #ifdef IMGUI_BUNDLE_PYTHON_API
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # void ExportResultsFilename_Set(const char* filename);    /* original C++ signature */
     def export_results_filename_set(self, filename: str) -> None:
@@ -623,7 +623,7 @@ class TestEngineIO:
         (private API)
         """
         pass
-    #                                                     #endif
+    # #endif
     #
 
     # Options: Sanity Checks
@@ -1624,7 +1624,7 @@ class TestContext:
         Set capture file format (otherwise for video this default to EngineIO->VideoCaptureExtension)
         """
         pass
-    #                                                                     #ifdef IMGUI_BUNDLE_PYTHON_API
+    # #ifdef IMGUI_BUNDLE_PYTHON_API
     #
     # void        CaptureSetFilename(const char* filename);    /* original C++ signature */
     def capture_set_filename(self, filename: str) -> None:
@@ -1633,7 +1633,7 @@ class TestContext:
         (private API)
         """
         pass
-    #                                                                     #endif
+    # #endif
     #
     # bool        CaptureAddWindow(ImGuiTestRef ref);                                     /* original C++ signature */
     def capture_add_window(self, ref: Union[TestRef, str]) -> bool:
@@ -2137,7 +2137,7 @@ class TestContext:
     # Those are mostly useful to simulate OS actions and testing of viewport-specific features, may not be useful to most users.
 
     # Docking
-    #                                                                     #ifdef IMGUI_HAS_DOCK
+    # #ifdef IMGUI_HAS_DOCK
     #
     # void        DockClear(const char* window_name, ...);    /* original C++ signature */
     def dock_clear(self, window_name: str) -> None:
@@ -2178,7 +2178,7 @@ class TestContext:
         """(private API)"""
         pass
     # ImVec2    GetDockNodeTitlebarPos(ImGuiDockNode* node);
-    #                                                                     #endif
+    # #endif
     #
 
     # Performances Measurement (use along with Dear ImGui Perf Tool)
