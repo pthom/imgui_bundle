@@ -1,8 +1,12 @@
 #pragma once
 #include <optional>
 #include <string>
+#include <vector>
 
 enum class ImGuiExplorerLibrary { ImGui, ImPlot, ImPlot3D, ImAnim };
+
+// The libraries offered by the toolbar (all of them by default), e.g. {ImGui, ImPlot, ImPlot3D}.
+void SetImGuiExplorerLibraries(const std::vector<ImGuiExplorerLibrary>& libraries);
 
 // C++ standalone explorer: shows C++/Python toggle and status bar option.
 void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library = std::nullopt,

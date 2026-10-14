@@ -9,6 +9,7 @@
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"
 #include "library_config.h"
+#include <algorithm>
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -62,6 +63,20 @@ namespace
     char                                GDemoMarker_CodeLookupInfo[1024] = {0};
     int                                 GDemoMarker_PrevLibIndex = -1;   // the lookup info is reset when they change
     int                                 GDemoMarker_PrevFileIndex = -1;
+
+    std::vector<std::string> GShownLibraries;  // the toolbar's libraries, by name (empty: all of them)
+
+    const char* LibraryName(ImGuiExplorerLibrary library)
+    {
+        static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
+        return names[static_cast<int>(library)];
+    }
+
+    bool IsLibraryShown(const std::string& name)
+    {
+        return GShownLibraries.empty()
+               || std::find(GShownLibraries.begin(), GShownLibraries.end(), name) != GShownLibraries.end();
+    }
 
     // Follow source only makes sense when the active code-viewer tab is the demo
     // file (imgui_demo.cpp, implot_demo.cpp, ...). On API reference tabs the user
@@ -333,7 +348,7 @@ namespace
             if (ImGui::BeginCombo("##library", libs[currentIdx].name.c_str()))
             {
                 for (size_t i = 0; i < libs.size(); ++i)
-                    if (ImGui::Selectable(libs[i].name.c_str(), (int)i == currentIdx))
+                    if (IsLibraryShown(libs[i].name) && ImGui::Selectable(libs[i].name.c_str(), (int)i == currentIdx))
                         SetCurrentLibraryIndex((int)i);
                 ImGui::EndCombo();
             }
@@ -342,6 +357,8 @@ namespace
 
         for (size_t i = 0; i < libs.size(); ++i)
         {
+            if (!IsLibraryShown(libs[i].name))
+                continue;
             ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
             bool isSelected = ((int)i == currentIdx);
             if (isSelected)
@@ -643,10 +660,7 @@ namespace {
     void SetLibraryMode(std::optional<ImGuiExplorerLibrary> library)
     {
         if (library.has_value())
-        {
-            static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
-            SetSingleLibraryMode(names[static_cast<int>(library.value())]);
-        }
+            SetSingleLibraryMode(LibraryName(library.value()));
         else
             SetMultipleLibraryMode();
     }
@@ -781,4 +795,20 @@ void ShowImGuiExplorerGui_Python(std::optional<ImGuiExplorerLibrary> library,
     DemoCodeViewer_SetShowPython(true);
     SetLibraryMode(library);
     ShowExplorerLayout(false);
+}
+
+void SetImGuiExplorerLibraries(const std::vector<ImGuiExplorerLibrary>& libraries)
+{
+    GShownLibraries.clear();
+    for (ImGuiExplorerLibrary library : libraries)
+        GShownLibraries.push_back(LibraryName(library));
+    // A hidden library leaves the stage to the first one shown
+    const auto& libs = GetAllLibraryConfigs();
+    if (!IsLibraryShown(GetCurrentLibrary().name))
+        for (size_t i = 0; i < libs.size(); ++i)
+            if (IsLibraryShown(libs[i].name))
+            {
+                SetCurrentLibraryIndex((int)i);
+                break;
+            }
 }

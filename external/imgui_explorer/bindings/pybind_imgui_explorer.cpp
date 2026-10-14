@@ -8,6 +8,7 @@
 #include <nanobind/nanobind.h>
 #include <nanobind/stl/optional.h>
 #include <nanobind/stl/string.h>
+#include <nanobind/stl/vector.h>
 
 #include "imgui_explorer.h"
 
@@ -33,6 +34,11 @@ void py_init_module_imgui_explorer(nb::module_& m)
             .value("implot3_d", ImGuiExplorerLibrary::ImPlot3D, "")
             .value("im_anim", ImGuiExplorerLibrary::ImAnim, "");
 
+
+    m.def("set_imgui_explorer_libraries",
+        SetImGuiExplorerLibraries,
+        nb::arg("libraries"),
+        "The libraries offered by the toolbar (all of them by default), e.g. {ImGui, ImPlot, ImPlot3D}.");
 
     m.def("show_imgui_explorer_gui_cpp",
         ShowImGuiExplorerGui_Cpp,
