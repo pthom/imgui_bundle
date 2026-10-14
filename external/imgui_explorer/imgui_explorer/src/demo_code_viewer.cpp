@@ -826,7 +826,13 @@ namespace
         ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
         ImGui::SetNextWindowSizeConstraints(ImVec2(ImMax(ImGui::GetFontSize() * 14.f, minWidth), 0.f),
                                             ImVec2(screen.x, screen.y * 0.7f));
-        if (!ImGui::BeginPopup("##outline"))
+        // Opaque: it opens over the search field, whose placeholder showed behind the query
+        ImVec4 popupBg = ImGui::GetStyleColorVec4(ImGuiCol_PopupBg);
+        popupBg.w = 1.f;
+        ImGui::PushStyleColor(ImGuiCol_PopupBg, popupBg);
+        bool open = ImGui::BeginPopup("##outline");  // the background is drawn here
+        ImGui::PopStyleColor();
+        if (!open)
             return nullptr;
         const OutlineNode& outline = OutlineOf(python ? cf.pyContent : cf.cppContent);
         // The search: the sections whose path holds every word (ignoring case), as a list; Enter takes the
