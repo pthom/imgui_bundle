@@ -43,7 +43,10 @@ class Handler(BaseHTTPRequestHandler):
         self.send_response(status)
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
-        self.wfile.write(body)
+        try:
+            self.wfile.write(body)
+        except (BrokenPipeError, ConnectionResetError):  # the client gave up: the timeout tests do it on purpose
+            pass
 
     def log_message(self, format: str, *args: object) -> None:  # noqa: A002  # silences the server's log
         pass
@@ -52,7 +55,8 @@ class Handler(BaseHTTPRequestHandler):
 @pytest.fixture(scope="module")
 def server_url() -> Iterator[str]:
     server = ThreadingHTTPServer(("127.0.0.1", 0), Handler)
-    server.daemon_threads = True
+    # Not daemon threads: server_close() joins them, so no handler (e.g. /slow) outlives the tests and writes at exit
+    server.daemon_threads = False
     threading.Thread(target=server.serve_forever, daemon=True).start()
     yield f"http://127.0.0.1:{server.server_address[1]}"
     server.shutdown()
