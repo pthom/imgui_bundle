@@ -40,114 +40,161 @@ parts:
       - file: addons/text_markdown
       - file: addons/tools
       - file: addons/widgets
-  - caption: API reference
+  # <api pages> written by ci_scripts/api_pages.py from the stubs: do not edit by hand
+  - caption: Python API
     chapters:
-      # <api pages> written by ci_scripts/api_pages.py from the stubs: do not edit by hand
       - file: api/index
       - file: api/imgui/index
         sections:
           - file: api/imgui/imgui
-          - file: api/imgui/imgui_cpp
           - file: api/imgui/imgui_internal
-          - file: api/imgui/imgui_internal_cpp
           - file: api/imgui/imgui_test_engine
-          - file: api/imgui/imgui_test_engine_cpp
           - file: api/imgui/imgui_backends
-          - file: api/imgui/imgui_backends_cpp
       - file: api/hello_imgui/index
         sections:
           - file: api/hello_imgui/hello_imgui
-          - file: api/hello_imgui/hello_imgui_cpp
           - file: api/hello_imgui/hello_imgui_nb
       - file: api/immapp/index
         sections:
           - file: api/immapp/immapp
-          - file: api/immapp/immapp_cpp
           - file: api/immapp/immapp_nb
       - file: api/implot/index
         sections:
           - file: api/implot/implot
-          - file: api/implot/implot_cpp
           - file: api/implot/implot_internal
-          - file: api/implot/implot_internal_cpp
       - file: api/implot3d/index
         sections:
           - file: api/implot3d/implot3d
-          - file: api/implot3d/implot3d_cpp
           - file: api/implot3d/implot3d_internal
-          - file: api/implot3d/implot3d_internal_cpp
       - file: api/immvision/index
         sections:
           - file: api/immvision/immvision
-          - file: api/immvision/immvision_cpp
       - file: api/imgui_node_editor/index
         sections:
           - file: api/imgui_node_editor/imgui_node_editor
-          - file: api/imgui_node_editor/imgui_node_editor_cpp
       - file: api/imguizmo/index
         sections:
           - file: api/imguizmo/imguizmo
-          - file: api/imguizmo/imguizmo_cpp
       - file: api/nanovg/index
         sections:
           - file: api/nanovg/nanovg
-          - file: api/nanovg/nanovg_cpp
       - file: api/im_anim/index
         sections:
           - file: api/im_anim/im_anim
-          - file: api/im_anim/im_anim_cpp
       - file: api/imgui_color_text_edit/index
         sections:
           - file: api/imgui_color_text_edit/imgui_color_text_edit
-          - file: api/imgui_color_text_edit/imgui_color_text_edit_cpp
       - file: api/rich_md/index
         sections:
           - file: api/rich_md/rich_md
-          - file: api/rich_md/rich_md_cpp
       - file: api/imgui_microtex/index
         sections:
           - file: api/imgui_microtex/imgui_microtex
-          - file: api/imgui_microtex/imgui_microtex_cpp
       - file: api/imgui_knobs/index
         sections:
           - file: api/imgui_knobs/imgui_knobs
-          - file: api/imgui_knobs/imgui_knobs_cpp
       - file: api/imgui_toggle/index
         sections:
           - file: api/imgui_toggle/imgui_toggle
-          - file: api/imgui_toggle/imgui_toggle_cpp
       - file: api/imspinner/index
         sections:
           - file: api/imspinner/imspinner
-          - file: api/imspinner/imspinner_cpp
       - file: api/im_cool_bar/index
         sections:
           - file: api/im_cool_bar/im_cool_bar
-          - file: api/im_cool_bar/im_cool_bar_cpp
       - file: api/imgui_command_palette/index
         sections:
           - file: api/imgui_command_palette/imgui_command_palette
-          - file: api/imgui_command_palette/imgui_command_palette_cpp
       - file: api/im_file_dialog/index
         sections:
           - file: api/im_file_dialog/im_file_dialog
-          - file: api/im_file_dialog/im_file_dialog_cpp
       - file: api/portable_file_dialogs/index
         sections:
           - file: api/portable_file_dialogs/portable_file_dialogs
-          - file: api/portable_file_dialogs/portable_file_dialogs_cpp
       - file: api/imgui_tex_inspect/index
         sections:
           - file: api/imgui_tex_inspect/imgui_tex_inspect
-          - file: api/imgui_tex_inspect/imgui_tex_inspect_cpp
       - file: api/imgui_explorer/index
         sections:
           - file: api/imgui_explorer/imgui_explorer
-          - file: api/imgui_explorer/imgui_explorer_cpp
       - file: api/webgl/index
         sections:
           - file: api/webgl/webgl
-      # </api pages>
+  - caption: C++ API
+    chapters:
+      - file: api/cpp_index
+      - file: api/imgui/cpp_index
+        sections:
+          - file: api/imgui/imgui_cpp
+          - file: api/imgui/imgui_internal_cpp
+          - file: api/imgui/imgui_test_engine_cpp
+          - file: api/imgui/imgui_backends_cpp
+      - file: api/hello_imgui/cpp_index
+        sections:
+          - file: api/hello_imgui/hello_imgui_cpp
+      - file: api/immapp/cpp_index
+        sections:
+          - file: api/immapp/immapp_cpp
+      - file: api/implot/cpp_index
+        sections:
+          - file: api/implot/implot_cpp
+          - file: api/implot/implot_internal_cpp
+      - file: api/implot3d/cpp_index
+        sections:
+          - file: api/implot3d/implot3d_cpp
+          - file: api/implot3d/implot3d_internal_cpp
+      - file: api/immvision/cpp_index
+        sections:
+          - file: api/immvision/immvision_cpp
+      - file: api/imgui_node_editor/cpp_index
+        sections:
+          - file: api/imgui_node_editor/imgui_node_editor_cpp
+      - file: api/imguizmo/cpp_index
+        sections:
+          - file: api/imguizmo/imguizmo_cpp
+      - file: api/nanovg/cpp_index
+        sections:
+          - file: api/nanovg/nanovg_cpp
+      - file: api/im_anim/cpp_index
+        sections:
+          - file: api/im_anim/im_anim_cpp
+      - file: api/imgui_color_text_edit/cpp_index
+        sections:
+          - file: api/imgui_color_text_edit/imgui_color_text_edit_cpp
+      - file: api/rich_md/cpp_index
+        sections:
+          - file: api/rich_md/rich_md_cpp
+      - file: api/imgui_microtex/cpp_index
+        sections:
+          - file: api/imgui_microtex/imgui_microtex_cpp
+      - file: api/imgui_knobs/cpp_index
+        sections:
+          - file: api/imgui_knobs/imgui_knobs_cpp
+      - file: api/imgui_toggle/cpp_index
+        sections:
+          - file: api/imgui_toggle/imgui_toggle_cpp
+      - file: api/imspinner/cpp_index
+        sections:
+          - file: api/imspinner/imspinner_cpp
+      - file: api/im_cool_bar/cpp_index
+        sections:
+          - file: api/im_cool_bar/im_cool_bar_cpp
+      - file: api/imgui_command_palette/cpp_index
+        sections:
+          - file: api/imgui_command_palette/imgui_command_palette_cpp
+      - file: api/im_file_dialog/cpp_index
+        sections:
+          - file: api/im_file_dialog/im_file_dialog_cpp
+      - file: api/portable_file_dialogs/cpp_index
+        sections:
+          - file: api/portable_file_dialogs/portable_file_dialogs_cpp
+      - file: api/imgui_tex_inspect/cpp_index
+        sections:
+          - file: api/imgui_tex_inspect/imgui_tex_inspect_cpp
+      - file: api/imgui_explorer/cpp_index
+        sections:
+          - file: api/imgui_explorer/imgui_explorer_cpp
+  # </api pages>
   - caption: Support
     chapters:
       - file: support/support_project

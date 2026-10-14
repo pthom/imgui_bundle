@@ -371,7 +371,7 @@ def write_book_pages(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) 
 
     toc = (BOOK / "_toc.yml").read_text()
     # The API pages (written by api_pages.py) stay out of the PDF: too long, and made to be looked up
-    toc = re.sub(r"  - caption: API reference\n(?:(?!  - caption:).*\n)*", "", toc)
+    toc = re.sub(r"  # <api pages>.*?  # </api pages>\n", "", toc, flags=re.S)
     entry, entry_pdf = (f"- file: {p.relative_to(BOOK).with_suffix('').as_posix()}\n"
                         for p in (BOOK_PAGE, BOOK_PAGE_PDF))
     if toc.count(entry) != 1:

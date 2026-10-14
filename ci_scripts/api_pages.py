@@ -835,7 +835,9 @@ def write_module_pages(library: Library, module: str, stubs: list[Path], folder:
     # The page's outline depth, in its frontmatter (the theme counts H2 as depth 1): 3 lists the entries (H4), 2 stops at
     # the sections. The book's other pages keep the theme's default
     depth = 2 if module in OUTLINE_WITHOUT_ENTRIES else 3
-    frontmatter = ["---", "site:", f"  outline_maxdepth: {depth}", "---"]
+    # The sidebar's title of a C++ view, under the "C++ API" caption: without "(C++)"
+    frontmatter = ["---", *([f"short_title: {json.dumps(short)}"] if cpp else []), "site:",
+                   f"  outline_maxdepth: {depth}", "---"]
     cards = _demo_cards(manifest, docs, index, [], MODULE_DEMOS.get(module, []))
     doc = _module_doc(stubs)
     if cpp:
@@ -993,8 +995,10 @@ def _demo_cards(manifest: dict[str, Any], docs: dict[str, dict[str, Any]], page:
             ":::::{grid} 1 2 3 3", "", *out, ":::::", ""]
 
 
-def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) -> list[str]:
-    """The intro page and the module pages of a library; returns the TOC lines"""
+def write_library_pages(library: Library, manifest: dict[str, Any],
+                        docs: dict[str, dict[str, Any]]) -> tuple[list[str], list[str]]:
+    """The intro page and the module pages of a library, and the index of their C++ views; returns the TOC lines of
+    the Python API and of the C++ API (none without a C++ view)"""
     global COMMENT_STYLE
     COMMENT_STYLE = library.comments
     folder = API / library.key
@@ -1028,11 +1032,19 @@ def write_library_pages(library: Library, manifest: dict[str, Any], docs: dict[s
     out += _demo_cards(manifest, docs, index, library.uses, library.demos)
     index.write_text("\n".join(out))
     toc = [f"      - file: api/{library.key}/index", "        sections:"]
-    for m in modules:
-        cpp = next((c for c in cpp_pages if c.module == m.module), None)
-        for mp in ([m, cpp] if cpp else [m]):
-            toc.append(f"          - file: api/{library.key}/{mp.index.stem}")
-    return toc
+    toc += [f"          - file: api/{library.key}/{m.index.stem}" for m in modules]
+    if not cpp_pages:
+        return toc, []
+    out = ["---", f"short_title: {json.dumps(library.title)}", "---", GENERATED, "",
+           f"# {library.title}: the C++ API", "",
+           f"The C++ view of the modules of [{library.title}](index.md): their entries, with their C++ signatures and "
+           "the headers' comments.", ""]
+    out += [f"- [`{c.module.removeprefix('imgui_bundle.')}`]({c.index.name}): {c.functions} functions, "
+            f"{c.classes} classes, {c.enums} enums" for c in cpp_pages]
+    (folder / "cpp_index.md").write_text("\n".join(out) + "\n")
+    cpp_toc = [f"      - file: api/{library.key}/cpp_index", "        sections:"]
+    cpp_toc += [f"          - file: api/{library.key}/{c.index.stem}" for c in cpp_pages]
+    return toc, cpp_toc
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1198,13 +1210,14 @@ def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]
 
 
 def write_index() -> None:
-    out = [GENERATED, "", "# API reference", "",
+    out = [GENERATED, "", "# Python API reference", "",
            "The libraries of Dear ImGui Bundle, as Python modules, with the C++ signature next to each Python one: "
            "the bindings are generated from the C++ headers, and their names follow them (`ImGui::Button` is "
            "`imgui.button`, `ImPlotFlags_` is `implot.Flags_`). These pages come from the Python stubs (`.pyi`), "
            "which keep the headers' comments. To learn, start with the [demos](../intro/demos.md); to look up a name, "
            "use these pages, or the stubs in your editor. For AI assistants, the same reference exists in plain "
            f"text, one file per library: {LLMS_URL}/index.txt", "",
+           "The same entries with their C++ names: the [C++ API](cpp_index.md).", "",
            "| Library | What it does | Modules |", "|---|---|---|"]
     for library in LIBRARIES:
         modules = ", ".join(f"`{m}`" for m, _ in library.modules)
@@ -1213,14 +1226,28 @@ def write_index() -> None:
     (API / "index.md").write_text("\n".join(out))
 
 
-def write_toc(toc_lines: list[str]) -> None:
+def write_cpp_index(libraries: list[Library]) -> None:
+    """The root of the C++ API: the libraries that have a C++ view"""
+    out = [GENERATED, "", "# C++ API reference", "",
+           "The C++ API of the libraries, as the bundle binds them to Python: for each module, its entries in the "
+           "headers' order, with their C++ signatures and the headers' comments. The functions excluded from the "
+           "bindings, the typedefs and the macros are absent. The same entries with their Python names: the "
+           "[Python API](index.md).", "",
+           "| Library | What it does |", "|---|---|"]
+    out += [f"| [{library.title}]({library.key}/cpp_index.md) | {library.tagline} |" for library in libraries]
+    (API / "cpp_index.md").write_text("\n".join(out) + "\n")
+
+
+def write_toc(toc_lines: list[str], cpp_toc_lines: list[str]) -> None:
+    """The API's two parts of the book's TOC: the Python API, then the C++ API (the C++ view of the modules)"""
     path = BOOK / "_toc.yml"
     text = path.read_text()
-    start, end = "      # <api pages>", "      # </api pages>"
+    start, end = "  # <api pages>", "  # </api pages>"
     i, j = text.index(start), text.index(end)
     i = text.index("\n", i) + 1
-    new = "\n".join(["      - file: api/index", *toc_lines]) + "\n"
-    path.write_text(text[:i] + new + text[j:])
+    new = ["  - caption: Python API", "    chapters:", "      - file: api/index", *toc_lines,
+           "  - caption: C++ API", "    chapters:", "      - file: api/cpp_index", *cpp_toc_lines]
+    path.write_text(text[:i] + "\n".join(new) + "\n" + text[j:])
 
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -1366,7 +1393,8 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
             bound = {_signature_key(s) for s in item.get("cpp", "").split("\n")}
             unbound = [d for d in overloads if _signature_key(d) not in bound]
             if unbound and entry.header in HEADER_NOTES:  # an extension's version (imgui_stdlib.h): after the core's
-                item["cpp"] = "\n".join([*unbound, f"// In {entry.header}, an optional extension (Python binds this one):",
+                item["cpp"] = "\n".join([*unbound,
+                                         f"// In {entry.header}, an optional extension (Python binds this one):",
                                          item.get("cpp", "")])
             elif unbound and cpp_header:
                 item["cpp"] = "\n".join([item.get("cpp", ""), f"// Also in {Path(cpp_header).name}, not in Python:",
@@ -1403,10 +1431,17 @@ def main() -> None:
     docs = json.loads((EXAMPLES_DIR / "examples_docs.json").read_text())
     API.mkdir(exist_ok=True)
     toc: list[str] = []
+    cpp_toc: list[str] = []
+    cpp_libraries: list[Library] = []
     for library in LIBRARIES:
-        toc += write_library_pages(library, manifest, docs)
+        library_toc, library_cpp_toc = write_library_pages(library, manifest, docs)
+        toc += library_toc
+        cpp_toc += library_cpp_toc
+        if library_cpp_toc:
+            cpp_libraries.append(library)
     write_index()
-    write_toc(toc)
+    write_cpp_index(cpp_libraries)
+    write_toc(toc, cpp_toc)
     llms: list[tuple[Library, str, list[tuple[Path, list[str]]]]] = []
     jsons: list[tuple[Library, str, Path]] = []
     for library in LIBRARIES:
