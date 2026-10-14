@@ -11,7 +11,7 @@ defaults:
 
 [[A "cues" block is Python, run once when the script loads: each call records an event on the timeline. set_value and animate are keyframes of the program's parameters (the scene, a card, a veil). The other calls are gestures: the Dear ImGui Test Engine moves the mouse, clicks and types, as a user would.]]
 
-[[A gesture's target is a Test Engine reference, like "//Dear ImGui Demo/**/Button" (the "**/" searches the window's items), or a name that the program turns into a rectangle on screen: "crumb", "code", "code_word", "button". A subtitle stays on screen until its gestures end.]]
+[[A gesture's target is a Test Engine reference, like "//Dear ImGui Demo/**/Button" (the "**/" searches the window's items), or a name that the program turns into a rectangle on screen: "code", "code_word", "button". A subtitle stays on screen until its gestures end.]]
 
 [[The video: python imgui_explorer_tour.py cut_montage.md --video out.mp4. The window is 960 x 540 points, 1920 x 1080 pixels on a Retina screen. The Test Engine's fixed delta time makes each frame last 1/30 s of video, however long it takes to draw. Each frame is read before the swap and piped to ffmpeg. The subtitles are drawn by Dear ImGui too, in the foreground draw list. A 30-second video takes about 10 seconds to record.]]
 
@@ -40,10 +40,10 @@ wait(0.3)
 ```
 Hover any demo: here is its code.
 
-[[ImPlot. "crumb" is the bar above the code: it names the section being read, and a click on it opens the demo's outline, with a search. "color" lists the colorful plots. A click on Colorful Bubbles opens that section in the demo, and shows its code.]]
+[[ImPlot. The "Search the demos" field, at the top of the demo pane, opens the demo's outline with a search, over the field like a dropdown. "color" lists the colorful plots. A click on Colorful Bubbles opens that section in the demo, and shows its code.]]
 ```cues
 click("item", "**/ImPlot")
-click("crumb")
+click("item", "**/###search_demos")
 type_keys("color")
 wait(0.5)
 click("item", "**/Colorful Bubbles##Colorful Bubbles")
@@ -82,14 +82,15 @@ In C++, or in Python.
 
 ## In 3D
 
-[[ImPlot3D: the same search, "surf", then Enter. The demo opens the section. Then 3 wheel steps show the whole surface: a number tuned for this window's size.]]
+[[ImPlot3D: the same search, "surf". The cursor goes to the section's entry in the demo, away from the field (its tooltip would show when the popup closes), then Enter takes the first match. The demo opens the section. Then 3 wheel steps show the whole surface: a number tuned for this window's size.]]
 ```cues
 click("item", "**/ImPlot3D")
-click("crumb")
+click("item", "**/###search_demos")
 type_keys("surf")
 wait(0.3)
+hover("item", "//ImPlot3D Demo/**/Surface Plots")
 press("enter")
-wait(0.6)
+wait(0.3)
 wheel("item", "//ImPlot3D Demo/**/Custom range", lines=-3)
 wait(1.2)
 ```
