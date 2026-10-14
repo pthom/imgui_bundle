@@ -8768,9 +8768,11 @@ class im_stb:  # Proxy class that introduces typings for the *submodule* im_stb
 
 # </submodule im_stb>
 
+# <custom_bindings>
 def get_current_window() -> Window:
     pass
 
+# </custom_bindings>
 ####################    </generated_from:imgui_internal.h>    ####################
 
 ####################    <generated_from:imgui_internal_pywrappers.h>    ####################

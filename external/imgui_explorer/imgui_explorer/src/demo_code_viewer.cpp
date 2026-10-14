@@ -1430,18 +1430,21 @@ namespace
                     }
             ImGui::SeparatorText(title.c_str());
 
-            // The parts, as runs of entries
+            // The parts, and their entries
             struct Part { std::string title; std::vector<const ApiEntry*> entries; bool hasFunction = false; };
             std::vector<Part> parts;
             for (const auto& e : m->entries)
             {
                 if (!python && e.cppName.empty())
                     continue;
-                if (parts.empty() || parts.back().title != e.part)
-                    parts.push_back({e.part, {}, false});
-                parts.back().entries.push_back(&e);
+                // By title: the Python additions come in several runs (the stub's start, the custom bindings at the
+                // end of a header)
+                auto part = std::find_if(parts.begin(), parts.end(), [&](const Part& p) { return p.title == e.part; });
+                if (part == parts.end())
+                    part = parts.insert(parts.end(), Part{e.part, {}, false});
+                part->entries.push_back(&e);
                 if (e.kind == "function")
-                    parts.back().hasFunction = true;
+                    part->hasFunction = true;
             }
             std::vector<const Part*> ordered, before, additions;
             bool functionsSeen = false;

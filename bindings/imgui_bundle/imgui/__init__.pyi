@@ -12085,6 +12085,7 @@ class PlatformImeData:
 
 # #endif
 
+# <custom_bindings>
 def get_clipboard_text() -> str:
     pass
 
@@ -12211,6 +12212,7 @@ def color_picker4(
 ) -> Tuple[bool, ImVec4]:
     pass
 
+# </custom_bindings>
 ####################    </generated_from:imgui.h>    ####################
 
 ####################    <generated_from:imgui_stacklayout.h>    ####################

@@ -440,6 +440,8 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
             headers.append((i + 1, m.group(1)))
     generated_start = next((i + 1 for i, line in enumerate(lines) if "<litgen_stub>" in line), 0)
     generated_end = next((i + 1 for i, line in enumerate(lines) if "</litgen_stub>" in line), len(lines) + 1)
+    custom_marks = [(i + 1, line == "# <custom_bindings>") for i, line in enumerate(lines)
+                    if line in ("# <custom_bindings>", "# </custom_bindings>")]  # litgen's, around the custom bindings
     entries: list[Entry] = []
     for node in tree.body:
         if not isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign)):
@@ -449,6 +451,11 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
             continue
         entry.header = next((h for (ln, h) in reversed(headers) if ln < node.lineno), "")
         entry.generated = generated_start < node.lineno < generated_end
+        if next((opening for (ln, opening) in reversed(custom_marks) if ln < node.lineno), False):
+            # written by hand in the litgen options: a Python addition, in no header (the banner above it is the
+            # header's last part, e.g. imgui.h's obsolete functions)
+            entry.header, entry.generated, entry.part, entry.part_text, entry.section = "", False, None, [], None
+            entry.note = entry.note.rpartition("<custom_bindings>")[2].strip()  # not the header's comments above it
         entries.append(entry)
     entries = _merge_overloads(entries)
     if len({e.part for e in entries if e.part}) < 2 or not any(e.section for e in entries):
@@ -774,6 +781,8 @@ def _render_entries(entries: list[Entry], module: str, cpp_namespace: Optional[s
             if header and header not in shown:
                 out += [f"## {header}", ""]
                 shown.add(header)
+            elif not header and out:  # the custom bindings, after a header's entries (the ones before come first)
+                out += ["## Python additions", ""]
         if entry.part is not None:
             out += [f"## {entry.part}", ""]
             if entry.part_text:
