@@ -646,9 +646,9 @@ namespace
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount);
 
     // In a toolbar: the next item goes on the same line, or on the next one when it does not fit (a narrow screen)
-    void SameLineIfFits(float itemWidth)
+    void SameLineIfFits(float itemWidth, float spacing = -1.f)
     {
-        ImGui::SameLine();
+        ImGui::SameLine(0.f, spacing);
         if (ImGui::GetContentRegionAvail().x < itemWidth)
             ImGui::NewLine();
     }
@@ -657,6 +657,11 @@ namespace
     {
         const ImGuiStyle& style = ImGui::GetStyle();
         return ImGui::GetFrameHeight() + style.ItemInnerSpacing.x + ImGui::CalcTextSize(label, nullptr, true).x;
+    }
+
+    float ButtonWidth(const char* label)
+    {
+        return ImGui::CalcTextSize(label, nullptr, true).x + 2.f * ImGui::GetStyle().FramePadding.x;
     }
 
     // A block of code with syntax highlighting, selectable and copyable (rich_md's snippets), not capped in height;
@@ -870,8 +875,9 @@ namespace
         else
         {
             ImGui::Text("In the demo: %zu use%s of %s", cachedUses.size(), cachedUses.size() > 1 ? "s" : "", name.c_str());
-            ImGui::SameLine();
-            ImGui::TextDisabled("(%s, a click shows the line)", displayName.c_str());
+            std::string howTo = "(" + displayName + ", a click shows the line)";
+            SameLineIfFits(ImGui::CalcTextSize(howTo.c_str()).x);
+            ImGui::TextDisabled("%s", howTo.c_str());
             ImGui::Spacing();
             auto codeFont = RichMd::GetCodeFont();
             for (size_t i = 0; i < cachedUses.size() && i < 40; ++i)
@@ -1230,7 +1236,7 @@ namespace
         std::string cppUrl = ref.CppUrl();
         auto pythonDocButton = [&]()
         {
-            ImGui::SameLine();
+            SameLineIfFits(ButtonWidth(ICON_FA4_EXTERNAL_LINK " Python"));
             if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " Python"))
                 ImmApp::BrowseToUrl(ref.Url().c_str());
             ImGui::SetItemTooltip("%s", ref.Url().c_str());
@@ -1239,7 +1245,7 @@ namespace
         {
             if (cppUrl.empty())
                 return;
-            ImGui::SameLine();
+            SameLineIfFits(ButtonWidth(ICON_FA4_EXTERNAL_LINK " C++"));
             if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " C++"))
                 ImmApp::BrowseToUrl(cppUrl.c_str());
             ImGui::SetItemTooltip("%s", cppUrl.c_str());
@@ -1254,13 +1260,14 @@ namespace
             cppDocButton();
             pythonDocButton();
         }
-        ImGui::SameLine(0.f, em * 1.5f);
+        SameLineIfFits(ButtonWidth("Go to declaration"), em * 1.5f);
         std::string apiFile = ApiFileName(located.header, python);
         if (ImGui::Button("Go to declaration"))
             RequestGoToDeclaration(ref, python);
         ImGui::SetItemTooltip("The line that declares it, in %s", apiFile.c_str());
-        ImGui::SameLine();
-        if (ImGui::Button(("Find in " + apiFile).c_str()))
+        std::string findLabel = "Find in " + apiFile;
+        SameLineIfFits(ButtonWidth(findLabel.c_str()));
+        if (ImGui::Button(findLabel.c_str()))
             SearchInApi(python ? e.name : BareCppName(ref.CppName()));
         ImGui::SetItemTooltip("The text search in the declarations");
         std::string signature = python ? e.py : e.cpp;
@@ -1592,7 +1599,11 @@ namespace
         if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
             ImGui::SetTooltip("Forward (Alt+Right, or the mouse's forward button)");
         ImGui::SameLine();
-        ImGui::SetNextItemWidth(18.f * em);
+        // 18 em, less on a phone: the buttons after it stay in view
+        const ImGuiStyle& style = ImGui::GetStyle();
+        float after = ImGui::CalcTextSize(ICON_FA_LIST " All").x + 2.f * style.FramePadding.x
+                      + ImGui::CalcTextSize("| API pages").x + 3.f * style.ItemSpacing.x;
+        ImGui::SetNextItemWidth((std::max)(6.f * em, (std::min)(18.f * em, ImGui::GetContentRegionAvail().x - after)));
         ImGui::InputTextWithHint("##apifilter", ICON_FA_SEARCH " a name, Python or C++", g_apiFilter, sizeof(g_apiFilter));
         ImGui::SameLine();
         bool listing = g_apiFilter[0] == '\0' && g_apiCandidates.empty();
@@ -1648,7 +1659,11 @@ namespace
         if (g_apiCurrent.entry != nullptr)
             ShowApiCard(g_apiCurrent, python);
         else
-            ImGui::TextDisabled("Select an entry above, or click a name in the code and press the book button.");
+        {
+            ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
+            ImGui::TextWrapped("Select an entry above, or click a name in the code and press the book button.");
+            ImGui::PopStyleColor();
+        }
         ImGui::EndChild();
         ImGui::PopStyleColor();
     }
