@@ -946,7 +946,6 @@ namespace
             if (ownerLine > 0)
                 from = (size_t)ownerLine;
         }
-        auto isComment = [](const std::string& trimmed) { return trimmed.rfind("//", 0) == 0; };
         if (e.kind == "function" || e.kind == "method")
         {
             std::string signature = NormalizeSpaces(e.cpp.substr(0, e.cpp.find('\n')));
@@ -956,9 +955,8 @@ namespace
                         return (int)i + 1;
             for (size_t i = from; i < lines.size(); ++i)
             {
-                const std::string& line = lines[i];
-                if (isComment(Trimmed(line)))
-                    continue;
+                // The code only: comments name other entries ("struct ImGuiInputTextCallbackData; // ... InputText()")
+                const std::string line = lines[i].substr(0, lines[i].find("//"));
                 size_t pos = 0;
                 while ((pos = line.find(bare, pos)) != std::string::npos)
                 {
@@ -1007,9 +1005,8 @@ namespace
         {
             for (size_t i = from; i < lines.size(); ++i)
             {
-                const std::string& line = lines[i];
-                if (isComment(Trimmed(line)))
-                    continue;
+                // The code only: comments name other entries ("struct ImGuiInputTextCallbackData; // ... InputText()")
+                const std::string line = lines[i].substr(0, lines[i].find("//"));
                 size_t pos = 0;
                 while ((pos = line.find(bare, pos)) != std::string::npos)
                 {

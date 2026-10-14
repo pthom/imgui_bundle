@@ -328,17 +328,27 @@ namespace
     }
 
     // C++/Python toggle (to be called inside a horizontal layout)
-    // A language as its logo, the height of a frame: bright when its code is shown, else dimmed (less when hovered).
+    // A language as its logo: the shown language in a frame; the other one stays visible (an invitation to the
+    // Python bindings), full when hovered. The frame's neutral colors read in both themes, around the blue C++ logo.
     // The logos are isocpp.org's and python.org's, unaltered: both allow their use to name the language
     bool LanguageLogoButton(const char* asset, bool selected, const char* tooltip)
     {
         ImVec2 imageSize = HelloImGui::ImageSizeFromAsset(asset);
-        float height = ImGui::GetFrameHeight();
-        bool clicked = ImGui::InvisibleButton(asset, ImVec2(height * imageSize.x / imageSize.y, height));
-        float alpha = selected ? 1.f : (ImGui::IsItemHovered() ? 0.7f : 0.3f);
-        ImGui::GetWindowDrawList()->AddImage(HelloImGui::ImTextureIdFromAsset(asset), ImGui::GetItemRectMin(),
-                                             ImGui::GetItemRectMax(), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f),
-                                             ImGui::GetColorU32(ImVec4(1.f, 1.f, 1.f, alpha)));
+        float em = ImGui::GetFontSize();
+        float height = em * 1.7f, pad = em * 0.2f;
+        ImVec2 size(height * imageSize.x / imageSize.y + 2.f * pad, height + 2.f * pad);
+        bool clicked = ImGui::InvisibleButton(asset, size);
+        bool hovered = ImGui::IsItemHovered();
+        ImVec2 p0 = ImGui::GetItemRectMin(), p1 = ImGui::GetItemRectMax();
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        if (selected || hovered)
+            drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_Text, selected ? 0.12f : 0.06f), em * 0.3f);
+        if (selected)
+            drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Text, 0.45f), em * 0.3f, 1.5f);
+        float alpha = (selected || hovered) ? 1.f : 0.8f;
+        drawList->AddImage(HelloImGui::ImTextureIdFromAsset(asset), ImVec2(p0.x + pad, p0.y + pad),
+                           ImVec2(p1.x - pad, p1.y - pad), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f),
+                           ImGui::GetColorU32(ImVec4(1.f, 1.f, 1.f, alpha)));
         ImGui::SetItemTooltip("%s", tooltip);
         return clicked;
     }
