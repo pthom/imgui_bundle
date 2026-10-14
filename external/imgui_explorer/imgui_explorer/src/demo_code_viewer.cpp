@@ -623,7 +623,7 @@ namespace
         return path;
     }
 
-    std::map<std::string, int> g_editorTopLine;  // per file and language: the top visible line, for the breadcrumb
+    std::map<std::string, int> g_editorReadingLine;  // per file and language: a quarter down the visible code
     bool g_showDemoRequested = false;            // a narrow layout then shows the demo pane
 
     // Shows a section in the demo window (with the C++ demo's labels: the demo window runs the C++ demo), and asks a
@@ -2377,13 +2377,13 @@ void DemoCodeViewer_Show()
             snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
     }
 
-    // The breadcrumb, in a demo file: the section of the top visible line (from the demo's markers), and the outline
+    // The breadcrumb, in a demo file: the section of the reading line (from the demo's markers), and the outline
     // that a click on it opens (unfolded at that section); its button shows the section in the demo window
     const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
     if (!outline.children.empty())
     {
         const OutlineNode* section = nullptr;
-        FindSectionAt(outline, g_editorTopLine[displayName], section);
+        FindSectionAt(outline, g_editorReadingLine[displayName], section);
         const char* showLabel = compact ? ICON_FA_PLAY " Demo" : ICON_FA_PLAY " Show in the demo";
         float showWidth = section ? ButtonWidth(showLabel) + ImGui::GetStyle().ItemSpacing.x : 0.f;
         float crumbWidth = ImGui::GetContentRegionAvail().x - showWidth - ButtonWidth(ICON_FA_LIST_UL " ");
@@ -2443,10 +2443,11 @@ void DemoCodeViewer_Show()
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
     editor.Render(editorId.c_str(), editorSize, false);
     {
-        // The top visible line, for the breadcrumb (drawn above the editor: at the next frame)
-        ImVec2 r = ImGui::GetItemRectMin();
-        g_editorTopLine[displayName] =
-            (int)editor.GetDocPosAtMousePos(ImVec2(r.x + ImGui::GetItemRectSize().x * 0.5f, r.y + 1.f)).line + 1;
+        // The reading line, for the breadcrumb (drawn above the editor: at the next frame): a quarter down the visible
+        // code, so that a section that starts near the top is the current one
+        ImVec2 r = ImGui::GetItemRectMin(), size = ImGui::GetItemRectSize();
+        g_editorReadingLine[displayName] =
+            (int)editor.GetDocPosAtMousePos(ImVec2(r.x + size.x * 0.5f, r.y + size.y * 0.25f)).line + 1;
     }
 
     // Hover: a tooltip with the API of the identifier under the mouse (the desktop's complement of the API button)
