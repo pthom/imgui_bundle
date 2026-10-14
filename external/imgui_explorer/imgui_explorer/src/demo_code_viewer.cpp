@@ -460,7 +460,18 @@ namespace
 
     std::string g_revealTarget;  // the section whose marker scrolls the demo window to it, when it runs
     double g_revealTime = -10.;  // when the last reveal started: "Show demo" flashes
-    std::map<std::string, int> g_sectionInViewFrame;  // per section: the last frame when its marker ran in view
+    std::map<std::string, int> g_sectionInViewFrame;  // per section: the last frame when its zone was in view
+    int g_demoShownFrame = -1;                        // the last frame when the explorer showed the demo
+
+    // "Show demo" blinks when the reader settles on a section that the demo does not show
+    struct ShowDemoBlink
+    {
+        std::string path;     // the section, and whether the demo shows it: the state that settles
+        bool inView = false;
+        double since = 0.;    // when that state started
+        int revealable = -1;  // whether a click can show it, checked once when it settles (-1: not yet)
+    };
+    ShowDemoBlink g_showDemoBlink;
 
     // Opens the nodes of a section in the demo window; its marker, when it runs, scrolls there. False when the
     // demo window or a level is not found
@@ -667,6 +678,13 @@ namespace
         if (cf.cppState == LoadState::Loaded)
             RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), path);
         g_showDemoRequested = true;
+    }
+
+    // Whether "Show demo" can open a section: the reveal follows the tree calls of the Dear ImGui demo only
+    bool CanRevealInDemo(const CodeFile& cf, const std::string& path)
+    {
+        return GetCurrentLibrary().name == "ImGui"
+               && !RevealChain(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), path).empty();
     }
 
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
@@ -2434,25 +2452,43 @@ void DemoCodeViewer_Show()
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x + pad, bandMin.y + pad));
         // Full-size buttons, colored, to be seen: "play" in green, the search in blue. "Show demo" is always there
         // when the reveal can work (it reads the C++ demo: not in Python-only mode), so that the search keeps its
-        // place; disabled before the first section, and while the demo shows the section. After a reveal, it
-        // flashes
+        // place; disabled before the first section, and while the demo beside the code shows the section
         if (cf.cppState == LoadState::Loaded)
         {
-            float flash = 1.f - (float)(ImGui::GetTime() - g_revealTime) / 0.8f;
+            // Wide, the demo is beside the code (shown at each frame, before it); narrow, in the other pane, as the
+            // reader left it: "Show demo" then leads back to a section shown there
+            int frame = ImGui::GetFrameCount();
+            bool demoBeside = g_demoShownFrame == frame;
             auto shown = section ? g_sectionInViewFrame.find(section->path) : g_sectionInViewFrame.end();
-            bool inView = shown != g_sectionInViewFrame.end() && shown->second >= ImGui::GetFrameCount() - 1;
-            ImGui::BeginDisabled(section == nullptr || (inView && flash <= 0.f));
+            bool inView = shown != g_sectionInViewFrame.end() && shown->second >= ImMin(g_demoShownFrame, frame - 1);
+
+            // A blink when the reader settles on a section that the demo does not show, if a click can show it (not
+            // while the path changes with the scroll): two pulses. A flash after a reveal
+            double now = ImGui::GetTime();
+            ShowDemoBlink& blink = g_showDemoBlink;
+            std::string path = section ? section->path : "";
+            if (path != blink.path || inView != blink.inView)
+                blink = {path, inView, now, -1};
+            float blinkTime = (float)(now - blink.since) - 0.4f;
+            if (section != nullptr && !inView && blinkTime > 0.f && blink.revealable < 0)
+                blink.revealable = CanRevealInDemo(cf, path) ? 1 : 0;
+            float pulse = blink.revealable == 1 && blinkTime < 1.f ? 0.5f - 0.5f * ImCos(blinkTime * 4.f * IM_PI) : 0.f;
+            float flash = ImClamp(1.f - (float)(now - g_revealTime) / 0.8f, 0.f, 1.f);
+
+            ImGui::BeginDisabled(section == nullptr || (demoBeside && inView && flash <= 0.f));
             ImVec4 green(0.16f, 0.42f, 0.26f, 1.f);
-            PushButtonColors(ImLerp(green, ImVec4(0.45f, 0.85f, 0.55f, 1.f), ImClamp(flash, 0.f, 1.f)),
+            PushButtonColors(ImLerp(green, ImVec4(0.45f, 0.85f, 0.55f, 1.f), ImMax(pulse, flash)),
                              ImVec4(0.22f, 0.55f, 0.34f, 1.f), ImVec4(0.26f, 0.63f, 0.39f, 1.f));
             if (ImGui::Button(ICON_FA_PLAY " Show demo"))
                 ShowSectionInDemo(cf, section->path);
             ImGui::PopStyleColor(3);
             ImGui::EndDisabled();
             if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled | ImGuiHoveredFlags_ForTooltip))
-                ImGui::SetTooltip("%s", section == nullptr ? "Scroll to a section of the demo, or search one"
-                                        : inView           ? "The demo shows this section"
-                                                           : "Show this section in the demo: it opens there");
+                ImGui::SetTooltip("%s", section == nullptr     ? "Scroll to a section of the demo, or search one"
+                                        : demoBeside && inView ? "You are viewing this demo: it is on the left"
+                                        : demoBeside           ? "Run this demo, on the left"
+                                        : inView               ? "Back to this demo, in the Demo pane"
+                                                               : "Run this demo, in the Demo pane");
             ImGui::SameLine();
         }
         // The path, as the search's door: the outline and its search open on a click
@@ -2631,6 +2667,11 @@ void DemoCodeViewer_Show()
 void DemoCodeViewer_NoteSectionInView(const char* section)
 {
     g_sectionInViewFrame[section] = ImGui::GetFrameCount();
+}
+
+void DemoCodeViewer_NoteDemoShown()
+{
+    g_demoShownFrame = ImGui::GetFrameCount();
 }
 
 bool DemoCodeViewer_TakeShowDemoRequest()

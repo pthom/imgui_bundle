@@ -30,8 +30,10 @@ int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* 
 bool DemoCodeViewer_TakeRevealTarget(const char* section);
 // True once after "Show demo" (the breadcrumb's button, the code's menu): a narrow layout shows the demo pane
 bool DemoCodeViewer_TakeShowDemoRequest();
-// The demo's marker callback reports a section whose marker ran in view: "Show demo" is then disabled for it
+// The demo's marker callback reports a section whose zone is in view: "Show demo" is then disabled for it
 void DemoCodeViewer_NoteSectionInView(const char* section);
+// The explorer reports each frame when it shows the demo: beside the code, or in the other pane of a narrow layout
+void DemoCodeViewer_NoteDemoShown();
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();

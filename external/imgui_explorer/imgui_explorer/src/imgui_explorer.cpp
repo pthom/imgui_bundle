@@ -226,6 +226,16 @@ namespace
 
     static DemoMarkersRegistry GDemoMarkersRegistry;
 
+    // The last marker that ran: the zone it starts (until the next marker of its window) may straddle the top
+    struct LastDemoMarker
+    {
+        std::string section;
+        ImGuiWindow* window = nullptr;
+        bool aboveTop = false;  // its marker is above the top of the window
+        int frame = -1;
+    };
+    LastDemoMarker GDemoMarker_Last;
+
     bool DemoMarker_IsMouveHovering(int line_number)
     {
         return GDemoMarkersRegistry.IsMouveHoveringDemoMarker(line_number);
@@ -235,7 +245,16 @@ namespace
     void OnDemoMarkerCallback(const char* file_ext_cpp, int line, const char* section)
     {
         // The section that an outline click reveals: the demo window scrolls to it. A section in view: the breadcrumb's
-        // "Show demo" is disabled for it
+        // "Show demo" is disabled for it. Its zone goes from its marker to the next one: it is in view when its
+        // marker is, or when it straddles the top of the window (the last zone: noted after the demo)
+        ImGuiWindow* window = ImGui::GetCurrentWindow();
+        float top = window->ClipRect.Min.y;
+        int frame = ImGui::GetFrameCount();
+        LastDemoMarker& last = GDemoMarker_Last;
+        if (last.frame == frame && last.window == window && last.aboveTop && ImGui::GetCursorScreenPos().y > top)
+            DemoCodeViewer_NoteSectionInView(last.section.c_str());
+        if (section != nullptr)
+            last = {section, window, ImGui::GetCursorScreenPos().y < top, frame};
         if (section != nullptr && DemoCodeViewer_TakeRevealTarget(section))
             ImGui::SetScrollHereY(0.1f);
         else if (section != nullptr && ImGui::IsRectVisible(ImVec2(1.f, ImGui::GetTextLineHeight())))
@@ -710,11 +729,15 @@ namespace {
             int frame = ImGui::GetFrameCount();
             GDemo_ShownAtLastFrame = (GDemo_LastShownFrame == frame - 1);
             GDemo_LastShownFrame = frame;
+            DemoCodeViewer_NoteDemoShown();
 
             if (!gIsImGuiDemoWindowUserEdited || GetCurrentLibrary().name != "ImGui")
                 ShowCurrentLibraryDemo(demoPos, demoSize);
             else
                 ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
+            // The last zone extends to the bottom of its window: in view when its marker is above the top
+            if (GDemoMarker_Last.frame == frame && GDemoMarker_Last.aboveTop)
+                DemoCodeViewer_NoteSectionInView(GDemoMarker_Last.section.c_str());
         }
 
         if (showDemo && showCode)
