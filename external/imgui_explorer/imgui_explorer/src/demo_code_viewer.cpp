@@ -727,6 +727,7 @@ namespace
         editor.SetShowLineNumbersEnabled(true);
         editor.SetShowWhitespacesEnabled(false);
         editor.SetLineFoldingEnabled(true);
+        editor.SetSmoothScrollingEnabled(true);  // the jumps (outline, demo, declarations) glide there, fast
         if (isPython) {
             cf.pyContent = content;
             cf.pyMarkers = ParseMarkers(content);
