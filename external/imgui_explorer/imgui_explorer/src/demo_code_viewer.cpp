@@ -526,6 +526,16 @@ namespace
         return "the declarations";
     }
 
+    // The declarations file where an entry is looked up, in the shown language: its header's, or the library's first
+    // when the explorer does not have that header (imgui_stdlib.h), as "Go to declaration" does
+    std::string ApiFileName(const std::string& header, bool python)
+    {
+        for (const auto& file : GetCurrentLibraryFiles())
+            if (file.isApiReference && file.cppDisplayName() == header)
+                return python ? file.pyDisplayName() : file.cppDisplayName();
+        return FirstApiFileName(python);
+    }
+
     // The name of an entry in a list: without the module in Python (button, ImDrawList.add_line), as typed in C++
     std::string ListLabel(const ApiRef& ref, bool python)
     {
@@ -1245,14 +1255,12 @@ namespace
             pythonDocButton();
         }
         ImGui::SameLine(0.f, em * 1.5f);
-        std::string apiFile = located.header;  // the header, or its stub ("imgui.h" -> "imgui.pyi")
-        if (python && apiFile.size() > 2 && apiFile.compare(apiFile.size() - 2, 2, ".h") == 0)
-            apiFile = apiFile.substr(0, apiFile.size() - 2) + ".pyi";
+        std::string apiFile = ApiFileName(located.header, python);
         if (ImGui::Button("Go to declaration"))
             RequestGoToDeclaration(ref, python);
-        ImGui::SetItemTooltip("The line that declares it, in %s", (apiFile.empty() ? FirstApiFileName(python) : apiFile).c_str());
+        ImGui::SetItemTooltip("The line that declares it, in %s", apiFile.c_str());
         ImGui::SameLine();
-        if (ImGui::Button(("Find in " + (apiFile.empty() ? FirstApiFileName(python) : apiFile)).c_str()))
+        if (ImGui::Button(("Find in " + apiFile).c_str()))
             SearchInApi(python ? e.name : BareCppName(ref.CppName()));
         ImGui::SetItemTooltip("The text search in the declarations");
         std::string signature = python ? e.py : e.cpp;
