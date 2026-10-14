@@ -344,7 +344,10 @@ namespace
 
         if (asCombo)
         {
-            ImGui::SetNextItemWidth(HelloImGui::EmSize(7.f));
+            // As wide as its name: the room left goes to the search, beside it
+            const ImGuiStyle& style = ImGui::GetStyle();
+            ImGui::SetNextItemWidth(ImGui::CalcTextSize(libs[currentIdx].name.c_str()).x + 2.f * style.FramePadding.x
+                                    + ImGui::GetFrameHeight());
             if (ImGui::BeginCombo("##library", libs[currentIdx].name.c_str()))
             {
                 for (size_t i = 0; i < libs.size(); ++i)
@@ -423,7 +426,7 @@ namespace
     // One pane at a time: a segmented control "Demo | Code", whose selected half is filled
     void GuiDemoCodeSwitch()
     {
-        ImVec2 size = HelloImGui::EmToVec2(8.f, 1.5f);
+        ImVec2 size = HelloImGui::EmToVec2(7.f, 1.5f);  // its words with some air: the room left goes to the search
         ImVec2 p0 = ImGui::GetCursorScreenPos();
         ImVec2 p1(p0.x + size.x, p0.y + size.y);
         float xMid = p0.x + size.x * 0.5f;

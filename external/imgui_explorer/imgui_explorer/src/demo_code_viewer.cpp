@@ -2820,6 +2820,7 @@ void DemoCodeViewer_Show()
     // A phone: the line numbers and a wide margin would take a quarter of the width (the breadcrumb says where it is)
     editor.SetShowLineNumbersEnabled(!g_narrowLayout);
     editor.SetTextLeftMargin(g_narrowLayout ? 1 : 2);
+    editor.SetLineFoldingEnabled(!g_narrowLayout);  // its arrows: too small for a finger, and a glyph of width
 
     // Use unique ID per file and language to keep cursor/scroll state independent
     std::string editorId = std::string("##code_") + displayName;
