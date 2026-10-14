@@ -75,6 +75,8 @@ namespace
         TextEditor cppEditor;
         TextEditor pyEditor;
         std::map<std::string, int> pyMarkers;  // section_name → 1-based line number
+        std::string readingSection;  // the breadcrumb's section, in the language shown
+        int shownPython = -1;        // the language shown at the last frame (-1: none yet): a switch keeps the section
     };
 
     std::map<std::string, CodeFile> g_codeFiles;  // Keyed by baseName (all files loaded)
@@ -768,6 +770,17 @@ namespace
     }
 
     std::map<std::string, int> g_editorReadingLine;  // per file and language: a quarter down the visible code
+
+    // The section of the cursor's line when it is on screen (the reader clicked there), else of the reading line. Null
+    // before the first section
+    const OutlineNode* SectionShown(TextEditor& editor, const OutlineNode& outline, const std::string& displayName)
+    {
+        const OutlineNode* section = nullptr;
+        TextEditor::DocPos cursor = editor.GetMainCursorPosition();  // on screen at the previous frame
+        int line = editor.IsDocPosVisible(cursor) ? (int)cursor.line + 1 : g_editorReadingLine[displayName];
+        FindSectionAt(outline, line, section);
+        return section;
+    }
     bool g_showDemoRequested = false;            // a narrow layout then shows the demo pane
 
     // Shows a section in the demo window (with the C++ demo's labels: the demo window runs the C++ demo), and asks a
@@ -2324,6 +2337,7 @@ void DemoCodeViewer_Show()
     // Handle pending scroll (before computing showingPython, since it may switch language). It waits for the files:
     // on the web, they load at their first display (e.g. a narrow screen shows the code after a tap in the demo)
     bool filesLoading = cf.cppState == LoadState::Loading || cf.pyState == LoadState::Loading;
+    bool jumped = false;  // both languages moved
     if (!g_pendingScrollFile.empty() && g_pendingScrollFile == currentFile.cppDisplayName() && g_pendingScrollLine > 0
         && !filesLoading)
     {
@@ -2359,11 +2373,28 @@ void DemoCodeViewer_Show()
         g_pendingScrollFile.clear();
         g_pendingScrollSection.clear();
         g_pendingScrollPython = false;
+        jumped = true;
     }
 
     bool showingPython = g_showPython && cf.pyState == LoadState::Loaded;
     LoadState activeState = showingPython ? cf.pyState : cf.cppState;
     std::string displayName = showingPython ? currentFile.pyDisplayName() : currentFile.cppDisplayName();
+
+    // A switch of language keeps the section being read (the breadcrumb's): the other editor goes to its marker,
+    // unless it shows that section already, or a jump just moved both
+    if (cf.shownPython >= 0 && cf.shownPython != (int)showingPython && !jumped && !cf.readingSection.empty())
+    {
+        TextEditor& shownEditor = showingPython ? cf.pyEditor : cf.cppEditor;
+        const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
+        const OutlineNode* target = FindOutlineNode(outline, cf.readingSection);
+        const OutlineNode* shown = SectionShown(shownEditor, outline, displayName);
+        if (target != nullptr && target->hasMarker && (shown == nullptr || shown->path != cf.readingSection))
+        {
+            shownEditor.SetCursor(TextEditor::DocPos(target->line - 1, 0));
+            shownEditor.ScrollToLine(ImMax(target->line - 3, 0), TextEditor::Scroll::alignTop);
+        }
+    }
+    cf.shownPython = showingPython;
 
     if (activeState == LoadState::Loading)
     {
@@ -2578,11 +2609,8 @@ void DemoCodeViewer_Show()
     const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
     if (!outline.children.empty())
     {
-        // The section of the cursor's line when it is on screen (the reader clicked there), else of the reading line
-        const OutlineNode* section = nullptr;
-        TextEditor::DocPos cursor = editor.GetMainCursorPosition();  // on screen at the previous frame
-        int line = editor.IsDocPosVisible(cursor) ? (int)cursor.line + 1 : g_editorReadingLine[displayName];
-        FindSectionAt(outline, line, section);
+        const OutlineNode* section = SectionShown(editor, outline, displayName);
+        cf.readingSection = section ? section->path : "";
         const ImGuiStyle& style = ImGui::GetStyle();
 
         // A tinted band: the two buttons belong together, apart from the toolbar. The button comes first: it keeps
