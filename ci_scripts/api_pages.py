@@ -243,12 +243,15 @@ def _leading_comments(lines: list[str], first_line: int) -> list[str]:
     topmost title are the header's preamble (immvision's notes on its API marker): they are left out"""
     blocks: list[list[str]] = [[]]
     at_header_start = False
+    indent = len(lines[first_line - 1]) - len(lines[first_line - 1].lstrip())
     i = first_line - 2
     while i >= 0:
         if ANY_HEADER_MARK.match(lines[i].strip()):
             at_header_start = True  # the comments above belong to another header, or to none
             break
         if lines[i].strip().startswith("#"):
+            if len(lines[i]) - len(lines[i].lstrip()) > indent:
+                break  # the end of the body above: an enum's "# Obsolete names", whose members litgen dropped
             blocks[-1].append(lines[i])
         elif not lines[i].strip() and i >= 1 and lines[i - 1].strip().startswith("#"):
             blocks.append([])  # a blank line, and a comment block above it
