@@ -817,6 +817,76 @@ namespace
         return known[key] = !SectionChain(sourceLines, OutlineOf(cf.cppContent), path).empty();
     }
 
+    // The outline's popup, opened by OpenPopup("##outline") in the same ID scope: a search of the demo's sections, or
+    // their tree, unfolded at the current one. A click shows the section in the code (at its next display) and in the
+    // demo window. Returns the clicked section, or null
+    const OutlineNode* OutlinePopup(CodeFile& cf, const DemoFileInfo& file, bool python, const std::string& current)
+    {
+        ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
+        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f),
+                                            ImVec2(screen.x, screen.y * 0.7f));
+        if (!ImGui::BeginPopup("##outline"))
+            return nullptr;
+        const OutlineNode& outline = OutlineOf(python ? cf.pyContent : cf.cppContent);
+        // The search: the sections whose path holds every word (ignoring case), as a list; Enter takes the
+        // first. It has the keyboard at once, except on a touch screen (the phone's keyboard would cover the tree)
+        static char search[128] = "";
+        bool appearing = ImGui::IsWindowAppearing();
+        if (appearing)
+        {
+            search[0] = '\0';
+            if (!(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen))
+                ImGui::SetKeyboardFocusHere();
+        }
+        ImGui::SetNextItemWidth(-FLT_MIN);
+        bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " a section", search,
+                                              sizeof(search), ImGuiInputTextFlags_EnterReturnsTrue);
+        const OutlineNode* clicked = nullptr;
+        // The tree, or the matches, in a child: its scroll to the current section keeps the search in view
+        const ImGuiStyle& popupStyle = ImGui::GetStyle();
+        float listHeight = screen.y * 0.7f - ImGui::GetFrameHeightWithSpacing() - 2.f * popupStyle.WindowPadding.y;
+        ImGui::SetNextWindowSizeConstraints(ImVec2(0.f, 0.f), ImVec2(FLT_MAX, listHeight));
+        ImGui::BeginChild("##outline_list", ImVec2(0.f, 0.f),
+                          ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
+        if (search[0] != '\0')
+        {
+            std::vector<const OutlineNode*> matches;
+            FindOutlineMatches(outline, Lowered(search), matches);
+            for (const OutlineNode* m : matches)
+                if (ImGui::Selectable((SectionCrumb(m->path, FLT_MAX) + "##" + m->path).c_str()))
+                    clicked = m;
+            if (enter && !matches.empty())
+                clicked = matches.front();
+            if (matches.empty())
+                ImGui::TextDisabled("No section matches");
+        }
+        else
+            ShowOutlineNodes(outline, clicked, current, appearing);
+        ImGui::EndChild();
+        if (clicked != nullptr)
+        {
+            g_pendingScrollFile = file.cppDisplayName();
+            g_pendingScrollLine = clicked->line;
+            g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
+            g_pendingScrollPython = python;
+            if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
+                RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
+            if (clicked->children.empty() || search[0] != '\0')  // a section that unfolds keeps the tree open
+                ImGui::CloseCurrentPopup();
+        }
+        // Within the screen (a phone): Dear ImGui places a popup when it appears, before the list's width is known
+        const ImGuiViewport* viewport = ImGui::GetMainViewport();
+        ImVec2 popupPos = ImGui::GetWindowPos(), popupSize = ImGui::GetWindowSize();
+        ImVec2 maxPos(viewport->WorkPos.x + viewport->WorkSize.x - popupSize.x,
+                      viewport->WorkPos.y + viewport->WorkSize.y - popupSize.y);
+        ImVec2 inside(ImMax(viewport->WorkPos.x, ImMin(popupPos.x, maxPos.x)),
+                      ImMax(viewport->WorkPos.y, ImMin(popupPos.y, maxPos.y)));
+        if (inside.x != popupPos.x || inside.y != popupPos.y)
+            ImGui::SetWindowPos(inside);
+        ImGui::EndPopup();
+        return clicked;
+    }
+
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
     std::map<std::string, int> ParseMarkers(const std::string& source)
     {
@@ -2723,68 +2793,7 @@ void DemoCodeViewer_Show()
         ImGui::SetItemTooltip("Search or browse the demo's sections");
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x, bandMax.y + style.ItemSpacing.y));
         ImGui::Dummy(ImVec2(0.f, 0.f));  // the band's height, for the layout
-        ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
-        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f),
-                                            ImVec2(screen.x, screen.y * 0.7f));
-        if (ImGui::BeginPopup("##outline"))
-        {
-            // The search: the sections whose path holds every word (ignoring case), as a list; Enter takes the
-            // first. It has the keyboard at once, except on a touch screen (the phone's keyboard would cover the tree)
-            static char search[128] = "";
-            bool appearing = ImGui::IsWindowAppearing();
-            if (appearing)
-            {
-                search[0] = '\0';
-                if (!(ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen))
-                    ImGui::SetKeyboardFocusHere();
-            }
-            ImGui::SetNextItemWidth(-FLT_MIN);
-            bool enter = ImGui::InputTextWithHint("##outline_search", ICON_FA_SEARCH " a section", search,
-                                                  sizeof(search), ImGuiInputTextFlags_EnterReturnsTrue);
-            const OutlineNode* clicked = nullptr;
-            // The tree, or the matches, in a child: its scroll to the current section keeps the search in view
-            const ImGuiStyle& popupStyle = ImGui::GetStyle();
-            float listHeight = screen.y * 0.7f - ImGui::GetFrameHeightWithSpacing() - 2.f * popupStyle.WindowPadding.y;
-            ImGui::SetNextWindowSizeConstraints(ImVec2(0.f, 0.f), ImVec2(FLT_MAX, listHeight));
-            ImGui::BeginChild("##outline_list", ImVec2(0.f, 0.f),
-                              ImGuiChildFlags_AutoResizeX | ImGuiChildFlags_AutoResizeY);
-            if (search[0] != '\0')
-            {
-                std::vector<const OutlineNode*> matches;
-                FindOutlineMatches(outline, Lowered(search), matches);
-                for (const OutlineNode* m : matches)
-                    if (ImGui::Selectable((SectionCrumb(m->path, FLT_MAX) + "##" + m->path).c_str()))
-                        clicked = m;
-                if (enter && !matches.empty())
-                    clicked = matches.front();
-                if (matches.empty())
-                    ImGui::TextDisabled("No section matches");
-            }
-            else
-                ShowOutlineNodes(outline, clicked, section ? section->path : "", appearing);
-            ImGui::EndChild();
-            if (clicked != nullptr)
-            {
-                g_pendingScrollFile = currentFile.cppDisplayName();
-                g_pendingScrollLine = clicked->line;
-                g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
-                g_pendingScrollPython = showingPython;
-                if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
-                    RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
-                if (clicked->children.empty() || search[0] != '\0')  // a section that unfolds keeps the tree open
-                    ImGui::CloseCurrentPopup();
-            }
-            // Within the screen (a phone): Dear ImGui places a popup when it appears, before the list's width is known
-            const ImGuiViewport* viewport = ImGui::GetMainViewport();
-            ImVec2 popupPos = ImGui::GetWindowPos(), popupSize = ImGui::GetWindowSize();
-            ImVec2 maxPos(viewport->WorkPos.x + viewport->WorkSize.x - popupSize.x,
-                          viewport->WorkPos.y + viewport->WorkSize.y - popupSize.y);
-            ImVec2 inside(ImMax(viewport->WorkPos.x, ImMin(popupPos.x, maxPos.x)),
-                          ImMax(viewport->WorkPos.y, ImMin(popupPos.y, maxPos.y)));
-            if (inside.x != popupPos.x || inside.y != popupPos.y)
-                ImGui::SetWindowPos(inside);
-            ImGui::EndPopup();
-        }
+        OutlinePopup(cf, currentFile, showingPython, section ? section->path : "");
     }
 
     // Ctrl+Shift+F shortcut: the API of the identifier at the cursor (as the book button)
@@ -2923,6 +2932,27 @@ void DemoCodeViewer_Show()
 void DemoCodeViewer_NoteSectionInView(const char* section)
 {
     g_sectionInViewFrame[section] = ImGui::GetFrameCount();
+}
+
+bool DemoCodeViewer_SearchButton(bool demoPaneShown)
+{
+    std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();  // the demo first
+    if (files.empty())
+        return false;
+    CodeFile& cf = g_codeFiles[files[0].baseName];
+    bool python = g_showPython && cf.pyState == LoadState::Loaded;
+    ImGui::BeginDisabled((python ? cf.pyState : cf.cppState) != LoadState::Loaded);  // DemoCodeViewer_PreloadDemoFile
+    PushButtonColors(ImVec4(0.18f, 0.32f, 0.52f, 1.f), ImVec4(0.25f, 0.42f, 0.66f, 1.f),
+                     ImVec4(0.29f, 0.48f, 0.74f, 1.f));  // the breadcrumb's search
+    if (ImGui::Button(ICON_FA_SEARCH "##search_demos"))
+        ImGui::OpenPopup("##outline");
+    ImGui::PopStyleColor(3);
+    ImGui::EndDisabled();
+    ImGui::SetItemTooltip("Search the demos");
+    // The current section: the one the code shows, or will show (a tap in the demo moved it)
+    const std::string& current = !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
+    const OutlineNode* clicked = OutlinePopup(cf, files[0], python, current);
+    return clicked != nullptr && demoPaneShown && !CanRevealInDemo(cf, clicked->path);
 }
 
 ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text)

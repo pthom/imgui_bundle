@@ -543,6 +543,9 @@ namespace
             if (mode.narrow)
                 GuiDemoCodeSwitch();
             GuiSelectLibrary(mode.narrow);
+            // One pane at a time (a phone): the search of the demos, over both panes
+            if (mode.narrow && DemoCodeViewer_SearchButton(!GNarrowLayout_ShowsCode))
+                GNarrowLayout_ShowsCode = true;
             ImGui::Spring();
             if (!mode.narrow)
                 GuiPythonCppToggle();

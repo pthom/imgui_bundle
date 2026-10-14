@@ -40,6 +40,10 @@ void DemoCodeViewer_NoteDemoShown();
 void DemoCodeViewer_NoteNarrowLayout(bool narrow);
 // The screen rectangle of a text in the code shown at the last frame: its first occurrence on screen
 ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text);
+// The search of the demo's sections, as a button for a phone's toolbar (over both panes): a result opens in the demo
+// when the demo pane is shown, in the code otherwise. True when the code pane should be shown: a result that the demo
+// cannot open
+bool DemoCodeViewer_SearchButton(bool demoPaneShown);
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();
