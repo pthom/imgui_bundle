@@ -646,6 +646,8 @@ namespace {
             mode = lastMode;
         lastMode = mode;
         GNarrowLayout_Active = mode.narrow;
+        if (DemoCodeViewer_TakeShowDemoRequest() && mode.narrow)  // "Show in the demo", from the code pane
+            GNarrowLayout_ShowsCode = false;
         // On a narrow screen, the code shows only after a tap: its source loads now, for the line labels
         DemoCodeViewer_PreloadDemoFile();
         ShowLibraryToolbar(mode);

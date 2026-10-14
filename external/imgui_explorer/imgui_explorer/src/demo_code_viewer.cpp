@@ -307,7 +307,8 @@ namespace
                 auto child = std::find_if(node->children.begin(), node->children.end(),
                                           [&](const OutlineNode& c) { return c.name == name; });
                 if (child == node->children.end())
-                    child = node->children.insert(node->children.end(), OutlineNode{name, path.substr(0, end), lineNum, {}});
+                    child = node->children.insert(node->children.end(),
+                                                  OutlineNode{name, path.substr(0, end), lineNum, {}});
                 node = &*child;
                 start = end + 1;
             }
@@ -548,21 +549,30 @@ namespace
     }
 
     // The outline's nodes as a tree. A click on a name selects its section; on a section with children, it also
-    // unfolds it (the small arrow is hard to reach, on a phone above all)
-    void ShowOutlineNodes(const OutlineNode& node, const OutlineNode*& clicked)
+    // unfolds it (the small arrow is hard to reach, on a phone above all). When the popup appears, the current section
+    // is unfolded, selected and scrolled to
+    void ShowOutlineNodes(const OutlineNode& node, const OutlineNode*& clicked, const std::string& current,
+                          bool appearing)
     {
         for (const OutlineNode& child : node.children)
         {
             ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
             if (child.children.empty())
                 flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+            bool isCurrent = child.path == current;
+            if (isCurrent)
+                flags |= ImGuiTreeNodeFlags_Selected;
+            if (appearing && current.rfind(child.path + "/", 0) == 0)
+                ImGui::SetNextItemOpen(true);
             bool open = ImGui::TreeNodeEx(child.path.c_str(), flags, "%s", child.name.c_str());
+            if (appearing && isCurrent)
+                ImGui::SetScrollHereY(0.3f);
             bool toggled = ImGui::IsItemToggledOpen();
             if ((ImGui::IsItemClicked() && !toggled) || (toggled && open))  // a leaf, or a section that unfolds
                 clicked = &child;
             if (open && !child.children.empty())
             {
-                ShowOutlineNodes(child, clicked);
+                ShowOutlineNodes(child, clicked, current, appearing);
                 ImGui::TreePop();
             }
         }
@@ -576,6 +586,53 @@ namespace
         if (entry.first != content.size())
             entry = {content.size(), BuildOutline(content)};
         return entry.second;
+    }
+
+    // The section of a line (1-based): the one whose marker is the nearest above (a line after a nested section, still
+    // in its parent, goes to the nested one). Null before the first marker
+    void FindSectionAt(const OutlineNode& node, int line, const OutlineNode*& best)
+    {
+        for (const OutlineNode& child : node.children)
+        {
+            if (child.hasMarker && child.line <= line && (best == nullptr || child.line > best->line))
+                best = &child;
+            FindSectionAt(child, line, best);
+        }
+    }
+
+    // A section's path for the eye: "Widgets > Basic > Button", its first segments folded ("... > Button") when it is
+    // wider than maxWidth
+    std::string SectionCrumb(const std::string& path, float maxWidth)
+    {
+        std::vector<std::string> parts;
+        for (size_t start = 0; start <= path.size();)
+        {
+            size_t slash = path.find('/', start);
+            size_t end = slash == std::string::npos ? path.size() : slash;
+            parts.push_back(path.substr(start, end - start));
+            start = end + 1;
+        }
+        for (size_t first = 0; first < parts.size(); ++first)
+        {
+            std::string crumb = first > 0 ? "..." : "";
+            for (size_t i = first; i < parts.size(); ++i)
+                crumb += (crumb.empty() ? "" : " " ICON_FA_ANGLE_RIGHT " ") + parts[i];
+            if (ImGui::CalcTextSize(crumb.c_str()).x <= maxWidth || first + 1 == parts.size())
+                return crumb;
+        }
+        return path;
+    }
+
+    std::map<std::string, int> g_editorTopLine;  // per file and language: the top visible line, for the breadcrumb
+    bool g_showDemoRequested = false;            // a narrow layout then shows the demo pane
+
+    // Shows a section in the demo window (with the C++ demo's labels: the demo window runs the C++ demo), and asks a
+    // narrow layout to show the demo pane
+    void ShowSectionInDemo(const CodeFile& cf, const std::string& path)
+    {
+        if (cf.cppState == LoadState::Loaded)
+            RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), path);
+        g_showDemoRequested = true;
     }
 
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
@@ -2206,35 +2263,6 @@ void DemoCodeViewer_Show()
         }
         ImGui::SetItemTooltip("Search (Ctrl+F).\n You may also right click in the editor below.");
 
-        // The outline: the demo's sections (its IMGUI_DEMO_MARKER labels) as a tree; a click shows one in the code
-        const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
-        if (!outline.children.empty())
-        {
-            SameLineIfFits(ButtonWidth(ICON_FA_LIST_UL " Outline"));
-            if (ImGui::SmallButton(ICON_FA_LIST_UL " Outline"))
-                ImGui::OpenPopup("##outline");
-            ImGui::SetItemTooltip("The demo's sections, as a tree: a click shows one in the code");
-        }
-        ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
-        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f), ImVec2(screen.x, screen.y * 0.7f));
-        if (ImGui::BeginPopup("##outline"))
-        {
-            const OutlineNode* clicked = nullptr;
-            ShowOutlineNodes(outline, clicked);
-            if (clicked != nullptr)
-            {
-                g_pendingScrollFile = currentFile.cppDisplayName();
-                g_pendingScrollLine = clicked->line;
-                g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
-                g_pendingScrollPython = showingPython;
-                if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
-                    RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
-                if (clicked->children.empty())  // a section that unfolds keeps the outline open
-                    ImGui::CloseCurrentPopup();
-            }
-            ImGui::EndPopup();
-        }
-
         ImGui::SameLine();
 
         // The API button: the entry of the identifier at the cursor, in the API tab; its label names the entry, so
@@ -2349,6 +2377,53 @@ void DemoCodeViewer_Show()
             snprintf(g_searchBuffer, sizeof(g_searchBuffer), "%s", sel.c_str());
     }
 
+    // The breadcrumb, in a demo file: the section of the top visible line (from the demo's markers), and the outline
+    // that a click on it opens (unfolded at that section); its button shows the section in the demo window
+    const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
+    if (!outline.children.empty())
+    {
+        const OutlineNode* section = nullptr;
+        FindSectionAt(outline, g_editorTopLine[displayName], section);
+        const char* showLabel = compact ? ICON_FA_PLAY " Demo" : ICON_FA_PLAY " Show in the demo";
+        float showWidth = section ? ButtonWidth(showLabel) + ImGui::GetStyle().ItemSpacing.x : 0.f;
+        float crumbWidth = ImGui::GetContentRegionAvail().x - showWidth - ButtonWidth(ICON_FA_LIST_UL " ");
+        std::string crumb = std::string(ICON_FA_LIST_UL " ")
+                            + (section ? SectionCrumb(section->path, crumbWidth) : "Outline");
+        if (ImGui::SmallButton((crumb + "##crumb").c_str()))
+            ImGui::OpenPopup("##outline");
+        ImGui::SetItemTooltip("The demo's sections, as a tree: a click shows one in the code and in the demo");
+        if (section)
+        {
+            ImGui::SameLine();
+            float rest = ImGui::GetContentRegionAvail().x - ButtonWidth(showLabel);
+            if (rest > 0.f)
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + rest);
+            if (ImGui::SmallButton(showLabel))
+                ShowSectionInDemo(cf, section->path);
+            ImGui::SetItemTooltip("Show this section in the demo: it opens there");
+        }
+        ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
+        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f),
+                                            ImVec2(screen.x, screen.y * 0.7f));
+        if (ImGui::BeginPopup("##outline"))
+        {
+            const OutlineNode* clicked = nullptr;
+            ShowOutlineNodes(outline, clicked, section ? section->path : "", ImGui::IsWindowAppearing());
+            if (clicked != nullptr)
+            {
+                g_pendingScrollFile = currentFile.cppDisplayName();
+                g_pendingScrollLine = clicked->line;
+                g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
+                g_pendingScrollPython = showingPython;
+                if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
+                    RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
+                if (clicked->children.empty())  // a section that unfolds keeps the outline open
+                    ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
+    }
+
     // Ctrl+Shift+F shortcut: the API of the identifier at the cursor (as the book button)
     if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F) && !apiHits.empty())
         OpenApi(apiHits);
@@ -2367,6 +2442,12 @@ void DemoCodeViewer_Show()
     std::string editorId = std::string("##code_") + displayName;
     ImVec2 editorSize = ImGui::GetContentRegionAvail();
     editor.Render(editorId.c_str(), editorSize, false);
+    {
+        // The top visible line, for the breadcrumb (drawn above the editor: at the next frame)
+        ImVec2 r = ImGui::GetItemRectMin();
+        g_editorTopLine[displayName] =
+            (int)editor.GetDocPosAtMousePos(ImVec2(r.x + ImGui::GetItemRectSize().x * 0.5f, r.y + 1.f)).line + 1;
+    }
 
     // Hover: a tooltip with the API of the identifier under the mouse (the desktop's complement of the API button)
     if (g_apiTooltips && ImGui::IsItemHovered(ImGuiHoveredFlags_DelayNormal | ImGuiHoveredFlags_Stationary)
@@ -2389,6 +2470,7 @@ void DemoCodeViewer_Show()
     // Right-click context menu on the editor
     static std::string rightClickWord;
     static std::vector<ApiRef> rightClickHits;
+    static std::string rightClickSection;
     if (ImGui::IsItemClicked(ImGuiMouseButton_Right))
     {
         // The API item: the identifier under the mouse (never the selection). The find items: the selection, else the word
@@ -2397,13 +2479,25 @@ void DemoCodeViewer_Show()
         auto pos = editor.GetDocPosAtMousePos(ImGui::GetMousePos());
         std::string identifier = ApiIndex_IdentifierAt(editor.GetLineText(pos.line), pos.index);
         rightClickHits = identifier.empty() ? std::vector<ApiRef>{} : ApiIndex_Lookup(apiModules, identifier);
-        if (!rightClickWord.empty() || !rightClickHits.empty())
+        const OutlineNode* section = nullptr;  // the section item: the clicked line's
+        FindSectionAt(outline, (int)pos.line + 1, section);
+        rightClickSection = section ? section->path : "";
+        if (!rightClickWord.empty() || !rightClickHits.empty() || !rightClickSection.empty())
             ImGui::OpenPopup("CodeEditorContext");
     }
     if (ImGui::BeginPopup("CodeEditorContext"))
     {
         if (codeFont.font)
             ImGui::PopFont(); // restore font for menu
+
+        if (!rightClickSection.empty())
+        {
+            std::string label = ICON_FA_PLAY " Show in the demo: "
+                                + SectionCrumb(rightClickSection, ImGui::GetFontSize() * 20.f);
+            if (ImGui::MenuItem(label.c_str()))
+                ShowSectionInDemo(cf, rightClickSection);
+            ImGui::Separator();
+        }
 
         std::string truncSel = rightClickWord.substr(0, 30) + (rightClickWord.size() > 30 ? "..." : "");
 
@@ -2439,6 +2533,13 @@ void DemoCodeViewer_Show()
 
     if (codeFont.font)
         ImGui::PopFont();
+}
+
+bool DemoCodeViewer_TakeShowDemoRequest()
+{
+    bool requested = g_showDemoRequested;
+    g_showDemoRequested = false;
+    return requested;
 }
 
 bool DemoCodeViewer_TakeRevealTarget(const char* section)
