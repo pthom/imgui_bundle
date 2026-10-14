@@ -84,10 +84,11 @@ def record_switch_id() -> None:
     imgui.pop_id()
 
 
-def gui_phone_bars(screen: ImVec2, size: ImVec2, em: float) -> None:
-    """The phone's status bar (the time, the battery) and its home indicator, around the app; em: the phone's"""
+def gui_phone_bars(screen: ImVec2, size: ImVec2, em: float, rounding: float) -> None:
+    """The phone's screen (rounded as the bezel's inner edge), its status bar (the time, the battery) and its home
+    indicator, around the app; em: the phone's"""
     draw_list = imgui.get_window_draw_list()
-    draw_list.add_rect_filled(screen, screen + size, u32(imgui.get_style_color_vec4(imgui.Col_.window_bg)))
+    draw_list.add_rect_filled(screen, screen + size, u32(imgui.get_style_color_vec4(imgui.Col_.window_bg)), rounding)
     imgui.push_font(rich_md.get_font(rich_md.MarkdownFontSpec(False, True, 0)).font, 0.0)
     font = imgui.get_font()
     draw_list.add_text(font, 0.95 * em, ImVec2(screen.x + 1.8 * em, screen.y + 0.45 * em), u32(WHITE), "9:41")
@@ -114,7 +115,8 @@ def gui_phone() -> None:
     size = ImVec2(height * PHONE_ASPECT, height)
     screen = ImVec2(pos.x + avail.x * PHONE_CENTER_X - size.x / 2, pos.y + (avail.y - size.y) / 2)
     em = hello_imgui.em_size()
-    gui_phone_bars(screen, size, PHONE_EM * em)
+    bezel, rounding = 0.55 * em, 0.16 * size.x   # the bezel's width; its rounding, at the middle of its stroke
+    gui_phone_bars(screen, size, PHONE_EM * em, rounding - bezel / 2)
     status, home = PHONE_STATUS_BAR_EM * PHONE_EM * em, PHONE_HOME_BAR_EM * PHONE_EM * em
     imgui.set_cursor_screen_pos(ImVec2(screen.x, screen.y + status))
     # The explorer's own zoom (FontScaleMain), which also scales its code: it pushes the code font at its own size
@@ -128,7 +130,6 @@ def gui_phone() -> None:
     style.font_scale_main = desktop_scale      # before the child ends: the stage's font size is computed then
     imgui.end_child()
     # The bezel, over the demo's window too: a thick ring whose inner edge rounds the screen's corners
-    bezel, rounding = 0.55 * em, 0.16 * size.x
     fg = imgui.get_foreground_draw_list()
     fg.add_rect(screen - ImVec2(bezel / 2, bezel / 2), screen + size + ImVec2(bezel / 2, bezel / 2),
                 u32(ImVec4(0.05, 0.05, 0.06, 1.0)), rounding=rounding, thickness=bezel)
