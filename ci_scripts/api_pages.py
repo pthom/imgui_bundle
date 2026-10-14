@@ -1291,9 +1291,13 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
     url = _page_url(library, stem)
     cpp_url = _page_url(library, stem + "_cpp") if namespace is not None else ""
     out: list[dict[str, Any]] = []
+    header: Optional[str] = None
     part: Optional[str] = None
     section = ""
     for entry in entries:
+        if entry.header != header:  # a part ends with its header; a header without parts is one (imgui_stdlib.h)
+            header = entry.header
+            part, section = entry.header or None, ""
         part = entry.part or part
         if entry.part is not None:
             section = ""

@@ -108,7 +108,12 @@ namespace
         m.url = j.value("url", "");
         m.cppUrl = j.value("cpp_url", "");
         for (const auto& e : j["entries"])
+        {
+            // Not Dear ImGui's API: thedmd's stack layout (ocornut/imgui PR #846), which the bundle's fork carries
+            if (e.value("header", "") == "imgui_stacklayout.h")
+                continue;
             m.entries.push_back(ParseEntry(e));
+        }
         IndexModule(m);
         slot.state = ApiIndexState::Loaded;
     }

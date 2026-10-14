@@ -21,6 +21,9 @@
 #include <sys/stat.h>  // mkdir
 #endif
 
+// U+F08E, external-link in Font Awesome 4 (and 6). hello_imgui's ICON_FA_EXTERNAL_LINK_ALT is U+F35D, a Font Awesome 5
+// code that the FA4 font lacks
+#define ICON_FA4_EXTERNAL_LINK "\xef\x82\x8e"
 
 
 namespace
@@ -1205,7 +1208,7 @@ namespace
         auto pythonDocButton = [&]()
         {
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " Python"))
+            if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " Python"))
                 ImmApp::BrowseToUrl(ref.Url().c_str());
             ImGui::SetItemTooltip("%s", ref.Url().c_str());
         };
@@ -1214,7 +1217,7 @@ namespace
             if (cppUrl.empty())
                 return;
             ImGui::SameLine();
-            if (ImGui::Button(ICON_FA_EXTERNAL_LINK_ALT " C++"))
+            if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " C++"))
                 ImmApp::BrowseToUrl(cppUrl.c_str());
             ImGui::SetItemTooltip("%s", cppUrl.c_str());
         };
@@ -1383,8 +1386,11 @@ namespace
                     g_apiCandidates.clear();
                     g_apiFilter[0] = '\0';
                 }
-                ImGui::SameLine();
-                ImGui::TextDisabled("%s", python ? ref.CppName().c_str() : ListLabel(ref, true).c_str());
+                if (python)  // the C++ name, which Dear ImGui's docs use; a C++ reader needs no Python name
+                {
+                    ImGui::SameLine();
+                    ImGui::TextDisabled("%s", ref.CppName().c_str());
+                }
             }
         if (shown == 0)
             ImGui::TextDisabled("No entry matches");

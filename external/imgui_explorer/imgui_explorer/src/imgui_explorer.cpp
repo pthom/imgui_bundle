@@ -53,6 +53,7 @@ namespace
     bool GNarrowLayout_ShowsCode = false;  // one pane at a time: the code is shown, otherwise the demo
     bool GNarrowLayout_CodeSeen = false;   // the code was shown once: the tip above the demo goes away
     bool GNarrowLayout_Active = false;     // the explorer shows one pane at a time (set at each frame)
+    bool GFontScaleSlider_Held = false;    // the status bar's font scale slider is held: the layout keeps its mode
 
     int GDemo_LastShownFrame = -1;         // the last frame when the demo was shown
     bool GDemo_ShownAtLastFrame = false;   // the demo was shown at the frame before (all its open sections were seen)
@@ -517,6 +518,7 @@ namespace
         // Scaling slider on the left
         ImGui::SetNextItemWidth(150.f); // one rare occasion where we set a fixed width for an item (not using EmSize), because it will change the full scale (and the slider size would vary!)
         ImGui::SliderFloat("Font scale  | ", &ImGui::GetStyle().FontScaleMain, 0.5f, 5.f);
+        GFontScaleSlider_Held = ImGui::IsItemActive();
 
         // Reference to ImGui Bundle
         ImGui::PushStyleColor(ImGuiCol_Text, RichMd::LinkColor());
@@ -608,6 +610,12 @@ namespace {
             mode.narrow = availableSize.x < HelloImGui::EmSize(kNarrowWidthEm) || (isShort && isTouchScreen);
             mode.statusInMenu = show_status_bar && (mode.narrow || isShort);
         }
+        // A bigger font can make the window short or narrow (in em): the status bar would then go to the "..." menu,
+        // with the slider under the mouse. The new mode waits for the slider's release
+        static LayoutMode lastMode;
+        if (GFontScaleSlider_Held)
+            mode = lastMode;
+        lastMode = mode;
         GNarrowLayout_Active = mode.narrow;
         // On a narrow screen, the code shows only after a tap: its source loads now, for the line labels
         DemoCodeViewer_PreloadDemoFile();
