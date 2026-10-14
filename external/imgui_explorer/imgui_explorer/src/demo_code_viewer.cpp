@@ -2,6 +2,7 @@
 #include "library_config.h"
 #include "api_index.h"
 #include "imgui.h"
+#include "imgui_internal.h"  // the demo window's storage, ImHashStr: the reveal of a section (spike)
 #include "hello_imgui/hello_imgui.h"
 #include "hello_imgui/icons_font_awesome_4.h"
 #include "ImGuiColorTextEdit/TextEditor.h"
@@ -13,6 +14,8 @@
 #include <algorithm>
 #include <cctype>
 #include <cstring>
+#include <cstdio>
+#include <cstdlib>
 #include <fstream>
 #include <optional>
 #include "immapp/browse_to_url.h"
@@ -275,6 +278,8 @@ namespace
         std::string name, path;  // "Button", "Widgets/Basic/Button"
         int line = -1;           // 1-based
         std::vector<OutlineNode> children;
+        bool hasMarker = false;  // its own marker, at `line` (else `line` is its first child's)
+        bool markerLive = false; // that marker runs (the demo comments some out: "// IMGUI_DEMO_MARKER("Widgets")")
     };
 
     OutlineNode BuildOutline(const std::string& source)
@@ -306,8 +311,240 @@ namespace
                 node = &*child;
                 start = end + 1;
             }
+            if (!node->hasMarker)
+            {
+                size_t lineBegin = source.rfind('\n', found);
+                lineBegin = lineBegin == std::string::npos ? 0 : lineBegin + 1;
+                node->hasMarker = true;
+                node->markerLive = source.substr(lineBegin, found - lineBegin).find("//") == std::string::npos;
+                node->line = lineNum;
+            }
         }
         return root;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // Reveal a section in the demo window (spike): open the tree nodes above its marker, then scroll to it.
+    // The nodes' labels come from the demo's source: the tree call just above each level's marker. Dear ImGui keeps a
+    // node's open state in its window's storage, under the hash of its label and of the ID stack: a TreeNode pushes its
+    // ID for its children, a CollapsingHeader does not.
+    // -----------------------------------------------------------------------------------------------------------------
+    std::vector<std::string> SplitLines(const std::string& content);
+    const OutlineNode& OutlineOf(const std::string& content);
+
+    struct TreeCall
+    {
+        std::string label;      // empty: none
+        bool pushesId = false;  // TreeNode, TreeNodeEx; not CollapsingHeader
+        bool opens = true;      // false: a PushID("label") (it changes the ID of what follows, opens nothing)
+    };
+
+    TreeCall TreeCallOn(const std::string& line)
+    {
+        for (const char* fn : {"CollapsingHeader(\"", "TreeNodeEx(\"", "TreeNode(\""})
+        {
+            size_t pos = line.find(fn);
+            if (pos == std::string::npos)
+                continue;
+            size_t start = pos + strlen(fn), end = line.find('"', start);
+            if (end != std::string::npos)
+                return {line.substr(start, end - start), fn[0] == 'T'};
+        }
+        return {};
+    }
+
+    std::string Lowered(std::string s)
+    {
+        std::transform(s.begin(), s.end(), s.begin(), [](unsigned char c) { return (char)std::tolower(c); });
+        return s;
+    }
+
+    // The first tree call whose label starts with `part` (ignoring case): a header, or a node; its line index, or -1
+    int FindTreeCall(const std::vector<std::string>& lines, const std::string& part, bool header, TreeCall& call)
+    {
+        std::string wanted = Lowered(part);
+        for (size_t i = 0; i < lines.size(); ++i)
+        {
+            TreeCall c = TreeCallOn(lines[i]);
+            if (!c.label.empty() && c.pushesId != header && Lowered(c.label).rfind(wanted, 0) == 0)
+            {
+                call = c;
+                return (int)i;
+            }
+        }
+        return -1;
+    }
+
+    // A PushID("...") just after a header, before its first node: it enters the IDs of its nodes (e.g. "Tables")
+    TreeCall PushIdAfter(const std::vector<std::string>& lines, int headerLine)
+    {
+        for (int i = headerLine + 1; i < (int)lines.size() && i <= headerLine + 12; ++i)
+        {
+            if (!TreeCallOn(lines[(size_t)i]).label.empty())
+                break;
+            size_t pos = lines[(size_t)i].find("PushID(\"");
+            size_t end = pos == std::string::npos ? pos : lines[(size_t)i].find('"', pos + 8);
+            if (end != std::string::npos)
+                return {lines[(size_t)i].substr(pos + 8, end - pos - 8), true, false};
+        }
+        return {};
+    }
+
+    // The tree calls to open for a section, from the top level down; empty when a level is not found. The marker
+    // paths do not always follow the tree: the top level is always a header, possibly with a node of its name inside
+    // (the marker "Configuration" is in TreeNode("Configuration##2"), in the header "Configuration")
+    std::vector<TreeCall> RevealChain(const std::vector<std::string>& lines, const OutlineNode& root,
+                                      const std::string& path)
+    {
+        std::vector<TreeCall> chain;
+        const OutlineNode* node = &root;
+        for (size_t start = 0, level = 0; start <= path.size(); ++level)
+        {
+            size_t slash = path.find('/', start);
+            std::string part = path.substr(start, (slash == std::string::npos ? path.size() : slash) - start);
+            start = slash == std::string::npos ? path.size() + 1 : slash + 1;
+            bool last = start > path.size();
+            auto child = std::find_if(node->children.begin(), node->children.end(),
+                                      [&](const OutlineNode& c) { return c.name == part; });
+            if (child == node->children.end())
+                return {};
+            node = &*child;
+            TreeCall call;
+            int callLine = -1;
+            if (node->hasMarker)  // the call just above its marker
+                for (int i = node->line - 1; i >= 0 && i >= node->line - 5 && callLine < 0; --i)
+                    if (!(call = TreeCallOn(lines[(size_t)i])).label.empty())
+                        callLine = i;
+            if (callLine < 0 && !(last && node->hasMarker))  // no marker: by its name
+                callLine = FindTreeCall(lines, part, level == 0, call);
+            if (callLine < 0)
+            {
+                if (last && node->hasMarker)
+                    break;  // a leaf: a widget inside its parent's node (e.g. "Widgets/Basic/Button")
+                return {};
+            }
+            if (level == 0)
+            {
+                int headerLine = callLine;
+                if (call.pushesId)  // a node: the header of the same name holds it
+                {
+                    TreeCall header;
+                    headerLine = FindTreeCall(lines, part, true, header);
+                    if (headerLine < 0)
+                        return {};
+                    chain.push_back(header);
+                }
+                else
+                    chain.push_back(call);
+                TreeCall push = PushIdAfter(lines, headerLine);
+                if (!push.label.empty())
+                    chain.push_back(push);
+                if (!call.pushesId)
+                    continue;
+            }
+            chain.push_back(call);
+        }
+        return chain;
+    }
+
+    std::string g_revealTarget;  // the section whose marker scrolls the demo window to it, when it runs
+
+    // Opens the nodes of a section in the demo window; its marker, when it runs, scrolls there. False when the
+    // demo window or a level is not found
+    bool RevealInDemo(const std::vector<std::string>& lines, const OutlineNode& root, const std::string& path)
+    {
+        ImGuiWindow* demo = ImGui::FindWindowByName("Dear ImGui Demo");
+        std::vector<TreeCall> chain = RevealChain(lines, root, path);
+        if (demo == nullptr || chain.empty())
+            return false;
+        ImGuiID seed = demo->ID;
+        for (const TreeCall& call : chain)
+        {
+            ImGuiID id = ImHashStr(call.label.c_str(), 0, seed);
+            if (call.opens)
+                demo->StateStorage.SetInt(id, 1);
+            if (call.pushesId)
+                seed = id;
+        }
+        g_revealTarget = path;
+        return true;
+    }
+
+    // The spike's measurement: reveals each live marker of the demo in turn (the demo window's storage cleared
+    // before each), and counts those whose marker ran within 15 frames. Started by "?reveal_selftest" in the page's
+    // URL, or the environment variable IMGUI_EXPLORER_REVEAL_SELFTEST; the result goes to stdout
+    struct RevealSelfTest
+    {
+        bool started = false, active = false, fired = false;
+        std::vector<std::string> paths, missed, notFound;
+        size_t index = 0;
+        int frames = 0, ok = 0;
+    };
+    RevealSelfTest g_revealSelfTest;
+
+    void CollectLivePaths(const OutlineNode& node, std::vector<std::string>& paths)
+    {
+        for (const OutlineNode& child : node.children)
+        {
+            if (child.markerLive)
+                paths.push_back(child.path);
+            CollectLivePaths(child, paths);
+        }
+    }
+
+    void RevealSelfTestStep(const std::string& cppContent)
+    {
+        RevealSelfTest& t = g_revealSelfTest;
+        if (!t.started)
+        {
+#ifdef __EMSCRIPTEN__
+            bool asked = EM_ASM_INT({ return location.search.indexOf('reveal_selftest') >= 0 ? 1 : 0; }) != 0;
+#else
+            bool asked = std::getenv("IMGUI_EXPLORER_REVEAL_SELFTEST") != nullptr;
+#endif
+            if (!asked || cppContent.empty() || ImGui::FindWindowByName("Dear ImGui Demo") == nullptr)
+                return;
+            t.started = t.active = true;
+            CollectLivePaths(OutlineOf(cppContent), t.paths);
+            printf("reveal self-test: %zu live markers\n", t.paths.size());
+        }
+        if (!t.active)
+            return;
+        if (t.index >= t.paths.size())
+        {
+            printf("reveal self-test: %d / %zu revealed; %zu not found; %zu found but their marker did not run\n",
+                   t.ok, t.paths.size(), t.notFound.size(), t.missed.size());
+            for (const std::string& p : t.notFound)
+                printf("  not found: %s\n", p.c_str());
+            for (const std::string& p : t.missed)
+                printf("  did not run: %s\n", p.c_str());
+            t.active = false;
+            return;
+        }
+        const std::string& path = t.paths[t.index];
+        if (t.frames == 0)
+        {
+            ImGui::FindWindowByName("Dear ImGui Demo")->StateStorage.Clear();
+            t.fired = false;
+            if (!RevealInDemo(SplitLines(cppContent), OutlineOf(cppContent), path))
+            {
+                t.notFound.push_back(path);
+                ++t.index;
+                return;
+            }
+        }
+        if (t.fired)
+            ++t.ok;
+        else if (t.frames < 15)
+        {
+            ++t.frames;
+            return;
+        }
+        else
+            t.missed.push_back(path);
+        g_revealTarget.clear();
+        t.frames = 0;
+        ++t.index;
     }
 
     // The outline's nodes as a tree. A click on a name selects its section; on a section with children, it also
@@ -1749,6 +1986,7 @@ void DemoCodeViewer_SetShowPython(bool show) { g_showPython = show; g_userPrefPy
 void DemoCodeViewer_Show()
 {
     bool pythonOnly = DemoCodeViewer_IsPythonOnlyMode();
+    RevealSelfTestStep(g_codeFiles["imgui_demo"].cppContent);
 
     // In Python-only mode, force Python display
     if (pythonOnly)
@@ -1989,6 +2227,8 @@ void DemoCodeViewer_Show()
                 g_pendingScrollLine = clicked->line;
                 g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
                 g_pendingScrollPython = showingPython;
+                if (cf.cppState == LoadState::Loaded)  // the demo window runs the C++ demo: its labels
+                    RevealInDemo(SplitLines(cf.cppContent), OutlineOf(cf.cppContent), clicked->path);
                 if (clicked->children.empty())  // a section that unfolds keeps the outline open
                     ImGui::CloseCurrentPopup();
             }
@@ -2199,6 +2439,15 @@ void DemoCodeViewer_Show()
 
     if (codeFont.font)
         ImGui::PopFont();
+}
+
+bool DemoCodeViewer_TakeRevealTarget(const char* section)
+{
+    if (g_revealTarget.empty() || g_revealTarget != section)
+        return false;
+    g_revealTarget.clear();
+    g_revealSelfTest.fired = true;
+    return true;
 }
 
 int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* section)

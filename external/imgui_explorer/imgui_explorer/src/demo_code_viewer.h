@@ -25,6 +25,9 @@ void DemoCodeViewer_PreloadDemoFile();
 // cppFilename: e.g. "imgui_demo.cpp". Returns -1 if not found or no Python available.
 int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* section);
 
+// The demo's marker callback asks whether its section is the one an outline click reveals: true once, then the caller
+// scrolls the demo window to it (spike)
+bool DemoCodeViewer_TakeRevealTarget(const char* section);
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();
