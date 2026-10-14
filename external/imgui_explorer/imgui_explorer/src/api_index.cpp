@@ -80,6 +80,7 @@ namespace
         e.partText = j.value("part_text", "");
         e.part = j.value("part", "");
         e.header = j.value("header", "");
+        e.headerNote = j.value("header_note", "");
         e.anchor = j.value("anchor", "");
         e.cppAnchor = j.value("cpp_anchor", "");
         e.typedefPy = j.value("typedef_py", "");

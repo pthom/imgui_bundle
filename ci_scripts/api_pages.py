@@ -1281,6 +1281,51 @@ def _json_entry(entry: Entry, module: str, namespace: Optional[str], owner: str 
     return {k: v for k, v in out.items() if v}
 
 
+CPP_HEADERS = {  # the header of a module whose functions' C++ overloads not bound to Python go to the index (the C++
+    # view shows all the signatures of a function: InputText with a char* buffer, not only with a std::string)
+    "imgui_bundle.imgui": "external/imgui/imgui/imgui.h",
+    "imgui_bundle.imgui.internal": "external/imgui/imgui/imgui_internal.h",
+}
+HEADER_NOTES = {  # a header outside the library's core: a note on its entries' cards
+    "imgui_stdlib.h": "From misc/cpp/imgui_stdlib.h, an optional part of Dear ImGui: add it to your build",
+}
+
+
+def _header_functions(header: Path) -> dict[str, list[str]]:
+    """The functions declared in a header's `namespace ImGui` blocks, by name: their declarations on one line,
+    comments removed. Without the obsolete ones (under `#ifndef IMGUI_DISABLE_OBSOLETE_FUNCTIONS`)"""
+    functions: dict[str, list[str]] = {}
+    conditions: list[tuple[bool, bool]] = []  # the open #if blocks: (about the obsolete functions, obsolete lines)
+    inside, pending = False, ""
+    for raw in header.read_text().splitlines():
+        line = raw.split("//")[0]
+        directive = line.strip()
+        if directive.startswith("#if"):
+            about = "IMGUI_DISABLE_OBSOLETE_FUNCTIONS" in directive
+            conditions.append((about, about and not directive.startswith("#ifdef")))
+        elif directive.startswith("#else") and conditions and conditions[-1][0]:
+            conditions[-1] = (True, not conditions[-1][1])
+        elif directive.startswith("#endif") and conditions:
+            conditions.pop()
+        elif re.match(r"^namespace ImGui\b", line):
+            inside = True
+        elif inside and line.startswith("}"):
+            inside = False
+        elif inside and not any(obsolete for _, obsolete in conditions) and (pending or "IMGUI_API" in line):
+            pending += " " + line.strip()
+            if ";" in line:
+                declaration = " ".join(pending.split())
+                if (m := re.search(r"(\w+)\s*\(", declaration.replace("IMGUI_API", ""))):
+                    functions.setdefault(m.group(1), []).append(declaration)
+                pending = ""
+    return functions
+
+
+def _signature_key(declaration: str) -> str:
+    """A declaration without its spaces and its format macros (litgen drops `IM_FMTARGS(1)`), for comparisons"""
+    return re.sub(r"\s+|IM_FMT\w+\(\d+\)", "", declaration)
+
+
 def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
     """The index of one module: its entries with the section and part each belongs to, and the pages' URLs"""
     entries: list[Entry] = []
@@ -1290,6 +1335,8 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
     namespace = CPP_NAMESPACES.get(module)
     url = _page_url(library, stem)
     cpp_url = _page_url(library, stem + "_cpp") if namespace is not None else ""
+    cpp_header = CPP_HEADERS.get(module)
+    header_functions = _header_functions(REPO / cpp_header) if cpp_header else {}
     out: list[dict[str, Any]] = []
     header: Optional[str] = None
     part: Optional[str] = None
@@ -1304,6 +1351,15 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
         if entry.section is not None:
             section = entry.section[0]
         item = _json_entry(entry, module, namespace)
+        overloads = header_functions.get(item.get("cpp_name", "").removeprefix("ImGui::"), [])
+        if item["kind"] == "function" and overloads:
+            bound = {_signature_key(s) for s in item.get("cpp", "").split("\n")}
+            unbound = [d for d in overloads if _signature_key(d) not in bound]
+            if unbound and cpp_header:
+                item["cpp"] = "\n".join([item.get("cpp", ""), f"// Also in {Path(cpp_header).name}, not in Python:",
+                                         *unbound])
+        if entry.header in HEADER_NOTES:
+            item["header_note"] = HEADER_NOTES[entry.header]
         if section:
             item["section"] = section
         if entry.section is not None and entry.section[1]:  # the section's intro (the header's comments under its

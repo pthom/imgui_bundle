@@ -713,6 +713,17 @@ namespace
         return hits;
     }
 
+    // A header outside the library's core (imgui_stdlib.h): where it comes from, in an accent color (both themes)
+    void ShowHeaderNote(const ApiEntry& e)
+    {
+        if (e.headerNote.empty())
+            return;
+        ImVec4 color = IsLightTheme() ? ImVec4(0.70f, 0.35f, 0.f, 1.f) : ImVec4(1.f, 0.70f, 0.30f, 1.f);
+        ImGui::PushStyleColor(ImGuiCol_Text, color);
+        ImGui::TextWrapped(ICON_FA_INFO_CIRCLE " %s", e.headerNote.c_str());
+        ImGui::PopStyleColor();
+    }
+
     // The hover tooltip: the signature in the shown language, in Python the C++ name, the first sentence of the doc
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount)
     {
@@ -725,6 +736,7 @@ namespace
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrap);
         if (python)
             ImGui::TextDisabled("C++: %s", ref.CppName().c_str());
+        ShowHeaderNote(ref.owner ? *ref.owner : e);
         std::string sentence = ApiIndex_FirstSentence(e.doc.empty() ? e.note : e.doc);
         if (!sentence.empty())
             ImGui::TextUnformatted(sentence.c_str());
@@ -1153,6 +1165,7 @@ namespace
         ImGui::TextDisabled("%s", e.kind.c_str());
         if (python)
             ImGui::TextDisabled("C++: %s", ref.CppName().c_str());
+        ShowHeaderNote(ref.owner ? *ref.owner : e);
 
         // Where it is declared: the owner, the header, the section
         const ApiEntry& located = ref.owner ? *ref.owner : e;
