@@ -268,6 +268,79 @@ namespace
         return {current, total};
     }
 
+    // The outline of a demo: its IMGUI_DEMO_MARKER labels ("Widgets/Basic/Button") as a tree, in the file's order. A
+    // node's line is its marker's, or its first child's when it has none
+    struct OutlineNode
+    {
+        std::string name, path;  // "Button", "Widgets/Basic/Button"
+        int line = -1;           // 1-based
+        std::vector<OutlineNode> children;
+    };
+
+    OutlineNode BuildOutline(const std::string& source)
+    {
+        OutlineNode root;
+        const std::string pattern = "IMGUI_DEMO_MARKER(\"";
+        int lineNum = 1;
+        size_t lineStart = 0;
+        for (size_t found = source.find(pattern); found != std::string::npos; found = source.find(pattern, found + 1))
+        {
+            for (size_t i = lineStart; i < found; ++i)
+                if (source[i] == '\n')
+                    ++lineNum;
+            lineStart = found;
+            size_t nameStart = found + pattern.size(), nameEnd = source.find('"', nameStart);
+            if (nameEnd == std::string::npos)
+                break;
+            std::string path = source.substr(nameStart, nameEnd - nameStart);
+            OutlineNode* node = &root;
+            for (size_t start = 0; start <= path.size();)
+            {
+                size_t slash = path.find('/', start);
+                size_t end = slash == std::string::npos ? path.size() : slash;
+                std::string name = path.substr(start, end - start);
+                auto child = std::find_if(node->children.begin(), node->children.end(),
+                                          [&](const OutlineNode& c) { return c.name == name; });
+                if (child == node->children.end())
+                    child = node->children.insert(node->children.end(), OutlineNode{name, path.substr(0, end), lineNum, {}});
+                node = &*child;
+                start = end + 1;
+            }
+        }
+        return root;
+    }
+
+    // The outline's nodes as a tree. A click on a name selects its section; on a section with children, it also
+    // unfolds it (the small arrow is hard to reach, on a phone above all)
+    void ShowOutlineNodes(const OutlineNode& node, const OutlineNode*& clicked)
+    {
+        for (const OutlineNode& child : node.children)
+        {
+            ImGuiTreeNodeFlags flags = ImGuiTreeNodeFlags_SpanAvailWidth;
+            if (child.children.empty())
+                flags |= ImGuiTreeNodeFlags_Leaf | ImGuiTreeNodeFlags_NoTreePushOnOpen;
+            bool open = ImGui::TreeNodeEx(child.path.c_str(), flags, "%s", child.name.c_str());
+            bool toggled = ImGui::IsItemToggledOpen();
+            if ((ImGui::IsItemClicked() && !toggled) || (toggled && open))  // a leaf, or a section that unfolds
+                clicked = &child;
+            if (open && !child.children.empty())
+            {
+                ShowOutlineNodes(child, clicked);
+                ImGui::TreePop();
+            }
+        }
+    }
+
+    // The outline of a file's content, built at its first display (the content does not change once loaded)
+    const OutlineNode& OutlineOf(const std::string& content)
+    {
+        static std::map<const std::string*, std::pair<size_t, OutlineNode>> cache;
+        auto& entry = cache[&content];
+        if (entry.first != content.size())
+            entry = {content.size(), BuildOutline(content)};
+        return entry.second;
+    }
+
     // Parse IMGUI_DEMO_MARKER("section") calls from source text, return section → 1-based line map
     std::map<std::string, int> ParseMarkers(const std::string& source)
     {
@@ -1894,6 +1967,33 @@ void DemoCodeViewer_Show()
             g_searchBarJustOpened = true;
         }
         ImGui::SetItemTooltip("Search (Ctrl+F).\n You may also right click in the editor below.");
+
+        // The outline: the demo's sections (its IMGUI_DEMO_MARKER labels) as a tree; a click shows one in the code
+        const OutlineNode& outline = OutlineOf(showingPython ? cf.pyContent : cf.cppContent);
+        if (!outline.children.empty())
+        {
+            SameLineIfFits(ButtonWidth(ICON_FA_LIST_UL " Outline"));
+            if (ImGui::SmallButton(ICON_FA_LIST_UL " Outline"))
+                ImGui::OpenPopup("##outline");
+            ImGui::SetItemTooltip("The demo's sections, as a tree: a click shows one in the code");
+        }
+        ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
+        ImGui::SetNextWindowSizeConstraints(ImVec2(ImGui::GetFontSize() * 14.f, 0.f), ImVec2(screen.x, screen.y * 0.7f));
+        if (ImGui::BeginPopup("##outline"))
+        {
+            const OutlineNode* clicked = nullptr;
+            ShowOutlineNodes(outline, clicked);
+            if (clicked != nullptr)
+            {
+                g_pendingScrollFile = currentFile.cppDisplayName();
+                g_pendingScrollLine = clicked->line;
+                g_pendingScrollSection = clicked->path;  // in C++, the Python code shows the same section
+                g_pendingScrollPython = showingPython;
+                if (clicked->children.empty())  // a section that unfolds keeps the outline open
+                    ImGui::CloseCurrentPopup();
+            }
+            ImGui::EndPopup();
+        }
 
         ImGui::SameLine();
 
