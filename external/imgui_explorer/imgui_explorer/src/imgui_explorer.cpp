@@ -767,6 +767,7 @@ namespace {
                 ShowCurrentLibraryDemo(demoPos, demoSize);
             else
                 ShowCurrentLibraryDemo(ImVec2(0, 0), ImVec2(0, 0));
+            DemoCodeViewer_PlaceMenuWindow(demoPos, demoSize);
             // The last zone extends to the bottom of its window: in view when its marker is above the top
             if (GDemoMarker_Last.frame == frame && GDemoMarker_Last.aboveTop)
                 DemoCodeViewer_NoteSectionInView(GDemoMarker_Last.section.c_str());

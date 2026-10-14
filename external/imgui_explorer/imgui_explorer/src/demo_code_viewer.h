@@ -38,6 +38,8 @@ void DemoCodeViewer_NoteDemoShown();
 // The explorer reports each frame whether it shows one pane at a time (a phone): the code then has no line numbers,
 // and a jump scrolls it sideways past its indentation
 void DemoCodeViewer_NoteNarrowLayout(bool narrow);
+// The explorer gives the demo's pane each frame: a window of the demo's menus that a search just opened goes there
+void DemoCodeViewer_PlaceMenuWindow(ImVec2 pos, ImVec2 size);
 // The screen rectangle of a text in the code shown at the last frame: its first occurrence on screen
 ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& text);
 // The search of the demo's sections, drawn as a text field ("Search the demos", shorter when narrow) of a width

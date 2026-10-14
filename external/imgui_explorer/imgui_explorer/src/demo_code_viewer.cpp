@@ -24,6 +24,10 @@
 #include <sys/stat.h>  // mkdir
 #endif
 
+// From the bundle's imgui_demo.cpp: the title of a section's window in the demo's menus (Examples, Tools), or null;
+// `open` opens it
+const char* ShowDemoWindow_MenuSectionWindow(const char* section, bool open);
+
 // U+F08E, external-link in Font Awesome 4 (and 6). hello_imgui's ICON_FA_EXTERNAL_LINK_ALT is U+F35D, a Font Awesome 5
 // code that the FA4 font lacks
 #define ICON_FA4_EXTERNAL_LINK "\xef\x82\x8e"
@@ -479,6 +483,8 @@ namespace
     }
 
     std::string g_revealTarget;  // the section whose marker scrolls the demo window to it, when it runs
+    std::string g_menuWindowToPlace;  // a window of the demo's menus, just opened: over the demo's pane, once it exists
+    int g_menuWindowFrame = 0;        // the frame it was opened at
     int g_revealScrolls = 0;     // at as many frames: the first scroll may be clamped to the content of before (a tab)
     double g_revealTime = -10.;  // when the last reveal started: "Show demo" flashes
     std::map<std::string, int> g_sectionInViewFrame;  // per section: the last frame when its zone was in view
@@ -579,6 +585,19 @@ namespace
     // False when the demo window or a level is not found
     bool RevealInDemo(const std::vector<std::string>& lines, const OutlineNode& root, const std::string& path)
     {
+        // A section of Dear ImGui's demo menus (Examples, Tools): its window opens, as its menu item does, over the
+        // demo's pane (it would open at its own place, beyond a phone's screen)
+        const char* menuWindow = GetCurrentLibrary().name == "ImGui"
+                                     ? ShowDemoWindow_MenuSectionWindow(path.c_str(), true) : nullptr;
+        if (menuWindow != nullptr)
+        {
+            g_menuWindowToPlace = menuWindow;
+            g_menuWindowFrame = ImGui::GetFrameCount();
+            g_revealTarget = path;
+            g_revealScrolls = 3;
+            g_revealTime = ImGui::GetTime();
+            return true;
+        }
         ImGuiWindow* demo = DemoWindow();
         std::vector<TreeCall> chain = SectionChain(lines, root, path);
         if (demo == nullptr || chain.empty())
@@ -805,6 +824,8 @@ namespace
     {
         if (GetCurrentLibrary().demoWindowName.empty())
             return false;
+        if (GetCurrentLibrary().name == "ImGui" && ShowDemoWindow_MenuSectionWindow(path.c_str(), false) != nullptr)
+            return true;  // a window of the demo's menus
         static std::map<const std::string*, std::vector<std::string>> lines;  // per demo source
         static std::map<std::pair<const std::string*, std::string>, bool> known;
         auto key = std::make_pair(&cf.cppContent, path);
@@ -3024,6 +3045,21 @@ void DemoCodeViewer_NoteDemoShown()
 void DemoCodeViewer_NoteNarrowLayout(bool narrow)
 {
     g_narrowLayout = narrow;
+}
+
+void DemoCodeViewer_PlaceMenuWindow(ImVec2 pos, ImVec2 size)
+{
+    if (g_menuWindowToPlace.empty())
+        return;
+    ImGuiWindow* window = ImGui::FindWindowByName(g_menuWindowToPlace.c_str());
+    if (window != nullptr && window->Active)
+    {
+        ImGui::SetWindowPos(window, pos);
+        ImGui::SetWindowSize(window, size);
+        g_menuWindowToPlace.clear();
+    }
+    else if (ImGui::GetFrameCount() - g_menuWindowFrame > 10)  // it did not appear
+        g_menuWindowToPlace.clear();
 }
 
 bool DemoCodeViewer_TakeShowDemoRequest()
