@@ -459,6 +459,8 @@ namespace
     }
 
     std::string g_revealTarget;  // the section whose marker scrolls the demo window to it, when it runs
+    double g_revealTime = -10.;  // when the last reveal started: "Show demo" flashes
+    std::map<std::string, int> g_sectionInViewFrame;  // per section: the last frame when its marker ran in view
 
     // Opens the nodes of a section in the demo window; its marker, when it runs, scrolls there. False when the
     // demo window or a level is not found
@@ -478,6 +480,7 @@ namespace
                 seed = id;
         }
         g_revealTarget = path;
+        g_revealTime = ImGui::GetTime();
         return true;
     }
 
@@ -2418,7 +2421,6 @@ void DemoCodeViewer_Show()
         TextEditor::DocPos cursor = editor.GetMainCursorPosition();  // on screen at the previous frame
         int line = editor.IsDocPosVisible(cursor) ? (int)cursor.line + 1 : g_editorReadingLine[displayName];
         FindSectionAt(outline, line, section);
-        const char* showLabel = compact ? ICON_FA_PLAY " Demo" : ICON_FA_PLAY " Show in the demo";
         const ImGuiStyle& style = ImGui::GetStyle();
 
         // A tinted band: the two buttons belong together, apart from the toolbar. The button comes first: it keeps
@@ -2429,15 +2431,27 @@ void DemoCodeViewer_Show()
         ImGui::GetWindowDrawList()->AddRectFilled(bandMin, bandMax, ImGui::GetColorU32(ImGuiCol_Header, 0.6f),
                                                   style.FrameRounding);
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x + pad, bandMin.y + pad));
-        // Full-size buttons, colored, to be seen: "play" in green, the search in blue
-        if (section && cf.cppState == LoadState::Loaded)  // the reveal reads the C++ demo (not in Python-only mode)
+        // Full-size buttons, colored, to be seen: "play" in green, the search in blue. "Show demo" is always there
+        // when the reveal can work (it reads the C++ demo: not in Python-only mode), so that the search keeps its
+        // place; disabled before the first section, and while the demo shows the section. After a reveal, it
+        // flashes
+        if (cf.cppState == LoadState::Loaded)
         {
-            PushButtonColors(ImVec4(0.16f, 0.42f, 0.26f, 1.f), ImVec4(0.22f, 0.55f, 0.34f, 1.f),
-                             ImVec4(0.26f, 0.63f, 0.39f, 1.f));
-            if (ImGui::Button(showLabel))
+            float flash = 1.f - (float)(ImGui::GetTime() - g_revealTime) / 0.8f;
+            auto shown = section ? g_sectionInViewFrame.find(section->path) : g_sectionInViewFrame.end();
+            bool inView = shown != g_sectionInViewFrame.end() && shown->second >= ImGui::GetFrameCount() - 1;
+            ImGui::BeginDisabled(section == nullptr || (inView && flash <= 0.f));
+            ImVec4 green(0.16f, 0.42f, 0.26f, 1.f);
+            PushButtonColors(ImLerp(green, ImVec4(0.45f, 0.85f, 0.55f, 1.f), ImClamp(flash, 0.f, 1.f)),
+                             ImVec4(0.22f, 0.55f, 0.34f, 1.f), ImVec4(0.26f, 0.63f, 0.39f, 1.f));
+            if (ImGui::Button(ICON_FA_PLAY " Show demo"))
                 ShowSectionInDemo(cf, section->path);
             ImGui::PopStyleColor(3);
-            ImGui::SetItemTooltip("Show this section in the demo: it opens there");
+            ImGui::EndDisabled();
+            if (ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled | ImGuiHoveredFlags_ForTooltip))
+                ImGui::SetTooltip("%s", section == nullptr ? "Scroll to a section of the demo, or search one"
+                                        : inView           ? "The demo shows this section"
+                                                           : "Show this section in the demo: it opens there");
             ImGui::SameLine();
         }
         // The path, as the search's door: the outline and its search open on a click
@@ -2570,7 +2584,7 @@ void DemoCodeViewer_Show()
 
         if (!rightClickSection.empty() && cf.cppState == LoadState::Loaded)
         {
-            std::string label = ICON_FA_PLAY " Show in the demo: "
+            std::string label = ICON_FA_PLAY " Show demo: "
                                 + SectionCrumb(rightClickSection, ImGui::GetFontSize() * 20.f);
             if (ImGui::MenuItem(label.c_str()))
                 ShowSectionInDemo(cf, rightClickSection);
@@ -2611,6 +2625,11 @@ void DemoCodeViewer_Show()
 
     if (codeFont.font)
         ImGui::PopFont();
+}
+
+void DemoCodeViewer_NoteSectionInView(const char* section)
+{
+    g_sectionInViewFrame[section] = ImGui::GetFrameCount();
 }
 
 bool DemoCodeViewer_TakeShowDemoRequest()

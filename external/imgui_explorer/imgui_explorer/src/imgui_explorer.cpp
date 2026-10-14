@@ -234,9 +234,12 @@ namespace
     // Callback invoked by IMGUI_DEMO_MARKER when a demo section is hovered
     void OnDemoMarkerCallback(const char* file_ext_cpp, int line, const char* section)
     {
-        // The section that an outline click reveals: the demo window scrolls to it (spike)
+        // The section that an outline click reveals: the demo window scrolls to it. A section in view: the breadcrumb's
+        // "Show demo" is disabled for it
         if (section != nullptr && DemoCodeViewer_TakeRevealTarget(section))
             ImGui::SetScrollHereY(0.1f);
+        else if (section != nullptr && ImGui::IsRectVisible(ImVec2(1.f, ImGui::GetTextLineHeight())))
+            DemoCodeViewer_NoteSectionInView(section);
 
         // On a touch screen, nothing is hovered between two touches, and a section's zone starts below its title:
         // a section that a tap just opened becomes the current one. (Not with a mouse: its hover, on the title of the
