@@ -128,7 +128,6 @@ parts:
           - file: api/imgui/imgui_cpp
           - file: api/imgui/imgui_internal_cpp
           - file: api/imgui/imgui_test_engine_cpp
-          - file: api/imgui/imgui_backends_cpp
       - file: api/hello_imgui/cpp_index
         sections:
           - file: api/hello_imgui/hello_imgui_cpp
