@@ -105,6 +105,7 @@ namespace
     constexpr float kCompactWidthEm = 35.f;
     // One pane at a time (a phone): no line numbers, and a jump scrolls sideways past the indentation (set each frame)
     bool g_narrowLayout = false;
+    constexpr float kNarrowCodeFontScale = 0.85f;  // a phone's code, against its other text
     // A jump's line at the top of an editor (a jump moves both languages' editors): in a narrow layout, the editor then
     // scrolls sideways (jumped: the jump was drawn; it scrolled back to the first column, the sideways scroll follows)
     struct PendingDedent { int topLine = 0; bool jumped = false; };
@@ -2790,10 +2791,11 @@ void DemoCodeViewer_Show()
     if (ImGui::IsKeyChordPressed(ImGuiMod_Ctrl | ImGuiMod_Shift | ImGuiKey_F) && !apiHits.empty())
         OpenApi(apiHits);
 
-    // Use code font if available
+    // Use code font if available; smaller on a phone than its other text: the code needs the width, a button a finger
     auto codeFont = RichMd::GetCodeFont();
+    float codeSize = codeFont.size * (g_narrowLayout ? kNarrowCodeFontScale : 1.f);
     if (codeFont.font)
-        ImGui::PushFont(codeFont.font, codeFont.size);
+        ImGui::PushFont(codeFont.font, codeSize);
 
     // Apply user display preferences to the active editor; its palette follows the theme (light on a light background)
     editor.SetPalette(IsLightTheme() ? TextEditor::GetLightPalette() : TextEditor::GetDarkPalette());
@@ -2846,7 +2848,7 @@ void DemoCodeViewer_Show()
             ShowApiTooltip(hits[0], showingPython, hits.size());
             ImGui::EndTooltip();
             if (codeFont.font)
-                ImGui::PushFont(codeFont.font, codeFont.size);
+                ImGui::PushFont(codeFont.font, codeSize);
         }
     }
 
@@ -2909,7 +2911,7 @@ void DemoCodeViewer_Show()
         }
 
         if (codeFont.font)
-            ImGui::PushFont(codeFont.font, codeFont.size);
+            ImGui::PushFont(codeFont.font, codeSize);
 
         ImGui::EndPopup();
     }
