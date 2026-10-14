@@ -7,14 +7,15 @@ defaults:
 
 ## Title
 
-[[The title card; under it, the demo opens its color picker]]
+[[The title card; under it, the demo opens its color picker (fast: unseen)]]
 ```cues
 set_value("scene", "desktop")
 set_value("card", "title")
 set_value("card_alpha", 1.0)
-click("item", "//Dear ImGui Demo/Widgets")
-click("item", "//Dear ImGui Demo/**/Color\\/Picker Widgets")
-hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.3, 0.3))
+click("item", "//Dear ImGui Demo/Widgets", fast=True)
+click("item", "//Dear ImGui Demo/**/Color\\/Picker Widgets", fast=True)
+hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.3, 0.3), fast=True)
+wait(1.0)
 ```
 
 ## Features
@@ -85,16 +86,19 @@ And in 3D?
 
 ## Phone
 
-[[A fade to the phone; a finger scrolls up to the surface; a tap on "Code"]]
+[[A fade to the phone, Dear ImGui's manual; under the veil, its Basic widgets open (fast). A finger ticks the checkbox, drags a slider, taps "Code": the slider's code]]
 ```cues
-animate("veil", 1.0, over=0.3)
-set_value("scene", "phone", at=0.3)
-animate("veil", 0.0, over=0.3, at=0.3)
-wait(0.4)
-wheel("item", "//ImPlot3D Demo/**/Mesh Plots", lines=3)
-wait(0.6)
+animate("veil", 1.0, over=0.25)
+set_value("scene", "phone", at=0.25)
+wait(0.3)
+click("item", "//Dear ImGui Demo/**/Basic", fast=True)
+hover("item", "//Dear ImGui Demo/**/checkbox", fast=True)
+animate("veil", 0.0, over=0.3, at=1.0)
+wait(0.5)
+click("item", "//Dear ImGui Demo/**/checkbox")
+drag("item", "//Dear ImGui Demo/**/slider float", start=(0.15, 0.5), end=(0.85, 0.5))
 click("button", "switch", point=(0.75, 0.5))
-wait(0.6)
+wait(0.7)
 ```
 
 ## End

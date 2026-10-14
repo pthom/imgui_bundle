@@ -128,6 +128,7 @@ class Gesture:
     end: Point = (0.5, 0.5)      # a drag's end
     text: str = ""               # press: the keys ("ctrl+f"); type, paste: the text; menu: the item's label;
                                  # wheel: the lines (negative: down); wait: the seconds
+    fast: bool = False           # played at the engine's fast speed: a setup the viewer does not see (under a card)
 
 
 @dataclass
@@ -386,33 +387,36 @@ class Parser:
                       at: At = None) -> None:
             record("challenge", prompt=prompt, until=until, hint=hint, hint_after=hint_after, at=at)
 
-        # The gestures: a target and its argument (a heading, an entry...), a point in its rectangle
+        # The gestures: a target and its argument (a heading, an entry...), a point in its rectangle. The mouse's ones
+        # may be `fast`: a setup the viewer does not see (under a card)
         def gesture(kind: str, target: str = "", arg: Any = "", point: Point = (0.5, 0.5), end: Point = (0.5, 0.5),
-                    text: str = "", at: At = None) -> None:
+                    text: str = "", at: At = None, fast: bool = False) -> None:
             if target and lesson.strict and target not in lesson.targets:
                 raise LessonError(f"line {block.line}: unknown target {target!r} (declared: {list(lesson.targets)})")
             record("gesture", gesture=Gesture(kind, target, str(arg), (float(point[0]), float(point[1])),
-                                              (float(end[0]), float(end[1])), text), at=at)
+                                              (float(end[0]), float(end[1])), text, fast), at=at)
 
-        def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
-            gesture("click", target, arg, point, at=at)
+        def click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None, fast: bool = False) -> None:
+            gesture("click", target, arg, point, at=at, fast=fast)
 
-        def double_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
-            gesture("double_click", target, arg, point, at=at)
+        def double_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None,
+                         fast: bool = False) -> None:
+            gesture("double_click", target, arg, point, at=at, fast=fast)
 
-        def right_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
-            gesture("right_click", target, arg, point, at=at)
+        def right_click(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None,
+                        fast: bool = False) -> None:
+            gesture("right_click", target, arg, point, at=at, fast=fast)
 
-        def hover(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None) -> None:
-            gesture("hover", target, arg, point, at=at)
+        def hover(target: str, arg: Any = "", point: Point = (0.5, 0.5), at: At = None, fast: bool = False) -> None:
+            gesture("hover", target, arg, point, at=at, fast=fast)
 
         def drag(target: str, arg: Any = "", start: Point = (0.0, 0.5), end: Point = (1.0, 0.5),
-                 at: At = None) -> None:
-            gesture("drag", target, arg, start, end, at=at)
+                 at: At = None, fast: bool = False) -> None:
+            gesture("drag", target, arg, start, end, at=at, fast=fast)
 
         def wheel(target: str, arg: Any = "", lines: float = -5.0, point: Point = (0.5, 0.5),
-                  at: At = None) -> None:
-            gesture("wheel", target, arg, point, text=str(float(lines)), at=at)
+                  at: At = None, fast: bool = False) -> None:
+            gesture("wheel", target, arg, point, text=str(float(lines)), at=at, fast=fast)
 
         def wait(seconds: float, at: At = None) -> None:
             gesture("wait", text=str(float(seconds)), at=at)
@@ -478,6 +482,10 @@ class Parser:
                         sentence.duration = max(0.8, len(sentence.text) * SECONDS_PER_CHAR)
                     t += sentence.duration + SENTENCE_GAP
                 paragraph.end = t
+            # It lasts until its own animations end, those anchored to its start (a chapter with no paragraph)
+            ends = [(float(e.anchor[1]) if isinstance(e.anchor[1], (int, float)) else 0.0) + e.over
+                    for e in self.events if e.chapter == i and e.anchor[0] is None and e.kind == "animate"]
+            t = max([t] + [chapter.start + end for end in ends])
             chapter.end = t
         for event in self.events:
             target, at = event.anchor
@@ -1135,7 +1143,7 @@ class Lesson:
                 self.actions[event.action](*event.args)
             elif event.kind == "gesture" and id(event) not in self.fired and event.gesture is not None:
                 self.fired.add(id(event))
-                self.gestures.push(event.gesture, fast=self._replaying)
+                self.gestures.push(event.gesture, fast=self._replaying or event.gesture.fast)
             elif event.kind == "highlight" and self.t - event.time < HIGHLIGHT_DURATION:
                 self.params[event.param].highlight_until = event.time + HIGHLIGHT_DURATION
 

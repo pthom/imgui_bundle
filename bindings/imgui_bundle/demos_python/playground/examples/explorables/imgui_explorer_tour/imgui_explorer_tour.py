@@ -18,6 +18,7 @@ WINDOW_SIZE = (960, 540)       # in points: 1920 x 1080 pixels on a Retina scree
 SCENARIO = "cut_demo_code.md"  # the cut played when none is given
 URL = "pthom.github.io/imgui_explorer"
 LIBRARIES = ["imgui", "implot", "implot3_d"]   # the toolbar's libraries, as in the online explorer
+PHONE_LIBRARY = "imgui"        # the phone shows this library's manual alone: the main one, to end with
 PHONE_FONT_SCALE = 0.7         # the phone's text, against the desktop's (a real phone shows about 24 em across)
 PHONE_HEIGHT = 0.92            # the phone's height, in the stage's
 PHONE_ASPECT = 402 / 874       # an iPhone's screen (width / height)
@@ -126,7 +127,7 @@ def gui_phone() -> None:
     imgui.begin_child("##phone", ImVec2(size.x, size.y - status - home), 0,
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse)
     record_toolbar_ids()
-    imgui_explorer.show_imgui_explorer_gui_cpp()
+    imgui_explorer.show_imgui_explorer_gui_cpp(imgui_explorer.ImGuiExplorerLibrary[PHONE_LIBRARY])
     imgui.end_child()
     imgui.pop_font()
     # The bezel, over the demo's window too: a thick ring whose inner edge rounds the screen's corners
