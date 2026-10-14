@@ -328,6 +328,21 @@ namespace
     }
 
     // C++/Python toggle (to be called inside a horizontal layout)
+    // A language as its logo, the height of a frame: bright when its code is shown, else dimmed (less when hovered).
+    // The logos are isocpp.org's and python.org's, unaltered: both allow their use to name the language
+    bool LanguageLogoButton(const char* asset, bool selected, const char* tooltip)
+    {
+        ImVec2 imageSize = HelloImGui::ImageSizeFromAsset(asset);
+        float height = ImGui::GetFrameHeight();
+        bool clicked = ImGui::InvisibleButton(asset, ImVec2(height * imageSize.x / imageSize.y, height));
+        float alpha = selected ? 1.f : (ImGui::IsItemHovered() ? 0.7f : 0.3f);
+        ImGui::GetWindowDrawList()->AddImage(HelloImGui::ImTextureIdFromAsset(asset), ImGui::GetItemRectMin(),
+                                             ImGui::GetItemRectMax(), ImVec2(0.f, 0.f), ImVec2(1.f, 1.f),
+                                             ImGui::GetColorU32(ImVec4(1.f, 1.f, 1.f, alpha)));
+        ImGui::SetItemTooltip("%s", tooltip);
+        return clicked;
+    }
+
     void GuiPythonCppToggle()
     {
         if (DemoCodeViewer_IsPythonOnlyMode())
@@ -339,9 +354,9 @@ namespace
         else
         {
             bool showPython = DemoCodeViewer_GetShowPython();
-            if (ImGui::RadioButton("C++", !showPython))
+            if (LanguageLogoButton("images/logo_cpp.png", !showPython, "Show the code in C++"))
                 DemoCodeViewer_SetShowPython(false);
-            if (ImGui::RadioButton("Python", showPython))
+            if (LanguageLogoButton("images/logo_python.png", showPython, "Show the code in Python"))
                 DemoCodeViewer_SetShowPython(true);
         }
     }

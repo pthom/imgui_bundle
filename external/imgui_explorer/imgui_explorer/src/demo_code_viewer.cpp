@@ -713,7 +713,7 @@ namespace
         return hits;
     }
 
-    // The hover tooltip: the signature in the shown language, the name in the other, the first sentence of the doc
+    // The hover tooltip: the signature in the shown language, in Python the C++ name, the first sentence of the doc
     void ShowApiTooltip(const ApiRef& ref, bool python, size_t hitCount)
     {
         const ApiEntry& e = *ref.entry;
@@ -723,7 +723,8 @@ namespace
             signature = python ? e.typedefPy : e.cpp + "\n" + e.typedefCpp;
         ShowCode(signature.empty() ? (python ? ref.PyName() : ref.CppName()) : signature, false, wrap);
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + wrap);
-        ImGui::TextDisabled("%s: %s", python ? "C++" : "Python", python ? ref.CppName().c_str() : ref.PyName().c_str());
+        if (python)
+            ImGui::TextDisabled("C++: %s", ref.CppName().c_str());
         std::string sentence = ApiIndex_FirstSentence(e.doc.empty() ? e.note : e.doc);
         if (!sentence.empty())
             ImGui::TextUnformatted(sentence.c_str());
@@ -1146,13 +1147,15 @@ namespace
         const ApiEntry& e = *ref.entry;
         float em = ImGui::GetFontSize();
 
-        // The title: the name in the shown language, the kind; the name in the other language under it
+        // The title: the name in the shown language, the kind; in Python, the C++ name under it (a C++ reader needs no
+        // Python name)
         ImGui::PushFont(nullptr, em * 1.35f);
         ImGui::TextUnformatted(python ? ref.PyName().c_str() : ref.CppName().c_str());
         ImGui::PopFont();
         ImGui::SameLine();
         ImGui::TextDisabled("%s", e.kind.c_str());
-        ImGui::TextDisabled("%s: %s", python ? "C++" : "Python", python ? ref.CppName().c_str() : ref.PyName().c_str());
+        if (python)
+            ImGui::TextDisabled("C++: %s", ref.CppName().c_str());
 
         // Where it is declared: the owner, the header, the section
         const ApiEntry& located = ref.owner ? *ref.owner : e;
@@ -1252,7 +1255,7 @@ namespace
 
         // The signatures, as code blocks (highlighted, selectable, with a copy button): in Python, the Python one,
         // then the C++ one (the C++ docs and snippets are what a Python user reads on the web); in C++, the C++ one
-        // only (the Python name on the title's second line is enough)
+        // only
         ImGui::Separator();
         size_t maxChars = CodeCharsPerLine();
         if (!signature.empty())
