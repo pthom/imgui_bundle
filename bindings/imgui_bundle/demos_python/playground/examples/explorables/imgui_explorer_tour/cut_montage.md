@@ -25,7 +25,7 @@ set_value("card_alpha", 1.0)
 click("item", "//Dear ImGui Demo/Widgets", fast=True)
 click("item", "//Dear ImGui Demo/**/Color\\/Picker Widgets", fast=True)
 hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.3, 0.3), fast=True)
-wait(1.0)
+wait(0.6)
 ```
 
 ## Features
@@ -56,10 +56,10 @@ How do I plot with colors?
 wheel("code", lines=-1, point=(0.85, 0.5))
 wait(0.3)
 hover("code_word", "PlotBubbles")
-wait(1.2)
+wait(0.9)
 right_click("code_word", "PlotBubbles")
 menu(API + "ImPlot::PlotBubbles")
-wait(1.0)
+wait(0.7)
 ```
 A function? Its signature, and its documentation.
 
@@ -69,18 +69,16 @@ click("item", "**/##apifilter")
 type_keys("SampleColormap")
 wait(0.3)
 click("item", "**/ImPlot::SampleColormap##hit0")
-wait(0.8)
+wait(0.6)
 ```
 The whole API, searchable.
 
 [[The Python logo: the same card in Python, with the C++ name under it. The code view would show the same section in Python too: the bundle's demos have a Python port, section by section.]]
 ```cues
 click("button", "python")
-wait(1.2)
+wait(0.9)
 ```
 In C++, or in Python.
-
-## In 3D
 
 [[ImPlot3D: the same search, "surf". The cursor goes to the section's entry in the demo, away from the field (its tooltip would show when the popup closes), then Enter takes the first match. The demo opens the section. Then 3 wheel steps show the whole surface: a number tuned for this window's size.]]
 ```cues
@@ -92,7 +90,7 @@ hover("item", "//ImPlot3D Demo/**/Surface Plots")
 press("enter")
 wait(0.3)
 wheel("item", "//ImPlot3D Demo/**/Custom range", lines=-3)
-wait(1.2)
+wait(1.0)
 ```
 And in 3D?
 
@@ -114,14 +112,14 @@ wait(0.5)
 click("item", "//Dear ImGui Demo/**/checkbox")
 drag("item", "//Dear ImGui Demo/**/slider float", start=(0.15, 0.5), end=(0.85, 0.5))
 click("button", "switch", point=(0.75, 0.5), fast=True)
-wait(1.0)
+wait(0.8)
 ```
 
 ## End
 
-[[The end card fades in, and the video ends a second and a half later.]]
+[[The end card fades in, and the video ends two and a half seconds later.]]
 ```cues
 set_value("card", "end")
 animate("card_alpha", 1.0)
-wait(1.5)
+wait(1.0)
 ```
