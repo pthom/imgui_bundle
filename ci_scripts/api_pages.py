@@ -210,6 +210,7 @@ class Entry:
     generated: bool = True  # written by litgen (between its markers), as opposed to the stub's hand-written parts
     typedefs: list["Entry"] = field(default_factory=list)  # an enum's typedefs: the type of its values in the API
     # (ImGuiWindowFlags for ImGuiWindowFlags_)
+    cpp_function: str = ""  # a custom binding of a header's function (ColorPicker4): that function's name
 
 
 def _clean_comment(line: str) -> str:
@@ -356,6 +357,9 @@ def _section_or_note(before: list[str],
         return nearer or _part_title(title), nearer_text if nearer else intro, section, note
     if (m := re.match(r"^<submodule (\w+)>$", title)):  # litgen's marker of a nested namespace
         title = f"Submodule {m.group(1)}"
+    if not _is_title(title) and (m := re.match(r"^(\w[\w ]*: .+?)\s+(\(.+\))$", title)) and _is_title(m.group(1)):
+        # a title "Category: Name", then a long parenthesis: "Widgets: Color Editor/Picker (tip: the ColorEdit*...)"
+        return None, [], (m.group(1), [m.group(2), *before[1:]]), ""
     if not _is_title(title):
         return None, [], None, "\n".join(before)
     return None, [], (title, before[1:]), ""
@@ -1313,6 +1317,8 @@ def _json_entry(entry: Entry, module: str, namespace: Optional[str], owner: str 
              and "pywrappers" not in entry.header and (entry.kind in ("class", "enum") or bool(entry.cpp)))
     page_name = _cpp_name(entry, namespace or "", page_owner) if bound else ""  # the C++ page's name of the entry
     cpp_name = page_name
+    if entry.cpp_function and namespace:
+        cpp_name = f"{namespace}::{entry.cpp_function}"
     if entry.kind in ("attribute", "member"):
         cpp_name = _cpp_member_name(entry, page_owner) if entry.cpp else ""
     elif entry.kind == "enum" and entry.children:
@@ -1380,6 +1386,52 @@ def _header_functions(header: Path) -> dict[str, list[str]]:
     return functions
 
 
+def _place_custom_bindings(entries: list[Entry], header: Path, functions: dict[str, list[str]]) -> list[Entry]:
+    """The custom bindings of the header's functions (ColorPicker4, SliderFloat2...: bound by hand in litgen's
+    options, at the end of the stub) take their place among the bound functions, with their C++ name and signatures:
+    after the one declared before them, in the same block of the header (no blank line between: a section), else
+    before the one declared after them. The other custom bindings stay Python additions (menu_item_simple)"""
+    lines = header.read_text().splitlines()
+
+    def line_of(name: str) -> int:
+        return next((i for i, line in enumerate(lines)
+                     if "IMGUI_API" in line and re.search(rf"\b{name}\s*\(", line.split("//")[0])), -1)
+
+    def same_block(a: int, b: int) -> bool:
+        return all(lines[i].strip() for i in range(min(a, b), max(a, b) + 1))
+
+    bound = [(line_of(_cpp_name(e, "")), e) for e in entries
+             if e.generated and e.kind == "function" and e.cpp and _cpp_name(e, "") in functions]
+    by_key = {name.replace("_", "").lower(): name for name in functions}
+    customs = [(by_key[e.name.replace("_", "").lower()], e) for e in entries
+               if not e.generated and e.kind == "function" and e.name.replace("_", "").lower() in by_key]
+    placed = list(entries)
+    for name, entry in sorted(customs, key=lambda c: line_of(c[0])):  # in the header's order
+        line = line_of(name)
+        before = max((b for b in bound if b[0] < line), key=lambda b: b[0], default=None)
+        after = min((b for b in bound if b[0] > line), key=lambda b: b[0], default=None)
+        entry.cpp_function = name
+        entry.cpp = entry.cpp or "\n".join(functions[name])
+        if before is None and after is None:
+            continue
+        placed.remove(entry)
+        if before is not None and (same_block(before[0], line) or after is None or not same_block(line, after[0])):
+            i = placed.index(before[1]) + 1
+            while i < len(placed) and placed[i].cpp_function:  # after the ones placed there before it
+                i += 1
+            entry.header = before[1].header
+        else:
+            assert after is not None
+            sibling = after[1]
+            i = placed.index(sibling)
+            entry.header = sibling.header
+            # the first entry of its section, or of its part: it opens them
+            entry.section, entry.part, entry.part_text = sibling.section, sibling.part, sibling.part_text
+            sibling.section, sibling.part, sibling.part_text = None, None, []
+        placed.insert(i, entry)
+    return placed
+
+
 def _signature_key(declaration: str) -> str:
     """A declaration without its spaces and its format macros (litgen drops `IM_FMTARGS(1)`), for comparisons"""
     return re.sub(r"\s+|IM_FMT\w+\(\d+\)", "", declaration)
@@ -1396,6 +1448,8 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
     cpp_url = _page_url(library, stem + "_cpp") if namespace is not None else ""
     cpp_header = CPP_HEADERS.get(module)
     header_functions = _header_functions(REPO / cpp_header) if cpp_header else {}
+    if cpp_header:
+        entries = _place_custom_bindings(entries, REPO / cpp_header, header_functions)
     out: list[dict[str, Any]] = []
     header: Optional[str] = None
     part: Optional[str] = None
