@@ -38,18 +38,28 @@ namespace
         return 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
     }
 
-    // Tinted tabs: the given colors on a dark background; in a light theme, mixed with white, so that the text reads
+    // A tint made for a dark background; in a light theme, mixed with white, so that the text reads
+    ImVec4 TintForTheme(ImVec4 c, float white)
+    {
+        if (!IsLightTheme())
+            return c;
+        return ImVec4(c.x + (1.f - c.x) * white, c.y + (1.f - c.y) * white, c.z + (1.f - c.z) * white, c.w);
+    }
+
+    // Tinted tabs: the given colors on a dark background, lighter in a light theme
     void PushTabColors(ImVec4 tab, ImVec4 hovered, ImVec4 selected)
     {
-        bool light = IsLightTheme();
-        auto adapt = [light](ImVec4 c, float white) {
-            if (!light)
-                return c;
-            return ImVec4(c.x + (1.f - c.x) * white, c.y + (1.f - c.y) * white, c.z + (1.f - c.z) * white, c.w);
-        };
-        ImGui::PushStyleColor(ImGuiCol_Tab, adapt(tab, 0.75f));
-        ImGui::PushStyleColor(ImGuiCol_TabHovered, adapt(hovered, 0.55f));
-        ImGui::PushStyleColor(ImGuiCol_TabSelected, adapt(selected, 0.6f));
+        ImGui::PushStyleColor(ImGuiCol_Tab, TintForTheme(tab, 0.75f));
+        ImGui::PushStyleColor(ImGuiCol_TabHovered, TintForTheme(hovered, 0.55f));
+        ImGui::PushStyleColor(ImGuiCol_TabSelected, TintForTheme(selected, 0.6f));
+    }
+
+    // Tinted buttons (pop 3 colors): less whitened than the tabs in a light theme, so that they stand out of a band
+    void PushButtonColors(ImVec4 button, ImVec4 hovered, ImVec4 active)
+    {
+        ImGui::PushStyleColor(ImGuiCol_Button, TintForTheme(button, 0.5f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonHovered, TintForTheme(hovered, 0.4f));
+        ImGui::PushStyleColor(ImGuiCol_ButtonActive, TintForTheme(active, 0.3f));
     }
 
     enum class LoadState { NotLoaded, Loading, Loaded, Failed };
@@ -2415,23 +2425,32 @@ void DemoCodeViewer_Show()
         // its place while the path changes with the scroll
         ImVec2 bandMin = ImGui::GetCursorScreenPos();
         float pad = style.FramePadding.y, bandWidth = ImGui::GetContentRegionAvail().x;
-        ImVec2 bandMax(bandMin.x + bandWidth, bandMin.y + ImGui::GetTextLineHeight() + 2.f * pad);
+        ImVec2 bandMax(bandMin.x + bandWidth, bandMin.y + ImGui::GetFrameHeight() + 2.f * pad);
         ImGui::GetWindowDrawList()->AddRectFilled(bandMin, bandMax, ImGui::GetColorU32(ImGuiCol_Header, 0.6f),
                                                   style.FrameRounding);
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x + pad, bandMin.y + pad));
+        // Full-size buttons, colored, to be seen: "play" in green, the search in blue
         if (section && cf.cppState == LoadState::Loaded)  // the reveal reads the C++ demo (not in Python-only mode)
         {
-            if (ImGui::SmallButton(showLabel))
+            PushButtonColors(ImVec4(0.16f, 0.42f, 0.26f, 1.f), ImVec4(0.22f, 0.55f, 0.34f, 1.f),
+                             ImVec4(0.26f, 0.63f, 0.39f, 1.f));
+            if (ImGui::Button(showLabel))
                 ShowSectionInDemo(cf, section->path);
+            ImGui::PopStyleColor(3);
             ImGui::SetItemTooltip("Show this section in the demo: it opens there");
             ImGui::SameLine();
         }
-        float crumbWidth = ImGui::GetContentRegionAvail().x - ButtonWidth(ICON_FA_LIST_UL " ") - pad;
-        std::string crumb = std::string(ICON_FA_LIST_UL " ")
-                            + (section ? SectionCrumb(section->path, crumbWidth) : "Outline");
-        if (ImGui::SmallButton((crumb + "##crumb").c_str()))
+        // The path, as the search's door: the outline and its search open on a click
+        float crumbWidth = ImGui::GetContentRegionAvail().x - ButtonWidth(ICON_FA_SEARCH " ") - pad;
+        std::string crumb = std::string(ICON_FA_SEARCH " ")
+                            + (section ? SectionCrumb(section->path, crumbWidth) : "Search the demo");
+        PushButtonColors(ImVec4(0.18f, 0.32f, 0.52f, 1.f), ImVec4(0.25f, 0.42f, 0.66f, 1.f),
+                         ImVec4(0.29f, 0.48f, 0.74f, 1.f));
+        if (ImGui::Button((crumb + "##crumb").c_str()))
             ImGui::OpenPopup("##outline");
-        ImGui::SetItemTooltip("The demo's sections, as a tree: a click shows one in the code and in the demo");
+        ImGui::PopStyleColor(3);
+        ImGui::SetItemTooltip("Search the demo's sections, or browse them as a tree: a click shows one in the code "
+                              "and in the demo");
         ImGui::SetCursorScreenPos(ImVec2(bandMin.x, bandMax.y + style.ItemSpacing.y));
         ImGui::Dummy(ImVec2(0.f, 0.f));  // the band's height, for the layout
         ImVec2 screen = ImGui::GetMainViewport()->WorkSize;  // a phone: within the screen
