@@ -7,48 +7,58 @@ defaults:
 
 ## Title
 
-[[The title card; under it, the demo opens Widgets > Basic]]
+[[The title card; under it, the demo opens its color picker]]
 ```cues
 set_value("scene", "desktop")
 set_value("card", "title")
 set_value("card_alpha", 1.0)
 click("item", "//Dear ImGui Demo/Widgets")
-click("item", "//Dear ImGui Demo/**/Basic")
-wait(0.3)
+click("item", "//Dear ImGui Demo/**/Color\\/Picker Widgets")
+hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.3, 0.3))
 ```
 
 ## Features
 
-[[Hover: the code follows]]
+[[The cursor plays with the color picker: the code follows]]
 ```cues
 animate("card_alpha", 0.0)
-hover("item", "//Dear ImGui Demo/**/Button")
-wait(0.4)
-hover("item", "//Dear ImGui Demo/**/checkbox")
+hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.7, 0.4))
+hover("item", "//Dear ImGui Demo/**/MyColor##4/hue", point=(0.5, 0.6))
+hover("item", "//Dear ImGui Demo/**/MyColor##4/sv", point=(0.5, 0.75))
 wait(0.3)
 ```
-Every demo, beside its code.
+Hover any demo: here is its code.
 
-[[The breadcrumb opens the outline; its search finds the plots; Enter: the code and the demo go there]]
+[[ImPlot; the outline's search: the colorful plots; the bubbles open, in the demo and in the code]]
 ```cues
+click("item", "**/ImPlot")
 click("crumb")
-type_keys("plot")
-wait(0.3)
-press("enter")
-wait(0.4)
-hover("item", "//Dear ImGui Demo/**/Lines", point=(0.5, 0.6))
-wait(0.4)
+type_keys("color")
+wait(0.5)
+click("item", "//$FOCUSED/Colorful Bubbles##Colorful Bubbles")
+wait(0.8)
 ```
-Search a section: the code and the demo go there.
+How do I plot with colors?
 
-[[The API tab: a search, a card]]
+[[A function of the code: its signature on hover, its card on a right-click]]
 ```cues
-click("item", API_TAB)
-click("item", "**/##apifilter")
-type_keys("slider")
+wheel("code", lines=-1, point=(0.85, 0.5))
 wait(0.3)
-click("item", "**/ImGui::SliderFloat##hit0")
+hover("code_word", "PlotBubbles")
+wait(1.2)
+right_click("code_word", "PlotBubbles")
+menu(API + "ImPlot::PlotBubbles")
 wait(1.0)
+```
+A function? Its signature, and its documentation.
+
+[[The API tab's search: a name, its card]]
+```cues
+click("item", "**/##apifilter")
+type_keys("SampleColormap")
+wait(0.3)
+click("item", "**/ImPlot::SampleColormap##hit0")
+wait(0.8)
 ```
 The whole API, searchable.
 
@@ -58,36 +68,33 @@ wait(1.2)
 ```
 In C++, or in Python.
 
-## Other libraries
+## In 3D
 
-[[ImPlot, ImPlot3D, ImAnim: a section opened in each, hovered]]
+[[ImPlot3D; the outline's search: the surfaces; the demo scrolls to the surface]]
 ```cues
-click("item", "**/ImPlot")
-click("item", "//ImPlot Demo/**/Line Plots")
-hover("item", "//ImPlot Demo/**/Line Plots", point=(0.5, 8.0))
-wait(0.3)
 click("item", "**/ImPlot3D")
-click("item", "//ImPlot3D Demo/**/Line Plots")
-hover("item", "//ImPlot3D Demo/**/Line Plots", point=(0.5, 9.0))
+click("crumb")
+type_keys("surf")
 wait(0.3)
-click("item", "**/ImAnim")
-click("item", "//ImAnimDemos/**/Basic Animations")
-click("item", "//ImAnimDemos/**/Easing Showcase")
-click("item", "//ImAnimDemos/**/Restart")
+press("enter")
+wait(0.6)
+wheel("item", "//ImPlot3D Demo/**/Custom range", lines=-10)
 wait(0.6)
 ```
-ImPlot, ImPlot3D and ImAnim too.
+And in 3D?
 
 ## Phone
 
-[[A fade to the phone; a tap on "Code"]]
+[[A fade to the phone; a finger scrolls up to the surface; a tap on "Code"]]
 ```cues
 animate("veil", 1.0, over=0.3)
 set_value("scene", "phone", at=0.3)
 animate("veil", 0.0, over=0.3, at=0.3)
+wait(0.4)
+wheel("item", "//ImPlot3D Demo/**/Mesh Plots", lines=3)
 wait(0.6)
 click("button", "switch", point=(0.75, 0.5))
-wait(1.2)
+wait(0.6)
 ```
 
 ## End
@@ -95,5 +102,5 @@ wait(1.2)
 ```cues
 set_value("card", "end")
 animate("card_alpha", 1.0)
-wait(2.0)
+wait(1.5)
 ```
