@@ -1286,8 +1286,9 @@ CPP_HEADERS = {  # the header of a module whose functions' C++ overloads not bou
     "imgui_bundle.imgui": "external/imgui/imgui/imgui.h",
     "imgui_bundle.imgui.internal": "external/imgui/imgui/imgui_internal.h",
 }
-HEADER_NOTES = {  # a header outside the library's core: a note on its entries' cards
-    "imgui_stdlib.h": "From misc/cpp/imgui_stdlib.h, an optional part of Dear ImGui: add it to your build",
+HEADER_NOTES = {  # a header that extends the library's core: a note on its entries' cards, whose C++ signatures start
+    # with the core's
+    "imgui_stdlib.h": "The std::string version is in misc/cpp/imgui_stdlib.h, an optional extension of Dear ImGui",
 }
 
 
@@ -1355,7 +1356,10 @@ def write_api_json(library: Library, module: str, stubs: list[Path]) -> Path:
         if item["kind"] == "function" and overloads:
             bound = {_signature_key(s) for s in item.get("cpp", "").split("\n")}
             unbound = [d for d in overloads if _signature_key(d) not in bound]
-            if unbound and cpp_header:
+            if unbound and entry.header in HEADER_NOTES:  # an extension's version (imgui_stdlib.h): after the core's
+                item["cpp"] = "\n".join([*unbound, f"// In {entry.header}, an optional extension (Python binds this one):",
+                                         item.get("cpp", "")])
+            elif unbound and cpp_header:
                 item["cpp"] = "\n".join([item.get("cpp", ""), f"// Also in {Path(cpp_header).name}, not in Python:",
                                          *unbound])
         if entry.header in HEADER_NOTES:
