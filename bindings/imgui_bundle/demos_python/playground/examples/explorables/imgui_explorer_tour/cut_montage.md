@@ -5,7 +5,7 @@ defaults:
 ---
 # The ImGui Explorer, a montage
 
-[[How to read this file. It is the script of a 30-second video of the ImGui Explorer. A small Python player, "narrator", plays it over the real explorer, which runs in Dear ImGui Bundle's Python bindings.]]
+[[How to read this file. It is the script of a 30-second video of the ImGui Explorer. A small Python player, "narrator", plays it over the real explorer, which runs in Dear ImGui Bundle's Python bindings. Every frame is drawn by Dear ImGui, the subtitles and the phone included: ffmpeg only encodes the frames.]]
 
 [[Each "##" heading is a scene. A plain paragraph is a subtitle: shown at the bottom of the frame for its reading time. A line in double brackets, like this one, is a note for the reader: the player ignores it.]]
 
