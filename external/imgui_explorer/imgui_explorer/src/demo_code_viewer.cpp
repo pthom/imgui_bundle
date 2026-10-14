@@ -2946,7 +2946,7 @@ bool DemoCodeViewer_SearchField(float width, bool demoShown)
     if (loaded && OutlineOf(python ? cf.pyContent : cf.cppContent).children.empty())
         return false;  // a demo without sections
     // A button that looks like a text field, with its placeholder: a field says "search" in a still frame (a
-    // magnifier alone could mean a zoom). The label as long as the width allows
+    // magnifier alone could mean a zoom). The label as long as the width allows; the ID without it (###)
     float available = width > 0.f ? width : ImGui::GetContentRegionAvail().x + width;
     const char* label = ICON_FA_SEARCH " Search the demos";
     if (ButtonWidth(label) > available)
@@ -2959,7 +2959,7 @@ bool DemoCodeViewer_SearchField(float width, bool demoShown)
     ImGui::PushStyleColor(ImGuiCol_Text, ImGui::GetStyleColorVec4(ImGuiCol_TextDisabled));
     ImGui::PushStyleVar(ImGuiStyleVar_ButtonTextAlign, ImVec2(0.f, 0.5f));
     ImGui::BeginDisabled(!loaded);
-    if (ImGui::Button((std::string(label) + "##search_demos").c_str(), ImVec2(width, 0.f)))
+    if (ImGui::Button((std::string(label) + "###search_demos").c_str(), ImVec2(width, 0.f)))
         ImGui::OpenPopup("##outline");
     ImGui::EndDisabled();
     ImGui::PopStyleVar();
