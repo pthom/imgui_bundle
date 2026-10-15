@@ -57,6 +57,31 @@ std::string ParseDemoArg(int argc, char** argv)
 #endif
 }
 
+// Whether the page takes the pictures of the API pages (ci_scripts/api_pictures.py adds &shot=1 to its links)
+bool IsPictureMode()
+{
+#ifdef __EMSCRIPTEN__
+    return emscripten_run_script_int("new URLSearchParams(window.location.search).has('shot') ? 1 : 0") != 0;
+#else
+    return false;
+#endif
+}
+
+// The code's language: ?lang=python (or cpp) in the URL, --lang python on the command line
+std::string ParseLangArg(int argc, char** argv)
+{
+#ifdef __EMSCRIPTEN__
+    (void)argc; (void)argv;
+    const char* result = emscripten_run_script_string("new URLSearchParams(window.location.search).get('lang') || ''");
+    return result ? result : "";
+#else
+    for (int i = 1; i < argc - 1; ++i)
+        if (std::string(argv[i]) == "--lang")
+            return argv[i + 1];
+    return "";
+#endif
+}
+
 
 int main(int argc, char** argv)
 {
@@ -71,6 +96,8 @@ int main(int argc, char** argv)
     };
     std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
     DemoCodeViewer_EnableLinks(ParseDemoArg(argc, argv));
+    if (ParseLangArg(argc, argv) == "python")
+        DemoCodeViewer_SetShowPython(true);
 
     HelloImGui::RunnerParams runnerParams;
 
@@ -98,6 +125,10 @@ int main(int argc, char** argv)
     runnerParams.callbacks.SetupImGuiConfig = [] {
         ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
     };
+    if (IsPictureMode())  // opaque windows: the demo's windows (Examples, Tools) show nothing of the windows below
+        runnerParams.callbacks.PreNewFrame = [] {  // (at each frame: hello_imgui applies its theme after PostInit)
+            ImGui::GetStyle().Colors[ImGuiCol_WindowBg].w = 1.f;
+        };
 
     ImmApp::AddOnsParams addons;
     addons.withMarkdown = true;

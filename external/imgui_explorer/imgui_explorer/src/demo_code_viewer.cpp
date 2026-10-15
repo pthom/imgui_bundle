@@ -862,11 +862,13 @@ namespace
         return r;
     }
 
-    // "?lib=implot&demo=Plots%2FLine%20Plots"; without a section, the library alone
+    // "?lib=implot&demo=Plots%2FLine%20Plots"; without a section, the library alone. "&lang=python" when the code
+    // shows Python
     std::string SectionQuery(const std::string& path)
     {
         std::string lib = Lowered(GetCurrentLibrary().name);
-        return "?lib=" + lib + (path.empty() ? "" : "&demo=" + UrlEncoded(path));
+        return "?lib=" + lib + (path.empty() ? "" : "&demo=" + UrlEncoded(path))
+               + (g_userPrefPython ? "&lang=python" : "");
     }
 
     // A link to a section: on the web, at the page's own address (a local server, a preview)
@@ -3178,6 +3180,11 @@ bool DemoCodeViewer_TakeShowDemoRequest()
     bool requested = g_showDemoRequested;
     g_showDemoRequested = false;
     return requested;
+}
+
+bool DemoCodeViewer_IsRevealTarget(const char* section)
+{
+    return !g_revealTarget.empty() && g_revealTarget == section;
 }
 
 bool DemoCodeViewer_TakeRevealTarget(const char* section)

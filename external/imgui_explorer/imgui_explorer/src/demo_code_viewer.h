@@ -29,6 +29,8 @@ int DemoCodeViewer_GetPythonLineForSection(const char* cppFilename, const char* 
 // The demo's marker callback asks whether its section is the one "Show demo" reveals: true at its first few frames,
 // then the caller scrolls the demo window to it
 bool DemoCodeViewer_TakeRevealTarget(const char* section);
+// Whether this section is being revealed (a query: unlike DemoCodeViewer_TakeRevealTarget, it does not count a frame)
+bool DemoCodeViewer_IsRevealTarget(const char* section);
 // True once after "Show demo" (the breadcrumb's button, the code's menu): a narrow layout shows the demo pane
 bool DemoCodeViewer_TakeShowDemoRequest();
 // The demo's marker callback reports a section whose zone is in view: "Show demo" is then disabled for it

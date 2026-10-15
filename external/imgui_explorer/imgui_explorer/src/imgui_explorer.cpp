@@ -10,6 +10,9 @@
 #include "imgui_internal.h"
 #include "library_config.h"
 #include <algorithm>
+#ifdef __EMSCRIPTEN__
+#include <emscripten.h>
+#endif
 
 // Forward declarations for ImAnim demo windows
 void ImAnimDemoBasicsWindow(bool create_window);
@@ -256,6 +259,39 @@ namespace
         return GDemoMarkersRegistry.IsMouveHoveringDemoMarker(line_number);
     }
 
+    bool GPictureMode = false;  // the page takes the pictures of the API pages: &shot in its URL (read by InitExplorer)
+
+    // On the web, the place of the section that a link revealed, for the pictures of the API pages
+    // (ci_scripts/api_pictures.py reads window.imguiExplorerSection): its marker's place (x: its line's start),
+    // the y of the markers after it in its window, the visible part of its window. In ImGui's coordinates: the page's
+    // CSS pixels, at a scale of 1
+    void PublishRevealedSection(const char* section, ImGuiWindow* window)
+    {
+#ifdef __EMSCRIPTEN__
+        if (!GPictureMode)
+            return;
+        static std::string revealed;
+        static ImGuiWindow* revealedWindow = nullptr;
+        if (DemoCodeViewer_IsRevealTarget(section))
+            revealed = section;
+        ImVec2 pos = ImGui::GetCursorScreenPos();
+        if (revealed != section)
+        {
+            if (window == revealedWindow)  // (before the revealed marker, at a frame's start: a list replaced below)
+                EM_ASM({ if (window.imguiExplorerSection) window.imguiExplorerSection.next.push($0); }, pos.y);
+            return;
+        }
+        revealedWindow = window;
+        float lineX = window->Pos.x + window->DC.Indent.x + window->DC.ColumnsOffset.x;  // (after a SameLine too)
+        ImRect r = window->ClipRect;
+        EM_ASM({ window.imguiExplorerSection = ({section: UTF8ToString($0), x: $1, top: $2, next: [], left: $3,
+                                                 right: $4, windowTop: $5, windowBottom: $6}); },  // (): the commas
+               section, lineX, pos.y, r.Min.x, r.Max.x, r.Min.y, r.Max.y);
+#else
+        (void)section; (void)window;
+#endif
+    }
+
     // Callback invoked by IMGUI_DEMO_MARKER when a demo section is hovered
     void OnDemoMarkerCallback(const char* file_ext_cpp, int line, const char* section)
     {
@@ -270,6 +306,8 @@ namespace
             DemoCodeViewer_NoteSectionInView(last.section.c_str());
         if (section != nullptr)
             last = {section, window, ImGui::GetCursorScreenPos().y < top, frame};
+        if (section != nullptr)
+            PublishRevealedSection(section, window);
         // (Its own position: SetScrollHereY would take the line before, the plot of the previous section when a
         // function holds several)
         if (section != nullptr && DemoCodeViewer_TakeRevealTarget(section))
@@ -666,6 +704,10 @@ namespace {
         // Set up the demo marker hook
         ImGuiContext& g = *GImGui;
         g.DemoMarkerCallback = OnDemoMarkerCallback;
+#ifdef __EMSCRIPTEN__
+        // (At the first frame: once a link's section is revealed, the address bar loses its &shot)
+        GPictureMode = EM_ASM_INT({ return new URLSearchParams(location.search).has("shot") ? 1 : 0; }) != 0;
+#endif
         // Disable close button on ImGui::ShowDemoWindow by default
         gIsImGuiDemoWindow_no_close = false;
     }
