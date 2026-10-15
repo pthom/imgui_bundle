@@ -14,7 +14,8 @@ for situations in which you can't control the headers (e.g. GitHub pages).
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"/>
-    <title>ImGui Bundle Demo</title>
+    <title>Dear ImGui Bundle Explorer</title>
+    <meta name="description" content="Every library of Dear ImGui Bundle, live in your browser, with its C++ and Python code.">
     <!-- The card shown when a link to this page is shared (LinkedIn, X, Discord, Slack...). No og:url: every demo's page uses this shell -->
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Dear ImGui Bundle">
@@ -61,6 +62,11 @@ for situations in which you can't control the headers (e.g. GitHub pages).
         #loading-status {
             color: #999; margin-top: 16px; font-family: sans-serif; font-size: 14px;
         }
+        #loading-text {
+            color: #888; margin-top: 32px; padding: 0 16px; max-width: 32em;
+            font-family: sans-serif; font-size: 14px; line-height: 1.5; text-align: center;
+        }
+        #loading-text a { color: #bbb; white-space: nowrap; }
         @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
@@ -68,6 +74,12 @@ for situations in which you can't control the headers (e.g. GitHub pages).
 <div id="loading-overlay">
     <div id="loading-spinner"></div>
     <div id="loading-status">Loading...</div>
+    <!-- Text shown while loading. Pages fetched without JavaScript (search engines, AI assistants) read it too -->
+    <div id="loading-text">
+        <p><b>Dear ImGui Bundle Explorer</b>: every library of Dear ImGui Bundle, live, with its C++ and Python code.</p>
+        <p>The documentation: <a href="https://imgui-bundle.pages.dev/">imgui-bundle.pages.dev</a></p>
+        <p>For AI assistants: <a href="https://imgui-bundle.pages.dev/llms/explorers.txt">imgui-bundle.pages.dev/llms/explorers.txt</a></p>
+    </div>
 </div>
 <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" tabindex=-1></canvas>
 

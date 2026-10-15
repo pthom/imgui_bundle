@@ -155,8 +155,17 @@ endfunction()
 function(iex_add_imgui_explorer_app)
     # The output folder, set before the target is created: hello_imgui places the web favicon there at configure time
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
-    # The web page's card when a link to it is shared (LinkedIn, X, Discord...): a slot of hello_imgui's shell
-    set(HELLO_IMGUI_SHELL_HEAD [=[<meta property="og:type" content="website">
+    # The web page's title, description and loading text: what search engines and AI assistants read, since they
+    # fetch the page without running it. Then its card when a link to it is shared (LinkedIn, X, Discord...).
+    # All are slots of hello_imgui's shell.
+    if(EMSCRIPTEN)
+        set(HELLO_IMGUI_ICON_DISPLAY_NAME "Dear ImGui Explorer")
+    endif()
+    set(HELLO_IMGUI_SHELL_LOADING_TEXT [=[<p><b>Dear ImGui Explorer</b>: the demos of Dear ImGui, ImPlot and ImPlot3D, live, each beside its code, in C++ and Python.</p>
+    <p>Part of <a href="https://imgui-bundle.pages.dev/">Dear ImGui Bundle</a></p>
+    <p>For AI assistants: <a href="https://imgui-bundle.pages.dev/llms/explorers.txt">imgui-bundle.pages.dev/llms/explorers.txt</a></p>]=])
+    set(HELLO_IMGUI_SHELL_HEAD [=[<meta name="description" content="The Dear ImGui, ImPlot and ImPlot3D demos, live in your browser, each beside its code, in C++ and Python, with the API at hand.">
+    <meta property="og:type" content="website">
     <meta property="og:title" content="Dear ImGui Explorer">
     <meta property="og:description" content="The Dear ImGui, ImPlot and ImPlot3D demos, live in your browser, each beside its code, in C++ and Python, with the API at hand.">
     <meta property="og:url" content="https://pthom.github.io/imgui_explorer/">
