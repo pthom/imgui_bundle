@@ -310,8 +310,9 @@ def write_llms_demos(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) 
     out = ["# Dear ImGui Bundle: the demos", "",
            "The demos of the catalog, by category: what each one shows, the libraries it uses, and its code on GitHub "
            "(Python, and C++ when it exists). Read the code of a demo close to what you write. Most demos run in the "
-           f"browser: {SITE}/playground/?demo=<file name> (not those marked desktop only). "
-           f"The guide for AI assistants: {SITE}/llms.txt; the API in plain text: {SITE}/llms/api/index.txt.", ""]
+           "browser: \"Run\" gives where (Python: the playground, C++: an explorer), a link for a user who wants to "
+           f"see it. The guide for AI assistants: {SITE}/llms.txt; the API in plain text: {SITE}/llms/api/index.txt; "
+           f"the explorers: {SITE}/llms/explorers.txt.", ""]
     count = 0
     for category in manifest["categories"]:
         demos = [e for e in manifest["examples"] if e["category"] == category["name"]
@@ -329,6 +330,13 @@ def write_llms_demos(manifest: dict[str, Any], docs: dict[str, dict[str, Any]]) 
             if doc.get("uses"):
                 out.append(f"  Uses: {', '.join(doc['uses'])}")
             out += [f"  {language}: {url}" for language, url in demo_code_links(manifest, e)]
+            if not e.get("page"):  # where it runs in the browser, as the "Run" links of the book's cards
+                if e.get("where", "both") != "desktop":
+                    out.append(f"  Run, Python: {SITE}/playground/?demo={e['filename']}")
+                path = disk_path(manifest["sources"], f"{e.get('source', 'examples')}/{e['filename']}")
+                explorer = e.get("cpp_url", f"{SITE}/explorer/{Path(e['filename']).stem}.html")
+                if explorer and cpp_file(e, path) is not None:
+                    out.append(f"  Run, C++: {explorer}")
             count += 1
     LLMS_DEMOS.write_text("\n".join(out) + "\n")
     print(f"wrote {LLMS_DEMOS} ({count} demos)")

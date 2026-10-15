@@ -13,8 +13,10 @@ This script reads them with `ast` and their source lines, and writes, for each l
   section that shows the entry, and its picture (taken by api_pictures.py);
 and `api/index.md` (all the libraries), and the part of `_toc.yml` between `# <api pages>` and `# </api pages>`.
 Also the API in plain text, for AI assistants (`api/llms/`, published under llms/api/): one file per module, with
-the demos that use it at the top, and an index. And the API as JSON (`api/json/`), for the explorers and the
-playground: one file per module, the entries with their names in both languages and the URLs of their anchors.
+the demos that use it at the top, and the link to an entry's demo section; and an index. And the explorers in plain
+text (`api/explorers.txt`, published as llms/explorers.txt): their links, the ImGui Explorer's sections. And the API
+as JSON (`api/json/`), for the explorers and the playground: one file per module, the entries with their names in both
+languages and the URLs of their anchors.
 Run by `just api_pages` and by the doc recipes. The same design in three readers' minds: a Python user looks up a
 name, a C++ user reads the C++ signature next to it, an AI assistant reads the whole page.
 """
@@ -704,6 +706,11 @@ def demo_picture(section: DemoSection) -> Path:
     return API_PICTURES / section.library / f"{stem}.jpg"
 
 
+def demo_url(library: str, path: str, language: str = "") -> str:
+    """The ImGui Explorer opened at a demo section; `language`: python or cpp, "" for the explorer's default (C++)"""
+    return f"{EXPLORER_URL}?lib={library}&demo={quote(path, safe='')}" + (f"&lang={language}" if language else "")
+
+
 def linked_demo_sections() -> list[DemoSection]:
     """The demo sections that the API pages link to, in the demos' order (api_pictures.py takes their pictures)"""
     found: dict[tuple[str, str], DemoSection] = {}
@@ -730,8 +737,7 @@ def _demo_block(entry: Entry, module: str, python: bool, owner: str = "") -> lis
     section = demo_section(entry, module, owner)
     if section is None:
         return []
-    language = "python" if python else "cpp"
-    url = f"{EXPLORER_URL}?lib={section.library}&demo={quote(section.path, safe='')}&lang={language}"
+    url = demo_url(section.library, section.path, "python" if python else "cpp")
     crumbs = re.sub(r"([\\\[\]*_<>`])", r"\\\1", " › ".join(section.path.split("/")))
     others = section.others
     also = f" (also used in {others} other section{'s' if others > 1 else ''})" if others else ""
@@ -1251,6 +1257,8 @@ def write_library_pages(library: Library, manifest: dict[str, Any],
 # ---------------------------------------------------------------------------------------------------------------------
 LLMS_URL = "https://imgui-bundle.pages.dev/llms/api"
 LLMS_DEMOS_URL = "https://imgui-bundle.pages.dev/llms/demos.txt"  # written by playground_examples_docs.py
+LLMS_EXPLORERS_URL = "https://imgui-bundle.pages.dev/llms/explorers.txt"  # written by write_llms_explorers()
+LLMS_EXPLORERS = API / "explorers.txt"  # (`just cf_stage` publishes it at LLMS_EXPLORERS_URL)
 LLMS_DOC_CHARS = 300  # an entry's doc: its first paragraph, cut at this length (the full docs are on the pages)
 
 
@@ -1266,9 +1274,11 @@ def _first_paragraph(doc: str) -> str:
     return _one_line(doc.strip().split("\n\n")[0])
 
 
-def _llms_entry(entry: Entry, indent: str = "") -> list[str]:
-    """An entry in plain text: its Python signature(s), each followed by its C++ declaration, then its doc's first
-    paragraph; a class's attributes and methods, an enum's members, indented under it"""
+def _llms_entry(entry: Entry, module: str, indent: str = "", owner: str = "", owner_demo: str = "") -> list[str]:
+    """An entry in plain text: its Python signature(s), each followed by its C++ declaration, then the link to its
+    demo section in the ImGui Explorer (if any, and not the same as its class's: `owner_demo`), and its doc's first
+    paragraph; a class's attributes and methods, an enum's members, indented under it (a method: `owner` is its
+    class)"""
     sub = indent + "    "
     out: list[str] = []
     if entry.kind in ("function", "method"):
@@ -1283,9 +1293,14 @@ def _llms_entry(entry: Entry, indent: str = "") -> list[str]:
         kind = "enum" if entry.kind == "enum" else "class"
         out.append(f"{indent}{kind} {entry.name}" + (f"    C++: {entry.cpp}" if entry.cpp else ""))
         out += [f"{sub}type of its values: {td.signature}    C++: {td.cpp}" for td in entry.typedefs]
+    section = demo_section(entry, module, owner)
+    demo = section.path if section is not None else owner_demo
+    if section is not None and section.path != owner_demo:
+        out.append(f'{sub}Live demo, section "{section.path}": {demo_url(section.library, section.path)}')
     doc = _first_paragraph(entry.doc)
     if doc:
         out.append(sub + doc)
+    qualified = f"{owner}.{entry.name}" if owner else entry.name
     for child in entry.children:
         note = f"  # {_one_line(child.note, 160)}" if child.note else ""
         if child.kind == "member":
@@ -1293,14 +1308,14 @@ def _llms_entry(entry: Entry, indent: str = "") -> list[str]:
         elif child.kind == "attribute":
             out.append(f"{sub}{child.signature}{note}")
         else:
-            out += _llms_entry(child, sub)
+            out += _llms_entry(child, module, sub, qualified, demo)
     return out
 
 
 LLMS_FILE_CHARS = 120_000  # about 30k tokens: a module above is cut at its parts into several files
 
 
-def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
+def _llms_chunks(entries: list[Entry], module: str) -> list[tuple[str, list[str]]]:
     """A module's entries in plain text, by chunk: a header or a part starts one (its title, its lines)"""
     chunks: list[tuple[str, list[str]]] = []
     header: Optional[str] = None
@@ -1327,7 +1342,7 @@ def _llms_chunks(entries: list[Entry]) -> list[tuple[str, list[str]]]:
                 lines += [f"class {entry.name}: the same methods as {first_vector}, for another element type", ""]
                 continue
             first_vector = entry.name
-        lines += _llms_entry(entry) + [""]
+        lines += _llms_entry(entry, module) + [""]
     return chunks
 
 
@@ -1358,7 +1373,7 @@ def write_llms_module(library: Library, module: str, stubs: list[Path], manifest
     for path in stubs:
         entries += read_stub(path, REPO / library.headers if library.headers else None)
     packed: list[tuple[list[str], list[str]]] = []  # (the parts' titles, the lines)
-    for title, lines in _llms_chunks(entries):
+    for title, lines in _llms_chunks(entries, module):
         size = sum(len(line) + 1 for line in lines)
         if packed and sum(len(line) + 1 for line in packed[-1][1]) + size > LLMS_FILE_CHARS:
             packed.append(([], []))
@@ -1376,13 +1391,16 @@ def write_llms_module(library: Library, module: str, stubs: list[Path], manifest
              "declaration (\"C++:\"), and the first paragraph of its doc. The Python names follow the C++ ones "
              "(`ImGui::Button` is `imgui.button`, `ImPlotFlags_` is `implot.Flags_`). The full docs: "
              f"https://imgui-bundle.pages.dev/doc/api/{library.key.replace('_', '-')}/")
+    live = ("An entry that a demo shows has a \"Live demo\" link: the ImGui Explorer, a web app, opens at that demo, "
+            "beside its C++ code (add &lang=python to the link for the Python code). Give it to a user who wants to "
+            f"see the entry in action. The explorers: {LLMS_EXPLORERS_URL}") if module in DEMO_SOURCES else ""
     written: list[tuple[Path, list[str]]] = []
     for n, (titles, lines) in enumerate(packed, 1):
         name = short if len(packed) == 1 else f"{short}.{n}"
         head = [f"# `{module}`" + (f", file {n} of {len(packed)}: {', '.join(titles)}" if len(packed) > 1 else ""), ""]
         if n == 1 and doc:
             head += [doc, ""]
-        head += [about, ""]
+        head += [about, ""] + ([live, ""] if live else [])
         if n == 1:
             head += demos
         path = API / "llms" / f"{name}.txt"
@@ -1396,7 +1414,8 @@ def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]
     out = ["# Dear ImGui Bundle: the API, in plain text", "",
            "One file per module (a large module is cut into several files, by part): every function, class and enum, "
            "with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a "
-           f"question needs. The demos, with their code: {LLMS_DEMOS_URL}", ""]
+           f"question needs. The demos, with their code: {LLMS_DEMOS_URL}; the explorers, where they run live: "
+           f"{LLMS_EXPLORERS_URL}", ""]
     library_key = ""
     for library, module, module_files in files:
         if library.key != library_key:
@@ -1406,6 +1425,41 @@ def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]
             parts = f" ({', '.join(titles)})" if len(module_files) > 1 else ""
             out.append(f"- `{module}`{parts}: {LLMS_URL}/{path.name}")
     (API / "llms" / "index.txt").write_text("\n".join(out) + "\n")
+
+
+def demo_markers(library: str) -> list[str]:
+    """The paths of a library's demo sections (its IMGUI_DEMO_MARKERs), in the demo's order, without the menu bar's"""
+    source = next(path for lib, path in DEMO_SOURCES.values() if lib == library)
+    paths = [m.group(1) for line in (REPO / source).read_text().splitlines()
+             if not line.strip().startswith("//") and (m := re.search(r'IMGUI_DEMO_MARKER\("([^"]*)"', line))]
+    return [p for p in dict.fromkeys(paths) if p.split("/")[0] not in DEMO_PARTS_UNSHOWN]
+
+
+def write_llms_explorers() -> None:
+    """The explorers in plain text, for AI assistants: their pages are a canvas, with no text to read. What each one
+    shows, its links, and the ImGui Explorer's sections with theirs"""
+    titles = {"imgui": "Dear ImGui", "implot": "ImPlot", "implot3d": "ImPlot3D"}
+    out = ["# Dear ImGui Bundle: the explorers", "",
+           "Two web apps show the demos live, each beside its code, in C++ and Python. They draw in a canvas (WebGL): "
+           "a fetch of their pages gets no text. This file says what they show, and how to link to a demo: give these "
+           "links to a user who wants to see a feature in action. The guide for AI assistants: "
+           "https://imgui-bundle.pages.dev/llms.txt", "",
+           "", "## Dear ImGui Bundle Explorer", "", "https://imgui-bundle.pages.dev/explorer/", "",
+           "Every library of Dear ImGui Bundle, live, with its C++ and Python code: a welcome, the gallery of the "
+           "demos (https://imgui-bundle.pages.dev/explorer/#demos), and the manuals of the ImGui Explorer below. Each "
+           f"demo of {LLMS_DEMOS_URL} gives the link where its C++ version runs.", "",
+           "", "## Dear ImGui Explorer", "", EXPLORER_URL, "",
+           "The demos of Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section, each beside its code, with the "
+           "API at hand. Its links:",
+           "- a library: ?lib=imgui (or implot, implot3d, imanim)",
+           "- a section: ?lib=implot&demo=Plots%2FLine%20Plots, the section's path as listed below, URL-encoded (or "
+           "words of it, e.g. &demo=line%20plots: the first section whose path holds them all)",
+           "- the code in Python: add &lang=python (C++ by default)", "",
+           f"The API in plain text links each entry that a demo shows to its section: {LLMS_URL}/index.txt", ""]
+    for library in titles:
+        out += ["", f"### {titles[library]}: the sections of its demo (lib={library})", ""]
+        out += [f"- {path}: {demo_url(library, path)}" for path in demo_markers(library)]
+    LLMS_EXPLORERS.write_text("\n".join(out) + "\n")
 
 
 def write_index() -> None:
@@ -1700,6 +1754,7 @@ def main() -> None:
                 llms.append((library, module, write_llms_module(library, module, stubs, manifest, docs)))
                 jsons.append((library, module, write_api_json(library, module, stubs)))
     write_llms_index(llms)
+    write_llms_explorers()
     write_api_json_index(jsons)
     texts = [path for _, _, module_files in llms for path, _ in module_files]
     pages = sorted(API.rglob("*.md"))

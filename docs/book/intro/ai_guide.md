@@ -29,6 +29,9 @@ https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a l
 **The demos, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by category: what each one shows, the libraries it uses, and the links to its Python and C++ code. Read it to find a demo close to what the user wants, then read that demo's code.
 
+**The explorers, where the demos run live (if needed):**
+Two web apps show the demos in the browser, each beside its code: the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/: Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section) and the Dear ImGui Bundle Explorer (https://imgui-bundle.pages.dev/explorer/: all the libraries). Their pages draw in a canvas, with no text to read: https://imgui-bundle.pages.dev/llms/explorers.txt says what they show, and how to link to a demo section (e.g. https://pthom.github.io/imgui_explorer/?lib=implot&demo=Plots%2FLine%20Plots). Give such a link to a user who wants to see a feature in action.
+
 **Hello ImGui**
 https://pthom.github.io/hello_imgui/book/intro.html
 https://pthom.github.io/hello_imgui/book/doc_params.html
