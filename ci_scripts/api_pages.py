@@ -10,7 +10,7 @@ This script reads them with `ast` and their source lines, and writes, for each l
   it (the same cards as the demos page), its modules;
 - `api/<lib>/<module>.md`: the reference of a module: per source header, its sections (the headers' comments), and
   per entry the Python signature, the C++ signature, the doc; in the ImGui Explorer's modules, a link to the demo
-  section that shows the entry, and its picture (taken by api_pictures.py);
+  section that shows the entry, its picture (taken by api_pictures.py), and its code there, collapsed;
 and `api/index.md` (all the libraries), and the part of `_toc.yml` between `# <api pages>` and `# </api pages>`.
 Also the API in plain text, for AI assistants (`api/llms/`, published under llms/api/): one file per module, with
 the demos that use it at the top, and the link to an entry's demo section; and an index. And the explorers in plain
@@ -26,6 +26,7 @@ import json
 import os
 import re
 import sys
+import textwrap
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
@@ -593,6 +594,12 @@ DEMO_SOURCES = {  # the modules whose demo the ImGui Explorer shows: its name fo
     "imgui_bundle.implot": ("implot", "external/implot/implot/implot_demo.cpp"),
     "imgui_bundle.implot3d": ("implot3d", "external/implot3d/implot3d/implot3d_demo.cpp"),
 }
+DEMO_PYTHON = {  # the Python ports of these demos, by library: the same sections (IMGUI_DEMO_MARKERs)
+    "imgui": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py",
+    "implot": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py",
+    "implot3d": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py",
+}
+DEMO_EXTRACT_LINES = 14  # an extract's lines at most ("..." when cut)
 DEMO_PARTS_SKIPPED = ("Configuration", "Config", "Tools", "Help")  # the demo's parts that use widgets in passing: a
 # function first used there links to its next section
 DEMO_PARTS_UNSHOWN = ("", "Menu")  # never linked: the code before the first marker, the demo window's menu bar
@@ -732,6 +739,88 @@ def linked_demo_sections() -> list[DemoSection]:
     return sorted(found.values(), key=lambda s: (s.library, order.get((s.library, s.path), 0)))
 
 
+def _indent(line: str) -> int:
+    return len(line) - len(line.lstrip())
+
+
+def _is_code(line: str) -> bool:
+    return bool(line.strip()) and not line.strip().startswith(("//", "#"))
+
+
+def _without_strings(line: str) -> str:
+    """A code line without its string literals and its trailing comment: a name in a text is not a use"""
+    return re.sub(r'"(\\.|[^"\\])*"|\'(\\.|[^\'\\])*\'|//.*|\s#.*', '""', line)
+
+
+def _block_end(lines: list[str], header: int, python: bool) -> int:
+    """The line after the block or the statement that starts at `header` (Python: by indentation; C++: by braces, or a
+    statement's ";")"""
+    if python:
+        j = header + 1
+        while j < len(lines) and (not lines[j].strip() or _indent(lines[j]) > _indent(lines[header])):
+            j += 1
+        return j
+    depth, opened = 0, False
+    for j in range(header, len(lines)):
+        code = _without_strings(lines[j])
+        depth += code.count("{") - code.count("}")
+        opened = opened or "{" in code
+        if (opened and depth <= 0) or (not opened and code.rstrip().endswith(";")):
+            return j + 1
+    return len(lines)
+
+
+@functools.cache
+def _demo_source(path: str) -> list[str]:
+    return (REPO / path).read_text().splitlines()
+
+
+def demo_extract(section: DemoSection, entry: Entry, python: bool) -> str:
+    """The demo's code that uses an entry, in its section, in Python (the port) or C++: the block that holds its first
+    use (an `if begin_...` and its end), else its statement or the block it opens, after up to 3 lines of setup (its
+    state, its data). DEMO_EXTRACT_LINES at most, "..." when cut; "" when that demo does not use it there"""
+    cpp_source = next(path for lib, path in DEMO_SOURCES.values() if lib == section.library)
+    lines = _demo_source(DEMO_PYTHON[section.library] if python else cpp_source)
+    marker = re.compile(r'IMGUI_DEMO_MARKER\("([^"]*)"')
+    start_mark = next((i for i, line in enumerate(lines) if (m := marker.search(line)) and m.group(1) == section.path),
+                      None)
+    if start_mark is None:
+        return ""
+    end = next((i for i in range(start_mark + 1, len(lines)) if marker.search(lines[i])), len(lines))
+    name = entry.name if python else _cpp_name(entry, "")
+    is_call = entry.kind in ("function", "method")
+    use = re.compile(rf"(?<!\w){re.escape(name.removesuffix('_'))}" + (r"\s*\(" if is_call else r"(?:_\w*)?(?!\w)"))
+    first = next((i for i in range(start_mark + 1, end)
+                  if _is_code(lines[i]) and use.search(_without_strings(lines[i]))), None)
+    if first is None:
+        return ""
+    statement, depth = start_mark + 1, 0  # the start of the statement that holds the use (a call over several lines)
+    for i in range(start_mark + 1, first):
+        text = _without_strings(lines[i]) if _is_code(lines[i]) else ""
+        depth = max(0, depth + sum(text.count(c) for c in "([") - sum(text.count(c) for c in ")]"))
+        if depth == 0:
+            statement = i + 1
+    if depth > 0:
+        first = statement
+    start = first  # the header of the block that holds the use: the nearest less indented code line, close above
+    for i in range(first - 1, max(start_mark, first - 8), -1):
+        if _is_code(lines[i]) and _indent(lines[i]) < _indent(lines[first]) and lines[i].strip() != "{":
+            if not re.match(r"(\}\s*)?(else|elif)\b", lines[i].strip()):  # (a branch: the use alone)
+                start = i
+            break
+    setup = start  # its state and data: the code lines just above, at the same indentation
+    while (setup - 1 > start_mark and start - setup < 3 and _is_code(lines[setup - 1])
+           and _indent(lines[setup - 1]) == _indent(lines[start])
+           and not lines[setup - 1].rstrip().endswith(("}", ":"))):
+        setup -= 1
+    stop = _block_end(lines, start, python)  # (it may hold the next sections: TreeNode("Basic Trees") and its own)
+    code = [line for line in lines[setup:stop] if not marker.search(line)]
+    while code and not code[-1].strip():
+        code.pop()
+    cut = len(code) > DEMO_EXTRACT_LINES
+    return textwrap.dedent("\n".join(code[:DEMO_EXTRACT_LINES])) + ("\n..." if cut else "")
+
+
 def _demo_block(entry: Entry, module: str, python: bool, owner: str = "") -> list[str]:
     """Under an entry's signatures: a link to the ImGui Explorer at the demo section that shows it, and its picture"""
     section = demo_section(entry, module, owner)
@@ -745,6 +834,10 @@ def _demo_block(entry: Entry, module: str, python: bool, owner: str = "") -> lis
     picture = demo_picture(section)
     if picture.is_file():  # the module pages are in api/<library>/
         out += [f"[![{crumbs}]({os.path.relpath(picture, API / 'library')})]({url})", ""]
+    code = demo_extract(section, entry, python)
+    if code:  # collapsed at first
+        out += [":::::{dropdown} Code from the demo", f"::::{{code-block}} {'python' if python else 'cpp'}", code,
+                "::::", ":::::", ""]
     return out + ["::::::", ""]
 
 

@@ -129,6 +129,14 @@ h4 > .heading-text > code:first-child {
 .api-demo a:has(img) .link-icon {
   display: none !important;
 }
+/* Its "Code from the demo", collapsed: a discreet bar, the size of the line above it */
+.api-demo .myst-dropdown {
+  margin: 0.5rem 0 !important;
+}
+.api-demo .myst-dropdown-header {
+  font-size: 0.9rem !important;
+  min-height: 0 !important;
+}
 /* A heading reached by its anchor clears the fixed top bar (the theme sets no scroll margin) */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   scroll-margin-top: 4.5rem;
