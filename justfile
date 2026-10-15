@@ -293,6 +293,13 @@ playground_examples_docs:
 api_pages:
     python ci_scripts/api_pages.py
 
+# The API pages' pictures of the explorer's demo sections (website resources), from its web build: see the docstring
+# of ci_scripts/api_pictures.py (`just api_pictures --stale` at each release)
+[group('docs')]
+[positional-arguments]
+api_pictures *args:
+    uv run --no-project --with playwright --with pillow python ci_scripts/api_pictures.py "$@"
+
 # The pictures go to the website resources; the browser-only examples: see ci_scripts/playground_screenshots.py
 # Playground: retake the examples' pictures (all, or some: `just playground_screenshots julia_map boids`)
 [group('pyodide')]

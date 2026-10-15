@@ -123,6 +123,8 @@ just mypy          # or: mypy (from the repo root)
 
 See [Testing](testing.md) for more details.
 
+**After an update of imgui, implot or implot3d:** their demos may have changed, and the API pages show pictures of them. Rebuild the web explorer (`just imex_ems_build`), then retake the pictures of the changed sections: `just api_pictures --stale` (see the docstring of `ci_scripts/api_pictures.py`).
+
 ### 5. Push fork changes (if applicable)
 
 If the fork submodule was modified during rebase or to fix binding compatibility:

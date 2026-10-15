@@ -6,8 +6,12 @@ misses on the big API pages (React reports a hydration error there and renders t
 of the API landed on the top of the page. This pass adds a small script to every page: when the URL has a hash, it
 re-applies it once the page has settled, and stops at the reader's first gesture.
 
+The API pages show hundreds of pictures (the demo sections, see api_pages.py): their images load lazily, as the reader
+scrolls to them (the theme does not set `loading`).
+
 Run by `just doc_build_cf`; idempotent (a marker in the script tag).
 """
+import re
 import sys
 from pathlib import Path
 
@@ -45,6 +49,14 @@ def main() -> None:
         page.write_text(text.replace("</head>", SCRIPT + "</head>", 1))
         done += 1
     print(f"hash fix: {done} pages of {len(pages)} patched in {HTML}")
+    lazy = 0
+    for page in sorted((HTML / "api").rglob("index.html")):
+        text = page.read_text()
+        patched = re.sub(r"<img (?![^>]*\bloading=)", '<img loading="lazy" ', text)
+        if patched != text:
+            page.write_text(patched)
+            lazy += 1
+    print(f"lazy images: {lazy} API pages patched")
 
 
 if __name__ == "__main__":

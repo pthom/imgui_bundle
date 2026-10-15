@@ -110,6 +110,25 @@ h4 > .heading-text > code:first-child {
   font-size: 0.85em;
   opacity: 0.7;
 }
+/* The API pages: "See it live", a link to the ImGui Explorer's demo, and its picture, which links there too */
+.api-demo {
+  font-size: 0.9em;
+  margin-bottom: 1rem;
+}
+.api-demo p {
+  margin: 0.3rem 0;
+}
+.api-demo picture {
+  margin: 0.4rem 0 !important;  /* the theme's figure margins */
+}
+.api-demo img {
+  max-width: min(480px, 100%) !important;  /* the picture's own width: its widgets are at 0.8 of their size */
+  margin: 0 !important;  /* the theme centers images */
+  border-radius: 4px;
+}
+.api-demo a:has(img) .link-icon {
+  display: none !important;
+}
 /* A heading reached by its anchor clears the fixed top bar (the theme sets no scroll margin) */
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   scroll-margin-top: 4.5rem;

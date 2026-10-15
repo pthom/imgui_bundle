@@ -208,9 +208,9 @@ module = ["OpenGL.*", "glfw.*", "glm"]
 ignore_missing_imports = true
 
 # paramiko (imgui_terminal SSH demo) is untyped; miniaudio and edge_tts (the narrator's voice) and the plotting
-# libraries of the demos are optional, absent on CI
+# libraries of the demos are optional, absent on CI; playwright comes from a throwaway environment (api_pictures.py)
 [[tool.mypy.overrides]]
-module = ["paramiko", "miniaudio", "edge_tts", "seaborn", "cartopy.*"]
+module = ["paramiko", "miniaudio", "edge_tts", "seaborn", "cartopy.*", "playwright.*"]
 ignore_missing_imports = true
 
 # tiny_nn, julia_points, grok_train, narrator: sibling modules of the neural_spiral, julia_map and grokking explorables

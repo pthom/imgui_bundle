@@ -9,7 +9,8 @@ This script reads them with `ast` and their source lines, and writes, for each l
 - `api/<lib>/index.md`: what the library does, its upstream, the book's page that presents it, the demos that use
   it (the same cards as the demos page), its modules;
 - `api/<lib>/<module>.md`: the reference of a module: per source header, its sections (the headers' comments), and
-  per entry the Python signature, the C++ signature, the doc;
+  per entry the Python signature, the C++ signature, the doc; in the ImGui Explorer's modules, a link to the demo
+  section that shows the entry, and its picture (taken by api_pictures.py);
 and `api/index.md` (all the libraries), and the part of `_toc.yml` between `# <api pages>` and `# </api pages>`.
 Also the API in plain text, for AI assistants (`api/llms/`, published under llms/api/): one file per module, with
 the demos that use it at the top, and an index. And the API as JSON (`api/json/`), for the explorers and the
@@ -18,6 +19,7 @@ Run by `just api_pages` and by the doc recipes. The same design in three readers
 name, a C++ user reads the C++ signature next to it, an AI assistant reads the whole page.
 """
 import ast
+import functools
 import json
 import os
 import re
@@ -25,6 +27,7 @@ import sys
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Optional
+from urllib.parse import quote
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from playground_examples_docs import EXAMPLES_DIR, demo_card, demo_code_links, plain  # noqa: E402  # the demos, as on the demos page
@@ -579,6 +582,166 @@ def _code(language: str, text: str) -> list[str]:
     return [f"::::::{{code-block}} {language}", ":class: signature", text, "::::::", ""]
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# The live demos: the section of the ImGui Explorer's demo that shows an entry
+# ---------------------------------------------------------------------------------------------------------------------
+EXPLORER_URL = "https://pthom.github.io/imgui_explorer/"
+DEMO_SOURCES = {  # the modules whose demo the ImGui Explorer shows: its name for the library, the C++ demo
+    "imgui_bundle.imgui": ("imgui", "external/imgui/imgui/imgui_demo.cpp"),
+    "imgui_bundle.implot": ("implot", "external/implot/implot/implot_demo.cpp"),
+    "imgui_bundle.implot3d": ("implot3d", "external/implot3d/implot3d/implot3d_demo.cpp"),
+}
+DEMO_PARTS_SKIPPED = ("Configuration", "Config", "Tools", "Help")  # the demo's parts that use widgets in passing: a
+# function first used there links to its next section
+DEMO_PARTS_UNSHOWN = ("", "Menu")  # never linked: the code before the first marker, the demo window's menu bar
+DEMO_STOP_WORDS = {"begin", "end", "set", "get", "push", "pop", "next", "is", "show", "im", "gui"}  # words of a name
+# that do not say what it shows
+DEMO_SECTION_OVERRIDES: dict[tuple[str, str], Optional[str]] = {  # (library, C++ name, or a class's for its
+    # methods): where the rule picks badly, the path under which to take the first section that uses it; None: no link
+    # (a function used everywhere, whose first use shows nothing of it)
+    ("imgui", "Text"): "Widgets/Text",
+    ("imgui", "BeginTable"): "Tables/Basic",
+    **{("imgui", name): "Tables" for name in ("TableSetupColumn", "TableSetColumnIndex", "TableHeadersRow",
+                                               "TableNextRow", "TableNextColumn")},
+    ("imgui", "MenuItem"): "Popups/Menus inside a regular window",
+    ("imgui", "Selectable"): "Widgets/Selectables/Multiple items on the same line",  # (its Basic: not revealed)
+    ("imgui", "DockSpace"): "Using Dockspace",
+    ("imgui", "ImDrawList"): "Examples/Custom rendering",
+    ("imgui", "Begin"): None,
+    ("imgui", "End"): None,
+    ("imgui", "GetIO"): None,
+}
+API_PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/api"  # by api_pictures.py
+
+
+@dataclass
+class DemoSection:
+    library: str  # the explorer's name for it: imgui, implot, implot3d
+    path: str  # the section's IMGUI_DEMO_MARKER: "Widgets/Basic/SliderInt, SliderFloat"
+    others: int  # the number of the other sections that use the entry
+
+
+@functools.cache
+def demo_lines(library: str) -> list[tuple[str, str]]:
+    """The code lines of a library's demo, each with its section (the IMGUI_DEMO_MARKER above it in its function, "" if
+    none), without the comments, the preprocessor lines and the functions' signatures"""
+    source = next(path for lib, path in DEMO_SOURCES.values() if lib == library)
+    out, section = [], ""
+    for line in (REPO / source).read_text().splitlines():
+        text = line.strip()
+        if not text or text.startswith(("//", "#")):
+            continue
+        if re.match(r"(static\s+|inline\s+)*[\w:<>]+[\s*&]+[\w:]+\s*\([^;]*$", line):  # a function's signature
+            section = ""  # (its markers do not cover the next function)
+            continue
+        marker = re.search(r'IMGUI_DEMO_MARKER\("([^"]*)"', text)
+        if marker:
+            section = marker.group(1)
+        else:
+            out.append((text, section))
+    return out
+
+
+def _name_words(text: str) -> list[str]:
+    """SliderInt -> [slider, int]; "Line Plots" -> [line, plot]: lowercase, without a plural's s"""
+    words = re.findall(r"[A-Z]+(?![a-z])|[A-Z]?[a-z]+|\d+", text)
+    return [w.lower().removesuffix("s") if len(w) > 3 else w.lower() for w in words]
+
+
+_LIBRARY_PREFIX = re.compile(r"^(ImPlot3D|ImPlot|ImGui|Im)(?=[A-Z])")  # ImGuiSliderFlags_ -> SliderFlags_
+
+
+@functools.cache
+def _demo_section(library: str, kind: str, cpp_name: str, owner: str) -> Optional[DemoSection]:
+    is_call = kind in ("function", "method")
+    bare = cpp_name.removesuffix("_")  # an enum: ImGuiSliderFlags_, used as ImGuiSliderFlags or its members
+    pattern = re.compile(rf"(?<!\w){re.escape(bare)}" + (r"\s*\(" if is_call else r"(?:_\w*)?(?!\w)"))
+    sections: list[str] = []
+    for text, section in demo_lines(library):
+        if section not in sections and section.split("/")[0] not in DEMO_PARTS_UNSHOWN and pattern.search(text):
+            sections.append(section)
+    if not sections:
+        return None
+    subject = owner or bare  # a method's section is named after its class
+    name = _LIBRARY_PREFIX.sub("", subject)
+    keys = [key for key in DEMO_SECTION_OVERRIDES if key[0] == library and _LIBRARY_PREFIX.sub("", key[1]) == name]
+    if keys and DEMO_SECTION_OVERRIDES[keys[0]] is None:
+        return None
+    override = DEMO_SECTION_OVERRIDES[keys[0]] if keys else None
+    under = [s for s in sections if override and (s == override or s.startswith(override + "/"))]
+    if under:
+        return DemoSection(library, under[0], len(sections) - 1)
+    words = set(_name_words(name)) - DEMO_STOP_WORDS
+
+    def is_name(path: str) -> bool:  # "SliderInt, SliderFloat" for SliderInt
+        return name.lower() in re.split(r"[^a-z0-9]+", path.split("/")[-1].lower().replace(" ", ""))
+
+    named = [s for s in sections if is_name(s) or (words and words <= set(_name_words(s)))]
+    if named:  # the leaf that is the name, then the leaf with the most words; max keeps the first: the demo's order
+        best = max(named, key=lambda s: (is_name(s), len(words & set(_name_words(s.split("/")[-1])))))
+    elif kind == "function":
+        best = next((s for s in sections if s.split("/")[0] not in DEMO_PARTS_SKIPPED), sections[0])
+    else:
+        return None  # a class or an enum is often only named, and a method's name is often shared by other classes
+    return DemoSection(library, best, len(sections) - 1)
+
+
+def demo_section(entry: Entry, module: str, owner: str = "") -> Optional[DemoSection]:
+    """The demo section that shows an entry best (a method: `owner` is its class, in either language). A section whose
+    name holds the entry's name (a method: its class's), or a function's first use outside DEMO_PARTS_SKIPPED, or
+    DEMO_SECTION_OVERRIDES. None outside the explorer's modules"""
+    if module not in DEMO_SOURCES or entry.kind not in ("function", "method", "class", "enum") or not entry.cpp:
+        return None
+    owner_name = _LIBRARY_PREFIX.sub("", re.split(r"[.:]", owner)[-1]) if entry.kind == "method" else ""
+    if entry.kind == "method" and not owner_name:
+        return None
+    return _demo_section(DEMO_SOURCES[module][0], entry.kind, _cpp_name(entry, ""), owner_name)
+
+
+def demo_picture(section: DemoSection) -> Path:
+    """A demo section's picture, taken by api_pictures.py: Widgets/Basic/Button -> imgui/widgets_basic_button.jpg"""
+    stem = re.sub(r"[^a-z0-9]+", "_", section.path.lower()).strip("_")
+    return API_PICTURES / section.library / f"{stem}.jpg"
+
+
+def linked_demo_sections() -> list[DemoSection]:
+    """The demo sections that the API pages link to, in the demos' order (api_pictures.py takes their pictures)"""
+    found: dict[tuple[str, str], DemoSection] = {}
+
+    def walk(entries: list[Entry], module: str, owner: str = "") -> None:
+        for entry in entries:
+            section = demo_section(entry, module, owner)
+            if section is not None:
+                found.setdefault((section.library, section.path), section)
+            if entry.kind == "class":
+                walk(entry.children, module, f"{owner}.{entry.name}" if owner else entry.name)
+
+    for library in LIBRARIES:
+        for module, stub in library.modules:
+            if module in DEMO_SOURCES:
+                walk(read_stub(STUBS / stub), module)
+    order = {(lib, section): i for lib, _ in DEMO_SOURCES.values()
+             for i, section in enumerate(dict.fromkeys(s for _, s in demo_lines(lib)))}
+    return sorted(found.values(), key=lambda s: (s.library, order.get((s.library, s.path), 0)))
+
+
+def _demo_block(entry: Entry, module: str, python: bool, owner: str = "") -> list[str]:
+    """Under an entry's signatures: a link to the ImGui Explorer at the demo section that shows it, and its picture"""
+    section = demo_section(entry, module, owner)
+    if section is None:
+        return []
+    language = "python" if python else "cpp"
+    url = f"{EXPLORER_URL}?lib={section.library}&demo={quote(section.path, safe='')}&lang={language}"
+    crumbs = re.sub(r"([\\\[\]*_<>`])", r"\\\1", " › ".join(section.path.split("/")))
+    others = section.others
+    also = f" (also used in {others} other section{'s' if others > 1 else ''})" if others else ""
+    out = ["::::::{div}", ":class: api-demo", f"See it live: [{crumbs}]({url}){also}", ""]
+    picture = demo_picture(section)
+    if picture.is_file():  # the module pages are in api/<library>/
+        out += [f"[![{crumbs}]({os.path.relpath(picture, API / 'library')})]({url})", ""]
+    return out + ["::::::", ""]
+
+
 OUTLINE_WITHOUT_ENTRIES = {"imgui_bundle.imgui", "imgui_bundle.imgui.internal"}  # the modules whose outline (the
 # contents panel) stops at the sections: hundreds of entries would make it heavy; the others list their entries
 
@@ -700,6 +863,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         if any(cpp for _, cpp in signatures):  # the C++ signatures, muted (custom.css: .cpp-signature)
             out += ["::::::{code-block} cpp", ":class: cpp-signature", *[cpp for _, cpp in signatures if cpp],
                     "::::::", ""]
+        out += _demo_block(entry, module, python=True, owner=owner)
         doc, notes = _split_bindings_notes(entry.doc)
         out += _doc_lines(doc)
         if entry.note:
@@ -716,6 +880,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         out[1] = f"{hashes} `{qualified}` (enum)"
         if entry.cpp:
             out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
+        out += _demo_block(entry, module, python=True)
         for td in entry.typedefs:
             out += [f"The type of its values in the API: `{td.signature}` (C++ `{td.cpp}`)", ""]
         out += _doc_lines(entry.doc)
@@ -727,6 +892,7 @@ def _render_entry(entry: Entry, module: str, level: int, owner: str = "") -> lis
         out[1] = f"{hashes} `{qualified}` (class)"
         if entry.cpp:
             out += ["::::::{code-block} cpp", ":class: cpp-signature", entry.cpp, "::::::", ""]
+        out += _demo_block(entry, module, python=True)
         out += _doc_lines(entry.doc)
         attributes = [c for c in entry.children if c.kind == "attribute"]
         if attributes:
@@ -933,6 +1099,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         for _, cpp in [(entry.signature, entry.cpp), *entry.overloads]:
             if cpp:
                 out += _code("cpp", cpp)
+        out += _demo_block(entry, module, python=False, owner=owner)
         out += _doc_lines(_cpp_doc(entry.doc))
         if entry.note:
             out += [_safe_markdown(entry.note), ""]
@@ -945,6 +1112,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         out[1] = f"{hashes} `{name}` (enum)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
+        out += _demo_block(entry, module, python=False)
         for td in entry.typedefs:
             out += [f"The type of its values in the API: `{td.cpp}`", ""]
         out += _doc_lines(_cpp_doc(entry.doc))
@@ -956,6 +1124,7 @@ def _render_cpp_entry(entry: Entry, module: str, namespace: str, level: int, own
         out[1] = f"{hashes} `{name}` (struct)"
         if entry.cpp:
             out += _code("cpp", entry.cpp)
+        out += _demo_block(entry, module, python=False)
         out += _doc_lines(_cpp_doc(entry.doc))
         attributes = [c for c in entry.children if c.kind == "attribute"]
         if attributes:

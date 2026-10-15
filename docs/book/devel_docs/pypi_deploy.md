@@ -8,6 +8,7 @@
    [cloudflare_deploy.md → wheel filename references](cloudflare_deploy.md#when-to-update-wheel-filename-references).
 2. Check the web builds (Emscripten and Pyodide): see [Web checks before a release](#web-checks-before-a-release).
    After an update of Dear ImGui, also check a third party renderer: see [Third party renderers check](#third-party-renderers-check).
+   Retake the API pages' pictures of the demo sections whose code changed: `just imex_ems_build`, then `just api_pictures --stale`, and review them (`--sheet`, see the docstring of `ci_scripts/api_pictures.py`).
 3. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically.
 4. Manually build and upload the macOS arm64 wheel (see below).
