@@ -240,6 +240,9 @@ doc_build_cf: playground_examples_docs api_pages
     #!/usr/bin/env bash
     set -euo pipefail
     PDF=docs/book/_build/exports/imgui_bundle_book.pdf
+    # A clean build: the build never removes its hashed files, and the site would carry every past PDF (the
+    # downloaded theme template stays)
+    (cd docs/book && jupyter-book clean --site --html --temp --exports --yes)
     (cd docs/book && BASE_URL=/doc jupyter-book build --html)
     python ci_scripts/book_postprocess.py  # a script in each page: the URL's hash re-applied after hydration (Firefox)
     # jupyter-book exits 0 even when the typst compilation fails, so remove the
