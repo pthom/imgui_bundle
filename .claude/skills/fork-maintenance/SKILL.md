@@ -1,6 +1,6 @@
 ---
 name: fork-maintenance
-description: Rules for the forks of the bundle's libraries (external/<lib>/<lib>, branch imgui_bundle) - which commits are generic, and how to rewrite, reorder or slim a fork's history without breaking the bundle's submodule pointers. Use before committing to a fork, rebasing or rewriting its history, force-pushing it, or removing a submodule.
+description: Rules for the forks of the bundle's libraries (external/<lib>/<lib>, branch imgui_bundle) - which commits are generic, and how to rewrite, reorder or slim a fork's history without breaking the bundle's submodule pointers, and how to prepare a pull request upstream (Dear ImGui and the others). Use before committing to a fork, rebasing or rewriting its history, force-pushing it, removing a submodule, or preparing a PR to a library's author.
 ---
 
 # Fork maintenance
@@ -34,3 +34,16 @@ Plan the bundle commits and the verification commands before starting.
 5. The shell traps of the environment rules apply: CRLF files, zsh `$VAR:t`, removing the worktrees and branches you create.
 
 After a rebase of the imgui fork, follow step 4b of `bindings_update.md` (node editor patches, pinned tags).
+
+## A pull request upstream
+
+The process of three PRs to Dear ImGui (2026-10-15), for any upstream library.
+
+1. **The branch:** a worktree from `official/master`, never the fork's `imgui_bundle` branch nor the bundle's checkout: `git -C external/<lib>/<lib> worktree add -b <topic> builds/claude_<lib>_pr_<topic> official/master`. Dear ImGui: target master, not docking (the fork follows docking; Omar carries master into docking). A fork commit brought over with `cherry-pick -n` leaves a `MERGE_MSG`, which Fork shows as the commit message: delete it.
+2. **The code, in upstream's style:** no `[Bundle]` prefix, no `[ADAPT_IMGUI_BUNDLE]` markers; fields initialized where upstream does it (Dear ImGui: in `ImGuiContext`'s constructor); one-line comments, none that only points to what the next line names.
+3. **The proof:** a headless test for an API (balanced calls, the state at the call). For a behavior, an A/B app: the library's stock example built twice (master, the change), an auto mode that plays the case and prints the result, and a recording mode for the PR (each frame piped to ffmpeg, `io.MouseDrawCursor` on, A above B with captions, about 10 s). Inject the mouse after the backend's `NewFrame()`, the position before the wheel or the click. Real input (a trackpad) gets into the auto runs: nobody touches the machine meanwhile.
+4. **The facts:** `_plans/scratch/<topic>_pr/<topic>_pr__findings.md`: the branch, the symptom, the cause, the change, the tests, the links, the pictures and the movie. Check that a linked issue still relates: cite the recent commit that the change completes, not only old issues.
+5. **Show the code to the user:** in CLion at the changed lines, the diff in Fork (`fork status` from inside the worktree), each hunk commented.
+6. **The text is the user's** (Dear ImGui's PR template: no AI-generated prose). The commit: one line in the author's style ("Area: what changes."), written or approved by the user, who may commit in Fork himself. A draft of the PR's text only on his request, in Obsidian (`<topic>_pr__draft.md`), marked to reword.
+7. **Push and open:** `git push -u fork <topic>`, then open `https://github.com/<owner>/<repo>/compare/master...pthom:<repo>:<topic>?expand=1`.
+8. **After:** a pending item per PR, for each answer. Merged: the fork drops its copy at its next rebase, a Python port follows then (never before: C++ and Python would differ), the worktree and the test app go. Declined: the fork keeps the commit, as a generic one.
