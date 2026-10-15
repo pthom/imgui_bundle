@@ -155,6 +155,15 @@ endfunction()
 function(iex_add_imgui_explorer_app)
     # The output folder, set before the target is created: hello_imgui places the web favicon there at configure time
     set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+    # The web page's card when a link to it is shared (LinkedIn, X, Discord...): a slot of the bundle's shell
+    set(IMGUI_BUNDLE_SHELL_HEAD [=[<meta property="og:type" content="website">
+    <meta property="og:title" content="Dear ImGui Explorer">
+    <meta property="og:description" content="The Dear ImGui, ImPlot and ImPlot3D demos, live in your browser, each beside its code, in C++ and Python, with the API at hand.">
+    <meta property="og:url" content="https://pthom.github.io/imgui_explorer/">
+    <meta property="og:image" content="https://imgui-bundle.pages.dev/resources/og/imgui_explorer.jpg">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">]=])
     imgui_bundle_add_app(imgui_explorer ${CMAKE_CURRENT_FUNCTION_LIST_DIR}/imgui_explorer.main.cpp)
     if(EMSCRIPTEN)
         set_target_properties(imgui_explorer PROPERTIES OUTPUT_NAME index)
