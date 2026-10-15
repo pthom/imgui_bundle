@@ -1369,9 +1369,9 @@ def _first_paragraph(doc: str) -> str:
 
 def _llms_entry(entry: Entry, module: str, indent: str = "", owner: str = "", owner_demo: str = "") -> list[str]:
     """An entry in plain text: its Python signature(s), each followed by its C++ declaration, then the link to its
-    demo section in the ImGui Explorer (if any, and not the same as its class's: `owner_demo`), and its doc's first
-    paragraph; a class's attributes and methods, an enum's members, indented under it (a method: `owner` is its
-    class)"""
+    demo section in the ImGui Explorer (if any, and not the same as its class's: `owner_demo`), the demo's code that
+    uses it there (Python, then C++), and its doc's first paragraph; a class's attributes and methods, an enum's
+    members, indented under it (a method: `owner` is its class)"""
     sub = indent + "    "
     out: list[str] = []
     if entry.kind in ("function", "method"):
@@ -1390,6 +1390,11 @@ def _llms_entry(entry: Entry, module: str, indent: str = "", owner: str = "", ow
     demo = section.path if section is not None else owner_demo
     if section is not None and section.path != owner_demo:
         out.append(f'{sub}Live demo, section "{section.path}": {demo_url(section.library, section.path)}')
+    for in_python, language in ((True, "Python"), (False, "C++")):  # (a method too: its own call)
+        code = demo_extract(section, entry, in_python) if section is not None else ""
+        if code:
+            out.append(f"{sub}{language}, in the demo:")
+            out += [f"{sub}    {line}" if line.strip() else "" for line in code.splitlines()]
     doc = _first_paragraph(entry.doc)
     if doc:
         out.append(sub + doc)
@@ -1409,15 +1414,18 @@ LLMS_FILE_CHARS = 120_000  # about 30k tokens: a module above is cut at its part
 
 
 def _llms_chunks(entries: list[Entry], module: str) -> list[tuple[str, list[str]]]:
-    """A module's entries in plain text, by chunk: a header or a part starts one (its title, its lines)"""
+    """A module's entries in plain text, by chunk: a header, a part or a section starts one (the title of its part or
+    header, its lines): a large part spreads over several files"""
     chunks: list[tuple[str, list[str]]] = []
     header: Optional[str] = None
+    part = ""
     shown: set[str] = set()  # a header's title, once (the typedefs come back to the first header at the end)
     first_vector = ""
     for entry in entries:
-        if entry.header != header or entry.part is not None or not chunks:
-            title = entry.part or entry.header or ""
-            chunks.append((title, []))
+        if entry.header != header or entry.part is not None or entry.section is not None or not chunks:
+            if entry.header != header or entry.part is not None:
+                part = entry.part or entry.header or ""
+            chunks.append((part, []))
         lines = chunks[-1][1]
         if entry.header != header:
             header = entry.header
@@ -1486,7 +1494,8 @@ def write_llms_module(library: Library, module: str, stubs: list[Path], manifest
              f"https://imgui-bundle.pages.dev/doc/api/{library.key.replace('_', '-')}/")
     live = ("An entry that a demo shows has a \"Live demo\" link: the ImGui Explorer, a web app, opens at that demo, "
             "beside its C++ code (add &lang=python to the link for the Python code). Give it to a user who wants to "
-            f"see the entry in action. The explorers: {LLMS_EXPLORERS_URL}") if module in DEMO_SOURCES else ""
+            "see the entry in action. Under it, the demo's code that uses the entry, in Python and in C++: an extract "
+            f"(\"...\" when cut). The explorers: {LLMS_EXPLORERS_URL}") if module in DEMO_SOURCES else ""
     written: list[tuple[Path, list[str]]] = []
     for n, (titles, lines) in enumerate(packed, 1):
         name = short if len(packed) == 1 else f"{short}.{n}"
