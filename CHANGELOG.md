@@ -19,6 +19,14 @@ The demo "Touch screens (phones, tablets)" (`demo_touch_screen`, in "In the brow
 
 On a desktop, a wheel that started on the content of a window keeps scrolling it when the mouse travels over a plot or an image that zooms with the wheel: the item sees no wheel until the session ends (0.7 s without an event, ImGui's own lock of the scrolled window, applied to items). A wheel that starts on the item is the item's.
 
+## Node editor: on imgui-node-editor v0.9.4
+
+The node editor now follows thedmd's `master` (v0.9.4: about 110 fixes, with a test suite), instead of the old `develop` branch. What changes for an application:
+- `get_action_context_nodes()` and `get_action_context_links()` return what a shortcut acts on, valid between `begin_shortcut()` and `end_shortcut()`: no longer the selection outside of them. For the selection, use `get_selected_nodes()` and `get_selected_links()`.
+- `end_create()` may be called after every `begin_create()`, or only when it returned true: both work.
+- A right drag that starts on a widget of a node pans the view.
+- Smooth zoom stays on by default.
+
 ## ImmVision: a negative display size is the remaining width
 
 `ImageParams.image_display_size`, the size of `image_display()` and the in/out size of `image_display_resizable()` accept a negative width or height: the window's remaining space minus its absolute value, as ImGui's item widths (`(-1, 0)`: the width of the window, the height from the aspect ratio).

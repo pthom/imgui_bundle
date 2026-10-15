@@ -446,7 +446,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     m.def("begin_group_hint",
         ax::NodeEditor::BeginGroupHint,
         nb::arg("node_id"),
-        "True when zoomed out: draw the group's hint then");
+        "True when zoomed out: draw the group's hint then (outside of BeginNode()/EndNode())");
 
     m.def("get_group_min",
         ax::NodeEditor::GetGroupMin, "The top left corner of the group, in screen coords (in a hint)");
@@ -470,7 +470,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     m.def("get_node_background_draw_list",
         ax::NodeEditor::GetNodeBackgroundDrawList,
         nb::arg("node_id"),
-        " Returns the draw list used for the node's BACKGROUND layer (drawn under\n the node's content). Useful to add badges, highlights, etc. behind a node.\n TODO: Add a way to manage node background channels",
+        " Returns the draw list used for the node's BACKGROUND layer (drawn under\n the node's content). Useful to add badges, highlights, etc. behind a node.\n It is available after EndNode(); None outside Begin()/End(), and for a node not submitted in this frame.\n TODO: Add a way to manage node background channels",
         nb::rv_policy::reference);
 
     m.def("link",
@@ -525,7 +525,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     m.def("query_new_link",
         nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *>(ax::NodeEditor::QueryNewLink),
         nb::arg("start_id"), nb::arg("end_id"),
-        "True while the dragged link is not over empty space: the pin it starts from, and the pin under the mouse (0 if none).");
+        " True while the dragged link is not over empty space: the pin it starts from, and the pin under the mouse (0 if none),\n of either kind.");
 
     m.def("query_new_link",
         nb::overload_cast<ax::NodeEditor::PinId *, ax::NodeEditor::PinId *, const ImVec4 &, float>(ax::NodeEditor::QueryNewLink),
@@ -638,7 +638,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         ax::NodeEditor::IsActive, "True when the editor's window has the focus: the editor's keyboard shortcuts work only then.");
 
     m.def("has_selection_changed",
-        ax::NodeEditor::HasSelectionChanged, "True during the frame after the selection changed");
+        ax::NodeEditor::HasSelectionChanged, "True when the selection changed in the last frame, also between Begin() and End()");
 
     m.def("get_selected_object_count",
         ax::NodeEditor::GetSelectedObjectCount, "The number of selected nodes and links");
@@ -802,7 +802,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
     m.def("get_link_pins",
         ax::NodeEditor::GetLinkPins,
         nb::arg("link_id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"),
-        "pass None if particular pin do not interest you");
+        "pass None if particular pin do not interest you; False for an unknown link and a link whose pins were deleted");
 
     m.def("pin_had_any_links",
         ax::NodeEditor::PinHadAnyLinks,

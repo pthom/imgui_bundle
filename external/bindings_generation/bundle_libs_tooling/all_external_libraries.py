@@ -82,7 +82,7 @@ def lib_imgui_node_editor() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui-node-editor",
         official_git_url="https://github.com/thedmd/imgui-node-editor.git",
-        official_branch="develop",
+        official_branch="master",
         fork_git_url="https://github.com/pthom/imgui-node-editor.git",
     )
 

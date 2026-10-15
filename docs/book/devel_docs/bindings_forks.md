@@ -173,7 +173,7 @@ Because of the `std::function` typedefs, the Dear ImGui compiled inside the Pyth
 
 ### The imgui-node-editor fork
 
-The fork of imgui-node-editor is organised in the same way, on top of upstream's `develop` branch: generic commits first (fixes, the canvas, widgets inside nodes, node width, angled links), then a few `[Bundle]` commits, then the tests and the documentation. What it adds is described in its own `docs/fork_imgui_bundle.md`.
+The fork of imgui-node-editor is organised in the same way, on top of upstream's `master` branch: generic commits first (fixes, the canvas, widgets inside nodes, node width, angled links), then the tests and the documentation. Its first commits, each with tests in upstream's headless suite, are also on branches of their own, for upstream. What it adds is described in its own `docs/fork_imgui_bundle.md`.
 
 - It **builds against a stock Dear ImGui**. The code that needs one of the two Dear ImGui commits above is guarded by their macros.
 - It carries **no Python adaptation and no Bundle-specific commit**: its public API is upstream's, plus additions. The functions that fill an array are wrapped in `external/imgui-node-editor/imgui_node_editor_pywrappers/` (mechanism 2). `Style.color_()` and `Config.settings_file` are custom bindings (mechanism 3): `SettingsFile` is a `const char*` that the editor keeps, so the Python property interns the strings it receives.

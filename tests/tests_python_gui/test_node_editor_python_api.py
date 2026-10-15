@@ -23,8 +23,8 @@ def test_node_editor_python_api() -> None:
             results["selected_nodes"] = sorted(n.id() for n in ed.get_selected_nodes())
             results["selected_links"] = [link.id() for link in ed.get_selected_links()]
             results["ordered_node_ids"] = sorted(n.id() for n in ed.get_ordered_node_ids())
-            results["action_context_nodes"] = sorted(n.id() for n in ed.get_action_context_nodes())
-            results["action_context_links"] = [link.id() for link in ed.get_action_context_links()]
+            n_context = len(ed.get_action_context_nodes()) + len(ed.get_action_context_links())
+            results["action_context_adds_up"] = n_context == ed.get_action_context_size()
 
             style = ed.get_style()
             style.set_color_(ed.StyleColor.bg, ImVec4(0.1, 0.2, 0.3, 1.0))
@@ -47,9 +47,9 @@ def test_node_editor_python_api() -> None:
     assert results["selected_nodes"] == [2, 3]
     assert results["selected_links"] == []
     assert results["ordered_node_ids"] == [1, 2, 3]
-    # imgui-node-editor builds the "action context" lists from the selected objects
-    assert results["action_context_nodes"] == [2, 3]
-    assert results["action_context_links"] == []
+    # The "action context" is what a shortcut acts on (valid between begin_shortcut() and end_shortcut()):
+    # its lists add up to its size
+    assert results["action_context_adds_up"]
     assert results["color_roundtrip"] == (0.1, 0.2, 0.3, 1.0)
     assert results["color_is_reference"] == 0.9
     print("OK test_node_editor_python_api")
