@@ -46,6 +46,14 @@ ImGuiExplorerCodeTextRect DemoCodeViewer_TextRectOnScreen(const std::string& tex
 // (-FLT_MIN: all the width): a click opens the popup over it. A result opens in the demo when it is shown, in the
 // code otherwise. True when the code pane should be shown (one pane at a time: a result the demo cannot open)
 bool DemoCodeViewer_SearchField(float width, bool demoShown);
+// Links to a section, for the standalone explorer (call once, before the first frame): opens demoRequest (a
+// section's path, e.g. "Plots/Line Plots", or words of it, as in the search; empty for none), and on the web keeps
+// the address bar on the section shown (?lib=implot&demo=...). "Copy link" items appear in the menus
+void DemoCodeViewer_EnableLinks(const std::string& demoRequest);
+// Each frame, after DemoCodeViewer_PreloadDemoFile(): opens the requested section, updates the address bar
+void DemoCodeViewer_UpdateLinks();
+// The "..." menu's item: copies a link to the section shown (when links are enabled). True when clicked
+bool DemoCodeViewer_CopyLinkMenuItem();
 // Returns true when in Python-only mode (PyPI install).
 // In this mode, C++ source files are not available and only Python code is shown.
 bool DemoCodeViewer_IsPythonOnlyMode();

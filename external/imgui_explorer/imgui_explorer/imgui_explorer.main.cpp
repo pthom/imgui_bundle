@@ -2,6 +2,7 @@
 #include "hello_imgui/hello_imgui_font.h"
 #include "immapp/runner.h"
 #include "imgui_explorer.h"
+#include "src/demo_code_viewer.h"
 #include "imgui.h"
 #include <algorithm>
 #include <cctype>
@@ -40,6 +41,22 @@ std::string ParseLibraryArg(int argc, char** argv)
     return libName;
 }
 
+// The section to open: ?demo=<section> in the URL, --demo <section> on the command line (a path such as
+// "Plots/Line Plots", or words of it)
+std::string ParseDemoArg(int argc, char** argv)
+{
+#ifdef __EMSCRIPTEN__
+    (void)argc; (void)argv;
+    const char* result = emscripten_run_script_string("new URLSearchParams(window.location.search).get('demo') || ''");
+    return result ? result : "";
+#else
+    for (int i = 1; i < argc - 1; ++i)
+        if (std::string(argv[i]) == "--demo")
+            return argv[i + 1];
+    return "";
+#endif
+}
+
 
 int main(int argc, char** argv)
 {
@@ -53,6 +70,7 @@ int main(int argc, char** argv)
         return std::nullopt;
     };
     std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
+    DemoCodeViewer_EnableLinks(ParseDemoArg(argc, argv));
 
     HelloImGui::RunnerParams runnerParams;
 

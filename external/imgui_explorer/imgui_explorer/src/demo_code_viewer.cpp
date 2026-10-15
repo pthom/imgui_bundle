@@ -838,6 +838,115 @@ namespace
         return known[key] = !SectionChain(sourceLines, OutlineOf(cf.cppContent), path).empty();
     }
 
+    // Links to a section, in the standalone explorer only (DemoCodeViewer_EnableLinks): ?lib=implot&demo=<section>.
+    // The bundle's explorer shows the manuals in place, and has its own routes in the address bar
+    bool g_linksEnabled = false;
+    std::string g_sectionRequest;    // the section a link opens: its path, or words of it (as in the search)
+    int g_sectionRequestFrames = 0;  // frames spent waiting for the demo window, whose tab bars appear as it runs
+    std::string g_addressBarQuery;   // the query last written to the address bar
+
+    std::string UrlEncoded(const std::string& s)
+    {
+        std::string r;
+        for (unsigned char c : s)
+        {
+            if (isalnum(c) || c == '-' || c == '_' || c == '.' || c == '~')
+                r += (char)c;
+            else
+            {
+                char hex[4];
+                snprintf(hex, sizeof(hex), "%%%02X", c);
+                r += hex;
+            }
+        }
+        return r;
+    }
+
+    // "?lib=implot&demo=Plots%2FLine%20Plots"; without a section, the library alone
+    std::string SectionQuery(const std::string& path)
+    {
+        std::string lib = Lowered(GetCurrentLibrary().name);
+        return "?lib=" + lib + (path.empty() ? "" : "&demo=" + UrlEncoded(path));
+    }
+
+    // A link to a section: on the web, at the page's own address (a local server, a preview)
+    std::string SectionLink(const std::string& path)
+    {
+#ifdef __EMSCRIPTEN__
+        char* base = (char*)EM_ASM_PTR({
+            var s = window.location.origin + window.location.pathname;
+            var n = lengthBytesUTF8(s) + 1;
+            var buf = _malloc(n);
+            stringToUTF8(s, buf, n);
+            return buf;
+        });
+        std::string link = std::string(base) + SectionQuery(path);
+        free(base);
+        return link;
+#else
+        return "https://pthom.github.io/imgui_explorer/" + SectionQuery(path);
+#endif
+    }
+
+    // Opens the section a link asked for, once the demo's code is loaded: the code scrolls to it, the demo window
+    // opens it (retried for a while: the window and its tab bars exist only after its first frames), a phone shows
+    // the demo pane
+    void SectionRequestStep(CodeFile& cf, const DemoFileInfo& file)
+    {
+        if (g_sectionRequest.empty() || cf.cppState != LoadState::Loaded)
+            return;
+        const OutlineNode& outline = OutlineOf(cf.cppContent);
+        const OutlineNode* node = FindOutlineNode(outline, g_sectionRequest);
+        if (node == nullptr)
+        {
+            std::vector<const OutlineNode*> matches;
+            FindOutlineMatches(outline, Lowered(g_sectionRequest), matches);
+            node = matches.empty() ? nullptr : matches.front();
+        }
+        if (node == nullptr)
+        {
+            g_sectionRequest.clear();
+            return;
+        }
+        if (g_sectionRequestFrames == 0)
+        {
+            g_pendingScrollFile = file.cppDisplayName();
+            g_pendingScrollLine = node->line;
+            g_pendingScrollSection = node->path;  // in Python, the code shows the same section
+            g_pendingScrollPython = false;
+            g_showDemoRequested = true;
+        }
+        bool revealed = RevealInDemo(SplitLines(cf.cppContent), outline, node->path);
+        if (revealed || ++g_sectionRequestFrames > 120)
+            g_sectionRequest.clear();
+    }
+
+    // The section the code shows, or will show (a link, a search, a tap in the demo): on a phone, the code pane is not
+    // drawn until a tap on "Code", and its reading section stays empty
+    const std::string& CurrentSection(const CodeFile& cf)
+    {
+        return !g_pendingScrollSection.empty() ? g_pendingScrollSection : cf.readingSection;
+    }
+
+    // On the web, the address bar follows the section the code shows: copying it shares that section
+    // (replaceState: no entry in the history)
+    void AddressBarStep(const CodeFile& cf)
+    {
+#ifdef __EMSCRIPTEN__
+        if (!g_linksEnabled || !g_sectionRequest.empty())
+            return;
+        std::string query = SectionQuery(CurrentSection(cf));
+        if (query == g_addressBarQuery)
+            return;
+        g_addressBarQuery = query;
+        EM_ASM({
+            window.history.replaceState(null, "", window.location.pathname + UTF8ToString($0) + window.location.hash);
+        }, query.c_str());
+#else
+        (void)cf;
+#endif
+    }
+
     // The outline's popup, opened by OpenPopup("##outline") in the same ID scope: a search of the demo's sections, or
     // their tree, unfolded at the current one. A click shows the section in the code (at its next display) and in the
     // demo window. Returns the clicked section, or null
@@ -2919,6 +3028,8 @@ void DemoCodeViewer_Show()
                                 + SectionCrumb(rightClickSection, ImGui::GetFontSize() * 20.f);
             if (ImGui::MenuItem(label.c_str(), nullptr, false, CanRevealInDemo(cf, rightClickSection)))
                 ShowSectionInDemo(cf, rightClickSection);
+            if (g_linksEnabled && ImGui::MenuItem(ICON_FA_LINK " Copy link to this demo"))
+                ImGui::SetClipboardText(SectionLink(rightClickSection).c_str());
             ImGui::Separator();
         }
 
@@ -3107,6 +3218,38 @@ void DemoCodeViewer_ShowCodeAt(const char* filename, int line, const char* secti
     {
         g_currentFileIndex = idx;
     }
+}
+
+void DemoCodeViewer_EnableLinks(const std::string& demoRequest)
+{
+    g_linksEnabled = true;
+    g_sectionRequest = demoRequest;
+}
+
+void DemoCodeViewer_UpdateLinks()
+{
+    if (!g_linksEnabled)
+        return;
+    std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();
+    if (files.empty())
+        return;
+    CodeFile& cf = g_codeFiles[files[0].baseName];
+    SectionRequestStep(cf, files[0]);
+    AddressBarStep(cf);
+}
+
+bool DemoCodeViewer_CopyLinkMenuItem()
+{
+    if (!g_linksEnabled)
+        return false;
+    std::vector<DemoFileInfo> files = GetCurrentLibraryFiles();
+    if (files.empty())
+        return false;
+    const CodeFile& cf = g_codeFiles[files[0].baseName];
+    if (!ImGui::MenuItem(ICON_FA_LINK " Copy link to this demo"))
+        return false;
+    ImGui::SetClipboardText(SectionLink(CurrentSection(cf)).c_str());  // no section: the library alone
+    return true;
 }
 
 void DemoCodeViewer_PreloadDemoFile()

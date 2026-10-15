@@ -505,6 +505,7 @@ namespace
         ImGui::TextUnformatted(lib.introText.c_str());
         for (const auto& [label, url] : lib.links)
             RenderLink(label.c_str(), url.c_str());
+        DemoCodeViewer_CopyLinkMenuItem();  // the section shown, in the standalone explorer
 
         if (withStatus)
         {
@@ -701,6 +702,7 @@ namespace {
             GNarrowLayout_ShowsCode = false;
         // On a narrow screen, the code shows only after a tap: its source loads now, for the line labels
         DemoCodeViewer_PreloadDemoFile();
+        DemoCodeViewer_UpdateLinks();
         ShowLibraryToolbar(mode);
 
         // Use all space, except for a small margin at the bottom for the status bar
