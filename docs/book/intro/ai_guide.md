@@ -24,7 +24,7 @@ Please do read to the following documentation for a comprehensive understanding 
 https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf
 
 **The API, in plain text (if needed):**
-https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt or https://imgui-bundle.pages.dev/llms/api/implot.txt. Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a question needs, to check that a name exists and how to call it.
+https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt. Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++. Read the file that a question needs, to check that a name exists and how to call it.
 
 **The demos, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by category: what each one shows, the libraries it uses, and the links to its Python and C++ code. Read it to find a demo close to what the user wants, then read that demo's code.

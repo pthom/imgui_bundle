@@ -25,6 +25,7 @@ import functools
 import json
 import os
 import re
+import shutil
 import sys
 import textwrap
 from dataclasses import dataclass, field
@@ -1515,8 +1516,9 @@ def write_llms_module(library: Library, module: str, stubs: list[Path], manifest
 def write_llms_index(files: list[tuple[Library, str, list[tuple[Path, list[str]]]]]) -> None:
     out = ["# Dear ImGui Bundle: the API, in plain text", "",
            "One file per module (a large module is cut into several files, by part): every function, class and enum, "
-           "with its Python signature, its C++ declaration, and the first paragraph of its doc. Read the file that a "
-           f"question needs. The demos, with their code: {LLMS_DEMOS_URL}; the explorers, where they run live: "
+           "with its Python signature, its C++ declaration, and the first paragraph of its doc; in Dear ImGui, ImPlot "
+           "and ImPlot3D, the link to the demo that shows an entry, and the demo's code that uses it. Read the file "
+           f"that a question needs. The demos, with their code: {LLMS_DEMOS_URL}; the explorers, where they run live: "
            f"{LLMS_EXPLORERS_URL}", ""]
     library_key = ""
     for library, module, module_files in files:
@@ -1557,7 +1559,8 @@ def write_llms_explorers() -> None:
            "- a section: ?lib=implot&demo=Plots%2FLine%20Plots, the section's path as listed below, URL-encoded (or "
            "words of it, e.g. &demo=line%20plots: the first section whose path holds them all)",
            "- the code in Python: add &lang=python (C++ by default)", "",
-           f"The API in plain text links each entry that a demo shows to its section: {LLMS_URL}/index.txt", ""]
+           "The API in plain text links each entry that a demo shows to its section, with the demo's code that uses "
+           f"it: {LLMS_URL}/index.txt", ""]
     for library in titles:
         out += ["", f"### {titles[library]}: the sections of its demo (lib={library})", ""]
         out += [f"- {path}: {demo_url(library, path)}" for path in demo_markers(library)]
@@ -1847,6 +1850,7 @@ def main() -> None:
     write_index()
     write_cpp_index(cpp_libraries)
     write_toc(toc, cpp_toc)
+    shutil.rmtree(API / "llms", ignore_errors=True)  # (a module's files change with its size: no stale file)
     llms: list[tuple[Library, str, list[tuple[Path, list[str]]]]] = []
     jsons: list[tuple[Library, str, Path]] = []
     for library in LIBRARIES:

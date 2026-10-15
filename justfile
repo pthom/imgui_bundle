@@ -452,7 +452,7 @@ cf_stage:
     cp docs/book/intro/ai_guide.md {{_CF_STAGING}}/llms.txt  # the guide for AI assistants (llmstxt.org convention)
     mkdir -p {{_CF_STAGING}}/llms/api
     cp docs/book/intro/demos.txt {{_CF_STAGING}}/llms/demos.txt  # the demos in plain text (written by playground_examples_docs)
-    rsync -a docs/book/api/llms/ {{_CF_STAGING}}/llms/api/  # the API in plain text (written by api_pages)
+    rsync -a --delete docs/book/api/llms/ {{_CF_STAGING}}/llms/api/  # the API in plain text (written by api_pages)
     cp docs/book/api/explorers.txt {{_CF_STAGING}}/llms/explorers.txt  # the explorers in plain text (written by api_pages)
     #
     # 6. Place an up to date assets.zip
