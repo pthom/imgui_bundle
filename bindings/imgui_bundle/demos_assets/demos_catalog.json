@@ -202,7 +202,7 @@
           ],
           "python_file": "bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py",
           "cpp_file": "external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp",
-          "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=im_anim",
+          "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imanim",
           "in_place": true,
           "page": "",
           "video": "",

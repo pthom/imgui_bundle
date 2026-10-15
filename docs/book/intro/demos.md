@@ -234,7 +234,7 @@ Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in P
 *Uses: ImAnim*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=im_anim) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp)
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imanim) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp)
 
 ::::
 
