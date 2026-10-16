@@ -443,6 +443,22 @@ namespace
         return clicked;
     }
 
+    // The code's language is a lasting pref of the app (hello_imgui): remembered from one visit to the next, and
+    // shared with the app's other views (in the Bundle Explorer: its launcher and its intro)
+    void SaveCodeLanguage(bool python)
+    {
+        DemoCodeViewer_SetShowPython(python);
+        HelloImGui::SaveLastingPref("code_language", python ? "python" : "cpp");
+    }
+
+    void FollowCodeLanguagePref()
+    {
+        std::string lang = HelloImGui::LoadLastingPref("code_language");
+        bool python = lang == "python";
+        if ((python || lang == "cpp") && python != DemoCodeViewer_GetShowPython())
+            DemoCodeViewer_SetShowPython(python);
+    }
+
     void GuiPythonCppToggle()
     {
         if (DemoCodeViewer_IsPythonOnlyMode())
@@ -455,9 +471,9 @@ namespace
         {
             bool showPython = DemoCodeViewer_GetShowPython();
             if (LanguageLogoButton("images/logo_cpp.png", !showPython, "Show the code in C++"))
-                DemoCodeViewer_SetShowPython(false);
+                SaveCodeLanguage(false);
             if (LanguageLogoButton("images/logo_python.png", showPython, "Show the code in Python"))
-                DemoCodeViewer_SetShowPython(true);
+                SaveCodeLanguage(true);
         }
     }
 
@@ -849,6 +865,7 @@ void ShowImGuiExplorerGui_Cpp(std::optional<ImGuiExplorerLibrary> library,
                               bool show_status_bar)
 {
     InitExplorer();
+    FollowCodeLanguagePref();
     SetLibraryMode(library);
     ShowExplorerLayout(show_status_bar);
 }

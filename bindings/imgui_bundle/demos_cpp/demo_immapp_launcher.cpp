@@ -1219,10 +1219,20 @@ void DemoLauncher::ShowCode()
     ImGui::SameLine();
     BigText(demo->label.c_str(), 1.3f);
     bool small = SmallScreen();
+    std::string remembered = CodeLanguagePref();  // the reader's last choice, in any view of the app
+    if (_codeLanguage != "Side by side" && !remembered.empty())
+        _codeLanguage = remembered;
     if (small && files.size() == 2)  // one language at a time: a switch, then its file (C++ first, here)
     {
+        if (_codeLanguage == "Side by side")
+            _codeLanguage = remembered.empty() ? "C++" : remembered;
         int index = _codeLanguage == "Python" ? 0 : 1;
-        _codeLanguage = SegmentedSwitch("language", {"Python", "C++"}, index) == 0 ? "Python" : "C++";
+        int chosen = SegmentedSwitch("language", {"Python", "C++"}, index);
+        if (chosen != index)
+        {
+            _codeLanguage = chosen == 0 ? "Python" : "C++";
+            SetCodeLanguagePref(_codeLanguage);
+        }
     }
     for (auto& file : files)  // where the file is, and how to open it
     {
@@ -1258,7 +1268,11 @@ void DemoLauncher::ShowCode()
     {
         for (const char* choice : {"Side by side", "Python", "C++"})
             if (Chip(choice, choice == _codeLanguage ? 1.f : 0.f))
+            {
                 _codeLanguage = choice;
+                if (_codeLanguage != "Side by side")
+                    SetCodeLanguagePref(_codeLanguage);
+            }
         ImGui::NewLine();
     }
     for (auto& file : files)

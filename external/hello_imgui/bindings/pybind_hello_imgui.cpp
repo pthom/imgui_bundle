@@ -1935,12 +1935,22 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("save_user_pref",
         HelloImGui::SaveUserPref,
         nb::arg("user_pref_name"), nb::arg("user_pref_content"),
-        " `SaveUserPref(string userPrefName, string userPrefContent)`:\n  Shall be called in the callback runnerParams.callbacks.BeforeExit");
+        " `SaveUserPref(string userPrefName, string userPrefContent)`:\n  Shall be called in the callback runnerParams.callbacks.BeforeExit\n  On the web, the user prefs live in memory, like the ini file: a reload loses them. For a value that the user\n  should find again at the next visit, use SaveLastingPref (below).");
 
     m.def("load_user_pref",
         HelloImGui::LoadUserPref,
         nb::arg("user_pref_name"),
         " `string LoadUserPref(string& userPrefName)`\n  Shall be called in the callback runnerParams.callbacks.PostInit");
+
+    m.def("save_lasting_pref",
+        HelloImGui::SaveLastingPref,
+        nb::arg("pref_name"), nb::arg("pref_content"),
+        " `SaveLastingPref(string prefName, string prefContent)`:\n  Call it when the value changes: on the web, BeforeExit does not run when a tab closes.");
+
+    m.def("load_lasting_pref",
+        HelloImGui::LoadLastingPref,
+        nb::arg("pref_name"),
+        " `string LoadLastingPref(string prefName)`:\n  Returns \"\" if the pref was never saved. Call it in PostInit, or later: after its first read, it is cheap\n  enough to call at each frame (so that several views of an app can share a pref).");
 
     m.def("show_view_menu",
         HelloImGui::ShowViewMenu,

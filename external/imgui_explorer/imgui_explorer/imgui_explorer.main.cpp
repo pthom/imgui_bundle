@@ -96,7 +96,8 @@ int main(int argc, char** argv)
     };
     std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
     DemoCodeViewer_EnableLinks(ParseDemoArg(argc, argv));
-    if (ParseLangArg(argc, argv) == "python")
+    std::string lang = ParseLangArg(argc, argv);
+    if (lang == "python")
         DemoCodeViewer_SetShowPython(true);
 
     HelloImGui::RunnerParams runnerParams;
@@ -108,6 +109,10 @@ int main(int argc, char** argv)
     runnerParams.imGuiWindowParams.enableViewports = false;
 
     runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui_Cpp(library, true); };
+    runnerParams.callbacks.PostInit = [lang]() {
+        if (lang == "python" || lang == "cpp")  // a link's language becomes the remembered one (a lasting pref)
+            HelloImGui::SaveLastingPref("code_language", lang);
+    };
 
     runnerParams.fpsIdling.fpsIdle = 30.f; // The demos animate, and are not ours to mark as live (SetItemIsLive)
 

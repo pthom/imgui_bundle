@@ -3679,6 +3679,8 @@ def remove_dockable_window(dockable_window_name: str) -> None:
 def save_user_pref(user_pref_name: str, user_pref_content: str) -> None:
     """`SaveUserPref(string userPrefName, string userPrefContent)`:
     Shall be called in the callback runnerParams.callbacks.BeforeExit
+    On the web, the user prefs live in memory, like the ini file: a reload loses them. For a value that the user
+    should find again at the next visit, use SaveLastingPref (below).
     """
     pass
 
@@ -3686,6 +3688,29 @@ def save_user_pref(user_pref_name: str, user_pref_content: str) -> None:
 def load_user_pref(user_pref_name: str) -> str:
     """`string LoadUserPref(string& userPrefName)`
     Shall be called in the callback runnerParams.callbacks.PostInit
+    """
+    pass
+
+# Lasting prefs: small values that survive a reset of the settings (iniClearPreviousSettings, DeleteIniSettings).
+# They are stored apart from the ini file:
+#   - on the desktop, in "<ini name>_lasting.ini", next to the ini file (e.g. "My_App_lasting.ini");
+#   - on the web, in the browser's localStorage, with the key "<ini name>/<prefName>"
+#     (the ini file lives in memory there, and a reload loses it).
+# Nothing is stored when iniDisable is set.
+# Use them for choices that the user sees and can change back (a language, a zoom), never for the layout.
+
+# void        SaveLastingPref(const std::string& prefName, const std::string& prefContent);    /* original C++ signature */
+def save_lasting_pref(pref_name: str, pref_content: str) -> None:
+    """`SaveLastingPref(string prefName, string prefContent)`:
+    Call it when the value changes: on the web, BeforeExit does not run when a tab closes.
+    """
+    pass
+
+# std::string LoadLastingPref(const std::string& prefName);    /* original C++ signature */
+def load_lasting_pref(pref_name: str) -> str:
+    """`string LoadLastingPref(string prefName)`:
+    Returns "" if the pref was never saved. Call it in PostInit, or later: after its first read, it is cheap
+    enough to call at each frame (so that several views of an app can share a pref).
     """
     pass
 

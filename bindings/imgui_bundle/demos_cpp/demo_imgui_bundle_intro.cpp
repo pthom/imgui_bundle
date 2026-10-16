@@ -2337,15 +2337,22 @@ int main() {
                 labels.push_back("The app");
             if (view < 0)
                 view = narrow ? 2 : 1;  // the C++ code first, in the C++ explorer
+            std::string remembered = CodeLanguagePref();  // the reader's last choice, in any view of the app
+            if (view != 2 && !remembered.empty())
+                view = remembered == "Python" ? 0 : 1;
             for (int i = 0; i < (int)labels.size(); i++)
             {
                 if (i > 0)
                     ImGui::SameLine();
                 if (ImGui::RadioButton(labels[i], view == i))
+                {
                     view = i;
+                    if (i < 2)  // "The app" is not a language
+                        SetCodeLanguagePref(labels[i]);
+                }
             }
             if (!narrow && view == 2)
-                view = 1;
+                view = remembered == "Python" ? 0 : 1;
             ImVec2 size(contentSize.x, contentSize.y - ImGui::GetFrameHeightWithSpacing());
             if (narrow)  // one at a time: the code, or the app
             {
@@ -2552,9 +2559,15 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
             float em = HelloImGui::EmSize();
             bool narrow = IsSmallScreen();
             float topY = ImGui::GetCursorPosY();  // contentSize starts here (below the title card)
+            std::string remembered = CodeLanguagePref();  // the reader's last choice, in any view of the app
+            if (!remembered.empty())
+                lang = remembered == "Python" ? 0 : 1;
+            int langBefore = lang;
             ImGui::RadioButton("Python", &lang, 0);  // the language (and on a phone, the snippet shown)
             ImGui::SameLine();
             ImGui::RadioButton("C++", &lang, 1);
+            if (lang != langBefore)
+                SetCodeLanguagePref(lang == 0 ? "Python" : "C++");
             if (narrow)
             {
                 ImGui::SameLine(0.f, em);

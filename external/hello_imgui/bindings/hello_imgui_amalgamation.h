@@ -3079,11 +3079,34 @@ void RemoveDockableWindow(const std::string& dockableWindowName);
 
 // `SaveUserPref(string userPrefName, string userPrefContent)`:
 //  Shall be called in the callback runnerParams.callbacks.BeforeExit
+//  On the web, the user prefs live in memory, like the ini file: a reload loses them. For a value that the user
+//  should find again at the next visit, use SaveLastingPref (below).
 void        SaveUserPref(const std::string& userPrefName, const std::string& userPrefContent);
 
 // `string LoadUserPref(string& userPrefName)`
 //  Shall be called in the callback runnerParams.callbacks.PostInit
 std::string LoadUserPref(const std::string& userPrefName);
+// ::endcode
+
+
+// ::code HelloImGui::LastingPref
+
+// Lasting prefs: small values that survive a reset of the settings (iniClearPreviousSettings, DeleteIniSettings).
+// They are stored apart from the ini file:
+//   - on the desktop, in "<ini name>_lasting.ini", next to the ini file (e.g. "My_App_lasting.ini");
+//   - on the web, in the browser's localStorage, with the key "<ini name>/<prefName>"
+//     (the ini file lives in memory there, and a reload loses it).
+// Nothing is stored when iniDisable is set.
+// Use them for choices that the user sees and can change back (a language, a zoom), never for the layout.
+
+// `SaveLastingPref(string prefName, string prefContent)`:
+//  Call it when the value changes: on the web, BeforeExit does not run when a tab closes.
+void        SaveLastingPref(const std::string& prefName, const std::string& prefContent);
+
+// `string LoadLastingPref(string prefName)`:
+//  Returns "" if the pref was never saved. Call it in PostInit, or later: after its first read, it is cheap
+//  enough to call at each frame (so that several views of an app can share a pref).
+std::string LoadLastingPref(const std::string& prefName);
 // ::endcode
 
 
