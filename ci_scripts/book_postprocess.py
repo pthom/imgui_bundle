@@ -9,7 +9,12 @@ re-applies it once the page has settled, and stops at the reader's first gesture
 The API pages show hundreds of pictures (the demo sections, see api_pages.py): their images load lazily, as the reader
 scrolls to them (the theme does not set `loading`).
 
-Run by `just doc_build_cf`; idempotent (a marker in the script tag).
+The links to the ImGui Explorer (its sections, from the API pages and the demos) open in one tab, which the next link
+reuses and brings to the front. The theme renders external links as `target="_blank" rel="noreferrer"`: a new tab per
+click, since `noreferrer` keeps a page from finding the tab it opened. A script on every page opens them with
+`window.open(url, "imgui_explorer")` instead; a click with a modifier key keeps the browser's own behavior.
+
+Run by `just doc_build_cf`; idempotent (a marker in each script tag).
 """
 import re
 import sys
@@ -35,6 +40,16 @@ SCRIPT = """<script id="imgui-bundle-hash-fix">
 })();
 </script>
 """
+EXPLORER_TAB_MARKER = 'id="imgui-bundle-explorer-tab"'
+EXPLORER_TAB_SCRIPT = """<script id="imgui-bundle-explorer-tab">
+// The ImGui Explorer's links open in one tab, reused by the next link (see ci_scripts/book_postprocess.py)
+document.addEventListener('click', function (e) {
+  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+  var link = e.target.closest && e.target.closest('a[href^="https://pthom.github.io/imgui_explorer"]');
+  if (link && window.open(link.href, 'imgui_explorer')) e.preventDefault();
+});
+</script>
+"""
 
 
 def main() -> None:
@@ -49,6 +64,14 @@ def main() -> None:
         page.write_text(text.replace("</head>", SCRIPT + "</head>", 1))
         done += 1
     print(f"hash fix: {done} pages of {len(pages)} patched in {HTML}")
+    done = 0
+    for page in pages:
+        text = page.read_text()
+        if EXPLORER_TAB_MARKER in text or "</head>" not in text:
+            continue
+        page.write_text(text.replace("</head>", EXPLORER_TAB_SCRIPT + "</head>", 1))
+        done += 1
+    print(f"explorer tab: {done} pages of {len(pages)} patched in {HTML}")
     lazy = 0
     for page in sorted((HTML / "api").rglob("index.html")):
         text = page.read_text()
