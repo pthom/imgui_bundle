@@ -235,13 +235,17 @@ ImmApp handles add-on initialization automatically via simple boolean flags.
 
 :::{tab-item} Python
 ```python
+import numpy as np
 from imgui_bundle import immapp, imgui, implot, rich_md
+
+xs = np.array([1, 2, 3, 4], dtype=np.float64)  # ImPlot takes numpy arrays
+ys = np.array([1, 4, 2, 3], dtype=np.float64)
 
 def gui():
     rich_md.render("# Hello with Markdown!")
 
     if implot.begin_plot("My Plot"):
-        implot.plot_line("data", [1, 2, 3, 4], [1, 4, 2, 3])
+        implot.plot_line("data", xs, ys)
         implot.end_plot()
 
 # Enable add-ons with simple flags

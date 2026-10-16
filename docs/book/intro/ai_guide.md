@@ -91,7 +91,7 @@ ImGui Bundle's Python bindings follow Python's conventions while maintaining com
   from imgui_bundle import imgui, implot, immapp, hello_imgui
 
   # Or specific components:
-  from imgui_bundle.immapp import fonts, icons_fontawesome_6
+  from imgui_bundle import icons_fontawesome_6
   ```
 * C++ uses `#include` directives:
   ```cpp
@@ -128,15 +128,17 @@ for i, item in enumerate(items):
 
 Many ImGui functions come in begin/end pairs. **Important rules:**
 
-1. **`imgui.begin()` is special**: Always call `imgui.end()`, even if `begin()` returns False:
+1. **`imgui.begin()` is special**: Always call `imgui.end()`, even if `begin()` returns False. In Python, `begin()` returns two values, `(expanded, opened)`: test the first one (a tuple is always true):
    ```python
    # CORRECT
-   if imgui.begin("Window"):
+   expanded, _ = imgui.begin("Window")
+   if expanded:
        imgui.text("Content")
    imgui.end()  # Always called!
 
    # WRONG - will cause errors
-   if imgui.begin("Window"):
+   expanded, _ = imgui.begin("Window")
+   if expanded:
        imgui.text("Content")
        imgui.end()  # Only called when window is visible - BUG!
    ```
@@ -144,7 +146,7 @@ Many ImGui functions come in begin/end pairs. **Important rules:**
 2. **Other begin/end pairs**: Only call `end_*()` if `begin_*()` returned True:
    ```python
    if imgui.begin_menu("File"):
-       if imgui.menu_item("Open"):
+       if imgui.menu_item_simple("Open"):  # menu_item() takes a shortcut and a "selected" flag, and returns two values
            open_file()
        imgui.end_menu()  # Only when begin_menu returned True
 
@@ -168,7 +170,7 @@ with imgui_ctx.begin("My Window") as window_visible:
 # Works for other pairs too
 with imgui_ctx.begin_menu("File") as menu_open:
     if menu_open:
-        if imgui.menu_item("Open"):
+        if imgui.menu_item_simple("Open"):
             open_file()
 
 # Useful for tree nodes, popups, etc.
@@ -534,8 +536,11 @@ from imgui_bundle import hello_imgui, imgui
 
 def gui():
     # Load and display an image from assets
+    hello_imgui.image_from_asset("images/logo.png", imgui.ImVec2(100, 100))
+
+    # Or with its texture, e.g. for imgui.image() (which takes an ImTextureRef)
     texture = hello_imgui.im_texture_id_from_asset("images/logo.png")
-    imgui.image(texture, imgui.ImVec2(100, 100))
+    imgui.image(imgui.ImTextureRef(texture), imgui.ImVec2(100, 100))
 ```
 
 **DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing (see also "Common ImGui Patterns and Gotchas" section above):

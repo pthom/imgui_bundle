@@ -141,13 +141,15 @@ Many ImGui functions come in pairs:
 :::{tab-item} Python
 ```python
 if imgui.begin_menu("File"):
-    if imgui.menu_item("Open"):
+    if imgui.menu_item_simple("Open"):
         open_file()
     # you should call `end_*` after `begin_*`, if the `begin_*` returned `True`.
     imgui.end_menu()
 
 # Note: begin() is an exception, always call end(), even if begin() returned False
-if imgui.begin("My Window"):
+# begin() returns two values: (expanded, opened); opened is the state of the close button, if any
+expanded, _ = imgui.begin("My Window")
+if expanded:
     imgui.text("Content here")
 imgui.end()  # Always call end!
 ```
