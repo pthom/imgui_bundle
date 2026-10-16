@@ -9,10 +9,13 @@ re-applies it once the page has settled, and stops at the reader's first gesture
 The API pages show hundreds of pictures (the demo sections, see api_pages.py): their images load lazily, as the reader
 scrolls to them (the theme does not set `loading`).
 
-The links to the ImGui Explorer (its sections, from the API pages and the demos) open in one tab, which the next link
-reuses and brings to the front. The theme renders external links as `target="_blank" rel="noreferrer"`: a new tab per
-click, since `noreferrer` keeps a page from finding the tab it opened. A script on every page opens them with
-`window.open(url, "imgui_explorer")` instead; a click with a modifier key keeps the browser's own behavior.
+The links to the ImGui Explorer (its sections, from the API pages and the demos) keep one explorer tab: a link closes
+the tab that the previous one opened, then opens its own, in front. The theme renders external links as
+`target="_blank" rel="noreferrer"`: a new tab per click, and no handle on it. A named tab
+(`window.open(url, "imgui_explorer")`) would be reused instead, but Safari on iOS loads a link into an existing tab in
+the background, without showing it (`focus()` does not either): the second link seemed to do nothing. A page reload
+loses the handle on the previous tab, which then stays open. A click with a modifier key keeps the browser's own
+behavior.
 
 Run by `just doc_build_cf`; idempotent (a marker in each script tag).
 """
@@ -42,12 +45,19 @@ SCRIPT = """<script id="imgui-bundle-hash-fix">
 """
 EXPLORER_TAB_MARKER = 'id="imgui-bundle-explorer-tab"'
 EXPLORER_TAB_SCRIPT = """<script id="imgui-bundle-explorer-tab">
-// The ImGui Explorer's links open in one tab, reused by the next link (see ci_scripts/book_postprocess.py)
-document.addEventListener('click', function (e) {
-  if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-  var link = e.target.closest && e.target.closest('a[href^="https://pthom.github.io/imgui_explorer"]');
-  if (link && window.open(link.href, 'imgui_explorer')) e.preventDefault();
-});
+// The ImGui Explorer's links keep one explorer tab: each closes the previous one's tab, then opens its own, in front
+// (see ci_scripts/book_postprocess.py)
+(function () {
+  var explorerTab = null;
+  document.addEventListener('click', function (e) {
+    if (e.defaultPrevented || e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+    var link = e.target.closest && e.target.closest('a[href^="https://pthom.github.io/imgui_explorer"]');
+    if (!link) return;
+    if (explorerTab && !explorerTab.closed) explorerTab.close();
+    explorerTab = window.open(link.href, '_blank');
+    if (explorerTab) e.preventDefault();
+  });
+})();
 </script>
 """
 
