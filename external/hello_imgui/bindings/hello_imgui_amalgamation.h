@@ -38,7 +38,7 @@ namespace HelloImGui
 //    (2) Either by setting them in a `hello_imgui.ini` file. See hello_imgui/hello_imgui_example.ini for more info
 // Note: if several methods are used, the order of priority is (1) > (2)
 //
-// For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc_api.html#handling-screens-with-high-dpi
+// For more information, see the documentation on DPI handling, here: https://pthom.github.io/hello_imgui/book/doc-api/#handling-screens-with-high-dpi
 //
 struct DpiAwareParams
 {
@@ -187,7 +187,7 @@ Notes:
 
 ### Using HelloImGui (recommended)
 
-[`HelloImGui::LoadFont()`](https://pthom.github.io/hello_imgui/book/doc_api.html#load-fonts) will load fonts
+[`HelloImGui::LoadFont()`](https://pthom.github.io/hello_imgui/book/doc-api/#load-fonts) will load fonts
  with the correct size, taking into account the DPI scaling.
 
 ### Using Dear ImGui
