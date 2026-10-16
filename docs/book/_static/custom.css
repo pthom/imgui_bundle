@@ -141,3 +141,18 @@ h4 > .heading-text > code:first-child {
 h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
   scroll-margin-top: 4.5rem;
 }
+/* The top bar on a narrow phone: the site's name wraps to two lines, so that the theme button stays on the screen.
+   With the theme's shrink-0, the page is wider than the screen, and takes the swipes meant for a code block */
+.myst-top-nav-bar > div:first-child {
+  flex-shrink: 1;
+}
+.myst-home-link-logo {
+  flex-shrink: 0;  /* the name wraps, the logo keeps its size */
+}
+.myst-home-link > span {
+  line-height: 1.15;
+}
+/* A heading's "¶" link, after its text: on a narrow screen, it can go past the right edge, and widen the page too */
+h1[id], h2[id], h3[id], h4[id], h5[id], h6[id] {
+  overflow-x: clip;
+}
