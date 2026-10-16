@@ -24,7 +24,7 @@ Please do read to the following documentation for a comprehensive understanding 
 https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf
 
 **The API, in plain text (if needed):**
-https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt. Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++. Read the file that a question needs, to check that a name exists and how to call it.
+https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui). Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++. Read the file that a question needs, to check that a name exists and how to call it.
 
 **The demos, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by category: what each one shows, the libraries it uses, and the links to its Python and C++ code. Read it to find a demo close to what the user wants, then read that demo's code.
@@ -33,9 +33,9 @@ https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by 
 Two web apps show the demos in the browser, each beside its code: the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/: Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section) and the Dear ImGui Bundle Explorer (https://imgui-bundle.pages.dev/explorer/: all the libraries). Their pages draw in a canvas, with no text to read: https://imgui-bundle.pages.dev/llms/explorers.txt says what they show, and how to link to a demo section (e.g. https://pthom.github.io/imgui_explorer/?lib=implot&demo=Plots%2FLine%20Plots). Give such a link to a user who wants to see a feature in action.
 
 **Hello ImGui**
-https://pthom.github.io/hello_imgui/book/intro.html
-https://pthom.github.io/hello_imgui/book/doc_params.html
-https://pthom.github.io/hello_imgui/book/doc_api.html
+https://pthom.github.io/hello_imgui/book/
+https://pthom.github.io/hello_imgui/book/doc-params/
+https://pthom.github.io/hello_imgui/book/doc-api/
 
 **Docs for Fiatlight**
 Fiatlight is a library heavily based on Dear ImGui Bundle, by the same author.
@@ -565,26 +565,7 @@ ImmApp:
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immapp/__init__.pyi
 https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi
 
-Main ImmApp run function:
-```python
-@overload
-def run(
-    gui_function: VoidFunction,
-    window_title: str = "",
-    window_size_auto: bool = False,
-    window_restore_previous_geometry: bool = False,
-    window_size: Optional[ScreenSize] = None,
-    fps_idle: float = 10.0,
-    with_implot: bool = False,
-    with_implot3d: bool = False,
-    with_markdown: bool = False,
-    with_node_editor: bool = False,
-    with_tex_inspect: bool = False,
-    with_node_editor_config: Optional[NodeEditorConfig] = None,
-    with_markdown_options: Optional[RichMd.MarkdownOptions] = None,
-) -> None:
-    ...
-```
+The main function, `immapp.run()`, and its parameters (`with_implot`, `with_markdown`, `with_latex`...): https://imgui-bundle.pages.dev/llms/api/immapp.txt
 
 ### ImGui API
 
