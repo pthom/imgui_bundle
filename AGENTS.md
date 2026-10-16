@@ -107,7 +107,7 @@ The commands are recipes of the `justfile`: `just --list` shows them by group, e
 
 | Task | Recipes | Doc |
 |---|---|---|
-| Forks and submodules | `libs_info`, `libs_check_upstream`, `libs_log <lib>`, `libs_rebase <lib>`, `libs_tag <lib>`, `libs_check_pushed`, `libs_reattach`, `libs_fetch`, `libs_pull` | `bindings_forks.md`, `bindings_update.md` |
+| Forks and submodules | `libs_info`, `libs_check_upstream`, `libs_log <lib>`, `libs_rebase <lib>`, `libs_tag <lib>`, `libs_check_pushed`, `bundle_push`, `libs_reattach`, `libs_fetch`, `libs_pull` | `bindings_forks.md`, `bindings_update.md` |
 | Python bindings | `libs_bindings <lib>`, `libs_bindings_all` | `bindings_update.md`, `bindings_newlib.md` |
 | Type checks and tests | `mypy`, `mypy_bindings_scripts`, `test_pytest`, `test_cpp_compat` | `testing.md` |
 | C++ package, integration in other projects | `cpp_package_install`, `example_integration_all` | the recipes' comments |

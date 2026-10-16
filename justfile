@@ -68,6 +68,11 @@ libs_check_pushed:
     fi
     echo "All submodule commits are on a remote branch."
 
+# Push the bundle, once libs_check_pushed passes (the only way to push the bundle)
+[group('libs')]
+bundle_push: libs_check_pushed
+    git push
+
 # Regenerate Python bindings for a single library (usage: just libs_bindings <name>)
 [group('libs')]
 libs_bindings lib:
