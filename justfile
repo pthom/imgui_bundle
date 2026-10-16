@@ -509,6 +509,27 @@ cf_serve_imgui_bundle_pages_landing:
     echo "http://localhost:8333"
     cd docs/clone_website_resources/imgui_bundle_pages_landing/final && python3 -m http.server 8333
 
+# The IndexNow key: its file is at the root of imgui-bundle.pages.dev (in the website resources), and in the ImGui
+# Explorer's site (website/ of pthom/imgui_explorer, kept by imex_ems_deploy.sh)
+_INDEXNOW_KEY := "4a5941b545eb53e6d66dc55845681b0a"
+
+# Ask Bing and DuckDuckGo (which uses Bing's index) to recrawl pages whose title or text changed, through IndexNow
+[group('cloudflare')]
+site_recrawl +urls:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    key={{_INDEXNOW_KEY}}
+    for url in {{urls}}; do
+        case "$url" in
+            https://imgui-bundle.pages.dev/*) loc="https://imgui-bundle.pages.dev/$key.txt" ;;
+            https://pthom.github.io/imgui_explorer/*) loc="https://pthom.github.io/imgui_explorer/$key.txt" ;;
+            *) echo "ERROR: no IndexNow key for $url" >&2; exit 1 ;;
+        esac
+        code=$(curl -s -o /dev/null -w '%{http_code}' -G https://api.indexnow.org/indexnow \
+            --data-urlencode "url=$url" --data-urlencode "key=$key" --data-urlencode "keyLocation=$loc")
+        echo "$code $url"  # 200 or 202: accepted
+    done
+
 
 # ==============================================================
 # The points shared by the users of the Julia map demo

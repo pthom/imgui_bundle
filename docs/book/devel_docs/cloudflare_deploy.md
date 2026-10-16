@@ -150,10 +150,16 @@ The admin mode: the Worker's secret `ADMIN_TOKEN` opens the routes that hide a p
 
 The database in production: `wrangler d1 execute imgui_bundle_julia_points --remote --command "SELECT ..."`, from `cloudflare/julia_points`. The free tier allows 100 000 requests a day.
 
+## Search engines
+
+After a change that search results should show soon (a page's title, its description), ask for a recrawl:
+- Bing and DuckDuckGo (which uses Bing's index): `just site_recrawl <url>...`, through IndexNow. It covers the pages of `imgui-bundle.pages.dev` and of the ImGui Explorer (`pthom.github.io/imgui_explorer/`).
+- Google: in Search Console, "URL Inspection", then "Request indexing". The property of `imgui-bundle.pages.dev` is verified by the `google<id>.html` file of the website resources.
+
 ## Pitfalls
 
 - Cloudflare Pages refuses a file over 25 MiB. A stray folder can push a packed file over it: a `.mypy_cache/` left in a demo folder gets packed into the explorer's `.data` (run mypy from the repo root, and remove such caches before `just cf_stage`).
-- A missing file answers 200, with an HTML page. To check that a file is deployed, look at its content type (`curl -sI <url> | grep -i content-type`), not at the status.
+- A missing file answers 404, with the site's `404.html` page (from the website resources).
 - After a deploy, check the live site: the book (`/doc/`) and its PDF (`/doc/assets/imgui_bundle_book.pdf`), the playground and its `examples/examples_docs.json`, the explorer, `/llms.txt`.
 
 ## Links on imgui-bundle pages at claoudflare

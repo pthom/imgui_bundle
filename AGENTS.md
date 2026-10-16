@@ -115,7 +115,7 @@ The commands are recipes of the `justfile`: `just --list` shows them by group, e
 | Pyodide wheel | `pyodide_setup_local_build`, `pyodide_build`, `pyodide_demo_runner` | `Readme_pyodide_bundle.md` |
 | Playground | `playground_examples_docs` (the menu's descriptions, the manifests, the book's demos page), `playground_screenshots [names]`, `narrator_audio <lesson>` (a narrated explorable's voice, into the website resources) | the docstrings of `ci_scripts/playground_examples_docs.py`, `ci_scripts/playground_screenshots.py` and `explorables/grokking/narrator.py` |
 | Book | `doc_serve`, `doc_build_cf`, `api_pages` (the API reference and its plain text, from the stubs), `api_pictures` (its pictures of the explorer's demo sections) | `getting_started_dev.md` ("Build the docs"), `bindings_intro.md` ("The API pages") |
-| Web site | `cf_deploy_all_in_one` (or `cf_stage_prepare`, `cf_stage`, `cf_deploy`), `cf_serve_local` | `cloudflare_deploy.md` |
+| Web site | `cf_deploy_all_in_one` (or `cf_stage_prepare`, `cf_stage`, `cf_deploy`), `cf_serve_local`, `site_recrawl <url>...` (search engines) | `cloudflare_deploy.md` |
 | The demos' API (a Cloudflare Worker, deployed apart) | `demo_julia_points_check`, `demo_julia_points_dev`, `demo_julia_points_deploy` | `cloudflare_deploy.md` ("The demos' API") |
 | PyPI release | (CI) | `pypi_deploy.md` |
 
