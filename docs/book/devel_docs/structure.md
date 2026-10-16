@@ -341,7 +341,8 @@ docs/book/
 │     ├── demos_pdf.md                      The same without its grids, for the PDF (generated)
 │     ├── examples_gallery.md               Apps made with Dear ImGui Bundle
 │     ├── resources.md                      Links & resources (includes bindings/imgui_bundle/demos_assets/resources.md)
-│     └── ai_guide.md                       For AI assistants (the deploy also publishes it as /llms.txt)
+│     └── ai_guide.md                       For AI assistants (the deploy also publishes it as /llms.txt, and the
+│                                           pages for users in plain text as /llms/book.txt: ci_scripts/llms_book.py)
 │
 ├── python/                                 For Python users
 │     ├── python_imgui_intro.md             ImGui introduction for Python developers

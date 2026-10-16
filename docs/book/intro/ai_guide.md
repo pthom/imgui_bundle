@@ -18,10 +18,10 @@ The following sections will contain lots of links:
 
 ImGui Bundle is based on Dear ImGui, and can also use Hello ImGui as a base, in order to ease the creation of interactive applications.
 
-Please do read to the following documentation for a comprehensive understanding of the libraries:
+The following documentation gives a comprehensive understanding of the libraries:
 
-**Dear ImGui Bundle, full doc (PDF):**
-https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf
+**The book, in plain text (if needed):**
+https://imgui-bundle.pages.dev/llms/book.txt holds the book's pages for users, one after the other (about 18,000 words): how to install, the core libraries, the add-ons, the notes for Python and for C++. Read it for a question that this page does not answer.
 
 **The API, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui). Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++. Read the file that a question needs, to check that a name exists and how to call it.
