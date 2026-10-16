@@ -1,18 +1,17 @@
 """A pass on the book's built pages (docs/book/_build/html), after `jupyter-book build --html`.
 
 A link with a hash can miss its anchor in two ways:
-- The theme (mystmd's book theme 1.2.2, on react-router) can scroll a page back to the top after it hydrates: its
-  scroll restoration looks the anchor up at that moment, and scrolls to the top when it misses. Firefox misses on the
-  big API pages, so a link to an entry of the API landed on the top of the page.
-- The pictures above the anchor push it down as they load: they have no size before. React reports a hydration error
-  on every page and renders it again, and the pictures it renders load all at once. Chrome's scroll anchoring
-  compensates, not always; Safari did not, and a link on a phone landed a few screens above its entry.
+- The theme (mystmd's book theme, on react-router) can scroll a page back to the top after it hydrates: its scroll
+  restoration looks the anchor up at that moment, and scrolls to the top when it misses. Firefox missed on the big API
+  pages, so a link to an entry of the API landed on the top of the page.
+- The pictures above the anchor push it down as they load: they have no size before. Chrome's scroll anchoring
+  compensates, not always; Safari does not: a link on a phone lands about a screen above its entry. With the theme
+  1.2.2, it was a few screens: its hydration failed on every page, and React's new render loaded all the pictures.
 This pass adds a small script to every page: when the URL has a hash, it keeps its element in view while the page
 settles, and stops at the reader's first gesture.
 
 The API pages show hundreds of pictures (the demo sections, see api_pages.py): their images load lazily, as the reader
-scrolls to them (the theme does not set `loading`), until React renders the page again (see above), without this
-attribute.
+scrolls to them (the theme does not set `loading`).
 
 The links to the ImGui Explorer (its sections, from the API pages and the demos) keep one explorer tab: a link closes
 the tab that the previous one opened, then opens its own, in front. The theme renders external links as

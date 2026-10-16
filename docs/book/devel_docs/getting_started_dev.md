@@ -127,6 +127,7 @@ Pitfalls of the book (MyST, exported to PDF with Typst):
 - Nested directives need longer outer fences: a card (`::::`) inside a grid (`:::::`), with an image (`:::`) inside the card.
 - mystmd takes the page's title from its first H1 only when it comes first: put a comment after it, not before.
 - `jupyter-book build --pdf` exits 0 even when Typst fails: `just doc_build_cf` checks that the PDF was really written.
+- The site's theme (mystmd's book theme) is downloaded once into `_build/templates`, and the builds keep it. To upgrade it: `jupyter-book clean --templates` in `docs/book`, then a build. Then check the pages that `_static/custom.css` restyles (the top bar, the API pages, the demos' cards), at phone and desktop widths, in the dark and light themes.
 
 ## Useful justfile commands
 

@@ -14,6 +14,7 @@ project:
       template: lapreprint-typst
 
 site:
+  template: book-theme  # downloaded once into _build/templates, and kept: see devel_docs/getting_started_dev.md
   options:
     logo: ../../logo/logo_imgui_bundle_1024.png
     logo_url: https://imgui-bundle.pages.dev/   # logo + title → landing
@@ -21,7 +22,6 @@ site:
     favicon: ../../logo/logo_imgui_bundle_1024.png
     folders: true
     style: _static/custom.css
-    template: book-theme
   nav:
     - title: Interactive explorer
       url: https://imgui-bundle.pages.dev/explorer/
