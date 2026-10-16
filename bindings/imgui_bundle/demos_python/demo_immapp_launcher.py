@@ -18,7 +18,8 @@ from typing import Optional
 from imgui_bundle import imgui, immapp, hello_imgui, rich_md, im_anim, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4, IM_COL32, em_size
 from imgui_bundle.demos_python.demo_utils.api_demos import (
-    main_python_package_folder, demos_python_folder, demos_cpp_folder, read_code, can_run_subprocess, spawn_demo_file)
+    main_python_package_folder, demos_python_folder, demos_cpp_folder, read_code, can_run_subprocess, spawn_demo_file,
+    code_language_pref, set_code_language_pref)
 
 SITE = "https://imgui-bundle.pages.dev"
 PICTURES_URL = SITE + "/resources/playground/"
@@ -911,9 +912,17 @@ class Launcher:
         imgui.same_line()
         big_text(demo.label, 1.3)
         small = small_screen()
+        remembered = code_language_pref()  # the reader's last choice, in any view of the app
+        if self.code_language != "Side by side" and remembered:
+            self.code_language = remembered
         if small and len(files) == 2:  # one language at a time: a switch, then its file
+            if self.code_language == "Side by side":
+                self.code_language = remembered or "Python"
             index = 1 if self.code_language == "C++" else 0
-            self.code_language = ["Python", "C++"][segmented_switch("language", ["Python", "C++"], index)]
+            chosen = segmented_switch("language", ["Python", "C++"], index)
+            if chosen != index:
+                self.code_language = ["Python", "C++"][chosen]
+                set_code_language_pref(self.code_language)
             files = [f for f in files if f.language == self.code_language]
         for file in files:  # where the file is, and how to open it
             imgui.push_id(file.language)
@@ -942,6 +951,8 @@ class Launcher:
             for choice in ("Side by side", "Python", "C++"):
                 if self.chip(choice, 1.0 if choice == self.code_language else 0.0):
                     self.code_language = choice
+                    if choice != "Side by side":
+                        set_code_language_pref(choice)
             imgui.new_line()
             shown = [f for f in files if self.code_language in ("Side by side", f.language)]
         lines = int(imgui.get_content_region_avail().y / imgui.get_text_line_height()) - 4

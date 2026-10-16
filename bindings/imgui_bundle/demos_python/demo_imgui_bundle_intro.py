@@ -20,6 +20,7 @@ from imgui_bundle import imgui_color_text_edit as ed, register_demos_assets_fold
 from imgui_bundle import imgui_knobs, imgui_toggle, imgui_node_editor as node_ed
 from imgui_bundle import implot, implot3d
 from imgui_bundle.immapp import icons_fontawesome_4
+from imgui_bundle.demos_python.demo_utils.api_demos import code_language_pref, set_code_language_pref
 
 register_demos_assets_folder()  # welcome.md and resources.md (in Pyodide: delivered by the playground, see examples.json)
 
@@ -2120,13 +2121,18 @@ def _haiku_slide_gui(content_size: ImVec2):
     labels = ["Python", "C++"] + (["The app"] if narrow else [])
     if _haiku_view < 0:
         _haiku_view = 2 if narrow else 0
+    remembered = code_language_pref()  # the reader's last choice, in any view of the app
+    if _haiku_view != 2 and remembered:
+        _haiku_view = 1 if remembered == "C++" else 0
     for i, label in enumerate(labels):
         if i > 0:
             imgui.same_line()
         if imgui.radio_button(label, _haiku_view == i):
             _haiku_view = i
+            if i < 2:  # "The app" is not a language
+                set_code_language_pref(label)
     if not narrow and _haiku_view == 2:
-        _haiku_view = 0
+        _haiku_view = 1 if remembered == "C++" else 0
     size = ImVec2(content_size.x, content_size.y - imgui.get_frame_height_with_spacing())
     if narrow:  # one at a time: the code, or the app
         if _haiku_view == 2:
@@ -2260,9 +2266,15 @@ def _gallery_slide_gui(content_size: ImVec2):
     top_y = imgui.get_cursor_pos_y()  # content_size starts here (below the title card)
 
     # Language radio buttons (and on a phone, the snippet shown)
+    remembered = code_language_pref()  # the reader's last choice, in any view of the app
+    if remembered:
+        _gallery_lang = 0 if remembered == "Python" else 1
+    lang_before = _gallery_lang
     _, _gallery_lang = imgui.radio_button("Python", _gallery_lang, 0)
     imgui.same_line()
     _, _gallery_lang = imgui.radio_button("C++", _gallery_lang, 1)
+    if _gallery_lang != lang_before:
+        set_code_language_pref("Python" if _gallery_lang == 0 else "C++")
     if narrow:
         imgui.same_line(0.0, em)
         imgui.set_next_item_width(-1)
