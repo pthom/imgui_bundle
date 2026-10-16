@@ -418,7 +418,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             ImageFromAssetWithBg_adapt_mutable_param_with_default_value(assetPath, size, uv0, uv1, tint_col, border_col);
         },
         nb::arg("asset_path"), nb::arg("size").none() = nb::none(), nb::arg("uv0").none() = nb::none(), nb::arg("uv1").none() = nb::none(), nb::arg("tint_col").none() = nb::none(), nb::arg("border_col").none() = nb::none(),
-        " `HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
+        " `HelloImGui::ImageFromAssetWithBg(const char *assetPath, size, ...)`:\n will display a static image from the assets, with a colored background and a border.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * size: ImVec2(0, 0)\n        * uv0: ImVec2(0, 0)\n        * uv1: ImVec2(1,1)\n        * tint_col: ImVec4(1,1,1,1)\n        * border_col: ImVec4(0,0,0,0)");
 
     m.def("image_button_from_asset",
         [](const char * assetPath, const std::optional<const ImVec2> & size = std::nullopt, const std::optional<const ImVec2> & uv0 = std::nullopt, const std::optional<const ImVec2> & uv1 = std::nullopt, int frame_padding = -1, const std::optional<const ImVec4> & bg_col = std::nullopt, const std::optional<const ImVec4> & tint_col = std::nullopt) -> bool

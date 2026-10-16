@@ -528,7 +528,7 @@ def image_from_asset_with_bg(
     tint_col: Optional[ImVec4Like] = None,
     border_col: Optional[ImVec4Like] = None,
 ) -> None:
-    """`HelloImGui::ImageFromAsset(const char *assetPath, size, ...)`:
+    """`HelloImGui::ImageFromAssetWithBg(const char *assetPath, size, ...)`:
      will display a static image from the assets, with a colored background and a border.
 
     Python bindings defaults:
