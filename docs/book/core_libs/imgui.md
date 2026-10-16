@@ -227,6 +227,38 @@ imgui.same_line()
 imgui.button("Three")
 ```
 
+### Horizontal and vertical layouts (StackLayout)
+
+The bundle's Dear ImGui includes StackLayout (by thedmd): `begin_horizontal()` / `end_horizontal()`, `begin_vertical()` / `end_vertical()`, and `spring()`, which takes the free space.
+
+Prefer it to `same_line()`:
+- for many items on one line;
+- for right-aligned or centered content, with `spring()`;
+- for flexible spacing between groups of widgets.
+
+::::{tab-set}
+:::{tab-item} Python
+```python
+imgui.begin_horizontal("toolbar", imgui.ImVec2(imgui.get_content_region_avail().x, 0.0))
+imgui.button("Left")
+imgui.button("Also Left")
+imgui.spring()  # pushes the next items to the right
+imgui.text("Right-aligned")
+imgui.end_horizontal()
+```
+:::
+:::{tab-item} C++
+```cpp
+ImGui::BeginHorizontal("toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 0.f));
+ImGui::Button("Left");
+ImGui::Button("Also Left");
+ImGui::Spring();  // pushes the next items to the right
+ImGui::Text("Right-aligned");
+ImGui::EndHorizontal();
+```
+:::
+::::
+
 ### DPI-Aware Sizing (Basic)
 
 Avoid hardcoded pixel sizes for portable UIs. Use sizes relative to the font:

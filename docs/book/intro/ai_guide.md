@@ -1,121 +1,150 @@
 # For AI assistants
 
-This page is written for AI assistants: give it to yours (it is also at https://imgui-bundle.pages.dev/llms.txt), and it will know how to help you write applications with Dear ImGui Bundle, in Python or C++. The [full PDF manuals](https://imgui-bundle.pages.dev/doc/intro/resources/) give it even more context.
+This page is written for AI assistants. Give it to yours: it will know how to help you write applications with Dear ImGui Bundle, in Python or C++. It is also at https://imgui-bundle.pages.dev/llms.txt.
 
-## ImGui Bundle: Conversation Starter for LLMs
+## About this page
 
-ImGui Bundle provides a complete set of libraries on top of Dear ImGui, enabling users to create interactive applications in C++ and Python.
+Dear ImGui Bundle is a set of libraries on top of [Dear ImGui](https://github.com/ocornut/imgui), to write interactive applications in Python and C++: on the desktop, on mobile, and in the browser.
 
-This conversation starter is intended to be studied by a LLM, so that it can then help users.
+Read this page first. It links to more:
+- a link marked "please do read": read it right away;
+- a link marked "if needed": read it when a question needs it.
 
-Please read thoroughly the following sections to understand the structure of the project and how to use it.
+## Install
 
-The following sections will contain lots of links:
-* those which are marked with "please do read" are important to understand the project, and you should read them right away.
-* those which are marked with "if needed" are less important, and you can read them later if you need to help users with specific questions.
+**Python** (3.10 or later; binary wheels for Windows, macOS and Linux):
 
-## Docs for ImGui Bundle and Hello ImGui
+```bash
+pip install imgui-bundle
+```
 
-ImGui Bundle is based on Dear ImGui, and can also use Hello ImGui as a base, in order to ease the creation of interactive applications.
+- The package is `imgui-bundle`, the module is `imgui_bundle`.
+- The minimal install has no dependency. ImPlot and ImmVision take numpy arrays: install `numpy` too.
+- `pip install "imgui-bundle[full]"` also installs the optional dependencies (numpy, OpenCV, Pillow, matplotlib...).
 
-The following documentation gives a comprehensive understanding of the libraries:
+**C++**: start from the template, https://github.com/pthom/imgui_bundle_template. In CMake, `imgui_bundle_add_app(my_app my_app.cpp)` creates an app, with its assets.
+
+**In the browser, with no install**: the Python playground, https://imgui-bundle.pages.dev/playground/, runs Dear ImGui Bundle in Python (Pyodide), with ready-to-run demos.
+
+The install pages, with the platform notes: https://imgui-bundle.pages.dev/doc/python/python-install/ and https://imgui-bundle.pages.dev/doc/cpp/cpp-install/
+
+## Not pyimgui
+
+`pyimgui` (`pip install imgui`, then `import imgui`) is another Python binding of Dear ImGui, with another API. Its code does not run with Dear ImGui Bundle. Assistants often mix the two up: check each name in the API files below.
+
+| pyimgui | Dear ImGui Bundle |
+|---|---|
+| `import imgui` | `from imgui_bundle import imgui` |
+| `imgui.WINDOW_NO_TITLE_BAR` | `imgui.WindowFlags_.no_title_bar` |
+| `imgui.create_context()`, a renderer from `imgui.integrations`, and a loop written by hand | `immapp.run(gui)` or `hello_imgui.run(gui)`: the runner creates the window and runs the loop |
+
+## Where to find more
 
 **The book, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/book.txt holds the book's pages for users, one after the other (about 18,000 words): how to install, the core libraries, the add-ons, the notes for Python and for C++. Read it for a question that this page does not answer.
 
 **The API, in plain text (if needed):**
-https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui). Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc. In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++. Read the file that a question needs, to check that a name exists and how to call it.
+https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui).
+- Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc.
+- In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++.
+- Read the file that a question needs, to check that a name exists and how to call it.
 
 **The demos, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by category: what each one shows, the libraries it uses, and the links to its Python and C++ code. Read it to find a demo close to what the user wants, then read that demo's code.
 
 **The explorers, where the demos run live (if needed):**
-Two web apps show the demos in the browser, each beside its code: the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/: Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section) and the Dear ImGui Bundle Explorer (https://imgui-bundle.pages.dev/explorer/: all the libraries). Their pages draw in a canvas, with no text to read: https://imgui-bundle.pages.dev/llms/explorers.txt says what they show, and how to link to a demo section (e.g. https://pthom.github.io/imgui_explorer/?lib=implot&demo=Plots%2FLine%20Plots). Give such a link to a user who wants to see a feature in action.
+Two web apps show the demos in the browser, each beside its code:
+- the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/): Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section;
+- the Dear ImGui Bundle Explorer (https://imgui-bundle.pages.dev/explorer/): all the libraries.
 
-**Hello ImGui**
-https://pthom.github.io/hello_imgui/book/
-https://pthom.github.io/hello_imgui/book/doc-params/
-https://pthom.github.io/hello_imgui/book/doc-api/
+Their pages draw in a canvas, with no text to read. https://imgui-bundle.pages.dev/llms/explorers.txt says what they show, and how to link to a demo section (e.g. https://pthom.github.io/imgui_explorer/?lib=implot&demo=Plots%2FLine%20Plots). Give such a link to a user who wants to see a feature in action.
 
-**Docs for Fiatlight**
-Fiatlight is a library heavily based on Dear ImGui Bundle, by the same author.
-Reading this is not mandatory, it only helps if working on Fiatlight itself.
-https://pthom.github.io/fiatlight/flgt.pdf
+**Hello ImGui's docs (if needed):** the app runner of the bundle, and its parameters.
+- https://pthom.github.io/hello_imgui/book/
+- https://pthom.github.io/hello_imgui/book/doc-params/
+- https://pthom.github.io/hello_imgui/book/doc-api/
 
-## Differences in the C++ versus Python APIs
+**Fiatlight (only for work on Fiatlight itself):** a library built on Dear ImGui Bundle, by the same author. https://pthom.github.io/fiatlight/flgt.pdf
 
-ImGui Bundle's Python bindings follow Python's conventions while maintaining compatibility with the underlying C++ API. Here are the key differences:
+## Python and C++: the differences
 
-### 1. Naming Conventions
+The Python bindings follow Python's conventions, and keep the C++ API's structure.
 
-* C++ uses `CamelCase` while Python uses `snake_case`:
-  ```cpp
-  // C++
-  ImGui::BeginMainMenuBar();
-  ImGui::SliderFloat("My Slider", &value, 0.0f, 1.0f);
-  ```
-  ```python
-  # Python
-  imgui.begin_main_menu_bar()
-  imgui.slider_float("My Slider", value, 0.0, 1.0)
-  ```
+### 1. Naming
 
-### 2. Return Values vs Output Parameters
+C++ uses `CamelCase`, Python uses `snake_case`:
 
-* C++ modifies variables through pointers, while Python returns modified values:
-  ```cpp
-  // C++: Modified through pointer, returns if value changed
-  bool changed = ImGui::SliderFloat("value", &f, 0.0f, 1.0f);
-  ```
-  ```python
-  # Python: Returns both the change status and modified value
-  changed, f = imgui.slider_float("value", f, 0.0, 1.0)
-  ```
+```cpp
+// C++
+ImGui::BeginMainMenuBar();
+ImGui::SliderFloat("My Slider", &value, 0.0f, 1.0f);
+```
+```python
+# Python
+imgui.begin_main_menu_bar()
+changed, value = imgui.slider_float("My Slider", value, 0.0, 1.0)
+```
 
-### 3. Enum Values
+### 2. Return values instead of output parameters
 
-* C++ enums are converted to Python enum classes:
-  ```cpp
-  // C++ (buffer is a char[256])
-  bool changed = ImGui::InputText("Input", buffer, 256, ImGuiInputTextFlags_CharsUppercase);
-  ```
-  ```python
-  # Python (text is a str)
-  changed, text = imgui.input_text("Input", text, imgui.InputTextFlags_.chars_uppercase)
-  ```
+C++ modifies a variable through a pointer. Python returns the new value:
 
-### 4. Module Structure and Imports
+```cpp
+// C++: modified through a pointer, returns whether the value changed
+bool changed = ImGui::SliderFloat("value", &f, 0.0f, 1.0f);
+```
+```python
+# Python: returns whether the value changed, and the new value
+changed, f = imgui.slider_float("value", f, 0.0, 1.0)
+```
 
-* Python requires explicit imports from the imgui_bundle package:
-  ```python
-  from imgui_bundle import imgui, implot, immapp, hello_imgui
+### 3. Enums
 
-  # Or specific components:
-  from imgui_bundle import icons_fontawesome_6
-  ```
-* C++ uses `#include` directives:
-  ```cpp
-  #include "imgui.h"
-  #include "implot.h"
-  #include "hello_imgui/hello_imgui.h"
-  #include "immapp/immapp.h"
-  ```
+C++ enums become Python enum classes:
 
+```cpp
+// C++ (buffer is a char[256])
+bool changed = ImGui::InputText("Input", buffer, 256, ImGuiInputTextFlags_CharsUppercase);
+```
+```python
+# Python (text is a str)
+changed, text = imgui.input_text("Input", text, imgui.InputTextFlags_.chars_uppercase)
+```
 
-## Common ImGui Patterns and Gotchas
+### 4. Imports
+
+Python imports the modules from the `imgui_bundle` package:
+
+```python
+from imgui_bundle import imgui, implot, immapp, hello_imgui
+
+# Or specific components:
+from imgui_bundle import icons_fontawesome_6
+```
+
+C++ includes their headers:
+
+```cpp
+#include "imgui.h"
+#include "implot.h"
+#include "hello_imgui/hello_imgui.h"
+#include "immapp/immapp.h"
+```
+
+## Common patterns and gotchas
 
 ### Widget IDs
 
-ImGui identifies widgets by their label string. You must not have two widgets with the same label in the same scope, or they will conflict.
+Dear ImGui identifies a widget by its label. Two widgets with the same label in the same scope conflict.
 
-**Solution 1: Use `##` to add a hidden ID suffix:**
+**Solution 1: `##` adds a hidden ID suffix:**
 ```python
 imgui.button("OK")           # ID is "OK"
 imgui.button("OK##dialog2")  # ID is "OK##dialog2", but displays as "OK"
 imgui.button("##hidden")     # No visible label, ID is "##hidden"
 ```
 
-**Solution 2: Use `push_id()`/`pop_id()` for loops:**
+**Solution 2: `push_id()` / `pop_id()` in loops:**
 ```python
 for i, item in enumerate(items):
     imgui.push_id(i)          # or push_id(str(i)) or push_id(item.name)
@@ -124,11 +153,11 @@ for i, item in enumerate(items):
     imgui.pop_id()
 ```
 
-### Begin/End Pairs
+### Begin/End pairs
 
-Many ImGui functions come in begin/end pairs. **Important rules:**
+Many functions come in begin/end pairs. Two rules:
 
-1. **`imgui.begin()` is special**: Always call `imgui.end()`, even if `begin()` returns False. In Python, `begin()` returns two values, `(expanded, opened)`: test the first one (a tuple is always true):
+1. **`imgui.begin()` is special**: always call `imgui.end()`, even if `begin()` returns False. In Python, `begin()` returns two values, `(expanded, opened)`: test the first one (a tuple is always true):
    ```python
    # CORRECT
    expanded, _ = imgui.begin("Window")
@@ -143,7 +172,7 @@ Many ImGui functions come in begin/end pairs. **Important rules:**
        imgui.end()  # Only called when window is visible - BUG!
    ```
 
-2. **Other begin/end pairs**: Only call `end_*()` if `begin_*()` returned True:
+2. **Other begin/end pairs**: call `end_*()` only if `begin_*()` returned True:
    ```python
    if imgui.begin_menu("File"):
        if imgui.menu_item_simple("Open"):  # menu_item() takes a shortcut and a "selected" flag, and returns two values
@@ -155,9 +184,9 @@ Many ImGui functions come in begin/end pairs. **Important rules:**
        imgui.end_popup()  # Only when begin_popup returned True
    ```
 
-### Context Managers (Python)
+### Context managers (Python)
 
-Python users can use `imgui_ctx` for automatic end calls, which is cleaner and less error-prone:
+`imgui_ctx` calls the `end_*()` functions for you:
 
 ```python
 from imgui_bundle import imgui, imgui_ctx
@@ -179,11 +208,11 @@ with imgui_ctx.tree_node("Settings") as node_open:
         imgui.text("Settings content")
 ```
 
-See: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py
+All of them: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_ctx.py
 
-### DPI-Aware Sizing (em units)
+### Sizes in em units (DPI-aware)
 
-**Never use hardcoded pixel sizes** - they will look wrong on high-DPI screens and different platforms.
+**Never use sizes in pixels**: they look wrong on high-DPI screens. Use em units: 1 em is the font's height.
 
 ```python
 from imgui_bundle import imgui, em_to_vec2, em_size
@@ -199,39 +228,26 @@ width = em_size(10)  # Single dimension
 em = em_size()       # Get 1 em in pixels
 ```
 
-The `em_to_vec2()` and `em_size()` functions are available directly from `imgui_bundle` (recommended), and also in `hello_imgui` and `immapp` modules.
+`em_to_vec2()` and `em_size()` are in `imgui_bundle` (recommended), and also in `hello_imgui` and `immapp`.
 
-### Horizontal/Vertical Layouts (StackLayout)
+### Horizontal and vertical layouts (StackLayout)
 
-ImGui Bundle includes a patched ImGui with **StackLayout** (by thedmd), which adds `BeginHorizontal`/`EndHorizontal`, `BeginVertical`/`EndVertical`, and `Spring()`. Use these instead of repeated `SameLine()` calls, or when you need right-alignment or flexible spacing.
-
-```cpp
-// Instead of many SameLine() calls:
-ImGui::BeginHorizontal("toolbar", ImVec2(ImGui::GetContentRegionAvail().x, 0.f));
-ImGui::Button("Left");
-ImGui::Button("Also Left");
-ImGui::Spring();          // pushes remaining items to the right
-ImGui::Text("Right-aligned");
-ImGui::EndHorizontal();
-```
+The bundle's Dear ImGui has StackLayout (by thedmd): `begin_horizontal()` / `end_horizontal()`, `begin_vertical()` / `end_vertical()`, and `spring()`. Prefer it to many `same_line()` calls, and for right-aligned or centered content:
 
 ```python
 imgui.begin_horizontal("toolbar", imgui.ImVec2(imgui.get_content_region_avail().x, 0.0))
 imgui.button("Left")
 imgui.button("Also Left")
-imgui.spring()
+imgui.spring()  # pushes the next items to the right
 imgui.text("Right-aligned")
 imgui.end_horizontal()
 ```
 
-Prefer StackLayout over `SameLine()` when:
-- You have many items on one line
-- You need right-alignment or centered content via `Spring()`
-- You want flexible spacing between groups of widgets
+The same in C++, and when to use it: https://imgui-bundle.pages.dev/doc/core-libs/imgui/#horizontal-and-vertical-layouts-stacklayout
 
 ### A widget that reads the mouse wheel
 
-Hello ImGui keeps the wheel on the window it scrolls: a page scrolled with the wheel keeps scrolling over a plot. A widget that reads `io.mouse_wheel` itself (a value changed by the wheel, a zoom) must claim the wheel while hovered, or the page takes it and the widget never sees it.
+Hello ImGui keeps the wheel on the window it scrolls: a page scrolled with the wheel keeps scrolling over a plot. A widget that reads `io.mouse_wheel` itself (a value changed by the wheel, a zoom) must claim the wheel while hovered. Otherwise the page takes it, and the widget never sees it.
 
 ```python
 imgui.invisible_button("zoom", em_to_vec2(10, 10))
@@ -267,12 +283,11 @@ if (ImPlot::BeginPlot("Live data"))
 }
 ```
 
-Do not turn idling off (`fps_idling.enable_idling = False`, or `fps_idle=0`) to animate one widget: these settings are global, and the app would never idle. Keep them for an app whose whole window always moves.
-
+Do not turn idling off (`fps_idling.enable_idling = False`, or `fps_idle=0`) to animate one widget. These settings are global, and the app would never idle. Keep them for an app whose whole window always moves.
 
 ## Let the AI see and drive the app
 
-You can check your own work. After a change that affects what the user sees, run the app for a few frames and look at a screenshot, or drive the GUI (click, type, open a header) with the ImGui Test Engine, taking screenshots along the way. Do it before saying that the change works.
+You can check your own work. After a change that the user sees, run the app for a few frames and look at a screenshot. Or drive the GUI (click, type, open a header) with the ImGui Test Engine, with screenshots along the way. Do it before saying that the change works.
 
 **A screenshot of the final frame** (no test engine needed):
 
@@ -311,50 +326,13 @@ Good to know:
 - The test engine is in the desktop packages, not in the Pyodide build (in the browser).
 - The test engine's page gives more: https://imgui-bundle.pages.dev/doc/core-libs/test-engine/. Coding agents working in the bundle's repository also find skills about this in `.claude/skills/` (`screenshot-imgui-bundle`, `interact-and-screenshot`).
 
-## References for Python APIs
+## Writing an app
 
-### Hello ImGui and ImApp API
+### The runners: Hello ImGui and ImmApp
 
-Hello ImGui and ImmApp are frameworks that simplify creating interactive applications with ImGui. They handle window creation, rendering, UI loops, and events, allowing developers to focus on GUI elements.
-
-#### Hello ImGui Core Features
-
-1. **Simple Application Structure**:
-   - Define a single GUI function that will be called each frame
-   - Call `HelloImGui::Run()` (C++) or `hello_imgui.run()` (Python) to start the application
-
-2. **DPI-Aware Interface**:
-   - Automatically handles high-DPI screens across platforms
-   - Provides utilities like `em_size()` and `em_to_vec2()` for resolution-independent sizing
-
-3. **Asset Management**:
-   - Embedded asset system for fonts, images, and other resources
-   - Functions like `image_from_asset()` and `load_font()` for easy asset loading
-   - Works across all platforms (including mobile and web)
-
-4. **Theming Support**:
-   - Multiple built-in themes (Darcula, SoDark, PhotoshopStyle, etc.)
-   - Theme customization with `ImGuiTweakedTheme`
-   - Theme editor GUI with `show_theme_tweak_gui()`
-
-5. **Window Management**:
-   - Optional docking support
-   - Window geometry restoration
-   - Multi-viewport support
-
-#### ImmApp Features
-
-ImmApp extends Hello ImGui with additional capabilities:
-
-1. **AddOns Support**:
-   - Enables integration with ImPlot, ImPlot3D, Markdown, Node Editor, etc.
-   - Simple boolean flags to activate add-ons
-
-2. **Extended API**:
-   - Simplified interface for common tasks
-   - Additional utilities for GUI layouts
-
-#### Basic Usage
+The runners create the window, run the loop, and handle the DPI, the assets and the themes. The app gives a function that draws the GUI, called at each frame:
+- `hello_imgui.run()` (C++: `HelloImGui::Run()`) for an app without add-ons;
+- `immapp.run()` (C++: `ImmApp::Run()`) for an app with add-ons (ImPlot, Markdown, the node editor...), enabled by flags.
 
 ```python
 from imgui_bundle import imgui, immapp
@@ -371,67 +349,13 @@ immapp.run(
 )
 ```
 
-Note: When using Hello ImGui or ImmApp, you don't need to call `imgui.begin()` and `imgui.end()` for the main window, as they automatically create a full-window ImGui context.
+- The runner provides a full-window ImGui context: the main window needs no `imgui.begin()` / `imgui.end()`.
+- `immapp.run()` and all its parameters (`with_implot3d`, `with_latex`, `with_node_editor`...): https://imgui-bundle.pages.dev/llms/api/immapp.txt
+- Their page in the book: https://imgui-bundle.pages.dev/doc/core-libs/hello-imgui-immapp/
 
-#### Async and Pyodide Support
+### More settings: RunnerParams
 
-ImGui Bundle supports asynchronous execution for Jupyter notebooks and web deployment via Pyodide.
-
-**Desktop Async** - For applications that need async integration:
-
-```python
-import asyncio
-from imgui_bundle import immapp
-
-async def main():
-    await immapp.run_async(gui, window_title="My App")
-    print("GUI closed")
-
-asyncio.run(main())
-```
-
-**Jupyter Notebooks** - Use the `.nb` module for non-blocking execution:
-
-```python
-from imgui_bundle import immapp
-
-# Start GUI (non-blocking, continues to next cell)
-immapp.nb.start(gui, window_title="My App")
-
-# Later, to stop:
-immapp.nb.stop()
-
-# Check if running:
-if immapp.nb.is_running():
-    print("GUI is active")
-```
-
-**Pyodide (Web Browser)** - In Pyodide, `run()` starts the GUI and returns immediately (browsers cannot block):
-
-```python
-# Same code works on desktop (blocking) and Pyodide (fire-and-forget)
-immapp.run(gui, window_title="My App")
-```
-
-For async control in Pyodide (waiting for GUI to exit), use `run_async()`:
-
-```python
-import asyncio
-async def main():
-    await immapp.run_async(gui, window_title="My App")
-    print("GUI closed")
-asyncio.create_task(main())
-```
-
-| Platform | `run()` | `run_async()` |
-|----------|---------|---------------|
-| Desktop | Blocking | Awaitable |
-| Pyodide | Fire-and-forget | Awaitable |
-| Notebook | Use `nb.start()` | Use `nb.start()` |
-
-#### Advanced Configuration with RunnerParams
-
-For more sophisticated applications, Hello ImGui provides a comprehensive `RunnerParams` structure that controls all aspects of application behavior. Instead of using simple parameters, you can create and configure a `RunnerParams` object:
+`hello_imgui.RunnerParams` controls the whole app: its window, its menus, its status bar, its docking layout, its callbacks.
 
 ```python
 from imgui_bundle import hello_imgui, immapp
@@ -458,60 +382,83 @@ params.callbacks.show_status = my_status_function
 immapp.run(params)
 ```
 
-##### Key RunnerParams Components
+Its parts:
+- `app_window_params`: the window (size, position, full screen, borderless).
+- `imgui_window_params`: the menu bar (with its App and View menus), the status bar, the default window type (full screen, dock space, none).
+- `callbacks`:
+  - each frame: `show_gui`, `show_menus`, `show_app_menu_items`, `show_status`;
+  - once: `post_init` (after the backend's init), `before_exit`;
+  - `load_additional_fonts`, `custom_background` (OpenGL or 3D under the GUI), `mobile_on_pause` / `mobile_on_resume`.
+- `docking_params`: the dockable windows and their layouts (several, to switch between).
+- `fps_idling`: the frame rate when idle (global; for one animated widget, see "Animations and live data: idling" above).
 
-1. **App Window Parameters** (`app_window_params`):
-   - Controls the application window appearance and behavior
-   - Window geometry (size, position, full-screen mode)
-   - Borderless mode with customizable controls
+All the parameters: https://pthom.github.io/hello_imgui/book/doc-params/ and https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt
 
-2. **ImGui Window Parameters** (`imgui_window_params`):
-   - Configures the ImGui windows inside the application
-   - Menu bar options (app menu, view menu, themes)
-   - Status bar settings
-   - Default window types (full screen, dockspace, none)
+### Async, notebooks and the browser (Pyodide)
 
-3. **Callbacks** (`callbacks`):
-   - GUI callbacks (called every frame):
-     - `show_gui`: Main GUI content
-     - `show_menus`: Custom menu bar content
-     - `show_app_menu_items`: Items in the "App" menu
-     - `show_status`: Status bar content
-   - Lifecycle callbacks:
-     - `post_init`: Called once after OpenGL/backend initialization
-     - `before_exit`: Called once before shutdown
-     - `pre_new_frame`: Called before each frame starts
-   - Font loading:
-     - `load_additional_fonts`: Load custom fonts at startup
-   - Custom rendering:
-     - `custom_background`: For custom OpenGL/3D backgrounds
-   - Mobile-specific:
-     - `mobile_on_pause`, `mobile_on_resume`: App backgrounded/foregrounded
+| Platform | `run()` | `run_async()` |
+|----------|---------|---------------|
+| Desktop | Blocking | Awaitable |
+| Pyodide | Fire-and-forget | Awaitable |
+| Notebook | Use `nb.start()` | Use `nb.start()` |
 
-4. **Docking Parameters** (`docking_params`):
-   - Define dockable window layouts
-   - Create complex UI arrangements with splits
-   - Manage multiple alternative layouts
+**Desktop, async:**
 
-5. **Performance Settings**:
-   - Control frame rate limiting with `fps_idling` (global; for one animated widget, see "Animations and live data: idling" above)
-   - Mobile device optimizations
-   - Background rendering options
+```python
+import asyncio
+from imgui_bundle import immapp
 
-This comprehensive parameter system allows for highly customized applications while maintaining the simplicity of the basic API for common use cases.
+async def main():
+    await immapp.run_async(gui, window_title="My App")
+    print("GUI closed")
 
-#### Asset Management
+asyncio.run(main())
+```
 
-Hello ImGui provides a cross-platform asset system for fonts, images, and other resources.
+**Jupyter notebooks**: the `nb` module runs the GUI without blocking the next cells:
 
-**Asset Directories** - By default, assets are loaded from a folder named `assets` next to your executable or script:
+```python
+from imgui_bundle import immapp
+
+# Start GUI (non-blocking, continues to next cell)
+immapp.nb.start(gui, window_title="My App")
+
+# Later, to stop:
+immapp.nb.stop()
+
+# Check if running:
+if immapp.nb.is_running():
+    print("GUI is active")
+```
+
+**Pyodide (in the browser)**: `run()` starts the GUI and returns at once, since a browser cannot block. The same code works on the desktop (blocking) and in Pyodide:
+
+```python
+immapp.run(gui, window_title="My App")
+```
+
+To wait for the GUI's exit in Pyodide, use `run_async()`:
+
+```python
+import asyncio
+async def main():
+    await immapp.run_async(gui, window_title="My App")
+    print("GUI closed")
+asyncio.create_task(main())
+```
+
+More: https://imgui-bundle.pages.dev/doc/python/python-async/ and https://imgui-bundle.pages.dev/doc/python/python-pyodide/
+
+### Assets: fonts and images
+
+The runners load the assets from a folder named `assets`, next to the script or the executable:
 
 ```python
 # Set custom assets folder (call before run)
 hello_imgui.set_assets_folder("my_assets")
 ```
 
-**Loading Fonts**:
+**Fonts**, loaded in the `load_additional_fonts` callback:
 
 ```python
 from imgui_bundle import hello_imgui
@@ -529,7 +476,7 @@ params = hello_imgui.RunnerParams()
 params.callbacks.load_additional_fonts = load_fonts
 ```
 
-**Loading Images**:
+**Images:**
 
 ```python
 from imgui_bundle import hello_imgui, imgui
@@ -543,148 +490,68 @@ def gui():
     imgui.image(imgui.ImTextureRef(texture), imgui.ImVec2(100, 100))
 ```
 
-**DPI-Aware Sizing** - Use `em_size()` for resolution-independent sizing (see also "Common ImGui Patterns and Gotchas" section above):
-
-```python
-from imgui_bundle import imgui, em_to_vec2, em_size
-
-def gui():
-    em = em_size()  # Current font size (adapts to DPI)
-    imgui.button("Click", imgui.ImVec2(10 * em, 2 * em))
-
-    # Convenience function (preferred)
-    imgui.button("Click", em_to_vec2(10, 2))
-```
-
-#### API References
-
-Hello ImGui:
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/hello_imgui.pyi
-
-ImmApp:
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immapp/__init__.pyi
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/immapp/immapp_cpp.pyi
-
-The main function, `immapp.run()`, and its parameters (`with_implot`, `with_markdown`, `with_latex`...): https://imgui-bundle.pages.dev/llms/api/immapp.txt
-
-### ImGui API
-
-If needed, the Python bindings for ImGui are available in the following files:
-
-Python:
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/__init__.pyi
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui/internal.pyi
-
-(those are bindings for imgui.h and imgui_internal.h)
-
-### ImPlot and ImPlot3D API
-
-Below are the Python bindings for ImPlot and ImPlot3D, read them if needed:
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot/__init__.pyi
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/implot3d/__init__.pyi
-
-
-### All Library APIs
-
-All library stubs (Python type hints and API documentation) are in `bindings/imgui_bundle/*.pyi`:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle
-
-Key files: `hello_imgui.pyi`, `imgui/__init__.pyi`, `implot/__init__.pyi`, `immvision.pyi`, `immapp/__init__.pyi`
-
+The assets folder, and what it holds: https://imgui-bundle.pages.dev/doc/python/python-assets/ (C++: https://imgui-bundle.pages.dev/doc/cpp/cpp-assets/)
 
 ## Example programs and demos
 
-The ones below are the first to read. The whole catalog, with a line per demo and the links to its code: https://imgui-bundle.pages.dev/llms/demos.txt
-
+Read these first. The whole catalog, with a line per demo and the links to its code: https://imgui-bundle.pages.dev/llms/demos.txt
 
 ### Hello World
 
-Please do read these minimal hello world programs:
+Please do read these minimal programs, in Python and C++:
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp
 
-Hello World in Python and C++:
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_hello_world.py
-and
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_hello_world.cpp
+### A small program with ImGui, ImPlot and ImmApp
 
+A beating heart whose pulse is controlled by a knob: a good example of the three libraries together. Please do read it:
+- in Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py
+- in C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp
 
-### A small program using ImGui, ImPlot and ImmApp
-The program below shows a beating heart whose pulse is controlled by a knob.
-It is a good example of how to use ImGui, ImPlot and ImmApp together.
+### ImPlot and ImPlot3D demos (if needed)
 
-Please do read it:
+The full Python demos of ImPlot and ImPlot3D:
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py
 
-in python
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_implot_heart.py
-and in C++
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_implot_heart.cpp
+They are close translations of the C++ demos of the ImPlot and ImPlot3D repositories:
+- https://github.com/epezent/implot/blob/master/implot_demo.cpp
+- https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp
 
+### Complex layouts with Hello ImGui (if needed)
 
-### Demos for ImPlot and ImPlot3D
+This demo shows:
+- docking layouts (several, to switch between);
+- the status bar;
+- the default menus (App and View), and how to customize them;
+- a log window;
+- additional fonts, possibly colored, and emojis;
+- an app state (instead of static variables);
+- user settings saved in the ImGui ini file;
+- borderless windows, movable and resizable.
 
-If needed, a full set of Python demos for ImPlot and ImPlot3D are available:
+In Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py
+In C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
 
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot/implot_demo.py
+### A custom background (if needed)
 
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_implot3d/implot3d_demo.py
+A 3D background under the GUI, with OpenGL shaders:
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
 
-They are almost direct translation of the C++ demos available in the ImPlot and ImPlot3D repositories:
-https://github.com/epezent/implot/blob/master/implot_demo.cpp
-https://github.com/brenocq/implot3d/blob/main/implot3d_demo.cpp
+### Pure Python backends (if needed)
 
-
-
-### How to create complex applications layouts using Hello ImGui
-
-The demo below demonstrates how to use Hello ImGui to create complex applications layouts, using the following features:
-- set up a complex docking layouts (with several possible layouts):
-- use the status bar
-- use default menus (App and view menu), and how to customize them
-- display a log window
-- load additional fonts, possibly colored, and with emojis
-- use a specific application state (instead of using static variables)
-- save some additional user settings within imgui ini file
-- use borderless windows, that are movable and resizable
-
-Read it if needed.
-
-See
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_docking.py
-
-and its C++ equivalent:
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
-
-### Custom background:
-
-If a user wants to create a custom 3D background (using OpenGL and shaders), an example is available in the following files, which you can read if needed:
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_custom_background.py
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_custom_background.cpp
-
-### Pure python backends
-If a users wants to control the full app cycle (i.e. not using ImmApp or HelloImGui), they may want to use a pure python backend.
-
-If needed, read the following links to understand how to use the pure python backends:
-https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py
-
-https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py
-
+For an app that runs its own loop (without Hello ImGui or ImmApp):
+- https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_glfw3.py
+- https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/python_backends/examples/example_python_backend_sdl2.py
 
 ## ImmVision
 
-ImmVision is an image debugger with zoom, pan, pixel inspection, and colormaps. Key points:
+ImmVision is an image debugger: zoom, pan, pixel inspection, colormaps.
+- Color order: RGB by default. Call `immvision.use_bgr_color_order()` once at startup for OpenCV (BGR) images.
+- `image()`: the full display, with `ImageParams` for its options.
+- `image_display()`: a simple display.
+- `inspector_add_image()` / `inspector_show()`: the inspection of several images.
 
-- Color order: RGB by default; call `immvision.use_bgr_color_order()` once at startup for OpenCV (BGR) images
-- `image()`: Full-featured display with `ImageParams` for options
-- `image_display()`: Simple display
-- `inspector_add_image()` / `inspector_show()`: Multi-image inspection
-
-Demos: `demos_python/demos_immvision/` (display, inspector, processing, linked views)
-
-## Follow up
-
-**Consult the links that were marked with "if needed" if you need to help users with specific questions on the APIs**
+Demos: `demos_python/demos_immvision/` (display, inspector, processing, linked views).

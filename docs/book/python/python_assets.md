@@ -45,6 +45,40 @@ You can [download the default assets as a zip file](https://imgui-bundle.pages.d
 
 Look at the folder [imgui_bundle/bindings/imgui_bundle/assets](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/assets) to see its content.
 
+## Fonts and images
+
+Fonts are loaded in the `load_additional_fonts` callback, with paths relative to the assets folder:
+
+```python
+from imgui_bundle import hello_imgui
+
+def load_fonts():
+    # Load a font at 18px size
+    hello_imgui.load_font("fonts/Roboto-Regular.ttf", 18.0)
+
+    # Load with options (e.g., merge icons into previous font)
+    font_params = hello_imgui.FontLoadingParams()
+    font_params.merge_to_last_font = True
+    hello_imgui.load_font("fonts/icons.ttf", 16.0, font_params)
+
+params = hello_imgui.RunnerParams()
+params.callbacks.load_additional_fonts = load_fonts
+```
+
+Images are displayed from their path in the assets folder:
+
+```python
+from imgui_bundle import hello_imgui, imgui
+
+def gui():
+    # Load and display an image from assets
+    hello_imgui.image_from_asset("images/logo.png", imgui.ImVec2(100, 100))
+
+    # Or with its texture, e.g. for imgui.image() (which takes an ImTextureRef)
+    texture = hello_imgui.im_texture_id_from_asset("images/logo.png")
+    imgui.image(imgui.ImTextureRef(texture), imgui.ImVec2(100, 100))
+```
+
 ## Troubleshooting
 
 **"Assets not found" or missing fonts/images:**
@@ -52,7 +86,7 @@ Look at the folder [imgui_bundle/bindings/imgui_bundle/assets](https://github.co
 1. Ensure the `assets/` folder is in the same directory as your script
 2. If running from a different directory, set the path explicitly:
    ```python
-   import hello_imgui
+   from imgui_bundle import hello_imgui
    hello_imgui.set_assets_folder("/path/to/your/assets")
    ```
 3. For packaged applications, ensure assets are included in your distribution
