@@ -1,4 +1,4 @@
-"""The book in plain text, for AI assistants (published as llms/book.txt): its pages for users, one after the other.
+"""The book in plain text, for AI assistants (published as llms-full.txt): its pages for users, one after the other.
 
 The pages are those of the PDF (docs/book/_toc_pdf.yml) before the developer docs, but for the guide for AI assistants
 (published as llms.txt) and the demos (llms/demos.txt has them, with their links). Each page starts with its URL.

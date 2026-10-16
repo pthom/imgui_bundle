@@ -41,7 +41,7 @@ The install pages, with the platform notes: https://imgui-bundle.pages.dev/doc/p
 ## Where to find more
 
 **The book, in plain text (if needed):**
-https://imgui-bundle.pages.dev/llms/book.txt holds the book's pages for users, one after the other (about 18,000 words): how to install, the core libraries, the add-ons, the notes for Python and for C++. Read it for a question that this page does not answer.
+https://imgui-bundle.pages.dev/llms-full.txt holds the book's pages for users, one after the other (about 18,000 words): how to install, the core libraries, the add-ons, the notes for Python and for C++. Read it for a question that this page does not answer.
 
 **The API, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui).

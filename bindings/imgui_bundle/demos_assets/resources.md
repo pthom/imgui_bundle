@@ -12,7 +12,7 @@
 
 - [Dear ImGui Bundle documentation](https://imgui-bundle.pages.dev/doc/), also as a [PDF](https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf)
 - [API reference](https://imgui-bundle.pages.dev/doc/api/): every function, class and enum of each library, with its Python and C++ signatures; also [in plain text](https://imgui-bundle.pages.dev/llms/api/index.txt), for AI assistants
-- [For AI assistants](https://imgui-bundle.pages.dev/doc/intro/ai-guide/): a page written for them (also at https://imgui-bundle.pages.dev/llms.txt), and the book [in plain text](https://imgui-bundle.pages.dev/llms/book.txt)
+- [For AI assistants](https://imgui-bundle.pages.dev/doc/intro/ai-guide/): a page written for them (also at https://imgui-bundle.pages.dev/llms.txt), and the book [in plain text](https://imgui-bundle.pages.dev/llms-full.txt)
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui), also as a [PDF](https://pthom.github.io/hello_imgui/hello_imgui_book.pdf). Hello ImGui provides a simple framework to quickly create applications using Dear ImGui. It is included in Dear ImGui Bundle.
 - [Fiatlight documentation](https://pthom.github.io/fiatlight), also as a [PDF](https://pthom.github.io/fiatlight/flgt.pdf). Fiatlight provides automatic UI generation for functions and structured data (dataclasses, pydantic models), making it a powerful tool for rapid prototyping and application development. It is built on top of Dear ImGui Bundle.
 - [litgen documentation](https://pthom.github.io/litgen/): the generator of the Python bindings

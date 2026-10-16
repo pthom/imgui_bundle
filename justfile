@@ -459,7 +459,7 @@ cf_stage:
     cp docs/book/intro/demos.txt {{_CF_STAGING}}/llms/demos.txt  # the demos in plain text (written by playground_examples_docs)
     rsync -a --delete docs/book/api/llms/ {{_CF_STAGING}}/llms/api/  # the API in plain text (written by api_pages)
     cp docs/book/api/explorers.txt {{_CF_STAGING}}/llms/explorers.txt  # the explorers in plain text (written by api_pages)
-    python ci_scripts/llms_book.py {{_CF_STAGING}}/llms/book.txt  # the book's pages for users, in plain text
+    python ci_scripts/llms_book.py {{_CF_STAGING}}/llms-full.txt  # the book's pages for users, in plain text (llmstxt.org's name for the whole doc)
     #
     # 6. Place an up to date assets.zip
     # ------------------------------------------------------------
