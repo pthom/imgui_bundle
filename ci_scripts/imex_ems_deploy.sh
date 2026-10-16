@@ -16,8 +16,10 @@ if [ ! -d "$CHECKOUT_DIR/.git" ]; then
     git clone "$REMOTE_URL" "$CHECKOUT_DIR"
 fi
 
-# Clear website dir (keep .nojekyll, and the IndexNow key's file: see `just site_recrawl`)
-find "$WEBSITE" -mindepth 1 ! -name '.nojekyll' ! -name '4a5941b545eb53e6d66dc55845681b0a.txt' -delete 2>/dev/null || true
+# Clear website dir (keep .nojekyll, the IndexNow key's file (see `just site_recrawl`), and Google Search Console's
+# verification file)
+find "$WEBSITE" -mindepth 1 ! -name '.nojekyll' ! -name '4a5941b545eb53e6d66dc55845681b0a.txt' \
+    ! -name 'googlefd56dbd2b8d2f8bc.html' -delete 2>/dev/null || true
 
 # Copy build output to website root (no .gz files — GitHub Pages CDN handles compression)
 rsync -a --exclude='*.gz' build_imex_ems/bin/ "$WEBSITE"/
