@@ -226,7 +226,7 @@ ignore_missing_imports = true
 build-verbosity = 1
 
 # Target python versions:
-build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*"]
+build = ["cp311-*", "cp312-*", "cp313-*", "cp314-*", "cp315-*"]
 
 # Tests : we ignore the python GUI tests here, as they require a display
 # (note: those tests are run in the pip.yml GitHub actions workflows)
