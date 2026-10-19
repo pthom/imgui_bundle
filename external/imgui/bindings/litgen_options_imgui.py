@@ -59,6 +59,9 @@ def _preprocess_imgui_code(code: str) -> str:
     # It is removed, because srcML would read it as a part of the return type.
     new_code, _n = re.subn(r"(?<!#define )\bIM_NODEBUGSTEP[ \t]+", "", new_code)
 
+    # imgui_stacklayout.h starts with its changelog: it is removed, so that it does not land in the stubs
+    new_code, _n = re.subn(r"/\*\s*CHANGELOG\n.*?\*/", "", new_code, flags=re.DOTALL)
+
     new_code = new_code.replace("unsigned char", "uchar")
 
     return new_code

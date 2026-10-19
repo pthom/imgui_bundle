@@ -136,17 +136,23 @@ imgui.get_style().curve_tessellation_max_error = 1.12   # was: curve_tessellatio
 - Test Engine: new `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()` and `TestOpFlags_.no_wait_when_moving`.
 
 
-## Behavior change: StackLayout clips the content of fixed-size layouts
+## StackLayout v2.2: behavior changes
 
-`BeginHorizontal` / `BeginVertical` (StackLayout, by thedmd) now clip their content on the axes where they were given a **fixed size**. ImGui Bundle had disabled thedmd's clipping since 2024, because it hid the content submitted after a nested layout.
-
-Visible effect: a layout created with a fixed width or height cuts the content that overflows it, instead of letting it draw over its neighbors. Axes with an automatic size (the default) are not clipped, so layouts created without a size are not affected. (This differs from thedmd's implementation, which also clips auto-sized layouts to their measured size: that cuts selection highlights and user-drawn decorations, and costs one draw command per layout.)
+`BeginHorizontal` / `BeginVertical` / `Spring` (StackLayout, by thedmd) follow his [v2.2](https://github.com/ocornut/imgui/pull/846#issuecomment-6232934755), which includes the fixes ImGui Bundle carried. What changes for an application:
+- A negative size is relative to the far edge of the content region, as for other widgets (`-FLT_MIN` fills it). It meant "automatic", like 0.
+- Items flow as in a menu bar: in a horizontal layout, `separator()` is vertical, `menu_item()` / `begin_menu()` look as in a menu bar, and `new_line()` starts a new row.
+- A layout scopes its contents like `push_id()` with its identifier, as `begin_table()` and `tree_node()` do. The IDs of the items inside a layout change: settings saved under them (e.g. the columns of a table, in imgui.ini) reset once.
+- A layout clips its content only on the axes given a fixed size. Axes with an automatic size (the default) are not clipped, and decorations at the edge of a layout (the focus rectangle, a selection highlight) are no longer cut. ImGui Bundle had disabled the clipping since 2024.
 
 ```python
 imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
 imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
 imgui.end_horizontal()
 ```
+
+Fixed: widgets that call `same_line()` (`drag_float3()`, `input_int()`, `color_edit3()`...) no longer collapse in a horizontal layout; `ListClipper` works in a vertical layout, tables in a horizontal one.
+
+New: `imgui.set_next_layout_debug_flags()` draws the springs or the items of the next layout (see "Layout & Scrolling / Stack Layout" in the demo). `imgui.StyleVar_.layout_align` moves to the end of the enum: the style vars after it have their stock Dear ImGui values again.
 
 ## imgui-node-editor: widgets inside nodes, and a fork that works with a stock Dear ImGui
 

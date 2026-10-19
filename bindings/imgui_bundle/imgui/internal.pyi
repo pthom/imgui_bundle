@@ -5932,6 +5932,8 @@ class TableTempData:
     host_backup_item_width: float  # Backup of OuterWindow->DC.ItemWidth at the end of BeginTable()
     # int                         HostBackupItemWidthStackSize;    /* original C++ signature */
     host_backup_item_width_stack_size: int  # Backup of OuterWindow->DC.ItemWidthStack.Size at the end of BeginTable()
+    # ImGuiLayoutType             HostBackupLayoutType;    /* original C++ signature */
+    host_backup_layout_type: LayoutType  # Backup of InnerWindow->DC.LayoutType at the end of BeginTable()
 
     # ImGuiTableTempData();    /* original C++ signature */
     def __init__(self) -> None:

@@ -248,6 +248,8 @@ KeyChord = ModFlags  # == int. We generally use ImGuiKeyChord to mean "a ImGuiKe
 ImFontFlags = int  # -> enum ImFontFlags_          // Flags: for ImFont
 # typedef int ImGuiListClipperFlags;    /* original C++ signature */
 ListClipperFlags = int
+# typedef int ImGuiLayoutDebugFlags;    /* original C++ signature */
+LayoutDebugFlags = int  # -> enum LayoutDebugFlags_   # Flags: for set_next_layout_debug_flags()
 
 """
 // ImTexture: user data for renderer backend to identify a texture [Compile-time configurable type]
@@ -4702,48 +4704,48 @@ class StyleVar_(enum.IntFlag):
     image_rounding = enum.auto()  # (= 23)  # float     ImageRounding
     # ImGuiStyleVar_ImageBorderSize,              /* original C++ signature */
     image_border_size = enum.auto()  # (= 24)  # float     ImageBorderSize
-    # ImGuiStyleVar_LayoutAlign,                  /* original C++ signature */
-    layout_align = enum.auto()  # (= 25)  # float     LayoutAlign
     # ImGuiStyleVar_TabRounding,                  /* original C++ signature */
-    tab_rounding = enum.auto()  # (= 26)  # float     TabRounding
+    tab_rounding = enum.auto()  # (= 25)  # float     TabRounding
     # ImGuiStyleVar_TabBorderSize,                /* original C++ signature */
-    tab_border_size = enum.auto()  # (= 27)  # float     TabBorderSize
+    tab_border_size = enum.auto()  # (= 26)  # float     TabBorderSize
     # ImGuiStyleVar_TabMinWidthBase,              /* original C++ signature */
-    tab_min_width_base = enum.auto()  # (= 28)  # float     TabMinWidthBase
+    tab_min_width_base = enum.auto()  # (= 27)  # float     TabMinWidthBase
     # ImGuiStyleVar_TabMinWidthShrink,            /* original C++ signature */
-    tab_min_width_shrink = enum.auto()  # (= 29)  # float     TabMinWidthShrink
+    tab_min_width_shrink = enum.auto()  # (= 28)  # float     TabMinWidthShrink
     # ImGuiStyleVar_TabBarBorderSize,             /* original C++ signature */
-    tab_bar_border_size = enum.auto()  # (= 30)  # float     TabBarBorderSize
+    tab_bar_border_size = enum.auto()  # (= 29)  # float     TabBarBorderSize
     # ImGuiStyleVar_TabBarOverlineSize,           /* original C++ signature */
-    tab_bar_overline_size = enum.auto()  # (= 31)  # float     TabBarOverlineSize
+    tab_bar_overline_size = enum.auto()  # (= 30)  # float     TabBarOverlineSize
     # ImGuiStyleVar_TableAngledHeadersAngle,      /* original C++ signature */
-    table_angled_headers_angle = enum.auto()  # (= 32)  # float     TableAngledHeadersAngle
+    table_angled_headers_angle = enum.auto()  # (= 31)  # float     TableAngledHeadersAngle
     # ImGuiStyleVar_TableAngledHeadersTextAlign,    /* original C++ signature */
-    table_angled_headers_text_align = enum.auto()  # (= 33)  # ImVec2  TableAngledHeadersTextAlign
+    table_angled_headers_text_align = enum.auto()  # (= 32)  # ImVec2  TableAngledHeadersTextAlign
     # ImGuiStyleVar_TreeLinesSize,                /* original C++ signature */
-    tree_lines_size = enum.auto()  # (= 34)  # float     TreeLinesSize
+    tree_lines_size = enum.auto()  # (= 33)  # float     TreeLinesSize
     # ImGuiStyleVar_TreeLinesRounding,            /* original C++ signature */
-    tree_lines_rounding = enum.auto()  # (= 35)  # float     TreeLinesRounding
+    tree_lines_rounding = enum.auto()  # (= 34)  # float     TreeLinesRounding
     # ImGuiStyleVar_MenuItemRounding,             /* original C++ signature */
-    menu_item_rounding = enum.auto()  # (= 36)  # float     MenuItemRounding
+    menu_item_rounding = enum.auto()  # (= 35)  # float     MenuItemRounding
     # ImGuiStyleVar_SelectableRounding,           /* original C++ signature */
-    selectable_rounding = enum.auto()  # (= 37)  # float     SelectableRounding
+    selectable_rounding = enum.auto()  # (= 36)  # float     SelectableRounding
     # ImGuiStyleVar_DragDropTargetRounding,       /* original C++ signature */
-    drag_drop_target_rounding = enum.auto()  # (= 38)  # float     DragDropTargetRounding
+    drag_drop_target_rounding = enum.auto()  # (= 37)  # float     DragDropTargetRounding
     # ImGuiStyleVar_ButtonTextAlign,              /* original C++ signature */
-    button_text_align = enum.auto()  # (= 39)  # ImVec2    ButtonTextAlign
+    button_text_align = enum.auto()  # (= 38)  # ImVec2    ButtonTextAlign
     # ImGuiStyleVar_SelectableTextAlign,          /* original C++ signature */
-    selectable_text_align = enum.auto()  # (= 40)  # ImVec2    SelectableTextAlign
+    selectable_text_align = enum.auto()  # (= 39)  # ImVec2    SelectableTextAlign
     # ImGuiStyleVar_SeparatorSize,                /* original C++ signature */
-    separator_size = enum.auto()  # (= 41)  # float     SeparatorSize
+    separator_size = enum.auto()  # (= 40)  # float     SeparatorSize
     # ImGuiStyleVar_SeparatorTextBorderSize,      /* original C++ signature */
-    separator_text_border_size = enum.auto()  # (= 42)  # float     SeparatorTextBorderSize
+    separator_text_border_size = enum.auto()  # (= 41)  # float     SeparatorTextBorderSize
     # ImGuiStyleVar_SeparatorTextAlign,           /* original C++ signature */
-    separator_text_align = enum.auto()  # (= 43)  # ImVec2    SeparatorTextAlign
+    separator_text_align = enum.auto()  # (= 42)  # ImVec2    SeparatorTextAlign
     # ImGuiStyleVar_SeparatorTextPadding,         /* original C++ signature */
-    separator_text_padding = enum.auto()  # (= 44)  # ImVec2    SeparatorTextPadding
+    separator_text_padding = enum.auto()  # (= 43)  # ImVec2    SeparatorTextPadding
     # ImGuiStyleVar_DockingSeparatorSize,         /* original C++ signature */
-    docking_separator_size = enum.auto()  # (= 45)  # float     DockingSeparatorSize
+    docking_separator_size = enum.auto()  # (= 44)  # float     DockingSeparatorSize
+    # ImGuiStyleVar_LayoutAlign,                  /* original C++ signature */
+    layout_align = enum.auto()  # (= 45)  # float     LayoutAlign
     # ImGuiStyleVar_COUNT    /* original C++ signature */
     # }
     count = enum.auto()  # (= 46)
@@ -12217,7 +12219,7 @@ def color_picker4(
 ####################    </generated_from:imgui.h>    ####################
 
 ####################    <generated_from:imgui_stacklayout.h>    ####################
-# dear imgui, v1.86 WIP
+# dear imgui: stack layouts
 # (stack layout headers)
 
 #
@@ -12227,6 +12229,8 @@ def color_picker4(
 #
 #
 
+# Version of the stack layout code, independent of IMGUI_VERSION. X.Y is X * 10000 + Y * 100 in IMGUI_STACK_LAYOUT_VERSION_NUM.
+
 # #ifndef IMGUI_DISABLE
 #
 
@@ -12234,6 +12238,22 @@ def color_picker4(
 # [SECTION] Stack Layout API
 # -----------------------------------------------------------------------------
 
+# enum ImGuiLayoutDebugFlags_    /* original C++ signature */
+class LayoutDebugFlags_(enum.IntFlag):
+    """Flags for SetNextLayoutDebugFlags()"""
+
+    # ImGuiLayoutDebugFlags_None          = 0,    /* original C++ signature */
+    none = enum.auto()  # (= 0)
+    # ImGuiLayoutDebugFlags_DrawSprings   = 1 << 0,       /* original C++ signature */
+    draw_springs = enum.auto()  # (= 1 << 0)  # Draw springs and their spacing.
+    # ImGuiLayoutDebugFlags_DrawItems     = 1 << 1,       /* original C++ signature */
+    draw_items = enum.auto()  # (= 1 << 1)  # Draw the bounds of the items between springs.
+
+# Stack layouts: items flow along the layout, and springs share the free space by weight.
+# - size: 0.0 = automatic, > 0.0 = fixed, < 0.0 = relative to the far edge of the content region, as in CalcItemSize() (-FLT_MIN fills it).
+# - align: position of items on the other axis, from 0.0 (left/top) to 1.0 (right/bottom). < 0.0 uses style.LayoutAlign.
+# - IDs: contents are scoped like PushID() with the same identifier. To reach an ID across the scope, take it outside,
+#   e.g. ImGuiID popup_id = GetID("popup") before BeginHorizontal(), OpenPopup(popup_id) inside, BeginPopup("popup") after EndHorizontal().
 # IMGUI_API void BeginHorizontal(const char* str_id, const ImVec2& size = ImVec2(0, 0), float align = -1.0f);    /* original C++ signature */
 @overload
 def begin_horizontal(str_id: str, size: Optional[ImVec2Like] = None, align: float = -1.0) -> None:
@@ -12302,29 +12322,13 @@ def suspend_layout() -> None:
 def resume_layout() -> None:
     pass
 
+# IMGUI_API void SetNextLayoutDebugFlags(ImGuiLayoutDebugFlags flags);       /* original C++ signature */
+def set_next_layout_debug_flags(flags: LayoutDebugFlags) -> None:
+    """Draw the next layout and the layouts nested in it. Exact once the outermost layout ends, as their sizes settle there."""
+    pass
+
 # #endif
 ####################    </generated_from:imgui_stacklayout.h>    ####################
-
-####################    <generated_from:imgui_stacklayout_internal.h>    ####################
-# dear imgui, v1.86 WIP
-# (stack layout headers)
-
-#
-#
-# Index of this file:
-# // [SECTION] Stack Layout Internal API
-#
-#
-
-# #ifndef IMGUI_DISABLE
-#
-
-# -----------------------------------------------------------------------------
-# [SECTION] Stack Layout Internal API
-# -----------------------------------------------------------------------------
-
-# #endif
-####################    </generated_from:imgui_stacklayout_internal.h>    ####################
 
 ####################    <generated_from:imgui_stdlib.h>    ####################
 # dear imgui: wrappers for C++ standard library (STL) types (std::string, etc.)

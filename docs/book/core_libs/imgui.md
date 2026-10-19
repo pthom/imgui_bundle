@@ -259,6 +259,9 @@ ImGui::EndHorizontal();
 :::
 ::::
 
+- The size of a layout: 0 is automatic, a positive value is fixed, a negative value is relative to the far edge of the content region, as for other widgets (`-FLT_MIN` fills it).
+- A layout scopes its contents like `push_id()`. A popup opened inside a layout and begun after it needs an ID taken before the layout: `popup_id = imgui.get_id("popup")`, then `imgui.open_popup(popup_id)` inside, and `imgui.begin_popup("popup")` after the layout.
+
 ### DPI-Aware Sizing (Basic)
 
 Avoid hardcoded pixel sizes for portable UIs. Use sizes relative to the font:

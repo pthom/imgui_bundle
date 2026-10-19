@@ -3489,6 +3489,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("host_backup_columns_offset", &ImGuiTableTempData::HostBackupColumnsOffset, "Backup of OuterWindow->DC.ColumnsOffset at the end of BeginTable()")
         .def_rw("host_backup_item_width", &ImGuiTableTempData::HostBackupItemWidth, "Backup of OuterWindow->DC.ItemWidth at the end of BeginTable()")
         .def_rw("host_backup_item_width_stack_size", &ImGuiTableTempData::HostBackupItemWidthStackSize, "Backup of OuterWindow->DC.ItemWidthStack.Size at the end of BeginTable()")
+        .def_rw("host_backup_layout_type", &ImGuiTableTempData::HostBackupLayoutType, "Backup of InnerWindow->DC.LayoutType at the end of BeginTable()")
         .def(nb::init<>())
         ;
 

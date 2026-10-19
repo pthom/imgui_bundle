@@ -148,6 +148,7 @@ The Dear ImGui fork is kept as a short list of thematic commits on top of upstre
 
 ```
 $ git log --oneline official/docking..imgui_bundle
+[Bundle] imgui_demo.cpp: ShowDemoWindow_MenuSectionWindow(), the window of a section of the demo's menus
 [Bundle] Move the docking internal types from imgui.cpp to imgui_internal.h
 [Bundle] imgui_freetype: PlutoSVG's FreeType hooks are in <plutosvg-ft.h>
 [Bundle] Python build: throwing IM_ASSERT support and std::function callback typedefs
@@ -155,14 +156,13 @@ $ git log --oneline official/docking..imgui_bundle
 [Bundle] Emscripten / Pyodide: SDL2 backend fixes
 [Bundle] ImGuiContext::InputTextMultilineOverride
 [Bundle] ImGuiContext::BeginWindowCallback / EndWindowCallback, called by Begin() and End()
-StackLayout: fix the vertical drift of items with a fractional height in horizontal layouts
-StackLayout: inflate an auto-sized layout to its parent only when it has springs
-StackLayout: fix unused parameter / variable warnings
-StackLayout: fix the clipping of content submitted after a nested layout
-StackLayout: thedmd's Stack Layout implementation v2.1 (PR #846)
+Widgets: Sliders & Drags display the value in a tooltip on touchscreens.
+Stack Layout implementation v2.2
+Internals: CallContextHooks(): fixed iterating a reallocated array when a hook callback adds a hook.
+Tables: fixed items in a cell being laid out on one line when the table is submitted in a horizontal layout (e.g. a menu bar).
 ```
 
-- **StackLayout** (`BeginHorizontal` / `BeginVertical` / `Spring`) comes from [thedmd's branch](https://github.com/thedmd/imgui/tree/feature/docking-layout-external). The first commit holds his three layout files verbatim plus the hooks ported to the current Dear ImGui; each following commit is one fix, proposed upstream to him. When he publishes a new version: replace the three files in the first commit, and drop the fixes he integrated.
+- **StackLayout** (`BeginHorizontal` / `BeginVertical` / `Spring`) comes from [thedmd's branch](https://github.com/thedmd/imgui/tree/feature/docking-layout-external): its three commits, cherry-picked as they are. The first two are fixes he proposes to Dear ImGui (the Tables one is [#9589](https://github.com/ocornut/imgui/pull/9589)); the third holds the layout itself. A fix of ours goes on top of them, as a commit of its own, proposed upstream to him. When he publishes a new version: replace his commits, and drop the fixes he integrated.
 - When a change belongs to an existing theme, fold it into that commit (`git commit --fixup` then `git rebase --autosquash`) instead of stacking a new commit on top. A new commit is for a new theme.
 - **The two commits used by imgui-node-editor are generic** (two callbacks called by `Begin()` / `End()`, and an override point for `InputTextMultiline()`): Dear ImGui does not know about the node editor. Each one defines a macro (`IMGUI_HAS_BEGIN_END_WINDOW_CALLBACKS`, `IMGUI_HAS_INPUT_TEXT_MULTILINE_OVERRIDE`) that the node editor tests. They are also published as patch files in the node editor fork (see below).
 - **What remains specific to Python** in this fork is small: the two `std::function` callback typedefs (`ImGuiInputTextCallback`, `ImGuiSizeCallback`), destructors marked `noexcept(false)` because `IM_ASSERT` throws in the Python build, and the `IMGUI_BUNDLE_PYTHON_UNSUPPORTED_API` marker. All other Python adaptations live in the bundle (mechanisms 1 to 3 above).

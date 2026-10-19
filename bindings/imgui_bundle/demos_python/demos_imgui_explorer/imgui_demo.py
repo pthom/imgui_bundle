@@ -3781,7 +3781,13 @@ def show_demo_window_layout():
         _, static.sl_horizontal = imgui.checkbox("Horizontal", static.sl_horizontal); imgui.same_line()
         _, static.sl_minimize_width = imgui.checkbox("Minimize Width", static.sl_minimize_width); imgui.same_line()
         _, static.sl_minimize_height = imgui.checkbox("Minimize Height", static.sl_minimize_height)
-        _, static.sl_draw_springs = imgui.checkbox("Draw Springs", static.sl_draw_springs)
+        _, static.sl_draw_springs = imgui.checkbox("Draw Springs", static.sl_draw_springs); imgui.same_line()
+        imgui.text_unformatted(" "); imgui.same_line()
+        imgui.color_button("- Spring", imgui.ImColor(80, 20, 80).value, imgui.ColorEditFlags_.no_tooltip | imgui.ColorEditFlags_.no_picker); imgui.same_line()
+        imgui.text_unformatted("Spring"); imgui.same_line()
+        imgui.text_unformatted(" "); imgui.same_line()
+        imgui.color_button("- Spacing", imgui.ImColor(80, 20, 20).value, imgui.ColorEditFlags_.no_tooltip | imgui.ColorEditFlags_.no_picker); imgui.same_line()
+        imgui.text_unformatted("Item Spacing")
         _, static.sl_item_spacing[0 if static.sl_horizontal else 1] = imgui.drag_float("Item Spacing", static.sl_item_spacing[0 if static.sl_horizontal else 1], 0.1, 0.0, 50.0)
         _, static.sl_a_c_spring_weight = imgui.drag_float("A & C Spring Weight", static.sl_a_c_spring_weight, 0.002, 0.0, 1.0)
         _, static.sl_ab_spring_weight = imgui.drag_float("AB Spring Weight", static.sl_ab_spring_weight, 0.002, 0.0, 1.0)
@@ -3806,6 +3812,8 @@ def show_demo_window_layout():
 
         imgui.push_style_var(imgui.StyleVar_.item_spacing, ImVec2(int(static.sl_item_spacing[0]), int(static.sl_item_spacing[1])))
 
+        # The layout draws its springs: their sizes are known once the layout ends.
+        imgui.set_next_layout_debug_flags(imgui.LayoutDebugFlags_.draw_springs if static.sl_draw_springs else imgui.LayoutDebugFlags_.none)
         if static.sl_horizontal:
             imgui.begin_horizontal("h1", layout_size, static.sl_alignment)
         else:

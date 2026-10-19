@@ -3601,7 +3601,6 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("grab_rounding", ImGuiStyleVar_GrabRounding, "float     GrabRounding")
             .value("image_rounding", ImGuiStyleVar_ImageRounding, "float     ImageRounding")
             .value("image_border_size", ImGuiStyleVar_ImageBorderSize, "float     ImageBorderSize")
-            .value("layout_align", ImGuiStyleVar_LayoutAlign, "float     LayoutAlign")
             .value("tab_rounding", ImGuiStyleVar_TabRounding, "float     TabRounding")
             .value("tab_border_size", ImGuiStyleVar_TabBorderSize, "float     TabBorderSize")
             .value("tab_min_width_base", ImGuiStyleVar_TabMinWidthBase, "float     TabMinWidthBase")
@@ -3622,6 +3621,7 @@ void py_init_module_imgui_main(nb::module_& m)
             .value("separator_text_align", ImGuiStyleVar_SeparatorTextAlign, "ImVec2    SeparatorTextAlign")
             .value("separator_text_padding", ImGuiStyleVar_SeparatorTextPadding, "ImVec2    SeparatorTextPadding")
             .value("docking_separator_size", ImGuiStyleVar_DockingSeparatorSize, "float     DockingSeparatorSize")
+            .value("layout_align", ImGuiStyleVar_LayoutAlign, "float     LayoutAlign")
             .value("count", ImGuiStyleVar_COUNT, "");
 
 
@@ -8110,6 +8110,13 @@ void py_init_module_imgui_main(nb::module_& m)
     //
 
 
+    auto pyEnumLayoutDebugFlags_ =
+        nb::enum_<ImGuiLayoutDebugFlags_>(m, "LayoutDebugFlags_", nb::is_arithmetic(), nb::is_flag(), "Flags for SetNextLayoutDebugFlags()")
+            .value("none", ImGuiLayoutDebugFlags_None, "")
+            .value("draw_springs", ImGuiLayoutDebugFlags_DrawSprings, "Draw springs and their spacing.")
+            .value("draw_items", ImGuiLayoutDebugFlags_DrawItems, "Draw the bounds of the items between springs.");
+
+
     m.def("begin_horizontal",
         [](const char * str_id, const std::optional<const ImVec2> & size = std::nullopt, float align = -1.0f)
         {
@@ -8250,15 +8257,13 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("resume_layout",
         ImGui::ResumeLayout);
+
+    m.def("set_next_layout_debug_flags",
+        ImGui::SetNextLayoutDebugFlags,
+        nb::arg("flags"),
+        "Draw the next layout and the layouts nested in it. Exact once the outermost layout ends, as their sizes settle there.");
     // #endif
     ////////////////////    </generated_from:imgui_stacklayout.h>    ////////////////////
-
-
-    ////////////////////    <generated_from:imgui_stacklayout_internal.h>    ////////////////////
-    // #ifndef IMGUI_DISABLE
-    //
-    // #endif
-    ////////////////////    </generated_from:imgui_stacklayout_internal.h>    ////////////////////
 
 
     ////////////////////    <generated_from:imgui_stdlib.h>    ////////////////////
