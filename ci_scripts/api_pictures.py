@@ -71,6 +71,8 @@ CROPS: dict[tuple[str, str], Crop] = {  # (library, section): its crop, where th
     ("imgui", "Examples/Custom rendering/Primitives"): Crop(top=411, height=212),  # the shapes, under their controls
     ("implot3d", "Plots/Surface Plots"): Crop(top=250, height=370),  # the plot, under its controls
 }
+NO_PICTURE = {("imgui", "Examples/Simple overlay")}  # (library, section): no readable picture (a small window over
+# the others): its pages show the link alone
 
 
 def _hash(section: DemoSection) -> str:
@@ -222,7 +224,7 @@ def main() -> None:
     parser.add_argument("--sheet", type=Path, help="contact sheets of the pictures, in this folder")
     parser.add_argument("--raw", type=Path, help="the whole pages as PNG, in this folder (no picture saved)")
     args = parser.parse_args()
-    sections = _selected(linked_demo_sections(), args.names)
+    sections = [s for s in _selected(linked_demo_sections(), args.names) if (s.library, s.path) not in NO_PICTURE]
     if args.sheet:
         contact_sheets(sections, args.sheet)
         return
