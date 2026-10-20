@@ -9,7 +9,7 @@ def lib_glfw() -> ExternalLibrary:
     return ExternalLibrary(
         name="glfw",
         official_git_url="https://github.com/glfw/glfw.git",
-        pinned_tag="3.4",  # the GLFW of the desktop Python wheel (a shared library, for pyGLFW too)
+        pinned_tag="3.5.1",  # the GLFW of the desktop Python wheel (a shared library, for pyGLFW too)
         is_published_in_python=False
     )
 
