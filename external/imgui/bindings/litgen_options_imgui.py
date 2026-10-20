@@ -710,9 +710,12 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     """,
     )
 
-    # Simplified versions of MenuItem and BeginTabItem (the C++ overloads with an output param are also bound)
+    # Simplified versions of Begin, MenuItem and BeginTabItem (the C++ overloads with an output param are also bound)
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
+        def begin_simple(name: str, flags: WindowFlags = 0) -> bool:
+            """create a window (non-closable). Returns False when it is collapsed or fully clipped. Always call end(), even then."""
+            pass
         def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool = False, enabled: bool = True) -> bool:
             """return True when activated. (simplified version of menu_item, where selected is read-only)"""
             pass
@@ -721,6 +724,10 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             pass
     ''',
         pydef_code="""
+        LG_MODULE.def("begin_simple",
+            [](const char* name, ImGuiWindowFlags flags) -> bool { return ImGui::Begin(name, NULL, flags); },
+            nb::arg("name"), nb::arg("flags") = 0,
+            "create a window (non-closable). Returns False when it is collapsed or fully clipped. Always call end(), even then.");
         LG_MODULE.def("menu_item_simple",
             [](const char* label, std::optional<std::string> shortcut, bool selected, bool enabled) -> bool {
                 return ImGui::MenuItem(label, shortcut.has_value() ? shortcut->c_str() : nullptr, selected, enabled);

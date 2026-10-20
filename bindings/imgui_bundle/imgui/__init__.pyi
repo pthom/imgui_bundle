@@ -12105,6 +12105,10 @@ def color_convert_hsv_to_rgb(h: float, s: float, v: float) -> Tuple[float, float
     """Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])"""
     ...
 
+def begin_simple(name: str, flags: WindowFlags = 0) -> bool:
+    """create a window (non-closable). Returns False when it is collapsed or fully clipped. Always call end(), even then."""
+    pass
+
 def menu_item_simple(label: str, shortcut: Optional[str] = None, selected: bool = False, enabled: bool = True) -> bool:
     """return True when activated. (simplified version of menu_item, where selected is read-only)"""
     pass

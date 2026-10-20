@@ -7989,6 +7989,10 @@ void py_init_module_imgui_main(nb::module_& m)
             return std::make_tuple(r, g, b);
         }, nb::arg("h"), nb::arg("s"), nb::arg("v"),
         "Convert hsv floats ([0-1],[0-1],[0-1]) to rgb floats ([0-1],[0-1],[0-1])");
+    m.def("begin_simple",
+        [](const char* name, ImGuiWindowFlags flags) -> bool { return ImGui::Begin(name, NULL, flags); },
+        nb::arg("name"), nb::arg("flags") = 0,
+        "create a window (non-closable). Returns False when it is collapsed or fully clipped. Always call end(), even then.");
     m.def("menu_item_simple",
         [](const char* label, std::optional<std::string> shortcut, bool selected, bool enabled) -> bool {
             return ImGui::MenuItem(label, shortcut.has_value() ? shortcut->c_str() : nullptr, selected, enabled);

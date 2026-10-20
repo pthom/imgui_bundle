@@ -171,6 +171,7 @@ Many functions come in begin/end pairs. Two rules:
        imgui.text("Content")
        imgui.end()  # Only called when window is visible - BUG!
    ```
+   For a window without a close button, `imgui.begin_simple("Window")` returns `expanded` alone, a bool: `if imgui.begin_simple("Window"):`, then `imgui.end()` after the `if`.
 
 2. **Other begin/end pairs**: call `end_*()` only if `begin_*()` returned True:
    ```python

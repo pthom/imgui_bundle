@@ -148,6 +148,7 @@ if imgui.begin_menu("File"):
 
 # Note: begin() is an exception, always call end(), even if begin() returned False
 # begin() returns two values: (expanded, opened); opened is the state of the close button, if any
+# (begin_simple("My Window") returns expanded alone, for a window without a close button)
 expanded, _ = imgui.begin("My Window")
 if expanded:
     imgui.text("Content here")
