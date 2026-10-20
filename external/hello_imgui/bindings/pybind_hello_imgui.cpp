@@ -1215,7 +1215,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("show_menus", &HelloImGui::RunnerCallbacks::ShowMenus, " `ShowMenus`: Fill it with a function that will add ImGui menus by calling:\n       ImGui::BeginMenu(...) / ImGui::MenuItem(...) / ImGui::EndMenu()\n   Notes:\n   * you do not need to call ImGui::BeginMenuBar and ImGui::EndMenuBar\n   * Some default menus can be provided:\n     see ImGuiWindowParams options:\n         _showMenuBar, showMenu_App_QuitAbout, showMenu_View_")
         .def_rw("show_app_menu_items", &HelloImGui::RunnerCallbacks::ShowAppMenuItems, " `ShowAppMenuItems`: A function that will render items that will be placed\n in the App menu. They will be placed before the \"Quit\" MenuItem,\n which is added automatically by HelloImGui.\n  This will be displayed only if ImGuiWindowParams.showMenu_App is True")
         .def_rw("show_status", &HelloImGui::RunnerCallbacks::ShowStatus, " `ShowStatus`: A function that will add items to the status bar.\n  Use small items (ImGui::Text for example), since the height of the status is 30.\n  Also, remember to call ImGui::SameLine() between items.")
-        .def_rw("edges_toolbars", &HelloImGui::RunnerCallbacks::edgesToolbars, " `EdgesToolbars`:\n A dict that contains toolbars that can be placed on the edges of the App window")
+        .def_rw("edges_toolbars", &HelloImGui::RunnerCallbacks::edgesToolbars, " `edgesToolbars`:\n A dict that contains toolbars that can be placed on the edges of the App window")
         .def("add_edge_toolbar",
             [](HelloImGui::RunnerCallbacks & self, HelloImGui::EdgeToolbarType edgeToolbarType, VoidFunction guiFunction, const std::optional<const HelloImGui::EdgeToolbarOptions> & options = std::nullopt)
             {

@@ -21,6 +21,12 @@ def autogenerate_im_file_dialog() -> None:
     options.original_signature_flag_show = True
     options.python_run_black_formatter = True
     options.namespaces_root = ["ifd"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ifd": "im_file_dialog", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.fn_return_force_policy_reference_for_references__regex = "^Instance$"
     options.type_replacements.add_first_replacement("std::filesystem::path", "Path")
     options.member_exclude_by_name__regex = "CreateTexture|DeleteTexture"

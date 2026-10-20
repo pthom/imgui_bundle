@@ -76,6 +76,9 @@ def _options_general(options: LitgenOptions, docking_branch: bool) -> None:
     options.cpp_indent_size = 4
 
     options.namespaces_root = ["ImGui"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImGui": "imgui"}
 
     options.python_max_line_length = (
         -1
@@ -256,6 +259,16 @@ def _options_exclusions(options: LitgenOptions) -> None:
         # label_end must point inside label, which a Python string cannot do (imgui_internal.h): replaced by a version
         # that computes it (discussion #498)
         "SeparatorTextEx": "ImGuiID, const char *, const char *, float",
+    }
+
+    # Docstrings that point to the simpler versions, which return a bool (see _custom_bindings_imgui_h)
+    options.fn_docstring_additions = {
+        "ImGui::Begin": "Python: returns (expanded, p_open): p_open becomes False when the close button is clicked. "
+        "Without a close button, `begin_simple()` returns expanded alone.",
+        "ImGui::MenuItem": "Python: returns (activated, p_selected): p_selected toggles when activated. "
+        "`menu_item_simple()` returns activated alone.",
+        "ImGui::BeginTabItem": "Python: returns (selected, p_open): p_open becomes False when the close button is "
+        "clicked. Without a close button, `begin_tab_item_simple()` returns selected alone.",
     }
 
     # Exclude some members and methods, per class

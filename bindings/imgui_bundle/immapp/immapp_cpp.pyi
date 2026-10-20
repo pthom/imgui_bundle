@@ -208,12 +208,12 @@ def run(
      Helper to run an app inside imgui_bundle, using HelloImGui:
 
      (HelloImGui::SimpleRunnerParams)
-         - `guiFunction`: the function that will render the ImGui widgets
-         - `windowTitle`: title of the window
-         - `windowSizeAuto`: if True, autosize the window from its inner widgets
-         - `windowRestorePreviousGeometry`: if True, restore window size and position from last run
-         - `windowSize`: size of the window
-         - `fpsIdle`: fps of the application when idle
+         - `gui_function`: the function that will render the ImGui widgets
+         - `window_title`: title of the window
+         - `window_size_auto`: if True, autosize the window from its inner widgets
+         - `window_restore_previous_geometry`: if True, restore window size and position from last run
+         - `window_size`: size of the window
+         - `fps_idle`: fps of the application when idle
 
      (ImmApp::AddOnsParams)
          - `with_implot`: if True, then a context for implot will be created/destroyed automatically
@@ -361,8 +361,8 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     """ namespace ManualRender"""
     # Immapp::ManualRender is a namespace that groups functions, allowing fine-grained control over the rendering process:
     # - It is customizable like Immapp::Run: initialize it with `RunnerParams` and `AddOnsParams`.
-    # - `ManualRender::Render()` will render the application for one frame:
-    # - Ensure that `ManualRender::Render()` is triggered regularly (e.g., through a loop or other mechanism)
+    # - `manual_render.render()` will render the application for one frame:
+    # - Ensure that `manual_render.render()` is triggered regularly (e.g., through a loop or other mechanism)
     #   to maintain responsiveness. This method must be called on the main thread.
 
     # void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams = AddOnsParams());    /* original C++ signature */
@@ -453,7 +453,7 @@ class manual_render:  # Proxy class that introduces typings for the *submodule* 
     def tear_down() -> None:
         """Tears down the renderer and releases all associated resources.
         This will release the platform backend (SDL, Glfw, etc.) and the rendering backend (OpenGL, Vulkan, etc.).
-        After calling `TearDown()`, the InitFromXXX can be called with new parameters.
+        After calling `tear_down()`, the InitFromXXX can be called with new parameters.
         """
         pass
 
@@ -591,7 +591,7 @@ class snippets:  # Proxy class that introduces typings for the *submodule* snipp
     pass  # (This corresponds to a C++ namespace. All methods are static!)
     """Code snippets with syntax highlighting (ImGuiColorTextEdit), read-only or editable, with a copy button. A snippet whose
     lines overflow its width also shows a wrap button; the reader's choice holds for all the snippets of the session.
-    The markdown code blocks use `ShowCodeSnippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
+    The markdown code blocks use `show_code_snippet` when built with `IMGUI_RICHMD_WITH_CODE_EDITOR`.
     """
     # =================================================================================================================
     #                                      Snippet data

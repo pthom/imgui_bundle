@@ -32,6 +32,12 @@ def main() -> None:
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.namespaces_root = ["ImSpinner"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImSpinner": "imspinner", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
 
     options.srcmlcpp_options.header_filter_acceptable__regex = "_H_$|_IMSPINNER_BARS_INTERNAL_"  # see imspinner_bars.h
     options.fn_exclude_by_name__regex = r"^(?!Spinner)|SpinnerCamera"  # Exclude all functions whose name does not stat by Spinner

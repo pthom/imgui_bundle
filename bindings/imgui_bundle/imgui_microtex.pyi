@@ -30,7 +30,7 @@ ImTextureID = int
 # =====================================================================================================================
 #                                      TeX style
 # =====================================================================================================================
-#The layout style of a formula: `Display` for `$$...$$`, `Text` for `$...$`.
+#The layout style of a formula: `display` for `$$...$$`, `text` for `$...$`.
 
 # enum class TexStyle    /* original C++ signature */
 class TexStyle(enum.IntEnum):
@@ -65,7 +65,7 @@ class TexStyle(enum.IntEnum):
 # =====================================================================================================================
 #                                      Initialization and shutdown
 # =====================================================================================================================
-#`Init()` loads the font files, once. `Release()` lets the host free the textures it made from formulas,
+#`init()` loads the font files, once. `release()` lets the host free the textures it made from formulas,
 #while its rendering backend is still alive.
 
 # void Init(const std::string& clmFile, const std::string& fontFile);    /* original C++ signature */
@@ -106,7 +106,7 @@ def add_release_callback(callback: Callable[[], None]) -> None:
 # =====================================================================================================================
 #                                      Rendering
 # =====================================================================================================================
-#`Render()` draws a formula into an RGBA buffer, with its baseline, to align it with the text.
+#`render()` draws a formula into an RGBA buffer, with its baseline, to align it with the text.
 
 # struct RenderedFormula    /* original C++ signature */
 class RenderedFormula:

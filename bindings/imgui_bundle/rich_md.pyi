@@ -61,7 +61,7 @@ def document(
 ####################    <generated_from:rich_md_host.h>    ####################
 # What the markdown renderer needs from the application or the framework that hosts it (GPU textures, asset files,
 # logging). Every service is optional and has a plain default; a host (e.g. ImGui Bundle with HelloImGui) installs
-# richer ones with `SetHostServices()` before `CreateContext()`. Only the download types are part of the Python API.
+# richer ones with `SetHostServices()` before `create_context()`. Only the download types are part of the Python API.
 
 # =================================================================================================================
 #                                      Types and defaults (C++ only)
@@ -107,7 +107,7 @@ class MarkdownDownloadResult:
 # =================================================================================================================
 #                                      The services (C++ only)
 # =================================================================================================================
-#    Every field is optional: an empty one keeps its default. Set them before `CreateContext()`.
+#    Every field is optional: an empty one keeps its default. Set them before `create_context()`.
 
 # Sets the host services (call before CreateContext). Empty fields keep their default.
 
@@ -194,7 +194,7 @@ def resolve_transclusions(
 # =================================================================================================================
 #                                        Main API: Rendering
 # =================================================================================================================
-#    `Render()` draws a markdown string where it is called, every frame: rich_md is immediate mode, like Dear ImGui.
+#    `render()` draws a markdown string where it is called, every frame: rich_md is immediate mode, like Dear ImGui.
 #    It needs a context (see Contexts). Its text can be selected with the mouse (a double click selects a word, a triple
 #    click a paragraph) and copied with Ctrl+C (Cmd+C on macOS); a right click opens a menu: Copy, Copy as Markdown,
 #    Select All, and Copy Link over a link.
@@ -234,13 +234,13 @@ def set_selectable_text_default(selectable: bool) -> None:
 # =================================================================================================================
 #                                        Headings
 # =================================================================================================================
-#    After a `Render()`, its headings and their places: for a table of contents drawn by the application.
+#    After a `render()`, its headings and their places: for a table of contents drawn by the application.
 #    A link `[text](#slug)` scrolls to the heading of that slug in the same render, and opens the collapsed sections
-#    (`<details>`) that hide it. A slug that no heading of the render has goes to `OnOpenLink`, as any link.
+#    (`<details>`) that hide it. A slug that no heading of the render has goes to `on_open_link`, as any link.
 #
-#    With `MarkdownOptions::foldableHeadings`, the headings fold: an arrow in a margin at their left (shown under the
+#    With `MarkdownOptions.foldable_headings`, the headings fold: an arrow in a margin at their left (shown under the
 #    mouse, always on a touch screen) hides their section, until the next heading of the same level or above. The menu
-#    of a right click folds or unfolds them all, as `FoldAllHeadings()` does. A link or a search that reaches a folded
+#    of a right click folds or unfolds them all, as `fold_all_headings()` does. A link or a search that reaches a folded
 #    section unfolds it.
 
 # struct Heading    /* original C++ signature */
@@ -280,13 +280,13 @@ def fold_all_headings(folded: bool) -> None:
 # =================================================================================================================
 #                                        Documents
 # =================================================================================================================
-#    A document is markdown in a scroll area of its own, with a table of contents beside it. `RenderDocument()` draws
-#    one markdown string. `BeginDocument()` and `EndDocument()` frame several renders and widgets: their headings belong
-#    to the document, and a link `[text](#slug)` in any of them reaches a heading of any other. `DocumentHeading()`
+#    A document is markdown in a scroll area of its own, with a table of contents beside it. `render_document()` draws
+#    one markdown string. `begin_document()` and `end_document()` frame several renders and widgets: their headings belong
+#    to the document, and a link `[text](#slug)` in any of them reaches a heading of any other. `document_heading()`
 #    gives a section made of widgets its heading, as a markdown heading does.
 #
-#    With foldable headings (`DocumentOptions::foldableHeadings` for one document, or the context's option), a fold goes
-#    on across the renders and the sections of widgets: `DocumentHeading()` returns False when a fold hides its section,
+#    With foldable headings (`DocumentOptions.foldable_headings` for one document, or the context's option), a fold goes
+#    on across the renders and the sections of widgets: `document_heading()` returns False when a fold hides its section,
 #    and the application skips its widgets. The table of contents folds or unfolds them all.
 #
 #    The search: Ctrl+F (Cmd+F on macOS) in a document opens its find bar, and so does "/" when no text field is active
@@ -396,7 +396,7 @@ def document_heading(level: int, text: str, draw_title: bool = True) -> bool:
 # =================================================================================================================
 #    A text that folds to its first paragraph, or to a line `<!--more-->` (as Jekyll and Hugo mark an excerpt: an HTML
 #    comment, which other renderers show as nothing): an introduction above a demo, which leaves the room to the demo
-#    once read. A link at its end folds or unfolds it, with a short slide. With `foldOnClickElsewhere`, it folds as soon
+#    once read. A link at its end folds or unfolds it, with a short slide. With `fold_on_click_elsewhere`, it folds as soon
 #    as the user clicks (or taps) elsewhere in the window: on the demo below it.
 
 # struct FoldingTextOptions    /* original C++ signature */
@@ -655,7 +655,7 @@ def set_assets_folder(folder: str) -> None:
 # =================================================================================================================
 #                                      Rendering files
 # =================================================================================================================
-#    `RenderFile()` renders a section, a code region or a whole file: a program renders its own narrative with
+#    `render_file()` renders a section, a code region or a whole file: a program renders its own narrative with
 #    `RICHMD_RENDER_THIS_FILE`. The syntax and the resolver: `narrative_programming.h`.
 
 # void RenderFile(const std::string& path, const std::string& target = "");    /* original C++ signature */

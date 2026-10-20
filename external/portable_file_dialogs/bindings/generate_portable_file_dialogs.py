@@ -149,6 +149,12 @@ def main() -> None:
     options.use_nanobind()
 
     options.namespaces_root = ["pfd"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"pfd": "portable_file_dialogs", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.namespace_exclude__regex = ""
     options.original_signature_flag_show = True
     options.python_run_black_formatter = True

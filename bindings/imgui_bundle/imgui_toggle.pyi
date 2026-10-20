@@ -277,12 +277,12 @@ class ToggleConfig:
     knob_rounding: float = ToggleConstants.KnobRoundingDefault
 
     # float WidthRatio = ImGuiToggleConstants::WidthRatioDefault;    /* original C++ signature */
-    # A ratio that controls how wide the toggle is compared to it's height. If `Size.x` is non-zero, this value is ignored.
+    # A ratio that controls how wide the toggle is compared to it's height. If `size.x` is non-zero, this value is ignored.
     width_ratio: float = ToggleConstants.WidthRatioDefault
 
     # ImVec2 Size = ImVec2(0.0f, 0.0f);    /* original C++ signature */
-    # A custom size to draw the toggle with. Defaults to (0, 0). If `Size.x` is zero, `WidthRatio` will control the toggle width.
-    # If `Size.y` is zero, the toggle height will be set by `ImGui::GetFrameHeight()`.
+    # A custom size to draw the toggle with. Defaults to (0, 0). If `size.x` is zero, `width_ratio` will control the toggle width.
+    # If `size.y` is zero, the toggle height will be set by `ImGui::GetFrameHeight()`.
     size: ImVec2 = ImVec2(0.0, 0.0)
 
     # ImGuiToggleStateConfig On;    /* original C++ signature */

@@ -52,6 +52,12 @@ def main() -> None:
     options.srcmlcpp_options.ignored_warning_parts = ["gAssetsSubfolderFolderName"]
     options.namespace_names_replacements.add_last_replacement("ImGui", "Imgui")
     options.namespaces_root = ["HelloImGui","ImGuiTheme"]
+    # In the comments' backticks: `HelloImGui::Run()` -> `hello_imgui.run()`, `ImGui::GetStyle()` -> `imgui.get_style()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"HelloImGui": "hello_imgui", "ImGuiTheme": "hello_imgui", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.fn_return_force_policy_reference_for_pointers__regex = (
         join_string_by_pipe_char([r"\bLoadFontTTF\w*", r"MergeFontAwesomeToLastFont"])
     )

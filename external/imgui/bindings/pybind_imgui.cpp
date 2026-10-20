@@ -454,7 +454,9 @@ void py_init_module_imgui_main(nb::module_& m)
             };
 
             return Begin_adapt_modifiable_immutable_to_return(name, p_open, flags);
-        },     nb::arg("name"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0);
+        },
+        nb::arg("name"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0,
+        "Python: returns (expanded, p_open): p_open becomes False when the close button is clicked. Without a close button, `begin_simple()` returns expanded alone.");
 
     m.def("end",
         ImGui::End);
@@ -2213,7 +2215,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return MenuItem_adapt_modifiable_immutable_to_return(label, shortcut, p_selected, enabled);
         },
         nb::arg("label"), nb::arg("shortcut"), nb::arg("p_selected"), nb::arg("enabled") = true,
-        "return True when activated + toggle (*p_selected) if p_selected != None");
+        " return True when activated + toggle (*p_selected) if p_selected != None\nPython: returns (activated, p_selected): p_selected toggles when activated. `menu_item_simple()` returns activated alone.");
 
     m.def("begin_tooltip",
         ImGui::BeginTooltip, "begin/append a tooltip window.");
@@ -2529,7 +2531,7 @@ void py_init_module_imgui_main(nb::module_& m)
             return BeginTabItem_adapt_modifiable_immutable_to_return(label, p_open, flags);
         },
         nb::arg("label"), nb::arg("p_open").none() = nb::none(), nb::arg("flags") = 0,
-        "create a Tab. Returns True if the Tab is selected.");
+        " create a Tab. Returns True if the Tab is selected.\nPython: returns (selected, p_open): p_open becomes False when the close button is clicked. Without a close button, `begin_tab_item_simple()` returns selected alone.");
 
     m.def("end_tab_item",
         ImGui::EndTabItem, "only call EndTabItem() if BeginTabItem() returns True!");

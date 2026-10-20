@@ -37,6 +37,12 @@ def main() -> None:
     options = litgen.LitgenOptions()
     options.original_signature_flag_show = True
     options.use_nanobind()
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.class_override_virtual_methods_in_python__regex = r".*"

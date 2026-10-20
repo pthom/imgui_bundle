@@ -22,6 +22,12 @@ def main() -> None:
     options.original_signature_flag_show = True
     options.original_location_flag_show = False
     options.namespaces_root = ["ImmVision"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImmVision": "immvision", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.srcmlcpp_options.functions_api_prefixes = "IMMVISION_API"
     options.srcmlcpp_options.header_filter_acceptable__regex = r"IMMVISION_SERIALIZE_JSON"
     options.python_run_black_formatter = True

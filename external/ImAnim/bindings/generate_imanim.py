@@ -21,6 +21,12 @@ def main() -> None:
     # Configure options
     options = litgen.LitgenOptions()
     options.use_nanobind()
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
 
     options.srcmlcpp_options.header_filter_acceptable__regex = code_utils.append_regex(options.srcmlcpp_options.header_filter_acceptable__regex, "IMGUI_BUNDLE_PYTHON_API")
 

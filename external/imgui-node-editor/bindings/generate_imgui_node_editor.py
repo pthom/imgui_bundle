@@ -38,6 +38,12 @@ def main() -> None:
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.namespaces_root = ["ax", "NodeEditor", "ax::NodeEditor"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"NodeEditor": "imgui_node_editor", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.class_exclude_by_name__regex = "^NodeId$|^LinkId$|^PinId$"
     options.srcmlcpp_options.header_filter_acceptable__regex = "H__$"
     # The header documents each function on the line above or at the end of the line; its group comments end with

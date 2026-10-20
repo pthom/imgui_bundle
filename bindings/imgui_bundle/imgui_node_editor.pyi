@@ -872,7 +872,7 @@ def end_create() -> None:
 #   }
 #   EndDelete();
 #
-# `deleteDependencies = True` (the default for AcceptDeletedItem) tells the
+# `delete_dependencies = True` (the default for AcceptDeletedItem) tells the
 # editor to also enqueue links touching the accepted node, so a subsequent
 # QueryDeletedLink call yields them too.
 

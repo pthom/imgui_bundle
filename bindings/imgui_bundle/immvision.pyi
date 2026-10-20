@@ -586,7 +586,7 @@ def image(label: str, image: ImageBuffer, params: ImageParams) -> None:
     - `label`: the legend, displayed above the image. It is also the widget's id: two images cannot share it
       (if they do, they might not refresh correctly). To keep a legend and make the id unique, append a suffix:
       `"MyLabel##some_unique_id"` (the part after `##` is not displayed); to display no legend, use
-      `"##some_unique_id"`; or wrap the call in `ImGui::PushID("some_unique_string")` / `ImGui::PopID()`.
+      `"##some_unique_id"`; or wrap the call in `imgui.push_id("some_unique_string")` / `imgui.pop_id()`.
     - `image`: the image to display. All dense image types are supported (uint8, int16, float32, etc.).
       C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy). Python: a `numpy.ndarray`.
     - `params`: the options (zoom, colormap, ...) as inputs, and the outputs (mouse position, watched pixels, ...):
@@ -612,25 +612,25 @@ def image_display(
     refresh_image: bool = False,
     show_options_button: bool = False,
 ) -> Point2d:
-    """Display an image, with no user interaction by default: a simpler and faster alternative to `Image()`.
+    """Display an image, with no user interaction by default: a simpler and faster alternative to `image()`.
 
-     - `label_id`: the legend, and the widget's id (unique: see `Image()`). To display no legend, use
-       `"##some_unique_id"`. A displayed legend makes the widget taller than `imageDisplaySize`.
+     - `label_id`: the legend, and the widget's id (unique: see `image()`). To display no legend, use
+       `"##some_unique_id"`. A displayed legend makes the widget taller than `image_display_size`.
      - `image`: the image to display. C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy).
        Python: a `numpy.ndarray`.
-     - `imageDisplaySize`: the size of the displayed image, which may differ from the image's. With only the
+     - `image_display_size`: the size of the displayed image, which may differ from the image's. With only the
        width or the height given (e.g. `(300, 0)`), the other dimension follows the image's aspect ratio.
        A negative value is the remaining width (or height) of the window minus its absolute value, as ImGui's
        item widths: `(-1, 0)` fills the width of the window.
-     - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).
-     - `showOptionsButton`: shows a button that opens the options panel; zoom, pan and watched pixels
+     - `refresh_image`: the textures are cached: set it to True when the image changed (e.g. live video).
+     - `show_options_button`: shows a button that opens the options panel; zoom, pan and watched pixels
        (double-click) then become possible.
 
-     Returns the mouse position in the original image's coordinates, as doubles, whatever `imageDisplaySize`:
-     `(-1, -1)` when the mouse is not over the image. For the buttons, see `ImGui::IsMouseDown` (C++) or
+     Returns the mouse position in the original image's coordinates, as doubles, whatever `image_display_size`:
+     `(-1, -1)` when the mouse is not over the image. For the buttons, see `imgui.is_mouse_down` (C++) or
      `imgui.is_mouse_down` (Python).
 
-     This function requires that both imgui and OpenGL were initialized (see `Image()`).
+     This function requires that both imgui and OpenGL were initialized (see `image()`).
 
     Python bindings defaults:
         If imageDisplaySize is None, then its default value will be: (0, 0)
@@ -654,18 +654,18 @@ def image_display_resizable(
     show_options_button: bool = False,
 ) -> Point2d:
     """Display an image, with no user interaction by default, in a widget the user can resize.
-    The label is not displayed, but it is the widget's id (unique: see `Image()`).
+    The label is not displayed, but it is the widget's id (unique: see `image()`).
 
     - `image`: the image to display. C++: an `ImageBuffer`, or a `cv::Mat` (implicit conversion, zero-copy).
       Python: a `numpy.ndarray`.
     - `size`: the displayed size, in and out: the size chosen by the user is stored in it, when given.
       A negative value is the remaining width (or height) of the window (`(-1, 0)`: the width of the window),
       resolved once: the concrete size is stored back.
-    - `refreshImage`: the textures are cached: set it to True when the image changed (e.g. live video).
+    - `refresh_image`: the textures are cached: set it to True when the image changed (e.g. live video).
     - `resizable`: whether the user can resize the widget.
-    - `showOptionsButton`: shows a button that opens the options panel.
+    - `show_options_button`: shows a button that opens the options panel.
 
-    Returns the mouse position in the original image's coordinates, as `ImageDisplay()` does.
+    Returns the mouse position in the original image's coordinates, as `image_display()` does.
     """
     pass
 

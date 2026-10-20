@@ -1573,7 +1573,7 @@ def setup_finish() -> None:
 # -----------------------------------------------------------------------------
 
 # Though you should default to the `Setup` API above, there are some scenarios
-# where (re)configuring a plot or axis before `BeginPlot` is needed (e.g. if
+# where (re)configuring a plot or axis before `begin_plot` is needed (e.g. if
 # using a preceding button or slider widget to change the plot limits). In
 # this case, you can use the `SetNext` API below. While this is not as feature
 # rich as the Setup API, most common needs are provided. These functions can be
@@ -2036,7 +2036,7 @@ def plot_dummy(label_id: str, spec: Optional[Spec] = None) -> None:
 
 # The following can be used to render interactive elements and/or annotations.
 # Like the item plotting functions above, they apply to the current x and y
-# axes, which can be changed with `SetAxis/SetAxes`. These functions return True
+# axes, which can be changed with `set_axis/set_axes`. These functions return True
 # when user interaction causes the provided coordinates to change. Additional
 # user interactions can be retrieved through the optional output parameters.
 

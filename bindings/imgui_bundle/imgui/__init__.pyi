@@ -833,6 +833,7 @@ def style_colors_classic(dst: Optional[Style] = None) -> None:
 # - Note that the bottom of window stack always contains a window called "Debug".
 # IMGUI_API bool          Begin(const char* name, bool* p_open = NULL, ImGuiWindowFlags flags = 0);    /* original C++ signature */
 def begin(name: str, p_open: Optional[bool] = None, flags: WindowFlags = 0) -> Tuple[bool, Optional[bool]]:
+    """Python: returns (expanded, p_open): p_open becomes False when the close button is clicked. Without a close button, `begin_simple()` returns expanded alone."""
     pass
 
 # IMGUI_API void          End();    /* original C++ signature */
@@ -2163,7 +2164,9 @@ def end_menu() -> None:
 
 # IMGUI_API bool          MenuItem(const char* label, const char* shortcut, bool* p_selected, bool enabled = true);                  /* original C++ signature */
 def menu_item(label: str, shortcut: str, p_selected: bool, enabled: bool = True) -> Tuple[bool, bool]:
-    """return True when activated + toggle (*p_selected) if p_selected != None"""
+    """return True when activated + toggle (*p_selected) if p_selected != None
+    Python: returns (activated, p_selected): p_selected toggles when activated. `menu_item_simple()` returns activated alone.
+    """
     pass
 
 # Tooltips
@@ -2478,7 +2481,9 @@ def end_tab_bar() -> None:
 
 # IMGUI_API bool          BeginTabItem(const char* label, bool* p_open = NULL, ImGuiTabItemFlags flags = 0);     /* original C++ signature */
 def begin_tab_item(label: str, p_open: Optional[bool] = None, flags: TabItemFlags = 0) -> Tuple[bool, Optional[bool]]:
-    """create a Tab. Returns True if the Tab is selected."""
+    """create a Tab. Returns True if the Tab is selected.
+    Python: returns (selected, p_open): p_open becomes False when the close button is clicked. Without a close button, `begin_tab_item_simple()` returns selected alone.
+    """
     pass
 
 # IMGUI_API void          EndTabItem();                                                           /* original C++ signature */

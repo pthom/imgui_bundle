@@ -23,6 +23,12 @@ def main() -> None:
     options.fn_params_type_replacements.add_replacements([(r"\bImVec2\b", "ImVec2Like"), (r"\bImVec4\b", "ImVec4Like")])
 
     options.namespaces_root = ["ImGuiKnobs"]
+    # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
+    options.comments_python_names_in_backticks = True
+    options.comments_python_modules = {"ImGuiKnobs": "imgui_knobs", "ImGui": "imgui"}
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.original_signature_flag_show = True
     options.python_run_black_formatter = True
