@@ -615,7 +615,7 @@ DEMO_SECTION_OVERRIDES: dict[tuple[str, str], Optional[str]] = {  # (library, C+
                                                "TableNextRow", "TableNextColumn")},
     ("imgui", "MenuItem"): "Popups/Menus inside a regular window",
     ("imgui", "Selectable"): "Widgets/Selectables/Multiple items on the same line",  # (its Basic: not revealed)
-    ("imgui", "DockSpace"): "Using Dockspace",
+    ("imgui", "DockSpace"): "Using Dockspace (Read note below)",
     ("imgui", "ImDrawList"): "Examples/Custom rendering",
     ("imgui", "Begin"): None,
     ("imgui", "End"): None,
@@ -640,7 +640,6 @@ DEMO_SECTION_OVERRIDES: dict[tuple[str, str], Optional[str]] = {  # (library, C+
     ("imgui", "ColorPicker4"): "Widgets/Color/ColorPicker",
     **{("imgui", name): "Widgets/Multi-component Widgets" for name in ("SliderFloat4", "DragFloat4", "InputFloat3")},
     ("imgui", "GetWindowSize"): "Examples/Custom rendering/BG & FG draw lists",
-    ("imgui", "SetNextWindowSize"): "Examples/Documents",
     ("imgui", "SetNextWindowSizeConstraints"): "Layout/Child windows",
     **{("imgui", name): "Widgets/Selectables/Alignment" for name in ("PushStyleVar", "PopStyleVar")},
     **{("imgui", name): "Layout/Widgets Width" for name in ("GetContentRegionAvail", "Indent", "Unindent")},
@@ -668,18 +667,55 @@ class DemoSection:
     others: int  # the number of the other sections that use the entry
 
 
+_SIGNATURE = re.compile(r"(static\s+|inline\s+)*[\w:<>]+[\s*&]+[\w:]+\s*\([^;]*$")
+_STATEMENT = re.compile(r"(if|else|for|while|switch|return|case|do|catch)\b")  # `else if (x)` reads as a signature
+
+
+@functools.cache
+def _function_starts(path: str) -> dict[int, str]:
+    """The lines of a C++ source where a function starts, each with the section its code starts in.
+    - A signature at the line's start: no section, until a marker.
+    - A method: one level in, in a struct declared at the file's level (ExampleAppConsole::Draw()), with its "{" alone
+      on the next line. Its struct's section: the first marker in the struct (its other methods are its helpers).
+    - Not the methods of a struct declared inside a function, deeper: a demo's own helpers, part of its section.
+    By indentation: some preprocessor branches open a brace each, the braces do not add up."""
+    lines = _demo_source(path)
+    starts: dict[int, str] = {}
+    methods: list[int] = []
+    in_struct, struct_section = False, ""
+    for i, line in enumerate(lines):
+        if not _is_code(line):
+            continue
+        text = line.strip()
+        if _indent(line) == 0 and not (in_struct and text == "{"):
+            if in_struct:  # its end
+                starts.update({method: struct_section for method in methods})
+            in_struct, methods, struct_section = bool(re.match(r"(struct|class)\s+\w+[^;]*$", text)), [], ""
+        marker = re.search(r'IMGUI_DEMO_MARKER\("([^"]*)"', text)
+        if in_struct and marker and not struct_section:
+            struct_section = marker.group(1)
+        if _SIGNATURE.match(text) and not _STATEMENT.match(text):
+            following = next((other.strip() for other in lines[i + 1:] if other.strip()), "")
+            if _indent(line) == 0:
+                starts[i] = ""
+            elif in_struct and _indent(line) == 4 and following == "{":
+                methods.append(i)
+    return starts
+
+
 @functools.cache
 def demo_lines(library: str) -> list[tuple[str, str]]:
     """The code lines of a library's demo, each with its section (the IMGUI_DEMO_MARKER above it in its function, "" if
     none), without the comments, the preprocessor lines and the functions' signatures"""
     source = next(path for lib, path in DEMO_SOURCES.values() if lib == library)
     out, section = [], ""
-    for line in (REPO / source).read_text().splitlines():
+    starts = _function_starts(source)
+    for i, line in enumerate(_demo_source(source)):
         text = line.strip()
         if not text or text.startswith(("//", "#")):
             continue
-        if re.match(r"(static\s+|inline\s+)*[\w:<>]+[\s*&]+[\w:]+\s*\([^;]*$", line):  # a function's signature
-            section = ""  # (its markers do not cover the next function)
+        if i in starts:
+            section = starts[i]  # (a function's markers do not cover the next function)
             continue
         marker = re.search(r'IMGUI_DEMO_MARKER\("([^"]*)"', text)
         if marker:
@@ -826,7 +862,9 @@ def demo_extract(section: DemoSection, entry: Entry, python: bool) -> str:
                       None)
     if start_mark is None:
         return ""
-    end = next((i for i in range(start_mark + 1, len(lines)) if marker.search(lines[i])), len(lines))
+    starts = {} if python else _function_starts(cpp_source)
+    end = next((i for i in range(start_mark + 1, len(lines))  # the next marker, or in C++ the next function elsewhere
+                if marker.search(lines[i]) or starts.get(i, section.path) != section.path), len(lines))
     name = entry.name if python else _cpp_name(entry, "")
     is_call = entry.kind in ("function", "method")
     use = re.compile(rf"(?<!\w){re.escape(name.removesuffix('_'))}" + (r"\s*\(" if is_call else r"(?:_\w*)?(?!\w)"))
