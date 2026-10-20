@@ -35,6 +35,7 @@ void UpdateNodeEditorColorsFromImguiColors();
 #endif
 
 #include <chrono>
+#include <cmath>
 #include <cstring>
 #include <cassert>
 #include <filesystem>
@@ -61,6 +62,8 @@ namespace ImmApp
 
         RichMd::Context* _MarkdownContext = nullptr;          // ours, for the duration of Run
         RichMd::Context* _MarkdownPreviousContext = nullptr;  // the application's current context before Run
+
+        bool _ImPlotStylesDpiScaled = false;  // once per Run (see ScaleImPlotStylesForDpi)
     };
 
     ImmAppContext gImmAppContext;
@@ -72,6 +75,59 @@ namespace ImmApp
 
     static void Priv_TearDown();
 
+
+#if defined(IMGUI_BUNDLE_WITH_IMPLOT) || defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
+    // As ImGuiStyle::ScaleAllSizes (ImTrunc)
+    static float ScaledSize(float v, float k) { return std::trunc(v * k); }
+    static ImVec2 ScaledSize(ImVec2 v, float k) { return ImVec2(ScaledSize(v.x, k), ScaledSize(v.y, k)); }
+
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+    // Its sizes in pixels: not the alphas, nor FitPadding (a fraction of the data's extents)
+    static void ImPlotStyle_ScaleAllSizes(ImPlotStyle& style, float k)
+    {
+        for (ImVec2* v : {&style.PlotDefaultSize, &style.PlotMinSize, &style.MajorTickLen, &style.MinorTickLen,
+                          &style.MajorTickSize, &style.MinorTickSize, &style.MajorGridSize, &style.MinorGridSize,
+                          &style.PlotPadding, &style.LabelPadding, &style.LegendPadding, &style.LegendInnerPadding,
+                          &style.LegendSpacing, &style.MousePosPadding, &style.AnnotationPadding})
+            *v = ScaledSize(*v, k);
+        for (float* v : {&style.PlotBorderSize, &style.DigitalPadding, &style.DigitalSpacing})
+            *v = ScaledSize(*v, k);
+    }
+#endif
+
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+    // Its sizes in pixels: not the alphas, nor ViewScaleFactor
+    static void ImPlot3DStyle_ScaleAllSizes(ImPlot3DStyle& style, float k)
+    {
+        for (ImVec2* v : {&style.PlotDefaultSize, &style.PlotMinSize, &style.PlotPadding, &style.LabelPadding,
+                          &style.LegendPadding, &style.LegendInnerPadding, &style.LegendSpacing})
+            *v = ScaledSize(*v, k);
+        for (float* v : {&style.LineWeight, &style.MarkerSize})
+            *v = ScaledSize(*v, k);
+    }
+#endif
+
+    // ImPlot's sizes are in pixels, like ImGui's: scale them as Hello ImGui scales ImGui's (ScaleAllSizes, by the DPI
+    // factor when it is above 1: on Windows and Linux). Called after SetupImGuiStyle, so that the application's own
+    // sizes are scaled too. Once per Run: a Python app that runs twice with the same params holds this callback twice.
+    // ImPlot (1.1) and ImPlot3D (0.5) do not scale their sizes by themselves. Should a later version do it, the sizes
+    // would be scaled twice, and tests/tests_python_gui/test_implot_dpi_scale.py fails.
+    static void ScaleImPlotStylesForDpi()
+    {
+        float dpiScale = HelloImGui::GetDpiAwareParams()->dpiWindowSizeFactor;
+        if (gImmAppContext._ImPlotStylesDpiScaled || dpiScale <= 1.f)
+            return;
+        gImmAppContext._ImPlotStylesDpiScaled = true;
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT
+        if (gAddOnsParamsAtSetup.withImplot)
+            ImPlotStyle_ScaleAllSizes(ImPlot::GetStyle(), dpiScale);
+#endif
+#ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
+        if (gAddOnsParamsAtSetup.withImplot3d)
+            ImPlot3DStyle_ScaleAllSizes(ImPlot3D::GetStyle(), dpiScale);
+#endif
+    }
+#endif // defined(IMGUI_BUNDLE_WITH_IMPLOT) || defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
 
     static void Priv_Setup(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& passedAddOnsParams)
     {
@@ -104,6 +160,13 @@ namespace ImmApp
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT3D
         if (addOnsParams.withImplot3d)
             ImPlot3D::CreateContext();
+#endif
+#if defined(IMGUI_BUNDLE_WITH_IMPLOT) || defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
+        gImmAppContext._ImPlotStylesDpiScaled = false;
+        runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
+            runnerParams.callbacks.SetupImGuiStyle,
+            ScaleImPlotStylesForDpi
+        );
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
