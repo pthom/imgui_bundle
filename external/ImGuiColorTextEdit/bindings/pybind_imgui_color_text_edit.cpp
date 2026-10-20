@@ -489,6 +489,12 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetLineFoldingEnabled, nb::arg("value"))
         .def("is_line_folding_enabled",
             &TextEditor::IsLineFoldingEnabled)
+        .def("set_smooth_scrolling_enabled",
+            &TextEditor::SetSmoothScrollingEnabled,
+            nb::arg("value"),
+            "ScrollToLine() glides there")
+        .def("is_smooth_scrolling_enabled",
+            &TextEditor::IsSmoothScrollingEnabled)
         .def("set_overwrite_enabled",
             &TextEditor::SetOverwriteEnabled, nb::arg("value"))
         .def("is_overwrite_enabled",

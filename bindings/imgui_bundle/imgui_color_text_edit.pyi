@@ -313,6 +313,13 @@ class TextEditor:
     # inline bool IsLineFoldingEnabled() const;    /* original C++ signature */
     def is_line_folding_enabled(self) -> bool:
         pass
+    # inline void SetSmoothScrollingEnabled(bool value);    /* original C++ signature */
+    def set_smooth_scrolling_enabled(self, value: bool) -> None:
+        """ ScrollToLine() glides there"""
+        pass
+    # inline bool IsSmoothScrollingEnabled() const;    /* original C++ signature */
+    def is_smooth_scrolling_enabled(self) -> bool:
+        pass
     # inline void SetOverwriteEnabled(bool value);    /* original C++ signature */
     def set_overwrite_enabled(self, value: bool) -> None:
         pass
