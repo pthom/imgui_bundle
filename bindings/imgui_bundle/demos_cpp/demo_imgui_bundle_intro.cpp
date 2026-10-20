@@ -3128,8 +3128,15 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
         IntroAutomations::Init();
         if (IntroAutomations::showImmediateApps != nullptr)  // the explorer with the test engine: a guided tour
         {
+            const char* label = "Show me " ICON_FA_EYE;
+            float buttonW = ImGui::CalcTextSize(label).x + ImGui::GetStyle().FramePadding.x * 2;
             ImGui::SameLine(0, em);
-            if (ImGui::SmallButton("Show me " ICON_FA_EYE))
+            if (ImGui::GetContentRegionAvail().x < buttonW)  // a phone: under the links, centered
+            {
+                ImGui::NewLine();
+                ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (availX - buttonW) / 2);
+            }
+            if (ImGui::SmallButton(label))
                 ImGuiTestEngine_QueueTest(HelloImGui::GetImGuiTestEngine(), IntroAutomations::showImmediateApps);
         }
 #endif

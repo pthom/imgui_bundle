@@ -2948,8 +2948,13 @@ def _manuals_line(open_demo: Callable[[str], None], avail_x: float, small: bool)
     imgui.pop_font()
     _IntroAutomations.init()
     if _IntroAutomations.show_immediate_apps is not None:  # the explorer with the test engine: a guided tour
+        label = "Show me " + icons_fontawesome_4.ICON_FA_EYE
+        button_w = imgui.calc_text_size(label).x + imgui.get_style().frame_padding.x * 2
         imgui.same_line(0, em)
-        if imgui.small_button("Show me " + icons_fontawesome_4.ICON_FA_EYE):
+        if imgui.get_content_region_avail().x < button_w:  # a phone: under the links, centered
+            imgui.new_line()
+            imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (avail_x - button_w) / 2)
+        if imgui.small_button(label):
             imgui.test_engine.queue_test(hello_imgui.get_imgui_test_engine(), _IntroAutomations.show_immediate_apps)
 
 
