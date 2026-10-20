@@ -620,6 +620,28 @@ DEMO_SECTION_OVERRIDES: dict[tuple[str, str], Optional[str]] = {  # (library, C+
     ("imgui", "Begin"): None,
     ("imgui", "End"): None,
     ("imgui", "GetIO"): None,
+    ("imgui", "TreeNodeEx"): "Widgets/Tree Nodes/Advanced",
+    ("imgui", "OpenPopup"): "Popups/Popups",
+    ("imgui", "BeginPopupContextItem"): "Popups/Context menus",
+    ("imgui", "SetItemTooltip"): "Widgets/Tooltips",
+    ("imgui", "GetWindowDrawList"): "Examples/Custom rendering",
+    ("imgui", "GetForegroundDrawList"): "Examples/Custom rendering/BG & FG draw lists",
+    ("imgui", "TextWrapped"): "Widgets/Text/Word Wrapping",
+    ("imgui", "PopItemWidth"): "Layout/Widgets Width",
+    ("imgui", "AlignTextToFramePadding"): "Layout/Text Baseline Alignment",
+    ("imgui", "TableAngledHeadersRow"): "Tables/Angled headers",
+    ("imgui", "GetColumnWidth"): "Columns (legacy API)",
+    ("imgui", "LogToClipboard"): "Configuration/Capture, Logging",
+    ("imgui", "LogFinish"): "Configuration/Capture, Logging",
+    ("imgui", "SetKeyboardFocusHere"): "Inputs & Focus/Focus from code",
+    ("imgui", "SetNextItemShortcut"): "Inputs & Focus/Shortcuts",
+    ("imgui", "IsMouseDragging"): "Inputs & Focus/Dragging",
+    ("imgui", "GetMouseDragDelta"): "Inputs & Focus/Dragging",
+    ("imgui", "ColorPicker4"): "Widgets/Color/ColorPicker",
+    **{("imgui", name): "Widgets/Multi-component Widgets" for name in ("SliderFloat4", "DragFloat4", "InputFloat3")},
+    ("implot", "GetPlotLimits"): "Tools/Querying",
+    **{("implot", name): "Tools/Drag and Drop" for name in ("BeginDragDropTargetPlot", "EndDragDropTarget",
+                                                             "BeginDragDropSourceItem", "EndDragDropSource")},
 }
 API_PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resources/api"  # by api_pictures.py
 
@@ -653,8 +675,10 @@ def demo_lines(library: str) -> list[tuple[str, str]]:
 
 
 def _name_words(text: str) -> list[str]:
-    """SliderInt -> [slider, int]; "Line Plots" -> [line, plot]: lowercase, without a plural's s"""
+    """SliderInt -> [slider, int]; "Line Plots" -> [line, plot]: lowercase, without a plural's s. A hyphenated word also
+    reads joined: "Multi-line" -> [multi, line, multiline], for InputTextMultiline"""
     words = re.findall(r"[A-Z]+(?![a-z])|[A-Z]?[a-z]+|\d+", text)
+    words += [w.replace("-", "") for w in re.findall(r"[A-Za-z]+(?:-[A-Za-z]+)+", text)]
     return [w.lower().removesuffix("s") if len(w) > 3 else w.lower() for w in words]
 
 
