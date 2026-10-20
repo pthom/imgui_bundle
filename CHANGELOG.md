@@ -1,148 +1,131 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# Ongoing changes
+# v1.93.0
 
-## Touch screens: the gestures of a phone
+A big release, 865 commits since v1.92.900: Dear ImGui 1.93, a markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
 
-On a touch screen (a phone running the explorer or the playground, a tablet), Hello ImGui turns a finger into what its user expects, with nothing to write in the app:
-- a swipe scrolls the content of a window, with inertia and a bounce at the end, even when the drag starts on a button or on a markdown text; a tap still clicks (when the finger lifts), two taps are a double click, and a short hold then a drag goes to the widget under the finger (a slider, a text selection; a ring around the finger shows when the hold took effect);
-- a finger still for half a second, then lifted, is a right click (the context menus): a ring around the finger shows it, and a move after the ring cancels it (a slider dragged after a pause keeps its drag); not on a widget that acted on the press already (a button that repeats while held);
-- the scroll bars are thin (0.3 em, rounded): indicators, since a swipe scrolls anywhere, on a bar too (it dragged the thumb, which moved the content against the finger); a hold on a bar hands its thumb over, wider while held (as on iOS); `RunnerParams::touchThinScrollbars` keeps the theme's bars;
-- two fingers that pinch scale the app (its font); two fingers that move together are a right drag (the pan of a node editor, the box selection of a plot);
-- a text widget that is active shows a keyboard button next to it: a tap opens the phone's keyboard, and what is typed goes to the widget.
+Pictures and videos of the novelties: [the release page](RELEASE_PAGE_URL).
 
-`hello_imgui.RunnerParams.touch_scroll_mode` (`auto`: when the input is a touch screen; `always`: also with the mouse, to try it on a desktop; `disabled`), `touch_long_press_is_right_click`, `touch_pinch_mode`. In the browser with GLFW (the explorers), ImGui now knows whether the pointer is a mouse, a finger or a pen. ImPlot's drag tools (the guide lines, the boxes) get finger-sized grabs on a touch screen.
+## Highlights
 
-The demo "Touch screens (phones, tablets)" (`demo_touch_screen`, in "In the browser") shows every gesture on a phone-shaped page; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse. The playground has a phone layout: one pane at a time, Demo or Code, from a switch in its toolbar.
+1. **Dear ImGui 1.93.0**, with its reworked draw list: crisper shapes. See [Dear ImGui 1.93.0](#dear-imgui-1930).
+2. **A renewed Bundle Explorer and playground**: a welcome screen, a gallery of the demos, phones and tablets, light and dark. See [The Bundle Explorer and the playground](#the-bundle-explorer-and-the-playground).
+3. **An API reference, with live demos**: the book's API pages in Python and C++, and an API tab in the ImGui Explorer. See [The API reference](#the-api-reference).
+4. **RichMd**: the markdown renderer becomes a standalone library, with documents, selectable text, Mermaid diagrams and narrative programming. See [RichMd, the markdown renderer](#richmd-the-markdown-renderer).
+5. **The node editor on thedmd's v0.9.4**, with widgets that work inside nodes. See [The node editor](#the-node-editor).
+6. **Phones and tablets**: Hello ImGui turns a finger into the gestures its user expects. See [Hello ImGui](#hello-imgui).
+7. **Wheels for Python 3.15**. See [Python](#python).
 
-## Mouse wheel: a wheel that started on the page keeps scrolling it
+Also new: Stack Layout v2.2 by thedmd ([Stack Layout v2.2](#stack-layout-v22)), and a guide for AI assistants ([For AI assistants](#for-ai-assistants)).
 
-On a desktop, a wheel that started on the content of a window keeps scrolling it when the mouse travels over a plot or an image that zooms with the wheel: the item sees no wheel until the session ends (0.7 s without an event, ImGui's own lock of the scrolled window, applied to items). A wheel that starts on the item is the item's.
+*Candidate:* Ctrl+Tab switches windows on the Mac too ([GLFW 3.5.1](#glfw-351)).
 
-## Node editor: on imgui-node-editor v0.9.4
+## Breaking changes
 
-The node editor now follows thedmd's `master` (v0.9.4: about 110 fixes, with a test suite), instead of the old `develop` branch. What changes for an application:
-- `get_action_context_nodes()` and `get_action_context_links()` return what a shortcut acts on, valid between `begin_shortcut()` and `end_shortcut()`: no longer the selection outside of them. For the selection, use `get_selected_nodes()` and `get_selected_links()`.
-- `end_create()` may be called after every `begin_create()`, or only when it returned true: both work.
-- A right drag that starts on a widget of a node pans the view.
-- Smooth zoom stays on by default.
+*Python and C++:*
 
-## ImmVision: a negative display size is the remaining width
+- The draw list (see [Dear ImGui 1.93.0](#dear-imgui-1930)):
+  - `ImDrawFlags_.round_corners_xxx` become `ImDrawFlags_.round_xxx`
+  - `ImDrawListFlags_` is merged into `ImDrawFlags_`
+  - `style.curve_tessellation_tol` becomes `style.curve_tessellation_max_error`
+  - `style.anti_aliased_lines_use_tex` is removed
+  - `ImFont.add_remap_char()` becomes `add_remap_codepoint()`
+- `TextFilter`: `draw()` lost its width, `TextRange` and `count_grep` are removed, `draw_with_hint()` is new.
+- Stack Layout: a negative size is relative to the far edge, and a layout scopes the IDs of its items (see [Stack Layout v2.2](#stack-layout-v22)).
+- The mouse wheel: in a window that scrolled, a custom widget that reads `io.mouse_wheel` no longer sees the wheel, until it claims it with `set_item_key_owner(Key.mouse_wheel_y)` (see [Hello ImGui](#hello-imgui)).
+- The internal API (`imgui.internal`, `imgui_internal.h`):
+  - `set/get_font_rasterizer_density()` become `set/get_pixel_density()`
+  - `im_round64()` becomes `im_round_positive64()` or `im_round_signed64()`
+  - the context hooks `begin_window` / `end_window` are removed: the node editor uses two window callbacks instead
 
-`ImageParams.image_display_size`, the size of `image_display()` and the in/out size of `image_display_resizable()` accept a negative width or height: the window's remaining space minus its absolute value, as ImGui's item widths (`(-1, 0)`: the width of the window, the height from the aspect ratio).
+*Python:*
 
-## ImGui Explorer: an API tab
+- The C++ "text end" parameters leave the API (see [Python](#python)).
+- `imgui.set_drag_drop_payload(type, data, sz)` is removed: use `imgui.set_drag_drop_payload_py_id()`.
+- `slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` return an `ImVec2` / `ImVec4` when given one, instead of a `list`.
+- Some errors raise `ValueError` or `IndexError`, instead of a `RuntimeError`.
+- Some demos moved: `python -m imgui_bundle.demos_python.demos_immapp.demo_run_async` and its likes change their path (see [the demos](#the-bundle-explorer-and-the-playground)).
 
-The code viewer of the [ImGui Explorer](https://imgui-bundle.pages.dev/explorer/) (the interactive manuals of ImGui, ImPlot, ImPlot3D and ImAnim) gets an "API" tab, built from the same index as the book's API pages:
-- click an identifier in the code, then the book button (or Ctrl+Shift+F, or the right-click menu): the card of the entry, with its Python and C++ names and signatures, its doc, the members of a struct or the values of an enum, "Go to declaration" (the line in the header or in the stub), links to its online pages, and "In the demo": the lines of the demo that use it, one click away;
-- a tooltip with the API of the identifier under the mouse ("API tooltips" in the toolbar);
-- the list of all the entries by section, with a filter on the Python and C++ names.
+*C++:*
 
-The index (`just api_pages`) must be generated before the explorer is configured; otherwise the tab links to the online pages.
+- `ed::Config::SettingsFile` is a `const char*` again, and the `std::vector` versions of `GetSelectedNodes()` and its likes left the fork (see [The node editor](#the-node-editor)).
+- RichMd: the renderer class `imgui_md` is internal: the compatibility header no longer names it (see [RichMd](#richmd-the-markdown-renderer)).
+- ImmVision never links OpenCV (see [ImmVision](#immvision)).
+- The CMake package is named `imgui_bundle`, instead of `imgui-bundle` (see [C++](#c)).
 
-## immapp: downloads that do not block the GUI
+## Libraries
 
-`immapp.start_download(url, method, json_body, timeout_s, headers)` starts an HTTP request in the background, from a GUI function: a thread on the desktop, a fetch in the browser (Pyodide). The GUI looks at the result's `done` at each frame, then at its `status`, `data` and `error` (the HTTP status with the start of the body, where web APIs explain their errors).
-- GET, or POST with a JSON body; more headers, e.g. an API key (`{"Authorization": "Bearer <key>"}`); a time limit for the answer.
-- `download_url_bytes()` and `download_url_bytes_async()` gain `timeout_s`.
-- Doc: the book's page on async Python, "Downloads that do not block the GUI". Demos: "An image from a prompt", the Julia map.
+### Dear ImGui 1.93.0
 
-## The Julia map: values of c shared by its users
+Dear ImGui is updated to [v1.93.0](https://github.com/ocornut/imgui/releases/tag/v1.93.0), and ImGui Test Engine to its latest version.
 
-The Julia map explorable (playground: "Interactive exploration of the Mandelbrot set") lets its users share the places they find:
-- "Copy" copies c and the zoom of the map; a field under the map takes a pasted value, and the map flies there.
-- The tab "Found by users" lists the values of c that users shared, with a filter, a sort (name, votes, author, date), a vote per user, and "Share the current c...".
-- On a narrow window (a phone), the three columns become rows.
+- The draw list is reworked: Dear ImGui's widgets look the same or crisper.
+- Custom drawing can move by half a pixel. [ocornut/imgui#9504](https://github.com/ocornut/imgui/issues/9504) explains how to migrate.
+- `StyleColorsDark()` is refreshed: a greyer window background, without transparency.
+- A drag or a slider edit can be cancelled with a right click or Escape.
+- On a touch screen, sliders and drags show their value in a tooltip above the finger (a patch of the bundle, proposed upstream as [ocornut/imgui#9575](https://github.com/ocornut/imgui/pull/9575)).
 
-The points live in a Cloudflare Worker with a database (`cloudflare/julia_points`), deployed apart from the site: see `cloudflare_deploy.md`. The demo is now a folder, `explorables/julia_map/`, and its address in the playground changed.
+<details>
+<summary>The draw list: the details</summary>
 
-## Markdown renderer:
+Custom drawing can move by half a pixel:
 
-Fully rewritten imgui_md, which is now imgui_rich_md
+- `add_line()` lost its half pixel offset.
+- Closed shapes (rectangles, circles...) are stroked inside by default.
 
-`imgui_md` becomes `rich_md` (library imgui_rich_md)
+On high density screens (Retina), anti-aliasing and the tessellation of curves follow the framebuffer scale.
 
-The markdown stack (renderer, wrapper, LaTeX backend) is now [imgui_rich_md](https://github.com/pthom/imgui_rich_md), a standalone
-library that works on stock Dear ImGui.
+New:
 
-- Existing code keeps working:
-  - Python: the module is `imgui_bundle.rich_md`; `imgui_bundle.imgui_md` is the same module and stays as an alias.
-  - C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`; the former `imgui_md_wrapper/imgui_md_wrapper.h` include and the `ImGuiMd` namespace stay as aliases (`ImGuiMicroTeX` likewise, for `RichMd::Latex`).
-  - CMake: the option `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`; the former name still works, with a deprecation warning.
+- `add_line_h()` and `add_line_v()`, for straight lines
+- stroke flags: `stroke_inside`, `stroke_center`, `stroke_outside`, `stroke_legacy`, `join_miter`, `cap_square`...
+- `push_draw_flag()` / `pop_draw_flag()`, for a scope
+- `io.config_debug_draw_list_defaults_to_stroke_legacy`: draws everything as before, to compare
 
-What else rich_md brings:
+Breaking:
 
-- **Narrative programming**: a source file can carry its own narrative. `::md Name` sections in comments or strings,
-  `::code` regions, and transclusions (`![[file#Name]]`, `![[#Name#code]]`) resolved by `Render()`;
-  `rich_md.render_this_file("Name")` (C++: `RICHMD_RENDER_THIS_FILE`) renders a section of the calling file, and follows
-  the file when it changes. Spec: imgui_rich_md's `docs/narrative_programming`. Example: the Julia map explorable
-  (playground).
-- **Selectable text**: select with the mouse (double click: a word, triple click: a paragraph), copy with Ctrl+C /
-  Cmd+C; a right click opens a menu (Copy, Copy as Markdown, Select All, Copy Link). `MarkdownOptions.selectable_text`,
-  `push_selectable_text()` / `pop_selectable_text()`, `set_selectable_text_default()` turn it off. Links open on release.
-- **Mermaid** diagrams, drawn natively (a subset of Mermaid: flowcharts, sequence and class diagrams).
-- **Widgets in the text**: `register_fenced_block_renderer("lang", fn)` draws a fenced block of that language.
-- **Layout**: a gap between paragraphs; `<br/>` and `<br />`; HTML comments are not shown; code blocks follow the
-  indent of quotes and lists; long code blocks can be scrolled.
-- **Browser (Emscripten, Pyodide)**: on a Mac, Cmd acts as Ctrl (Cmd+C copies), in every widget (hello_imgui).
+- `ImDrawFlags_.round_corners_xxx` become `ImDrawFlags_.round_xxx`.
+- `ImDrawListFlags_` is merged into `ImDrawFlags_` (`aa_lines`, `aa_fill`, `use_vtx_offset`).
+- `TextFilter.draw()` lost its width: call `imgui.set_next_item_width()` before it.
+- `style.anti_aliased_lines_use_tex` is removed.
+- `ImFont.add_remap_char()` becomes `add_remap_codepoint()`.
+- In C++, the old names stay unless `IMGUI_DISABLE_OBSOLETE_FUNCTIONS` is defined.
 
-## Test engine in the browser (Pyodide):
-
-The ImGui Test Engine now runs in Pyodide, with the same Python API as on the desktop: the engine's coroutine is a WebAssembly stack switch (JSPI) instead of a thread. It needs Chrome 137, Firefox 153 or Safari 27; in an older browser the app runs without the engine and says so. `immapp.testing.run()` in the browser returns at once, keeps the app open after the test, and prints the result. The playground lists the test engine demo (greyed in a browser without JSPI), and its error window now shows whole tracebacks, across the bottom of the page. The demo of scripted runs, `demo_testapp`, is renamed `demo_immapp_testing` (desktop only: its output is files); it writes its pictures to a temporary folder. The playground's menu now lists the desktop-only demos too, after the others of their category, with a "Desktop only" tag: a click stops the running demo and shows their code, their picture and a notice on how to run them on a machine (the Python backends: a chip per backend).
-
-## ImmVision:
-- RGB is the default color order. Calling `immvision.use_rgb_color_order()` (C++: `ImmVision::UseRgbColorOrder()`) at startup is not required anymore. Images in BGR order (OpenCV) still need `immvision.use_bgr_color_order()`.
-
-**Breaking change (C++): ImmVision never links OpenCV, `cv::Mat` interop is an application choice**
-
-* ImmVision does not look for OpenCV at configure time anymore, and never links it: the `cv::` conversions are now header-only. C++ applications that pass `cv::Mat` to ImmVision define `IMMVISION_HAS_OPENCV` and link OpenCV by themselves:
-```cmake
-find_package(OpenCV REQUIRED)
-target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
-target_link_libraries(my_app PRIVATE opencv_core)
-```
-- `IMMVISION_FETCH_OPENCV` is now only a convenience that provides a minimal OpenCV to `find_package(OpenCV)`: it does not enable the interop by itself.
-
-## Updated Dear ImGui to v1.93.0 WIP
-
-Dear ImGui is updated to the tip of its `docking` branch (v1.93.0 WIP), and ImGui Test Engine to the tip of its `main` branch.
-See upstream's [changelog](https://github.com/ocornut/imgui/blob/docking/docs/CHANGELOG.txt).
-
-### The reworked draw list ([ocornut/imgui#9504](https://github.com/ocornut/imgui/issues/9504))
-
-Dear ImGui's own widgets look the same or crisper. Custom drawing can move by half a pixel: `add_line()` lost its half pixel offset, and closed shapes (rectangles, circles...) are stroked inside by default. #9504 explains how to migrate.
-
-- Breaking: `ImDrawFlags_.round_corners_xxx` become `ImDrawFlags_.round_xxx`, and `ImDrawListFlags_` is merged into `ImDrawFlags_` (`aa_lines`, `aa_fill`, `use_vtx_offset`). In C++, the old names stay unless `IMGUI_DISABLE_OBSOLETE_FUNCTIONS` is defined.
-- Breaking: `TextFilter.draw()` lost its width: call `imgui.set_next_item_width()` before it. `style.anti_aliased_lines_use_tex` is removed. `ImFont.add_remap_char()` becomes `add_remap_codepoint()`.
-- New: `add_line_h()` and `add_line_v()` for straight lines; stroke flags (`stroke_inside`, `stroke_center`, `stroke_outside`, `stroke_legacy`, `join_miter`, `cap_square`...), also for a scope with `push_draw_flag()` / `pop_draw_flag()`; `io.config_debug_draw_list_defaults_to_stroke_legacy` draws everything as before, to compare.
-
-### Breaking change: `style.curve_tessellation_tol` becomes `style.curve_tessellation_max_error`
-
-The new field is expressed in pixels (the old one was in squared pixels), so that it can scale with the screen density:
-`curve_tessellation_max_error = sqrt(curve_tessellation_tol)` (default: 1.12, was 1.25).
+`style.curve_tessellation_tol` becomes `style.curve_tessellation_max_error`. The new field is in pixels (the old one was in squared pixels): `curve_tessellation_max_error = sqrt(curve_tessellation_tol)`.
 
 ```python
 imgui.get_style().curve_tessellation_max_error = 1.12   # was: curve_tessellation_tol = 1.25
 ```
 
-### Other changes
+</details>
 
-- Ongoing drags and slider edits can be cancelled with a right-click or Escape: the value reverts to its initial value.
-- New `imgui.ItemFlags_.mixed_value`: displays a mixed / indeterminate value in checkboxes, radio buttons, drags, sliders,
-  inputs, color widgets and combos (for property editors; see "Widgets / Mixed Values" in the demo).
-- On high density screens (Apple Retina), anti-aliasing and the tessellation of circles and curves follow the framebuffer scale:
-  shapes look slightly crisper.
-- Disabled color buttons keep the same color as enabled ones.
-- Test Engine: new `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()` and `TestOpFlags_.no_wait_when_moving`.
+<details>
+<summary>Other changes</summary>
 
+- `imgui.ItemFlags_.mixed_value` shows a mixed value in checkboxes, radio buttons, drags, sliders, inputs, color widgets and combos. See "Widgets / Mixed Values" in the demo.
+- Disabled color buttons keep their color.
+- Test Engine: `TestContext.item_drag_to_pos()`, `TestContext.item_make_visible()`, `TestOpFlags_.no_wait_when_moving`. Actions on a moving item wait for it to settle.
 
-## StackLayout v2.2: behavior changes
+</details>
 
-`BeginHorizontal` / `BeginVertical` / `Spring` (StackLayout, by thedmd) follow his [v2.2](https://github.com/ocornut/imgui/pull/846#issuecomment-6232934755), which includes the fixes ImGui Bundle carried. What changes for an application:
-- A negative size is relative to the far edge of the content region, as for other widgets (`-FLT_MIN` fills it). It meant "automatic", like 0.
-- Items flow as in a menu bar: in a horizontal layout, `separator()` is vertical, `menu_item()` / `begin_menu()` look as in a menu bar, and `new_line()` starts a new row.
-- A layout scopes its contents like `push_id()` with its identifier, as `begin_table()` and `tree_node()` do. The IDs of the items inside a layout change: settings saved under them (e.g. the columns of a table, in imgui.ini) reset once.
-- A layout clips its content only on the axes given a fixed size. Axes with an automatic size (the default) are not clipped, and decorations at the edge of a layout (the focus rectangle, a selection highlight) are no longer cut. ImGui Bundle had disabled the clipping since 2024.
+### Stack Layout v2.2
+
+`begin_horizontal()`, `begin_vertical()` and `spring()` follow thedmd's [v2.2](https://github.com/ocornut/imgui/pull/846#issuecomment-6232934755). It includes the fixes ImGui Bundle carried.
+
+- A negative size is relative to the far edge, as for other widgets. It meant "automatic".
+- A layout scopes the IDs of its items, like `push_id()`. Settings saved under them (e.g. in imgui.ini) reset once.
+- A layout clips its content only on the axes given a fixed size.
+- Widgets that call `same_line()` (`drag_float3()`, `input_int()`...) no longer collapse in a horizontal layout.
+
+<details>
+<summary>Stack Layout: the details</summary>
+
+- In a horizontal layout, items flow as in a menu bar: `separator()` is vertical, and `new_line()` starts a new row.
+- `ListClipper` works in a vertical layout, tables in a horizontal one.
+- Decorations at the edge of a layout (the focus rectangle, a selection highlight) are no longer cut.
+- New: `imgui.set_next_layout_debug_flags()` draws the springs or the items of the next layout. See "Layout & Scrolling / Stack Layout" in the demo.
+- `imgui.StyleVar_.layout_align` moves to the end of the enum: the style vars after it have their stock Dear ImGui values again.
+- The book's page on Dear ImGui has a new section on these layouts: when to prefer them to `same_line()`, their sizes, their IDs.
 
 ```python
 imgui.begin_horizontal("row", hello_imgui.em_to_vec2(12, 0))  # fixed width: 12 em
@@ -150,109 +133,498 @@ imgui.text("A long text which does not fit in 12 em")         # now cut at 12 em
 imgui.end_horizontal()
 ```
 
-Fixed: widgets that call `same_line()` (`drag_float3()`, `input_int()`, `color_edit3()`...) no longer collapse in a horizontal layout; `ListClipper` works in a vertical layout, tables in a horizontal one.
+</details>
 
-New: `imgui.set_next_layout_debug_flags()` draws the springs or the items of the next layout (see "Layout & Scrolling / Stack Layout" in the demo). `imgui.StyleVar_.layout_align` moves to the end of the enum: the style vars after it have their stock Dear ImGui values again.
+### RichMd, the markdown renderer
 
-## imgui-node-editor: widgets inside nodes, and a fork that works with a stock Dear ImGui
+The markdown renderer is now [imgui_rich_md](https://github.com/pthom/imgui_rich_md), a standalone library that works with a stock Dear ImGui.
 
-The fork of imgui-node-editor was reorganised. It does not contain anything specific to ImGui Bundle anymore, it builds against a stock Dear ImGui, and it has automated tests (run in CI) and its own
-[documentation](https://github.com/pthom/imgui-node-editor/blob/imgui_bundle/docs/fork_imgui_bundle.md).
-Dear ImGui itself does not know about the node editor anymore: it only provides two generic hooks that the editor uses.
+- Documents: `rich_md.document()` shows a long text with a table of contents, a search (Ctrl+F or "/"), anchor links and foldable headings.
+- Selectable text: select with the mouse, copy with Ctrl+C / Cmd+C, a menu on right click.
+- Mermaid diagrams (flowcharts, sequence and class diagrams), drawn natively.
+- Widgets in the text: `register_fenced_block_renderer("lang", fn)` draws a fenced block of that language.
+- Narrative programming: a source file carries its own narrative, which `rich_md.render_this_file("Name")` renders.
 
-- Popups, combos, color pickers, tooltips and context menus opened from inside the editor work without `suspend()` / `resume()`, now also **between** nodes (a background context menu, for example). Code that calls `suspend()` / `resume()` keeps working.
-- New `imgui_node_editor.Style.angled_links` (default: `True`): set it to `False` to always draw links as a single curve.
-- `get_selected_nodes()`, `get_selected_links()`, `get_action_context_nodes()`, `get_action_context_links()` and
-  `get_ordered_node_ids()` were silently limited to 1000 elements: not anymore.
-- `imgui_node_editor.Config.settings_file` is an `Optional[str]`: `None` means "no settings file".
-- New `imgui_md.MarkdownCallbacks.can_use_child_windows`. Markdown code blocks use a child window, which cannot work inside a node: they are rendered as inline code there. ImmApp sets this callback for you. If you initialize the markdown renderer without ImmApp and render code blocks inside a node, set it yourself.
-- C++: new `ed::InputTextMultiline()` (a multiline text field that works inside a node; `ImGui::InputTextMultiline()` is redirected to it inside a node, as before) and `ImGuiEx::IsInsideCanvas()`.
+Python code keeps working: `imgui_bundle.imgui_md` stays, as an alias of `imgui_bundle.rich_md`.
 
-**Breaking change (C++)**: `ed::Config::SettingsFile` is a `const char*` again, as in upstream imgui-node-editor (it was a`std::string`). The editor keeps the pointer: keep your string alive, and assign its `c_str()`. String literals are not concerned, neither is Python. The hidden functions `Priv_ImGuiNodeEditor_EnterCanvas() / ExitCanvas() / IsInCanvas()` were removed from Dear ImGui: use `ImGuiEx::IsInsideCanvas()`.
+<details>
+<summary>RichMd: the details</summary>
+
+Names:
+
+- Python: the module is `imgui_bundle.rich_md`. `imgui_bundle.imgui_md` is the same module.
+- C++: the API is `RichMd::` in `imgui_rich_md/rich_md.h`. The former include `imgui_md_wrapper/imgui_md_wrapper.h` and the namespaces `ImGuiMd` and `ImGuiMicroTeX` stay as aliases.
+- C++, breaking: code that used the renderer class `imgui_md` (md4c's client) breaks: that class is internal now.
+- CMake: `IMGUI_BUNDLE_WITH_IMGUI_MD` becomes `IMGUI_BUNDLE_WITH_IMGUI_RICH_MD`. The former name still works, with a warning.
+
+Rendering:
+
+- Behavior change: `rich_md.render()` removes the common indentation of the text, and resolves its transclusions. `render_raw()` renders the text as is. `render_unindented()` stays, as the former name.
+- `rich_md.render_folding()`: a text folded to its first paragraph, or to `<!--more-->`.
+- `render_file()`, and `render_mermaid()` for a diagram alone.
+- Anchor links (`[text](#slug)`) scroll to their heading. Wikilinks (`on_wiki_link`), `<center>` blocks, `<br/>`, hidden HTML comments.
+- A size pushed with `imgui.push_font(None, size)` scales the markdown.
+- Inline formulas wrap like words. An invalid LaTeX formula shows its source in the error color, instead of ending the app.
+- Code blocks: `markdown` is highlighted as markdown, an unknown language as plain text. A wrap button shows when a line overflows. They follow the indent of quotes and lists, and scroll when long.
+- A gap between paragraphs.
+
+Selectable text:
+
+- A double click selects a word, a triple click a paragraph.
+- The menu: Copy, Copy as Markdown, Select All, Copy Link.
+- Links open on release. On a phone, a tap on a link opens it in a new tab.
+- `MarkdownOptions.selectable_text`, `push_selectable_text()` / `pop_selectable_text()` and `set_selectable_text_default()` turn it off.
+
+Documents:
+
+- `rich_md.document()`, or `begin_document()` / `render_document()`.
+- With `hello_imgui.prefers_reduced_motion()`, a document scrolls without animation.
+
+Narrative programming:
+
+- `::md Name` sections in comments or strings, and transclusions (`![[file#Name]]`).
+- `rich_md.render_this_file("Name")` (C++: `RICHMD_RENDER_THIS_FILE`) renders a section of the calling file, and follows the file when it changes.
+- The book has a section on it.
+
+Python:
+
+- `rich_md.set_download_function()`: `MarkdownCallbacks.on_download_data` is deprecated.
+- Contexts: `create_context()`, `destroy_context()`, `set_current_context()`, `get_current_context()`.
+- ImmApp restores the markdown context that was current before `run()`, instead of destroying it.
+
+</details>
+
+### The node editor
+
+The node editor follows thedmd's `master` (v0.9.4: about 110 fixes, and a test suite), instead of the old `develop` branch.
+
+- Popups, combos, color pickers, tooltips and context menus work inside the editor without `suspend()` / `resume()`, also between nodes.
+- Every editor follows the theme, light or dark.
+- Zoomed out, links and node borders stay crisp with Dear ImGui 1.93.
+- The fork contains nothing specific to ImGui Bundle anymore, and has its own [documentation](https://github.com/pthom/imgui-node-editor/blob/imgui_bundle/docs/fork_imgui_bundle.md). It builds with a stock Dear ImGui; its popups need two small Dear ImGui patches, which the bundle carries.
+
+<details>
+<summary>The node editor: what changes for an application</summary>
+
+- `get_action_context_nodes()` and `get_action_context_links()` return what a shortcut acts on, between `begin_shortcut()` and `end_shortcut()`. For the selection, use `get_selected_nodes()` and `get_selected_links()`.
+- `end_create()` may be called after every `begin_create()`, or only when it returned true.
+- A right drag that starts on a widget of a node pans the view.
+- Smooth zoom stays on by default.
+- `Style.angled_links` (default: `True`) turns off the routing of links around their nodes, which the bundle's fork already did.
+- Colors pushed with `ed.push_style_color()` before `ed.begin()` are now overwritten: push them after it.
+- `Config.settings_file` is an `Optional[str]`: `None` means "no settings file".
+- `get_selected_nodes()`, `get_selected_links()` and their likes are no longer limited to 1000 elements.
+- New `ed.get_mouse_pos_on_canvas()`: the mouse in canvas coordinates, also where the editor is suspended (e.g. to place a node at the end of a new link).
+- Python: `NodeId`, `LinkId` and `PinId` are false when null (`if ed.get_hovered_node():` was always true). Each function has a docstring.
+- With `Config.force_window_content_width_to_node_width`, a node that collapses to one character is reported, with the fix.
+- Markdown code blocks inside a node are rendered as inline code. Without ImmApp, set `imgui_md.MarkdownCallbacks.can_use_child_windows` yourself.
+- C++: new `ed::InputTextMultiline()`, `ImGuiEx::IsInsideCanvas()`, and `ed::SetBeginHook()` (called at each editor's `Begin()`).
+
+**Breaking changes (C++)**
+
+`ed::Config::SettingsFile` is a `const char*` again, as upstream. The editor keeps the pointer: keep your string alive. Python is not concerned.
 
 ```cpp
 static std::string settingsFile = MySettingsFolder() + "/nodes.json";   // must outlive the editor
 config.SettingsFile = settingsFile.c_str();                             // was: config.SettingsFile = settingsFile;
 ```
 
-## Behavior change: ImVec in, ImVec out for the multi-float widgets
+- The `std::vector` versions of `GetSelectedNodes()`, `GetSelectedLinks()`, `GetActionContextNodes()`, `GetActionContextLinks()` and `GetOrderedNodeIds()` left the fork: use upstream's versions, with an array.
+- The hidden functions `Priv_ImGuiNodeEditor_EnterCanvas() / ExitCanvas() / IsInCanvas()` were removed from Dear ImGui: use `ImGuiEx::IsInsideCanvas()`.
 
-`slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` now return an `ImVec2` / `ImVec4` when they are given one, as the stubs always said. Until now they returned a `list` in that case. Lists and tuples still return a `list`.
+</details>
+
+### Hello ImGui
+
+On a touch screen, Hello ImGui turns a finger into what its user expects, with nothing to write in the app:
+
+- a swipe scrolls, with inertia
+- a tap clicks, a long press is a right click
+- two fingers pinch to scale, or drag together to pan
+- a text field opens the phone's keyboard
+
+Also:
+
+- **Idling without frozen animations**: `hello_imgui.set_item_is_live()` and `request_refresh()` keep the full frame rate while content changes by itself. The idle rate is now exactly `fps_idle`.
+- **Readable themes**: the 17 themes were reviewed. Text cursors, slider grabs, selections, disabled text, borders and tabs read well in each of them.
+- **The mouse wheel**: a wheel that started on a page keeps scrolling it when the mouse passes over a plot or an image.
+
+<details>
+<summary>Touch screens: the details</summary>
+
+- A swipe scrolls the content of a window, with a bounce at the end, even when it starts on a button or a text.
+- Two taps are a double click.
+- A short hold, then a drag, goes to the widget under the finger (a slider, a text selection). A ring shows when the hold took effect.
+- A finger still for half a second, then lifted, is a right click.
+- The scroll bars are thin indicators. A hold on a bar hands its thumb over, as on iOS.
+- Two fingers that move together are a right drag (the pan of a node editor, the box selection of a plot).
+- The keyboard: an active text widget shows a keyboard button. The keyboard serves any widget that wants text (the code editor too), stays open when a tap moves the caret, and comes back after iPadOS or Android hid it.
+- `hello_imgui.set_item_takes_touch_drags()`: a plot, a canvas or a node editor takes a finger's drag at once, without the hold.
+- `hello_imgui.set_tap_opens_url()`: in a browser, a tap opens a URL in a new tab.
+- ImPlot's drag tools get finger-sized grabs, ImmVision pans an image at once, the command palette fits a phone.
+- The settings: `RunnerParams.touch_scroll_mode`, `touch_long_press_is_right_click`, `touch_pinch_mode`, `touch_pinch_interrupts_widgets`, `touch_thin_scrollbars`.
+- The demo "Touch screens (phones, tablets)" shows every gesture. On a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse.
+
+</details>
+
+<details>
+<summary>Idling, themes, the mouse wheel: the details</summary>
+
+- Idling: in a browser, `fps_idle = 30` gave 20 or 30 frames per second; it gives 30. The book's page on Hello ImGui has a section on idling.
+- Themes: they start from Dear ImGui's dark or light colors. The light themes drew the text cursor white on white. A held slider's grab stands out. SoDark and BlackIsBlack dim the background of modals neutrally.
+- The mouse wheel: a wheel that starts on the item is the item's. `RunnerParams.wheel_session` (default: `True`) turns the behavior off.
+- The mouse wheel, behavior change: a custom widget that reads `io.mouse_wheel` claims it with `imgui.set_item_key_owner(imgui.Key.mouse_wheel_y)`, as ImPlot and ImmVision do. Without the claim, in a page that scrolls, it never sees the wheel.
+
+</details>
+
+<details>
+<summary>New functions, the web, SDL, Vulkan</summary>
+
+- `hello_imgui.save_lasting_pref()` / `load_lasting_pref()`: preferences kept outside the ini file, so that a reset of the layout keeps them (in the browser's local storage on the web).
+- `hello_imgui.prefers_reduced_motion()`: the system's "reduce motion" setting, on macOS, iOS, Windows and the browser.
+- `hello_imgui.load_image_data_from_encoded_data()`: decodes an image file's bytes, without OpenCV.
+- The web:
+  - In a browser on a Mac, Cmd acts as Ctrl in every widget (Cmd+C copies).
+  - The canvas follows Safari's page zoom.
+  - A demo opened in a popup window takes the app's window size.
+  - The page's icon is the app's icon.
+- SDL (C++): the DPI scale comes from the display that holds the window, instead of the first display.
+- Vulkan:
+  - a texture is destroyed only once the device is idle (an app could end with `VK_ERROR_DEVICE_LOST`)
+  - `fps_idling.vsync_to_monitor` and screenshots are implemented
+  - Vulkan errors raise an exception with the name of the `VkResult`, instead of calling `abort()`
+  - new CMake option `HELLOIMGUI_VULKAN_VALIDATION`
+
+</details>
+
+### GLFW 3.5.1
+
+*Candidate: only if GLFW 3.5.1 goes into the release.*
+
+The desktop Python wheels use GLFW 3.5.1 (was 3.4). C++ builds without a system GLFW download it too (was 3.3.8).
+
+- On the Mac, Ctrl+Tab now reaches the app: Dear ImGui's window switcher works there too. Hold Ctrl and press Tab to go through the windows (Shift+Tab goes back), then release Ctrl to focus one. It already worked on Windows and Linux.
+- Also: fixes for X11 and Wayland, and Windows XP and Vista are no longer supported. See [GLFW's changelog](https://github.com/glfw/glfw/releases/tag/3.5.1).
+
+### ImmVision
+
+- RGB is the default color order: `immvision.use_rgb_color_order()` is no longer needed. BGR images (OpenCV) still need `immvision.use_bgr_color_order()`.
+- A negative display size is the remaining space, as ImGui's item widths: `(-1, 0)` takes the window's width, and the height from the aspect ratio.
+- `ImageParams.image_to_screen()` and `image_screen_top_left`: draw over a displayed image.
+- On a phone: a finger pans an image at once, and the inspector fits the screen.
+
+<details>
+<summary>Breaking change (C++): ImmVision never links OpenCV</summary>
+
+- The `cv::Mat` conversions are header-only.
+- An application that passes `cv::Mat` defines `IMMVISION_HAS_OPENCV`, and links OpenCV itself.
+- `IMMVISION_FETCH_OPENCV` only provides a minimal OpenCV to `find_package(OpenCV)`. On Windows, it builds OpenCV from source: the precompiled `opencv_world` pack is removed.
+
+```cmake
+find_package(OpenCV REQUIRED)
+target_compile_definitions(my_app PRIVATE IMMVISION_HAS_OPENCV)
+target_link_libraries(my_app PRIVATE opencv_core)
+```
+
+</details>
+
+### Other libraries
+
+- **ImGuiColorTextEdit**, updated to upstream's `master`: East Asian wide glyphs, custom line numbers, whole word search, squiggles.
+- **ImAnim**, updated to upstream's `main`: grid stagger, delays, loop and pause callbacks, two tween policies.
+- **ImPlot and ImPlot3D in ImmApp** follow the DPI factor: on a screen at 150% or 200% (Windows, Linux), a plot of the default size scales like the widgets around it ([#501](https://github.com/pthom/imgui_bundle/issues/501)). The line weights and marker sizes of the plotted items stay in pixels.
+- **immapp**: `immapp.start_download()` starts an HTTP request in the background, and `immapp.decode_image()` decodes an image file's bytes without OpenCV.
+- **imgui_toggle** reads like a checkbox in every theme. **ImGuizmo**, **imspinner** and **ImPlot3D** are updated.
+
+<details>
+<summary>Other libraries: the details</summary>
+
+ImGuiColorTextEdit:
+
+- East Asian wide glyphs take two grid cells.
+- New: `set_custom_line_number_renderer()`, `set_text()` from a list of lines, `find_word_start()` / `find_word_end()`, `is_mouse_pos_over_text_area()`, `doc_pos2_screen_pos()`.
+- Squiggles: `add_squiggle(..., style=SquiggleStyle.background)`.
+- `set_find_replace_enabled()`, `set_show_current_line_highlight_enabled()`.
+- A `whole_word` option on `add_next_occurrence()` / `select_all_occurrences()`. `scroll_to_line()` centers the line by default.
+- Smooth scrolling, off by default: `set_smooth_scrolling_enabled()` / `is_smooth_scrolling_enabled()`. `scroll_to_line()` then glides to its line.
+- `clear_change_callback()` / `clear_transaction_callback()` deactivate a callback.
+- Fixes: a focused editor captures the keyboard again, the IME window sits at the cursor, a read-only editor no longer opens a phone's keyboard, the fold chevrons are whole without line numbers. Upstream: a crash on empty text, the double click word selection, the autocomplete window, more editing shortcuts.
+
+ImAnim:
+
+- grid stagger: `stagger_grid_opts`, `stagger_grid_delay()`
+- `play_with_delay()`, `clip.set_stagger_ease()`, `clip.set_loop_delay()`
+- the callbacks `clip.on_loop()` and `clip.on_pause()`
+- `instance.restart()` / `reset()` / `refresh()`
+- the tween policies `policy.additive` and `policy.multiply`
+
+immapp:
+
+- `immapp.start_download(url, method, json_body, timeout_s, headers)`: a thread on the desktop, a fetch in the browser. The GUI looks at the result's `done` at each frame, then at its `status`, `data` and `error`. See the book's page on async Python.
+- `immapp.download_url_bytes()` and `download_url_bytes_async()` gain `timeout_s`.
+- `immapp.decode_image(bytes, channels=3)`, also in Pyodide.
+- `with_im_anim` works in `manual_render` (Pyodide) and in `immapp.testing.run()`.
+- `immapp.testing.run()` needs no `gui_function` when given `runner_params`. `capture_final_frame()` takes `add_ons_params`.
+
+The others:
+
+- imgui_toggle: without a palette, "on" takes the theme's check mark color, and the toggle draws the style's frame border (merged upstream).
+- ImGuizmo: upstream fixes (`SetRect`'s maximum y, the tripod of multiple views). imspinner: updated.
+- ImPlot3D: its lines render right with Dear ImGui 1.93, without blur on Retina.
+- imgui-command-palette: usable on a phone, its list above the keyboard.
+- imgui_explorer: `set_imgui_explorer_libraries()` picks the libraries an app shows.
+
+</details>
+
+## Python
+
+- Wheels for Python 3.15, on the same platforms as the other versions ([#502](https://github.com/pthom/imgui_bundle/issues/502)). The wheels now cover Python 3.11 to 3.15.
+- `imgui.begin_simple(name, flags)`: `begin()` for a window without a close button, which returns a bool. `begin()` returns two values, so `if imgui.begin(...):` was always true.
+- ImmVision, and ImPlot's `plot_heatmap()` and `add_colormap()`, accept read-only numpy arrays, such as `np.asarray()` of a Pillow image or `np.frombuffer()`. They raised "incompatible function arguments".
+- `slider_float2/4`, `input_float2/4`, `color_edit3/4` and `color_picker3/4` return an `ImVec2` / `ImVec4` when given one, as the stubs said.
+- The C++ "text end" parameters leave the API: a Python string passed there made C++ read from an unrelated address ([#498](https://github.com/pthom/imgui_bundle/discussions/498)).
+
+<details>
+<summary>Python: the details</summary>
 
 ```python
 color = imgui.ImVec4(1, 0, 0, 1)
 changed, color = imgui.color_edit4("color", color)   # color is still an ImVec4 (was a list)
 ```
 
-## Breaking changes
+Lists and tuples still return a `list`.
 
-- C++: `ed::Config::SettingsFile` is a `const char*` again (see the imgui-node-editor section above).
-- The C++ "text end" parameters leave the Python API: `text_end` (`imgui.text_unformatted(text)`, `imgui.calc_text_size(text, hide_text_after_double_hash, wrap_width)`, `ImDrawList.add_text()`, `TextFilter.pass_filter()`, `TextBuffer.append()`, and the internal API), and the two-string overloads of `push_id()` and `get_id()`. In C++, the end must point inside its text, which a Python string cannot do: a string passed there made C++ read from an unrelated address ([#498](https://github.com/pthom/imgui_bundle/discussions/498)). A call that passed `None` as the end must drop it.
-- `imgui.set_drag_drop_payload(type, data, sz)` was removed: it took a raw buffer and was not usable from Python.
-  Use `imgui.set_drag_drop_payload_py_id()` (see `demo_drag_and_drop.py`).
-- Some errors are now reported with a more specific exception (`ValueError`, `IndexError`) where they used to raise a `RuntimeError` coming from an `IM_ASSERT` (for example `ImVec2.from_dict()` with a missing key, or an out-of-range color index).
+The "text end" parameters removed:
 
-## Updated bundled libraries
+- `text_end` in `imgui.text_unformatted()`, `imgui.calc_text_size()`, `ImDrawList.add_text()`, `TextFilter.pass_filter()`, `TextBuffer.append()`, and the internal API
+- the two-string overloads of `push_id()` and `get_id()`
+- `imgui.internal.separator_text_ex()`: it shows the label up to its `##`, as `separator_text()` does
 
-- **ImGuiColorTextEdit**: updated to upstream's `master` branch (the `future` branch is now merged there).
-  East Asian wide glyphs (CJK characters take two grid cells), custom line number rendering
-  (`set_custom_line_number_renderer()` with the new `TextEditor.CustomLineNumber`), `set_text()` from a
-  list of lines, `find_word_start()` / `find_word_end()` plus a `whole_word` option on
-  `add_next_occurrence()` / `select_all_occurrences()`, `is_mouse_pos_over_text_area()`, a default
-  `align_middle` alignment for `scroll_to_line()`, and `clear_change_callback()` /
-  `clear_transaction_callback()` to deactivate a callback (passing `None` was documented but never
-  worked from Python). Upstream fixes: crash on empty text, double click word selection, autocomplete
-  window scrolling, and more editing shortcuts. Upstream's unicode `set_text()` / `get_text_as_*()`
-  overloads (`std::wstring`, `std::u16string`) are not bound: Python `str` already goes through the
-  UTF-8 API.
-- **ImAnim**: updated to upstream's `main` branch. Grid stagger (`stagger_grid_opts`,
-  `stagger_grid_delay()`, `stagger_grid_delay_index()`, with the new `stagger_from` and `stagger_axis`
-  enums), `play_with_delay()`, `clip.set_stagger_ease()` and `clip.set_loop_delay()`, new clip callbacks
-  `clip.on_loop()` (receives the instance id and the loop index) and `clip.on_pause()`,
-  `instance.restart()` / `reset()` / `refresh()`, and two new tween policies (`policy.additive`,
-  `policy.multiply`).
+A call that passed `None` as the end must drop it.
+
+Arrays: empty and one-element arrays pass the buffer check, whatever their stride (about 60 functions, mostly ImPlot's). A fix of litgen, by Clay Dugo.
+
+The stubs:
+
+- a docstring for each module (what it is for, then the notes for Python users)
+- the original C++ signatures in eleven more stubs
+- their comments name the Python API (`imgui.push_id()`, `RunnerParams.callbacks.show_menus`), instead of the C++ one
+- `imgui.begin()`, `menu_item()` and `begin_tab_item()` document their results, and point to their `_simple` versions
+
+The extras: `[full]` no longer installs PyGLM (the ImGuizmo demo does without it), and `[pyglet]` needs pyglet 2.0.10 or later.
+
+Source builds work with nanobind 3.
+
+The Pyodide wheel stays on Python 3.14.
+
+</details>
+
+## Web: the explorers, the playground and the docs
+
+### The Bundle Explorer and the playground
+
+The [Bundle Explorer](https://imgui-bundle.pages.dev/explorer/) and the [playground](https://imgui-bundle.pages.dev/playground/) were reviewed from end to end, and look much nicer:
+
+- **One welcome screen** for both: a carousel of eleven live slides (plots, a GPU shader, the Lorenz attractor, a neural network, images, a node editor, markdown...), then a button to the demos.
+- **A gallery of the demos**, by category, with their pictures, a search box and a library filter. Each demo shows its code, and runs in place.
+- **Phones and tablets**: one pane at a time (Demo or Code), and every demo checked on a phone.
+- **Light and dark**: a theme switch in the header.
+- **New demos**: a tiny neural network that learns two spirals, a WebAudio synthesizer, "Plotting with Python" (Matplotlib, Seaborn, Cartopy), and interactive manuals of Dear ImGui, ImPlot, ImPlot3D and ImAnim.
+
+<details>
+<summary>The Bundle Explorer and the playground: the details</summary>
+
+- The same gallery in the Python and C++ explorers, and in the playground. It replaces the explorer's former tabs (Dear ImGui, Demo Apps, Visualization, Widgets, Tools).
+- The browser's back and forward buttons move in the web explorer, and a link can open a demo.
+- The explorers remember the choice of C++ or Python.
+- The playground:
+  - besides light and dark, a "..." menu with Hello ImGui's 17 themes, and A- / A+ buttons for the font size
+  - the desktop-only demos are listed too, with a "Desktop only" tag: a click shows their code, their picture, and how to run them
+  - the error window shows the whole traceback, across the bottom of the page
+  - a demo runs from its own folder, so that it can import its sibling files
+
+The test engine in the browser (Pyodide):
+
+- The ImGui Test Engine runs in the browser, with the same Python API as on the desktop.
+- It needs Chrome 137, Firefox 153 or Safari 27. In an older browser, the app runs without the engine, and says so.
+- In the browser, `immapp.testing.run()` returns at once, keeps the app open after the test, and prints the result.
+- The demo of scripted runs, `demo_testapp`, is renamed `demo_immapp_testing` (desktop only).
+
+</details>
+
+<details>
+<summary>The demos: new, moved, removed</summary>
+
+New:
+
+- "A tiny neural network learns two spirals": it trains live, and tells its story with narrative programming.
+- The WebAudio synthesizer (a piano, tunes, a scope) replaces the minimal beep.
+- "Plotting with Python": a Matplotlib phase portrait, Seaborn, Cartopy.
+- The node editor: a color mixer and an image pipeline, in Python and C++.
+- RichMd: a document (`demo_imgui_md_document`) and a markdown editor, in Python and C++.
+- C++ versions of "What is an Immediate GUI", the resizable panels and the dockable windows.
+- `demo_powersave`, redone: a live plot and the pace of the frames show what idling does.
+- Now in the browser too: ImGuizmo, docking, pydantic, Chinese fonts, async.
+
+Moved and renamed:
+
+- The Python-specific demos moved to `demos_python_specifics/` (`demo_run_async`, `demo_pydantic`, `demo_glfw_window_manip`, `demo_python_context_manager`; `demo_matplotlib` to `plotting/`).
+- A demo's function is `gui()` in Python (was `demo_gui()`), and `gui_<file name>()` in C++.
+
+Removed:
+
+- the node editor's former demos (`demo_node_editor_basic`, `demo_romeo_and_juliet`) and launcher
+- four ImmVision demos (contours, laplacian, the Mandelbrot inspector, no_opencv)
+- `demo_implot` (ImPlot's manual is in the explorer) and `demo_imgui_show_demo_window`
+- in the playground: the "Full Demo" entries (now the interactive manuals), `immvision.py`, `implot3d_butterfly.py`, `landing_page.py`: their old `?demo=` links no longer open
+
+</details>
+
+### The API reference
+
+- **The book's API pages**: the functions, structs and enums of all the bundle's libraries, with their Python and C++ signatures and their documentation. See [the API reference](https://imgui-bundle.pages.dev/doc/api/).
+- **Live demos in the API pages**: 450 entries of Dear ImGui, ImPlot and ImPlot3D show the demo that uses them: its picture, its code, and a link to run it.
+- **The ImGui Explorer's API tab**: in the [ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manuals of Dear ImGui, ImPlot and ImPlot3D, click an identifier in the code. Its card shows its Python and C++ signatures, its doc, and the demo lines that use it.
+
+<details>
+<summary>The API reference, and the ImGui Explorer: the details</summary>
+
+- The API pages are generated from the bundle's Python stubs, with a page per library, in Python and in C++.
+- In the API pages, the demo's code is in the page's language.
+- Each entry links to the demo section that shows it best (`input_text_multiline()` to "Multi-line Text Input").
+- The API tab: the card of an entry ("Go to declaration", links to its online pages, "In the demo"), API tooltips, and the list of all the entries, with a filter.
+- The ImGui Explorer also gets an outline of the demo, a "Search the demos" field, and a breadcrumb above the code, with "Show demo".
+- On a phone, it shows one pane at a time.
+- A link opens a section of a manual (`?lib=implot&demo=Plots/Line Plots`, and `&lang=python`), and "Copy link to this demo" gives it.
+
+</details>
+
+### For AI assistants
+
+Give your AI assistant the bundle's guide: it will know how to help you write apps with Dear ImGui Bundle, in Python or C++.
+
+- The guide: [llms.txt](https://imgui-bundle.pages.dev/llms.txt), also in the book ("For AI assistants").
+- The whole book, in plain text: [llms-full.txt](https://imgui-bundle.pages.dev/llms-full.txt).
+- The API in plain text, with the demos' code in Python and C++: [llms/api](https://imgui-bundle.pages.dev/llms/api/index.txt). The demos and the explorers: [llms/demos.txt](https://imgui-bundle.pages.dev/llms/demos.txt), [llms/explorers.txt](https://imgui-bundle.pages.dev/llms/explorers.txt).
+
+### The book and the site
+
+- A page of all the demos, by category, with their pictures and links to run them or read their code.
+- New sections: idling, the stack layouts, RichMd's documents, narrative programming, asyncio in the browser, fonts and images in Python.
+- "Examples and Gallery" becomes "Made with Dear ImGui Bundle": apps built with the bundle.
+
+<details>
+<summary>The book and the site: the details</summary>
+
+- Links to the ImGui Explorer reuse one browser tab.
+- The book no longer scrolls sideways on a phone.
+- Link previews (the picture and the text a chat or a social network shows) for the playground and both explorers.
+- The explorers' pages have a title and text while they load, and unknown addresses answer a 404 page.
+
+</details>
+
+## C++
+
+- The CMake package is named `imgui_bundle` (was `imgui-bundle`): `find_package(imgui_bundle CONFIG REQUIRED)`, then `imgui_bundle_add_app(...)`.
+- `cmake --install` produces one relocatable package, with Hello ImGui and all the bundled libraries.
+
+<details>
+<summary>C++: the details</summary>
+
+- After `find_package()`: `imgui_bundle_add_app(...)`, or `target_link_libraries(app PRIVATE imgui_bundle::imgui_bundle)`.
+- The package is in `lib/cmake/imgui_bundle/`, with all the libraries under the `imgui_bundle::` namespace. A CMake preset, `cpp_package`, builds and installs it.
+- The app template (`imgui_bundle_template`) builds against an installed package when `imgui_bundle_DIR` is set.
+- Hello ImGui's package is now `hello_imgui` (was `hello-imgui`): the former name still works, through a deprecated shim.
+- plutovg and plutosvg are git submodules of Hello ImGui, no longer downloaded at configure time. They are in the `srcs-full` release archive.
+- When a needed submodule is missing, the configure step initializes it.
+- Packagers (conda, vcpkg, distributions): `HELLOIMGUI_USE_SYSTEM_PLUTOSVG=ON` links an installed plutosvg. It is on under `CONDA_BUILD`. The license texts ship beside the fonts.
+- On MSVC, `imgui_bundle_add_app()` compiles the sources as UTF-8 (`/utf-8`).
+- Web apps (Emscripten): `HELLO_IMGUI_SHELL_HEAD` adds lines to the page's `<head>` (e.g. link previews), and `HELLO_IMGUI_SHELL_LOADING_TEXT` adds text under the loading spinner.
+
+</details>
 
 ## Fixes
 
-- imgui-node-editor: every editor follows the theme (light or dark), also the editors that the app creates itself, with or without `with_node_editor`. ImmApp used to recolor only the current editor: the others kept dark nodes, with unreadable text in a light theme. Colors pushed with `ed.push_style_color()` before `ed.begin()` are now overwritten: push them after it.
-- imgui-node-editor on Dear ImGui 1.93: the hover and selection outlines show again (1.93 drew them inside the node, under its background), and the grid lines stay sharp with one pixel per point.
-- imgui-node-editor on Dear ImGui 1.93, zoomed out: links and node borders stay at least one point wide, with a softer edge. Thin links faded, and wavered from one row of pixels to the next.
-- imgui-node-editor: at 100% zoom, text and borders stay sharp on screens with one pixel per point (most Windows screens). After a resize or a navigation, the canvas could land on half a pixel, which blurred them ([#497](https://github.com/pthom/imgui_bundle/issues/497)).
-- The pure Python pyglet backend: the mouse wheel scrolled the wrong way, and the horizontal scroll was lost (its handler did not match pyglet's `on_mouse_scroll(x, y, scroll_x, scroll_y)`).
-- `imgui.internal.separator_text_ex(id, label, extra_width)` no longer takes a `label_end`: it shows the label up to its `##`, as `separator_text()` does. In C++, `label_end` points inside `label`; a Python string could not, so the call printed garbage, then crashed ([#498](https://github.com/pthom/imgui_bundle/discussions/498)).
-- Hello ImGui: `hello_imgui.load_user_pref()` gives back the value as saved by `save_user_pref()`. It came back with a trailing newline from the second run on: each write of the ini file added a newline to its last part.
-- `ImDrawData.cmd_lists_count` is back, as a read-only property. Dear ImGui 1.92.9 made `CmdListsCount` obsolete, and it had
-  disappeared from the bindings in v1.92.900, which broke third party renderers such as wgpu's imgui backend
-  (`AttributeError: 'ImDrawData' object has no attribute 'cmd_lists_count'`). New code should use `len(draw_data.cmd_lists)`.
-- `imgui.set_window_focus("window name")` crashed; `imgui.set_window_focus(None)` removes the focus.
-- `imgui.color_picker4()` did not accept a list.
-- `ImColor.to_dict()` returned the red component for all keys; `ImColor.from_dict()` returned an `ImVec4`.
-- `imgui.internal.input_text_ex()` rejected every call ("incompatible function arguments").
-- Pure Python pygame backend (`python_backends/pygame_backend.py`): copy / cut / paste / select all / undo / redo work (their keys were not forwarded to imgui), the system clipboard is used (via `pygame.scrap`), and double clicks are detected (imgui's clock ran faster than the wall clock at high frame rates).
-- `imgui.get_clipboard_text()` crashed when the clipboard was empty and no backend was installed; it always returns a `str` (`""` when empty).
-- `imgui.color_picker4()` with a list: `ref_col` is a list of 4 floats (it was declared as a single float, and read out of bounds).
-- An exception raised inside a Python clipboard / open-in-shell callback is reported ("Exception ignored in...") instead of
-  unwinding through Dear ImGui.
-- `ImFont.calc_word_wrap_position_python()` returns an index in the `str` (so that `text[:index]` is what fits). It returned an
-  offset in the UTF-8 bytes, which was wrong for any non-ASCII text.
-- Stubs: the default of `format` arguments reads `"%.3f"` (it was truncated to `"%.3"`; the runtime default was always right).
-- `imgui.internal.get_current_window()` raises an exception instead of crashing when called without a context or outside a frame.
-- Hello ImGui, Vulkan backend:
-  - a texture is destroyed only once the device is idle (at exit, the app could end with `VK_ERROR_DEVICE_LOST`);
-    the surface is destroyed at exit; `VK_KHR_portability_subset` is enabled when available (MoltenVK); textures do not keep their staging buffer.
-  - `fps_idling.vsync_to_monitor` is implemented (it was only implemented with OpenGL).
-  - screenshots are implemented (`hello_imgui.final_app_window_screenshot()`; C++: `FinalAppWindowScreenshotRgbBuffer()`, `AppWindowScreenshotRgbBuffer()`).
-  - Vulkan errors raise an exception with the name of the `VkResult` (they called `abort()`).
-  - new CMake option `HELLOIMGUI_VULKAN_VALIDATION`: enables the validation layers.
+<details>
+<summary>The Python bindings</summary>
 
-## C++: installable CMake package, and notes for packagers
+- `ImDrawData.cmd_lists_count` is back, read-only. Its removal in v1.92.900 broke third party renderers, such as wgpu's.
+- `imgui.set_window_focus("window name")` crashed. `imgui.set_window_focus(None)` removes the focus.
+- `imgui.color_picker4()` accepts a list, and its `ref_col` is a list of 4 floats.
+- `ImColor.to_dict()` returned the red component for all keys. `ImColor.from_dict()` returned an `ImVec4`.
+- `imgui.internal.input_text_ex()` rejected every call.
+- `imgui.get_clipboard_text()` crashed with an empty clipboard and no backend. It returns `""` then.
+- An exception raised in a Python clipboard callback is reported, instead of unwinding through Dear ImGui.
+- `ImFont.calc_word_wrap_position_python()` returns an index in the `str`, instead of an offset in the UTF-8 bytes.
+- `imgui.internal.get_current_window()` raises an exception outside a frame, instead of crashing.
+- Stubs: the default of `format` arguments reads `"%.3f"` (it was cut to `"%.3"`).
+- `immapp.runnable_code_cell`: its cells lost their results on Python 3.13 and later. A function result now runs as a live GUI.
+- The same `RunnerParams` can run twice (`hello_imgui.run()`, `immapp.run()`, `immapp.manual_render()`), e.g. when a notebook cell runs again. The second run measures the DPI factor again (e.g. on another screen).
+- `immapp.manual_render`: the app's Python callbacks are released at the teardown. They stayed alive until the next setup.
 
-* The CMake package is now named `imgui_bundle` (was `imgui-bundle`): `find_package(imgui_bundle CONFIG REQUIRED)` then `imgui_bundle_add_app(...)` or `target_link_libraries(app PRIVATE imgui_bundle::imgui_bundle)`. `cmake --install` produces a single relocatable package (`lib/cmake/imgui_bundle/`) which includes hello_imgui and all bundled libraries under the `imgui_bundle::` namespace. Likewise, hello_imgui's own CMake package is now `hello_imgui` (was `hello-imgui`; the former name still works through a deprecated shim).
-* plutovg and plutosvg are now git submodules of hello_imgui (`external/hello_imgui/hello_imgui/external/plutosvg`), no longer downloaded at configure time; they are included in the `srcs-full` release archive.
-* Packagers (conda, vcpkg, distributions): set `HELLOIMGUI_USE_SYSTEM_PLUTOSVG=ON` to link an installed plutosvg (with freetype support) instead of the submodule. It is ON automatically when `IMGUI_BUNDLE_PYTHON_USE_SYSTEM_LIBS` is set (i.e. under `CONDA_BUILD`), so the conda-forge patch that swapped in the system plutovg/plutosvg is no longer needed.
+</details>
 
+<details>
+<summary>The node editor</summary>
 
+- On Dear ImGui 1.93, the hover and selection outlines show again, and the grid lines stay sharp.
+- On Dear ImGui 1.93, zoomed out: links and node borders stay at least one point wide, with a softer edge. Thin links faded, and wavered from one row of pixels to the next.
+- At 100% zoom, text and borders stay sharp on screens with one pixel per point ([#497](https://github.com/pthom/imgui_bundle/issues/497)).
+- A link's bounds no longer rely on undefined behavior, which an optimizing compiler could break ([thedmd/imgui-node-editor#344](https://github.com/thedmd/imgui-node-editor/pull/344)).
 
+</details>
+
+<details>
+<summary>Hello ImGui, ImmVision, and the others</summary>
+
+- Hello ImGui:
+  - A new app starts after an app whose setup failed. The next app failed with "Already initialized a platform backend!" (in the playground: every example, until a reload).
+  - `hello_imgui.load_user_pref()` gives back the value saved by `save_user_pref()`. It came back with a trailing newline from the second run on.
+  - Window positions with negative coordinates (a monitor left of the main one) are restored ([pthom/hello_imgui#168](https://github.com/pthom/hello_imgui/issues/168)).
+  - `ImGuiTheme.apply_theme()` works again without `hello_imgui.run()`, and `theme_to_style()` no longer changes the current style.
+  - Screenshots with OpenGL swapped the two middle rows of an image of even height.
+  - The installed CMake package announced version 1.92.700.
+- ImmVision: its icon buttons were invisible in a light theme.
+- `immapp.show_python_code()` follows the theme.
+- MicroTeX: `\sqrt` or an argument without braces no longer aborts a web build (C++).
+- NanoVG in the browser: the font atlas lost the glyphs of later uploads.
+- pyglet: blank rendering with pyglet 2 is fixed, and the system clipboard is used. The mouse wheel scrolled the wrong way, and the horizontal scroll was lost.
+- pygame: copy, cut, paste, select all, undo and redo work, with the system clipboard, and double clicks are detected.
+
+</details>
+
+## For contributors
+
+- `AGENTS.md` gives the rules for AI coding agents working on the bundle, and `.claude/skills/` six skills for them (screenshots of a GUI or a web build, the bindings, the forks).
+
+## Thanks
+
+This release owes a lot to:
+
+- **Omar Cornut** ([@ocornut](https://github.com/ocornut)), for Dear ImGui 1.93.
+- **Michał Cichoń** ([@thedmd](https://github.com/thedmd)), for Stack Layout v2.2, and for imgui-node-editor v0.9.4, with its test suite.
+- **Breno Cunha Queiroz** ([@brenocq](https://github.com/brenocq)), for ImPlot3D's lines on Dear ImGui 1.93 ([brenocq/implot3d#195](https://github.com/brenocq/implot3d/pull/195)).
+- **Clay Dugo** ([@claydugo](https://github.com/claydugo)), for the buffer check of empty and one-element arrays, in litgen ([pthom/litgen#48](https://github.com/pthom/litgen/pull/48)).
+- **Johan Goossens** ([@goossens](https://github.com/goossens)), **cmd.wtf** ([@cmdwtf](https://github.com/cmdwtf)) and **dalerank** ([@dalerank](https://github.com/dalerank)), who merged our changes into ImGuiColorTextEdit, imgui_toggle and imspinner.
+- The users who reported issues: Diederick C. Niehorster ([#501](https://github.com/pthom/imgui_bundle/issues/501)), Kushal Kolar ([#491](https://github.com/pthom/imgui_bundle/issues/491), who asked for API docs), Gabriel Tremeschin ([#502](https://github.com/pthom/imgui_bundle/issues/502)), [@drongh-bot](https://github.com/drongh-bot) ([#497](https://github.com/pthom/imgui_bundle/issues/497)), Tal ([#498](https://github.com/pthom/imgui_bundle/discussions/498)), [@meinradr](https://github.com/meinradr) ([pthom/hello_imgui#168](https://github.com/pthom/hello_imgui/issues/168)) and Diego Mateos ([pthom/hello_imgui#169](https://github.com/pthom/hello_imgui/issues/169)).
+
+In return, the bundle sent 20 pull requests to the libraries it uses: 10 merged, 8 open, and 2 whose fixes thedmd folded into Stack Layout v2.2.
+
+<details>
+<summary>The pull requests sent upstream</summary>
+
+- Dear ImGui:
+  - merged: [ocornut/imgui#9582](https://github.com/ocornut/imgui/pull/9582) and [#9586](https://github.com/ocornut/imgui/pull/9586) (the demo's markers)
+  - open: [#9575](https://github.com/ocornut/imgui/pull/9575) (the value of sliders and drags in a tooltip, on a touch screen), [#9587](https://github.com/ocornut/imgui/pull/9587) (the mouse wheel's lock), [#9588](https://github.com/ocornut/imgui/pull/9588) (window callbacks, for the node editor's popups)
+- imgui-node-editor, open: [thedmd/imgui-node-editor#343](https://github.com/thedmd/imgui-node-editor/pull/343) (popups inside a canvas), [#344](https://github.com/thedmd/imgui-node-editor/pull/344) (undefined behavior in a link's bounds), [#345](https://github.com/thedmd/imgui-node-editor/pull/345) (a pan from a widget of a node)
+- Stack Layout: [thedmd/imgui#9](https://github.com/thedmd/imgui/pull/9) and [#10](https://github.com/thedmd/imgui/pull/10), closed, their fixes in v2.2
+- ImGuiColorTextEdit, merged: [goossens/ImGuiColorTextEdit#92](https://github.com/goossens/ImGuiColorTextEdit/pull/92), [#93](https://github.com/goossens/ImGuiColorTextEdit/pull/93), [#94](https://github.com/goossens/ImGuiColorTextEdit/pull/94), [#95](https://github.com/goossens/ImGuiColorTextEdit/pull/95)
+- imgui_toggle, merged: [cmdwtf/imgui_toggle#24](https://github.com/cmdwtf/imgui_toggle/pull/24), [#25](https://github.com/cmdwtf/imgui_toggle/pull/25)
+- imspinner, merged: [dalerank/imspinner#37](https://github.com/dalerank/imspinner/pull/37)
+- MicroTeX, open: [NanoMichael/MicroTeX#195](https://github.com/NanoMichael/MicroTeX/pull/195), [#196](https://github.com/NanoMichael/MicroTeX/pull/196)
+- wgpu-py's imgui backend, merged: [pygfx/wgpu-py#837](https://github.com/pygfx/wgpu-py/pull/837)
+
+</details>
 
 # v1.92.900
 
