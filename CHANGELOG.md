@@ -1,8 +1,8 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.93.0
+# v1.93.0 - WIP
 
-A big release, 865 commits since v1.92.900: Dear ImGui 1.93, a markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
+This is a big release, with 865 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
 
 Pictures and videos of the novelties: [the release page](RELEASE_PAGE_URL).
 
@@ -22,7 +22,7 @@ Also new: Stack Layout v2.2 by thedmd ([Stack Layout v2.2](#stack-layout-v22)), 
 
 ## Breaking changes
 
-*Python and C++:*
+### Python and C++:
 
 - The draw list (see [Dear ImGui 1.93.0](#dear-imgui-1930)):
   - `ImDrawFlags_.round_corners_xxx` become `ImDrawFlags_.round_xxx`
@@ -38,7 +38,7 @@ Also new: Stack Layout v2.2 by thedmd ([Stack Layout v2.2](#stack-layout-v22)), 
   - `im_round64()` becomes `im_round_positive64()` or `im_round_signed64()`
   - the context hooks `begin_window` / `end_window` are removed: the node editor uses two window callbacks instead
 
-*Python:*
+### Python:
 
 - The C++ "text end" parameters leave the API (see [Python](#python)).
 - `imgui.set_drag_drop_payload(type, data, sz)` is removed: use `imgui.set_drag_drop_payload_py_id()`.
@@ -46,7 +46,7 @@ Also new: Stack Layout v2.2 by thedmd ([Stack Layout v2.2](#stack-layout-v22)), 
 - Some errors raise `ValueError` or `IndexError`, instead of a `RuntimeError`.
 - Some demos moved: `python -m imgui_bundle.demos_python.demos_immapp.demo_run_async` and its likes change their path (see [the demos](#the-bundle-explorer-and-the-playground)).
 
-*C++:*
+### C++:
 
 - `ed::Config::SettingsFile` is a `const char*` again, and the `std::vector` versions of `GetSelectedNodes()` and its likes left the fork (see [The node editor](#the-node-editor)).
 - RichMd: the renderer class `imgui_md` is internal: the compatibility header no longer names it (see [RichMd](#richmd-the-markdown-renderer)).
@@ -64,6 +64,10 @@ Dear ImGui is updated to [v1.93.0](https://github.com/ocornut/imgui/releases/tag
 - `StyleColorsDark()` is refreshed: a greyer window background, without transparency.
 - A drag or a slider edit can be cancelled with a right click or Escape.
 - On a touch screen, sliders and drags show their value in a tooltip above the finger (a patch of the bundle, proposed upstream as [ocornut/imgui#9575](https://github.com/ocornut/imgui/pull/9575)).
+
+![Dear ImGui 1.93's demo of the draw list: the shapes under each stroke flag](https://github.com/user-attachments/assets/039215b9-dd92-42a4-9ae7-657c79eaa6a6)
+
+*Picture: Dear ImGui 1.93.0's [release notes](https://github.com/ocornut/imgui/releases/tag/v1.93.0).*
 
 <details>
 <summary>The draw list: the details</summary>
@@ -306,6 +310,8 @@ The desktop Python wheels use GLFW 3.5.1 (was 3.4). C++ builds without a system 
 - On the Mac, Ctrl+Tab now reaches the app: Dear ImGui's window switcher works there too. Hold Ctrl and press Tab to go through the windows (Shift+Tab goes back), then release Ctrl to focus one. It already worked on Windows and Linux.
 - Also: fixes for X11 and Wayland, and Windows XP and Vista are no longer supported. See [GLFW's changelog](https://github.com/glfw/glfw/releases/tag/3.5.1).
 
+<!-- ![The window switcher: hold Ctrl, press Tab](_plans/scratch/release_page_193/switcher_demo_theme.png) -->
+
 ### ImmVision
 
 - RGB is the default color order: `immvision.use_rgb_color_order()` is no longer needed. BGR images (OpenCV) still need `immvision.use_bgr_color_order()`.
@@ -486,6 +492,8 @@ Removed:
 - **Live demos in the API pages**: 450 entries of Dear ImGui, ImPlot and ImPlot3D show the demo that uses them: its picture, its code, and a link to run it.
 - **The ImGui Explorer's API tab**: in the [ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manuals of Dear ImGui, ImPlot and ImPlot3D, click an identifier in the code. Its card shows its Python and C++ signatures, its doc, and the demo lines that use it.
 
+<!-- ![The ImGui Explorer's API tab: the card of implot.plot_bubbles, beside its demo](_plans/scratch/release_page_193/api_tab_card.png) -->
+
 <details>
 <summary>The API reference, and the ImGui Explorer: the details</summary>
 
@@ -601,7 +609,8 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
 
 This release owes a lot to:
 
-- **Omar Cornut** ([@ocornut](https://github.com/ocornut)), for Dear ImGui 1.93.
+- **Omar Cornut** ([@ocornut](https://github.com/ocornut)), for Dear ImGui 1.93, and his feedback on Dear ImGui Explorer and the bundle in general.
+- **Mikko Mononen** ([@memononen](https://github.com/memononen)), for the main work on Dear ImGui 1.93's new draw list.
 - **Michał Cichoń** ([@thedmd](https://github.com/thedmd)), for Stack Layout v2.2, and for imgui-node-editor v0.9.4, with its test suite.
 - **Breno Cunha Queiroz** ([@brenocq](https://github.com/brenocq)), for ImPlot3D's lines on Dear ImGui 1.93 ([brenocq/implot3d#195](https://github.com/brenocq/implot3d/pull/195)).
 - **Clay Dugo** ([@claydugo](https://github.com/claydugo)), for the buffer check of empty and one-element arrays, in litgen ([pthom/litgen#48](https://github.com/pthom/litgen/pull/48)).
