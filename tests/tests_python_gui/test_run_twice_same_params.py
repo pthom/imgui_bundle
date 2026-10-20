@@ -1,5 +1,5 @@
 """Test that the same RunnerParams can run twice: with hello_imgui.run, immapp.run and immapp.manual_render.
-A run leaves the params as it found them: appShallExit, LoadAdditionalFonts, and the user's callbacks.
+A run leaves the params as it found them: appShallExit, LoadAdditionalFonts, the DPI factor, and the user's callbacks.
 """
 
 from imgui_bundle import hello_imgui, immapp, imgui
@@ -31,6 +31,23 @@ def test_hello_imgui_run_twice() -> None:
     for _ in range(NB_RUNS):
         hello_imgui.run(runner_params)
     assert nb_runs_seen[0] == NB_RUNS
+
+
+def test_dpi_factor_after_run() -> None:
+    """A factor that the run measured is measured again at the next run (on another screen, it may differ);
+    a factor set by the app stays"""
+    runner_params = _runner_params([0])
+    factor_during_run = [0.0]
+
+    def post_init() -> None:
+        factor_during_run[0] = hello_imgui.get_runner_params().dpi_aware_params.dpi_window_size_factor
+
+    runner_params.callbacks.post_init = post_init
+    for factor_set_by_app in (0.0, 1.5):  # 0: measured
+        runner_params.dpi_aware_params.dpi_window_size_factor = factor_set_by_app
+        hello_imgui.run(runner_params)
+        assert factor_during_run[0] > 0.0
+        assert runner_params.dpi_aware_params.dpi_window_size_factor == factor_set_by_app
 
 
 def test_immapp_run_twice() -> None:
