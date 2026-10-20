@@ -20,7 +20,17 @@ from imgui_bundle import imgui_color_text_edit as ed, register_demos_assets_fold
 from imgui_bundle import imgui_knobs, imgui_toggle, imgui_node_editor as node_ed
 from imgui_bundle import implot, implot3d
 from imgui_bundle.immapp import icons_fontawesome_4
-from imgui_bundle.demos_python.demo_utils.api_demos import code_language_pref, set_code_language_pref
+
+
+# The reader's code language ("Python", "C++", or "" if never chosen), as in demo_utils/api_demos.py:
+# a copy, because the playground's slim wheel has no demos_python.
+def code_language_pref() -> str:
+    return {"python": "Python", "cpp": "C++"}.get(hello_imgui.load_lasting_pref("code_language"), "")
+
+
+def set_code_language_pref(language: str) -> None:
+    hello_imgui.save_lasting_pref("code_language", "python" if language == "Python" else "cpp")
+
 
 register_demos_assets_folder()  # welcome.md and resources.md (in Pyodide: delivered by the playground, see examples.json)
 
