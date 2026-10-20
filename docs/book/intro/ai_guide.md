@@ -305,6 +305,8 @@ testing.capture_final_frame(gui, "/tmp/out.png", window_size=(600, 400))
 
 **Driving the GUI, with screenshots at chosen moments:**
 
+This uses the ImGui Test Engine, which has its own license (Dear ImGui Test Engine License v1.04): free for individuals, education, open-source and not-for-profit projects, and companies with a turnover under 2 million USD. Other companies need a paid license from Omar Cornut's company: https://www.dearimgui.com/licenses. The screenshot of the final frame, above, does not use the test engine.
+
 ```python
 def gui():
     imgui.button("Click me")
