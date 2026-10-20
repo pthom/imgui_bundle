@@ -2,6 +2,9 @@
 A run leaves the params as it found them: appShallExit, LoadAdditionalFonts, the DPI factor, and the user's callbacks.
 """
 
+import gc
+import weakref
+
 from imgui_bundle import hello_imgui, immapp, imgui
 
 NB_RUNS = 2
@@ -59,6 +62,19 @@ def test_immapp_run_twice() -> None:
         # ImmApp chains its own callbacks into the params during the run: the user's come back
         assert runner_params.callbacks.setup_imgui_style is _user_setup_style
     assert nb_runs_seen[0] == NB_RUNS
+
+
+def test_immapp_manual_render_keeps_no_callback() -> None:
+    """After tear_down, ImmApp keeps no copy of the app's callbacks: freed after Python's exit, they could crash it"""
+    runner_params = _runner_params([0])
+    gui = weakref.ref(runner_params.callbacks.show_gui)
+    immapp.manual_render.setup_from_runner_params(runner_params, immapp.AddOnsParams())
+    while not runner_params.app_shall_exit:
+        immapp.manual_render.render()
+    immapp.manual_render.tear_down()
+    del runner_params
+    gc.collect()
+    assert gui() is None
 
 
 def test_immapp_manual_render_twice() -> None:

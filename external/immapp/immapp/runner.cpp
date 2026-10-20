@@ -630,6 +630,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         catch (...)
         {
             runnerParams.callbacks = sUserCallbacks;
+            sUserCallbacks = {};
             throw;
         }
         sRunnerParams = &runnerParams;
@@ -708,6 +709,7 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         HelloImGui::ManualRender::TearDown();
         Priv_TearDown();
         sRunnerParams->callbacks = sUserCallbacks;
+        sUserCallbacks = {};  // No copy kept: in Python, freed after the interpreter's exit, they could crash it
         sRunnerParams = nullptr;
         sStoredRunnerParams.reset();  // Clear the stored RunnerParams
     }
