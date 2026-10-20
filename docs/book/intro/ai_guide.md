@@ -320,7 +320,12 @@ testing.run(gui, my_test, window_size=(600, 400))
 In C++: `ImmApp::Testing::CaptureFinalFrame(guiFn, path, opts)` and `ImmApp::Testing::Capture(ctx, path)`, in `immapp/testing.h`.
 
 Good to know:
-- Both open a real window for a few frames: they need a display (on a headless Linux machine, use Xvfb).
+- Both open a real window for a few frames: they need a display. On a headless Linux machine (an AI's sandbox, a CI runner), use Xvfb, a virtual display, with Mesa's software OpenGL:
+  ```bash
+  pip install imgui-bundle
+  sudo apt-get install -y xvfb libgl1-mesa-dri
+  xvfb-run -a -s "-screen 0 1920x1080x24" python my_app.py   # or: Xvfb :99 & export DISPLAY=:99
+  ```
 - They accept the add-on flags of `immapp.run` (`with_markdown`, `with_implot`...).
 - `window_size` is in logical pixels: on a Retina screen, the PNG is twice as large.
 - In the default run speed, `ctx.sleep()` lets no real time pass: for a tooltip's delay or an animation, use `run_speed=testing.TestRunSpeed.normal`.
