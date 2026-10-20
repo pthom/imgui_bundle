@@ -113,7 +113,7 @@ r"""::md Mandelbrot
 """
 def mandelbrot_image(size: int, max_iter: int, window_re: Window, window_im: Window) -> np.ndarray:
     re = np.linspace(*window_re, size, dtype=np.float32)
-    im = np.linspace(*window_im, size, dtype=np.float32)
+    im = np.linspace(window_im[1], window_im[0], size, dtype=np.float32)  # the top row first: the imaginary axis up
     c = (re[None, :] + 1j * im[:, None]).astype(np.complex64)
     return escape_time(np.zeros_like(c), c, max_iter)
 # ::endcode
@@ -124,7 +124,7 @@ r"""::md Julia
 """
 def julia_image(c: complex, size: int, max_iter: int, window_re: Window, window_im: Window) -> np.ndarray:
     re = np.linspace(*window_re, size, dtype=np.float32)
-    im = np.linspace(*window_im, size, dtype=np.float32)
+    im = np.linspace(window_im[1], window_im[0], size, dtype=np.float32)  # the top row first: the imaginary axis up
     z0 = (re[None, :] + 1j * im[:, None]).astype(np.complex64)
     return escape_time(z0, np.full_like(z0, c), max_iter)
 # ::endcode
@@ -186,11 +186,11 @@ class PlaneView:
 
     def to_plane(self, x: float, y: float) -> complex:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
-        return complex(re0 + x / self.size * (re1 - re0), im0 + y / self.size * (im1 - im0))
+        return complex(re0 + x / self.size * (re1 - re0), im1 - y / self.size * (im1 - im0))  # y goes down, im up
 
     def to_pixel(self, z: complex) -> tuple[int, int]:
         (re0, re1), (im0, im1) = self.window_re, self.window_im
-        return int((z.real - re0) / (re1 - re0) * self.size), int((z.imag - im0) / (im1 - im0) * self.size)
+        return int((z.real - re0) / (re1 - re0) * self.size), int((im1 - z.imag) / (im1 - im0) * self.size)
 
     def move(self, window_re: Window, window_im: Window) -> None:
         """After a zoom or a pan: computed fast while the mouse moves, then sharp"""
@@ -214,7 +214,7 @@ class PlaneView:
         drag = imgui.get_mouse_drag_delta(0)  # stays (0, 0) until the mouse moves past the drag threshold
         if imgui.is_item_active() and (drag.x, drag.y) != (0, 0):
             (re0, re1), (im0, im1) = self.drag_start
-            d_re, d_im = -drag.x / self.size * (re1 - re0), -drag.y / self.size * (im1 - im0)
+            d_re, d_im = -drag.x / self.size * (re1 - re0), drag.y / self.size * (im1 - im0)  # the picture follows
             window = (re0 + d_re, re1 + d_re), (im0 + d_im, im1 + d_im)
             if window != (self.window_re, self.window_im):
                 self.move(*window)
