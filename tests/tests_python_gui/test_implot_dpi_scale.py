@@ -26,14 +26,9 @@ def test_implot_dpi_scale() -> None:
     runner_params.ini_disable = True
     add_ons = immapp.AddOnsParams(with_implot=True, with_implot3d=True)
 
-    # 1, then 2 as on a screen at 200%, twice with the same params: ImmApp's callbacks are then chained twice
+    # 1, then 2 as on a screen at 200%, twice with the same params: ImmApp's callbacks must not pile up
     for dpi_factor in (1.0, 2.0, 2.0):
         runner_params.dpi_aware_params.dpi_window_size_factor = dpi_factor
-        # A run leaves these two consumed
-        runner_params.app_shall_exit = False
-        runner_params.callbacks.load_additional_fonts = (
-            hello_imgui.imgui_default_settings.load_default_font_with_font_awesome_icons
-        )
         immapp.run(runner_params, add_ons)
 
     unscaled = sizes[0]

@@ -62,8 +62,6 @@ namespace ImmApp
 
         RichMd::Context* _MarkdownContext = nullptr;          // ours, for the duration of Run
         RichMd::Context* _MarkdownPreviousContext = nullptr;  // the application's current context before Run
-
-        bool _ImPlotStylesDpiScaled = false;  // once per Run (see ScaleImPlotStylesForDpi)
     };
 
     ImmAppContext gImmAppContext;
@@ -109,15 +107,14 @@ namespace ImmApp
 
     // ImPlot's sizes are in pixels, like ImGui's: scale them as Hello ImGui scales ImGui's (ScaleAllSizes, by the DPI
     // factor when it is above 1: on Windows and Linux). Called after SetupImGuiStyle, so that the application's own
-    // sizes are scaled too. Once per Run: a Python app that runs twice with the same params holds this callback twice.
+    // sizes are scaled too.
     // ImPlot (1.1) and ImPlot3D (0.5) do not scale their sizes by themselves. Should a later version do it, the sizes
     // would be scaled twice, and tests/tests_python_gui/test_implot_dpi_scale.py fails.
     static void ScaleImPlotStylesForDpi()
     {
         float dpiScale = HelloImGui::GetDpiAwareParams()->dpiWindowSizeFactor;
-        if (gImmAppContext._ImPlotStylesDpiScaled || dpiScale <= 1.f)
+        if (dpiScale <= 1.f)
             return;
-        gImmAppContext._ImPlotStylesDpiScaled = true;
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
         if (gAddOnsParamsAtSetup.withImplot)
             ImPlotStyle_ScaleAllSizes(ImPlot::GetStyle(), dpiScale);
@@ -162,7 +159,6 @@ namespace ImmApp
             ImPlot3D::CreateContext();
 #endif
 #if defined(IMGUI_BUNDLE_WITH_IMPLOT) || defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
-        gImmAppContext._ImPlotStylesDpiScaled = false;
         runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
             runnerParams.callbacks.SetupImGuiStyle,
             ScaleImPlotStylesForDpi
@@ -371,9 +367,21 @@ namespace ImmApp
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
-        Priv_Setup(runnerParams, addOnsParams);
-        HelloImGui::Run(runnerParams);
+        // Priv_Setup chains ImmApp's callbacks into the params: the user's come back after the run, so that the same
+        // params can run again (each run would chain ImmApp's once more)
+        HelloImGui::RunnerCallbacks userCallbacks = runnerParams.callbacks;
+        try
+        {
+            Priv_Setup(runnerParams, addOnsParams);
+            HelloImGui::Run(runnerParams);
+        }
+        catch (...)
+        {
+            runnerParams.callbacks = userCallbacks;
+            throw;
+        }
         Priv_TearDown();
+        runnerParams.callbacks = userCallbacks;
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)
@@ -586,6 +594,10 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     // so we need to keep it alive between Setup and TearDown
     std::optional<HelloImGui::RunnerParams> sStoredRunnerParams;
 
+    // The params between Setup and TearDown, and the user's callbacks, which TearDown gives back (see ImmApp::Run)
+    HelloImGui::RunnerParams* sRunnerParams = nullptr;
+    HelloImGui::RunnerCallbacks sUserCallbacks;
+
     // Asserts that the renderer is currently NotInitialized, without changing state.
     // Every public Setup* entry point calls this FIRST, before any state mutation,
     // so that on collision we throw while globals are still pristine (notably
@@ -609,8 +621,18 @@ namespace ManualRender  // namespace ImmApp::ManualRender
     void SetupFromRunnerParams(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
         AssertNotInitialized();
-        Priv_Setup(runnerParams, addOnsParams);
-        HelloImGui::ManualRender::SetupFromRunnerParams(runnerParams);
+        sUserCallbacks = runnerParams.callbacks;
+        try
+        {
+            Priv_Setup(runnerParams, addOnsParams);
+            HelloImGui::ManualRender::SetupFromRunnerParams(runnerParams);
+        }
+        catch (...)
+        {
+            runnerParams.callbacks = sUserCallbacks;
+            throw;
+        }
+        sRunnerParams = &runnerParams;
         // Flip state only after success — if any of the above throws, we stay
         // NotInitialized so a follow-up TearDown() doesn't operate on partial state.
         sCurrentStatus = RendererStatus::Initialized;
@@ -685,6 +707,8 @@ namespace ManualRender  // namespace ImmApp::ManualRender
         TrySwitchToNotInitialized();
         HelloImGui::ManualRender::TearDown();
         Priv_TearDown();
+        sRunnerParams->callbacks = sUserCallbacks;
+        sRunnerParams = nullptr;
         sStoredRunnerParams.reset();  // Clear the stored RunnerParams
     }
 } // namespace ManualRender
