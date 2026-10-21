@@ -400,7 +400,7 @@ Lists and tuples still return a `list`.
 
 The "text end" parameters removed:
 
-- `text_end` in `imgui.text_unformatted()`, `imgui.calc_text_size()`, `ImDrawList.add_text()`, `TextFilter.pass_filter()`, `TextBuffer.append()`, and the internal API
+- `text_end` in `imgui.text_unformatted()`, `imgui.calc_text_size()`, `ImDrawList.add_text()`, `ImFont.render_text()`, `ImFontGlyphRangesBuilder.add_text()`, `InputTextCallbackData.insert_chars()`, `TextFilter.pass_filter()`, `TextBuffer.append()`, the test engine's `TestContext.item_info_handle_wildcard_search()`, and the internal API
 - the two-string overloads of `push_id()` and `get_id()`
 - `imgui.internal.separator_text_ex()`: it shows the label up to its `##`, as `separator_text()` does
 
