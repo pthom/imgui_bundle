@@ -61,11 +61,14 @@ And the same clarity that helps humans also helps AI: with no implicit state to 
 - **Robotics developers**: fast, readable debug UIs in Python or C++
 - **Scientific instrument builders**: cross-platform GUIs that deploy to desktop and web from the same code
 - **Technical tool makers**: build node editors, gizmos, code editors without a web stack
+- **Teachers and science communicators**: interactive lessons that open from a link, on a computer or a phone, such as [Grokking](https://imgui-bundle.pages.dev/playground/?demo=explorables/grokking/grokking.py) or [Minard's map](https://minard.imgui-bundle.pages.dev/), animated
 
 
 **Who is this project not for**
 
 You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for accessibility, internationalization, or the platform's native look. The style itself is not the limit: 17 themes, tweaked live, though not with CSS.
+
+Its strength lies elsewhere: the same code runs on the desktop, in the browser and on phones, in C++ as in Python, and it is fast. Qt comes closest, but its Python does not run in the browser.
 
 ---
 
