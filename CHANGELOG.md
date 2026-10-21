@@ -462,7 +462,10 @@ The test engine in the browser (Pyodide):
 New:
 
 - "A tiny neural network learns two spirals": it trains live, and tells its story with narrative programming.
-- *Candidate:* the rotor run-up monitor, a vibration-analysis dashboard (live plots, knobs, a node editor for the signal chain), and "Health and wealth": the nations from 1800 to 2100 in animated bubbles, after Hans Rosling's Gapminder, with the data fetched live. Both were written by Claude, from llms.txt.
+- *Candidate:* two apps:
+  - **The rotor run-up monitor**: a vibration-analysis dashboard, with live plots, knobs, and a node editor for the signal chain.
+  - **Health and wealth**: the nations from 1800 to 2100 in animated bubbles, after Hans Rosling's Gapminder. The data is fetched live.
+  - They serve as examples of what can be obtained with AI assistance, from [llms.txt](https://imgui-bundle.pages.dev/llms.txt).
 - The WebAudio synthesizer (a piano, tunes, a scope) replaces the minimal beep.
 - "Plotting with Python": a Matplotlib phase portrait, Seaborn, Cartopy.
 - The node editor: a color mixer and an image pipeline, in Python and C++.
@@ -511,8 +514,12 @@ Removed:
 Give your AI assistant the bundle's guide: it will know how to help you write apps with Dear ImGui Bundle, in Python or C++.
 
 - The guide: [llms.txt](https://imgui-bundle.pages.dev/llms.txt), also in the book ("For AI assistants").
-- With it, an assistant can check its own work: screenshots of the app, or the GUI driven by the ImGui Test Engine (which has [its own license](https://www.dearimgui.com/licenses)). This also works in a headless Linux sandbox, with Xvfb.
-- *Candidate, if they land before the deploy:* two of the playground's new examples were written by Claude in a chat, from llms.txt alone, and checked with its own screenshots: the rotor run-up monitor and "Health and wealth".
+- With it, an assistant can check its own work:
+  - with screenshots of the app
+  - by driving the GUI with the ImGui Test Engine (it has [its own license](https://www.dearimgui.com/licenses))
+  - also in a headless Linux sandbox, with Xvfb
+- *Candidate:* two of the playground's new apps were built in a chat, from llms.txt alone: the rotor run-up monitor and "Health and wealth".
+  - The assistant checked its work with its own screenshots.
 - The whole book, in plain text: [llms-full.txt](https://imgui-bundle.pages.dev/llms-full.txt).
 - The API in plain text, with the demos' code in Python and C++: [llms/api](https://imgui-bundle.pages.dev/llms/api/index.txt). The demos and the explorers: [llms/demos.txt](https://imgui-bundle.pages.dev/llms/demos.txt), [llms/explorers.txt](https://imgui-bundle.pages.dev/llms/explorers.txt).
 
@@ -598,10 +605,14 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
   - The installed CMake package announced version 1.92.700.
 - ImmVision:
   - Its icon buttons were invisible in a light theme.
-  - A params JSON whose zoom matrix lacks a key raises an error. It read past the end of the JSON object. An int field out of range raises an error too.
+  - The params JSON raises an error:
+    - on a zoom matrix that lacks a key (it read past the end)
+    - on an int field out of range
   - NaN pixels (a depth map's holes, masked data) show as the scale's minimum. With a colormap, they read out of its bounds.
   - The Inspector skips an empty image, instead of dividing by zero.
-- On the web, RichMd and `ImmApp::BrowseToUrl()` (C++) escape a link before opening it: a quote in a markdown link ran as JavaScript, and a link over about 460 characters was cut.
+- On the web, RichMd and `ImmApp::BrowseToUrl()` (C++) escape a link before opening it. Before:
+  - a quote in a markdown link ran as JavaScript
+  - a link over about 460 characters was cut
 - `immapp.show_python_code()` follows the theme.
 - MicroTeX: `\sqrt` or an argument without braces no longer aborts a web build (C++).
 - NanoVG in the browser: the font atlas lost the glyphs of later uploads.
