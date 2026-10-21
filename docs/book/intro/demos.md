@@ -1222,6 +1222,25 @@ Then read how it works, formula by formula, next to its numpy code.
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/rotor_dashboard.jpg
+:alt: Rotor run-up monitor: vibration analysis
+:::
+
+### Rotor run-up monitor: vibration analysis
+
+A simulated three-axis accelerometer sits on the bearing housing of a rotor whose speed sweeps up and down.
+
+:::{dropdown} More
+The dashboard shows what a vibration analyst would watch:
+:::
+
+*Uses: ImPlot, knobs, toggles, node editor*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/rotor_dashboard.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/rotor_dashboard.py)
+
+::::
+
+::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/lesson_harmonic_motion.jpg
 :alt: Simple harmonic motion
 :class: demo-fit
@@ -1314,6 +1333,25 @@ The [logistic map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(
 *Uses: ImPlot, toggles*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/health_and_wealth.jpg
+:alt: Health and wealth of nations, 1800 to 2100
+:::
+
+### Health and wealth of nations, 1800 to 2100
+
+Each bubble is a country: income per person across, life expectancy up, population as the size, world region as the color.
+
+:::{dropdown} More
+Press Play and two centuries go by. Click a bubble to pin it and draw its path through time; pick other indicators for the axes.
+:::
+
+*Uses: ImPlot, spinners*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/health_and_wealth.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py)
 
 ::::
 

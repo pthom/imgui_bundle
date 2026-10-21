@@ -95,6 +95,18 @@
     ],
     "cpp": false
   },
+  "explorables/rotor_dashboard.py": {
+    "title": "Rotor run-up monitor: a live vibration-analysis dashboard built with Dear ImGui Bundle.",
+    "text": "A simulated three-axis accelerometer sits on the bearing housing of a rotor whose\nspeed sweeps up and down. The dashboard shows what a vibration analyst would watch:",
+    "summary": "A simulated three-axis accelerometer sits on the bearing housing of a rotor whose speed sweeps up and down.",
+    "uses": [
+      "ImPlot",
+      "knobs",
+      "toggles",
+      "node editor"
+    ],
+    "cpp": false
+  },
   "explorables/lesson_harmonic_motion.py": {
     "title": "Simple harmonic motion",
     "text": "A mass on a spring, a pendulum, a vibrating string: they all follow the same equation. It is the equation of\n[simple harmonic motion](https://en.wikipedia.org/wiki/Simple_harmonic_motion) (for the pendulum, at small\nangles). Adjust the mass and the spring stiffness, and watch how the motion changes.",
@@ -145,6 +157,16 @@
     "uses": [
       "ImPlot",
       "toggles"
+    ],
+    "cpp": false
+  },
+  "explorables/health_and_wealth.py": {
+    "title": "Health and wealth of nations, 1800 to 2100: an animated bubble chart fed by live open data.",
+    "text": "Each bubble is a country: income per person across, life expectancy up, population as the\nsize, world region as the color. Press Play and two centuries go by. Click a bubble to pin\nit and draw its path through time; pick other indicators for the axes.",
+    "summary": "Each bubble is a country: income per person across, life expectancy up, population as the size, world region as the color.",
+    "uses": [
+      "ImPlot",
+      "spinners"
     ],
     "cpp": false
   },

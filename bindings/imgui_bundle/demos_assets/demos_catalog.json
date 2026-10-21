@@ -1132,6 +1132,27 @@
           "variants": []
         },
         {
+          "label": "Rotor run-up monitor: vibration analysis",
+          "filename": "explorables/rotor_dashboard.py",
+          "stem": "rotor_dashboard",
+          "where": "both",
+          "text": "A simulated three-axis accelerometer sits on the bearing housing of a rotor whose\nspeed sweeps up and down. The dashboard shows what a vibration analyst would watch:",
+          "summary": "A simulated three-axis accelerometer sits on the bearing housing of a rotor whose speed sweeps up and down.",
+          "uses": [
+            "ImPlot",
+            "knobs",
+            "toggles",
+            "node editor"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/rotor_dashboard.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/rotor_dashboard.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
           "label": "Simple harmonic motion",
           "filename": "explorables/lesson_harmonic_motion.py",
           "stem": "lesson_harmonic_motion",
@@ -1224,6 +1245,25 @@
           "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/logistic_map.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
+          "label": "Health and wealth of nations, 1800 to 2100",
+          "filename": "explorables/health_and_wealth.py",
+          "stem": "health_and_wealth",
+          "where": "both",
+          "text": "Each bubble is a country: income per person across, life expectancy up, population as the\nsize, world region as the color. Press Play and two centuries go by. Click a bubble to pin\nit and draw its path through time; pick other indicators for the axes.",
+          "summary": "Each bubble is a country: income per person across, life expectancy up, population as the size, world region as the color.",
+          "uses": [
+            "ImPlot",
+            "spinners"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/health_and_wealth.html",
           "in_place": false,
           "page": "",
           "video": "",

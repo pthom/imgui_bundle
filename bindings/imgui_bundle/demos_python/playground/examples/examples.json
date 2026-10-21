@@ -135,6 +135,12 @@
             ]
         },
         {
+            "label": "Rotor run-up monitor: vibration analysis",
+            "filename": "explorables/rotor_dashboard.py",
+            "own_theme": true,
+            "category": "Interactive science"
+        },
+        {
             "label": "Simple harmonic motion",
             "filename": "explorables/lesson_harmonic_motion.py",
             "own_theme": true,
@@ -194,6 +200,11 @@
         {
             "label": "Logistic map",
             "filename": "explorables/logistic_map.py",
+            "category": "Interactive science"
+        },
+        {
+            "label": "Health and wealth of nations, 1800 to 2100",
+            "filename": "explorables/health_and_wealth.py",
             "category": "Interactive science"
         },
         {

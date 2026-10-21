@@ -337,6 +337,10 @@ Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per se
   Uses: ImPlot
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/neural_spiral/neural_spiral.py
+- Rotor run-up monitor: vibration analysis: A simulated three-axis accelerometer sits on the bearing housing of a rotor whose speed sweeps up and down. The dashboard shows what a vibration analyst would watch:
+  Uses: ImPlot, knobs, toggles, node editor
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/rotor_dashboard.py
+  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/rotor_dashboard.py
 - Simple harmonic motion: A mass on a spring, a pendulum, a vibrating string: they all follow the same equation. It is the equation of simple harmonic motion (for the pendulum, at small angles). Adjust the mass and the spring stiffness, and watch how the motion changes.
   Uses: ImPlot, knobs
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/lesson_harmonic_motion.py
@@ -357,3 +361,7 @@ Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per se
   Uses: ImPlot, toggles
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py
+- Health and wealth of nations, 1800 to 2100: Each bubble is a country: income per person across, life expectancy up, population as the size, world region as the color. Press Play and two centuries go by. Click a bubble to pin it and draw its path through time; pick other indicators for the axes.
+  Uses: ImPlot, spinners
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py
+  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/health_and_wealth.py

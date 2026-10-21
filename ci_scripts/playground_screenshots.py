@@ -77,6 +77,12 @@ def _train(g: dict[str, Any], frame: int) -> None:
     g["state"].training = True
 
 
+def _today(g: dict[str, Any], frame: int) -> None:
+    app = g["_app"]
+    if frame == 240 and app is not None:  # the data have arrived: today, paused
+        app.year, app.playing = float(g["THIS_YEAR"]), False
+
+
 def _fixed_picture() -> None:
     """Fiatlight: the example downloads a random picture; this one gives clean edges (a vulture)"""
     from imgui_bundle import immapp
@@ -221,6 +227,8 @@ SHOTS: dict[str, Shot] = {
     "explorables/fourier_epicycles.py": Shot(frames=240, crop=(0.38, 0.12, 0.9, 0.8)),
     "explorables/boids.py": Shot(frames=240, crop=(0.28, 0.0, 1.0, 0.82)),
     "explorables/logistic_map.py": Shot(frames=120, crop=(0.3, 0.0, 0.99, 0.62)),
+    "explorables/rotor_dashboard.py": Shot(frames=120),
+    "explorables/health_and_wealth.py": Shot(frames=300, action=_today, crop=(0.0, 0.07, 0.72, 0.77)),
     "minimal_example.py": Shot(crop=(0.0, 0.0, 1.0, 0.62)),
     "webgl_background_shader.py": Shot(frames=120),
     # The immapp demos (source: demos_immapp)

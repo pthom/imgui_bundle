@@ -1011,6 +1011,22 @@ code.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/neural_spiral/neural_spiral.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/neural_spiral/neural_spiral.py)
 
+### Rotor run-up monitor: vibration analysis
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/rotor_dashboard.jpg
+:alt: Rotor run-up monitor: vibration analysis
+:width: 400px
+:::
+
+A simulated three-axis accelerometer sits on the bearing housing of a rotor whose
+speed sweeps up and down. The dashboard shows what a vibration analyst would watch:
+
+*Python*
+
+*Uses: ImPlot, knobs, toggles, node editor*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/rotor_dashboard.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/rotor_dashboard.py)
+
 ### Simple harmonic motion
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/lesson_harmonic_motion.jpg
@@ -1096,3 +1112,20 @@ map](https://en.wikipedia.org/wiki/Logistic_map), `x(n+1) = r * x(n) * (1 - x(n)
 *Uses: ImPlot, toggles*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/logistic_map.py)
+
+### Health and wealth of nations, 1800 to 2100
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/health_and_wealth.jpg
+:alt: Health and wealth of nations, 1800 to 2100
+:width: 400px
+:::
+
+Each bubble is a country: income per person across, life expectancy up, population as the
+size, world region as the color. Press Play and two centuries go by. Click a bubble to pin
+it and draw its path through time; pick other indicators for the axes.
+
+*Python*
+
+*Uses: ImPlot, spinners*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/health_and_wealth.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py)
