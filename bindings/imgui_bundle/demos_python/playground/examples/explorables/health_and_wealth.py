@@ -963,8 +963,10 @@ class App:
     def gui_data_sources(self) -> None:
         d = self.data
         imgui.text(f"{fa.ICON_FA_DATABASE}  Where the data comes from")
-        imgui.text_disabled(f"Data: github.com/{REPO}")
+        imgui.push_text_wrap_pos(0.0)  # a narrow panel (a phone, or beside the code) wraps them
+        imgui.text_disabled(f"Data: {REPO} on GitHub")
         imgui.text_disabled("Images: commons.wikimedia.org")
+        imgui.pop_text_wrap_pos()
         imgui.spacing()
         for s in d.sources.values():
             if s.state == "waiting":
@@ -1017,11 +1019,14 @@ class App:
             if imgui.get_scroll_y() >= imgui.get_scroll_max_y() - 1:
                 imgui.set_scroll_here_y(1.0)  # follow new lines, unless the user scrolled up
         imgui.end_child()
-        imgui.text_link_open_url(ATTRIBUTION, ATTRIBUTION_URL)
-        imgui.text_disabled("The chart is Hans Rosling's:")
-        imgui.same_line()
-        imgui.text_link_open_url("200 countries, 200 years, 4 minutes", ROSLING_URL)
-        imgui.text_disabled("Thank you, Hans.")
+        # The credits, in markdown: its links wrap on a narrow panel
+        imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
+        rich_md.render_unindented(f"""
+            [{ATTRIBUTION}]({ATTRIBUTION_URL})
+
+            The chart is Hans Rosling's: [200 countries, 200 years, 4 minutes]({ROSLING_URL}). Thank you, Hans.
+            """)
+        imgui.pop_style_color()
 
     def gui_countries(self) -> None:
         d = self.data
