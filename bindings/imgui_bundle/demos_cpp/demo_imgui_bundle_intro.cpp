@@ -288,7 +288,8 @@ namespace
             gHost.openDemo(demo);
     }
 
-    // A line of text, then the manual's picture below it, as large as the space left allows (none if too small)
+    // A line of text, then the manual's picture below it, as large as the space left allows (none if too small, or
+    // in a build that cannot download images, e.g. a desktop build without libcurl)
     void ManualTeaser(const char* text, const std::string& demo)
     {
         float em = HelloImGui::EmSize();
@@ -297,7 +298,7 @@ namespace
         ImGui::PopTextWrapPos();
         ImVec2 avail = ImGui::GetContentRegionAvail();
         float width = std::min(avail.x - em * 0.5f, (avail.y - em * 0.5f) * MANUAL_PICTURE_ASPECT);
-        if (width < em * 6.f)
+        if (width < em * 6.f || !RichMd::HasUrlImages())
             return;
         ImGui::SetCursorPosX(ImGui::GetCursorPosX() + (avail.x - width) / 2);
         ManualPicture(demo, width);
@@ -2635,6 +2636,7 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
         HelloImGui::AssetFileData data = HelloImGui::LoadAssetFileData("welcome.md");
         std::string text((const char*)data.data, data.dataSize);
         HelloImGui::FreeAssetFileData(&data);
+        text.erase(std::remove(text.begin(), text.end(), '\r'), text.end());  // a Windows checkout has CRLF line ends
         size_t cut = text.find("\n## ");
         std::string head = cut == std::string::npos ? text : text.substr(0, cut);
         gWelcomeRest = cut == std::string::npos ? "" : text.substr(cut + 1);
