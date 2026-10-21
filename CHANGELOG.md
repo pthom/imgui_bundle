@@ -462,9 +462,9 @@ The test engine in the browser (Pyodide):
 New:
 
 - "A tiny neural network learns two spirals": it trains live, and tells its story with narrative programming.
-- *Candidate:* two apps:
-  - **The rotor run-up monitor**: a vibration-analysis dashboard, with live plots, knobs, and a node editor for the signal chain.
-  - **Health and wealth**: the nations from 1800 to 2100 in animated bubbles, after Hans Rosling's Gapminder. The data is fetched live.
+- Two apps:
+  - **The rotor run-up monitor**: a vibration-analysis dashboard, with live plots, knobs, and a node editor for the signal chain. Toggle a bearing defect, and watch it in the spectrum and the spectrogram.
+  - **Health and wealth**: the nations from 1800 to 2100 in animated bubbles, after Hans Rosling's Gapminder. The data is fetched live. On the way, cards tell the events behind the curves (the 1918 influenza pandemic, the eradication of smallpox...).
   - They serve as examples of what can be obtained with AI assistance, from [llms.txt](https://imgui-bundle.pages.dev/llms.txt).
 - The WebAudio synthesizer (a piano, tunes, a scope) replaces the minimal beep.
 - "Plotting with Python": a Matplotlib phase portrait, Seaborn, Cartopy.
@@ -518,10 +518,12 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
   - with screenshots of the app
   - by driving the GUI with the ImGui Test Engine (it has [its own license](https://www.dearimgui.com/licenses))
   - also in a headless Linux sandbox, with Xvfb
-- *Candidate:* two of the playground's new apps were built in a chat, from llms.txt alone: the rotor run-up monitor and "Health and wealth".
-  - The assistant checked its work with its own screenshots.
 - The whole book, in plain text: [llms-full.txt](https://imgui-bundle.pages.dev/llms-full.txt).
 - The API in plain text, with the demos' code in Python and C++: [llms/api](https://imgui-bundle.pages.dev/llms/api/index.txt). The demos and the explorers: [llms/demos.txt](https://imgui-bundle.pages.dev/llms/demos.txt), [llms/explorers.txt](https://imgui-bundle.pages.dev/llms/explorers.txt).
+- Two of the playground's new apps were built in a chat, from llms.txt alone: the rotor run-up monitor and "Health and wealth".
+  - The assistant checked its work with its own screenshots.
+
+<!-- <img src="_plans/scratch/playground_apps/rotor_monitor.png" width="49%" alt="The rotor run-up monitor: a vibration-analysis dashboard"> <img src="_plans/scratch/playground_apps/health_and_wealth_1918.png" width="49%" alt="Health and wealth of nations, in 1918: the influenza pandemic"> -->
 
 ### The book and the site
 
