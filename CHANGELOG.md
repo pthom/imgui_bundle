@@ -462,6 +462,7 @@ The test engine in the browser (Pyodide):
 New:
 
 - "A tiny neural network learns two spirals": it trains live, and tells its story with narrative programming.
+- *Candidate:* the rotor run-up monitor, a vibration-analysis dashboard (live plots, knobs, a node editor for the signal chain), and "Health and wealth": the nations from 1800 to 2100 in animated bubbles, after Hans Rosling's Gapminder, with the data fetched live. Both were written by Claude, from llms.txt.
 - The WebAudio synthesizer (a piano, tunes, a scope) replaces the minimal beep.
 - "Plotting with Python": a Matplotlib phase portrait, Seaborn, Cartopy.
 - The node editor: a color mixer and an image pipeline, in Python and C++.
@@ -511,6 +512,7 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
 
 - The guide: [llms.txt](https://imgui-bundle.pages.dev/llms.txt), also in the book ("For AI assistants").
 - With it, an assistant can check its own work: screenshots of the app, or the GUI driven by the ImGui Test Engine (which has [its own license](https://www.dearimgui.com/licenses)). This also works in a headless Linux sandbox, with Xvfb.
+- *Candidate, if they land before the deploy:* two of the playground's new examples were written by Claude in a chat, from llms.txt alone, and checked with its own screenshots: the rotor run-up monitor and "Health and wealth".
 - The whole book, in plain text: [llms-full.txt](https://imgui-bundle.pages.dev/llms-full.txt).
 - The API in plain text, with the demos' code in Python and C++: [llms/api](https://imgui-bundle.pages.dev/llms/api/index.txt). The demos and the explorers: [llms/demos.txt](https://imgui-bundle.pages.dev/llms/demos.txt), [llms/explorers.txt](https://imgui-bundle.pages.dev/llms/explorers.txt).
 
