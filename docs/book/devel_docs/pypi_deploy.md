@@ -11,6 +11,7 @@
    Retake the API pages' pictures of the demo sections whose code changed: `just imex_ems_build`, then `just api_pictures --stale`, and review them (`--sheet`, see the docstring of `ci_scripts/api_pictures.py`).
 3. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically, macOS arm64 included.
+   The `pyodide.yml` workflow does the same for the Pyodide wheel, and attaches it to the GitHub release.
 
 
 ## About cibuildwheel
@@ -47,13 +48,15 @@ Since Pyodide 314 / pyodide-build 0.35, Pyodide wheels (platform tag
 can be published on PyPI alongside the desktop wheels. micropip then installs
 them directly: `micropip.install("imgui-bundle")`.
 
+At a release, the `pyodide.yml` CI workflow builds the Pyodide wheel and uploads it to PyPI and to the GitHub release:
+nothing to do by hand. Before the release, check it locally:
+
 1. Build locally: `just pyodide_setup_local_build` (once), then `just pyodide_build`.
 2. Test in a browser: `just pyodide_serve_projects`, then open
    http://localhost:6456/pyodide_test_bundle/test_cdn_pyodide_local_wheel.html
-3. Upload to PyPI (can be added to an existing release version):
-   ```bash
-   uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl
-   ```
+
+Only if the CI's upload failed, upload the local wheel by hand (it can be added to an existing release version):
+`uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl`.
 
 See the [Pyodide build guide](Readme_pyodide_bundle.md) for details on the
 build environment. Note: the legacy distribution channel (pyodide-recipes

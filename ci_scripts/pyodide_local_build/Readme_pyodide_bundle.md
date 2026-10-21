@@ -165,13 +165,10 @@ just pyodide_deep_clean
 
 # Release a new version for Pyodide
 
-- After creating a new release for imgui bundle
-- Build & test the new version locally with pyodide (see above)
-- Upload the wheel to PyPI (PEP 783 `pyemscripten` wheels are accepted there
-  since Pyodide 314 / pyodide-build 0.35):
-  ```bash
-  uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl
-  ```
+- Before the release: build & test the new version locally with pyodide (see above)
+- At the release, the `pyodide.yml` CI workflow builds the wheel and uploads it to PyPI (PEP 783 `pyemscripten`
+  wheels are accepted there since Pyodide 314 / pyodide-build 0.35) and to the GitHub release: nothing to do by hand.
+  Only if that upload failed: `uv tool run twine upload dist/imgui_bundle-*pyemscripten*.whl`
 - micropip then resolves it directly: `micropip.install("imgui-bundle")`
 
 Note: the former channel (a recipe in https://github.com/pyodide/pyodide-recipes,
