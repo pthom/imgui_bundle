@@ -61,7 +61,7 @@ And the same clarity that helps humans also helps AI: with no implicit state to 
 - **Robotics developers**: fast, readable debug UIs in Python or C++
 - **Scientific instrument builders**: cross-platform GUIs that deploy to desktop and web from the same code
 - **Technical tool makers**: build node editors, gizmos, code editors without a web stack
-- **Teachers and science communicators**: interactive lessons that open from a link, on a computer or a phone, such as [Grokking](https://imgui-bundle.pages.dev/playground/?demo=explorables/grokking/grokking.py) or [Minard's map](https://minard.imgui-bundle.pages.dev/), animated
+- **Teachers and science communicators**: interactive lessons that open from a link, on a computer or a phone, such as [Grokking](https://imgui-bundle.pages.dev/playground/?demo=explorables/grokking/grokking.py) or the [logistic map](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py)
 
 
 **Who is this project not for**

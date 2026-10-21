@@ -11,7 +11,7 @@ Dear ImGui Bundle is a framework built on top of [Dear ImGui](https://github.com
 **What for?**
 
 - **Real-time tools:** live data, instruments, simulations, scientific viewers, dashboards.
-- **Science, education and teaching:** interactive lessons that open from a link, on a computer or a phone. For example, [Grokking](https://imgui-bundle.pages.dev/playground/?demo=explorables/grokking/grokking.py), a narrated lesson where a small neural network memorizes, then suddenly generalizes; or [Minard's map](https://minard.imgui-bundle.pages.dev/) of Napoleon's 1812 campaign, animated.
+- **Science, education and teaching:** interactive lessons that open from a link, on a computer or a phone. For example, [Grokking](https://imgui-bundle.pages.dev/playground/?demo=explorables/grokking/grokking.py), a narrated lesson where a small neural network memorizes, then suddenly generalizes; or the [logistic map](https://imgui-bundle.pages.dev/playground/?demo=explorables/logistic_map.py), a very simple equation that leads to chaos.
 - **Playful sketches with sliders:** creative coding and math toys, shared with friends through a link.
 
 **The same code everywhere:** on the desktop, in the browser and on phones. In the browser, no server is needed: a static page is enough.
