@@ -551,6 +551,10 @@ endif()
 if(IMGUI_BUNDLE_WITH_HELLO_IMGUI)
     him_log_configuration()
 endif()
+set(_richmd_download_images ${IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES})
+if(IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES AND NOT EMSCRIPTEN AND NOT IMGUI_RICHMD_LINKS_CURL)
+    set(_richmd_download_images "OFF: libcurl not found (Linux: apt install libcurl4-openssl-dev, Windows: vcpkg install curl)")
+endif()
 message(STATUS "
     ===========================================================================
     Dear ImGui Bundle - Build Configuration
@@ -582,6 +586,6 @@ message(STATUS "
     IMGUI_BUNDLE_WITH_IMFILEDIALOG:        ${IMGUI_BUNDLE_WITH_IMFILEDIALOG}
     IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT:   ${IMGUI_BUNDLE_WITH_IMGUI_TEX_INSPECT}
     IMGUI_BUNDLE_WITH_MICROTEX:            ${IMGUI_BUNDLE_WITH_MICROTEX}
-    IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES      ${IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES}
+    IMGUI_RICHMD_WITH_DOWNLOAD_IMAGES      ${_richmd_download_images}
     ===========================================================================
 ")
