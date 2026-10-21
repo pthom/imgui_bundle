@@ -332,7 +332,7 @@ Good to know:
 - They accept the add-on flags of `immapp.run` (`with_markdown`, `with_implot`...).
 - `window_size` is in logical pixels: on a Retina screen, the PNG is twice as large.
 - In the default run speed, `ctx.sleep()` lets no real time pass: for a tooltip's delay or an animation, use `run_speed=testing.TestRunSpeed.normal`.
-- The test engine is in the desktop packages, not in the Pyodide build (in the browser).
+- In the browser (Pyodide), the test engine works since v1.93, with the same API, in Chrome 137, Firefox 153 or Safari 27 and later; in an older browser, the app runs without it. There, `immapp.testing.run()` returns at once, the test runs in the frames that follow, and the screenshots go to Pyodide's virtual file system.
 - The test engine's page gives more: https://imgui-bundle.pages.dev/doc/core-libs/test-engine/. Coding agents working in the bundle's repository also find skills about this in `.claude/skills/` (`screenshot-imgui-bundle`, `interact-and-screenshot`).
 
 ## Writing an app
