@@ -10,7 +10,7 @@ build-backend = "scikit_build_core.build"
 
 [project]
 name = "imgui-bundle"
-version = "1.93.0"  # Based on ImGui 1.93.0 WIP (docking tip) - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (hardcoded pyodide wheel filenames must be updated too: find them with the rg command in docs/book/devel_docs/cloudflare_deploy.md.)
+version = "1.93.0"  # Based on ImGui 1.93.0 (docking branch) - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (hardcoded pyodide wheel filenames must be updated too: find them with the rg command in docs/book/devel_docs/cloudflare_deploy.md.)
 
 description="Dear ImGui for Python and C++, batteries included: real-time GUIs, plots and live data, on the desktop and in the browser, with no server."
 readme = "bindings/imgui_bundle/Readme_pypi.md"

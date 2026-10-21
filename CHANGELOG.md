@@ -1,10 +1,10 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# v1.93.0 - WIP
+# v1.93.0
 
-This is a big release, with 865 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
+This is a big release, with 911 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
 
-Pictures and videos of the novelties: [the release page](RELEASE_PAGE_URL).
+Pictures and videos of the novelties: [the release page](https://imgui-bundle.pages.dev/releases/1.93/).
 
 ## Highlights
 
