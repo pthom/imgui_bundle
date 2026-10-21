@@ -4,7 +4,9 @@
 
 The resources list is bindings/imgui_bundle/demos_assets/resources.md: the book's Resources page includes it, and the
 explorer's intro transcludes its "Start here" section. A few short lists stay written by hand (the intro's row of
-links, the playground's landing page, the Readme): each of their links must be in the list, with the same address.
+links, the playground's landing page, the Readme): each of their links to the bundle's own sites must be in the list,
+with the same address. Links to other projects (the users, the libraries) are not resources, and a link to a demo of
+the playground counts as the playground.
 Run with: pytest tests/test_resources_links.py
 """
 
@@ -18,6 +20,7 @@ RESOURCES = REPO / "bindings/imgui_bundle/demos_assets/resources.md"
 URL = re.compile(r"https?://[^\s)\"'<>\]]+")
 IMAGE = (".png", ".gif", ".svg", ".jpg")
 RESOURCES_PAGE = "https://imgui-bundle.pages.dev/doc/intro/resources"  # the book's page that shows the whole list
+OWN = ("https://imgui-bundle.pages.dev", "https://github.com/pthom/imgui_bundle", "https://discord.gg")  # the bundle's sites
 
 # The hand-written lists: (file, the text that starts the list, the text that ends it)
 HAND_WRITTEN = [
@@ -31,6 +34,10 @@ def addresses(text: str) -> set[str]:
     return {u.rstrip("/.,") for u in URL.findall(text) if not u.lower().endswith(IMAGE)}
 
 
+def own_addresses(text: str) -> set[str]:
+    return {u.split("?demo=")[0].rstrip("/") for u in addresses(text) if u.startswith(OWN)}
+
+
 def test_resources_list_has_the_transcluded_section() -> None:
     assert "\n## Start here\n" in "\n" + RESOURCES.read_text(), "the explorer's intro transcludes this section"
 
@@ -41,6 +48,6 @@ def test_hand_written_links_are_in_the_resources_list(path: str, start: str, end
     begin = text.index(start)  # a ValueError here: the list moved; update HAND_WRITTEN
     links = text[begin:text.index(end, begin + len(start))]
     known = addresses(RESOURCES.read_text()) | {RESOURCES_PAGE}  # a short list may link to the whole list
-    unknown = sorted(addresses(links) - known)
-    assert addresses(links), f"no link found in the list of {path}"
+    unknown = sorted(own_addresses(links) - known)
+    assert own_addresses(links), f"no link found in the list of {path}"
     assert not unknown, f"{path}: addresses missing from {RESOURCES.name} (or different there): {unknown}"

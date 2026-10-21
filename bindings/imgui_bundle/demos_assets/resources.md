@@ -35,6 +35,7 @@ The manuals and demos below are using Dear ImGui Bundle itself!
 
 - [Discord](https://discord.gg/xkzpKMeYN3): join the community for questions, showcase, and discussion
 - [GitHub Discussions](https://github.com/pthom/imgui_bundle/discussions): searchable Q&A
+- [FAQ](https://github.com/pthom/imgui_bundle/issues?q=is%3Aissue+label%3AFAQ): answers to common questions, as issues
 
 ## Repositories
 
