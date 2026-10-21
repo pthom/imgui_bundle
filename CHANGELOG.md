@@ -590,13 +590,17 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
   - A malformed `hello_imgui.ini` no longer stops the app at every start: its malformed part is ignored.
   - A new app starts after an app whose setup failed. The next app failed with "Already initialized a platform backend!" (in the playground: every example, until a reload).
   - `hello_imgui.load_user_pref()` gives back the value saved by `save_user_pref()`. It came back with a trailing newline from the second run on.
+  - `hello_imgui.save_user_pref()`: a value with lines that look like the file's own markers comes back intact (it came back cut). An empty name is refused.
+  - The log window's level buttons are readable in dark and light themes. The "Error" filter was red on red.
   - Window positions with negative coordinates (a monitor left of the main one) are restored ([pthom/hello_imgui#168](https://github.com/pthom/hello_imgui/issues/168)).
   - `ImGuiTheme.apply_theme()` works again without `hello_imgui.run()`, and `theme_to_style()` no longer changes the current style.
   - Screenshots with OpenGL swapped the two middle rows of an image of even height.
   - The installed CMake package announced version 1.92.700.
 - ImmVision:
   - Its icon buttons were invisible in a light theme.
-  - A params JSON whose zoom matrix lacks a key raises an error. It read past the end of the JSON object.
+  - A params JSON whose zoom matrix lacks a key raises an error. It read past the end of the JSON object. An int field out of range raises an error too.
+  - NaN pixels (a depth map's holes, masked data) show as the scale's minimum. With a colormap, they read out of its bounds.
+  - The Inspector skips an empty image, instead of dividing by zero.
 - On the web, RichMd and `ImmApp::BrowseToUrl()` (C++) escape a link before opening it: a quote in a markdown link ran as JavaScript, and a link over about 460 characters was cut.
 - `immapp.show_python_code()` follows the theme.
 - MicroTeX: `\sqrt` or an argument without braces no longer aborts a web build (C++).
