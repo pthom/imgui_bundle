@@ -426,7 +426,8 @@ class DataStore:
         a, b = m[:, i], m[:, j]
         if ind.log or ind is POPULATION:
             with np.errstate(invalid="ignore", divide="ignore"):
-                return np.exp(np.log(a) * (1.0 - f) + np.log(b) * f)
+                geometric: np.ndarray = np.exp(np.log(a) * (1.0 - f) + np.log(b) * f)
+            return geometric
         return a * (1.0 - f) + b * f
 
     def axis_limits(self, ind: Indicator) -> Tuple[float, float]:
