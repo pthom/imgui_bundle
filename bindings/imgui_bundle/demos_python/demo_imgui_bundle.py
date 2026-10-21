@@ -203,7 +203,7 @@ class Explorer:
         for state, label in ((WELCOME, WELCOME_LABEL), (DEMOS, DEMOS_LABEL)):
             highlight = demo_immapp_launcher.tween(f"switch {state}", 1.0 if state == self.state else 0.0, 0.25)
             button = imgui.get_style_color_vec4(imgui.Col_.button)
-            accent = demo_immapp_launcher.ACCENT
+            accent = demo_immapp_launcher.themed(demo_immapp_launcher.ACCENT)
             imgui.push_style_color(imgui.Col_.button,
                                    demo_immapp_launcher.lerp(button, ImVec4(accent.x, accent.y, accent.z, 0.55), highlight))
             if imgui.small_button(label):

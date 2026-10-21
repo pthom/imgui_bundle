@@ -125,7 +125,9 @@ namespace
         ImGui::SameLine();
 
         ImGui::PushFont(RichMd::GetCodeFont().font, 0.f);
-        ImGui::PushStyleColor(ImGuiCol_Text, ImVec4(0.7f, 0.7f, 0.3f, 1.0f));
+        ImVec4 bg = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+        bool lightTheme = 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
+        ImGui::PushStyleColor(ImGuiCol_Text, lightTheme ? ImVec4(0.45f, 0.4f, 0.f, 1.f) : ImVec4(0.7f, 0.7f, 0.3f, 1.0f));
         ImGui::Text("%s", GDemoMarker_CodeLookupInfo);
         ImGui::PopStyleColor();
         ImGui::PopFont();

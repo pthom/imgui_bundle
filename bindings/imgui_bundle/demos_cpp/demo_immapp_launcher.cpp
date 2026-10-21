@@ -43,11 +43,23 @@ namespace
     const float DEAL_SPIN = 18.f;  // degrees: a card is dealt with a spin of at most this, settling as it lands
     const int DEAL_CAP = 24;  // the cards after this one fly together with it
 
-    const ImVec4 CARD_BG(0.16f, 0.18f, 0.24f, 1.f);  // under the card's text (the picture covers the rest)
-    const ImVec4 CARD_BG_HOVERED(0.2f, 0.23f, 0.31f, 1.f);
-    const ImVec4 CARD_BORDER(0.25f, 0.25f, 0.3f, 1.f);
-    const ImVec4 CARD_BORDER_HOVERED(0.6f, 0.62f, 0.72f, 1.f);
-    const ImVec4 CATEGORY_TITLE(0.61f, 0.86f, 1.f, 1.f);
+    // Colors: for the dark and the light themes, picked by Themed(); the light ones are the playground gallery's
+    struct ThemedColor { ImVec4 dark, light; };
+    const ThemedColor CARD_BG{{0.16f, 0.18f, 0.24f, 1.f}, {1.f, 1.f, 1.f, 1.f}};  // under the card's text (the picture
+                                                                                // covers the rest)
+    const ThemedColor CARD_BG_HOVERED{{0.2f, 0.23f, 0.31f, 1.f}, {0.95f, 0.96f, 0.98f, 1.f}};
+    const ThemedColor CARD_BORDER{{0.25f, 0.25f, 0.3f, 1.f}, {0.83f, 0.84f, 0.87f, 1.f}};
+    const ThemedColor CARD_BORDER_HOVERED{{0.6f, 0.62f, 0.72f, 1.f}, {0.54f, 0.58f, 0.69f, 1.f}};
+    const ThemedColor CATEGORY_TITLE{{0.61f, 0.86f, 1.f, 1.f}, {0.1f, 0.38f, 0.66f, 1.f}};
+    const ThemedColor ACCENT{{0.45f, 0.65f, 1.f, 1.f}, {0.18f, 0.44f, 0.86f, 1.f}};  // the selected card, the chip of
+                                                                                   // the category in view
+
+    // The light theme's color when the window's background is light, else the dark theme's
+    ImVec4 Themed(const ThemedColor& c)
+    {
+        ImVec4 bg = ImGui::GetStyle().Colors[ImGuiCol_WindowBg];
+        return 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f ? c.light : c.dark;
+    }
     const std::map<std::string, ImU32> TAG_COLORS = {
         {"Python", IM_COL32(48, 105, 152, 235)}, {"C++", IM_COL32(96, 72, 160, 235)},
         {"Browser only", IM_COL32(190, 105, 30, 235)}, {"Desktop only", IM_COL32(40, 125, 85, 235)}};
@@ -326,7 +338,7 @@ std::string RepoFile(const std::string& repoRelative)
 // ---------------------------------------------------------------------------------------------------------------------
 // The page's shared bits
 // ---------------------------------------------------------------------------------------------------------------------
-const ImVec4 LAUNCHER_ACCENT(0.45f, 0.65f, 1.f, 1.f);
+ImVec4 LauncherAccent() { return Themed(ACCENT); }
 
 float Tween(const char* key, float target, float duration, std::optional<float> start)
 {
@@ -502,7 +514,8 @@ bool DemoLauncher::Chip(const std::string& label, float highlight, bool wrap)
     if (wrap && width > ImGui::GetContentRegionAvail().x)
         ImGui::NewLine();
     ImVec4 button = ImGui::GetStyleColorVec4(ImGuiCol_Button);
-    ImVec4 accent(LAUNCHER_ACCENT.x, LAUNCHER_ACCENT.y, LAUNCHER_ACCENT.z, 0.55f);
+    ImVec4 accent = LauncherAccent();
+    accent.w = 0.55f;
     ImGui::PushStyleColor(ImGuiCol_Button, Lerp(button, accent, highlight));
     bool clicked = ImGui::SmallButton(label.c_str());
     ImGui::PopStyleColor();
@@ -861,9 +874,10 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
     ImGui::GetWindowDrawList()->AddRectFilled(ImVec2(topLeft.x, topLeft.y + shadow),
                                               ImVec2(bottomRight.x, bottomRight.y + shadow),
                                               IM_COL32(0, 0, 0, (int)(110 * hover)), Em(0.5f));
-    ImVec4 border = isSelected ? LAUNCHER_ACCENT : Lerp(CARD_BORDER, CARD_BORDER_HOVERED, hover);
+    ImVec4 border = isSelected ? LauncherAccent()
+                               : Lerp(Themed(CARD_BORDER), Themed(CARD_BORDER_HOVERED), hover);
     ImGui::PushStyleColor(ImGuiCol_Border, border);
-    ImGui::PushStyleColor(ImGuiCol_ChildBg, Lerp(CARD_BG, CARD_BG_HOVERED, hover));
+    ImGui::PushStyleColor(ImGuiCol_ChildBg, Lerp(Themed(CARD_BG), Themed(CARD_BG_HOVERED), hover));
     ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, Em(0.5f));
     ImGui::PushStyleVar(ImGuiStyleVar_ChildBorderSize, isSelected ? 2.f : 1.f);
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -993,7 +1007,7 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     float padding = Em(0.6f), rounding = Em(0.5f);
     const float titleScale = 1.1f;
     float textScale = CardTextScale(width);
-    drawList->AddRectFilled(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BG), rounding);
+    drawList->AddRectFilled(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(Themed(CARD_BG)), rounding);
     DrawPicture(drawList, demo.stem, topLeft, width, PICTURE_ASPECT, Em(0.8f), ImDrawFlags_RoundTop);
     float pictureBottom = topLeft.y + width / PICTURE_ASPECT;
     DrawTags(demo.Tags(), ImVec2(bottomRight.x - Em(0.4f), pictureBottom - Em(0.4f)), width - Em(0.8f), drawList,
@@ -1012,7 +1026,7 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     y += fontSize * titleScale + ImGui::GetStyle().ItemSpacing.y;
     drawList->AddText(font, fontSize, ImVec2(topLeft.x + padding, y), ImGui::GetColorU32(ImGuiCol_TextDisabled),
                       summary.c_str(), nullptr, width - 2 * padding);
-    drawList->AddRect(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(CARD_BORDER), rounding);
+    drawList->AddRect(topLeft, bottomRight, ImGui::ColorConvertFloat4ToU32(Themed(CARD_BORDER)), rounding);
 }
 
 void DemoLauncher::Gallery()
@@ -1047,7 +1061,7 @@ void DemoLauncher::Gallery()
         bool atTheEnd = ImGui::GetScrollY() >= ImGui::GetScrollMaxY() - 1;  // the last categories can't reach the top
         if (_categoryY[category->name] <= ImGui::GetScrollY() + Em(3.f) || atTheEnd)
             _categoryInView = category->name;
-        BigText(category->name.c_str(), 1.45f, CATEGORY_TITLE);
+        BigText(category->name.c_str(), 1.45f, Themed(CATEGORY_TITLE));
         ImGui::TextDisabled("%s", category->about.c_str());
         if (!category->tip.empty())
             ImGui::TextDisabled("%s", category->tip.c_str());

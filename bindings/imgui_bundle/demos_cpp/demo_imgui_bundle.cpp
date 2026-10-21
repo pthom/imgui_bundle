@@ -455,7 +455,8 @@ namespace
                 bool current = state == target || (state == State::Demo && target == State::Demos);
                 float highlight = Tween((std::string("switch ") + label).c_str(), current ? 1.f : 0.f, 0.25f);
                 ImVec4 button = ImGui::GetStyleColorVec4(ImGuiCol_Button);
-                ImVec4 accent(LAUNCHER_ACCENT.x, LAUNCHER_ACCENT.y, LAUNCHER_ACCENT.z, 0.55f);
+                ImVec4 accent = LauncherAccent();
+                accent.w = 0.55f;
                 ImGui::PushStyleColor(ImGuiCol_Button, Lerp(button, accent, highlight));
                 if (ImGui::SmallButton(label))
                     Go(target);

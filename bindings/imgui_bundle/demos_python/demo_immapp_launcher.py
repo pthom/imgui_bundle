@@ -13,7 +13,7 @@ import math
 import time
 from dataclasses import dataclass, field
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Tuple
 
 from imgui_bundle import imgui, immapp, hello_imgui, rich_md, im_anim, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4, IM_COL32, em_size
@@ -42,15 +42,22 @@ DEAL_DELAY = 0.05  # s: between two cards dealt, when the gallery arrives on scr
 DEAL_DURATION = 0.35  # s: the flight of one card, from the deck to its place
 DEAL_SPIN = 18.0  # degrees: a card is dealt with a spin of at most this, settling as it lands (0: no spin)
 
-# Colors
-ACCENT = ImVec4(0.45, 0.65, 1.0, 1.0)  # the selected card, the chip of the category in view
-CARD_BG = ImVec4(0.16, 0.18, 0.24, 1.0)  # under the card's text (the picture covers the rest)
-CARD_BG_HOVERED = ImVec4(0.2, 0.23, 0.31, 1.0)
-CARD_BORDER = ImVec4(0.25, 0.25, 0.3, 1.0)
-CARD_BORDER_HOVERED = ImVec4(0.6, 0.62, 0.72, 1.0)
-CATEGORY_TITLE = ImVec4(0.61, 0.86, 1.0, 1.0)
+# Colors: (dark theme, light theme), picked by themed(); the light ones are the playground gallery's
+ACCENT = (ImVec4(0.45, 0.65, 1.0, 1.0), ImVec4(0.18, 0.44, 0.86, 1.0))  # the selected card, the category in view
+CARD_BG = (ImVec4(0.16, 0.18, 0.24, 1.0), ImVec4(1.0, 1.0, 1.0, 1.0))  # under the card's text (the picture covers
+# the rest)
+CARD_BG_HOVERED = (ImVec4(0.2, 0.23, 0.31, 1.0), ImVec4(0.95, 0.96, 0.98, 1.0))
+CARD_BORDER = (ImVec4(0.25, 0.25, 0.3, 1.0), ImVec4(0.83, 0.84, 0.87, 1.0))
+CARD_BORDER_HOVERED = (ImVec4(0.6, 0.62, 0.72, 1.0), ImVec4(0.54, 0.58, 0.69, 1.0))
+CATEGORY_TITLE = (ImVec4(0.61, 0.86, 1.0, 1.0), ImVec4(0.1, 0.38, 0.66, 1.0))
 TAG_COLORS = {"Python": IM_COL32(48, 105, 152, 235), "C++": IM_COL32(96, 72, 160, 235),
               "Browser only": IM_COL32(190, 105, 30, 235), "Desktop only": IM_COL32(40, 125, 85, 235)}
+
+
+def themed(colors: Tuple[ImVec4, ImVec4]) -> ImVec4:
+    """The light theme's color when the window's background is light, else the dark theme's"""
+    bg = imgui.get_style().color_(imgui.Col_.window_bg)
+    return colors[1] if 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z > 0.5 else colors[0]
 
 
 def tween(key: str, target: float, duration: float, start: Optional[float] = None) -> float:
@@ -502,8 +509,8 @@ class Launcher:
         width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x
         if wrap and width > imgui.get_content_region_avail().x:
             imgui.new_line()
-        button = imgui.get_style_color_vec4(imgui.Col_.button)
-        imgui.push_style_color(imgui.Col_.button, lerp(button, ImVec4(ACCENT.x, ACCENT.y, ACCENT.z, 0.55), highlight))
+        button, accent = imgui.get_style_color_vec4(imgui.Col_.button), themed(ACCENT)
+        imgui.push_style_color(imgui.Col_.button, lerp(button, ImVec4(accent.x, accent.y, accent.z, 0.55), highlight))
         clicked = imgui.small_button(label)
         imgui.pop_style_color()
         imgui.same_line()
@@ -678,9 +685,10 @@ class Launcher:
         imgui.get_window_draw_list().add_rect_filled(ImVec2(top_left.x, top_left.y + shadow),
                                                      ImVec2(bottom_right.x, bottom_right.y + shadow),
                                                      IM_COL32(0, 0, 0, int(110 * hover)), em_size(0.5))
-        border = ACCENT if is_selected else lerp(CARD_BORDER, CARD_BORDER_HOVERED, hover)
+        border = (themed(ACCENT) if is_selected
+                  else lerp(themed(CARD_BORDER), themed(CARD_BORDER_HOVERED), hover))
         imgui.push_style_color(imgui.Col_.border, border)
-        imgui.push_style_color(imgui.Col_.child_bg, lerp(CARD_BG, CARD_BG_HOVERED, hover))
+        imgui.push_style_color(imgui.Col_.child_bg, lerp(themed(CARD_BG), themed(CARD_BG_HOVERED), hover))
         imgui.push_style_var(imgui.StyleVar_.child_rounding, em_size(0.5))
         imgui.push_style_var(imgui.StyleVar_.child_border_size, 2.0 if is_selected else 1.0)
         imgui.push_style_var(imgui.StyleVar_.window_padding, ImVec2(0, 0))
@@ -792,7 +800,7 @@ class Launcher:
         bottom_right = ImVec2(top_left.x + width, top_left.y + height)
         padding, title_scale, rounding = em_size(0.6), 1.1, em_size(0.5)
         text_scale = card_text_scale(width)
-        draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BG), rounding)
+        draw_list.add_rect_filled(top_left, bottom_right, imgui.color_convert_float4_to_u32(themed(CARD_BG)), rounding)
         self.pictures.draw_at(draw_list, demo.stem, top_left, width, PICTURE_ASPECT, em_size(0.8),
                               imgui.ImDrawFlags_.round_top)
         picture_bottom = top_left.y + width / PICTURE_ASPECT
@@ -811,7 +819,7 @@ class Launcher:
         y += font_size * title_scale + imgui.get_style().item_spacing.y
         draw_list.add_text(font, font_size, ImVec2(top_left.x + padding, y),
                            imgui.get_color_u32(imgui.Col_.text_disabled), summary, wrap_width=width - 2 * padding)
-        draw_list.add_rect(top_left, bottom_right, imgui.color_convert_float4_to_u32(CARD_BORDER), rounding)
+        draw_list.add_rect(top_left, bottom_right, imgui.color_convert_float4_to_u32(themed(CARD_BORDER)), rounding)
 
     def gallery(self) -> None:
         self.smooth_scroll()
@@ -834,7 +842,7 @@ class Launcher:
             at_the_end = imgui.get_scroll_y() >= imgui.get_scroll_max_y() - 1  # the last categories can't reach the top
             if self.category_y[category.name] <= imgui.get_scroll_y() + em_size(3) or at_the_end:
                 self.category_in_view = category.name
-            big_text(category.name, 1.45, CATEGORY_TITLE)
+            big_text(category.name, 1.45, themed(CATEGORY_TITLE))
             imgui.text_disabled(category.about)
             if category.tip:
                 imgui.text_disabled(category.tip)

@@ -3034,7 +3034,11 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
             gAutoStopped = true;
         }
         float dotsStartX = navStartX + arrowW + em * 0.5f, dotsCenterY = navY + em * 0.75f;
-        ImVec4 accent = ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
+        // The current dot: the theme's accent, but a light theme's may be near white, and vanish on its background
+        ImVec4 bg = ImGui::GetStyleColorVec4(ImGuiCol_WindowBg);
+        bool lightTheme = 0.299f * bg.x + 0.587f * bg.y + 0.114f * bg.z > 0.5f;
+        ImVec4 accent = lightTheme ? ImVec4(0.18f, 0.44f, 0.86f, 1.f)
+                                   : ImGui::GetStyleColorVec4(ImGuiCol_ButtonHovered);
         for (int i = 0; i < slideCount; i++)
         {
             ImVec2 center(dotsStartX + i * dotSpacing + dotSpacing * 0.5f, dotsCenterY);

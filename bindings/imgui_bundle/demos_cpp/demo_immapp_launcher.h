@@ -144,7 +144,7 @@ private:
 void gui_demo_immapp_launcher();  // the launcher alone (a standalone app)
 
 // Shared with the explorer's page
-extern const ImVec4 LAUNCHER_ACCENT;  // the selected card, the chip of the category in view, the state's switch
+ImVec4 LauncherAccent();  // the selected card, the chip of the category in view, the state's switch (themed)
 // A value that eases toward its target (ImAnim), from `start` the first time (default: the target itself),
 // identified by this key in the current ID stack
 float Tween(const char* key, float target, float duration, std::optional<float> start = std::nullopt);

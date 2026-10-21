@@ -2858,7 +2858,10 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
 
         hovered = imgui.is_item_hovered()
         r = dot_radius * 1.3 if i == _current_slide else dot_radius
-        accent = imgui.get_style_color_vec4(imgui.Col_.button_hovered)
+        # The current dot: the theme's accent, but a light theme's may be near white, and vanish on its background
+        bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+        light_theme = 0.299 * bg.x + 0.587 * bg.y + 0.114 * bg.z > 0.5
+        accent = ImVec4(0.18, 0.44, 0.86, 1.0) if light_theme else imgui.get_style_color_vec4(imgui.Col_.button_hovered)
         if i == _current_slide:
             dot_col = imgui.color_convert_float4_to_u32(accent)
         elif hovered:
