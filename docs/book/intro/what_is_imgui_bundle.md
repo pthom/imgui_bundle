@@ -65,7 +65,7 @@ And the same clarity that helps humans also helps AI: with no implicit state to 
 
 **Who is this project not for**
 
-You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for accessibility, internationalization, advanced styling, etc.
+You should prefer a more complete framework (such as Qt for example) if your intent is to build a fully fledged application, with support for accessibility, internationalization, or the platform's native look. The style itself is not the limit: 17 themes, tweaked live, though not with CSS.
 
 ---
 

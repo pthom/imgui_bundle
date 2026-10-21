@@ -12,17 +12,34 @@ build-backend = "scikit_build_core.build"
 name = "imgui-bundle"
 version = "1.93.0"  # Based on ImGui 1.93.0 WIP (docking tip) - Remember to mirror changes on line 3 of main CMakeLists! Version = ImGui patch × 100 + bundle release. (hardcoded pyodide wheel filenames must be updated too: find them with the rg command in docs/book/devel_docs/cloudflare_deploy.md.)
 
-description="Dear ImGui Bundle: From expressive code to powerful GUIs in no time. A fast, feature-rich, cross-platform toolkit for C++ and Python."
+description="Dear ImGui for Python and C++, batteries included: real-time GUIs, plots and live data, on the desktop and in the browser, with no server."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
 requires-python = ">=3.10"
+keywords = ["imgui", "dear-imgui", "gui", "immediate-mode", "real-time", "live-data", "visualization", "plotting", "scientific", "dashboard", "creative-coding", "generative-art", "pyodide", "webassembly", "jupyter", "node-editor", "markdown"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "License :: OSI Approved :: MIT License",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Education",
     "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Visualization",
+    "Topic :: Software Development :: User Interfaces",
+    "Topic :: Multimedia :: Graphics",
+    "Topic :: Artistic Software",
+    "Topic :: Education",
+    "Environment :: WebAssembly :: Emscripten",
+    "Framework :: Jupyter",
     "Typing :: Typed",
     "Operating System :: OS Independent",
+    "Programming Language :: C++",
     "Programming Language :: Python :: 3 :: Only",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 
 dependencies = []
@@ -94,6 +111,9 @@ Documentation = "https://imgui-bundle.pages.dev/doc/"
 Repository = "https://github.com/pthom/imgui_bundle"
 Issues = "https://github.com/pthom/imgui_bundle/issues"
 Changelog = "https://github.com/pthom/imgui_bundle/blob/main/CHANGELOG.md"
+Playground = "https://imgui-bundle.pages.dev/playground/"
+"Guide for AI assistants" = "https://imgui-bundle.pages.dev/llms.txt"
+FAQ = "https://github.com/pthom/imgui_bundle/issues?q=is%3Aissue+label%3AFAQ"
 
 [project.scripts]
 demo_imgui_bundle="imgui_bundle.demos_python.demo_imgui_bundle:main"
