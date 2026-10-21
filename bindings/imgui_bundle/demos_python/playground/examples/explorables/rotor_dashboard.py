@@ -1380,7 +1380,7 @@ class Dashboard:
         imgui.text_colored(hex_color(PAL.muted), "RMS in g. Kurtosis is 3 for Gaussian noise.")
 
     def phone_plot_flags(self) -> int:
-        """On a phone, the plots are short: their legends would cover the data (the channels' colors are in the
+        """On a phone, the plots are narrow: their legends would cover the data (the channels' colors are in the
         acceleration's legend)"""
         return implot.Flags_.no_legend if self.narrow else 0
 
@@ -1388,7 +1388,7 @@ class Dashboard:
         if implot.begin_plot("Acceleration", size):
             implot.setup_axes("time (s)", "g", 0, implot.AxisFlags_.auto_fit)
             implot.setup_axis_limits(implot.ImAxis_.x1, -HISTORY_S, 0.0, imgui.Cond_.always)
-            outside = implot.LegendFlags_.outside if self.narrow else 0  # on a phone, the plot is short
+            outside = implot.LegendFlags_.outside if self.narrow else 0  # on a phone, off the data
             implot.setup_legend(implot.Location_.north_west, implot.LegendFlags_.horizontal | outside)
             for c, (name, col) in enumerate(channels()):
                 spec = implot.Spec(line_color=hex_color(col, 0.9), line_weight=1.0)
@@ -1453,8 +1453,7 @@ class Dashboard:
         gauss = np.exp(-0.5 * ((xs - mu) / sigma) ** 2) / (sigma * np.sqrt(2.0 * np.pi))
 
         if implot.begin_plot(f"Distribution, {name}", size, self.phone_plot_flags()):
-            y_flags = implot.AxisFlags_.auto_fit | (implot.AxisFlags_.no_tick_labels if self.narrow else 0)
-            implot.setup_axes("g", "" if self.narrow else "density", implot.AxisFlags_.auto_fit, y_flags)
+            implot.setup_axes("g", "density", implot.AxisFlags_.auto_fit, implot.AxisFlags_.auto_fit)
             implot.setup_legend(implot.Location_.north_east)
             implot.plot_bars(
                 "Measured", centers, counts, float(edges[1] - edges[0]) * 0.92,
@@ -1547,13 +1546,15 @@ class Dashboard:
 
 
     def gui_plots(self) -> None:
-        """On a phone: the four plots stacked, filling the page (no scrolling: a swipe on a plot pans it)"""
-        avail = imgui.get_content_region_avail()
-        h = avail.y - 3 * imgui.get_style().item_spacing.y
-        self.gui_time_series(imgui.ImVec2(avail.x, h * 0.24))
-        self.gui_spectrum(imgui.ImVec2(avail.x, h * 0.28))
-        self.gui_histogram(imgui.ImVec2(avail.x, h * 0.18))
-        self.gui_spectrogram(imgui.ImVec2(avail.x, h * 0.3))
+        """On a phone: the four plots stacked, in a column that scrolls (a swipe scrolls it, even from a plot; a short
+        hold, then a drag, pans the plot)"""
+        imgui.begin_child("plots_column", imgui.ImVec2(0.0, 0.0))
+        w = imgui.get_content_region_avail().x
+        self.gui_time_series(imgui.ImVec2(w, em_size(13.0)))
+        self.gui_spectrum(imgui.ImVec2(w, em_size(16.0)))
+        self.gui_histogram(imgui.ImVec2(w, em_size(13.0)))
+        self.gui_spectrogram(imgui.ImVec2(w, em_size(17.0)))
+        imgui.end_child()
 
     def gui_controls_page(self) -> None:
         """On a phone: the sidebar's controls, on a page of their own"""

@@ -552,7 +552,7 @@ class App:
         else:
             imgui.text_colored(hex_color("#009E73"), fa.ICON_FA_CHECK)
         imgui.same_line()
-        imgui.text(text)
+        imgui.text_wrapped(text)  # on a phone, it wraps under the title
 
     # ----- the chart --------------------------------------------------------------
     def gui_chart_area(self, size: imgui.ImVec2) -> None:
@@ -614,9 +614,13 @@ class App:
         needed = ("countries", POPULATION.key, xi.key, yi.key)
         ready = d.ready(*needed)
         flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text
+        space = imgui.get_content_region_avail()  # the chart's size (`size` may be 0: fill)
         if not implot.begin_plot("##bubbles", size, flags):
             return
-        implot.setup_axes(xi.axis, yi.axis)
+        # On a narrow chart (a phone), a long label would run off its edges: the indicator's short title instead
+        x_label = xi.axis if imgui.calc_text_size(xi.axis).x < space.x - em_size(4.0) else xi.title
+        y_label = yi.axis if imgui.calc_text_size(yi.axis).x < space.y - em_size(4.0) else yi.title
+        implot.setup_axes(x_label, y_label)
         if xi.log:
             implot.setup_axis_scale(implot.ImAxis_.x1, implot.Scale_.log10)
         if yi.log:
