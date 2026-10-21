@@ -2809,9 +2809,11 @@ def _intro_mini_demos(host: Host, bottom_margin: float):
                       imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse
                       | imgui.WindowFlags_.no_background)
     for i in range(slide_count):
-        slide_x = slide_area_pos.x + (float(i) - _animated_offset) * slide_width
-        if slide_x >= slide_area_pos.x + carousel_width or slide_x + slide_width <= slide_area_pos.x:
+        # Tested on the offset, not on the positions: their float rounding kept the slide just left of the area
+        # (and the seascape's overlay window, which then stayed on screen)
+        if abs(i - _animated_offset) >= 1.0:
             continue
+        slide_x = slide_area_pos.x + (float(i) - _animated_offset) * slide_width
 
         imgui.set_cursor_screen_pos(ImVec2(slide_x, slide_area_pos.y))
         child_id = f"##slide_{i}"

@@ -3012,9 +3012,11 @@ ImGui::Combo("Fruit", &choice, "Apple\0Banana\0Cherry\0");)code"},
                           ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse | ImGuiWindowFlags_NoBackground);
         for (int i = 0; i < slideCount; i++)
         {
-            float slideX = slideAreaPos.x + ((float)i - gAnimatedOffset) * slideWidth;
-            if (slideX >= slideAreaPos.x + carouselWidth || slideX + slideWidth <= slideAreaPos.x)
+            // Tested on the offset, not on the positions: their float rounding kept the slide just left of the area
+            // (and the seascape's overlay window, which then stayed on screen)
+            if (std::fabs((float)i - gAnimatedOffset) >= 1.f)
                 continue;
+            float slideX = slideAreaPos.x + ((float)i - gAnimatedOffset) * slideWidth;
             ImGui::SetCursorScreenPos(ImVec2(slideX, slideAreaPos.y));
             ImGui::BeginChild(("##slide_" + std::to_string(i)).c_str(), ImVec2(slideWidth, slideHeight), false,
                               ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoBackground);
