@@ -70,6 +70,10 @@ as the parent project (x64 or ARM64): no DLL is involved. A precompiled `opencv_
 was used in the past: it was removed, since it is not compatible with Visual Studio 2026.
 An application which links its own OpenCV DLLs shall copy them next to its exe by itself.
 
+The fetched OpenCV is built in Release only. Build the project in Release or RelWithDebInfo: in Debug, the demos
+that link OpenCV fail at link time (`LNK2038`, a mismatch of `RuntimeLibrary` and `_ITERATOR_DEBUG_LEVEL`),
+since MSVC cannot mix the Debug and Release runtimes.
+
 SIMD is disabled globally (`-DWITH_SIMD=OFF` in `build_opencv.sh`) to avoid
 cross-compilation mismatches (ARM NEON headers vs x64 compiler). The performance impact
 is negligible for the minimalist OpenCV (image loading only).
