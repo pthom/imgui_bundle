@@ -18,7 +18,7 @@ Pictures and videos of the novelties: [the release page](RELEASE_PAGE_URL).
 
 Also new: Stack Layout v2.2 by thedmd ([Stack Layout v2.2](#stack-layout-v22)), and a guide for AI assistants ([For AI assistants](#for-ai-assistants)).
 
-*Candidate:* Ctrl+Tab switches windows on the Mac too ([GLFW 3.5.1](#glfw-351)).
+Ctrl+Tab switches windows on the Mac too ([GLFW 3.5.1](#glfw-351)).
 
 ## Breaking changes
 
@@ -303,8 +303,6 @@ Also:
 
 ### GLFW 3.5.1
 
-*Candidate: only if GLFW 3.5.1 goes into the release.*
-
 The desktop Python wheels use GLFW 3.5.1 (was 3.4). C++ builds without a system GLFW download it too (was 3.3.8).
 
 - On the Mac, Ctrl+Tab now reaches the app: Dear ImGui's window switcher works there too. Hold Ctrl and press Tab to go through the windows (Shift+Tab goes back), then release Ctrl to focus one. It already worked on Windows and Linux.
@@ -512,6 +510,7 @@ Removed:
 Give your AI assistant the bundle's guide: it will know how to help you write apps with Dear ImGui Bundle, in Python or C++.
 
 - The guide: [llms.txt](https://imgui-bundle.pages.dev/llms.txt), also in the book ("For AI assistants").
+- With it, an assistant can check its own work: screenshots of the app, or the GUI driven by the ImGui Test Engine (which has [its own license](https://www.dearimgui.com/licenses)). This also works in a headless Linux sandbox, with Xvfb.
 - The whole book, in plain text: [llms-full.txt](https://imgui-bundle.pages.dev/llms-full.txt).
 - The API in plain text, with the demos' code in Python and C++: [llms/api](https://imgui-bundle.pages.dev/llms/api/index.txt). The demos and the explorers: [llms/demos.txt](https://imgui-bundle.pages.dev/llms/demos.txt), [llms/explorers.txt](https://imgui-bundle.pages.dev/llms/explorers.txt).
 
@@ -586,13 +585,17 @@ Give your AI assistant the bundle's guide: it will know how to help you write ap
 <summary>Hello ImGui, ImmVision, and the others</summary>
 
 - Hello ImGui:
+  - A malformed `hello_imgui.ini` no longer stops the app at every start: its malformed part is ignored.
   - A new app starts after an app whose setup failed. The next app failed with "Already initialized a platform backend!" (in the playground: every example, until a reload).
   - `hello_imgui.load_user_pref()` gives back the value saved by `save_user_pref()`. It came back with a trailing newline from the second run on.
   - Window positions with negative coordinates (a monitor left of the main one) are restored ([pthom/hello_imgui#168](https://github.com/pthom/hello_imgui/issues/168)).
   - `ImGuiTheme.apply_theme()` works again without `hello_imgui.run()`, and `theme_to_style()` no longer changes the current style.
   - Screenshots with OpenGL swapped the two middle rows of an image of even height.
   - The installed CMake package announced version 1.92.700.
-- ImmVision: its icon buttons were invisible in a light theme.
+- ImmVision:
+  - Its icon buttons were invisible in a light theme.
+  - A params JSON whose zoom matrix lacks a key raises an error. It read past the end of the JSON object.
+- On the web, RichMd and `ImmApp::BrowseToUrl()` (C++) escape a link before opening it: a quote in a markdown link ran as JavaScript, and a link over about 460 characters was cut.
 - `immapp.show_python_code()` follows the theme.
 - MicroTeX: `\sqrt` or an argument without braces no longer aborts a web build (C++).
 - NanoVG in the browser: the font atlas lost the glyphs of later uploads.
