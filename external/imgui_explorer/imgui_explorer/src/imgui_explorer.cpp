@@ -795,7 +795,7 @@ namespace {
                     ImGui::BeginChild("##demo_area", ImVec2(leftPaneWidth, availableSize.y), demoChildFlags, 0);
                 }
                 if (mode.narrow && !GNarrowLayout_CodeSeen)
-                    ImGui::TextWrapped("Open a section of the demo, or tap a widget in it, then tap \"Code\" in the "
+                    ImGui::TextWrapped("Open a section of the demo, or tap a widget in it, then tap Code in the "
                                        "switch above: it shows the source of that section.");
                 // On the desktop, the code follows the mouse: the hint stays, while the code follows
                 if (!mode.narrow && GDemoMarker_FlagFollowSource && IsFollowSourceApplicable())
