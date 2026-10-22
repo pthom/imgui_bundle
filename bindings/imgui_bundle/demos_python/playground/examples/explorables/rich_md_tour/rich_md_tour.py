@@ -292,7 +292,10 @@ def gui_source(size: ImVec2) -> None:
         editor.scroll_to_line(cursor.line, ed.TextEditor.Scroll.align_middle)
         _editor_text = after
         page.follow_end = True
+    code_font = rich_md.get_code_font()           # a monospaced font
+    imgui.push_font(code_font.font, code_font.size)
     editor.render("##source", size)
+    imgui.pop_font()
     page.editor_rect = (imgui.get_item_rect_min(), imgui.get_item_rect_max())
     text = editor.get_text()
     if text != _editor_text:                      # edited by the learner: the lesson lets it be for a while
