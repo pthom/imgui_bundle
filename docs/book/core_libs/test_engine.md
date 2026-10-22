@@ -219,7 +219,7 @@ When test engine is enabled:
 
 The test engine works in the browser since v1.93, with the same API. Its coroutine, a thread on the desktop, is a WebAssembly stack switch there (JSPI), which needs Chrome 137, Firefox 153 or Safari 27. In an older browser, the app runs without the engine: `use_imgui_test_engine` is turned off, `get_imgui_test_engine()` returns `None`, and a message says so on stderr.
 
-`immapp.testing.run()` cannot block in the browser: it returns at once, the test runs in the frames that follow, the app stays open after it, and the result is printed when the test ends (stderr on failure). The screenshots go to Pyodide's virtual file system.
+`immapp.testing.run()` cannot block in the browser: it returns at once, the test runs in the frames that follow, the app stays open after it, and the result is printed when the test ends (stderr on failure). The screenshots go to Pyodide's virtual file system, and a "Captures" window shows them when the test ends: click one to enlarge it, or download it.
 
 While the engine runs, Python's automatic garbage collection is replaced by explicit collections at each frame (a workaround for a Pyodide bug with suspended stacks, pyodide#6464): a test that calls `gc.enable()` reopens it.
 

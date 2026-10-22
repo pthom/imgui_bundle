@@ -123,9 +123,10 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_testengine.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_testengine.py
   Run, C++: https://imgui-bundle.pages.dev/explorer/demo_testengine.html
-- immapp.testing: scripted runs (desktop only): Easy automated tests with immapp.testing, a thin layer on the test engine: a script drives the app, then exits. The test engine demo shows the engine itself, which runs in the browser too. Here, a test function drives the GUI (it clicks, moves a slider, opens a header) and captures a picture at each step; immapp.testing.run() starts the app, runs the test, then exits. The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at the mouse (the bundle's screenshot skills are built on it). See the test engine doc.
+- immapp.testing: scripted runs: Easy automated tests with immapp.testing, a thin layer on the test engine: a script drives the app, then exits. The test engine demo shows the engine itself, which runs in the browser too. Here, a test function drives the GUI (it clicks, moves a slider, opens a header) and captures a picture at each step; immapp.testing.run() starts the app, runs the test, then exits. The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at the mouse (the bundle's screenshot skills are built on it). See the test engine doc.
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp
+  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_immapp_testing.py
 
 ## Library tours
 

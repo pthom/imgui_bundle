@@ -338,9 +338,9 @@ The same recipe gives documentation pictures, and lets an AI agent see and drive
 the mouse (the bundle's screenshot skills are built on it).
 See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 
-*Python, C++, Desktop only*
+*Python, C++*
 
-[Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_immapp_testing.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp)
 
 ## Library tours
 

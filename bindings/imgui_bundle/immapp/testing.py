@@ -6,20 +6,29 @@ capture screenshots, etc. The window exits automatically once the test
 finishes (unless exit_after_test=False).
 
 In the browser (Pyodide), run() returns at once, the app stays open after the
-test, and the result is printed when the test ends (stderr on failure).
+test, and the result is printed when the test ends (stderr on failure). The
+captures land in the browser's memory: a "Captures" window shows them, and
+can download them.
 """
 from __future__ import annotations
 
+import itertools
 import sys
 import traceback
 from pathlib import Path
-from typing import Callable, Optional, Tuple, Union
+from typing import Callable, List, Optional, Tuple, Union
 
-from imgui_bundle import imgui, hello_imgui, immapp
+from imgui_bundle import imgui, hello_imgui, immapp, ImVec2
 
 PathLike = Union[str, Path]
 
 _IN_PYODIDE = sys.platform == "emscripten"
+
+# In the browser: the captures of the current run(), as (path, PNG data, texture cache key).
+# The keys never repeat: a capture saved twice to the same path gets a new texture.
+_browser_captures: List[Tuple[str, bytes, str]] = []
+_browser_capture_keys = (f"immapp.testing capture {n}" for n in itertools.count())
+_browser_enlarged: Optional[int] = None  # the index of the capture shown large
 
 
 TestFunction = Callable[["imgui.test_engine.TestContext"], None]
@@ -68,6 +77,71 @@ def capture(
     ctx.capture_set_filename(path)
     if not ctx.capture_screenshot(flags):
         raise RuntimeError(f"capture('{path}') failed: capture_screenshot() returned False.")
+    if _IN_PYODIDE:
+        _browser_captures.append((path, Path(path).read_bytes(), next(_browser_capture_keys)))
+
+
+def _clear_browser_captures() -> None:
+    global _browser_enlarged
+    _browser_captures.clear()
+    _browser_enlarged = None
+
+
+def _show_browser_captures() -> None:
+    """The "Captures" window: in the browser, the PNGs are in Pyodide's virtual file system, out of the user's sight."""
+    global _browser_enlarged
+    if not _browser_captures:
+        return
+    em = hello_imgui.em_size()
+    viewport = imgui.get_main_viewport()
+    imgui.set_next_window_pos(
+        ImVec2(viewport.work_pos.x + viewport.work_size.x - em, viewport.work_pos.y + em),
+        imgui.Cond_.first_use_ever, ImVec2(1.0, 0.0))
+    imgui.set_next_window_size(ImVec2(em * 14, viewport.work_size.y * 0.7), imgui.Cond_.first_use_ever)
+    if imgui.begin(f"Captures ({len(_browser_captures)})###immapp.testing captures")[0]:
+        imgui.text_wrapped("In the browser's memory. Click a picture to enlarge it.")
+        thumbnail_width = imgui.get_content_region_avail().x - 2 * imgui.get_style().frame_padding.x
+        for i, (path, data, cache_key) in enumerate(_browser_captures):
+            image = hello_imgui.image_and_size_from_encoded_data(data, cache_key)
+            imgui.push_id(i)
+            imgui.separator_text(Path(path).name)
+            size = ImVec2(thumbnail_width, thumbnail_width * image.size.y / max(image.size.x, 1.0))
+            if imgui.image_button("##thumbnail", imgui.ImTextureRef(image.texture_id), size):
+                _browser_enlarged = i
+            if imgui.button("Download"):
+                _download_in_browser(Path(path).name, data)
+            imgui.pop_id()
+    imgui.end()
+
+    if _browser_enlarged is None:
+        return
+    path, data, cache_key = _browser_captures[_browser_enlarged]
+    image = hello_imgui.image_and_size_from_encoded_data(data, cache_key)
+    imgui.set_next_window_pos(viewport.get_center(), imgui.Cond_.appearing, ImVec2(0.5, 0.5))
+    imgui.set_next_window_size(ImVec2(viewport.work_size.x * 0.8, viewport.work_size.y * 0.8), imgui.Cond_.appearing)
+    expanded, opened = imgui.begin(f"{Path(path).name}###immapp.testing enlarged capture", True)
+    if expanded:
+        available = imgui.get_content_region_avail()
+        scale = min(available.x / max(image.size.x, 1.0), available.y / max(image.size.y, 1.0))
+        imgui.image(imgui.ImTextureRef(image.texture_id), ImVec2(image.size.x * scale, image.size.y * scale))
+    imgui.end()
+    if not opened:
+        _browser_enlarged = None
+
+
+def _download_in_browser(filename: str, data: bytes) -> None:
+    """Hands a file to the browser, which saves it with the user's downloads."""
+    import js  # type: ignore[import-not-found]
+    from pyodide.ffi import to_js  # type: ignore[import-not-found]
+
+    blob = js.Blob.new(to_js([js.Uint8Array.new(data)]),
+                       to_js({"type": "image/png"}, dict_converter=js.Object.fromEntries))
+    url = js.URL.createObjectURL(blob)
+    link = js.document.createElement("a")
+    link.href = url
+    link.download = filename
+    link.click()
+    js.URL.revokeObjectURL(url)
 
 
 def run(
@@ -211,6 +285,18 @@ def run(
             runner_params.app_shall_exit = True
 
     runner_params.callbacks.before_imgui_render = _on_test_done
+
+    if _IN_PYODIDE:
+        _clear_browser_captures()
+        prior_show_gui = runner_params.callbacks.show_gui
+
+        def _show_gui_and_captures() -> None:
+            if callable(prior_show_gui):
+                prior_show_gui()
+            if test_done:  # during the test, the window would appear in the captures, and could catch its clicks
+                _show_browser_captures()
+
+        runner_params.callbacks.show_gui = _show_gui_and_captures
 
     immapp.run(runner_params, add_ons_params)
     if _IN_PYODIDE:

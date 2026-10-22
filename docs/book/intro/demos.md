@@ -407,9 +407,7 @@ Easy automated tests with `immapp.testing`, a thin layer on the test engine: a s
 The test engine demo shows the engine itself, which runs in the browser too. Here, a test function drives the GUI (it clicks, moves a slider, opens a header) and captures a picture at each step; `immapp.testing.run()` starts the app, runs the test, then exits. The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at the mouse (the bundle's screenshot skills are built on it). See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
 :::
 
-*Desktop only*
-
-{span .demo-lang}`Python:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py)\
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_immapp_testing.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_immapp_testing.py)\
 {span .demo-lang}`C++:` [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_immapp_testing.cpp)
 
 ::::

@@ -270,7 +270,7 @@
             "filename": "demo_immapp_testing.py",
             "category": "Build an app",
             "source": "demos_immapp",
-            "where": "desktop",
+            "needs": ["jspi"],
             "cpp_url": ""
         },
         {
