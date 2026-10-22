@@ -63,7 +63,8 @@ VIDEO_MOUSE_SPEED = 1100.0       # the engine's cursor, in points per second (it
 VIDEO_ACTION_DELAYS = (0.08, 0.2)  # the engine's pauses between actions, short and standard (default: 0.15, 0.4)
 VIDEO_CURSOR_SCALE = 1.6         # the drawn cursor's size
 SUBTITLE_EM = 1.6                # the subtitles' size
-SUBTITLE_BOTTOM_EM = 1.2         # their distance to the window's bottom
+SUBTITLE_BAND_EM = 3.6           # the band under the stage where they are drawn: the stage never goes under them
+SUBTITLE_BAND_COLOR = ImVec4(0.094, 0.098, 0.11, 1.0)   # dark in every theme, as a letterbox
 SUBTITLE_MAX_WIDTH = 0.8         # their lines' width, at most, in the window's width
 SUBTITLE_FADE = 0.15             # seconds: a subtitle fades in
 RIPPLE_DURATION = 0.5            # seconds: the ring a click leaves
@@ -1291,8 +1292,8 @@ class Lesson:
             return
         imgui.push_id("narrator")                  # the player's widgets may share labels with the program's
         if self.video_look:
-            self._gui_stage_child(stage, avail)
-            self._gui_subtitle()
+            self._gui_stage_child(stage, ImVec2(avail.x, avail.y - SUBTITLE_BAND_EM * em))
+            self._gui_subtitle(imgui.get_item_rect_max().y)
             self._gui_ripples()
         elif landscape:
             strip_width = max(STRIP_MIN_WIDTH_EM * em, 0.4 * avail.x)
@@ -1363,16 +1364,19 @@ class Lesson:
         imgui.end_child()
 
     # ---- the video's subtitles and ripples ------------------------------------------------------------------------
-    def _gui_subtitle(self) -> None:
-        """The sentence being read: centered lines on a dark band, at the bottom of the window, over everything"""
+    def _gui_subtitle(self, band_top: float) -> None:
+        """The sentence being read: centered lines in the band under the stage, from band_top to the window's bottom"""
+        viewport = imgui.get_main_viewport()
+        band_bottom = viewport.pos.y + viewport.size.y
+        draw_list = imgui.get_foreground_draw_list()
+        draw_list.add_rect_filled(ImVec2(viewport.pos.x, band_top), ImVec2(viewport.pos.x + viewport.size.x, band_bottom),
+                                  imgui.color_convert_float4_to_u32(SUBTITLE_BAND_COLOR))
         sentence = self.current_sentence() if self._video_frames >= VIDEO_WARMUP_FRAMES else None
         text = re.sub(r"\*+|`", "", sentence.text) if sentence is not None else ""   # markdown's marks: not shown
         if self._recorder is not None:
             self._recorder.note_subtitle(text)
         if sentence is None or not text:
             return
-        em = hello_imgui.em_size()
-        viewport = imgui.get_main_viewport()
         imgui.push_font(None, imgui.get_style().font_size_base * SUBTITLE_EM)
         font, size, line_height = imgui.get_font(), imgui.get_font_size(), imgui.get_text_line_height()
         lines: list[str] = []
@@ -1385,8 +1389,7 @@ class Lesson:
         alpha = min(1.0, (self.t - sentence.start) / SUBTITLE_FADE)
         pad = ImVec2(0.6 * size, 0.25 * size)
         center_x = viewport.pos.x + viewport.size.x / 2
-        top = viewport.pos.y + viewport.size.y - SUBTITLE_BOTTOM_EM * em - pad.y - line_height * len(lines)
-        draw_list = imgui.get_foreground_draw_list()
+        top = (band_top + band_bottom - line_height * len(lines)) / 2
         draw_list.add_rect_filled(ImVec2(center_x - max(widths) / 2 - pad.x, top - pad.y),
                                   ImVec2(center_x + max(widths) / 2 + pad.x, top + line_height * len(lines) + pad.y),
                                   imgui.color_convert_float4_to_u32(ImVec4(0.0, 0.0, 0.0, 0.72 * alpha)),
