@@ -15,7 +15,7 @@ version = "1.93.0"  # Based on ImGui 1.93.0 (docking branch) - Remember to mirro
 description="Dear ImGui for Python and C++, batteries included: real-time GUIs, plots and live data, on the desktop and in the browser, with no server."
 readme = "bindings/imgui_bundle/Readme_pypi.md"
 authors = [ { name = "Pascal Thomet", email = "pthomet@gmail.com" } ]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 keywords = ["imgui", "dear-imgui", "gui", "immediate-mode", "real-time", "live-data", "visualization", "plotting", "scientific", "dashboard", "creative-coding", "generative-art", "pyodide", "webassembly", "jupyter", "node-editor", "markdown"]
 classifiers = [
     "Development Status :: 5 - Production/Stable",

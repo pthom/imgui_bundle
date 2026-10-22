@@ -1,5 +1,11 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
+# Next release - WIP
+
+## Breaking changes
+
+- Python 3.10 is no longer supported: `imgui-bundle` needs Python 3.11 or later, like its wheels (3.11 to 3.15). Python 3.10 reaches its end of life in October 2026.
+
 # v1.93.0
 
 This is a big release, with 911 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.

@@ -12,7 +12,7 @@ Read this page first. It links to more:
 
 ## Install
 
-**Python** (3.10 or later; binary wheels for Windows, macOS and Linux):
+**Python** (3.11 or later; binary wheels for Windows, macOS and Linux):
 
 ```bash
 pip install imgui-bundle
