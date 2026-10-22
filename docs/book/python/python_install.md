@@ -36,7 +36,12 @@ The build process might take up to 5 minutes, and will clone the submodules if n
 
 ## Run the python demo
 
-Simply run `imgui_bundle_demo`.
+The demo needs the optional features: after a minimal install, it stops at start ("Dear ImGui Bundle Explorer requires numpy!").
+
+```bash
+pip install "imgui-bundle[full]"
+imgui_bundle_demo
+```
 
 The source for the demos can be found inside [bindings/imgui_bundle/demos_python](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/demos_python).
 
