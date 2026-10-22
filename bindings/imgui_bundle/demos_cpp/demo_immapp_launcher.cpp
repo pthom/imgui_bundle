@@ -1062,9 +1062,11 @@ void DemoLauncher::Gallery()
         if (_categoryY[category->name] <= ImGui::GetScrollY() + Em(3.f) || atTheEnd)
             _categoryInView = category->name;
         BigText(category->name.c_str(), 1.45f, Themed(CATEGORY_TITLE));
+        ImGui::PushTextWrapPos(0.0f);  // a phone's width wraps them
         ImGui::TextDisabled("%s", category->about.c_str());
         if (!category->tip.empty())
             ImGui::TextDisabled("%s", category->tip.c_str());
+        ImGui::PopTextWrapPos();
         ImGui::Dummy(ImVec2(0, Em(0.3f)));
         for (size_t j = 0; j < shown.size(); ++j)
         {

@@ -843,9 +843,11 @@ class Launcher:
             if self.category_y[category.name] <= imgui.get_scroll_y() + em_size(3) or at_the_end:
                 self.category_in_view = category.name
             big_text(category.name, 1.45, themed(CATEGORY_TITLE))
+            imgui.push_text_wrap_pos(0.0)  # a phone's width wraps them
             imgui.text_disabled(category.about)
             if category.tip:
                 imgui.text_disabled(category.tip)
+            imgui.pop_text_wrap_pos()
             imgui.dummy(ImVec2(0, em_size(0.3)))
             for i, demo in enumerate(self.shown(category)):
                 if i % columns:
