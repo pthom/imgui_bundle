@@ -234,7 +234,7 @@
   },
   "demo_immapp_testing.py": {
     "title": "immapp.testing: a script drives the app, captures screenshots, then exits.",
-    "text": "Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.\nThe test engine demo shows the engine itself. Here, a test function drives the GUI (it clicks, moves a slider, opens\na header) and captures a picture at each step; `immapp.testing.run()` starts the app, runs the test, then exits.\nThe same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at\nthe mouse (the bundle's screenshot skills are built on it).\nSee the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
+    "text": "Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.\nThe test engine demo shows the engine itself, which runs in the browser too. Here, a test function drives the GUI\n(it clicks, moves a slider, opens a header) and captures a picture at each step; `immapp.testing.run()` starts the\napp, runs the test, then exits.\nThe same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at\nthe mouse (the bundle's screenshot skills are built on it).\nSee the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).",
     "summary": "Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.",
     "uses": [],
     "cpp": true

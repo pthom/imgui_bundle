@@ -331,8 +331,9 @@ See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engi
 :::
 
 Easy automated tests with `immapp.testing`, a thin layer on the test engine: a script drives the app, then exits.
-The test engine demo shows the engine itself. Here, a test function drives the GUI (it clicks, moves a slider, opens
-a header) and captures a picture at each step; `immapp.testing.run()` starts the app, runs the test, then exits.
+The test engine demo shows the engine itself, which runs in the browser too. Here, a test function drives the GUI
+(it clicks, moves a slider, opens a header) and captures a picture at each step; `immapp.testing.run()` starts the
+app, runs the test, then exits.
 The same recipe gives documentation pictures, and lets an AI agent see and drive the app it writes, with nobody at
 the mouse (the bundle's screenshot skills are built on it).
 See the [test engine doc](https://imgui-bundle.pages.dev/doc/core-libs/test-engine/).
