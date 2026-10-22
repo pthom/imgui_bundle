@@ -143,8 +143,9 @@ reset_page()
 set_value("view", "page")
 set_value("source", FULL)
 set_value("page_width", 1.0)
+wait(0.5)                                     # the new page's table of contents, drawn first
 click("toc", "The families")
-animate("page_width", 0.4, over=3, at="On a phone")
+animate("page_width", 0.3, over=3, at="On a phone")   # under 40 em, the table of contents folds into a menu
 set_value("theme", "light", at="In a light")
 ```
 On a phone, the table of contents folds into a menu above the page. In a light theme, the diagram and the code follow.
