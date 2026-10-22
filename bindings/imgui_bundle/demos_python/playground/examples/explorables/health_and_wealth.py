@@ -989,8 +989,15 @@ class App:
                 info = f"downloading, {time.perf_counter() - s.started:.1f} s"
             else:
                 info = s.error
-            imgui.same_line(imgui.get_window_width() - imgui.calc_text_size(info).x - em_size(1.0))
-            imgui.text_disabled(info)
+            # at the right of the title when both fit (a narrow panel: on the next line)
+            imgui.same_line()
+            info_w = imgui.calc_text_size(info).x
+            if imgui.get_content_region_avail().x >= info_w:
+                imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - info_w)
+                imgui.text_disabled(info)
+            else:
+                imgui.new_line()
+                imgui.text_disabled("    " + info)
             imgui.text_disabled("    " + elided(s.path.split("/")[-1], imgui.get_content_region_avail().x - em_size(2.0)))
             if imgui.is_item_hovered():
                 imgui.set_tooltip(s.url)
