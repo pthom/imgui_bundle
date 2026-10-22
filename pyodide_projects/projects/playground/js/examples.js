@@ -178,7 +178,7 @@ async function installBundleFiles(bundleFiles, source) {
     }
 }
 
-// Function to load example content (and install packages + bundle folders if needed).
+// Function to load example content (and install packages + bundle folders if needed). Returns false when it failed.
 // source: the served folder of the example's file (examples.json "source"; e.g. demos_immapp), examples by default
 async function loadExample(filename, packages, label, bundleFolders, source, bundleFiles) {
     try {
@@ -195,9 +195,11 @@ async function loadExample(filename, packages, label, bundleFolders, source, bun
         loadedExampleFilename = filename;
         if (label) setEditorLabel(label);
         clearError(); // Clear previous errors when loading a new example
+        return true;
     } catch (error) {
         console.error('Error loading example:', error);
         displayError('Failed to load the example. Please try again.');
+        return false;
     }
 }
 
@@ -530,7 +532,12 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     // The welcome and the manuals hide the code (a manual shows its own); the other demos show it, to be edited
     const hidesCode = filename === WELCOME_FILENAME || (!!example && example.category === 'Interactive manuals');
     if (!narrowScreen.matches) setCodeFolded(hidesCode);
-    await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
+    const loaded = await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
+    if (!loaded && !example) {  // a wrong or outdated ?demo= link: the whole welcome, and why it shows
+        await showWelcome();
+        displayError(`No demo is named "${filename}": here is the welcome.`);
+        return;
+    }
     markCurrentExample(filename);
     showHackHint(example);
     // Update browser URL and history
@@ -558,13 +565,30 @@ function githubUrl(source, filename) {
     return 'https://github.com/pthom/imgui_bundle/blob/main/' + parts.join('/');
 }
 
+// A short name in a ?demo= link ("rotor_dashboard", "rotor_dashboard.py", "explorables/rotor_dashboard"): the file of
+// the only catalog entry whose path ends that way; otherwise the name as given
+function resolveDemoName(name) {
+    if (examplesMetadata.some(e => e.filename === name)) return name;
+    const stem = name.replace(/\.py$/, '');
+    const matches = examplesMetadata.filter(e => {
+        const fileStem = e.filename.replace(/\.py$/, '');
+        return fileStem === stem || fileStem.endsWith('/' + stem);
+    });
+    return matches.length === 1 ? matches[0].filename : name;
+}
+
 // Check ?demo= URL parameter and load the specified demo after Pyodide is ready
 async function loadDemoFromUrlIfNeeded() {
-    const demoFile = getDemoFromUrl();
-    if (demoFile) {
+    if (getDemoFromUrl()) {
         // Wait for metadata to be available
         if (examplesMetadata.length === 0) {
             examplesMetadata = await fetchExampleMetadata();
+        }
+        const demoFile = resolveDemoName(getDemoFromUrl());
+        if (demoFile !== getDemoFromUrl()) {  // the address bar shows the full name
+            const url = new URL(window.location);
+            url.searchParams.set('demo', demoFile);
+            history.replaceState({demo: demoFile}, '', url);
         }
         await loadDemoByFilename(demoFile);
     }
