@@ -43,6 +43,7 @@ Dear ImGui Bundle is a framework built on top of [Dear ImGui](https://github.com
     - Dear ImGui (core widgets)
     - ImPlot / ImPlot3D (2D and 3D plotting)
     - ImmVision (image inspection)
+    - RichMd (Markdown documents: math, diagrams, a search; [a 40 s video](https://github.com/pthom/imgui_rich_md))
     - ImAnim (animations), and your Matplotlib figures inside the GUI (`imgui_fig`)
     - imgui-node-editor, ImGuizmo, file dialogs, knobs, spinners, toggles, command palette, a terminal, and more.
 - **Optional high-level runners:**
