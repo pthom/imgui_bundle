@@ -12,6 +12,7 @@
 3. Create a GitHub release with a new tag (e.g. `v1.92.601`).
    The `wheels.yml` CI workflow builds and uploads wheels to PyPI automatically, macOS arm64 included.
    The `pyodide.yml` workflow does the same for the Pyodide wheel, and attaches it to the GitHub release.
+4. Pin the C++ template to the new tag: `GIT_TAG` in `_example_integration/CMakeLists.txt` (the submodule `pthom/imgui_bundle_template`). Push the template, then commit the submodule's new pointer in the bundle.
 
 
 ## About cibuildwheel
