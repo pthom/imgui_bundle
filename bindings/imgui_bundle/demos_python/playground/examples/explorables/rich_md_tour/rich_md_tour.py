@@ -94,8 +94,10 @@ class AppState:
         self.view = "split"          # "split": the source and the page; "page": the page alone
         self.page_width = 1.0        # the page's share of the stage's width ("page" view): a narrow page, shown
         self.theme = "dark"          # "dark" or "light"
+        self.page_scroll = 0.0       # the page's scroll, as a share of its height: a cue scrolls it slowly
         self.page_id = 0             # a new id: a fresh document (no fold, no search, at the top)
         self._theme_applied = "dark"
+        self._scroll_applied = 0.0
 
     def reset_page(self) -> None:
         self.page_id += 1
@@ -254,6 +256,7 @@ lesson.param(name="source", owner=app_state)
 lesson.param(name="view", owner=app_state)
 lesson.param(name="page_width", owner=app_state, range=(0.2, 1.0))
 lesson.param(name="theme", owner=app_state)
+lesson.param(name="page_scroll", owner=app_state, range=(0.0, 1.0))
 lesson.action(name="reset_page", function=app_state.reset_page)
 lesson.constant(name="upto", value=upto)
 lesson.constant(name="part", value=part)
@@ -319,6 +322,9 @@ def gui_page(size: ImVec2) -> None:
         if page.follow_end:                      # the text grows at its end: the page follows, as a terminal
             imgui.set_scroll_here_y(1.0)
             page.follow_end = False
+        if app_state.page_scroll != app_state._scroll_applied:   # a cue scrolls the page (the learner's wheel is free)
+            imgui.set_scroll_y(app_state.page_scroll * imgui.get_scroll_max_y())
+            app_state._scroll_applied = app_state.page_scroll
         page.record()
     page.page_rect = (start, start + size)
     lesson.widget("page_width")
