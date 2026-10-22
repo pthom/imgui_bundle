@@ -1255,7 +1255,8 @@ class Lesson:
         """The learner changed a parameter by other means than its widget: its value holds, as after a drag"""
         p = self.params.get(name)
         if p is not None and self.script is not None:
-            p.hold_until = max(self.next_keyframe_time(name, self.t), self.t + self.delay_after_interaction)
+            delay = 0.0 if self.gestures.busy() else self.delay_after_interaction   # the lesson's own gestures: until
+            p.hold_until = max(self.next_keyframe_time(name, self.t), self.t + delay)  # the next cue, not past it
 
     def widget(self, name: str, changed: bool = False) -> None:
         """Call it right after the widget that shows a parameter: its rectangle, and the learner's edit"""
