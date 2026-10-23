@@ -1,10 +1,12 @@
 // A platform specific utility to open an url in a browser
 // (especially useful with emscripten version)
+#include <cctype>
+#include <string>
+
 // Specific per platform includes for BrowseToUrl
 #if defined(__EMSCRIPTEN__)
 #include <emscripten.h>
 #include <cstdio> // snprintf
-#include <string>
 #elif defined(_WIN32)
 #include <windows.h>
 #include <shellapi.h>
@@ -47,15 +49,29 @@ namespace ImmApp
     }
 #endif
 
+    // Web addresses only (http, https, mailto): a url from a document could otherwise start a program (a file: or
+    // a custom scheme on the desktop), or run script in the page (javascript: in the browser)
+    static bool IsWebAddress(const char* url)
+    {
+        std::string s(url);
+        for (char& c : s)
+            c = (char)tolower((unsigned char)c);
+        return s.rfind("http://", 0) == 0 || s.rfind("https://", 0) == 0 || s.rfind("mailto:", 0) == 0;
+    }
+
     void BrowseToUrl(const char *url)
     {
+        if (!IsWebAddress(url))
+            return;
 #if defined(__EMSCRIPTEN__)
         // A new tab, when the browser allows it. On a touch screen (the pointer probe of hello_imgui knows), the page
         // itself goes there: a popup blocker refuses a new tab when the click did not come from a user gesture, and
         // on a phone ImGui learns of a tap two frames after the finger lifted. The browser's back button returns.
         std::string urlJs = JsStringLiteral(url);
+        // The new tab gets no handle on this one (w.opener): it could otherwise replace the app's page
         std::string js_command =
-            "if (window.helloImGuiPointerType === 1 || !window.open(" + urlJs + ")) window.location.assign(" + urlJs + ");";
+            "if (window.helloImGuiPointerType === 1) window.location.assign(" + urlJs + ");"
+            " else { const w = window.open(" + urlJs + "); if (w) w.opener = null; else window.location.assign(" + urlJs + "); }";
         emscripten_run_script(js_command.c_str());
 #elif defined(_WIN32)
         ShellExecuteA( NULL, "open", url, NULL, NULL, SW_SHOWNORMAL );
