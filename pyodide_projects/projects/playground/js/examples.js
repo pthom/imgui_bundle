@@ -521,6 +521,12 @@ async function loadDemoByFilename(filename, updateHistory = true) {
         if (tab) tab.opener = null; else window.location.assign(example.page);
         return;
     }
+    if (!example) {  // a wrong or outdated ?demo= link: the whole welcome, and why it shows. Decided before any fetch:
+        // the name would otherwise reach any file of the site (../../x) and run it as Python
+        await showWelcome();
+        displayError(`No demo is named "${filename}": here is the welcome.`);
+        return;
+    }
     if (narrowScreen.matches) setPane('demo');  // a phone: the demo shows first, whatever pane showed before
     settingsBeforeDemo(example);  // does it set a theme of its own? (js/settings.js)
     const packages = example ? example.packages : undefined;
@@ -532,12 +538,7 @@ async function loadDemoByFilename(filename, updateHistory = true) {
     // The welcome and the manuals hide the code (a manual shows its own); the other demos show it, to be edited
     const hidesCode = filename === WELCOME_FILENAME || (!!example && example.category === 'Interactive manuals');
     if (!narrowScreen.matches) setCodeFolded(hidesCode);
-    const loaded = await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
-    if (!loaded && !example) {  // a wrong or outdated ?demo= link: the whole welcome, and why it shows
-        await showWelcome();
-        displayError(`No demo is named "${filename}": here is the welcome.`);
-        return;
-    }
+    await loadExample(filename, packages, label, bundleFolders, source, bundleFiles);
     markCurrentExample(filename);
     showHackHint(example);
     // Update browser URL and history
