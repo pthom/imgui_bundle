@@ -24,11 +24,12 @@ jobs:
         ]
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       with:
+        persist-credentials: false
         submodules: recursive
 
-    - uses: actions/setup-python@v7
+    - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
       with:
         python-version: ${{ matrix.python-version }}
 
@@ -78,7 +79,7 @@ jobs:
         python ci_automation_test_app_bundle.py
 
 #    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
+#      uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113  # v3.9
 
     - name: Run mypy
       shell: bash

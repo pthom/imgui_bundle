@@ -12,18 +12,18 @@ jobs:
       contents: write
     steps:
       - name: Checkout project source code
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
           path: project
 
       - name: Package source code including submodules
-        uses: qmonnet/git-archive-all-action@v1
+        uses: qmonnet/git-archive-all-action@791fb850881cf58b1d1fcc9b06c01940080bba0a  # v1.0.1
         with:
           output-files: srcs-full-${{ github.ref_name }}.tar.gz
           base-repo: project
 
       - name: Create draft release and add artifacts
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@efb35369e0ad2afab669f228072c1b0d510eae64  # v3.0.3
         with:
           draft: true
           files: srcs-full-*

@@ -22,18 +22,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          persist-credentials: false
           submodules: recursive
 
       #
       # Install required apps (just, python, emscripten, etc)
       # =====================================================
       # install just
-      - uses: extractions/setup-just@v4
+      - uses: extractions/setup-just@53165ef7e734c5c07cb06b3c8e7b647c5aa16db3  # v4.0.0
       # install emscripten (and cache it)
       - name: Setup emsdk
-        uses: emscripten-core/setup-emsdk@v16
+        uses: emscripten-core/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984  # v16
         with:
           # Make sure to set a version number!
           version: 5.0.4
@@ -44,7 +45,7 @@ jobs:
       - name: Verify emscripten toolchain
         run: emcc -v
       # Install python 3.13 required by pyodide
-      - uses: actions/setup-python@v7
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
         with:
           python-version: '3.13'
       # install jupyter-book
@@ -52,7 +53,7 @@ jobs:
         run: pip install -r docs/book/requirements.txt
       # install typst
       - name: Install Typst
-        uses: typst-community/setup-typst@v5
+        uses: typst-community/setup-typst@fee4b65b091cc546f02ce3be15fad8760f38a108  # v5.3.0b2
       # Install wrangler (to upload to cloudflare)
       - name: Install wrangler
         run: npm install -g wrangler
@@ -61,7 +62,7 @@ jobs:
       # Optional ssh / debug
       # =====================================================
       # - name: Setup interactive tmate session
-      #   uses: mxschmitt/action-tmate@v3
+      #   uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113  # v3.9
 
       #
       # Build all elements

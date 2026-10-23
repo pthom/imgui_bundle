@@ -18,8 +18,9 @@ jobs:
         platform: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          persist-credentials: false
           submodules: recursive
 
       - name: apt install xorg-dev  libglfw3-dev libsdl2-dev (ubuntu only)

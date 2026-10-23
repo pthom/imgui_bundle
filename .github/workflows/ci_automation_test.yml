@@ -20,8 +20,9 @@ jobs:
         # this does not work under macos-latest (may be "Off-screen Mesa" could help)
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
         with:
+          persist-credentials: false
           submodules: recursive
 
       - name: install libglfw3-dev xorg-dev & start Xvfb (ubuntu only)
@@ -34,7 +35,7 @@ jobs:
           echo "DISPLAY=:99.0" >> $GITHUB_ENV
 
       #      - name: Setup interactive tmate session
-      #        uses: mxschmitt/action-tmate@v3
+      #        uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113  # v3.9
 
       - name: Build C++ automation app
         shell: bash
@@ -104,7 +105,7 @@ jobs:
 
       - name: Upload the screenshots of the imgui-node-editor tests
         if: ${{ always() && matrix.platform != 'windows-latest' }}
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
         with:
           name: node_editor_tests_captures
           path: .github/ci_automation_tests/build/node_editor_tests_captures

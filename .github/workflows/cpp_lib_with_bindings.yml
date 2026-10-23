@@ -19,15 +19,16 @@ jobs:
         platform: [windows-latest, macos-latest, ubuntu-latest]
 
     steps:
-    - uses: actions/checkout@v7
+    - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
       with:
+        persist-credentials: false
         submodules: recursive
 
     - name: install xorg-dev on ubuntu
       run: ./ci_scripts/install_xorg_dev.sh
 
 #    - name: Setup interactive tmate session
-#      uses: mxschmitt/action-tmate@v3
+#      uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113  # v3.9
 
     - name: Build and install (*nixes)
       if: ${{ matrix.platform != 'windows-latest' }}
