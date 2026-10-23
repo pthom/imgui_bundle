@@ -13,6 +13,10 @@ on:
       - master
       - main
 
+# The token reads only; a job that publishes asks for more
+permissions:
+  contents: read
+
 jobs:
   build_sdist:
     name: Build SDist

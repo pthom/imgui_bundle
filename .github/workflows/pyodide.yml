@@ -11,6 +11,10 @@ on:
       - master
       - main
 
+# The token reads only; a job that publishes asks for more
+permissions:
+  contents: read
+
 jobs:
   build_pyodide_wheel:
     name: Build Pyodide Wheel

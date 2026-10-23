@@ -1088,41 +1088,42 @@ def debug_dump_path_cache(ctx: Context) -> None:
 
 
 # The 2x3 transforms for Python: a std::array<float, 6> in place of nanovg's float* (which would bind as one number).
-# These overloads keep the C names; the functions that take float* are not bound.
-# inline std::array<float, 6> nvgCurrentTransform(NVGcontext* ctx);    /* original C++ signature */
+# Named nvgcpp_X (an overload of the C name would be ambiguous for the bindings), bound in Python as X; the C functions
+# that take float* are not bound.
+# inline std::array<float, 6> nvgcpp_CurrentTransform(NVGcontext* ctx);    /* original C++ signature */
 def current_transform(ctx: Context) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformIdentity();    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformIdentity();    /* original C++ signature */
 def transform_identity() -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformTranslate(float tx, float ty);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformTranslate(float tx, float ty);    /* original C++ signature */
 def transform_translate(tx: float, ty: float) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformScale(float sx, float sy);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformScale(float sx, float sy);    /* original C++ signature */
 def transform_scale(sx: float, sy: float) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformRotate(float a);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformRotate(float a);    /* original C++ signature */
 def transform_rotate(a: float) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformSkewX(float a);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformSkewX(float a);    /* original C++ signature */
 def transform_skew_x(a: float) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformSkewY(float a);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformSkewY(float a);    /* original C++ signature */
 def transform_skew_y(a: float) -> List[float]:
     pass
-# inline std::array<float, 6> nvgTransformMultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformMultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
 def transform_multiply(dst: List[float], src: List[float]) -> List[float]:
     """ dst = dst * src"""
     pass
-# inline std::array<float, 6> nvgTransformPremultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
+# inline std::array<float, 6> nvgcpp_TransformPremultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
 def transform_premultiply(dst: List[float], src: List[float]) -> List[float]:
     """ dst = src * dst"""
     pass
-# inline std::optional<std::array<float, 6>> nvgTransformInverse(const std::array<float, 6>& src);    /* original C++ signature */
+# inline std::optional<std::array<float, 6>> nvgcpp_TransformInverse(const std::array<float, 6>& src);    /* original C++ signature */
 def transform_inverse(src: List[float]) -> Optional[List[float]]:
     """ The inverse of src, or nullopt when src is singular"""
     pass
-# inline ImVec2 nvgTransformPoint(const std::array<float, 6>& xform, float srcx, float srcy);    /* original C++ signature */
+# inline ImVec2 nvgcpp_TransformPoint(const std::array<float, 6>& xform, float srcx, float srcy);    /* original C++ signature */
 def transform_point(xform: List[float], srcx: float, srcy: float) -> ImVec2:
     """ The point (srcx, srcy) transformed by xform"""
     pass

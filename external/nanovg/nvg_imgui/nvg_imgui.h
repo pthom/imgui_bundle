@@ -19,22 +19,23 @@
 struct NVGcontext;
 
 // The 2x3 transforms for Python: a std::array<float, 6> in place of nanovg's float* (which would bind as one number).
-// These overloads keep the C names; the functions that take float* are not bound.
-inline std::array<float, 6> nvgCurrentTransform(NVGcontext* ctx) { std::array<float, 6> xform; nvgCurrentTransform(ctx, xform.data()); return xform; }
-inline std::array<float, 6> nvgTransformIdentity() { std::array<float, 6> dst; nvgTransformIdentity(dst.data()); return dst; }
-inline std::array<float, 6> nvgTransformTranslate(float tx, float ty) { std::array<float, 6> dst; nvgTransformTranslate(dst.data(), tx, ty); return dst; }
-inline std::array<float, 6> nvgTransformScale(float sx, float sy) { std::array<float, 6> dst; nvgTransformScale(dst.data(), sx, sy); return dst; }
-inline std::array<float, 6> nvgTransformRotate(float a) { std::array<float, 6> dst; nvgTransformRotate(dst.data(), a); return dst; }
-inline std::array<float, 6> nvgTransformSkewX(float a) { std::array<float, 6> dst; nvgTransformSkewX(dst.data(), a); return dst; }
-inline std::array<float, 6> nvgTransformSkewY(float a) { std::array<float, 6> dst; nvgTransformSkewY(dst.data(), a); return dst; }
+// Named nvgcpp_X (an overload of the C name would be ambiguous for the bindings), bound in Python as X; the C functions
+// that take float* are not bound.
+inline std::array<float, 6> nvgcpp_CurrentTransform(NVGcontext* ctx) { std::array<float, 6> xform; nvgCurrentTransform(ctx, xform.data()); return xform; }
+inline std::array<float, 6> nvgcpp_TransformIdentity() { std::array<float, 6> dst; nvgTransformIdentity(dst.data()); return dst; }
+inline std::array<float, 6> nvgcpp_TransformTranslate(float tx, float ty) { std::array<float, 6> dst; nvgTransformTranslate(dst.data(), tx, ty); return dst; }
+inline std::array<float, 6> nvgcpp_TransformScale(float sx, float sy) { std::array<float, 6> dst; nvgTransformScale(dst.data(), sx, sy); return dst; }
+inline std::array<float, 6> nvgcpp_TransformRotate(float a) { std::array<float, 6> dst; nvgTransformRotate(dst.data(), a); return dst; }
+inline std::array<float, 6> nvgcpp_TransformSkewX(float a) { std::array<float, 6> dst; nvgTransformSkewX(dst.data(), a); return dst; }
+inline std::array<float, 6> nvgcpp_TransformSkewY(float a) { std::array<float, 6> dst; nvgTransformSkewY(dst.data(), a); return dst; }
 // dst = dst * src
-inline std::array<float, 6> nvgTransformMultiply(std::array<float, 6> dst, const std::array<float, 6>& src) { nvgTransformMultiply(dst.data(), src.data()); return dst; }
+inline std::array<float, 6> nvgcpp_TransformMultiply(std::array<float, 6> dst, const std::array<float, 6>& src) { nvgTransformMultiply(dst.data(), src.data()); return dst; }
 // dst = src * dst
-inline std::array<float, 6> nvgTransformPremultiply(std::array<float, 6> dst, const std::array<float, 6>& src) { nvgTransformPremultiply(dst.data(), src.data()); return dst; }
+inline std::array<float, 6> nvgcpp_TransformPremultiply(std::array<float, 6> dst, const std::array<float, 6>& src) { nvgTransformPremultiply(dst.data(), src.data()); return dst; }
 // The inverse of src, or nullopt when src is singular
-inline std::optional<std::array<float, 6>> nvgTransformInverse(const std::array<float, 6>& src) { std::array<float, 6> dst; if (!nvgTransformInverse(dst.data(), src.data())) return std::nullopt; return dst; }
+inline std::optional<std::array<float, 6>> nvgcpp_TransformInverse(const std::array<float, 6>& src) { std::array<float, 6> dst; if (!nvgTransformInverse(dst.data(), src.data())) return std::nullopt; return dst; }
 // The point (srcx, srcy) transformed by xform
-inline ImVec2 nvgTransformPoint(const std::array<float, 6>& xform, float srcx, float srcy) { ImVec2 r; nvgTransformPoint(&r.x, &r.y, xform.data(), srcx, srcy); return r; }
+inline ImVec2 nvgcpp_TransformPoint(const std::array<float, 6>& xform, float srcx, float srcy) { ImVec2 r; nvgTransformPoint(&r.x, &r.y, xform.data(), srcx, srcy); return r; }
 
 namespace NvgImgui
 {

@@ -8,6 +8,10 @@ on:
 
 # https://sdk.lunarg.com/sdk/download/1.3.268.0/windows/VulkanSDK-1.3.268.0-Installer.exe
 
+# The token reads only; a job that publishes asks for more
+permissions:
+  contents: read
+
 jobs:
   build:
     name: Vulkan

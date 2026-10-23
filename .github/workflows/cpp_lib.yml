@@ -9,6 +9,10 @@ on:
 env:
   MACOSX_DEPLOYMENT_TARGET: "11.0"
 
+# The token reads only; a job that publishes asks for more
+permissions:
+  contents: read
+
 jobs:
   build:
     name: CppLib (${{ matrix.platform }}${{ matrix.fetch_opencv && ', OpenCV' || '' }})

@@ -16,6 +16,10 @@ concurrency:
   group: cf-pages-deploy
   cancel-in-progress: false
 
+# The token reads only; a job that publishes asks for more
+permissions:
+  contents: read
+
 jobs:
   build:
     name: "Build Cloudflare Pages deploy"

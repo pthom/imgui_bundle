@@ -738,43 +738,43 @@ void py_init_module_nanovg(nb::module_& m)
     //
 
     m.def("current_transform",
-        nvgCurrentTransform, nb::arg("ctx"));
+        nvgcpp_CurrentTransform, nb::arg("ctx"));
 
     m.def("transform_identity",
-        nvgTransformIdentity);
+        nvgcpp_TransformIdentity);
 
     m.def("transform_translate",
-        nvgTransformTranslate, nb::arg("tx"), nb::arg("ty"));
+        nvgcpp_TransformTranslate, nb::arg("tx"), nb::arg("ty"));
 
     m.def("transform_scale",
-        nvgTransformScale, nb::arg("sx"), nb::arg("sy"));
+        nvgcpp_TransformScale, nb::arg("sx"), nb::arg("sy"));
 
     m.def("transform_rotate",
-        nvgTransformRotate, nb::arg("a"));
+        nvgcpp_TransformRotate, nb::arg("a"));
 
     m.def("transform_skew_x",
-        nvgTransformSkewX, nb::arg("a"));
+        nvgcpp_TransformSkewX, nb::arg("a"));
 
     m.def("transform_skew_y",
-        nvgTransformSkewY, nb::arg("a"));
+        nvgcpp_TransformSkewY, nb::arg("a"));
 
     m.def("transform_multiply",
-        nvgTransformMultiply,
+        nvgcpp_TransformMultiply,
         nb::arg("dst"), nb::arg("src"),
         "dst = dst * src");
 
     m.def("transform_premultiply",
-        nvgTransformPremultiply,
+        nvgcpp_TransformPremultiply,
         nb::arg("dst"), nb::arg("src"),
         "dst = src * dst");
 
     m.def("transform_inverse",
-        nvgTransformInverse,
+        nvgcpp_TransformInverse,
         nb::arg("src"),
         "The inverse of src, or nullopt when src is singular");
 
     m.def("transform_point",
-        nvgTransformPoint,
+        nvgcpp_TransformPoint,
         nb::arg("xform"), nb::arg("srcx"), nb::arg("srcy"),
         "The point (srcx, srcy) transformed by xform");
     // #endif
