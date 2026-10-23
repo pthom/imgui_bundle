@@ -18,7 +18,7 @@ import enum
 import numpy as np
 from typing import Any, Callable, Tuple, List, Optional, overload
 
-from imgui_bundle.imgui import ImVec4Like
+from imgui_bundle.imgui import ImVec2, ImVec4Like
 from imgui_bundle.imgui import ImTextureID
 
 
@@ -562,77 +562,20 @@ def scale(ctx: Context, x: float, y: float) -> None:
     """ Scales the current coordinate system."""
     pass
 
-# void nvgCurrentTransform(NVGcontext* ctx, float* xform);    /* original C++ signature */
-def current_transform(ctx: Context, xform: float) -> None:
-    """ Stores the top part (a-f) of the current transformation matrix in to the specified buffer.
-       [a c e]
-       [b d f]
-       [0 0 1]
-     There should be space for 6 floats in the return buffer for the values a-f.
-    """
-    pass
 
 
 # The following functions can be used to make calculations on 2x3 transformation matrices.
 # A 2x3 matrix is represented as float[6].
 
-# void nvgTransformIdentity(float* dst);    /* original C++ signature */
-def transform_identity(dst: float) -> None:
-    """ Sets the transform to identity matrix."""
-    pass
 
-# void nvgTransformTranslate(float* dst, float tx, float ty);    /* original C++ signature */
-def transform_translate(dst: float, tx: float, ty: float) -> None:
-    """ Sets the transform to translation matrix matrix."""
-    pass
 
-# void nvgTransformScale(float* dst, float sx, float sy);    /* original C++ signature */
-def transform_scale(dst: float, sx: float, sy: float) -> None:
-    """ Sets the transform to scale matrix."""
-    pass
 
-# void nvgTransformRotate(float* dst, float a);    /* original C++ signature */
-def transform_rotate(dst: float, a: float) -> None:
-    """ Sets the transform to rotate matrix. Angle is specified in radians."""
-    pass
 
-# void nvgTransformSkewX(float* dst, float a);    /* original C++ signature */
-def transform_skew_x(dst: float, a: float) -> None:
-    """ Sets the transform to skew-x matrix. Angle is specified in radians."""
-    pass
 
-# void nvgTransformSkewY(float* dst, float a);    /* original C++ signature */
-def transform_skew_y(dst: float, a: float) -> None:
-    """ Sets the transform to skew-y matrix. Angle is specified in radians."""
-    pass
 
-# void nvgTransformMultiply(float* dst, const float* src);    /* original C++ signature */
-def transform_multiply(dst: float, src: float) -> None:
-    """ Sets the transform to the result of multiplication of two transforms, of A = A*B."""
-    pass
 
-# void nvgTransformPremultiply(float* dst, const float* src);    /* original C++ signature */
-def transform_premultiply(dst: float, src: float) -> None:
-    """ Sets the transform to the result of multiplication of two transforms, of A = B*A."""
-    pass
 
-# int nvgTransformInverse(float* dst, const float* src);    /* original C++ signature */
-def transform_inverse(dst: float, src: float) -> int:
-    """ Sets the destination to inverse of specified transform.
-     Returns 1 if the inverse could be calculated, else 0.
-    """
-    pass
 
-# void nvgTransformPoint(float* dstx, float* dsty, const float* xform, float srcx, float srcy);    /* original C++ signature */
-def transform_point(
-    dstx: float,
-    dsty: float,
-    xform: float,
-    srcx: float,
-    srcy: float
-    ) -> None:
-    """ Transform a point by given transform."""
-    pass
 
 # Converts degrees to radians and vice versa.
 # float nvgDegToRad(float deg);    /* original C++ signature */
@@ -656,30 +599,8 @@ def create_image(ctx: Context, filename: str, image_flags: int) -> int:
     """
     pass
 
-# int nvgCreateImageMem(NVGcontext* ctx, int imageFlags, unsigned char* data, int ndata);    /* original C++ signature */
-def create_image_mem(ctx: Context, image_flags: int, data: UChar, ndata: int) -> int:
-    """ Creates image by loading it from the specified chunk of memory.
-     Returns handle to the image.
-    """
-    pass
 
-# int nvgCreateImageRGBA(NVGcontext* ctx, int w, int h, int imageFlags, const unsigned char* data);    /* original C++ signature */
-def create_image_rgba(
-    ctx: Context,
-    w: int,
-    h: int,
-    image_flags: int,
-    data: UChar
-    ) -> int:
-    """ Creates image from specified image data.
-     Returns handle to the image.
-    """
-    pass
 
-# void nvgUpdateImage(NVGcontext* ctx, int image, const unsigned char* data);    /* original C++ signature */
-def update_image(ctx: Context, image: int, data: UChar) -> None:
-    """ Updates image data specified by image handle."""
-    pass
 
 
 # void nvgDeleteImage(NVGcontext* ctx, int image);    /* original C++ signature */
@@ -986,30 +907,7 @@ def create_font_at_index(
     """ fontIndex specifies which font face to load from a .ttf/.ttc file."""
     pass
 
-# int nvgCreateFontMem(NVGcontext* ctx, const char* name, unsigned char* data, int ndata, int freeData);    /* original C++ signature */
-def create_font_mem(
-    ctx: Context,
-    name: str,
-    data: UChar,
-    ndata: int,
-    free_data: int
-    ) -> int:
-    """ Creates font by loading it from the specified memory chunk.
-     Returns handle to the font.
-    """
-    pass
 
-# int nvgCreateFontMemAtIndex(NVGcontext* ctx, const char* name, unsigned char* data, int ndata, int freeData, const int fontIndex);    /* original C++ signature */
-def create_font_mem_at_index(
-    ctx: Context,
-    name: str,
-    data: UChar,
-    ndata: int,
-    free_data: int,
-    font_index: int
-    ) -> int:
-    """ fontIndex specifies which font face to load from a .ttf/.ttc file."""
-    pass
 
 # int nvgFindFont(NVGcontext* ctx, const char* name);    /* original C++ signature */
 def find_font(ctx: Context, name: str) -> int:
@@ -1188,6 +1086,46 @@ def debug_dump_path_cache(ctx: Context) -> None:
 
 
 
+
+# The 2x3 transforms for Python: a std::array<float, 6> in place of nanovg's float* (which would bind as one number).
+# These overloads keep the C names; the functions that take float* are not bound.
+# inline std::array<float, 6> nvgCurrentTransform(NVGcontext* ctx);    /* original C++ signature */
+def current_transform(ctx: Context) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformIdentity();    /* original C++ signature */
+def transform_identity() -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformTranslate(float tx, float ty);    /* original C++ signature */
+def transform_translate(tx: float, ty: float) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformScale(float sx, float sy);    /* original C++ signature */
+def transform_scale(sx: float, sy: float) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformRotate(float a);    /* original C++ signature */
+def transform_rotate(a: float) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformSkewX(float a);    /* original C++ signature */
+def transform_skew_x(a: float) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformSkewY(float a);    /* original C++ signature */
+def transform_skew_y(a: float) -> List[float]:
+    pass
+# inline std::array<float, 6> nvgTransformMultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
+def transform_multiply(dst: List[float], src: List[float]) -> List[float]:
+    """ dst = dst * src"""
+    pass
+# inline std::array<float, 6> nvgTransformPremultiply(std::array<float, 6> dst, const std::array<float, 6>& src);    /* original C++ signature */
+def transform_premultiply(dst: List[float], src: List[float]) -> List[float]:
+    """ dst = src * dst"""
+    pass
+# inline std::optional<std::array<float, 6>> nvgTransformInverse(const std::array<float, 6>& src);    /* original C++ signature */
+def transform_inverse(src: List[float]) -> Optional[List[float]]:
+    """ The inverse of src, or nullopt when src is singular"""
+    pass
+# inline ImVec2 nvgTransformPoint(const std::array<float, 6>& xform, float srcx, float srcy);    /* original C++ signature */
+def transform_point(xform: List[float], srcx: float, srcy: float) -> ImVec2:
+    """ The point (srcx, srcy) transformed by xform"""
+    pass
 
 
 # #endif

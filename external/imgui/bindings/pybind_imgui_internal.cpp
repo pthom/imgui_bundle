@@ -149,12 +149,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("im_text_init_classifiers",
         ImTextInitClassifiers);
 
-    m.def("im_text_classifier_clear",
-        ImTextClassifierClear, nb::arg("bits"), nb::arg("codepoint_min"), nb::arg("codepoint_end"), nb::arg("char_class"));
-
-    m.def("im_text_classifier_set_char_class",
-        ImTextClassifierSetCharClass, nb::arg("bits"), nb::arg("codepoint_min"), nb::arg("codepoint_end"), nb::arg("char_class"), nb::arg("c"));
-
     m.def("im_min",
         [](int lhs, int rhs) -> int
         {
@@ -639,31 +633,6 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImBitArrayGetStorageSizeInBytes,
         nb::arg("bitcount"),
         "(private API)");
-
-    m.def("im_bit_array_clear_all_bits",
-        ImBitArrayClearAllBits,
-        nb::arg("arr"), nb::arg("bitcount"),
-        "(private API)");
-
-    m.def("im_bit_array_test_bit",
-        ImBitArrayTestBit,
-        nb::arg("arr"), nb::arg("n"),
-        "(private API)");
-
-    m.def("im_bit_array_clear_bit",
-        ImBitArrayClearBit,
-        nb::arg("arr"), nb::arg("n"),
-        "(private API)");
-
-    m.def("im_bit_array_set_bit",
-        ImBitArraySetBit,
-        nb::arg("arr"), nb::arg("n"),
-        "(private API)");
-
-    m.def("im_bit_array_set_bit_range",
-        ImBitArraySetBitRange,
-        nb::arg("arr"), nb::arg("n"), nb::arg("n2"),
-        "(private API)\n\n// Works on range [n..n2)");
 
 
     auto pyClassImBitVector =
@@ -5228,12 +5197,6 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("color_tooltip",
         ImGui::ColorTooltip, nb::arg("text"), nb::arg("col"), nb::arg("flags"));
 
-    m.def("color_edit_options_popup",
-        nb::overload_cast<const float *, ImGuiColorEditFlags>(ImGui::ColorEditOptionsPopup), nb::arg("col"), nb::arg("flags"));
-
-    m.def("color_picker_options_popup",
-        nb::overload_cast<const float *, ImGuiColorEditFlags>(ImGui::ColorPickerOptionsPopup), nb::arg("ref_col"), nb::arg("flags"));
-
     m.def("set_next_item_color_marker",
         ImGui::SetNextItemColorMarker,
         nb::arg("col"),
@@ -5616,9 +5579,6 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_font_atlas_update_draw_lists_shared_data",
         nb::overload_cast<ImFontAtlas *>(ImFontAtlasUpdateDrawListsSharedData), nb::arg("atlas"));
-
-    m.def("im_font_atlas_texture_block_convert",
-        ImFontAtlasTextureBlockConvert, nb::arg("src_pixels"), nb::arg("src_fmt"), nb::arg("src_pitch"), nb::arg("dst_pixels"), nb::arg("dst_fmt"), nb::arg("dst_pitch"), nb::arg("w"), nb::arg("h"));
 
     m.def("im_font_atlas_texture_block_post_process",
         ImFontAtlasTextureBlockPostProcess, nb::arg("data"));

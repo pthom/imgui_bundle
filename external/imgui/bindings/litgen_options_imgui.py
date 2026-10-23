@@ -213,6 +213,12 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"^ImFormat",
             r"^ImParseFormat",
             r"^ImFontAtlasBuild",
+            # A C array passed as a pointer binds as one number: C++ would read or write past a stack variable
+            r"^ImTextClassifier",
+            r"^ImBitArray(ClearAllBits|TestBit|ClearBit|SetBit|SetBitRange)$",
+            r"^ColorEditOptionsPopup$",
+            r"^ColorPickerOptionsPopup$",
+            r"^ImFontAtlasTextureBlockConvert$",
             r"^ImText\w*To",
             r"^ImText\w*From",
             # They take or return other pointers into the text, which a Python string cannot hold

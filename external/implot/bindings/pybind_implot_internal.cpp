@@ -110,11 +110,6 @@ void py_init_module_implot_internal(nb::module_& m)
         nb::arg("a"), nb::arg("b"), nb::arg("s"),
         " Mix color a and b by factor s in [0 256]\n(private API)");
 
-    m.def("im_lerp_u32",
-        ImLerpU32,
-        nb::arg("colors"), nb::arg("size"), nb::arg("t"),
-        " Lerp across an array of 32-bit colors given t in [0.0 1.0]\n(private API)");
-
     m.def("im_alpha_u32",
         ImAlphaU32,
         nb::arg("col"), nb::arg("alpha"),
@@ -1274,11 +1269,6 @@ void py_init_module_implot_internal(nb::module_& m)
         ImPlot::SampleColormapU32,
         nb::arg("t"), nb::arg("cmap"),
         "Linearly interpolates a color from the current colormap given t between 0 and 1.");
-
-    m.def("render_color_bar",
-        ImPlot::RenderColorBar,
-        nb::arg("colors"), nb::arg("size"), nb::arg("draw_list"), nb::arg("bounds"), nb::arg("vert"), nb::arg("reversed"), nb::arg("continuous"),
-        "Render a colormap bar");
 
     m.def("nice_num",
         ImPlot::NiceNum,

@@ -433,61 +433,6 @@ void py_init_module_nanovg(nb::module_& m)
         nb::arg("ctx"), nb::arg("x"), nb::arg("y"),
         "Scales the current coordinate system.");
 
-    m.def("current_transform",
-        nvgCurrentTransform,
-        nb::arg("ctx"), nb::arg("xform"),
-        " Stores the top part (a-f) of the current transformation matrix in to the specified buffer.\n   [a c e]\n   [b d f]\n   [0 0 1]\n There should be space for 6 floats in the return buffer for the values a-f.");
-
-    m.def("transform_identity",
-        nvgTransformIdentity,
-        nb::arg("dst"),
-        "Sets the transform to identity matrix.");
-
-    m.def("transform_translate",
-        nvgTransformTranslate,
-        nb::arg("dst"), nb::arg("tx"), nb::arg("ty"),
-        "Sets the transform to translation matrix matrix.");
-
-    m.def("transform_scale",
-        nvgTransformScale,
-        nb::arg("dst"), nb::arg("sx"), nb::arg("sy"),
-        "Sets the transform to scale matrix.");
-
-    m.def("transform_rotate",
-        nvgTransformRotate,
-        nb::arg("dst"), nb::arg("a"),
-        "Sets the transform to rotate matrix. Angle is specified in radians.");
-
-    m.def("transform_skew_x",
-        nvgTransformSkewX,
-        nb::arg("dst"), nb::arg("a"),
-        "Sets the transform to skew-x matrix. Angle is specified in radians.");
-
-    m.def("transform_skew_y",
-        nvgTransformSkewY,
-        nb::arg("dst"), nb::arg("a"),
-        "Sets the transform to skew-y matrix. Angle is specified in radians.");
-
-    m.def("transform_multiply",
-        nvgTransformMultiply,
-        nb::arg("dst"), nb::arg("src"),
-        "Sets the transform to the result of multiplication of two transforms, of A = A*B.");
-
-    m.def("transform_premultiply",
-        nvgTransformPremultiply,
-        nb::arg("dst"), nb::arg("src"),
-        "Sets the transform to the result of multiplication of two transforms, of A = B*A.");
-
-    m.def("transform_inverse",
-        nvgTransformInverse,
-        nb::arg("dst"), nb::arg("src"),
-        " Sets the destination to inverse of specified transform.\n Returns 1 if the inverse could be calculated, else 0.");
-
-    m.def("transform_point",
-        nvgTransformPoint,
-        nb::arg("dstx"), nb::arg("dsty"), nb::arg("xform"), nb::arg("srcx"), nb::arg("srcy"),
-        "Transform a point by given transform.");
-
     m.def("deg_to_rad",
         nvgDegToRad, nb::arg("deg"));
 
@@ -498,21 +443,6 @@ void py_init_module_nanovg(nb::module_& m)
         nvgCreateImage,
         nb::arg("ctx"), nb::arg("filename"), nb::arg("image_flags"),
         " Creates image by loading it from the disk from specified file name.\n Returns handle to the image.");
-
-    m.def("create_image_mem",
-        nvgCreateImageMem,
-        nb::arg("ctx"), nb::arg("image_flags"), nb::arg("data"), nb::arg("ndata"),
-        " Creates image by loading it from the specified chunk of memory.\n Returns handle to the image.");
-
-    m.def("create_image_rgba",
-        nvgCreateImageRGBA,
-        nb::arg("ctx"), nb::arg("w"), nb::arg("h"), nb::arg("image_flags"), nb::arg("data"),
-        " Creates image from specified image data.\n Returns handle to the image.");
-
-    m.def("update_image",
-        nvgUpdateImage,
-        nb::arg("ctx"), nb::arg("image"), nb::arg("data"),
-        "Updates image data specified by image handle.");
 
     m.def("delete_image",
         nvgDeleteImage,
@@ -642,16 +572,6 @@ void py_init_module_nanovg(nb::module_& m)
     m.def("create_font_at_index",
         nvgCreateFontAtIndex,
         nb::arg("ctx"), nb::arg("name"), nb::arg("filename"), nb::arg("font_index"),
-        "fontIndex specifies which font face to load from a .ttf/.ttc file.");
-
-    m.def("create_font_mem",
-        nvgCreateFontMem,
-        nb::arg("ctx"), nb::arg("name"), nb::arg("data"), nb::arg("ndata"), nb::arg("free_data"),
-        " Creates font by loading it from the specified memory chunk.\n Returns handle to the font.");
-
-    m.def("create_font_mem_at_index",
-        nvgCreateFontMemAtIndex,
-        nb::arg("ctx"), nb::arg("name"), nb::arg("data"), nb::arg("ndata"), nb::arg("free_data"), nb::arg("font_index"),
         "fontIndex specifies which font face to load from a .ttf/.ttc file.");
 
     m.def("find_font",
@@ -816,6 +736,47 @@ void py_init_module_nanovg(nb::module_& m)
     ////////////////////    <generated_from:nvg_imgui.h>    ////////////////////
     // #ifdef IMGUI_BUNDLE_WITH_NANOVG
     //
+
+    m.def("current_transform",
+        nvgCurrentTransform, nb::arg("ctx"));
+
+    m.def("transform_identity",
+        nvgTransformIdentity);
+
+    m.def("transform_translate",
+        nvgTransformTranslate, nb::arg("tx"), nb::arg("ty"));
+
+    m.def("transform_scale",
+        nvgTransformScale, nb::arg("sx"), nb::arg("sy"));
+
+    m.def("transform_rotate",
+        nvgTransformRotate, nb::arg("a"));
+
+    m.def("transform_skew_x",
+        nvgTransformSkewX, nb::arg("a"));
+
+    m.def("transform_skew_y",
+        nvgTransformSkewY, nb::arg("a"));
+
+    m.def("transform_multiply",
+        nvgTransformMultiply,
+        nb::arg("dst"), nb::arg("src"),
+        "dst = dst * src");
+
+    m.def("transform_premultiply",
+        nvgTransformPremultiply,
+        nb::arg("dst"), nb::arg("src"),
+        "dst = src * dst");
+
+    m.def("transform_inverse",
+        nvgTransformInverse,
+        nb::arg("src"),
+        "The inverse of src, or nullopt when src is singular");
+
+    m.def("transform_point",
+        nvgTransformPoint,
+        nb::arg("xform"), nb::arg("srcx"), nb::arg("srcy"),
+        "The point (srcx, srcy) transformed by xform");
     // #endif
 
     { // <namespace NvgImgui>

@@ -511,16 +511,6 @@ class ImWcharClass(enum.IntFlag):
 def im_text_init_classifiers() -> None:
     pass
 
-# IMGUI_API void          ImTextClassifierClear(ImU32* bits, unsigned int codepoint_min, unsigned int codepoint_end, ImWcharClass char_class);    /* original C++ signature */
-def im_text_classifier_clear(bits: ImU32, codepoint_min: int, codepoint_end: int, char_class: ImWcharClass) -> None:
-    pass
-
-# IMGUI_API void          ImTextClassifierSetCharClass(ImU32* bits, unsigned int codepoint_min, unsigned int codepoint_end, ImWcharClass char_class, unsigned int c);    /* original C++ signature */
-def im_text_classifier_set_char_class(
-    bits: ImU32, codepoint_min: int, codepoint_end: int, char_class: ImWcharClass, c: int
-) -> None:
-    pass
-
 # Helpers: File System
 
 # - Wrapper for standard libs functions. (Note that imgui_demo.cpp does _not_ use them to keep the code easy to copy)
@@ -986,34 +976,6 @@ class ImRect:
 # inline size_t   ImBitArrayGetStorageSizeInBytes(int bitcount);    /* original C++ signature */
 def im_bit_array_get_storage_size_in_bytes(bitcount: int) -> int:
     """(private API)"""
-    pass
-
-# inline void     ImBitArrayClearAllBits(ImU32* arr, int bitcount);    /* original C++ signature */
-def im_bit_array_clear_all_bits(arr: ImU32, bitcount: int) -> None:
-    """(private API)"""
-    pass
-
-# inline bool     ImBitArrayTestBit(const ImU32* arr, int n);    /* original C++ signature */
-def im_bit_array_test_bit(arr: ImU32, n: int) -> bool:
-    """(private API)"""
-    pass
-
-# inline void     ImBitArrayClearBit(ImU32* arr, int n);    /* original C++ signature */
-def im_bit_array_clear_bit(arr: ImU32, n: int) -> None:
-    """(private API)"""
-    pass
-
-# inline void     ImBitArraySetBit(ImU32* arr, int n);    /* original C++ signature */
-def im_bit_array_set_bit(arr: ImU32, n: int) -> None:
-    """(private API)"""
-    pass
-
-# inline void     ImBitArraySetBitRange(ImU32* arr, int n, int n2) // Works on range [n..n2);    /* original C++ signature */
-def im_bit_array_set_bit_range(arr: ImU32, n: int, n2: int) -> None:
-    """(private API)
-
-    // Works on range [n..n2)
-    """
     pass
 
 # struct ImBitVector    /* original C++ signature */
@@ -8022,14 +7984,6 @@ def is_item_active_as_input_text() -> bool:
 def color_tooltip(text: str, col: float, flags: ColorEditFlags) -> None:
     pass
 
-# IMGUI_API void          ColorEditOptionsPopup(const float* col, ImGuiColorEditFlags flags);    /* original C++ signature */
-def color_edit_options_popup(col: float, flags: ColorEditFlags) -> None:
-    pass
-
-# IMGUI_API void          ColorPickerOptionsPopup(const float* ref_col, ImGuiColorEditFlags flags);    /* original C++ signature */
-def color_picker_options_popup(ref_col: float, flags: ColorEditFlags) -> None:
-    pass
-
 # inline void             SetNextItemColorMarker(ImU32 col);    /* original C++ signature */
 def set_next_item_color_marker(col: ImU32) -> None:
     """(private API)"""
@@ -8584,19 +8538,6 @@ def im_font_atlas_update_draw_lists_textures(atlas: ImFontAtlas, old_tex: ImText
 
 # IMGUI_API void              ImFontAtlasUpdateDrawListsSharedData(ImFontAtlas* atlas);    /* original C++ signature */
 def im_font_atlas_update_draw_lists_shared_data(atlas: ImFontAtlas) -> None:
-    pass
-
-# IMGUI_API void              ImFontAtlasTextureBlockConvert(const uchar* src_pixels, ImTextureFormat src_fmt, int src_pitch, uchar* dst_pixels, ImTextureFormat dst_fmt, int dst_pitch, int w, int h);    /* original C++ signature */
-def im_font_atlas_texture_block_convert(
-    src_pixels: uchar,
-    src_fmt: ImTextureFormat,
-    src_pitch: int,
-    dst_pixels: uchar,
-    dst_fmt: ImTextureFormat,
-    dst_pitch: int,
-    w: int,
-    h: int,
-) -> None:
     pass
 
 # IMGUI_API void              ImFontAtlasTextureBlockPostProcess(ImFontAtlasPostProcessData* data);    /* original C++ signature */

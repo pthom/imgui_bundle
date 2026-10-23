@@ -40,6 +40,9 @@ def main() -> None:
 
     # The entire nvgText API is oriented around C style strings, and needs adaptations
     options.fn_exclude_by_name__regex = r"^nvgText|^nvgImageSize$"
+    # A C array passed as a pointer (the transforms' float*, the images' bytes) binds as one number: C++ would
+    # read or write past a stack variable. The transforms have overloads for Python in nvg_imgui.h.
+    options.fn_exclude_by_param_type__regex = r"\bfloat\s*\*|\bunsigned char\s*\*"
 
     for letter in string.ascii_lowercase:
         options.type_replacements.add_last_replacement(

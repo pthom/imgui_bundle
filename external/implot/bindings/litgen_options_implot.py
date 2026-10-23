@@ -89,6 +89,9 @@ def litgen_options_implot() -> LitgenOptions:
             # void SetupAxisTicks(ImAxis idx, const double* values, int n_ticks, const char* const labels[], bool show_default)
             #                                                            ^                           ^
             "SetupAxisTicks",
+            # A C array passed as a pointer (const ImU32* colors) binds as one number: C++ would read past it
+            "^ImLerpU32$",
+            "^RenderColorBar$",
             # IMPLOT_API ImPlotColormap AddColormap(const char* name, const ImU32*  cols, int size, bool qual=true);
             # (This API is a bit exotic, and cannot be bound automatically)
             "^AddColormap$",

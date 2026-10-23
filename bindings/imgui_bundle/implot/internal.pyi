@@ -206,12 +206,6 @@ def im_mix_u32(a: ImU32, b: ImU32, s: ImU32) -> ImU32:
     """
     pass
 
-# static inline ImU32 ImLerpU32(const ImU32* colors, int size, float t);    /* original C++ signature */
-def im_lerp_u32(colors: ImU32, size: int, t: float) -> ImU32:
-    """ Lerp across an array of 32-bit colors given t in [0.0 1.0]
-    (private API)
-    """
-    pass
 
 # static inline ImU32 ImAlphaU32(ImU32 col, float alpha);    /* original C++ signature */
 def im_alpha_u32(col: ImU32, alpha: float) -> ImU32:
@@ -1660,10 +1654,6 @@ def sample_colormap_u32(t: float, cmap: Colormap) -> ImU32:
     """ Linearly interpolates a color from the current colormap given t between 0 and 1."""
     pass
 
-# IMPLOT_API void RenderColorBar(const ImU32* colors, int size, ImDrawList& DrawList, const ImRect& bounds, bool vert, bool reversed, bool continuous);    /* original C++ signature */
-def render_color_bar(colors: ImU32, size: int, draw_list: ImDrawList, bounds: ImRect, vert: bool, reversed: bool, continuous: bool) -> None:
-    """ Render a colormap bar"""
-    pass
 
 # Render Horizontal/Vertical lines
 
