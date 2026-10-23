@@ -1340,6 +1340,7 @@ namespace pfd
                 command.push_back("--separate-output");
             }
 
+            command.push_back("--");  // a default_path that starts with - is a path, not an option
             command.push_back(default_path);
 
             std::string filter;
