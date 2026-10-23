@@ -21,7 +21,7 @@ RUN apt-get install -y x11vnc xvfb icewm
 RUN mkdir ~/.vnc &&\
     x11vnc -storepasswd xxx ~/.vnc/passwd &&\
     echo 'export DISPLAY=:0' >> ~/.bashrc &&\
-    echo "Xvfb -screen 0 1280x1024x16 & sleep 1 && icewm & x11vnc -forever  -ncache 10" > /start_x_vnc.sh &&\
+    echo "Xvfb -screen 0 1280x1024x16 & sleep 1 && icewm & x11vnc -forever -ncache 10 -rfbauth ~/.vnc/passwd" > /start_x_vnc.sh &&\
     chmod +x /start_x_vnc.sh && \
     apt-get install -y libglapi-mesa
 

@@ -55,7 +55,7 @@ def rm_image():
 
 def create_container():
     run_local_command(
-        f"docker run --name {DOCKER_CONTAINER_NAME} -p {VNC_PORT}:{VNC_PORT} -it -d -v {REPO_DIR}:{SOURCES_MOUNT_DIR} {DOCKER_IMAGE_NAME}  /bin/bash"
+        f"docker run --name {DOCKER_CONTAINER_NAME} -p 127.0.0.1:{VNC_PORT}:{VNC_PORT} -it -d -v {REPO_DIR}:{SOURCES_MOUNT_DIR} {DOCKER_IMAGE_NAME}  /bin/bash"
     )
 
 
