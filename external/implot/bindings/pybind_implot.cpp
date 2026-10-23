@@ -1168,6 +1168,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_line: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1366,6 +1369,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_scatter: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1480,6 +1486,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * szs_from_pyarray = szs.data();
                 size_t szs_count = szs.shape(0);
+                // values and szs share the same count
+                if (szs_count != values_count)
+                    throw std::runtime_error("plot_bubbles: values and szs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1594,6 +1603,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_bubbles: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (szs.ndim() != 1 || (szs.shape(0) > 1 && szs.stride(0) != 1))
@@ -1602,6 +1614,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * szs_from_pyarray = szs.data();
                 size_t szs_count = szs.shape(0);
+                // ys and szs share the same count
+                if (szs_count != ys_count)
+                    throw std::runtime_error("plot_bubbles: ys and szs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1724,6 +1739,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_polygon: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1922,6 +1940,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_stairs: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -2120,6 +2141,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_shaded: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -2234,6 +2258,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys1_from_pyarray = ys1.data();
                 size_t ys1_count = ys1.shape(0);
+                // xs and ys1 share the same count
+                if (ys1_count != xs_count)
+                    throw std::runtime_error("plot_shaded: xs and ys1 must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (ys2.ndim() != 1 || (ys2.shape(0) > 1 && ys2.stride(0) != 1))
@@ -2242,6 +2269,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys2_from_pyarray = ys2.data();
                 size_t ys2_count = ys2.shape(0);
+                // ys1 and ys2 share the same count
+                if (ys2_count != ys1_count)
+                    throw std::runtime_error("plot_shaded: ys1 and ys2 must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -2448,6 +2478,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_bars: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -2650,6 +2683,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_error_bars: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (err.ndim() != 1 || (err.shape(0) > 1 && err.stride(0) != 1))
@@ -2658,6 +2694,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * err_from_pyarray = err.data();
                 size_t err_count = err.shape(0);
+                // ys and err share the same count
+                if (err_count != ys_count)
+                    throw std::runtime_error("plot_error_bars: ys and err must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -2780,6 +2819,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_error_bars: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (neg.ndim() != 1 || (neg.shape(0) > 1 && neg.stride(0) != 1))
@@ -2788,6 +2830,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * neg_from_pyarray = neg.data();
                 size_t neg_count = neg.shape(0);
+                // ys and neg share the same count
+                if (neg_count != ys_count)
+                    throw std::runtime_error("plot_error_bars: ys and neg must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (pos.ndim() != 1 || (pos.shape(0) > 1 && pos.stride(0) != 1))
@@ -2796,6 +2841,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * pos_from_pyarray = pos.data();
                 size_t pos_count = pos.shape(0);
+                // neg and pos share the same count
+                if (pos_count != neg_count)
+                    throw std::runtime_error("plot_error_bars: neg and pos must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -3010,6 +3058,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_stems: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -3272,6 +3323,8 @@ void py_init_module_implot(nb::module_& m)
                 label_ids_ptrs.reserve(label_ids.size());
                 for (const auto& v: label_ids)
                     label_ids_ptrs.push_back(v.c_str());
+                if (label_ids.size() != static_cast<size_t>(values.shape(0)))
+                    throw std::runtime_error("plot_pie_chart: label_ids and values must have the same length");
 
                 PlotPieChart_adapt_mutable_param_with_default_value(label_ids_ptrs.data(), values, x, y, radius, label_fmt, angle0, spec);
             };
@@ -3393,6 +3446,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_histogram_2d: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -3515,6 +3571,9 @@ void py_init_module_implot(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_digital: xs and ys must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;

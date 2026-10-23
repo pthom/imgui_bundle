@@ -731,6 +731,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_scatter: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (zs.ndim() != 1 || (zs.shape(0) > 1 && zs.stride(0) != 1))
@@ -739,6 +742,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
+                // ys and zs share the same count
+                if (zs_count != ys_count)
+                    throw std::runtime_error("plot_scatter: ys and zs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -861,6 +867,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_line: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (zs.ndim() != 1 || (zs.shape(0) > 1 && zs.stride(0) != 1))
@@ -869,6 +878,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
+                // ys and zs share the same count
+                if (zs_count != ys_count)
+                    throw std::runtime_error("plot_line: ys and zs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -991,6 +1003,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_triangle: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (zs.ndim() != 1 || (zs.shape(0) > 1 && zs.stride(0) != 1))
@@ -999,6 +1014,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
+                // ys and zs share the same count
+                if (zs_count != ys_count)
+                    throw std::runtime_error("plot_triangle: ys and zs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
@@ -1121,6 +1139,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * ys_from_pyarray = ys.data();
                 size_t ys_count = ys.shape(0);
+                // xs and ys share the same count
+                if (ys_count != xs_count)
+                    throw std::runtime_error("plot_quad: xs and ys must have the same length");
 
                 // Check if the array is 1D and C-contiguous
                 if (zs.ndim() != 1 || (zs.shape(0) > 1 && zs.stride(0) != 1))
@@ -1129,6 +1150,9 @@ void py_init_module_implot3d(nb::module_& m)
                 // convert nb::ndarray to C standard buffer (const)
                 const void * zs_from_pyarray = zs.data();
                 size_t zs_count = zs.shape(0);
+                // ys and zs share the same count
+                if (zs_count != ys_count)
+                    throw std::runtime_error("plot_quad: ys and zs must have the same length");
 
                 using np_uint_l = uint64_t;
                 using np_int_l = int64_t;
