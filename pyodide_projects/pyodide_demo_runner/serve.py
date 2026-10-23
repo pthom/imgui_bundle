@@ -14,6 +14,7 @@ Then open:
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from typing import Any
+from urllib.parse import urlparse
 import argparse
 import json
 import os
@@ -36,9 +37,13 @@ class PyodideRunnerHandler(SimpleHTTPRequestHandler):
         if self._cors:
             self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
             self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-            self.send_header('Access-Control-Allow-Headers', '*')
+            # Cross-origin requests from a page served by this machine (another local port), not from any web site
+            # open in the browser
+            origin = self.headers.get('Origin', '')
+            if urlparse(origin).hostname in ('localhost', '127.0.0.1', '::1'):
+                self.send_header('Access-Control-Allow-Origin', origin)
+                self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+                self.send_header('Access-Control-Allow-Headers', '*')
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
         SimpleHTTPRequestHandler.end_headers(self)
 
@@ -103,7 +108,7 @@ def main() -> None:
     print("\n  Press Ctrl+C to stop")
     print("=" * 60)
 
-    server = HTTPServer(('', args.port), make_handler_class(not args.no_cors))
+    server = HTTPServer(('127.0.0.1', args.port), make_handler_class(not args.no_cors))  # this machine only
     try:
         server.serve_forever()
     except KeyboardInterrupt:

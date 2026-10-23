@@ -508,7 +508,7 @@ cf_serve_local:
 [group('cloudflare')]
 cf_serve_imgui_bundle_pages_landing:
     echo "http://localhost:8333"
-    cd docs/clone_website_resources/imgui_bundle_pages_landing/final && python3 -m http.server 8333
+    cd docs/clone_website_resources/imgui_bundle_pages_landing/final && python3 -m http.server 8333 --bind 127.0.0.1
 
 # The IndexNow key: its file is at the root of imgui-bundle.pages.dev (in the website resources), and in the ImGui
 # Explorer's site (website/ of pthom/imgui_explorer, kept by imex_ems_deploy.sh)

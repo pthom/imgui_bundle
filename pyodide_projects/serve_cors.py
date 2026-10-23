@@ -16,6 +16,7 @@ Example:
 
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from pathlib import Path
+from urllib.parse import urlparse
 from typing import Any
 import argparse
 import sys
@@ -33,10 +34,13 @@ class CORSRequestHandler(SimpleHTTPRequestHandler):
         self.send_header('Cross-Origin-Opener-Policy', 'same-origin')
         self.send_header('Cross-Origin-Embedder-Policy', 'require-corp')
 
-        # Allow cross-origin requests
-        self.send_header('Access-Control-Allow-Origin', '*')
-        self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
-        self.send_header('Access-Control-Allow-Headers', '*')
+        # Cross-origin requests from a page served by this machine (another local port), not from any web site open
+        # in the browser
+        origin = self.headers.get('Origin', '')
+        if urlparse(origin).hostname in ('localhost', '127.0.0.1', '::1'):
+            self.send_header('Access-Control-Allow-Origin', origin)
+            self.send_header('Access-Control-Allow-Methods', 'GET, OPTIONS')
+            self.send_header('Access-Control-Allow-Headers', '*')
 
         # Cache control for development
         self.send_header('Cache-Control', 'no-cache, no-store, must-revalidate')
@@ -109,7 +113,7 @@ Test Pages:
     print("=" * 70)
     print()
 
-    server = HTTPServer(('', args.port), CORSRequestHandler)
+    server = HTTPServer(('127.0.0.1', args.port), CORSRequestHandler)  # this machine only
 
     try:
         server.serve_forever()

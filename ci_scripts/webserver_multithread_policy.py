@@ -67,4 +67,4 @@ if __name__ == '__main__':
     globals()['COI_PREFIX'] = args.coi_prefix
     globals()['GZIP_SUFFIX'] = args.gzip_suffix
     print(f"http://localhost:{args.port}/")
-    test(CORSRequestHandler, HTTPServer, port=args.port)
+    test(CORSRequestHandler, HTTPServer, port=args.port, bind='127.0.0.1')  # this machine only
