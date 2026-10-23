@@ -88,6 +88,11 @@ jobs:
     needs: [build_wheels, build_sdist]
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
+    # Trusted publishing: PyPI accepts this workflow's identity (project settings, "Publishing"), no stored token.
+    # The `pypi` environment is the repository's: its reviewers, if any, hold the release until they approve.
+    environment: pypi
+    permissions:
+      id-token: write
 
     steps:
     - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0  # v7.1.0
@@ -101,6 +106,3 @@ jobs:
         path: dist
 
     - uses: pypa/gh-action-pypi-publish@dc37677b2e1c63e2034f94d8a5b11f265b73ba33  # v1.14.2
-      with:
-        user: __token__
-        password: ${{ secrets.pypi_password }}
