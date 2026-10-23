@@ -18,8 +18,11 @@ CREATE TABLE IF NOT EXISTS votes (
   PRIMARY KEY (point_id, voter)
 );
 
--- The rate limit of the submissions: one row per submission, with the sender's IP hashed, deleted after an hour
-CREATE TABLE IF NOT EXISTS submissions (
-  ip_hash TEXT NOT NULL,
+-- The rate limits (src/index.ts, rateLimited): one row per event, by kind ("submit", "vote", "list"...), with the
+-- sender's IP hashed, deleted after an hour. Replaces the former `submissions` table (drop it after the deploy).
+CREATE TABLE IF NOT EXISTS rate_limits (
+  kind TEXT NOT NULL,
+  sender TEXT NOT NULL,
   created TEXT NOT NULL
 );
+CREATE INDEX IF NOT EXISTS rate_limits_by_sender ON rate_limits (kind, sender);

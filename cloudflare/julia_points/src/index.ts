@@ -15,7 +15,9 @@ const MAX_NAME = 40;
 const MAX_STORY = 300;
 const MAX_AUTHOR = 40;
 const MAX_BODY = 4096; // in characters: the largest valid point is far smaller
-const SUBMISSIONS_PER_HOUR = 5; // per IP
+const SUBMISSIONS_PER_HOUR = 5; // per IP (an IPv6 /64)
+const VOTES_PER_HOUR = 30; // per IP: a voter id is any string, so the IP is what bounds the votes
+const READS_PER_HOUR = 300; // per IP: a GET reads every point, with its votes
 const VOTER_ID = /^[A-Za-z0-9-]{8,64}$/;
 
 const CORS = {
@@ -26,11 +28,13 @@ const CORS = {
 
 class BadRequest extends Error {}
 
-function json(body: unknown, status = 200): Response {
-  return Response.json(body, { status, headers: CORS });
+function json(body: unknown, status = 200, headers: Record<string, string> = {}): Response {
+  return Response.json(body, { status, headers: { ...CORS, ...headers } });
 }
 
 async function readBody(request: Request): Promise<Record<string, unknown>> {
+  const length = Number(request.headers.get("Content-Length") ?? "0");
+  if (length > 4 * MAX_BODY) throw new BadRequest("the request is too large"); // before reading it (4 bytes per character at most)
   const raw = await request.text();
   if (raw.length > MAX_BODY) throw new BadRequest("the request is too large");
   let body: unknown = null;
@@ -68,6 +72,32 @@ async function sha256(s: string): Promise<string> {
   return [...new Uint8Array(digest)].map((b) => b.toString(16).padStart(2, "0")).join("");
 }
 
+// The sender, for the rate limits: its IP, hashed; an IPv6 address by its /64 (a user has the whole block)
+async function senderKey(request: Request): Promise<string> {
+  const ip = request.headers.get("CF-Connecting-IP") ?? "";
+  const block = ip.includes(":") ? ip.split(":").slice(0, 4).join(":") : ip;
+  return sha256(block);
+}
+
+// A rate limit, reusable by any route: at most `limit` events of a `kind` ("submit", "vote"...) per sender in the
+// last hour. Counts the sender's events, and records this one when it passes; true when the sender is over the limit.
+// The events older than an hour go away as they are counted (the table stays small).
+async function rateLimited(env: Env, kind: string, sender: string, limit: number): Promise<boolean> {
+  const now = new Date();
+  const hourAgo = new Date(now.getTime() - 3600_000).toISOString();
+  await env.DB.prepare("DELETE FROM rate_limits WHERE created < ?1").bind(hourAgo).run();
+  const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM rate_limits WHERE kind = ?1 AND sender = ?2")
+    .bind(kind, sender).first<number>("n");
+  if ((recent ?? 0) >= limit) return true;
+  await env.DB.prepare("INSERT INTO rate_limits (kind, sender, created) VALUES (?1, ?2, ?3)")
+    .bind(kind, sender, now.toISOString()).run();
+  return false;
+}
+
+function tooMany(what: string, limit: number): Response {
+  return json({ error: `at most ${limit} ${what} per hour: try again later` }, 429);
+}
+
 async function isAdmin(request: Request, env: AdminEnv): Promise<boolean> {
   if (!env.ADMIN_TOKEN) return false;
   const sent = new TextEncoder().encode(request.headers.get("Authorization") ?? "");
@@ -75,14 +105,16 @@ async function isAdmin(request: Request, env: AdminEnv): Promise<boolean> {
   return sent.byteLength === expected.byteLength && crypto.subtle.timingSafeEqual(sent, expected);
 }
 
-async function listPoints(env: Env, voter: string, admin: boolean): Promise<Response> {
+async function listPoints(request: Request, env: Env, voter: string, admin: boolean): Promise<Response> {
+  if (await rateLimited(env, "list", await senderKey(request), READS_PER_HOUR)) return tooMany("reads", READS_PER_HOUR);
   const { results } = await env.DB.prepare(
     `SELECT id, name, c_re, c_im, view_width, max_iter, story, author, created, status,
             (SELECT COUNT(*) FROM votes WHERE point_id = points.id) AS votes,
             EXISTS (SELECT 1 FROM votes WHERE point_id = points.id AND voter = ?1) AS voted_by_me
      FROM points WHERE status = 'shown' OR ?2 ORDER BY created DESC LIMIT 1000`,
   ).bind(voter, admin ? 1 : 0).all<{ voted_by_me: number }>();
-  return json(results.map((point) => ({ ...point, voted_by_me: point.voted_by_me === 1 })));
+  const points = results.map((point) => ({ ...point, voted_by_me: point.voted_by_me === 1 }));
+  return json(points, 200, admin ? {} : { "Cache-Control": "public, max-age=30" }); // the edge answers the bursts
 }
 
 async function setStatus(request: Request, env: Env, pointId: number): Promise<Response> {
@@ -115,18 +147,10 @@ async function addPoint(request: Request, env: Env): Promise<Response> {
   const view_width = number(body, "view_width", (x) => x > 0 && x <= 10);
   const max_iter = number(body, "max_iter", (x) => Number.isInteger(x) && x >= 10 && x <= 250);
 
-  // The rate limit counts the submissions of the last hour, per IP
-  const ipHash = await sha256(request.headers.get("CF-Connecting-IP") ?? "");
-  const now = new Date();
-  const hourAgo = new Date(now.getTime() - 3600_000).toISOString();
-  await env.DB.prepare("DELETE FROM submissions WHERE created < ?1").bind(hourAgo).run();
-  const recent = await env.DB.prepare("SELECT COUNT(*) AS n FROM submissions WHERE ip_hash = ?1")
-    .bind(ipHash).first<number>("n");
-  if ((recent ?? 0) >= SUBMISSIONS_PER_HOUR) {
-    return json({ error: `at most ${SUBMISSIONS_PER_HOUR} points per hour: try again later` }, 429);
+  if (await rateLimited(env, "submit", await senderKey(request), SUBMISSIONS_PER_HOUR)) {
+    return tooMany("points", SUBMISSIONS_PER_HOUR);
   }
-  await env.DB.prepare("INSERT INTO submissions (ip_hash, created) VALUES (?1, ?2)")
-    .bind(ipHash, now.toISOString()).run();
+  const now = new Date();
   const id = await env.DB.prepare(
     `INSERT INTO points (name, c_re, c_im, view_width, max_iter, story, author, created)
      VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8) RETURNING id`,
@@ -141,6 +165,7 @@ async function vote(request: Request, env: Env, pointId: number): Promise<Respon
     throw new BadRequest("voter: 8 to 64 letters, digits or dashes are expected");
   }
   if (typeof body.vote !== "boolean") throw new BadRequest("vote: true or false is expected");
+  if (await rateLimited(env, "vote", await senderKey(request), VOTES_PER_HOUR)) return tooMany("votes", VOTES_PER_HOUR);
   const shown = await env.DB.prepare("SELECT 1 AS shown FROM points WHERE id = ?1 AND status = 'shown'")
     .bind(pointId).first();
   if (shown === null) return json({ error: "no such point" }, 404);
@@ -161,8 +186,13 @@ export default {
     try {
       if (path.length === 1 && path[0] === "julia_points") {
         const admin = await isAdmin(request, env);
-        if (request.method === "GET") return await listPoints(env, url.searchParams.get("voter") ?? "", admin);
+        if (request.method === "GET") {
+          return await listPoints(request, env, url.searchParams.get("voter") ?? "", admin);
+        }
         if (request.method === "POST") return await addPoint(request, env);
+      }
+      if (path.length >= 2 && path[0] === "julia_points" && !/^[0-9]{1,9}$/.test(path[1])) {
+        throw new BadRequest("the point's id is a number"); // else parseInt gives NaN, and D1 a 500
       }
       if (path.length === 2 && path[0] === "julia_points" && request.method === "DELETE") {
         if (!(await isAdmin(request, env))) return json({ error: "for the admin only" }, 403);
