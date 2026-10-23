@@ -4655,7 +4655,8 @@ void implot_binding_manual(nb::module_& m)
 
     // Add a new colormap, inputs are np.array[uint32]
     m.def("add_colormap",
-        [](const char * name, const nb::ndarray<nb::ro> & cols, bool qual=true)
+        // c_contig: a view (a slice of a colormap table) is copied by nanobind, not read with its strides ignored
+        [](const char * name, const nb::ndarray<nb::ro, nb::c_contig> & cols, bool qual=true)
         {
             const void * values_from_pyarray = cols.data();
 
@@ -4743,9 +4744,10 @@ void implot_binding_manual(nb::module_& m)
 
     // PlotHeatmap, cf https://github.com/pthom/imgui_bundle/issues/81
     m.def("plot_heatmap",
-          [](const char * label_id, const nb::ndarray<nb::ro> & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f", const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1), const ImPlotSpec &spec = ImPlotSpec())
+          // c_contig: a view (np.flipud(img), a slice) is copied by nanobind, not read with its strides ignored
+          [](const char * label_id, const nb::ndarray<nb::ro, nb::c_contig> & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f", const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1), const ImPlotSpec &spec = ImPlotSpec())
           {
-              auto PlotHeatmap_adapt_c_buffers = [](const char * label_id, const nb::ndarray<nb::ro> & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f",  const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1),  const ImPlotSpec &spec = ImPlotSpec())
+              auto PlotHeatmap_adapt_c_buffers = [](const char * label_id, const nb::ndarray<nb::ro, nb::c_contig> & values, double scale_min = 0, double scale_max=0, const char * label_fmt="%.1f",  const ImPlotPoint& bounds_min=ImPlotPoint(0,0), const ImPlotPoint& bounds_max=ImPlotPoint(1,1),  const ImPlotSpec &spec = ImPlotSpec())
               {
                   // convert nb::array to C standard buffer (const)
                   const void * values_from_pyarray = values.data();
