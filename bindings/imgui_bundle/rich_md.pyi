@@ -178,18 +178,23 @@ def set_download_function(
 #    renders the embed in the error color, with the reason as a tooltip.
 
 # std::string ResolveTransclusions(const std::string& markdown, const ReadTextFile& readFile,    /* original C++ signature */
-#                                      const std::string& currentFile = "");
+#                                      const std::string& currentFile = "", const std::string& root = "");
 def resolve_transclusions(
-    markdown: str, read_file: ReadTextFile, current_file: str = ""
+    markdown: str, read_file: ReadTextFile, current_file: str = "", root: str = ""
 ) -> str:
     """ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);
     currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.
+    The embeds name files beside or below the document only (root empty: the folder of currentFile; for a text
+    from no file, relative paths, below the assets): a document from anyone must not show a file of the machine.
+    A caller that trusts the text widens it: root is the folder the embeds may reach, "/" for any file.
     """
     pass
 
 ####################    </generated_from:narrative_programming.h>    ####################
 
 ####################    <generated_from:rich_md.h>    ####################
+
+# The library's version: the release tag, and the CMake project's VERSION
 
 # =================================================================================================================
 #                                        Main API: Rendering
@@ -483,6 +488,11 @@ def on_image_default(image_path: str) -> Optional[MarkdownImage]:
 
 # void OnOpenLink_Default(const std::string& url);    /* original C++ signature */
 def on_open_link_default(url: str) -> None:
+    pass
+
+# bool IsWebUrl(const std::string& url);    /* original C++ signature */
+def is_web_url(url: str) -> bool:
+    """Whether a link is a web address (http:// or https://, any case): the only ones OnOpenLink_Default opens"""
     pass
 
 # struct MarkdownCallbacks    /* original C++ signature */

@@ -88,8 +88,8 @@ void py_init_module_rich_md(nb::module_& m)
     ////////////////////    <generated_from:narrative_programming.h>    ////////////////////
     m.def("resolve_transclusions",
         RichMd::ResolveTransclusions,
-        nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "",
-        " ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.");
+        nb::arg("markdown"), nb::arg("read_file"), nb::arg("current_file") = "", nb::arg("root") = "",
+        " ResolveTransclusions replaces the embeds of a markdown text: readFile reads a file (or returns std::nullopt);\n currentFile is the file the text comes from, if any. Render() calls it with the host's ReadAsset.\n The embeds name files beside or below the document only (root empty: the folder of currentFile; for a text\n from no file, relative paths, below the assets): a document from anyone must not show a file of the machine.\n A caller that trusts the text widens it: root is the folder the embeds may reach, \"/\" for any file.");
     ////////////////////    </generated_from:narrative_programming.h>    ////////////////////
 
 
@@ -291,6 +291,11 @@ void py_init_module_rich_md(nb::module_& m)
 
     m.def("on_open_link_default",
         RichMd::OnOpenLink_Default, nb::arg("url"));
+
+    m.def("is_web_url",
+        RichMd::IsWebUrl,
+        nb::arg("url"),
+        "Whether a link is a web address (http:// or https://, any case): the only ones OnOpenLink_Default opens");
 
 
     auto pyClassMarkdownCallbacks =
