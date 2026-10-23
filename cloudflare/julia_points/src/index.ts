@@ -7,6 +7,16 @@
 //   POST   /julia_points/<id>/status {status: "shown" | "hidden"} -> {status}
 //   DELETE /julia_points/<id> -> {deleted: <id>}
 // Errors answer {error: "..."}, with a status of 400, 403, 404 or 429. The tables are in schema.sql.
+//
+// The guestbook of the Minard animation (_plans/minard, a page of the site). An entry is shown only once the admin
+// has read it: its status goes from "pending" to "shown" (or "hidden").
+//   GET  /minard_guestbook                 -> the shown entries, newest first
+//   POST /minard_guestbook                 {name, place, message, lang} -> {id} (pending)
+// The admin:
+//   GET    /minard_guestbook/pending       -> the pending entries (the moderation, and a watcher)
+//   GET    /minard_guestbook/hidden        -> the hidden ones
+//   POST   /minard_guestbook/<id>/status   {status: "shown" | "hidden" | "pending"} -> {status}
+//   DELETE /minard_guestbook/<id>          -> {deleted: <id>}
 
 // ADMIN_TOKEN: a secret (wrangler secret put ADMIN_TOKEN; locally, in .dev.vars). Without it, nobody is admin
 type AdminEnv = Env & { ADMIN_TOKEN?: string };
@@ -19,6 +29,14 @@ const SUBMISSIONS_PER_HOUR = 5; // per IP (an IPv6 /64)
 const VOTES_PER_HOUR = 30; // per IP: a voter id is any string, so the IP is what bounds the votes
 const READS_PER_HOUR = 300; // per IP: a GET reads every point, with its votes
 const VOTER_ID = /^[A-Za-z0-9-]{8,64}$/;
+
+const GUESTBOOK = "minard_guestbook";
+const GB_MAX_NAME = 40;
+const GB_MAX_PLACE = 60;
+const GB_MAX_MESSAGE = 1000;
+const GB_ENTRIES_PER_HOUR = 3; // per IP
+const GB_PENDING_CAP = 200; // no more entries wait for a reading than this: the book is full for now
+const GB_STATUSES = ["pending", "shown", "hidden"];
 
 const CORS = {
   "Access-Control-Allow-Origin": "*", // the demo runs on the desktop and in the playground; no cookies to protect
@@ -56,6 +74,17 @@ function text(body: Record<string, unknown>, field: string, maxLength: number, r
   if (required && s.length === 0) throw new BadRequest(`${field} is required`);
   if ([...s].length > maxLength) throw new BadRequest(`${field}: at most ${maxLength} characters`);
   if (/[\u0000-\u001f\u007f]/.test(s)) throw new BadRequest(`${field}: no control characters`); // one line of text
+  return s;
+}
+
+// A text of several lines: line breaks allowed, the other control characters not
+function multilineText(body: Record<string, unknown>, field: string, maxLength: number): string {
+  const value = body[field] ?? "";
+  if (typeof value !== "string") throw new BadRequest(`${field}: a string is expected`);
+  const s = value.replace(/\r\n?/g, "\n").trim();
+  if (s.length === 0) throw new BadRequest(`${field} is required`);
+  if ([...s].length > maxLength) throw new BadRequest(`${field}: at most ${maxLength} characters`);
+  if (/[\u0000-\u0009\u000b-\u001f\u007f]/.test(s)) throw new BadRequest(`${field}: no control characters`);
   return s;
 }
 
@@ -178,12 +207,76 @@ async function vote(request: Request, env: Env, pointId: number): Promise<Respon
   return json({ votes });
 }
 
+// ----- The guestbook -----
+
+async function listGuestbook(request: Request, env: Env, status: string): Promise<Response> {
+  if (await rateLimited(env, "gb_list", await senderKey(request), READS_PER_HOUR)) return tooMany("reads", READS_PER_HOUR);
+  const { results } = await env.DB.prepare(
+    "SELECT id, name, place, message, lang, created FROM guestbook WHERE status = ?1 ORDER BY created DESC LIMIT 500",
+  ).bind(status).all();
+  return json(results, 200, status === "shown" ? { "Cache-Control": "public, max-age=30" } : {});
+}
+
+async function signGuestbook(request: Request, env: Env): Promise<Response> {
+  const body = await readBody(request);
+  const name = text(body, "name", GB_MAX_NAME, true);
+  const place = text(body, "place", GB_MAX_PLACE, false);
+  const message = multilineText(body, "message", GB_MAX_MESSAGE);
+  const lang = text(body, "lang", 8, false);
+  if (text(body, "website", 200, false) !== "") return json({ id: 0 }, 201); // a field no person sees: a robot filled it
+  if (await rateLimited(env, "gb_sign", await senderKey(request), GB_ENTRIES_PER_HOUR)) {
+    return tooMany("entries", GB_ENTRIES_PER_HOUR);
+  }
+  const pending = await env.DB.prepare("SELECT COUNT(*) AS n FROM guestbook WHERE status = 'pending'").first<number>("n");
+  if ((pending ?? 0) >= GB_PENDING_CAP) return json({ error: "the book is full for now: try again in a few days" }, 503);
+  const id = await env.DB.prepare(
+    "INSERT INTO guestbook (name, place, message, lang, created) VALUES (?1, ?2, ?3, ?4, ?5) RETURNING id",
+  ).bind(name, place, message, lang, new Date().toISOString()).first<number>("id");
+  return json({ id }, 201);
+}
+
+async function setGuestbookStatus(request: Request, env: Env, entryId: number): Promise<Response> {
+  const status = (await readBody(request)).status;
+  if (typeof status !== "string" || !GB_STATUSES.includes(status)) {
+    throw new BadRequest('status: "shown", "hidden" or "pending" is expected');
+  }
+  const changed = await env.DB.prepare("UPDATE guestbook SET status = ?1 WHERE id = ?2").bind(status, entryId).run();
+  if (changed.meta.changes === 0) return json({ error: "no such entry" }, 404);
+  return json({ status });
+}
+
+async function deleteGuestbookEntry(env: Env, entryId: number): Promise<Response> {
+  const deleted = await env.DB.prepare("DELETE FROM guestbook WHERE id = ?1").bind(entryId).run();
+  if (deleted.meta.changes === 0) return json({ error: "no such entry" }, 404);
+  return json({ deleted: entryId });
+}
+
+async function guestbook(request: Request, env: AdminEnv, path: string[]): Promise<Response> {
+  if (path.length === 1) {
+    if (request.method === "GET") return await listGuestbook(request, env, "shown");
+    if (request.method === "POST") return await signGuestbook(request, env);
+    return json({ error: "not found" }, 404);
+  }
+  if (!(await isAdmin(request, env))) return json({ error: "for the admin only" }, 403);
+  if (path.length === 2 && request.method === "GET" && (path[1] === "pending" || path[1] === "hidden")) {
+    return await listGuestbook(request, env, path[1]);
+  }
+  if (!/^[0-9]{1,9}$/.test(path[1])) throw new BadRequest("the entry's id is a number");
+  const entryId = Number.parseInt(path[1], 10);
+  if (path.length === 2 && request.method === "DELETE") return await deleteGuestbookEntry(env, entryId);
+  if (path.length === 3 && path[2] === "status" && request.method === "POST") {
+    return await setGuestbookStatus(request, env, entryId);
+  }
+  return json({ error: "not found" }, 404);
+}
+
 export default {
   async fetch(request, env): Promise<Response> {
     if (request.method === "OPTIONS") return new Response(null, { headers: CORS });
     const url = new URL(request.url);
     const path = url.pathname.split("/").filter(Boolean);
     try {
+      if (path[0] === GUESTBOOK) return await guestbook(request, env, path);
       if (path.length === 1 && path[0] === "julia_points") {
         const admin = await isAdmin(request, env);
         if (request.method === "GET") {

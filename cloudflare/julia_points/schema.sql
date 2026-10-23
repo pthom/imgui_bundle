@@ -26,3 +26,15 @@ CREATE TABLE IF NOT EXISTS rate_limits (
   created TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS rate_limits_by_sender ON rate_limits (kind, sender);
+
+-- The guestbook of the Minard animation (the API: src/index.ts, /minard_guestbook). An entry waits for the admin's
+-- reading (pending) before it is shown; hidden: read and refused.
+CREATE TABLE IF NOT EXISTS guestbook (
+  id INTEGER PRIMARY KEY,
+  name TEXT NOT NULL,
+  place TEXT NOT NULL DEFAULT '',          -- where the reader writes from
+  message TEXT NOT NULL,                   -- several lines
+  lang TEXT NOT NULL DEFAULT '',           -- the app's language when written: fr, en, ru
+  status TEXT NOT NULL DEFAULT 'pending',  -- pending | shown | hidden (the moderation)
+  created TEXT NOT NULL                    -- ISO 8601, UTC
+);
