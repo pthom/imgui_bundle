@@ -54,10 +54,6 @@ jobs:
       # install typst
       - name: Install Typst
         uses: typst-community/setup-typst@fee4b65b091cc546f02ce3be15fad8760f38a108  # v5.3.0b2
-      # Install wrangler (to upload to cloudflare)
-      - name: Install wrangler
-        run: npm install -g wrangler
-
       #
       # Optional ssh / debug
       # =====================================================
@@ -71,12 +67,29 @@ jobs:
         run: just cf_stage_prepare
 
       #
-      # Prepare site and upload to CloudFlare
+      # Stage the site, and hand it to the deploy job
       # =====================================================
       - name: Stage site
         run: just cf_stage
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2
+        with:
+          name: cf_staging
+          path: _cf_staging
+          retention-days: 1
+
+  # The secrets live in this job only, on a fresh runner that ran none of the build's tools (pip, npm, emscripten,
+  # the submodules' CMake): a compromised dependency of the build cannot read them.
+  deploy:
+    name: "Deploy to Cloudflare Pages"
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333  # v8.0.2
+        with:
+          name: cf_staging
+          path: _cf_staging
       - name: Deploy to Cloudflare Pages
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: just cf_deploy
+        run: npx --yes wrangler@4.83.0 pages deploy _cf_staging --project-name=imgui-bundle --branch=main
