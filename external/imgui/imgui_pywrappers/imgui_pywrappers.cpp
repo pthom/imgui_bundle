@@ -16,6 +16,8 @@ namespace ImGui
     {
         if (nativePayload == nullptr)
             return std::nullopt;
+        if (nativePayload->Data == nullptr || nativePayload->DataSize < (int)sizeof(ImGuiPayloadId))
+            return std::nullopt;  // a payload set from C++ with other data, or an empty one
         ImGuiPayload_PyId r;
         r.DataId = *(const ImGuiPayloadId*)nativePayload->Data;
         r.Type  = nativePayload->DataType;
