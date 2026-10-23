@@ -26,6 +26,7 @@ _DEBUG_DELAY_SECONDS = 0.0
 
 # Background thread pool for async downloads (desktop only)
 _executor = ThreadPoolExecutor(max_workers=2)
+_MAX_IMAGE_BYTES = 20 * 1024 * 1024  # the cap of the C++ downloads (rich_md_url_download.cpp)
 _pending: Dict[str, "Future[Any]"] = {}
 
 
@@ -40,7 +41,10 @@ def _do_download_desktop(url: str) -> bytes:
     try:
         req = urllib.request.Request(url, headers={"User-Agent": "imgui_bundle/1.0"})
         with urllib.request.urlopen(req, timeout=10) as resp:
-            data: bytes = resp.read()
+            data: bytes = resp.read(_MAX_IMAGE_BYTES + 1)
+            if len(data) > _MAX_IMAGE_BYTES:
+                log.warning("Image too large (more than %d MB): %s", _MAX_IMAGE_BYTES // (1024 * 1024), url)
+                return b""
             log.debug("Downloaded %d bytes from %s", len(data), url)
             return data
     except Exception as e:
