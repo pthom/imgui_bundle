@@ -538,7 +538,7 @@ site_recrawl +urls:
 # A Cloudflare Worker (cloudflare/julia_points), deployed on its own: the site's deploy does not touch it.
 # The curation is done in the demo, in admin mode (see the top of julia_points.py).
 _JP_DIR := "cloudflare/julia_points"
-_JP_DB := "imgui_bundle_julia_points"
+_JP_DB := "imgui_bundle_api"
 
 # Type checks the Worker
 [group('demos')]

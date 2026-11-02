@@ -6,9 +6,9 @@
   "d1_databases": [
     {
       "binding": "DB",
-      "database_name": "imgui_bundle_julia_points",
-      // The production database, made by `wrangler d1 create imgui_bundle_julia_points` (wrangler dev uses a local one)
-      "database_id": "b186aa08-40be-4aa8-a3f7-205e586aeeaf"
+      "database_name": "imgui_bundle_api",
+      // The production database, made by `wrangler d1 create imgui_bundle_api` (wrangler dev uses a local one)
+      "database_id": "17513825-b6ac-494f-9a03-ed385d4f9da6"
     }
   ]
 }

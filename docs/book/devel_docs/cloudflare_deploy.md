@@ -136,7 +136,7 @@ workflows) do not need updating on a version bump — only on a tag rename.
 Some demos store data on a server. The Julia map (playground: `explorables/julia_map`) lists the values of c that its users share, and their votes. They live in a Cloudflare Worker with a D1 database (Cloudflare's SQLite):
 
 - The Worker: `imgui-bundle-api`, at <https://imgui-bundle-api.pthomet.workers.dev/julia_points>. Its code: `cloudflare/julia_points/` (`src/index.ts`, its routes are listed at the top; `wrangler.jsonc`).
-- The database: `imgui_bundle_julia_points`. Its tables: `schema.sql`; its first points: `seed.sql`.
+- The database: `imgui_bundle_api`. Its tables: `schema.sql`; its first points: `seed.sql`.
 - The demo's side: `julia_points.py`, next to `julia_map.py` (`POINTS_API` is the Worker's address).
 
 The Worker is deployed on its own, only when it changes: `just demo_julia_points_deploy` (after a type check, `just demo_julia_points_check`). The site's deploy does not touch it, and it does not touch the site.
@@ -148,7 +148,7 @@ The admin mode: the Worker's secret `ADMIN_TOKEN` opens the routes that hide a p
 - Set it: `cd cloudflare/julia_points && wrangler secret put ADMIN_TOKEN`. `ADMIN_TOKEN` is the secret's name: the token goes at the prompt. `wrangler secret list` shows the names.
 - Locally: `cloudflare/julia_points/.dev.vars` (ignored by git), with a line `ADMIN_TOKEN=<any value>`.
 
-The database in production: `wrangler d1 execute imgui_bundle_julia_points --remote --command "SELECT ..."`, from `cloudflare/julia_points`. The free tier allows 100 000 requests a day.
+The database in production: `wrangler d1 execute imgui_bundle_api --remote --command "SELECT ..."`, from `cloudflare/julia_points`. The free tier allows 100 000 requests a day.
 
 ## Search engines
 
