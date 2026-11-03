@@ -342,6 +342,10 @@ class DocumentOptions:
     scroll_animation_seconds: float = (
         0.3  # the duration of an animated scroll, whatever its distance
     )
+    # bool scrollAnchoring = true;    /* original C++ signature */
+    # While the reader does not scroll, the block at the top of the view keeps its place when the content above it
+    # changes height (a picture that loads, a section opened), as in a web browser
+    scroll_anchoring: bool = True
     # bool foldableHeadings = false;    /* original C++ signature */
     # The headings of this document fold (also when the context's MarkdownOptions::foldableHeadings is off)
     foldable_headings: bool = False

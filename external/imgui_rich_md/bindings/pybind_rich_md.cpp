@@ -155,6 +155,7 @@ void py_init_module_rich_md(nb::module_& m)
         .def_rw("search", &RichMd::DocumentOptions::search, "")
         .def_rw("scroll_animation", &RichMd::DocumentOptions::scrollAnimation, "")
         .def_rw("scroll_animation_seconds", &RichMd::DocumentOptions::scrollAnimationSeconds, "the duration of an animated scroll, whatever its distance")
+        .def_rw("scroll_anchoring", &RichMd::DocumentOptions::scrollAnchoring, " While the reader does not scroll, the block at the top of the view keeps its place when the content above it\n changes height (a picture that loads, a section opened), as in a web browser")
         .def_rw("foldable_headings", &RichMd::DocumentOptions::foldableHeadings, "The headings of this document fold (also when the context's MarkdownOptions::foldableHeadings is off)")
         ;
 
