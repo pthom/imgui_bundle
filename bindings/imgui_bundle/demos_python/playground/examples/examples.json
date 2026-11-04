@@ -208,6 +208,17 @@
             "category": "Interactive science"
         },
         {
+            "label": "Medical imaging: a chest CT, its windows, a segmentation",
+            "filename": "explorables/medical_imaging/medical_imaging.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/medical_imaging"
+            ],
+            "packages": [
+                "opencv-python"
+            ]
+        },
+        {
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
             "hack": true,

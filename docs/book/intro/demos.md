@@ -1353,4 +1353,23 @@ Press Play and two centuries go by. Click a bubble to pin it and draw its path t
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/medical_imaging.jpg
+:alt: Medical imaging: a chest CT, its windows, a segmentation
+:::
+
+### Medical imaging: a chest CT, its windows, a segmentation
+
+A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click.
+
+:::{dropdown} More
+Choose a window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the app measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not for diagnosis.
+:::
+
+*Uses: ImPlot, ImPlot3D, ImmVision, knobs, OpenCV*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/medical_imaging/medical_imaging.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py)
+
+::::
+
 :::::

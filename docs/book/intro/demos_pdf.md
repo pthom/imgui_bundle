@@ -1130,3 +1130,21 @@ it and draw its path through time; pick other indicators for the axes.
 *Uses: ImPlot, spinners*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/health_and_wealth.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py)
+
+### Medical imaging: a chest CT, its windows, a segmentation
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/medical_imaging.jpg
+:alt: Medical imaging: a chest CT, its windows, a segmentation
+:width: 400px
+:::
+
+A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click. Choose
+a window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the
+app measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not
+for diagnosis.
+
+*Python*
+
+*Uses: ImPlot, ImPlot3D, ImmVision, knobs, OpenCV*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/medical_imaging/medical_imaging.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py)

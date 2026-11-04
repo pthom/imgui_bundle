@@ -1,0 +1,4 @@
+# The data waits on the site (docs/clone_website_resources/.../resources/explorables/medical_imaging/):
+# the demo downloads it here at its first run
+ct_chest.npz.bz2
+fundus_left_eye.jpg

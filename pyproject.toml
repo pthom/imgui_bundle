@@ -122,7 +122,13 @@ imgui_bundle_demo="imgui_bundle.demos_python.demo_imgui_bundle:main"
 [tool.scikit-build]
 wheel.expand-macos-universal-tags = true
 wheel.packages = ["bindings/imgui_bundle"]
-wheel.exclude = ["lib/**", "include/**"]
+wheel.exclude = [
+    "lib/**",
+    "include/**",
+    # The medical imaging demo's data: downloaded from the site at its first run (a copy here is a developer's)
+    "imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/ct_chest.npz.bz2",
+    "imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/fundus_left_eye.jpg",
+]
 sdist.exclude = [
     ".git",
     ".github",

@@ -170,6 +170,19 @@
     ],
     "cpp": false
   },
+  "explorables/medical_imaging/medical_imaging.py": {
+    "title": "Medical imaging: a chest CT scan, its contrast windows, and a segmentation grown from a click",
+    "text": "A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click. Choose\na window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the\napp measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not\nfor diagnosis.",
+    "summary": "A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click.",
+    "uses": [
+      "ImPlot",
+      "ImPlot3D",
+      "ImmVision",
+      "knobs",
+      "OpenCV"
+    ],
+    "cpp": false
+  },
   "layout_child.py": {
     "title": "Resizable Layouts with begin_child",
     "text": "Learn how to create resizable adjacent panels, using child windows.",

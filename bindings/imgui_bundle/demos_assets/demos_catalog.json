@@ -1268,6 +1268,28 @@
           "page": "",
           "video": "",
           "variants": []
+        },
+        {
+          "label": "Medical imaging: a chest CT, its windows, a segmentation",
+          "filename": "explorables/medical_imaging/medical_imaging.py",
+          "stem": "medical_imaging",
+          "where": "both",
+          "text": "A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click. Choose\na window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the\napp measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not\nfor diagnosis.",
+          "summary": "A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click.",
+          "uses": [
+            "ImPlot",
+            "ImPlot3D",
+            "ImmVision",
+            "knobs",
+            "OpenCV"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/medical_imaging.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
         }
       ]
     }
