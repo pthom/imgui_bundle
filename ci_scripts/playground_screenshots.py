@@ -229,6 +229,7 @@ SHOTS: dict[str, Shot] = {
     "explorables/logistic_map.py": Shot(frames=120, crop=(0.3, 0.0, 0.99, 0.62)),
     "explorables/rotor_dashboard.py": Shot(frames=120),
     "explorables/health_and_wealth.py": Shot(frames=300, action=_today, crop=(0.0, 0.07, 0.72, 0.77)),
+    "explorables/medical_imaging/medical_imaging.py": Shot(crop=(0.0, 0.0, 1.0, 0.945)),  # 1300 x 812: 16:10
     "minimal_example.py": Shot(crop=(0.0, 0.0, 1.0, 0.62)),
     "webgl_background_shader.py": Shot(frames=120),
     # The immapp demos (source: demos_immapp)
