@@ -97,8 +97,9 @@ class DataFiles:
             if not download.done:
                 continue
             del self.downloads[name]
-            if download.error:
-                self.error = f"{name}: {download.error}"
+            if download.error:  # the HTTP status alone: the error goes on with the start of the page
+                reason = f"HTTP {download.status}" if download.status else download.error.splitlines()[0]
+                self.error = f"{name}: {reason}"
                 continue
             try:
                 (HERE / name).write_bytes(download.data)
@@ -158,9 +159,12 @@ def help_marker(topic: str, label: str = "") -> None:
     if imgui.get_content_region_avail().x < imgui.calc_text_size(text).x:
         imgui.new_line()  # no room left on this line
     imgui.push_id(topic)
-    imgui.text_disabled(text)
+    imgui.push_style_color(imgui.Col_.button, ImVec4(0, 0, 0, 0))  # a button that looks like a faint text
+    imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
+    clicked = imgui.small_button(f"{text}##help")
+    imgui.pop_style_color(2)
     width = min(em_size(30), imgui.get_main_viewport().size.x - em_size(2))
-    if imgui.is_item_clicked():
+    if clicked:
         imgui.open_popup("##help")
     elif imgui.is_item_hovered() and not imgui.is_popup_open("##help"):
         imgui.set_next_window_size(ImVec2(width, 0))
@@ -183,9 +187,10 @@ def text_with_help(text: str, topic: str) -> None:
 
 
 def gui_intro(tab: str) -> None:
-    """The tab's intro: open at first, folded to its first paragraph as soon as the reader touches the demo"""
+    """The tab's intro, folded to its first paragraph: "More..." opens it. It does not fold by itself on a click
+    elsewhere: that folds at the press, and the layout, moved up under the mouse, would lose the click's release."""
     options = rich_md.FoldingTextOptions()
-    options.fold_on_click_elsewhere = True
+    options.start_folded = True
     rich_md.render_folding(f"intro_{tab}", HELP[tab], options)
 
 
