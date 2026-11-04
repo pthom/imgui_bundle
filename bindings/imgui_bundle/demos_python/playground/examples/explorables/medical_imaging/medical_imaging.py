@@ -900,15 +900,20 @@ def retina_viewer() -> RetinaViewer:
 def gui_retina_controls(r: RetinaViewer) -> None:
     text_with_help("Classic image processing, no learning: the green channel, then:", "Green channel")
     size, knob = em_size(3.4), imgui_knobs.ImGuiKnobVariant_.wiper_dot
+    takes_drags = hello_imgui.set_item_takes_touch_drags  # on a touch screen, a drag on a knob turns it at once
     changed, r.clahe_clip = imgui_knobs.knob("CLAHE", r.clahe_clip, 1.0, 6.0, 0.02, "%.1f", knob, size)
+    takes_drags(long_press_is_right_click=False)
     imgui.same_line()
     c, size_px = imgui_knobs.knob_int("Top-hat", r.tophat_size, 5, 41, 0.15, "%d px", knob, size)
+    takes_drags(long_press_is_right_click=False)
     r.tophat_size, changed = size_px | 1, changed or c  # odd: the kernel has a center
     imgui.same_line()
     c, r.threshold = imgui_knobs.knob_int("Threshold", r.threshold, 1, 60, 0.2, "%d", knob, size)
+    takes_drags(long_press_is_right_click=False)
     changed |= c
     imgui.same_line()
     c, r.min_area = imgui_knobs.knob_int("Min. area", r.min_area, 0, 400, 1.0, "%d px", knob, size)
+    takes_drags(long_press_is_right_click=False)
     changed |= c
     imgui.text_disabled("Explained:")
     for topic in ("CLAHE", "Top-hat", "Threshold", "Min. area"):
