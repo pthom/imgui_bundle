@@ -4,7 +4,9 @@ This page is a file, `medical_imaging_help.md`, beside the program. The program 
 
 ## Chest CT
 
-A CT scan (computed tomography) measures, slice after slice, how much each small cube of the body absorbs X-rays. Here, a real chest scan: scroll through its slices, change their contrast as radiologists do, and click an organ. The app outlines it on every slice, measures its volume, and shows it in 3D.
+A real chest scan: scroll through its slices, change their contrast, click an organ to measure it in 3D.
+
+A CT scan (computed tomography) measures, slice after slice, how much each small cube of the body absorbs X-rays. Change the contrast of the slices as radiologists do, and click an organ: the app outlines it on every slice, measures its volume, and shows it in 3D.
 
 The same steps, at a larger scale and with stronger methods, start many research tools: following a nodule over time, measuring a lung before surgery, planning an operation in 3D, preparing data to train a model. This demo shows them simply, with no learning. For research and teaching, not for diagnosis.
 
@@ -73,7 +75,9 @@ Points of the region's surface, at most 6000, shaded by the way they face the li
 
 ## Retina
 
-A fundus photograph shows the back of the eye through the pupil: the retina, its blood vessels, the optic disc (the bright spot at the left, where the optic nerve leaves) and the macula (the darker center, which gives the sharp vision). The vessels' width, branching and course help study diabetes, high blood pressure and other diseases. Here, classic image processing finds them, with no learning: tune each step, and see its effect.
+The blood vessels of a retina, found and measured by classic image processing: tune each step, see its effect.
+
+A fundus photograph shows the back of the eye through the pupil: the retina, its blood vessels, the optic disc (the bright spot at the left, where the optic nerve leaves) and the macula (the darker center, which gives the sharp vision). The vessels' width, branching and course help study diabetes, high blood pressure and other diseases. Here, classic image processing finds them, with no learning.
 
 The photograph: "Fundus photograph of normal left eye", by Mikael Häggström, on Wikimedia Commons, in the public domain (CC0).
 
