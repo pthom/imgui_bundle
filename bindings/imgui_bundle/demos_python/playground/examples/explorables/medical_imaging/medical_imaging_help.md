@@ -99,7 +99,17 @@ The groups of vessel pixels smaller than this many pixels are dropped: they are 
 
 ### Stages
 
-What the second view shows: each stage of the pipeline, in order, or the vessels over the photograph (*Overlay*).
+What the second view shows: each stage of the pipeline, in order, the vessels over the photograph (*Overlay*), or their measures (*Measure*).
+
+### Measure
+
+The vessels' map becomes lines one pixel wide, its *skeleton*, cut at each branching into segments. Click a vessel: its segment shows in yellow, with its measures. The largest segments carry a number.
+
+- *Width*: across the vessel, the top-hat's profile; the width is the span where it stays above half of its peak (the *full width at half maximum*), the median along the segment.
+- *Length*: along the skeleton.
+- *Position*: from the center of the optic disc, in disc diameters, and the quadrant: superior or inferior, temporal (toward the macula) or nasal.
+
+The scale comes from the optic disc, the yellow circle: its diameter, about 100 pixels on this photograph, is taken as 1.8 mm, a typical value (it varies from about 1.5 to 2.2 mm between people). So the µm and the mm are rough: a clinical measure needs a calibrated camera and validated software. Here, they show the method.
 
 ### Vessels' share
 
@@ -132,3 +142,15 @@ A voxel of the region is on its surface when one of its six neighbors is outside
 The pipeline of the Retina tab, in a few OpenCV calls.
 
 ![[medical_imaging.py#Vessels]]
+
+### The skeleton
+
+The vessels' map, peeled layer after layer until each vessel is a line one pixel wide: Zhang and Suen's thinning, in numpy.
+
+![[medical_imaging.py#Skeleton]]
+
+### The width at half height
+
+Across the vessel, at each point of its skeleton: the profile of the top-hat, and the span where it stays above half of its peak.
+
+![[medical_imaging.py#Width]]

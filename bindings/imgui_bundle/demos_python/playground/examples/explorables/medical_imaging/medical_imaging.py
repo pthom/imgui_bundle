@@ -8,7 +8,8 @@ for diagnosis.
 The original and the processed views zoom and pan together; the original gives the pixels' values in Hounsfield
 units (HU). The region takes the pixels within a tolerance of the seed's value, connected to it, slice after slice.
 The retina's vessels come from classic image processing, with no learning: the green channel, CLAHE, a black
-top-hat, a threshold, and the small blobs dropped.
+top-hat, a threshold, and the small blobs dropped. A click on a vessel measures it: its width at half height across
+it, its length along its skeleton, its position from the optic disc.
 
 The texts of the app (the intros, the help of each widget) live in `medical_imaging_help.md`, which the tab "How it
 works" shows whole, with the code it explains embedded from this file (narrative programming, with RichMd).
@@ -27,6 +28,7 @@ import bz2
 import io
 import re
 from pathlib import Path
+from dataclasses import dataclass
 from typing import Dict, List, Optional, Tuple
 
 import cv2
@@ -61,7 +63,12 @@ NARROW_WIDTH_EM = 52  # under this width (a phone), everything goes in one colum
 CONTROLS_WIDTH_EM = 23
 HISTOGRAM_HEIGHT_EM = 7.5
 HISTOGRAM_BINS = np.arange(-1000, 1510, 10)  # HU
-STAGES = ("Green channel", "CLAHE", "Top-hat", "Vessels", "Overlay")  # what the retina's processed view shows
+STAGES = ("Green channel", "CLAHE", "Top-hat", "Vessels", "Overlay", "Measure")  # what the retina's second view shows
+DISC_CENTER_PX = (137, 372)  # the optic disc on the photograph (800 px), measured by eye
+DISC_DIAMETER_PX = 100  # its vertical diameter, measured by eye: the scale of the measures
+DISC_DIAMETER_MM = 1.8  # a typical optic disc: it varies from about 1.5 to 2.2 mm between people
+NUMBERED_SEGMENTS = 10  # the largest vessel segments carry a number
+NUMBERED_RGB = (140, 230, 255)  # their color in the measure's view
 
 Volume = NDArray[np.int16]
 Mask = NDArray[np.bool_]
@@ -289,6 +296,26 @@ def image_params(zoom_key: str, colormap: str, show_pixel_info: bool) -> immvisi
     return params
 
 
+class ViewClick:
+    """A click (or a tap) on a view, told apart from a drag (which pans the views): its pixel, in the image"""
+
+    def __init__(self) -> None:
+        self.press: Optional[Tuple[str, float, float, Tuple[float, float]]] = None  # the view, the mouse, the pixel
+
+    def take(self, view: str, params: immvision.ImageParams) -> Optional[Tuple[int, int]]:
+        """Call after the view's immvision.image(): (x, y) when a click on it ends, else None"""
+        mouse = imgui.get_io().mouse_pos
+        if params.mouse_info.is_mouse_hovering and imgui.is_mouse_clicked(imgui.MouseButton_.left):
+            self.press = (view, mouse.x, mouse.y, params.mouse_info.mouse_position)
+        if self.press is None or self.press[0] != view or not imgui.is_mouse_released(imgui.MouseButton_.left):
+            return None
+        _, x0, y0, (px, py) = self.press
+        self.press = None
+        if params.mouse_info.is_mouse_hovering and (mouse.x - x0) ** 2 + (mouse.y - y0) ** 2 < em_size(0.4) ** 2:
+            return int(px), int(py)
+        return None
+
+
 def fit_views(params: Tuple[immvision.ImageParams, ...], width: float, max_height: float) -> None:
     """Two square views side by side, as large as the width and the height allow (set when the size changes only)"""
     spacing = imgui.get_style().item_spacing.x
@@ -319,7 +346,7 @@ class CtViewer:
         self.original_params = image_params("ct", "Gray", show_pixel_info=True)  # its pixels: the HU
         self.processed_params = image_params("ct", "None", show_pixel_info=False)
         self.processed: NDArray[np.uint8] = np.zeros((*self.hu.shape[1:], 3), np.uint8)
-        self.press: Optional[Tuple[float, float, Tuple[float, float]]] = None  # a click starting on a view
+        self.click = ViewClick()  # a click on a view seeds the region
         self.histogram = (np.zeros(0), np.zeros(0))  # the slice's, then the region's
         self.slice_changed = self.view_changed = True
         self.z = 0
@@ -402,17 +429,12 @@ def ct_viewer() -> CtViewer:
 # ======================================================================================================================
 # The CT: its GUI
 # ======================================================================================================================
-def take_click(v: CtViewer, params: immvision.ImageParams) -> None:
+def take_click(v: CtViewer, view: str, params: immvision.ImageParams) -> None:
     """A click (or a tap) on a view seeds the region; a drag pans the views, as usual"""
-    mouse = imgui.get_io().mouse_pos
-    if params.mouse_info.is_mouse_hovering and imgui.is_mouse_clicked(imgui.MouseButton_.left):
-        v.press = (mouse.x, mouse.y, params.mouse_info.mouse_position)
-    if v.press is not None and imgui.is_mouse_released(imgui.MouseButton_.left):
-        x0, y0, (px, py) = v.press
-        v.press = None
-        if params.mouse_info.is_mouse_hovering and (mouse.x - x0) ** 2 + (mouse.y - y0) ** 2 < em_size(0.4) ** 2:
-            v.seed = (v.z, int(py), int(px))
-            v.grow()
+    clicked = v.click.take(view, params)
+    if clicked is not None:
+        v.seed = (v.z, clicked[1], clicked[0])
+        v.grow()
 
 
 def gui_views(v: CtViewer, width: float, max_height: float, narrow: bool) -> None:
@@ -422,10 +444,10 @@ def gui_views(v: CtViewer, width: float, max_height: float, narrow: bool) -> Non
     fit_views((v.original_params, v.processed_params), width, max_height)
     v.update()
     immvision.image("Original, in HU##ct", v.hu[v.z], v.original_params)
-    take_click(v, v.original_params)
+    take_click(v, "original", v.original_params)
     imgui.same_line()
     immvision.image("Window and segmentation##ct", v.processed, v.processed_params)
-    take_click(v, v.processed_params)
+    take_click(v, "processed", v.processed_params)
 
 
 def gui_slice(v: CtViewer) -> None:
@@ -635,6 +657,110 @@ def gui_ct(v: CtViewer) -> None:
 # ======================================================================================================================
 # The retina
 # ======================================================================================================================
+# ::code Skeleton
+def thin(mask: Mask) -> Mask:
+    """The mask's skeleton, one pixel wide (Zhang and Suen's thinning): its border pixels are peeled, in two
+    alternating passes, as long as removing one neither cuts a line nor shortens its end"""
+    img = mask.astype(np.uint8)
+    changed = True
+    while changed:
+        changed = False
+        for first_pass in (True, False):
+            p = np.pad(img, 1)
+            # The 8 neighbors, clockwise from the top: P2, P3, ... P9
+            n = [p[:-2, 1:-1], p[:-2, 2:], p[1:-1, 2:], p[2:, 2:], p[2:, 1:-1], p[2:, :-2], p[1:-1, :-2], p[:-2, :-2]]
+            count = sum(q.astype(np.int32) for q in n)
+            transitions = sum(((n[i] == 0) & (n[(i + 1) % 8] == 1)).astype(np.int32) for i in range(8))
+            p2, p4, p6, p8 = n[0], n[2], n[4], n[6]
+            if first_pass:
+                keeps_shape = (p2 * p4 * p6 == 0) & (p4 * p6 * p8 == 0)
+            else:
+                keeps_shape = (p2 * p4 * p8 == 0) & (p2 * p6 * p8 == 0)
+            remove = (img == 1) & (count >= 2) & (count <= 6) & (transitions == 1) & keeps_shape
+            if remove.any():
+                img[remove] = 0
+                changed = True
+    return img.astype(bool)
+# ::endcode
+
+
+def skeleton_neighbors(skeleton: Mask) -> NDArray[np.int32]:
+    """For each pixel of the skeleton, how many of its 8 neighbors are in it (1: an end, 3 or more: a branching)"""
+    kernel = np.ones((3, 3), np.float32)
+    kernel[1, 1] = 0
+    count = cv2.filter2D(skeleton.astype(np.float32), -1, kernel, borderType=cv2.BORDER_CONSTANT)
+    return (count * skeleton).astype(np.int32)
+
+
+@dataclass
+class Segment:
+    """A vessel's stretch between two branchings: its skeleton's pixels, and its measures (in pixels)"""
+    ys: NDArray[np.intp]
+    xs: NDArray[np.intp]
+    length: float
+    width: float = -1.0  # at half height, measured when needed (-1: not yet)
+
+
+def vessel_segments(vessels: Mask, spur_px: int = 12) -> Tuple[NDArray[np.int32], List[Segment]]:
+    """The vessels' skeleton, cut at its branchings into segments; the short spurs (a segment with a free end, under
+    spur_px) are dropped first. Returns the segments, and an image of their numbers (0: none, i + 1: segments[i])."""
+    skeleton = thin(vessels)
+    for _ in range(2):
+        neighbors = skeleton_neighbors(skeleton)
+        cut = skeleton & ~cv2.dilate((neighbors >= 3).astype(np.uint8), np.ones((3, 3), np.uint8)).astype(bool)
+        count, labels, stats, _ = cv2.connectedComponentsWithStats(cut.astype(np.uint8), connectivity=8)
+        spurs = [i for i in np.unique(labels[(neighbors == 1) & cut]) if i and stats[i, cv2.CC_STAT_AREA] < spur_px]
+        if not spurs:
+            break
+        skeleton &= ~np.isin(labels, spurs)
+    # The segments' pixels, in one pass; their lengths from the links between neighbors: 1 for a step to a side,
+    # 1.41 for a diagonal one
+    ys, xs = np.nonzero(labels)
+    order = np.argsort(labels[ys, xs], kind="stable")
+    ys, xs = ys[order], xs[order]
+    starts = np.searchsorted(labels[ys, xs], np.arange(1, count + 1))
+    length = np.zeros(count)
+    for a, b, step in ((labels[:, 1:], labels[:, :-1], 1.0), (labels[1:, :], labels[:-1, :], 1.0),
+                       (labels[1:, 1:], labels[:-1, :-1], 1.41), (labels[1:, :-1], labels[:-1, 1:], 1.41)):
+        same = (a == b) & (a > 0)
+        length += step * np.bincount(a[same], minlength=count)[:count]
+    segments = [Segment(ys[starts[i - 1] : starts[i]], xs[starts[i - 1] : starts[i]], float(length[i]))
+                for i in range(1, count)]
+    return labels.astype(np.int32), segments
+
+
+# ::code Width
+def half_height_width(tophat: NDArray[np.float32], seg: Segment) -> float:
+    """The vessel's width at half height: at each pixel of its skeleton, the top-hat's profile across the vessel
+    (the vessels are bright there), and the span where it stays above half of its peak. Their median."""
+    points = np.stack([seg.xs, seg.ys], 1).astype(np.float32)
+    offsets = np.arange(-15, 15.01, 0.5, dtype=np.float32)  # along the profile, in pixels
+    middle = len(offsets) // 2
+    widths = []
+    for p in points:
+        near = points[np.sum((points - p) ** 2, 1) <= 16] - p  # the skeleton around p: its direction
+        if len(near) < 3:
+            continue
+        tangent = np.linalg.eigh(near.T @ near)[1][:, -1]
+        across = np.array([-tangent[1], tangent[0]], np.float32)
+        xs, ys = p[0] + offsets * across[0], p[1] + offsets * across[1]
+        profile = cv2.remap(tophat, xs[None, :], ys[None, :], cv2.INTER_LINEAR)[0]
+        peak = middle - 4 + int(np.argmax(profile[middle - 4 : middle + 5]))
+        half = profile[peak] / 2
+        lo, hi = peak, peak
+        while lo > 0 and profile[lo] > half:
+            lo -= 1
+        while hi < len(offsets) - 1 and profile[hi] > half:
+            hi += 1
+        if profile[peak] <= 0 or lo == 0 or hi == len(offsets) - 1:
+            continue  # no vessel there, or wider than the profile
+        left = offsets[lo] + 0.5 * (half - profile[lo]) / (profile[lo + 1] - profile[lo])  # the crossings, interpolated
+        right = offsets[hi - 1] + 0.5 * (profile[hi - 1] - half) / (profile[hi - 1] - profile[hi])
+        widths.append(right - left)
+    return float(np.median(widths)) if widths else float("nan")
+# ::endcode
+
+
 class RetinaViewer:
     """The fundus photograph, the vessel pipeline's parameters, its stages, and the view of one of them"""
 
@@ -652,23 +778,40 @@ class RetinaViewer:
         self.processed_params = image_params("retina", "None", show_pixel_info=False)
         self.processed = self.rgb
         self.vessel_fraction = 0.0
+        self.vessels: Mask = np.zeros(self.rgb.shape[:2], bool)
+        self.tophat_raw: NDArray[np.float32] = np.zeros(self.rgb.shape[:2], np.float32)  # for the widths
+        # The measure: the segments, their numbers' image, the numbered ones (the largest), the one selected
+        self.segment_labels: NDArray[np.int32] = np.zeros(self.rgb.shape[:2], np.int32)
+        self.segments: List[Segment] = []
+        self.numbered: List[int] = []
+        self.selected: Optional[int] = None
+        self.measure_pending = False  # the segments wait until the knob is released (the skeleton takes a while)
+        self.click = ViewClick()
         self.run()
 
-    def run(self) -> None:
-        """The pipeline, then the view of the chosen stage"""
+    def run(self, with_measure: bool = True) -> None:
+        """The pipeline, then the view of the chosen stage (the measure's segments: if with_measure)"""
         # ::code Vessels
         green = self.rgb[:, :, 1]  # where the vessels contrast most
         clahe = cv2.createCLAHE(clipLimit=self.clahe_clip, tileGridSize=(8, 8)).apply(green)
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (self.tophat_size, self.tophat_size))
-        tophat = cv2.GaussianBlur(cv2.morphologyEx(clahe, cv2.MORPH_BLACKHAT, kernel), (3, 3), 0) * self.fov
+        raw = cv2.morphologyEx(clahe, cv2.MORPH_BLACKHAT, kernel)  # the dark details, thinner than the kernel
+        tophat = cv2.GaussianBlur(raw, (3, 3), 0) * self.fov
         count, labels, stats, _ = cv2.connectedComponentsWithStats((tophat > self.threshold).astype(np.uint8))
         keep = stats[:, cv2.CC_STAT_AREA] >= self.min_area
         keep[0] = False  # the background
         vessels = keep[labels]
         # ::endcode
         self.vessel_fraction = float(vessels.sum()) / float(self.fov.sum())
+        self.vessels, self.tophat_raw = vessels, (raw * self.fov).astype(np.float32)
+        self.segments, self.numbered, self.selected = [], [], None
+        self.measure_pending = self.stage == "Measure" and not with_measure
+        if self.stage == "Measure" and with_measure:
+            self.measure()
 
-        if self.stage == "Overlay":
+        if self.stage == "Measure":
+            view = self.measure_view()
+        elif self.stage == "Overlay":
             view = (self.rgb * 0.55).astype(np.uint8)
             view[vessels] = OVERLAY_RGB
         else:
@@ -681,6 +824,67 @@ class RetinaViewer:
             view = np.repeat(gray[:, :, None], 3, axis=2)
         self.processed = np.ascontiguousarray(view)
         self.processed_params.refresh_image = True
+
+    # The measure
+    def measure(self) -> None:
+        """The segments, and the widths of the largest ones, which get a number"""
+        self.segment_labels, self.segments = vessel_segments(self.vessels)
+        dist = cv2.distanceTransform(self.vessels.astype(np.uint8), cv2.DIST_L2, 5)
+        size = [s.length * float(np.median(dist[s.ys, s.xs])) for s in self.segments]
+        self.numbered = [int(i) for i in np.argsort(size)[::-1][:NUMBERED_SEGMENTS]]
+        for i in self.numbered:
+            self.segments[i].width = half_height_width(self.tophat_raw, self.segments[i])
+
+    def select(self, x: int, y: int) -> None:
+        """The segment nearest to a click (within 12 pixels), measured"""
+        y0, y1, x0, x1 = max(y - 12, 0), y + 13, max(x - 12, 0), x + 13
+        window = self.segment_labels[y0:y1, x0:x1]
+        ys, xs = np.nonzero(window)
+        if len(ys) == 0:
+            self.selected = None
+        else:
+            nearest = int(np.argmin((ys + y0 - y) ** 2 + (xs + x0 - x) ** 2))
+            self.selected = int(window[ys[nearest], xs[nearest]]) - 1
+            if self.segments[self.selected].width < 0:
+                self.segments[self.selected].width = half_height_width(self.tophat_raw, self.segments[self.selected])
+        self.processed = np.ascontiguousarray(self.measure_view())
+        self.processed_params.refresh_image = True
+
+    def measure_view(self) -> NDArray[np.uint8]:
+        """The photograph, dimmed; the vessels, faint; the skeleton; the numbered segments, the selected one in
+        yellow; the optic disc, the measures' scale, as a circle"""
+        view = (self.rgb * 0.4).astype(np.uint8)
+        view[self.vessels] = (30, 70, 95)
+        view[self.segment_labels > 0] = (90, 140, 170)
+        for rank, i in enumerate(self.numbered):
+            s = self.segments[i]
+            for y, x in zip(s.ys, s.xs, strict=True):  # thicker than the skeleton, to be seen at a glance
+                cv2.circle(view, (int(x), int(y)), 2 if i == self.selected else 1, NUMBERED_RGB, -1)
+            mid = len(s.ys) // 2
+            at = (int(s.xs[mid]) + 6, int(s.ys[mid]) - 6)
+            for thickness, text_color in ((4, (0, 0, 0)), (1, (255, 255, 255))):  # the number, outlined
+                cv2.putText(view, str(rank + 1), at, cv2.FONT_HERSHEY_SIMPLEX, 0.55, text_color, thickness, cv2.LINE_AA)
+        if self.selected is not None:
+            s = self.segments[self.selected]
+            for y, x in zip(s.ys, s.xs, strict=True):
+                cv2.circle(view, (int(x), int(y)), 2, SEED_RGB, -1)
+        cv2.circle(view, DISC_CENTER_PX, DISC_DIAMETER_PX // 2, SEED_RGB, 1, cv2.LINE_AA)
+        return view
+
+    def describe(self, i: int) -> str:
+        """The measures of a segment, as markdown"""
+        s = self.segments[i]
+        um_per_px = DISC_DIAMETER_MM * 1000 / DISC_DIAMETER_PX
+        cx, cy = float(np.mean(s.xs)), float(np.mean(s.ys))
+        distance = np.hypot(cx - DISC_CENTER_PX[0], cy - DISC_CENTER_PX[1]) / DISC_DIAMETER_PX
+        # On this photograph of a left eye, the temporal side (toward the macula) is at the right, the superior up
+        vertical, horizontal = ("supero" if cy < DISC_CENTER_PX[1] else "infero"), cx > DISC_CENTER_PX[0]
+        quadrant = vertical + ("temporal" if horizontal else "nasal")
+        number = f"Segment {self.numbered.index(i) + 1}" if i in self.numbered else "This segment"
+        return (f"**{number}**\n\n"
+                f"- Width at half height: {s.width:.1f} px, about {s.width * um_per_px:.0f} µm\n"
+                f"- Length: {s.length:.0f} px, about {s.length * um_per_px / 1000:.1f} mm\n"
+                f"- Position: {distance:.1f} disc diameters from the disc's center, {quadrant}")
 
 
 RETINA: Optional[RetinaViewer] = None
@@ -714,10 +918,29 @@ def gui_retina_controls(r: RetinaViewer) -> None:
     if clicked is not None:
         r.stage, changed = clicked, True
     help_marker("Stages")
-    if changed:
-        r.run()
+    dragging = imgui.is_any_item_active()  # a knob held: the measure's segments wait for its release
+    if changed or (r.measure_pending and not dragging):
+        r.run(with_measure=not dragging)
     imgui.text(f"Vessels: {100 * r.vessel_fraction:.1f} % of the field of view")
     help_marker("Vessels' share")
+    if r.stage == "Measure":
+        gui_measure(r)
+
+
+def gui_measure(r: RetinaViewer) -> None:
+    imgui.separator_text("Measure")
+    text_with_help("Click a vessel in either view, or a number below.", "Measure")
+    if r.measure_pending:
+        imgui.text_disabled("Measuring...")
+        return
+    for rank, i in enumerate(r.numbered):
+        if rank > 0:
+            imgui.same_line()
+        if imgui.small_button(f"{rank + 1}") and r.segments:
+            s = r.segments[i]
+            r.select(int(s.xs[len(s.xs) // 2]), int(s.ys[len(s.ys) // 2]))
+    if r.selected is not None:
+        rich_md.render(r.describe(r.selected))
 
 
 def gui_retina_credit() -> None:
@@ -744,9 +967,14 @@ def gui_retina(r: RetinaViewer) -> None:
     max_height = em_size(40) if narrow else imgui.get_content_region_avail().y - views_chrome
     fit_views((r.original_params, r.processed_params), imgui.get_content_region_avail().x, max_height)
     immvision.image("Fundus photograph##retina", r.rgb, r.original_params)
+    clicks = [r.click.take("original", r.original_params)]
     imgui.same_line()
     immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
+    clicks.append(r.click.take("processed", r.processed_params))
     r.processed_params.refresh_image = False
+    for clicked in clicks:
+        if clicked is not None and r.stage == "Measure" and r.segments:
+            r.select(*clicked)
     imgui.end_group()
     if narrow:
         imgui.separator_text("Vessels")
