@@ -239,22 +239,17 @@ class PygletMixin(object):
         self.io.add_mouse_pos_event(x, self.io.display_size.y - y)
 
     def _on_mouse_button(self, pyglet_button, down):
-        imgui_button = 0
-        if pyglet_button == mouse.LEFT:
-            imgui_button = 0
-        elif pyglet_button == mouse.RIGHT:
-            imgui_button = 1
-        elif pyglet_button == mouse.MIDDLE:
-            imgui_button = 2
-        self.io.add_mouse_button_event(imgui_button, down)
+        buttons = {mouse.LEFT: 0, mouse.RIGHT: 1, mouse.MIDDLE: 2}
+        if pyglet_button in buttons:  # a side button, or a mask of several buttons: no event
+            self.io.add_mouse_button_event(buttons[pyglet_button], down)
+
     def on_mouse_press(self, x, y, button, modifiers):
         self._on_mouse_button(button, True)
 
     def on_mouse_release(self, x, y, button, modifiers):
         self._on_mouse_button(button, False)
 
-    def on_mouse_drag(self, x, y, dx, dy, button, modifiers):
-        self._on_mouse_button(button, True)
+    def on_mouse_drag(self, x, y, dx, dy, buttons, modifiers):
         self.on_mouse_motion(x, y, dx, dy)
 
     def on_mouse_scroll(self, x, y, scroll_x, scroll_y):
