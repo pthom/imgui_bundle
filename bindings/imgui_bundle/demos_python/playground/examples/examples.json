@@ -219,6 +219,14 @@
             ]
         },
         {
+            "label": "Gravitational lensing: a ring, arcs, the Einstein Cross",
+            "filename": "explorables/gravitational_lensing/gravitational_lensing.py",
+            "category": "Interactive science",
+            "bundle_folders": [
+                "explorables/gravitational_lensing"
+            ]
+        },
+        {
             "label": "Resizable panels with child windows",
             "filename": "layout_child.py",
             "hack": true,

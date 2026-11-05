@@ -1372,4 +1372,23 @@ Choose a window preset or drag its bounds on the histogram. Click a structure: t
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/gravitational_lensing.jpg
+:alt: Gravitational lensing: a ring, arcs, the Einstein Cross
+:::
+
+### Gravitational lensing: a ring, arcs, the Einstein Cross
+
+A mass in the foreground bends the light of a galaxy behind it.
+
+:::{dropdown} More
+The left sky shows the galaxy as it is, the right one what we see through the lens. Drag the galaxy (yellow) and the lens (blue), turn the knobs, or start from a preset: an Einstein ring, two images, a giant arc, the Einstein Cross. The thin lines are the critical curve, where the magnification diverges, and its map in the source plane, the caustic: as the galaxy crosses it, images are born or merge. Hover a pixel of the observed sky to see where its light comes from.
+:::
+
+*Uses: ImPlot, knobs, toggles*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/gravitational_lensing/gravitational_lensing.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/gravitational_lensing/gravitational_lensing.py)
+
+::::
+
 :::::

@@ -77,6 +77,11 @@ def _train(g: dict[str, Any], frame: int) -> None:
     g["state"].training = True
 
 
+def _einstein_cross(g: dict[str, Any], frame: int) -> None:
+    if frame == 2:
+        g["LAB"].start_preset(g["PRESETS"][3])
+
+
 def _today(g: dict[str, Any], frame: int) -> None:
     app = g["_app"]
     if frame == 240 and app is not None:  # the data have arrived: today, paused
@@ -230,6 +235,8 @@ SHOTS: dict[str, Shot] = {
     "explorables/rotor_dashboard.py": Shot(frames=120),
     "explorables/health_and_wealth.py": Shot(frames=300, action=_today, crop=(0.0, 0.07, 0.72, 0.77)),
     "explorables/medical_imaging/medical_imaging.py": Shot(crop=(0.0, 0.0, 1.0, 0.945)),  # 1300 x 812: 16:10
+    "explorables/gravitational_lensing/gravitational_lensing.py":
+        Shot(frames=120, action=_einstein_cross, crop=(0.265, 0.085, 1.0, 0.78)),  # the two skies, the Cross: 16:10
     "minimal_example.py": Shot(crop=(0.0, 0.0, 1.0, 0.62)),
     "webgl_background_shader.py": Shot(frames=120),
     # The immapp demos (source: demos_immapp)

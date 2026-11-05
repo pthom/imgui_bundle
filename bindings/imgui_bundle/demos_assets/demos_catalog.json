@@ -1290,6 +1290,26 @@
           "page": "",
           "video": "",
           "variants": []
+        },
+        {
+          "label": "Gravitational lensing: a ring, arcs, the Einstein Cross",
+          "filename": "explorables/gravitational_lensing/gravitational_lensing.py",
+          "stem": "gravitational_lensing",
+          "where": "both",
+          "text": "A mass in the foreground bends the light of a galaxy behind it. The left sky shows the galaxy as it is, the right one\nwhat we see through the lens. Drag the galaxy (yellow) and the lens (blue), turn the knobs, or start from a preset: an\nEinstein ring, two images, a giant arc, the Einstein Cross. The thin lines are the critical curve, where the\nmagnification diverges, and its map in the source plane, the caustic: as the galaxy crosses it, images are born or\nmerge. Hover a pixel of the observed sky to see where its light comes from.",
+          "summary": "A mass in the foreground bends the light of a galaxy behind it.",
+          "uses": [
+            "ImPlot",
+            "knobs",
+            "toggles"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/gravitational_lensing/gravitational_lensing.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/gravitational_lensing.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
         }
       ]
     }
