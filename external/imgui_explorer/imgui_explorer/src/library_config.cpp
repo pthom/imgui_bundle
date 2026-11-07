@@ -208,8 +208,8 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.demoWindowName = "ImGuiKit Demo";
         cfg.introText = "ImGuiKit - Small, standalone additions to Dear ImGui";
         cfg.noteMarkdown = "> [!NOTE]\n"
-                           "> **A preview.** ImGuiKit comes with the next release of Dear ImGui Bundle (after 1.93.0); "
-                           "its API may still change.";
+                           "> **This is a preview**<br>"
+                           "ImGuiKit comes with the next release of Dear ImGui Bundle (after 1.93.0); its API may still change.";
         cfg.apiModules = {"imgui_kit"};
         cfg.links = {
             {"Repository", "https://github.com/pthom/imgui_kit"},
