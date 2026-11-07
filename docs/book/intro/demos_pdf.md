@@ -198,6 +198,11 @@ it. Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, 
 
 ### ImGuiKit: the interactive manual
 
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_imgui_kit.jpg
+:alt: ImGuiKit: the interactive manual
+:width: 400px
+:::
+
 The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of
 each beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented
 switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual

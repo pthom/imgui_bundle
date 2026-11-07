@@ -239,6 +239,10 @@ Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in P
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_imgui_kit.jpg
+:alt: ImGuiKit: the interactive manual
+:::
+
 ### ImGuiKit: the interactive manual
 
 The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.
