@@ -107,6 +107,8 @@ The groups of vessel pixels smaller than this many pixels are dropped: they are 
 
 What the second view shows: each stage of the pipeline, in order, the vessels over the photograph (*Overlay*), or their measures (*Measure*).
 
+The switch above the views shows both, or one alone, larger. A phone shows one at a time.
+
 ### Measure
 
 The vessels' map becomes lines one pixel wide, its *skeleton*, cut at each branching into segments. Click a vessel: its segment shows in yellow, with its measures. The largest segments carry a number.

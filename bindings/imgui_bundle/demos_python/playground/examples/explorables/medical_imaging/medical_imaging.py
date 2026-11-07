@@ -64,7 +64,8 @@ POINTS_3D = 6000  # at most, on the region's surface
 NARROW_WIDTH_EM = 52  # under this width (a phone), everything goes in one column
 PINNED_MIN_HEIGHT_EM = 24  # a phone at least this tall keeps the viewer at the top, the controls scroll under it
 PINNED_VIEW_SHARE = 0.5  # then the view's share of the height
-VIEWS = ("Both", "Original", "Segmented", "3D")  # the viewer's switch (a phone shows one view at a time)
+VIEWS = ("Both", "Original", "Segmented", "3D")  # the CT viewer's switch (a phone shows one view at a time)
+RETINA_VIEWS = ("Both", "Photograph", "Processed")  # the retina viewer's switch
 CONTROLS_WIDTH_EM = 23
 HISTOGRAM_HEIGHT_EM = 7.5
 HISTOGRAM_BINS = np.arange(-1000, 1510, 10)  # HU
@@ -453,14 +454,20 @@ def gui_views(v: CtViewer, width: float, max_height: float, narrow: bool) -> Non
     take_click(v, "processed", v.processed_params)
 
 
-def gui_view_switch(v: CtViewer, narrow: bool) -> None:
-    """Both views, or one alone, larger, or the region in 3D (a phone shows one at a time)"""
-    names = list(VIEWS[1:] if narrow else VIEWS)
-    if v.view not in names:
-        v.view = "Segmented"
-    changed, i = imgui_kit.segmented_switch("##view", names.index(v.view), names)
+def gui_view_switch(views: Tuple[str, ...], current: str, narrow: bool) -> Tuple[bool, str]:
+    """Both views, or one alone, larger (a phone shows one at a time: the processed one, at first).
+    Returns (changed, the view)."""
+    names = list(views[1:] if narrow else views)
+    if current not in names:
+        current = names[1]
+    changed, i = imgui_kit.segmented_switch("##view", names.index(current), names)
+    return changed, names[i]
+
+
+def gui_ct_switch(v: CtViewer, narrow: bool) -> None:
+    changed, v.view = gui_view_switch(VIEWS, v.view, narrow)
     if changed:  # refreshed: a view hidden while the slice changed would show the old one
-        v.view, v.slice_changed = names[i], True
+        v.slice_changed = True
 
 
 def gui_one_view(v: CtViewer, width: float, max_size: float, narrow: bool) -> None:
@@ -660,7 +667,7 @@ def gui_ct(v: CtViewer) -> None:
         size = min(avail.x, avail.y * PINNED_VIEW_SHARE if pinned else em_size(40))
         if pinned:
             imgui.begin_child("viewer", ImVec2(0, 2 * line + size + views_chrome))
-        gui_view_switch(v, narrow=True)
+        gui_ct_switch(v, narrow=True)
         gui_one_view(v, avail.x, size, narrow=True)
         if pinned:  # the slider at the viewer's bottom, whatever the view: it stays under the finger
             imgui.set_cursor_pos_y(imgui.get_window_height() - imgui.get_frame_height())
@@ -689,7 +696,7 @@ def gui_ct(v: CtViewer) -> None:
 
     # The views, the slider under them (it moves the views and the plane in 3D at once), the window, and the credit
     imgui.begin_group()
-    gui_view_switch(v, narrow=False)
+    gui_ct_switch(v, narrow=False)
     below_views = 4 * line + em_size(HISTOGRAM_HEIGHT_EM) + 2 * imgui.get_text_line_height_with_spacing()
     max_height = imgui.get_content_region_avail().y - below_views - views_chrome
     if v.view == "Both":
@@ -836,6 +843,7 @@ class RetinaViewer:
         self.selected: Optional[int] = None
         self.measure_pending = False  # the segments wait until the knob is released (the skeleton takes a while)
         self.click = ViewClick()
+        self.view = "Both"  # the viewer's switch
         self.run()
 
     def run(self, with_measure: bool = True) -> None:
@@ -1011,35 +1019,61 @@ def gui_retina_credit() -> None:
     imgui.text_link_open_url("commons.wikimedia.org: the photograph", url)
 
 
-def gui_retina(r: RetinaViewer) -> None:
-    gui_intro("Retina")
-    narrow = imgui.get_content_region_avail().x < em_size(NARROW_WIDTH_EM)
-    if not narrow:
-        imgui.begin_child("retina_controls", ImVec2(em_size(CONTROLS_WIDTH_EM), 0))
-        imgui.separator_text("Vessels")
-        gui_retina_controls(r)
-        imgui.dummy(ImVec2(0, em_size(1)))
-        gui_retina_credit()
-        imgui.end_child()
+def gui_retina_views(r: RetinaViewer, width: float, max_size: float) -> None:
+    """The photograph and the processed view, side by side, or the one chosen in the switch, alone"""
+    params = (r.original_params, r.processed_params)
+    if r.view == "Both":
+        fit_views(params, width, max_size)
+    else:
+        set_views_size(params, min(width - imgui.get_frame_height(), max_size))
+    clicks = []
+    if r.view != "Processed":
+        immvision.image("Fundus photograph##retina", r.rgb, r.original_params)
+        clicks.append(r.click.take("original", r.original_params))
+    if r.view == "Both":
         imgui.same_line()
-    imgui.begin_group()
-    views_chrome = 2 * imgui.get_frame_height_with_spacing() + em_size(1)
-    max_height = em_size(40) if narrow else imgui.get_content_region_avail().y - views_chrome
-    fit_views((r.original_params, r.processed_params), imgui.get_content_region_avail().x, max_height)
-    immvision.image("Fundus photograph##retina", r.rgb, r.original_params)
-    clicks = [r.click.take("original", r.original_params)]
-    imgui.same_line()
-    immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
-    clicks.append(r.click.take("processed", r.processed_params))
-    r.processed_params.refresh_image = False
+    if r.view != "Photograph":
+        immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
+        clicks.append(r.click.take("processed", r.processed_params))
+        r.processed_params.refresh_image = False
     for clicked in clicks:
         if clicked is not None and r.stage == "Measure" and r.segments:
             r.select(*clicked)
-    imgui.end_group()
-    if narrow:
+
+
+def gui_retina(r: RetinaViewer) -> None:
+    gui_intro("Retina")
+    avail = imgui.get_content_region_avail()
+    views_chrome = 2 * imgui.get_frame_height_with_spacing() + em_size(1)  # the legend and the zoom buttons
+    switch_height = imgui.get_frame_height_with_spacing()
+    if avail.x < em_size(NARROW_WIDTH_EM):  # a phone: one view at a time, then the controls
+        pinned = avail.y >= em_size(PINNED_MIN_HEIGHT_EM)  # the viewer stays, the controls scroll under it
+        size = min(avail.x, avail.y * PINNED_VIEW_SHARE if pinned else em_size(40))
+        if pinned:
+            imgui.begin_child("retina_viewer", ImVec2(0, switch_height + size + views_chrome))
+        _, r.view = gui_view_switch(RETINA_VIEWS, r.view, narrow=True)
+        gui_retina_views(r, avail.x, size)
+        if pinned:
+            imgui.end_child()
+            imgui.begin_child("retina_controls")
         imgui.separator_text("Vessels")
         gui_retina_controls(r)
         gui_retina_credit()
+        if pinned:
+            imgui.end_child()
+        return
+
+    imgui.begin_child("retina_controls", ImVec2(em_size(CONTROLS_WIDTH_EM), 0))
+    imgui.separator_text("Vessels")
+    gui_retina_controls(r)
+    imgui.dummy(ImVec2(0, em_size(1)))
+    gui_retina_credit()
+    imgui.end_child()
+    imgui.same_line()
+    imgui.begin_group()
+    _, r.view = gui_view_switch(RETINA_VIEWS, r.view, narrow=False)
+    gui_retina_views(r, imgui.get_content_region_avail().x, imgui.get_content_region_avail().y - views_chrome)
+    imgui.end_group()
 
 
 # ======================================================================================================================
