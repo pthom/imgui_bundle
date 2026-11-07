@@ -16,6 +16,7 @@ def IMGUI_DEMO_MARKER(section: str) -> None:
 
 
 class _State:
+    font_size = 0.0
     slice = 37
     text = "An InputText fills the line too"
     preset = 0
@@ -34,11 +35,24 @@ def demo_em_units() -> None:
     IMGUI_DEMO_MARKER("Em units")
     if not imgui.collapsing_header("Em units"):
         return
-    imgui.text_wrapped("Sizes in em follow the font: this button is 8 em wide and 2 em high, on any screen.")
+    imgui.text_wrapped("Sizes in em follow the font: the first button is 8 em wide and 2 em high, on any screen. "
+                       "Change the font size: it grows with the text, as a standard button does.")
+    if state.font_size == 0.0:  # 0: the current size, unchanged
+        state.font_size = imgui.get_style().font_size_base
+    imgui.set_next_item_width(imgui_kit.em_size(12))
+    _, state.font_size = imgui.slider_float("Font size", state.font_size, 8.0, 40.0, "%.0f px")
+    imgui.same_line()
+    if imgui.button("Reset"):
+        state.font_size = imgui.get_style().font_size_base
+
+    imgui.push_font(None, state.font_size)
     imgui.button("8 x 2 em", imgui_kit.em_to_vec2(8, 2))
     imgui.same_line()
-    imgui_kit.help_marker("em_to_vec2(8, 2) gives the size in pixels. Change the font size: the button follows it.")
+    imgui.button("A standard button")
+    imgui.same_line()
+    imgui_kit.help_marker("em_to_vec2(8, 2) gives the size in pixels, from the current font size.")
     imgui.text(f"1 em = {imgui_kit.em_size():.1f} px")
+    imgui.pop_font()
 
 
 # =============================================================================
