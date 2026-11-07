@@ -143,7 +143,7 @@ Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_sys
 Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change the system's parameters and the gap between the two starting points; Reset starts them over.
 :::
 
-*Uses: ImPlot3D*
+*Uses: ImPlot3D, ImGuiKit*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp)
@@ -154,7 +154,7 @@ Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change
 
 ## Interactive manuals
 
-Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside.
+Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section by section, with the code beside.
 
 :::::{grid} 1 2 3 3
 
@@ -235,6 +235,22 @@ Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in P
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imanim) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp)
+
+::::
+
+::::{card}
+### ImGuiKit: the interactive manual
+
+The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.
+
+:::{dropdown} More
+Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+:::
+
+*Uses: ImGuiKit*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imguikit) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp)
 
 ::::
 
@@ -1366,7 +1382,7 @@ A real chest CT, explored as a radiologist would: its slices, its windows, and a
 Choose a window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the app measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not for diagnosis.
 :::
 
-*Uses: ImPlot, ImPlot3D, ImmVision, knobs, OpenCV*
+*Uses: ImPlot, ImPlot3D, ImmVision, knobs, ImGuiKit, OpenCV*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/medical_imaging/medical_imaging.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py)
 

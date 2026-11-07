@@ -223,6 +223,7 @@ SHOTS: dict[str, Shot] = {
     "manual_im_anim.py": Shot(test=_manual_section("ImAnimDemos", "Basic Animations", "Oscillator", "Easing Showcase",
                                                    "Color Tween (OKLAB)"),  # the last one at the top, followed
                               crop=MANUAL_CROP),
+    "manual_imgui_kit.py": Shot(test=_manual_section("ImGuiKit Demo", "Layout", "Label column"), crop=MANUAL_CROP),
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),

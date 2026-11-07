@@ -120,13 +120,13 @@ the system's parameters and the gap between the two starting points; Reset start
 
 *Python, C++*
 
-*Uses: ImPlot3D*
+*Uses: ImPlot3D, ImGuiKit*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/haiku_butterfly.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp)
 
 ## Interactive manuals
 
-Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside.
+Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section by section, with the code beside.
 
 ### Dear ImGui: the interactive manual
 
@@ -195,6 +195,19 @@ it. Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, 
 *Uses: ImAnim*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=imanim) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp)
+
+### ImGuiKit: the interactive manual
+
+The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of
+each beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented
+switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual
+for Dear ImGui and its libraries.
+
+*Python, C++*
+
+*Uses: ImGuiKit*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=imguikit) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp)
 
 ## Build an app
 
@@ -1145,7 +1158,7 @@ for diagnosis.
 
 *Python*
 
-*Uses: ImPlot, ImPlot3D, ImmVision, knobs, OpenCV*
+*Uses: ImPlot, ImPlot3D, ImmVision, knobs, ImGuiKit, OpenCV*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/medical_imaging/medical_imaging.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py)
 

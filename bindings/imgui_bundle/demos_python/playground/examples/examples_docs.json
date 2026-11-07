@@ -73,7 +73,8 @@
     "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,\nthen drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change\nthe system's parameters and the gap between the two starting points; Reset starts them over.",
     "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action.",
     "uses": [
-      "ImPlot3D"
+      "ImPlot3D",
+      "ImGuiKit"
     ],
     "cpp": true
   },
@@ -179,6 +180,7 @@
       "ImPlot3D",
       "ImmVision",
       "knobs",
+      "ImGuiKit",
       "OpenCV"
     ],
     "cpp": false
@@ -484,6 +486,15 @@
     "summary": "The animations of [ImAnim](https://github.com/SoufianeKHIAT/ImAnim), section by section, with the code of each beside it.",
     "uses": [
       "ImAnim"
+    ],
+    "cpp": true
+  },
+  "manual_imgui_kit.py": {
+    "title": "ImGuiKit: the interactive manual",
+    "text": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of\neach beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented\nswitch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual\nfor Dear ImGui and its libraries.",
+    "summary": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.",
+    "uses": [
+      "ImGuiKit"
     ],
     "cpp": true
   },

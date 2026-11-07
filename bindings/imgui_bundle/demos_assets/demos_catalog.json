@@ -119,7 +119,8 @@
           "text": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point,\nthen drift apart: chaos in action. Drawn in 3D with [ImPlot3D](https://github.com/brenocq/implot3d). Sliders change\nthe system's parameters and the gap between the two starting points; Reset starts them over.",
           "summary": "Two trajectories of the [Lorenz system](https://en.wikipedia.org/wiki/Lorenz_system) start almost at the same point, then drift apart: chaos in action.",
           "uses": [
-            "ImPlot3D"
+            "ImPlot3D",
+            "ImGuiKit"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp",
@@ -133,7 +134,7 @@
     },
     {
       "name": "Interactive manuals",
-      "about": "Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside.",
+      "about": "Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section by section, with the code beside.",
       "tip": "",
       "demos": [
         {
@@ -203,6 +204,24 @@
           "python_file": "bindings/imgui_bundle/demos_python/manuals/manual_im_anim.py",
           "cpp_file": "external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp",
           "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imanim",
+          "in_place": true,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
+          "label": "ImGuiKit: the interactive manual",
+          "filename": "manual_imgui_kit.py",
+          "stem": "manual_imgui_kit",
+          "where": "both",
+          "text": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of\neach beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented\nswitch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual\nfor Dear ImGui and its libraries.",
+          "summary": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.",
+          "uses": [
+            "ImGuiKit"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py",
+          "cpp_file": "external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp",
+          "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imguikit",
           "in_place": true,
           "page": "",
           "video": "",
@@ -1281,6 +1300,7 @@
             "ImPlot3D",
             "ImmVision",
             "knobs",
+            "ImGuiKit",
             "OpenCV"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py",

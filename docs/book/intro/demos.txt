@@ -42,7 +42,7 @@ The bundle in ten minutes: what it is, first apps, and a few lines that do a lot
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=haiku_implot_heart.py
   Run, C++: https://imgui-bundle.pages.dev/explorer/haiku_implot_heart.html
 - Butterfly effect, in a few lines: Two trajectories of the Lorenz system start almost at the same point, then drift apart: chaos in action. Drawn in 3D with ImPlot3D. Sliders change the system's parameters and the gap between the two starting points; Reset starts them over.
-  Uses: ImPlot3D
+  Uses: ImPlot3D, ImGuiKit
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/haiku_butterfly.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/haiku_butterfly.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=haiku_butterfly.py
@@ -50,7 +50,7 @@ The bundle in ten minutes: what it is, first apps, and a few lines that do a lot
 
 ## Interactive manuals
 
-Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section, with the code beside.
+Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section by section, with the code beside.
 
 - Dear ImGui: the interactive manual: Every widget and feature of Dear ImGui, section by section, with the Python and C++ code of each beside it. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
   Uses: ImGui
@@ -76,6 +76,12 @@ Dear ImGui, ImPlot, ImPlot3D and ImAnim: all their features, section by section,
   C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py
   Run, C++: https://pthom.github.io/imgui_explorer/?lib=imanim
+- ImGuiKit: the interactive manual: The additions of ImGuiKit to Dear ImGui, section by section, with the code of each beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+  Uses: ImGuiKit
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp
+  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py
+  Run, C++: https://pthom.github.io/imgui_explorer/?lib=imguikit
 
 ## Build an app
 
@@ -367,7 +373,7 @@ Dear ImGui Bundle excels at real-time scientific visualization: 60 frames per se
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/health_and_wealth.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/health_and_wealth.py
 - Medical imaging: a chest CT, its windows, a segmentation: A real chest CT, explored as a radiologist would: its slices, its windows, and a region grown from a click. Choose a window preset or drag its bounds on the histogram. Click a structure: the region grows across the slices, and the app measures it and shows it in 3D. A second tab finds the blood vessels of a retina. For research and teaching, not for diagnosis.
-  Uses: ImPlot, ImPlot3D, ImmVision, knobs, OpenCV
+  Uses: ImPlot, ImPlot3D, ImmVision, knobs, ImGuiKit, OpenCV
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/medical_imaging/medical_imaging.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=explorables/medical_imaging/medical_imaging.py
 - Gravitational lensing: a ring, arcs, the Einstein Cross: A mass in the foreground bends the light of a galaxy behind it. The left sky shows the galaxy as it is, the right one what we see through the lens. Drag the galaxy (yellow) and the lens (blue), turn the knobs, or start from a preset: an Einstein ring, two images, a giant arc, the Einstein Cross. The thin lines are the critical curve, where the magnification diverges, and its map in the source plane, the caustic: as the galaxy crosses it, images are born or merge. Hover a pixel of the observed sky to see where its light comes from.

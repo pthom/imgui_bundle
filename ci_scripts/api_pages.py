@@ -188,10 +188,11 @@ LIBRARIES = [
             [("imgui_bundle.imgui_tex_inspect", "imgui_tex_inspect.pyi")],
             uses=["Tex Inspect"]),
     Library("imgui_explorer", "Dear ImGui Explorer",
-            "The interactive manuals of Dear ImGui, ImPlot, ImPlot3D and ImAnim, as a widget.",
+            "The interactive manuals of Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit, as a widget.",
             "https://github.com/pthom/imgui_explorer", "intro/interactive_manuals",
             [("imgui_bundle.imgui_explorer", "imgui_explorer.pyi")],
-            demos=["manual_imgui.py", "manual_implot.py", "manual_implot3d.py", "manual_im_anim.py"]),
+            demos=["manual_imgui.py", "manual_implot.py", "manual_implot3d.py", "manual_im_anim.py",
+                   "manual_imgui_kit.py"]),
     Library("webgl", "WebGL helpers",
             "WebGL from Python, in Pyodide.",
             "https://github.com/pthom/imgui_bundle", "python/python_pyodide",
@@ -1635,9 +1636,10 @@ def write_llms_explorers() -> None:
            "demos (https://imgui-bundle.pages.dev/explorer/#demos), and the manuals of the ImGui Explorer below. Each "
            f"demo of {LLMS_DEMOS_URL} gives the link where its C++ version runs.", "",
            "", "## Dear ImGui Explorer", "", EXPLORER_URL, "",
-           "The demos of Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section, each beside its code, with the "
+           "The demos of Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit, section by section, each beside its code, "
+           "with the "
            "API at hand. Its links:",
-           "- a library: ?lib=imgui (or implot, implot3d, imanim)",
+           "- a library: ?lib=imgui (or implot, implot3d, imanim, imguikit)",
            "- a section: ?lib=implot&demo=Plots%2FLine%20Plots, the section's path as listed below, URL-encoded (or "
            "words of it, e.g. &demo=line%20plots: the first section whose path holds them all)",
            "- the code in Python: add &lang=python (C++ by default)", "",

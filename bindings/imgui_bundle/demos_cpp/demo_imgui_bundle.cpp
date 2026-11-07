@@ -60,7 +60,7 @@ void gui_demo_immvision_process();
 
 namespace
 {
-    // The ImPlot manual and the ImPlot3D manual, each alone (as in Python)
+    // The ImPlot, ImPlot3D and ImGuiKit manuals, each alone (as in Python)
     void manual_implot()
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
@@ -74,6 +74,15 @@ namespace
     {
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
         ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImPlot3D, false);
+#else
+        ImGui::Text("Demo unavailable, because Dear ImGui Manual library is not included in this build.");
+#endif
+    }
+
+    void manual_imgui_kit()
+    {
+#ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
+        ShowImGuiExplorerGui_Cpp(ImGuiExplorerLibrary::ImGuiKit, false);
 #else
         ImGui::Text("Demo unavailable, because Dear ImGui Manual library is not included in this build.");
 #endif
@@ -117,7 +126,8 @@ namespace
     // The idle rate of a demo in place that needs its own, as its Python main() sets it: the manuals' demos animate,
     // and are not ours to mark as live (HelloImGui::SetItemIsLive)
     const std::map<std::string, float> FPS_IDLE_IN_PLACE = {
-        {"manual_imgui", 30.f}, {"manual_implot", 30.f}, {"manual_implot3d", 30.f}, {"manual_im_anim", 30.f}};
+        {"manual_imgui", 30.f}, {"manual_implot", 30.f}, {"manual_implot3d", 30.f}, {"manual_im_anim", 30.f},
+        {"manual_imgui_kit", 30.f}};
 
     bool StatusInMenu() { return ImGui::GetIO().DisplaySize.x < HelloImGui::EmSize(STATUS_IN_MENU_BELOW); }
 
@@ -228,7 +238,7 @@ namespace
                 {"demo_node_editor_image_pipeline", gui_demo_node_editor_image_pipeline},
                 {"manual_imgui", gui_demo_imgui_show_demo_window},
                 {"manual_implot", manual_implot}, {"manual_implot3d", manual_implot3d},
-                {"manual_im_anim", gui_demo_im_anim},
+                {"manual_im_anim", gui_demo_im_anim}, {"manual_imgui_kit", manual_imgui_kit},
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
                 {"demo_immvision_display", gui_demo_immvision_display},
                 {"demo_immvision_inspector", gui_demo_immvision_inspector},
