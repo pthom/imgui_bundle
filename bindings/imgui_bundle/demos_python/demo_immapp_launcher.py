@@ -15,7 +15,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Optional, Tuple
 
-from imgui_bundle import imgui, immapp, hello_imgui, rich_md, im_anim, icons_fontawesome_4 as fa
+from imgui_bundle import imgui, imgui_kit, immapp, hello_imgui, rich_md, im_anim, icons_fontawesome_4 as fa
 from imgui_bundle import ImVec2, ImVec4, IM_COL32, em_size
 from imgui_bundle.demos_python.demo_utils.api_demos import (
     main_python_package_folder, demos_python_folder, demos_cpp_folder, read_code, can_run_subprocess, spawn_demo_file,
@@ -356,59 +356,14 @@ def draw_tags(tags: list[str], bottom_right: ImVec2, width: float, draw_list: Op
     imgui.pop_font()
 
 
-def sign_button(str_id: str, plus: bool) -> bool:
-    """A small button with a minus or a plus drawn at its center (an icon font's glyph sits a little high)"""
-    height = imgui.get_font_size()
-    imgui.push_style_var(imgui.StyleVar_.frame_padding, ImVec2(imgui.get_style().frame_padding.x, 0))  # as small_button
-    clicked = imgui.button(f"##{str_id}", ImVec2(height * 1.6, height))
-    imgui.pop_style_var()
-    a, b = imgui.get_item_rect_min(), imgui.get_item_rect_max()
-    cx, cy = round((a.x + b.x) / 2), round((a.y + b.y) / 2)
-    half, thickness = round(height * 0.25), max(1.0, round(height * 0.12))
-    draw_list, color = imgui.get_window_draw_list(), imgui.get_color_u32(imgui.Col_.text)
-    draw_list.add_rect_filled(ImVec2(cx - half, cy - thickness / 2), ImVec2(cx + half, cy + thickness / 2), color)
-    if plus:
-        draw_list.add_rect_filled(ImVec2(cx - thickness / 2, cy - half), ImVec2(cx + thickness / 2, cy + half), color)
-    return clicked
-
-
-_switch_press_x: dict[str, float] = {}  # where the last press on each segmented switch was
-
-
 def segmented_switch(str_id: str, labels: list[str], current: int) -> int:
-    """A segmented control, as the ImGui Explorer's "Demo | Code": one rounded frame, the selected part filled.
-    Returns the part selected"""
-    em = em_size()
-    widths = [imgui.calc_text_size(label).x + em * 1.6 for label in labels]
-    p0 = imgui.get_cursor_screen_pos()
-    p1 = ImVec2(p0.x + sum(widths), p0.y + em * 1.5)
-    clicked = imgui.invisible_button(f"##{str_id}", p1 - p0)
-    if imgui.is_item_activated():  # the press, rather than the release: a touch screen may not report the latter
-        _switch_press_x[str_id] = imgui.get_mouse_pos().x
-    lefts = [p0.x + sum(widths[:i]) for i in range(len(labels))]
-
-    def part_at(x: float) -> int:
-        return max((i for i, left in enumerate(lefts) if x >= left), default=0)
-
-    if clicked and str_id in _switch_press_x:
-        current = part_at(_switch_press_x[str_id])
-    draw_list, rounding = imgui.get_window_draw_list(), (p1.y - p0.y) * 0.5
-
-    def fill(i: int, color: int) -> None:
-        corners = ((imgui.ImDrawFlags_.round_left if i == 0 else 0)
-                   | (imgui.ImDrawFlags_.round_right if i == len(labels) - 1 else 0))
-        draw_list.add_rect_filled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
-                                  rounding if corners else 0.0, corners or imgui.ImDrawFlags_.round_none)
-
-    draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
-    if imgui.is_item_hovered() and part_at(imgui.get_mouse_pos().x) != current:
-        fill(part_at(imgui.get_mouse_pos().x), imgui.get_color_u32(imgui.Col_.frame_bg_hovered))
-    fill(current, imgui.get_color_u32(imgui.Col_.button_active))
-    draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.border), rounding)
-    for i, label in enumerate(labels):
-        size = imgui.calc_text_size(label)
-        draw_list.add_text(ImVec2(lefts[i] + (widths[i] - size.x) / 2, p0.y + (p1.y - p0.y - size.y) / 2),
-                           imgui.get_color_u32(imgui.Col_.text), label)
+    """imgui_kit's segmented switch, as a pill 1.5 em high. Returns the part selected"""
+    height = em_size(1.5)
+    imgui.push_style_var(imgui.StyleVar_.frame_padding,
+                         ImVec2(imgui.get_style().frame_padding.x, (height - imgui.get_font_size()) / 2))
+    imgui.push_style_var(imgui.StyleVar_.frame_rounding, height / 2)
+    _, current = imgui_kit.segmented_switch(f"##{str_id}", current, labels)
+    imgui.pop_style_var(2)
     return current
 
 
@@ -629,7 +584,9 @@ class Launcher:
         for direction, tooltip in [(-1, "Smaller thumbnails"), (1, "Larger thumbnails")]:
             target = self.next_card_width(direction)
             imgui.begin_disabled(target is None)
-            if sign_button(f"thumbnails {direction}", direction > 0) and target is not None:
+            icon = imgui_kit.Icon_.plus if direction > 0 else imgui_kit.Icon_.minus
+            size = ImVec2(imgui.get_font_size() * 1.6, imgui.get_font_size())
+            if imgui_kit.icon_button(f"##thumbnails {direction}", icon, size) and target is not None:
                 self.scroll_anchor = self.top_card()  # it stays where it is, while the rows change
                 self.card_width = target
             imgui.end_disabled()
