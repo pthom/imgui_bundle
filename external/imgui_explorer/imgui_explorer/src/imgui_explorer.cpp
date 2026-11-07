@@ -6,6 +6,7 @@
 #include "im_anim.h"
 #endif
 #include "imgui_rich_md/rich_md.h"
+#include "imgui_kit/imgui_kit.h"
 #include "demo_code_viewer.h"
 #include "imgui_internal.h"
 #include "library_config.h"
@@ -478,63 +479,24 @@ namespace
         }
     }
 
-    // One pane at a time: a segmented control "Demo | Code", whose selected half is filled
+    // One pane at a time: a switch "Demo | Code", 1.5 em high (a finger's target)
     void GuiDemoCodeSwitch()
     {
-        ImVec2 size = HelloImGui::EmToVec2(7.f, 1.5f);  // its words with some air: the room left goes to the search
-        ImVec2 p0 = ImGui::GetCursorScreenPos();
-        ImVec2 p1(p0.x + size.x, p0.y + size.y);
-        float xMid = p0.x + size.x * 0.5f;
-        // The position of the press, rather than of the release: a touch screen may not report the latter
-        if (ImGui::InvisibleButton("##demo_code_switch", size))
-            GNarrowLayout_ShowsCode = ImGui::GetIO().MouseClickedPos[0].x >= xMid;
+        const char* labels[2] = {"Demo", "Code"};
+        int current = GNarrowLayout_ShowsCode ? 1 : 0;
+        float padY = (HelloImGui::EmSize(1.5f) - ImGui::GetFontSize()) * 0.5f;
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, padY));
+        if (ImGuiKit::SegmentedSwitch("##demo_code_switch", &current, labels, 2))
+            GNarrowLayout_ShowsCode = (current == 1);
+        ImGui::PopStyleVar();
         if (GNarrowLayout_ShowsCode)
             GNarrowLayout_CodeSeen = true;
-
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        float rounding = size.y * 0.5f;
-        auto fillHalf = [&](bool codeHalf, ImGuiCol col)
-        {
-            if (codeHalf)
-                drawList->AddRectFilled(ImVec2(xMid, p0.y), p1, ImGui::GetColorU32(col), rounding,
-                                        ImDrawFlags_RoundRight);
-            else
-                drawList->AddRectFilled(p0, ImVec2(xMid, p1.y), ImGui::GetColorU32(col), rounding,
-                                        ImDrawFlags_RoundLeft);
-        };
-        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
-        if (ImGui::IsItemHovered())
-        {
-            bool overCode = ImGui::GetIO().MousePos.x >= xMid;
-            if (overCode != GNarrowLayout_ShowsCode)
-                fillHalf(overCode, ImGuiCol_FrameBgHovered);
-        }
-        fillHalf(GNarrowLayout_ShowsCode, ImGuiCol_ButtonActive);
-        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Border), rounding);
-
-        const char* labels[2] = {"Demo", "Code"};
-        for (int i = 0; i < 2; ++i)
-        {
-            ImVec2 textSize = ImGui::CalcTextSize(labels[i]);
-            ImVec2 textPos(p0.x + size.x * 0.5f * (float)i + (size.x * 0.5f - textSize.x) * 0.5f,
-                           p0.y + (size.y - textSize.y) * 0.5f);
-            drawList->AddText(textPos, ImGui::GetColorU32(ImGuiCol_Text), labels[i]);
-        }
     }
 
-    // A zoom button, its "-" or "+" drawn at its center (the icon font's minus sits off center)
+    // A zoom button, 2 x 1.5 em, its "-" or "+" drawn at its center
     bool ZoomButton(const char* id, bool plus)
     {
-        bool clicked = ImGui::Button(id, HelloImGui::EmToVec2(2.f, 1.5f));
-        ImVec2 mi = ImGui::GetItemRectMin(), ma = ImGui::GetItemRectMax();
-        ImVec2 c((mi.x + ma.x) * 0.5f, (mi.y + ma.y) * 0.5f);
-        float h = ImGui::GetFontSize() * 0.35f, t = ImGui::GetFontSize() * 0.09f;  // the half length and thickness
-        ImU32 col = ImGui::GetColorU32(ImGuiCol_Text);
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        drawList->AddRectFilled(ImVec2(c.x - h, c.y - t), ImVec2(c.x + h, c.y + t), col);
-        if (plus)
-            drawList->AddRectFilled(ImVec2(c.x - t, c.y - h), ImVec2(c.x + t, c.y + h), col);
-        return clicked;
+        return ImGuiKit::IconButton(id, plus ? ImGuiKitIcon_Plus : ImGuiKitIcon_Minus, HelloImGui::EmToVec2(2.f, 1.5f));
     }
 
     // The "..." button of a small screen, and its menu: the library's intro and links, then the status bar's content
