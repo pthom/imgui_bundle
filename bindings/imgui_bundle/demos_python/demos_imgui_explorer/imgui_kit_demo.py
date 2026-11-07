@@ -30,6 +30,9 @@ class _State:
     unit = 1
     period = 1
     eq = [0.3, 0.6, 0.45]
+    labels_align = 0
+    volume = 0.5
+    muted = False
 
 
 state = _State()
@@ -49,47 +52,33 @@ def demo_toolbar() -> None:
             state.app_colors.append(imgui.ImVec4(c.x, c.y, c.z, c.w))
         state.app_rounding = style.frame_rounding
 
-    # First line: the theme
-    imgui.align_text_to_frame_padding()
-    imgui.text("Theme")
-    imgui.same_line()
-    changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
-    if changed:
-        if state.theme == 0:
-            for i, c in enumerate(state.app_colors):
-                style.set_color_(i, c)
-        elif state.theme == 1:
-            imgui.style_colors_dark()
-        elif state.theme == 2:
-            imgui.style_colors_light()
-        else:
-            imgui.style_colors_classic()
+    # Each row: a label, then its widgets, aligned at the widest label
+    with imgui_kit.label_column("toolbar"):
+        imgui_kit.label("Theme")
+        changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
+        if changed:
+            if state.theme == 0:
+                for i, c in enumerate(state.app_colors):
+                    style.set_color_(i, c)
+            elif state.theme == 1:
+                imgui.style_colors_dark()
+            elif state.theme == 2:
+                imgui.style_colors_light()
+            else:
+                imgui.style_colors_classic()
 
-    # Second line: the sizes (its parts flow to a new line on a narrow screen)
-    with imgui_kit.flow("sizes"):
-        imgui_kit.flow_next()
-        imgui.begin_group()
-        imgui.align_text_to_frame_padding()
-        imgui.text("Font size")
-        imgui.same_line()
+        imgui_kit.label("Font size")
         imgui.set_next_item_width(imgui_kit.em_size(8))
         _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "%.0f px")
-        imgui.end_group()
 
-        imgui_kit.flow_next()
-        imgui.begin_group()
-        imgui.align_text_to_frame_padding()
-        imgui.text("Frame rounding")
-        imgui.same_line()
+        imgui_kit.label("Frame rounding")
         imgui.set_next_item_width(imgui_kit.em_size(8))
         _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0, "%.0f px")
         imgui.same_line()
         imgui_kit.help_marker("The style's frame_rounding: imgui.get_style().frame_rounding. Buttons, sliders, input "
                               "fields and the segmented switch round their corners with it. 0 gives square frames; "
                               "half the frame's height gives a pill.")
-        imgui.end_group()
-
-        imgui_kit.flow_next()
+        imgui.same_line()
         if imgui.button("Reset"):  # the application's font size and frame rounding
             state.font_size = style.font_size_base
             style.frame_rounding = state.app_rounding
@@ -182,6 +171,24 @@ def demo_column() -> None:
     imgui.tree_pop()
 
 
+def demo_label_column() -> None:
+    IMGUI_DEMO_MARKER("Layout/Label column")
+    if not imgui.tree_node("Label column"):
+        return
+    imgui.text_wrapped("Labels on the left, and the widgets after them aligned at the widest label. "
+                       "After its label, a row is a normal line: same_line() adds widgets to it.")
+    with imgui_kit.label_column("audio", 0.0 if state.labels_align == 0 else 1.0):
+        imgui_kit.label("Labels")
+        _, state.labels_align = imgui_kit.segmented_switch("##labels_align", state.labels_align, ["Left", "Right"])
+        imgui_kit.label("Volume")
+        _, state.volume = imgui.slider_float("##volume", state.volume, 0.0, 1.0)
+        imgui_kit.label("Output")
+        _, state.muted = imgui.checkbox("Muted", state.muted)
+        imgui.same_line()
+        imgui.button("Test sound")
+    imgui.tree_pop()
+
+
 def demo_flow() -> None:
     IMGUI_DEMO_MARKER("Layout/Flow")
     if not imgui.tree_node("Flow"):
@@ -210,6 +217,7 @@ def demo_layout() -> None:
     demo_fill_row()
     demo_aligned_group()
     demo_column()
+    demo_label_column()
     demo_flow()
 
 

@@ -164,6 +164,33 @@ def begin_column(str_id: str) -> None:
 def end_column() -> None:
     pass
 
+# Label column: labels on the left, and the widgets after them aligned, at the widest label (of the previous frame).
+# Label() starts a row; the rest of the row is a normal line.
+# labels_align_x: 0.0 = left-aligned labels, 1.0 = right-aligned (as the x of the style's ButtonTextAlign).
+#
+#     Volume   [=======o========]
+#     Output   [x] Muted  [Test sound]
+#
+#     ImGuiKit::BeginLabelColumn("audio");
+#     ImGuiKit::Label("Volume");
+#     ImGui::SliderFloat("##volume", &volume, 0.0, 1.0);
+#     ImGuiKit::Label("Output");
+#     ImGui::Checkbox("Muted", &muted);
+#     ImGui::SameLine();
+#     ImGui::Button("Test sound");
+#     ImGuiKit::EndLabelColumn();
+# IMGUI_API void   BeginLabelColumn(const char* str_id, float labels_align_x = 0.0f);    /* original C++ signature */
+def begin_label_column(str_id: str, labels_align_x: float = 0.0) -> None:
+    pass
+
+# IMGUI_API void   Label(const char* text);    /* original C++ signature */
+def label(text: str) -> None:
+    pass
+
+# IMGUI_API void   EndLabelColumn();    /* original C++ signature */
+def end_label_column() -> None:
+    pass
+
 # Flow: items on the same line while they fit, then on the next one, as words in a paragraph.
 # Call FlowNext() before each item (the first one too). An item wider than the line takes a line of its own.
 #
@@ -299,6 +326,11 @@ def aligned_group(str_id: str, align_x: float) -> _BlockContext:
 def column(str_id: str) -> _BlockContext:
     """A column, as a context manager: `begin_column()`, then `end_column()`. The aligned groups inside it align
     within its width."""
+    ...
+
+def label_column(str_id: str, labels_align_x: float = 0.0) -> _BlockContext:
+    """A label column, as a context manager: `begin_label_column()`, then `end_label_column()`. Call `label(text)`
+    at the start of each row."""
     ...
 
 def flow(str_id: str) -> _BlockContext:

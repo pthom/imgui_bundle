@@ -104,6 +104,15 @@ void py_init_module_imgui_kit(nb::module_& m)
     m.def("end_column",
         ImGuiKit::EndColumn);
 
+    m.def("begin_label_column",
+        ImGuiKit::BeginLabelColumn, nb::arg("str_id"), nb::arg("labels_align_x") = 0.0f);
+
+    m.def("label",
+        ImGuiKit::Label, nb::arg("text"));
+
+    m.def("end_label_column",
+        ImGuiKit::EndLabelColumn);
+
     m.def("begin_flow",
         ImGuiKit::BeginFlow, nb::arg("str_id"));
 
