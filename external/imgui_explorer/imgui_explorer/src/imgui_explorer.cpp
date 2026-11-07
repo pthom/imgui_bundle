@@ -769,6 +769,8 @@ namespace {
                 if (!mode.narrow && GDemoMarker_FlagFollowSource && IsFollowSourceApplicable())
                     ImGui::TextWrapped("Open a section of the demo, or hover a widget in it: the code at the right "
                                        "shows its source.");
+                if (const std::string& note = GetCurrentLibrary().noteMarkdown; !note.empty())
+                    RichMd::Render(note.c_str());
                 // Both panes shown (a desktop): the search of the demos, under the hint (a phone has it in its top bar)
                 if (!mode.narrow)
                     DemoCodeViewer_SearchField(-FLT_MIN, true);

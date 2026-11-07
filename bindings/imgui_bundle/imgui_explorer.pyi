@@ -35,8 +35,10 @@ class ImGuiExplorerLibrary(enum.IntEnum):
     implot = enum.auto()  # (= 1)
     # ImPlot3D,     /* original C++ signature */
     implot3_d = enum.auto()  # (= 2)
-    # ImAnim }    /* original C++ signature */
+    # ImAnim,     /* original C++ signature */
     im_anim = enum.auto()  # (= 3)
+    # ImGuiKit }    /* original C++ signature */
+    imgui_kit = enum.auto()  # (= 4)
 
 # void SetImGuiExplorerLibraries(const std::vector<ImGuiExplorerLibrary>& libraries);    /* original C++ signature */
 def set_imgui_explorer_libraries(libraries: List[ImGuiExplorerLibrary]) -> None:

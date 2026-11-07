@@ -39,6 +39,7 @@ struct LibraryConfig {
     std::string introText;                                       // Plain text intro for the library (e.g. "Dear ImGui")
     std::vector<std::pair<std::string, std::string>> links;      // {label, url} pairs shown in the top toolbar
     std::vector<std::string> apiModules;                         // The modules of the API index (demo_code/api_index/<module>.json)
+    std::string noteMarkdown;                                    // Optional: a Markdown note above the demo (a preview...)
 };
 
 // Get all library configurations
