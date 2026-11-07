@@ -11,6 +11,7 @@
 #include "ImAnim/im_anim.h"
 #include "nlohmann/json.hpp"
 #include "demo_utils/api_demos.h"
+#include "imgui_kit/imgui_kit.h"
 
 #include <algorithm>
 #include <cctype>
@@ -98,27 +99,6 @@ namespace
         return s.size() >= suffix.size() && s.compare(s.size() - suffix.size(), suffix.size(), suffix) == 0;
     }
 
-    // The text, cut at a word and ended with an ellipsis, so that it takes at most these lines once wrapped
-    std::string Fit(const std::string& text, float width, int lines)
-    {
-        float maxHeight = lines * ImGui::GetTextLineHeight() + 1.f;
-        if (ImGui::CalcTextSize(text.c_str(), nullptr, false, width).y <= maxHeight)
-            return text;
-        std::istringstream stream(text);
-        std::vector<std::string> words;
-        std::string word;
-        while (stream >> word)
-            words.push_back(word);
-        auto joined = [&words]() {
-            std::string r;
-            for (const auto& w : words)
-                r += (r.empty() ? "" : " ") + w;
-            return r + "\xe2\x80\xa6";  // …
-        };
-        while (!words.empty() && ImGui::CalcTextSize(joined().c_str(), nullptr, false, width).y > maxHeight)
-            words.pop_back();
-        return joined();
-    }
 
     // Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part)
     void DrawTags(const std::vector<std::string>& tags, ImVec2 bottomRight, float width,
@@ -148,68 +128,16 @@ namespace
         ImGui::PopFont();
     }
 
-    // A small button with a minus or a plus drawn at its center (an icon font's glyph sits a little high)
-    bool SignButton(const char* strId, bool plus)
-    {
-        float height = ImGui::GetFontSize();
-        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(ImGui::GetStyle().FramePadding.x, 0));  // as SmallButton
-        bool clicked = ImGui::Button((std::string("##") + strId).c_str(), ImVec2(height * 1.6f, height));
-        ImGui::PopStyleVar();
-        ImVec2 a = ImGui::GetItemRectMin(), b = ImGui::GetItemRectMax();
-        float cx = std::round((a.x + b.x) / 2), cy = std::round((a.y + b.y) / 2);
-        float half = std::round(height * 0.25f), thickness = std::max(1.f, std::round(height * 0.12f));
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        ImU32 color = ImGui::GetColorU32(ImGuiCol_Text);
-        drawList->AddRectFilled(ImVec2(cx - half, cy - thickness / 2), ImVec2(cx + half, cy + thickness / 2), color);
-        if (plus)
-            drawList->AddRectFilled(ImVec2(cx - thickness / 2, cy - half), ImVec2(cx + thickness / 2, cy + half), color);
-        return clicked;
-    }
 
-    // A segmented control, as the ImGui Explorer's "Demo | Code": one rounded frame, the selected part filled.
-    // Returns the part selected
+    // imgui_kit's segmented switch, as a pill 1.5 em high. Returns the part selected
     int SegmentedSwitch(const char* strId, const std::vector<const char*>& labels, int current)
     {
-        float em = Em();
-        std::vector<float> widths, lefts;
-        ImVec2 p0 = ImGui::GetCursorScreenPos();
-        float x = p0.x;
-        for (const char* label : labels)
-        {
-            lefts.push_back(x);
-            widths.push_back(ImGui::CalcTextSize(label).x + em * 1.6f);
-            x += widths.back();
-        }
-        ImVec2 p1(x, p0.y + em * 1.5f);
-        auto partAt = [&](float px) {
-            int part = 0;
-            for (int i = 0; i < (int)lefts.size(); i++)
-                if (px >= lefts[i])
-                    part = i;
-            return part;
-        };
-        // The position of the press, rather than of the release: a touch screen may not report the latter
-        if (ImGui::InvisibleButton((std::string("##") + strId).c_str(), ImVec2(p1.x - p0.x, p1.y - p0.y)))
-            current = partAt(ImGui::GetIO().MouseClickedPos[0].x);
-        ImDrawList* drawList = ImGui::GetWindowDrawList();
-        float rounding = (p1.y - p0.y) * 0.5f;
-        auto fill = [&](int i, ImU32 color) {
-            ImDrawFlags corners = (i == 0 ? ImDrawFlags_RoundLeft : 0)
-                                  | (i == (int)labels.size() - 1 ? ImDrawFlags_RoundRight : 0);
-            drawList->AddRectFilled(ImVec2(lefts[i], p0.y), ImVec2(lefts[i] + widths[i], p1.y), color,
-                                    corners ? rounding : 0.f, corners ? corners : ImDrawFlags_RoundNone);
-        };
-        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_FrameBg), rounding);
-        if (ImGui::IsItemHovered() && partAt(ImGui::GetMousePos().x) != current)
-            fill(partAt(ImGui::GetMousePos().x), ImGui::GetColorU32(ImGuiCol_FrameBgHovered));
-        fill(current, ImGui::GetColorU32(ImGuiCol_ButtonActive));
-        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Border), rounding);
-        for (int i = 0; i < (int)labels.size(); i++)
-        {
-            ImVec2 size = ImGui::CalcTextSize(labels[i]);
-            drawList->AddText(ImVec2(lefts[i] + (widths[i] - size.x) / 2, p0.y + (p1.y - p0.y - size.y) / 2),
-                              ImGui::GetColorU32(ImGuiCol_Text), labels[i]);
-        }
+        float height = Em() * 1.5f;
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,
+                            ImVec2(ImGui::GetStyle().FramePadding.x, (height - ImGui::GetFontSize()) * 0.5f));
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, height * 0.5f);
+        ImGuiKit::SegmentedSwitch((std::string("##") + strId).c_str(), &current, labels.data(), (int)labels.size());
+        ImGui::PopStyleVar(2);
         return current;
     }
 
@@ -384,7 +312,7 @@ void ThemeSwitch()
         ApplyThemeKeepingTweaks(DARK_THEME);
     else if (picked == 1 && current != 1)
         ApplyThemeKeepingTweaks(LIGHT_THEME);
-    else if (picked == 2 && ImGui::IsItemDeactivated() && ImGui::IsItemHovered())  // "...", pressed again or not
+    else if (picked == 2 && ImGui::IsItemActivated())  // "...", at its press (the switch changes at the press)
         ImGui::OpenPopup("##themes");
     ImGui::SetItemTooltip("The theme: dark, light, or one of all the themes");
     if (ImGui::BeginPopup("##themes"))
@@ -661,7 +589,7 @@ void DemoLauncher::ThumbnailSize()
 {
     const char* label = "Thumbnail size";
     const ImGuiStyle& style = ImGui::GetStyle();
-    float buttonWidth = ImGui::GetFontSize() * 1.6f;  // SignButton's
+    float buttonWidth = ImGui::GetFontSize() * 1.6f;  // the thumbnails' minus and plus buttons
     float width = ImGui::CalcTextSize(label).x + 2 * buttonWidth + 4 * style.ItemSpacing.x;
     if (width > ImGui::GetContentRegionAvail().x)
         ImGui::NewLine();
@@ -673,7 +601,9 @@ void DemoLauncher::ThumbnailSize()
     {
         std::optional<float> target = NextCardWidth(direction);
         ImGui::BeginDisabled(!target.has_value());
-        if (SignButton(("thumbnails " + std::to_string(direction)).c_str(), direction > 0) && target)
+        ImGuiKitIcon icon = direction > 0 ? ImGuiKitIcon_Plus : ImGuiKitIcon_Minus;
+        ImVec2 size(ImGui::GetFontSize() * 1.6f, ImGui::GetFontSize());
+        if (ImGuiKit::IconButton(("##thumbnails " + std::to_string(direction)).c_str(), icon, size) && target)
         {
             _scrollAnchor = TopCard();  // it stays where it is, while the rows change
             _cardWidth = *target;
@@ -899,12 +829,12 @@ void DemoLauncher::Card(const DemoEntry& demo, float width)
              width - Em(0.8f), nullptr, textScale);
     ImGui::SetCursorPos(ImVec2(padding, ImGui::GetCursorPosY() + Em(0.4f)));
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
-    ImGui::TextUnformatted(Fit(demo.label, width - 2 * padding, 1).c_str());
+    ImGui::TextUnformatted(ImGuiKit::FitText(demo.label.c_str(), width - 2 * padding, 1));
     ImGui::PopFont();
     ImGui::SetCursorPosX(padding);
     ImGui::PushTextWrapPos(width - padding);
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * textScale);
-    std::string shown = Fit(demo.summaryPlain, width - 2 * padding, 2);
+    std::string shown = ImGuiKit::FitText(demo.summaryPlain.c_str(), width - 2 * padding, 2);
     ImGui::TextDisabled("%s", shown.c_str());
     bool summaryHovered = ImGui::IsItemHovered(ImGuiHoveredFlags_ForTooltip | ImGuiHoveredFlags_AllowWhenOverlappedByItem);
     ImGui::PopFont();
@@ -1015,10 +945,10 @@ void DemoLauncher::CardFace(ImDrawList* drawList, const DemoEntry& demo, ImVec2 
     ImFont* font = ImGui::GetFont();
     float fontSize = ImGui::GetFontSize() * textScale;
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * titleScale * textScale);
-    std::string title = Fit(demo.label, width - 2 * padding, 1);
+    std::string title = ImGuiKit::FitText(demo.label.c_str(), width - 2 * padding, 1);
     ImGui::PopFont();
     ImGui::PushFont(nullptr, ImGui::GetStyle().FontSizeBase * textScale);
-    std::string summary = Fit(demo.summaryPlain, width - 2 * padding, 2);
+    std::string summary = ImGuiKit::FitText(demo.summaryPlain.c_str(), width - 2 * padding, 2);
     ImGui::PopFont();
     float y = pictureBottom + Em(0.4f);
     drawList->AddText(font, fontSize * titleScale, ImVec2(topLeft.x + padding, y), ImGui::GetColorU32(ImGuiCol_Text),
