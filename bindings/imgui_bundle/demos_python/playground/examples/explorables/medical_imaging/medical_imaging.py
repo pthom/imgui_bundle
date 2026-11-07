@@ -185,6 +185,12 @@ def help_marker(topic: str, label: str = "") -> None:
     imgui.pop_id()
 
 
+def help_marker_width() -> float:
+    """The room an (i) takes at the end of a line: its small button, and the spacing before it"""
+    style = imgui.get_style()
+    return imgui.calc_text_size(fa.ICON_FA_INFO_CIRCLE).x + 2 * style.frame_padding.x + style.item_spacing.x
+
+
 def text_with_help(text: str, topic: str) -> None:
     """A wrapped text, and its (i) at the end of its last line"""
     imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(1.6))
@@ -455,8 +461,8 @@ def gui_slice(v: CtViewer) -> None:
     if imgui.arrow_button("##previous", imgui.Dir.left):
         v.set_slice(v.z - 1)
     imgui.same_line()
-    help_width = imgui.calc_text_size(fa.ICON_FA_INFO_CIRCLE).x + imgui.get_style().item_spacing.x
-    imgui.set_next_item_width(imgui.get_content_region_avail().x - imgui.get_frame_height() - help_width - em_size(0.5))
+    imgui.set_next_item_width(imgui.get_content_region_avail().x - imgui.get_frame_height() - help_marker_width()
+                              - em_size(0.5))
     z_mm = v.z * v.spacing_mm[0]
     _, z = imgui.slider_int("##slice", v.z, 0, v.hu.shape[0] - 1, f"Slice %d of {v.hu.shape[0]}  ({z_mm:.0f} mm)")
     v.set_slice(z)
@@ -515,7 +521,7 @@ def gui_histogram(v: CtViewer) -> None:
         return
     centers = (HISTOGRAM_BINS[:-1] + 5).astype(np.float64)
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_box_select | implot.Flags_.no_mouse_text
-    if implot.begin_plot("##histogram", ImVec2(-em_size(1.5), em_size(HISTOGRAM_HEIGHT_EM)), flags):
+    if implot.begin_plot("##histogram", ImVec2(-help_marker_width(), em_size(HISTOGRAM_HEIGHT_EM)), flags):
         implot.setup_axes("HU", "", 0, implot.AxisFlags_.no_tick_labels)
         implot.setup_axis_scale(implot.ImAxis_.y1, implot.Scale_.log10)
         implot.setup_axis_limits(implot.ImAxis_.x1, -1400, 2100, implot.Cond_.always)  # the presets' bounds
