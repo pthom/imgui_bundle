@@ -32,6 +32,7 @@ class _State:
     eq = [0.3, 0.6, 0.45]
     labels_align = 0
     volume = 0.5
+    balance = 0.0
     muted = False
 
 
@@ -182,6 +183,8 @@ def demo_label_column() -> None:
         _, state.labels_align = imgui_kit.segmented_switch("##labels_align", state.labels_align, ["Left", "Right"])
         imgui_kit.label("Volume")
         _, state.volume = imgui.slider_float("##volume", state.volume, 0.0, 1.0)
+        imgui_kit.label("Left/right balance")
+        _, state.balance = imgui.slider_float("##balance", state.balance, -1.0, 1.0)
         imgui_kit.label("Output")
         _, state.muted = imgui.checkbox("Muted", state.muted)
         imgui.same_line()
