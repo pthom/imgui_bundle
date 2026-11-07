@@ -15,6 +15,7 @@
 
 #pragma once
 
+#include <exception>  // std::terminate(), in the Emscripten IM_ASSERT
 #include <stdexcept>
 #include <string>
 
