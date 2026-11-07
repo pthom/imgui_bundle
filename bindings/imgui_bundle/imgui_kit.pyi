@@ -148,8 +148,8 @@ def end_aligned_group() -> None:
 # Flow: items on the same line while they fit, then on the next one, as words in a paragraph.
 # Call FlowNext() before each item (the first one too). An item wider than the line takes a line of its own.
 #
-#     | [Lung] [Mediastinum] [Bone] |
-#     | [Full range] [Custom]       |
+#     | [Coral] [Lavender] [Mint]   |
+#     | [Sunflower yellow] [Sky]    |
 #
 #     ImGuiKit::BeginFlow("presets");
 #     for (int i = 0; i < count; i++)

@@ -7,6 +7,8 @@ marker, icon buttons, a segmented switch. The Python twin of imgui_kit_demo.cpp,
 # imgui_kit_demo.py is a port of imgui_kit_demo.cpp (https://github.com/pthom/imgui_kit). In Python, the
 # Begin/End pairs are also context managers: `with imgui_kit.fill_row("slice") as row: ... row.tail() ...`.
 ###############################################################################
+from typing import List
+
 from imgui_bundle import imgui, imgui_kit, immapp
 
 
@@ -16,7 +18,9 @@ def IMGUI_DEMO_MARKER(section: str) -> None:
 
 
 class _State:
-    font_size = 0.0
+    font_size = 0.0  # 0: the application's size, read at the first frame
+    app_colors: List[imgui.ImVec4] = []
+    theme = 0
     slice = 37
     text = "An InputText fills the line too"
     preset = 0
@@ -29,6 +33,48 @@ state = _State()
 
 
 # =============================================================================
+# Toolbar: theme and font size
+# =============================================================================
+def demo_toolbar() -> None:
+    """The theme applies to the whole application; "App" restores the colors it had. The font size applies to
+    the demo."""
+    IMGUI_DEMO_MARKER("Toolbar")
+    style = imgui.get_style()
+    if not state.app_colors:
+        for i in range(imgui.Col_.count.value):
+            c = style.color_(i)
+            state.app_colors.append(imgui.ImVec4(c.x, c.y, c.z, c.w))
+
+    with imgui_kit.flow("toolbar"):
+        imgui_kit.flow_next()
+        imgui.begin_group()
+        imgui.align_text_to_frame_padding()
+        imgui.text("Theme")
+        imgui.same_line()
+        changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
+        if changed:
+            if state.theme == 0:
+                for i, c in enumerate(state.app_colors):
+                    style.set_color_(i, c)
+            elif state.theme == 1:
+                imgui.style_colors_dark()
+            elif state.theme == 2:
+                imgui.style_colors_light()
+            else:
+                imgui.style_colors_classic()
+        imgui.end_group()
+
+        imgui_kit.flow_next()
+        imgui.begin_group()
+        imgui.set_next_item_width(imgui_kit.em_size(8))
+        _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "Font %.0f px")
+        imgui.same_line()
+        if imgui.button("Reset"):
+            state.font_size = style.font_size_base
+        imgui.end_group()
+
+
+# =============================================================================
 # Em units
 # =============================================================================
 def demo_em_units() -> None:
@@ -36,17 +82,8 @@ def demo_em_units() -> None:
     if not imgui.collapsing_header("Em units"):
         return
     imgui.text_wrapped("Sizes in em follow the font: the first button is 8 em wide and 2 em high, on any screen. "
-                       "Change the font size: it grows with the text, as a standard button does. "
+                       "Change the font size at the top: it grows with the text, as a standard button does. "
                        "The last button keeps its size in pixels: at a large font, its label gets cut.")
-    if state.font_size == 0.0:  # 0: the current size, unchanged
-        state.font_size = imgui.get_style().font_size_base
-    imgui.set_next_item_width(imgui_kit.em_size(12))
-    _, state.font_size = imgui.slider_float("Font size", state.font_size, 8.0, 40.0, "%.0f px")
-    imgui.same_line()
-    if imgui.button("Reset"):
-        state.font_size = imgui.get_style().font_size_base
-
-    imgui.push_font(None, state.font_size)
     imgui.button("8 x 2 em", imgui_kit.em_to_vec2(8, 2))
     imgui.same_line()
     imgui.button("A standard button")
@@ -55,7 +92,6 @@ def demo_em_units() -> None:
     imgui.same_line()
     imgui_kit.help_marker("em_to_vec2(8, 2) gives the size in pixels, from the current font size.")
     imgui.text(f"1 em = {imgui_kit.em_size():.1f} px")
-    imgui.pop_font()
 
 
 # =============================================================================
@@ -109,8 +145,8 @@ def demo_flow() -> None:
     if not imgui.tree_node("Flow"):
         return
     imgui.text_wrapped("The buttons stay on a line while they fit. Resize the window: they flow to the next line.")
-    presets = ["Lung", "Mediastinum", "Bone", "Full range", "Brain", "Liver", "Soft tissue",
-               "Abdomen", "Spine", "Angiography", "Stroke", "Temporal bone", "Custom"]
+    presets = ["Coral", "Lavender", "Mint", "Sunflower yellow", "Sky", "Peach", "Forest green",
+               "Sand", "Honey", "Midnight blue", "Rose", "Turquoise", "Custom"]
     with imgui_kit.flow("presets"):
         for i, preset in enumerate(presets):
             imgui_kit.flow_next()
@@ -214,10 +250,15 @@ def demo_widgets() -> None:
 # =============================================================================
 def show_demo_contents() -> None:
     imgui.text("ImGuiKit: small, standalone additions to Dear ImGui")
+    if state.font_size == 0.0:
+        state.font_size = imgui.get_style().font_size_base
+    demo_toolbar()
     imgui.separator()
+    imgui.push_font(None, state.font_size)
     demo_em_units()
     demo_layout()
     demo_widgets()
+    imgui.pop_font()
 
 
 def gui() -> None:
