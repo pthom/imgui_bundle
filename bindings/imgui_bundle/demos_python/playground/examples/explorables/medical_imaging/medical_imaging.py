@@ -35,7 +35,7 @@ import cv2
 import numpy as np
 from numpy.typing import NDArray
 
-from imgui_bundle import ImVec2, ImVec4, __bundle_pyodide__, em_size, hello_imgui, imgui, imgui_knobs, immapp
+from imgui_bundle import ImVec2, ImVec4, __bundle_pyodide__, em_size, hello_imgui, imgui, imgui_kit, imgui_knobs, immapp
 from imgui_bundle import icons_fontawesome_4 as fa  # the icon font Hello ImGui loads by default
 from imgui_bundle import immvision, implot, implot3d, rich_md
 
@@ -159,41 +159,21 @@ HELP = read_help()
 
 
 def help_marker(topic: str, label: str = "") -> None:
-    """An (i) after the last widget: the topic's help, as a tooltip on hover, and in a popup that stays on a click or
-    a tap (a finger does not hover)"""
-    text = f"{label} {fa.ICON_FA_INFO_CIRCLE}" if label else fa.ICON_FA_INFO_CIRCLE
+    """An (i) after the last widget, with the topic's help: imgui_kit's help marker (a tooltip on hover, a popup on a
+    click or a tap), its text rendered as Markdown. A label, if any, comes before it."""
     imgui.same_line()
-    if imgui.get_content_region_avail().x < imgui.calc_text_size(text).x:
-        imgui.new_line()  # no room left on this line
-    imgui.push_id(topic)
-    imgui.push_style_color(imgui.Col_.button, ImVec4(0, 0, 0, 0))  # a button that looks like a faint text
-    imgui.push_style_color(imgui.Col_.text, imgui.get_style_color_vec4(imgui.Col_.text_disabled))
-    clicked = imgui.small_button(f"{text}##help")
-    imgui.pop_style_color(2)
-    width = min(em_size(30), imgui.get_main_viewport().size.x - em_size(2))
-    if clicked:
-        imgui.open_popup("##help")
-    elif imgui.is_item_hovered() and not imgui.is_popup_open("##help"):
-        imgui.set_next_window_size(ImVec2(width, 0))
-        if imgui.begin_tooltip():
-            rich_md.render(HELP[topic])
-            imgui.end_tooltip()
-    imgui.set_next_window_size(ImVec2(width, 0))
-    if imgui.begin_popup("##help"):
-        rich_md.render(f"**{topic}**\n\n{HELP[topic]}")
-        imgui.end_popup()
-    imgui.pop_id()
-
-
-def help_marker_width() -> float:
-    """The room an (i) takes at the end of a line: its small button, and the spacing before it"""
-    style = imgui.get_style()
-    return imgui.calc_text_size(fa.ICON_FA_INFO_CIRCLE).x + 2 * style.frame_padding.x + style.item_spacing.x
+    if label:
+        if imgui.get_content_region_avail().x < imgui.calc_text_size(label).x + imgui_kit.help_marker_width():
+            imgui.new_line()  # the label and its (i) stay together
+        imgui.text_disabled(label)
+        imgui.same_line()
+    imgui_kit.help_marker(f"**{topic}**\n\n{HELP[topic]}")
 
 
 def text_with_help(text: str, topic: str) -> None:
     """A wrapped text, and its (i) at the end of its last line"""
-    imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - em_size(1.6))
+    imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x
+                             - imgui_kit.help_marker_width())
     imgui.text_wrapped(text)
     imgui.pop_text_wrap_pos()
     help_marker(topic)
@@ -461,31 +441,29 @@ def gui_slice(v: CtViewer) -> None:
     if imgui.arrow_button("##previous", imgui.Dir.left):
         v.set_slice(v.z - 1)
     imgui.same_line()
-    imgui.set_next_item_width(imgui.get_content_region_avail().x - imgui.get_frame_height() - help_marker_width()
-                              - em_size(0.5))
-    z_mm = v.z * v.spacing_mm[0]
-    _, z = imgui.slider_int("##slice", v.z, 0, v.hu.shape[0] - 1, f"Slice %d of {v.hu.shape[0]}  ({z_mm:.0f} mm)")
-    v.set_slice(z)
-    imgui.same_line()
-    if imgui.arrow_button("##next", imgui.Dir.right):
-        v.set_slice(v.z + 1)
-    help_marker("Slices and views")
+    with imgui_kit.fill_row("slice") as row:  # the slider fills the line, up to the items after row.tail()
+        z_mm = v.z * v.spacing_mm[0]
+        _, z = imgui.slider_int("##slice", v.z, 0, v.hu.shape[0] - 1, f"Slice %d of {v.hu.shape[0]}  ({z_mm:.0f} mm)")
+        v.set_slice(z)
+        row.tail()
+        if imgui.arrow_button("##next", imgui.Dir.right):
+            v.set_slice(v.z + 1)
+        help_marker("Slices and views")
 
 
 def gui_buttons(names: Tuple[str, ...], selected: Optional[str]) -> Optional[str]:
-    """A row of buttons that wraps on a narrow screen, the selected one highlighted. Returns the one clicked."""
+    """A row of buttons that wraps on a narrow screen (an imgui_kit flow), the selected one highlighted. Returns the one
+    clicked."""
     clicked = None
-    for i, name in enumerate(names):
-        if i > 0:
-            imgui.same_line()
-            if imgui.get_content_region_avail().x < imgui.calc_text_size(name).x + imgui.get_frame_height():
-                imgui.new_line()
-        if name == selected:
-            imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
-        if imgui.button(name):
-            clicked = name
-        if name == selected:
-            imgui.pop_style_color()
+    with imgui_kit.flow(names[0]):
+        for name in names:
+            imgui_kit.flow_next()
+            if name == selected:
+                imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
+            if imgui.button(name):
+                clicked = name
+            if name == selected:
+                imgui.pop_style_color()
     return clicked
 
 
@@ -521,7 +499,7 @@ def gui_histogram(v: CtViewer) -> None:
         return
     centers = (HISTOGRAM_BINS[:-1] + 5).astype(np.float64)
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_box_select | implot.Flags_.no_mouse_text
-    if implot.begin_plot("##histogram", ImVec2(-help_marker_width(), em_size(HISTOGRAM_HEIGHT_EM)), flags):
+    if implot.begin_plot("##histogram", ImVec2(-imgui_kit.help_marker_width(), em_size(HISTOGRAM_HEIGHT_EM)), flags):
         implot.setup_axes("HU", "", 0, implot.AxisFlags_.no_tick_labels)
         implot.setup_axis_scale(implot.ImAxis_.y1, implot.Scale_.log10)
         implot.setup_axis_limits(implot.ImAxis_.x1, -1400, 2100, implot.Cond_.always)  # the presets' bounds
