@@ -398,21 +398,28 @@ namespace
             return;
         }
 
+        // The shown libraries, in a pill-shaped switch 1.4 em high
+        std::vector<const char*> labels;
+        std::vector<int> indices;
+        int current = 0;
         for (size_t i = 0; i < libs.size(); ++i)
         {
             if (!IsLibraryShown(libs[i].name))
                 continue;
-            ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, 10.f);
-            bool isSelected = ((int)i == currentIdx);
-            if (isSelected)
-                ImGui::PushStyleColor(ImGuiCol_Button, ImGui::GetStyleColorVec4(ImGuiCol_ButtonActive));
-            if (ImGui::Button(libs[i].name.c_str(), HelloImGui::EmToVec2(5.2f, 1.4f)))
-                SetCurrentLibraryIndex((int)i);
-
-            if (isSelected)
-                ImGui::PopStyleColor();
-            ImGui::PopStyleVar();
+            if ((int)i == currentIdx)
+                current = (int)labels.size();
+            labels.push_back(libs[i].name.c_str());
+            indices.push_back((int)i);
         }
+        if (labels.empty())
+            return;
+        float height = HelloImGui::EmSize(1.4f);
+        ImGui::PushStyleVar(ImGuiStyleVar_FramePadding,
+                            ImVec2(ImGui::GetStyle().FramePadding.x, (height - ImGui::GetFontSize()) * 0.5f));
+        ImGui::PushStyleVar(ImGuiStyleVar_FrameRounding, height * 0.5f);
+        if (ImGuiKit::SegmentedSwitch("##library", &current, labels.data(), (int)labels.size()))
+            SetCurrentLibraryIndex(indices[current]);
+        ImGui::PopStyleVar(2);
     }
 
     // C++/Python toggle (to be called inside a horizontal layout)
