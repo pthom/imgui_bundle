@@ -41,6 +41,7 @@ parts:
       - file: addons/text_markdown
       - file: addons/tools
       - file: addons/widgets
+      - file: addons/imgui_kit
   - caption: Support
     chapters:
       - file: support/support_project
