@@ -11,6 +11,7 @@ It is a library of its own (MIT): one header, a few sources, and Dear ImGui as i
   - A *fill row*: a slider or an input fills the line, and the items after it stay on the right.
   - An *aligned group*: a group placed at the right of the line, or centered.
   - A *column*: a group that knows its width, so that what is inside can be centered under a knob or a slider.
+  - A *label column*: labels on the left, and the widgets after them aligned at the widest label.
   - A *flow*: items on a line while they fit, then on the next one, as words in a paragraph.
 - **Widgets**:
   - A *help marker*: an (i) that shows its text on hover, and on a tap (a touch screen has no hover). Its text can be rendered as Markdown.
@@ -57,7 +58,7 @@ ImGuiKit::EndFillRow();
 
 ::::
 
-In Python, each `begin_x()` / `end_x()` pair is also a context manager, named `x`: `fill_row`, `aligned_group`, `column`, `flow`. The help marker's is `help_marker_ctx`, since `help_marker(text)` is already a plain function.
+In Python, each `begin_x()` / `end_x()` pair is also a context manager, named `x`: `fill_row`, `aligned_group`, `column`, `label_column`, `flow`. The help marker's is `help_marker_ctx`, since `help_marker(text)` is already a plain function.
 
 ## Learn more
 

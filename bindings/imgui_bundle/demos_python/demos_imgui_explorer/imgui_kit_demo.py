@@ -1,7 +1,8 @@
 """imgui_kit: the demo
 
-Small, standalone additions to Dear ImGui: em units, a row that fills its line, aligned groups, a flow, a help
-marker, icon buttons, a segmented switch. The Python twin of imgui_kit_demo.cpp, section by section.
+Small, standalone additions to Dear ImGui: em units, a row that fills its line, aligned groups, columns, a label
+column, a flow, a help marker, icon buttons, a segmented switch. The Python twin of imgui_kit_demo.cpp, section by
+section.
 """
 ###############################################################################
 # imgui_kit_demo.py is a port of imgui_kit_demo.cpp (https://github.com/pthom/imgui_kit). In Python, the
