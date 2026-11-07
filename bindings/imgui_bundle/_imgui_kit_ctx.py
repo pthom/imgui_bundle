@@ -60,11 +60,14 @@ def install_context_managers(kit: ModuleType) -> None:
     def aligned_group(str_id: str, align_x: float) -> _BlockContext:
         return _BlockContext(lambda: kit.begin_aligned_group(str_id, align_x), kit.end_aligned_group)
 
+    def column(str_id: str) -> _BlockContext:
+        return _BlockContext(lambda: kit.begin_column(str_id), kit.end_column)
+
     def flow(str_id: str) -> _BlockContext:
         return _BlockContext(lambda: kit.begin_flow(str_id), kit.end_flow)
 
     def help_marker_ctx(str_id: str, width_em: float = 0.0) -> HelpMarkerContext:
         return HelpMarkerContext(str_id, width_em)
 
-    for fn in (fill_row, aligned_group, flow, help_marker_ctx):
+    for fn in (fill_row, aligned_group, column, flow, help_marker_ctx):
         setattr(kit, fn.__name__, fn)

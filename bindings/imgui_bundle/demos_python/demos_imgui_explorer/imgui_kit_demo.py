@@ -28,6 +28,7 @@ class _State:
     view = 0
     unit = 1
     period = 1
+    eq = [0.3, 0.6, 0.45]
 
 
 state = _State()
@@ -152,6 +153,28 @@ def demo_aligned_group() -> None:
     imgui.tree_pop()
 
 
+def demo_column() -> None:
+    IMGUI_DEMO_MARKER("Layout/Column")
+    if not imgui.tree_node("Column"):
+        return
+    imgui.text_wrapped("Each column knows its width: the aligned groups inside it center its slider and its help "
+                       "under its label, whatever the label's length.")
+    labels = ["Bass", "Midrange", "Treble"]
+    helps = ["Bass: below 250 Hz.", "Midrange: from 250 Hz to 4 kHz.", "Treble: above 4 kHz."]
+    for i in range(3):
+        imgui.push_id(i)
+        with imgui_kit.column("column"):
+            imgui.text(labels[i])
+            with imgui_kit.aligned_group("slider", 0.5):
+                _, state.eq[i] = imgui.v_slider_float("##v", imgui_kit.em_to_vec2(1.6, 6), state.eq[i], 0.0, 1.0, "")
+            with imgui_kit.aligned_group("help", 0.5):
+                imgui_kit.help_marker(helps[i])
+        imgui.pop_id()
+        imgui.same_line(0.0, imgui_kit.em_size(1.5))
+    imgui.new_line()
+    imgui.tree_pop()
+
+
 def demo_flow() -> None:
     IMGUI_DEMO_MARKER("Layout/Flow")
     if not imgui.tree_node("Flow"):
@@ -179,6 +202,7 @@ def demo_layout() -> None:
     imgui.text_wrapped("These helpers measure their parts on the previous frame. The first frame draws them hidden.")
     demo_fill_row()
     demo_aligned_group()
+    demo_column()
     demo_flow()
 
 

@@ -135,6 +135,7 @@ def end_fill_row() -> None:
 
 # Aligned group: a group placed on the line from its width on the previous frame.
 # align_x: 0.0 = left, 0.5 = centered, 1.0 = right. It aligns the group's box, not each line inside it.
+# Inside a column (below), it aligns within the column's width instead of the line's.
 #
 #     |                         [Cancel] [Apply] |    <- BeginAlignedGroup("buttons", 1.0)
 # IMGUI_API void   BeginAlignedGroup(const char* str_id, float align_x);    /* original C++ signature */
@@ -143,6 +144,24 @@ def begin_aligned_group(str_id: str, align_x: float) -> None:
 
 # IMGUI_API void   EndAlignedGroup();    /* original C++ signature */
 def end_aligned_group() -> None:
+    pass
+
+# Column: a group that knows its width (from the previous frame), so that aligned groups inside it align within it.
+# Items under a knob, centered under it:
+#
+#     ImGuiKit::BeginColumn("clahe");
+#     ImGuiKnobs::Knob("CLAHE", &clip, 1.0, 6.0);
+#     ImGuiKit::BeginAlignedGroup("help", 0.5);   // centered under the knob
+#     ImGuiKit::HelpMarker("Contrast-limited adaptive histogram equalization...");
+#     ImGuiKit::EndAlignedGroup();
+#     ImGuiKit::EndColumn();
+#     ImGui::SameLine();                             // the next column
+# IMGUI_API void   BeginColumn(const char* str_id);    /* original C++ signature */
+def begin_column(str_id: str) -> None:
+    pass
+
+# IMGUI_API void   EndColumn();    /* original C++ signature */
+def end_column() -> None:
     pass
 
 # Flow: items on the same line while they fit, then on the next one, as words in a paragraph.
@@ -275,6 +294,11 @@ class _BlockContext:
 
 def aligned_group(str_id: str, align_x: float) -> _BlockContext:
     """An aligned group, as a context manager: `begin_aligned_group()`, then `end_aligned_group()`."""
+    ...
+
+def column(str_id: str) -> _BlockContext:
+    """A column, as a context manager: `begin_column()`, then `end_column()`. The aligned groups inside it align
+    within its width."""
     ...
 
 def flow(str_id: str) -> _BlockContext:

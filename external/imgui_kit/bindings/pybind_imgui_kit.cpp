@@ -98,6 +98,12 @@ void py_init_module_imgui_kit(nb::module_& m)
     m.def("end_aligned_group",
         ImGuiKit::EndAlignedGroup);
 
+    m.def("begin_column",
+        ImGuiKit::BeginColumn, nb::arg("str_id"));
+
+    m.def("end_column",
+        ImGuiKit::EndColumn);
+
     m.def("begin_flow",
         ImGuiKit::BeginFlow, nb::arg("str_id"));
 

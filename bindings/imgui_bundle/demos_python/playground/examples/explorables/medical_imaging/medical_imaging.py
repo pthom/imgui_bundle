@@ -29,7 +29,7 @@ import io
 import re
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Dict, List, Optional, Tuple
+from typing import Callable, Dict, List, Optional, Tuple, TypeVar
 
 import cv2
 import numpy as np
@@ -38,6 +38,8 @@ from numpy.typing import NDArray
 from imgui_bundle import ImVec2, ImVec4, __bundle_pyodide__, em_size, hello_imgui, imgui, imgui_kit, imgui_knobs, immapp
 from imgui_bundle import icons_fontawesome_4 as fa  # the icon font Hello ImGui loads by default
 from imgui_bundle import immvision, implot, implot3d, rich_md
+
+T = TypeVar("T")  # a knob's value: a float or an int
 
 HERE = Path(__file__).parent
 DATA_URL = "https://imgui-bundle.pages.dev/resources/explorables/medical_imaging/"  # the data, on the site
@@ -158,16 +160,16 @@ def read_help() -> Dict[str, str]:
 HELP = read_help()
 
 
-def help_marker(topic: str, label: str = "") -> None:
+def help_text(topic: str) -> str:
+    """The topic's help, as Markdown, under its title"""
+    return f"**{topic}**\n\n{HELP[topic]}"
+
+
+def help_marker(topic: str) -> None:
     """An (i) after the last widget, with the topic's help: imgui_kit's help marker (a tooltip on hover, a popup on a
-    click or a tap), its text rendered as Markdown. A label, if any, comes before it."""
+    click or a tap), its text rendered as Markdown"""
     imgui.same_line()
-    if label:
-        if imgui.get_content_region_avail().x < imgui.calc_text_size(label).x + imgui_kit.help_marker_width():
-            imgui.new_line()  # the label and its (i) stay together
-        imgui.text_disabled(label)
-        imgui.same_line()
-    imgui_kit.help_marker(f"**{topic}**\n\n{HELP[topic]}")
+    imgui_kit.help_marker(help_text(topic))
 
 
 def text_with_help(text: str, topic: str) -> None:
@@ -885,23 +887,29 @@ def gui_retina_controls(r: RetinaViewer) -> None:
     text_with_help("Classic image processing, no learning: the green channel, then:", "Green channel")
     size, knob = em_size(3.4), imgui_knobs.ImGuiKnobVariant_.wiper_dot
     takes_drags = hello_imgui.set_item_takes_touch_drags  # on a touch screen, a drag on a knob turns it at once
-    changed, r.clahe_clip = imgui_knobs.knob("CLAHE", r.clahe_clip, 1.0, 6.0, 0.02, "%.1f", knob, size)
-    takes_drags(long_press_is_right_click=False)
-    imgui.same_line()
-    c, size_px = imgui_knobs.knob_int("Top-hat", r.tophat_size, 5, 41, 0.15, "%d px", knob, size)
-    takes_drags(long_press_is_right_click=False)
+
+    def knob_column(topic: str, draw_knob: Callable[[], Tuple[bool, T]]) -> Tuple[bool, T]:
+        """A knob, and its (i) centered under it (an imgui_kit column)"""
+        with imgui_kit.column(topic):
+            result = draw_knob()
+            takes_drags(long_press_is_right_click=False)
+            with imgui_kit.aligned_group("help", 0.5):
+                imgui_kit.help_marker(help_text(topic))
+        imgui.same_line()
+        return result
+
+    changed, r.clahe_clip = knob_column(
+        "CLAHE", lambda: imgui_knobs.knob("CLAHE", r.clahe_clip, 1.0, 6.0, 0.02, "%.1f", knob, size))
+    c, size_px = knob_column(
+        "Top-hat", lambda: imgui_knobs.knob_int("Top-hat", r.tophat_size, 5, 41, 0.15, "%d px", knob, size))
     r.tophat_size, changed = size_px | 1, changed or c  # odd: the kernel has a center
-    imgui.same_line()
-    c, r.threshold = imgui_knobs.knob_int("Threshold", r.threshold, 1, 60, 0.2, "%d", knob, size)
-    takes_drags(long_press_is_right_click=False)
+    c, r.threshold = knob_column(
+        "Threshold", lambda: imgui_knobs.knob_int("Threshold", r.threshold, 1, 60, 0.2, "%d", knob, size))
     changed |= c
-    imgui.same_line()
-    c, r.min_area = imgui_knobs.knob_int("Min. area", r.min_area, 0, 400, 1.0, "%d px", knob, size)
-    takes_drags(long_press_is_right_click=False)
+    c, r.min_area = knob_column(
+        "Min. area", lambda: imgui_knobs.knob_int("Min. area", r.min_area, 0, 400, 1.0, "%d px", knob, size))
     changed |= c
-    imgui.text_disabled("Explained:")
-    for topic in ("CLAHE", "Top-hat", "Threshold", "Min. area"):
-        help_marker(topic, topic)
+    imgui.new_line()
     imgui.separator_text("Show")
     clicked = gui_buttons(STAGES, r.stage)
     if clicked is not None:
