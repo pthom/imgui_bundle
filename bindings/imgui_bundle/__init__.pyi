@@ -6,6 +6,7 @@ from . import implot3d as implot3d
 from . import imgui_color_text_edit as imgui_color_text_edit
 from . import imgui_node_editor as imgui_node_editor
 from . import imgui_knobs as imgui_knobs
+from . import imgui_kit as imgui_kit
 from . import im_file_dialog as im_file_dialog
 from . import imspinner as imspinner
 from . import rich_md as rich_md

@@ -197,6 +197,13 @@ if has_submodule("imgui_knobs"):
     from imgui_bundle._imgui_bundle import imgui_knobs as imgui_knobs
     _publish("imgui_knobs", imgui_knobs)
     __all__.extend(["imgui_knobs"])
+
+if has_submodule("imgui_kit"):
+    from imgui_bundle._imgui_bundle import imgui_kit as imgui_kit
+    from imgui_bundle._imgui_kit_ctx import install_context_managers as _install_imgui_kit_context_managers
+    _install_imgui_kit_context_managers(imgui_kit)
+    _publish("imgui_kit", imgui_kit)
+    __all__.extend(["imgui_kit"])
 if has_submodule("im_file_dialog"):
     from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
     _publish("im_file_dialog", im_file_dialog)

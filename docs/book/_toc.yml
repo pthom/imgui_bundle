@@ -93,6 +93,9 @@ parts:
       - file: api/imgui_knobs/index
         sections:
           - file: api/imgui_knobs/imgui_knobs
+      - file: api/imgui_kit/index
+        sections:
+          - file: api/imgui_kit/imgui_kit
       - file: api/imgui_toggle/index
         sections:
           - file: api/imgui_toggle/imgui_toggle
@@ -169,6 +172,9 @@ parts:
       - file: api/imgui_knobs/cpp_index
         sections:
           - file: api/imgui_knobs/imgui_knobs_cpp
+      - file: api/imgui_kit/cpp_index
+        sections:
+          - file: api/imgui_kit/imgui_kit_cpp
       - file: api/imgui_toggle/cpp_index
         sections:
           - file: api/imgui_toggle/imgui_toggle_cpp

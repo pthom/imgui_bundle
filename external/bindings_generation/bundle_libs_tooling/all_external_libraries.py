@@ -78,6 +78,14 @@ def lib_imgui_knobs() -> ExternalLibrary:
     )
 
 
+def lib_imgui_kit() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_kit",
+        official_git_url="https://github.com/pthom/imgui_kit.git",
+        official_branch="main",
+    )
+
+
 def lib_imgui_node_editor() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui-node-editor",
@@ -244,6 +252,7 @@ ALL_LIBS = [
     lib_im_file_dialog(),
     lib_imgui_command_palette(),
     lib_imgui_knobs(),
+    lib_imgui_kit(),
     lib_imgui_node_editor(),
     lib_imgui_md(),
     lib_microtex(),

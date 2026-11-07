@@ -189,8 +189,13 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         LibraryConfig cfg;
         cfg.name = "imgui_kit";
         cfg.files = {
-            {"imgui_kit_demo", false, false, "https://github.com/pthom/imgui_kit/blob/main/imgui_kit_demo.cpp"},
-            {"imgui_kit", false, true, "https://github.com/pthom/imgui_kit/blob/main/imgui_kit.h"},
+            {"imgui_kit_demo", true, false,
+             "https://github.com/pthom/imgui_kit/blob/main/imgui_kit_demo.cpp",
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_kit_demo.py"},
+            {"imgui_kit", true, true,
+             "https://github.com/pthom/imgui_kit/blob/main/imgui_kit.h",
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_kit.pyi",
+             "imgui_kit.pyi"},
         };
         cfg.frameSetup = nullptr;
         cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
@@ -202,6 +207,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         };
         cfg.demoWindowName = "imgui_kit Demo";
         cfg.introText = "imgui_kit - Small, standalone additions to Dear ImGui";
+        cfg.apiModules = {"imgui_kit"};
         cfg.links = {
             {"Repository", "https://github.com/pthom/imgui_kit"},
         };

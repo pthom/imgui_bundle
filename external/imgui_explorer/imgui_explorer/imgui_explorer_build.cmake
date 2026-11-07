@@ -60,6 +60,7 @@ function(iex_setup_demo_code_dir)
     _iex_copy(${pydemos}/imgui_demo.py          ${dest})
     _iex_copy(${pydemos}/implot_demo.py         ${dest})
     _iex_copy(${pydemos}/implot3d_demo.py       ${dest})
+    _iex_copy(${pydemos}/imgui_kit_demo.py      ${dest})
 
     # C++ API headers
     _iex_copy(${b}/external/imgui/imgui/imgui.h                      ${dest})
@@ -80,11 +81,12 @@ function(iex_setup_demo_code_dir)
     _iex_copy_as(${stubs}/implot3d/__init__.pyi  implot3d.pyi          ${dest})
     _iex_copy_as(${stubs}/implot3d/internal.pyi  implot3d_internal.pyi ${dest})
     _iex_copy_as(${stubs}/im_anim.pyi            im_anim.pyi           ${dest})
+    _iex_copy_as(${stubs}/imgui_kit.pyi          imgui_kit.pyi         ${dest})
 
     # The API index (one JSON per module, read by the code viewer's API tab), written by `just api_pages`
     # into docs/book/api/json/ (ignored by git): copied when present
     set(api_json ${b}/docs/book/api/json)
-    set(api_modules imgui imgui.internal implot implot.internal implot3d implot3d.internal im_anim)
+    set(api_modules imgui imgui.internal implot implot.internal implot3d implot3d.internal im_anim imgui_kit)
     set(api_missing "")
     foreach(module ${api_modules})
         if(EXISTS ${api_json}/${module}.json)

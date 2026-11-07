@@ -15,6 +15,7 @@
 #include "imgui_tex_inspect/backends/tex_inspect_opengl.h"
 #endif
 #include "hello_imgui/hello_imgui.h"
+#include "imgui_kit/imgui_kit.h"
 #include "hello_imgui/internal/functional_utils.h"
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
 #include "immvision/immvision.h"
@@ -228,6 +229,8 @@ namespace ImmApp
             gImmAppContext._MarkdownPreviousContext = RichMd::GetCurrentContext();
             gImmAppContext._MarkdownContext = RichMd::CreateContext(addOnsParams.withMarkdownOptions.value());
             RichMd::SetCurrentContext(gImmAppContext._MarkdownContext);
+            // imgui_kit's help markers render their text as Markdown
+            ImGuiKit::SetHelpMarkerTextRenderer([](const char* text) { RichMd::Render(text); });
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before
@@ -245,6 +248,7 @@ namespace ImmApp
                     gImmAppContext._MarkdownContext = nullptr;
                     RichMd::SetCurrentContext(gImmAppContext._MarkdownPreviousContext);
                     gImmAppContext._MarkdownPreviousContext = nullptr;
+                    ImGuiKit::SetHelpMarkerTextRenderer(nullptr);
                 }
             );
         }
