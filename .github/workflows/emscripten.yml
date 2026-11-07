@@ -24,12 +24,17 @@ jobs:
 #      - name: Setup interactive tmate session
 #        uses: mxschmitt/action-tmate@35b54afac29c97fb54faba5b513f8fbd1882f113  # v3.9
 
+      # The same emsdk as the web site's deploy (cf_pages_deploy.yml): the CI checks what ships
+      - name: Setup emsdk
+        uses: emscripten-core/setup-emsdk@4528d102f7230f0e7b276855c01ea1159be0e984  # v16
+        with:
+          version: 5.0.4
+          actions-cache-folder: 'emsdk-cache'
+
       - name: Build and install
         shell: bash
         run: |
-          ./external/hello_imgui/hello_imgui/tools/emscripten/install_emscripten.sh
           mkdir build_ems
           cd build_ems
-          source ~/emsdk/emsdk_env.sh
           emcmake cmake .. -DCMAKE_BUILD_TYPE=Release
           make -j 4
