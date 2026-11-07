@@ -38,6 +38,8 @@ function (add_hello_imgui)
     set(imgui_dir ${CMAKE_CURRENT_LIST_DIR}/imgui/imgui)
     set(HELLOIMGUI_BUILD_IMGUI OFF CACHE BOOL "" FORCE)
     set(HELLOIMGUI_IMGUI_SOURCE_DIR ${imgui_dir} CACHE STRING "" FORCE)
+    #     ii. use our own imgui_kit submodule (external/CMakeLists.txt declares the target, after hello_imgui)
+    set(HELLOIMGUI_USE_EXTERNAL_IMGUI_KIT ON CACHE BOOL "" FORCE)
 
     # 4. Finally, add hello_imgui
     if(IMGUI_BUNDLE_INSTALL_CPP)
