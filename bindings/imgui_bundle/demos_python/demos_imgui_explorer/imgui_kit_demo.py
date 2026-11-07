@@ -20,6 +20,7 @@ def IMGUI_DEMO_MARKER(section: str) -> None:
 class _State:
     font_size = 0.0  # 0: the application's size, read at the first frame
     app_colors: List[imgui.ImVec4] = []
+    app_rounding = -1.0  # -1: not read yet
     theme = 0
     slice = 37
     text = "An InputText fills the line too"
@@ -35,57 +36,63 @@ state = _State()
 
 
 # =============================================================================
-# Toolbar: theme and font size
+# Toolbar: theme, font size, frame rounding
 # =============================================================================
 def demo_toolbar() -> None:
     """The theme and the frame rounding apply to the whole application; "App" restores the colors it had.
     The font size applies to the demo."""
     IMGUI_DEMO_MARKER("Toolbar")
     style = imgui.get_style()
-    if not state.app_colors:
+    if state.app_rounding < 0.0:
         for i in range(imgui.Col_.count.value):
             c = style.color_(i)
             state.app_colors.append(imgui.ImVec4(c.x, c.y, c.z, c.w))
+        state.app_rounding = style.frame_rounding
 
-    with imgui_kit.flow("toolbar"):
+    # First line: the theme
+    imgui.align_text_to_frame_padding()
+    imgui.text("Theme")
+    imgui.same_line()
+    changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
+    if changed:
+        if state.theme == 0:
+            for i, c in enumerate(state.app_colors):
+                style.set_color_(i, c)
+        elif state.theme == 1:
+            imgui.style_colors_dark()
+        elif state.theme == 2:
+            imgui.style_colors_light()
+        else:
+            imgui.style_colors_classic()
+
+    # Second line: the sizes (its parts flow to a new line on a narrow screen)
+    with imgui_kit.flow("sizes"):
         imgui_kit.flow_next()
         imgui.begin_group()
         imgui.align_text_to_frame_padding()
-        imgui.text("Theme")
+        imgui.text("Font size")
         imgui.same_line()
-        changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
-        if changed:
-            if state.theme == 0:
-                for i, c in enumerate(state.app_colors):
-                    style.set_color_(i, c)
-            elif state.theme == 1:
-                imgui.style_colors_dark()
-            elif state.theme == 2:
-                imgui.style_colors_light()
-            else:
-                imgui.style_colors_classic()
-        imgui.end_group()
-
-        imgui_kit.flow_next()
-        imgui.begin_group()
         imgui.set_next_item_width(imgui_kit.em_size(8))
-        _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "Font %.0f px")
-        imgui.same_line()
-        if imgui.button("Reset"):
-            state.font_size = style.font_size_base
+        _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "%.0f px")
         imgui.end_group()
 
         imgui_kit.flow_next()
         imgui.begin_group()
-        imgui.set_next_item_width(imgui_kit.em_size(10))
-        _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0,
-                                                     "Frame rounding %.0f px")
+        imgui.align_text_to_frame_padding()
+        imgui.text("Frame rounding")
+        imgui.same_line()
+        imgui.set_next_item_width(imgui_kit.em_size(8))
+        _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0, "%.0f px")
         imgui.same_line()
         imgui_kit.help_marker("The style's frame_rounding: imgui.get_style().frame_rounding. Buttons, sliders, input "
                               "fields and the segmented switch round their corners with it. 0 gives square frames; "
                               "half the frame's height gives a pill.")
         imgui.end_group()
 
+        imgui_kit.flow_next()
+        if imgui.button("Reset"):  # the application's font size and frame rounding
+            state.font_size = style.font_size_base
+            style.frame_rounding = state.app_rounding
 
 # =============================================================================
 # Em units
