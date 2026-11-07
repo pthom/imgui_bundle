@@ -214,6 +214,53 @@ void py_init_module_imgui_kit(nb::module_& m)
         nb::arg("text"), nb::arg("wrap_width"), nb::arg("max_lines"),
         " Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at\n wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the\n next call (copy it to keep two results).\n\n     ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);\n     ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then \"...\"\n     ImGui::PopTextWrapPos();");
 
+    m.def("setup_wheel_session",
+        ImGuiKit::SetupWheelSession,
+        nb::arg("enabled") = true,
+        " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
+
+
+    auto pyEnumTouchScrollMode_ =
+        nb::enum_<ImGuiTouchScrollMode_>(m, "TouchScrollMode_", nb::is_arithmetic(), "")
+            .value("auto", ImGuiTouchScrollMode_Auto, "only when the input is a touch screen (io.MouseSource)")
+            .value("always", ImGuiTouchScrollMode_Always, "also with the mouse (left button): to try the phone's behavior on a desktop")
+            .value("disabled", ImGuiTouchScrollMode_Disabled, "");
+
+
+    auto pyEnumTouchPinchMode_ =
+        nb::enum_<ImGuiTouchPinchMode_>(m, "TouchPinchMode_", nb::is_arithmetic(), "")
+            .value("font_scale", ImGuiTouchPinchMode_FontScale, "the pinch scales the font (style.FontScaleMain); two fingers dragged together are a right drag")
+            .value("disabled", ImGuiTouchPinchMode_Disabled, "");
+
+
+    auto pyClassImGuiTouchConfig =
+        nb::class_<ImGuiTouchConfig>
+            (m, "TouchConfig", "The settings, read at each frame: change them through ImGuiTouch::GetConfig()")
+        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, const std::optional<const ImGuiTouchPinchMode> & PinchMode = std::nullopt, bool PinchInterruptsWidgets = false)
+        {
+            new (self) ImGuiTouchConfig();  // placement new
+            auto r_ctor_ = self;
+            if (ScrollMode.has_value())
+                r_ctor_->ScrollMode = ScrollMode.value();
+            else
+                r_ctor_->ScrollMode = ImGuiTouchScrollMode_Auto;
+            r_ctor_->LongPressIsRightClick = LongPressIsRightClick;
+            r_ctor_->ThinScrollbars = ThinScrollbars;
+            if (PinchMode.has_value())
+                r_ctor_->PinchMode = PinchMode.value();
+            else
+                r_ctor_->PinchMode = ImGuiTouchPinchMode_FontScale;
+            r_ctor_->PinchInterruptsWidgets = PinchInterruptsWidgets;
+        },
+        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_mode").none() = nb::none(), nb::arg("pinch_interrupts_widgets") = false
+        )
+        .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, "")
+        .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, "a finger still for half a second, then lifted, is a right click")
+        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, "on a touch screen: thin scroll bars (indicators: a swipe scrolls anywhere)")
+        .def_rw("pinch_mode", &ImGuiTouchConfig::PinchMode, "")
+        .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, "a second finger while a widget holds the first: the widget keeps it (False)")
+        ;
+
 
     auto pyEnumIcon_ =
         nb::enum_<ImGuiKitIcon_>(m, "Icon_", nb::is_arithmetic(), "The symbols of IconButton()")
@@ -223,6 +270,46 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("zoom_out", ImGuiKitIcon_ZoomOut, "")
             .value("zoom_one_to_one", ImGuiKitIcon_ZoomOneToOne, "")
             .value("zoom_fit", ImGuiKitIcon_ZoomFit, "");
+
+    { // <namespace ImGuiTouch>
+        nb::module_ pyNsImGuiTouch = m.def_submodule("touch", "namespace ImGuiTouch");
+        pyNsImGuiTouch.def("setup",
+            [](const std::optional<const ImGuiTouchConfig> & config = std::nullopt)
+            {
+                auto Setup_adapt_mutable_param_with_default_value = [](const std::optional<const ImGuiTouchConfig> & config = std::nullopt)
+                {
+
+                    const ImGuiTouchConfig& config_or_default = [&]() -> const ImGuiTouchConfig {
+                        if (config.has_value())
+                            return config.value();
+                        else
+                            return ImGuiTouchConfig();
+                    }();
+
+                    ImGuiTouch::Setup(config_or_default);
+                };
+
+                Setup_adapt_mutable_param_with_default_value(config);
+            },
+            nb::arg("config").none() = nb::none(),
+            "Python bindings defaults:\n    If config is None, then its default value will be: TouchConfig()");
+
+        pyNsImGuiTouch.def("get_config",
+            ImGuiTouch::GetConfig, nb::rv_policy::reference);
+
+        pyNsImGuiTouch.def("is_animating",
+            ImGuiTouch::IsAnimating, " True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when\n nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it.");
+
+        pyNsImGuiTouch.def("set_item_takes_drags",
+            ImGuiTouch::SetItemTakesDrags,
+            nb::arg("long_press_is_right_click") = true,
+            " Right after a widget that a finger drags (a plot, a knob, a node editor's canvas): a drag that starts on it goes to\n it, not to the swipe. long_press_is_right_click: a long press on it is still a right click.");
+
+        pyNsImGuiTouch.def("add_finger_event",
+            ImGuiTouch::AddFingerEvent,
+            nb::arg("id"), nb::arg("pos"), nb::arg("down"),
+            " A finger on a touch screen, as the platform reports it (a browser's touch or pointer events, SDL's finger events):\n its id (any number the platform gives, stable while the finger is down), its position (in the mouse's coordinates),\n and whether it is down. Dear ImGui sees only the first finger, as the mouse: these events let the kit see the others.\n With two fingers down: they spread or close, a pinch (the font scales); they move together, a right drag.\n A desktop app with a mouse never calls it.");
+    } // </namespace ImGuiTouch>
     ////////////////////    </generated_from:imgui_kit.h>    ////////////////////
 
     // </litgen_pydef> // Autogenerated code end

@@ -26,6 +26,9 @@ def main() -> None:
     options.namespaces_root = ["ImGuiKit"]
     # ImGuiKitIcon_ -> Icon_, as ImPlot drops its own prefix
     options.type_replacements.add_last_replacement(r"ImGuiKit([A-Z][a-zA-Z0-9]*)", r"\1")
+    # The touch layer: ImGuiTouchConfig -> TouchConfig, and the namespace ImGuiTouch -> the submodule imgui_kit.touch
+    options.type_replacements.add_last_replacement(r"ImGuiTouch([A-Z][a-zA-Z0-9]*_?)(?![A-Za-z0-9_])", r"Touch\1")
+    options.namespace_names_replacements.add_last_replacement(r"^ImGuiTouch$", "touch")
     # A C function pointer, set from C++ by the bundle (which installs a Markdown renderer)
     # ResizeHandle is bound by hand (pybind_imgui_kit.cpp): it returns (changed, size), size being an ImVec2
     options.fn_exclude_by_name__regex = "^(SetHelpMarkerTextRenderer|ResizeHandle)$"
@@ -36,6 +39,8 @@ def main() -> None:
         "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
     }
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
+    # The touch layer's config, changed in place from Python
+    options.fn_return_force_policy_reference_for_references__regex = r"^GetConfig$"
     options.original_signature_flag_show = True
     options.python_run_black_formatter = True
 
