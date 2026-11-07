@@ -219,7 +219,8 @@ def icon_button(str_id: str, icon: Icon, size: Optional[ImVec2Like] = None) -> b
 
 # IMGUI_API bool   SegmentedSwitch(const char* str_id, int* current, const char* const labels[], int labels_count);    /* original C++ signature */
 def segmented_switch(str_id: str, current: int, labels: List[str]) -> Tuple[bool, int]:
-    """Segmented switch: exclusive choices in one rounded frame, the current one filled.
+    """Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's
+    FrameRounding, as buttons and sliders do.
 
         ( Demo | Code )        <- current = 1: "Code" is filled
 

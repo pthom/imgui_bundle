@@ -168,7 +168,7 @@ void py_init_module_imgui_kit(nb::module_& m)
             return SegmentedSwitch_adapt_c_string_list(str_id, current, labels);
         },
         nb::arg("str_id"), nb::arg("current"), nb::arg("labels"),
-        " Segmented switch: exclusive choices in one rounded frame, the current one filled.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.");
+        " Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's\n FrameRounding, as buttons and sliders do.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.");
 
 
     auto pyEnumIcon_ =

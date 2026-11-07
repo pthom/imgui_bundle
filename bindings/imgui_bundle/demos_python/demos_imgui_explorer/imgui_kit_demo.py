@@ -36,8 +36,8 @@ state = _State()
 # Toolbar: theme and font size
 # =============================================================================
 def demo_toolbar() -> None:
-    """The theme applies to the whole application; "App" restores the colors it had. The font size applies to
-    the demo."""
+    """The theme and the frame rounding apply to the whole application; "App" restores the colors it had.
+    The font size applies to the demo."""
     IMGUI_DEMO_MARKER("Toolbar")
     style = imgui.get_style()
     if not state.app_colors:
@@ -71,6 +71,17 @@ def demo_toolbar() -> None:
         imgui.same_line()
         if imgui.button("Reset"):
             state.font_size = style.font_size_base
+        imgui.end_group()
+
+        imgui_kit.flow_next()
+        imgui.begin_group()
+        imgui.set_next_item_width(imgui_kit.em_size(10))
+        _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0,
+                                                     "Frame rounding %.0f px")
+        imgui.same_line()
+        imgui_kit.help_marker("The style's frame_rounding: imgui.get_style().frame_rounding. Buttons, sliders, input "
+                              "fields and the segmented switch round their corners with it. 0 gives square frames; "
+                              "half the frame's height gives a pill.")
         imgui.end_group()
 
 
@@ -228,6 +239,7 @@ def demo_segmented_switch() -> None:
     IMGUI_DEMO_MARKER("Widgets/Segmented switch")
     if not imgui.tree_node("Segmented switch"):
         return
+    imgui.text_wrapped("Its corners follow the style's frame_rounding, as a button's do: change it at the top.")
     views = ["Demo", "Code"]
     _, state.view = imgui_kit.segmented_switch("##view", state.view, views)
     imgui.same_line()
