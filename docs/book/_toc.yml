@@ -40,6 +40,7 @@ parts:
       - file: addons/text_markdown
       - file: addons/tools
       - file: addons/widgets
+      - file: addons/imgui_kit
   # <api pages> written by ci_scripts/api_pages.py from the stubs: do not edit by hand
   - caption: Python API
     chapters:
