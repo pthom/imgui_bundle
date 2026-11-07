@@ -27,6 +27,7 @@ class _State:
     zoom = 1.0
     view = 0
     unit = 1
+    period = 1
 
 
 state = _State()
@@ -245,6 +246,11 @@ def demo_segmented_switch() -> None:
     imgui.same_line()
     imgui.text(f"showing: {views[state.view]}")
     _, state.unit = imgui_kit.segmented_switch("##unit", state.unit, ["mm", "cm", "inch"])
+
+    imgui.text_wrapped("One switch as a pill: push a frame_rounding of half the frame's height around it.")
+    imgui.push_style_var(imgui.StyleVar_.frame_rounding, imgui.get_frame_height() * 0.5)
+    _, state.period = imgui_kit.segmented_switch("##period", state.period, ["Day", "Week", "Month"])
+    imgui.pop_style_var()
     imgui.tree_pop()
 
 
