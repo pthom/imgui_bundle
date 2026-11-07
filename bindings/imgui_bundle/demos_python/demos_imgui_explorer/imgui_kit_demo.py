@@ -36,7 +36,8 @@ def demo_em_units() -> None:
     if not imgui.collapsing_header("Em units"):
         return
     imgui.text_wrapped("Sizes in em follow the font: the first button is 8 em wide and 2 em high, on any screen. "
-                       "Change the font size: it grows with the text, as a standard button does.")
+                       "Change the font size: it grows with the text, as a standard button does. "
+                       "The last button keeps its size in pixels: at a large font, its label gets cut.")
     if state.font_size == 0.0:  # 0: the current size, unchanged
         state.font_size = imgui.get_style().font_size_base
     imgui.set_next_item_width(imgui_kit.em_size(12))
@@ -49,6 +50,8 @@ def demo_em_units() -> None:
     imgui.button("8 x 2 em", imgui_kit.em_to_vec2(8, 2))
     imgui.same_line()
     imgui.button("A standard button")
+    imgui.same_line()
+    imgui.button("100 x 30 px", (100, 30))
     imgui.same_line()
     imgui_kit.help_marker("em_to_vec2(8, 2) gives the size in pixels, from the current font size.")
     imgui.text(f"1 em = {imgui_kit.em_size():.1f} px")
@@ -138,7 +141,11 @@ def demo_help_marker() -> None:
     IMGUI_DEMO_MARKER("Widgets/Help marker")
     if not imgui.tree_node("Help marker"):
         return
-    imgui.text("Hover the (i), or click it to pin its text:")
+    imgui.text_wrapped("A touch screen has no hover: a tooltip never shows there. The (i) opens on a tap as well, "
+                       "so its text reaches every user.")
+    imgui.bullet_text("With a mouse: hover to read, click to pin.")
+    imgui.bullet_text("On a touch screen: tap to open, tap elsewhere to close.")
+    imgui.text("Try it:")
     imgui.same_line()
     imgui_kit.help_marker("With a mouse, hovering shows this text, and a click pins it until a click elsewhere. "
                           "On a touch screen, a tap opens it.")
@@ -156,6 +163,8 @@ def demo_icon_button() -> None:
     IMGUI_DEMO_MARKER("Widgets/Icon button")
     if not imgui.tree_node("Icon button"):
         return
+    imgui.text_wrapped("The icons are drawn with the window's draw list (lines, rectangles, circles): "
+                       "no icon font to load, and they follow the font size.")
     Icon = imgui_kit.Icon_
     if imgui_kit.icon_button("##minus", Icon.minus):
         state.zoom /= 1.25
