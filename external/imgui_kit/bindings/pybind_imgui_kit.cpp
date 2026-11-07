@@ -185,6 +185,11 @@ void py_init_module_imgui_kit(nb::module_& m)
         nb::arg("str_id"), nb::arg("current"), nb::arg("labels"),
         " Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's\n FrameRounding, as buttons and sliders do.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.");
 
+    m.def("fit_text",
+        ImGuiKit::FitText,
+        nb::arg("text"), nb::arg("wrap_width"), nb::arg("max_lines"),
+        " Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at\n wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the\n next call (copy it to keep two results).\n\n     ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);\n     ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then \"...\"\n     ImGui::PopTextWrapPos();");
+
 
     auto pyEnumIcon_ =
         nb::enum_<ImGuiKitIcon_>(m, "Icon_", nb::is_arithmetic(), "The symbols of IconButton()")

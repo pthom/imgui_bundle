@@ -323,17 +323,6 @@ def big_text(text: str, scale: float, color: Optional[ImVec4] = None) -> None:
     imgui.pop_font()
 
 
-def fit(text: str, width: float, lines: int) -> str:
-    """The text, cut at a word and ended with an ellipsis, so that it takes at most these lines once wrapped"""
-    max_height = lines * imgui.get_text_line_height() + 1
-    if imgui.calc_text_size(text, wrap_width=width).y <= max_height:
-        return text
-    words = text.split()
-    while words and imgui.calc_text_size(" ".join(words) + "…", wrap_width=width).y > max_height:
-        words.pop()
-    return " ".join(words) + "…"
-
-
 def draw_tags(tags: list[str], bottom_right: ImVec2, width: float, draw_list: Optional[imgui.ImDrawList] = None,
               scale: float = 1.0) -> None:
     """Small pills, right-aligned from this corner (a picture's bottom right: usually its emptiest part); wider than
@@ -665,12 +654,12 @@ class Launcher:
                   width - em_size(0.8), scale=text_scale)
         imgui.set_cursor_pos(ImVec2(padding, imgui.get_cursor_pos_y() + em_size(0.4)))
         imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
-        imgui.text(fit(demo.label, width - 2 * padding, 1))
+        imgui.text(imgui_kit.fit_text(demo.label, width - 2 * padding, 1))
         imgui.pop_font()
         imgui.set_cursor_pos_x(padding)
         imgui.push_text_wrap_pos(width - padding)
         imgui.push_font(None, imgui.get_style().font_size_base * text_scale)
-        shown = fit(plain_text(demo.summary), width - 2 * padding, 2)
+        shown = imgui_kit.fit_text(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.text_disabled(shown)
         summary_hovered = imgui.is_item_hovered(imgui.HoveredFlags_.for_tooltip
                                                 | imgui.HoveredFlags_.allow_when_overlapped_by_item)
@@ -765,10 +754,10 @@ class Launcher:
                   width - em_size(0.8), draw_list, text_scale)
         font, font_size = imgui.get_font(), imgui.get_font_size() * text_scale
         imgui.push_font(None, imgui.get_style().font_size_base * title_scale * text_scale)
-        title = fit(demo.label, width - 2 * padding, 1)
+        title = imgui_kit.fit_text(demo.label, width - 2 * padding, 1)
         imgui.pop_font()
         imgui.push_font(None, imgui.get_style().font_size_base * text_scale)
-        summary = fit(plain_text(demo.summary), width - 2 * padding, 2)
+        summary = imgui_kit.fit_text(plain_text(demo.summary), width - 2 * padding, 2)
         imgui.pop_font()
         y = picture_bottom + em_size(0.4)
         draw_list.add_text(font, font_size * title_scale, ImVec2(top_left.x + padding, y),

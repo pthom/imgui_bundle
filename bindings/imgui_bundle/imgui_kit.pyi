@@ -274,6 +274,18 @@ def segmented_switch(str_id: str, current: int, labels: List[str]) -> Tuple[bool
     """
     pass
 
+# IMGUI_API const char* FitText(const char* text, float wrap_width, int max_lines);    /* original C++ signature */
+def fit_text(text: str, wrap_width: float, max_lines: int) -> str:
+    """Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at
+    wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the
+    next call (copy it to keep two results).
+
+        ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);
+        ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then "..."
+        ImGui::PopTextWrapPos();
+    """
+    pass
+
 # enum ImGuiKitIcon_    /* original C++ signature */
 class Icon_(enum.IntEnum):
     """The symbols of IconButton()"""

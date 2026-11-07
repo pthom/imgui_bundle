@@ -10,7 +10,7 @@ section.
 ###############################################################################
 from typing import List
 
-from imgui_bundle import imgui, imgui_kit, immapp
+from imgui_bundle import ImVec2, imgui, imgui_kit, immapp
 
 
 def IMGUI_DEMO_MARKER(section: str) -> None:
@@ -34,6 +34,8 @@ class _State:
     labels_align = 0
     volume = 0.5
     balance = 0.0
+    fit_width_em = 16.0
+    fit_lines = 2
     muted = False
 
 
@@ -297,6 +299,33 @@ def demo_segmented_switch() -> None:
     imgui.tree_pop()
 
 
+def demo_fit_text() -> None:
+    IMGUI_DEMO_MARKER("Widgets/Fit text")
+    if not imgui.tree_node("Fit text"):
+        return
+    imgui.text_wrapped("A text cut at a word, with an ellipsis, to fit a number of lines: a card's title or summary.")
+    with imgui_kit.label_column("fit_text"):
+        imgui_kit.label("Width")
+        imgui.set_next_item_width(imgui_kit.em_size(10))
+        _, state.fit_width_em = imgui.slider_float("##width", state.fit_width_em, 4.0, 40.0, "%.0f em")
+        imgui_kit.label("Lines")
+        imgui.set_next_item_width(imgui_kit.em_size(10))
+        _, state.fit_lines = imgui.slider_int("##lines", state.fit_lines, 1, 5)
+
+    text = ("Napoleon's army crossed the Niemen in June 1812 with more than four hundred thousand men; "
+            "Minard drew its march to Moscow and its retreat as a band whose width follows the number of "
+            "soldiers, and the temperature below it.")
+    width = imgui_kit.em_size(state.fit_width_em)
+    p = imgui.get_cursor_screen_pos()
+    imgui.push_text_wrap_pos(imgui.get_cursor_pos_x() + width)
+    imgui.text_unformatted(imgui_kit.fit_text(text, width, state.fit_lines))
+    imgui.pop_text_wrap_pos()
+    height = imgui.get_text_line_height() * state.fit_lines  # the room the text may take, framed
+    imgui.get_window_draw_list().add_rect(p, ImVec2(p.x + width, p.y + height), imgui.get_color_u32(imgui.Col_.border))
+    imgui.dummy(ImVec2(0.0, max(0.0, p.y + height - imgui.get_cursor_screen_pos().y)))
+    imgui.tree_pop()
+
+
 def demo_widgets() -> None:
     IMGUI_DEMO_MARKER("Widgets")
     if not imgui.collapsing_header("Widgets"):
@@ -304,6 +333,7 @@ def demo_widgets() -> None:
     demo_help_marker()
     demo_icon_button()
     demo_segmented_switch()
+    demo_fit_text()
 
 
 # =============================================================================
