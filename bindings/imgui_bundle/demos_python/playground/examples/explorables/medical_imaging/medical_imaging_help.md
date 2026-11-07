@@ -21,6 +21,8 @@ The slices go from the kidneys (slice 0) to the neck (slice 58), 5 mm apart. The
 
 The two views zoom and pan together: the mouse wheel zooms, a drag pans. They show the slice as radiologists look at it: the patient's right on the image's left, the front at the top.
 
+The switch above them shows both views, or one alone, larger, or the region in 3D. A phone shows one at a time.
+
 ### Window
 
 A CT gives values from -1000 (air) to more than +2000 (dense bone), while a screen shows 256 levels of gray, and the eye tells fewer apart. A *window* shows one part of that range: what lies below it is black, what lies above it is white.

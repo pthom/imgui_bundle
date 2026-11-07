@@ -62,6 +62,9 @@ OVERLAY_ALPHA = 0.45
 SEED_RGB = (255, 200, 40)  # the seed, the window's bounds on the histogram, the slice's plane in 3D
 POINTS_3D = 6000  # at most, on the region's surface
 NARROW_WIDTH_EM = 52  # under this width (a phone), everything goes in one column
+PINNED_MIN_HEIGHT_EM = 24  # a phone at least this tall keeps the viewer at the top, the controls scroll under it
+PINNED_VIEW_SHARE = 0.5  # then the view's share of the height
+VIEWS = ("Both", "Original", "Segmented", "3D")  # the viewer's switch (a phone shows one view at a time)
 CONTROLS_WIDTH_EM = 23
 HISTOGRAM_HEIGHT_EM = 7.5
 HISTOGRAM_BINS = np.arange(-1000, 1510, 10)  # HU
@@ -304,13 +307,24 @@ class ViewClick:
         return None
 
 
-def fit_views(params: Tuple[immvision.ImageParams, ...], width: float, max_height: float) -> None:
-    """Two square views side by side, as large as the width and the height allow (set when the size changes only)"""
-    spacing = imgui.get_style().item_spacing.x
-    size = max(int(min((width - spacing) / 2 - imgui.get_frame_height(), max_height)), int(em_size(8)))
+def set_views_size(params: Tuple[immvision.ImageParams, ...], size: float) -> None:
+    """The views' side (at least 8 em), set when it changes only; their zoom follows it, to show the same part of the
+    image"""
+    side = max(int(size), int(em_size(8)))
     for p in params:
-        if p.image_display_size != (size, size):
-            p.image_display_size = (size, size)
+        old = p.image_display_size[0]
+        if old == side:
+            continue
+        if old > 0:  # the zoom's first two rows map the image to the view: scaled with the view
+            m = p.zoom_pan_matrix
+            p.zoom_pan_matrix = [[c * side / old for c in m[0]], [c * side / old for c in m[1]], m[2]]
+        p.image_display_size = (side, side)
+
+
+def fit_views(params: Tuple[immvision.ImageParams, ...], width: float, max_height: float) -> None:
+    """Two square views side by side, as large as the width and the height allow"""
+    spacing = imgui.get_style().item_spacing.x
+    set_views_size(params, min((width - spacing) / 2 - imgui.get_frame_height(), max_height))
 
 
 # ======================================================================================================================
@@ -335,6 +349,7 @@ class CtViewer:
         self.processed_params = image_params("ct", "None", show_pixel_info=False)
         self.processed: NDArray[np.uint8] = np.zeros((*self.hu.shape[1:], 3), np.uint8)
         self.click = ViewClick()  # a click on a view seeds the region
+        self.view = "Both"  # the viewer's switch
         self.histogram = (np.zeros(0), np.zeros(0))  # the slice's, then the region's
         self.slice_changed = self.view_changed = True
         self.z = 0
@@ -436,6 +451,33 @@ def gui_views(v: CtViewer, width: float, max_height: float, narrow: bool) -> Non
     imgui.same_line()
     immvision.image("Window and segmentation##ct", v.processed, v.processed_params)
     take_click(v, "processed", v.processed_params)
+
+
+def gui_view_switch(v: CtViewer, narrow: bool) -> None:
+    """Both views, or one alone, larger, or the region in 3D (a phone shows one at a time)"""
+    names = list(VIEWS[1:] if narrow else VIEWS)
+    if v.view not in names:
+        v.view = "Segmented"
+    changed, i = imgui_kit.segmented_switch("##view", names.index(v.view), names)
+    if changed:  # refreshed: a view hidden while the slice changed would show the old one
+        v.view, v.slice_changed = names[i], True
+
+
+def gui_one_view(v: CtViewer, width: float, max_size: float, narrow: bool) -> None:
+    """The view chosen in the switch, alone: a square as large as the width and max_size allow"""
+    if v.view == "3D":
+        v.update()  # the histogram
+        gui_3d(v, max_size + 2 * imgui.get_frame_height_with_spacing() + em_size(1))  # the images' size, and chrome
+        return
+    params = v.original_params if v.view == "Original" else v.processed_params
+    v.original_params.show_pixel_info = not narrow
+    set_views_size((v.original_params, v.processed_params), min(width - imgui.get_frame_height(), max_size))
+    v.update()
+    if v.view == "Original":
+        immvision.image("Original, in HU##ct", v.hu[v.z], params)
+    else:
+        immvision.image("Window and segmentation##ct", v.processed, params)
+    take_click(v, v.view, params)
 
 
 def gui_slice(v: CtViewer) -> None:
@@ -572,7 +614,11 @@ def gui_3d(v: CtViewer, height: float) -> None:
     if v.points.shape[0] == 0:
         return
     flags = implot3d.Flags_.no_legend | implot3d.Flags_.no_mouse_text
+    transparent = ImVec4(0, 0, 0, 0)  # no strip along the axes to drag: the box's limits are fixed
+    implot3d.push_style_color(implot3d.Col_.axis_bg_hovered, transparent)
+    implot3d.push_style_color(implot3d.Col_.axis_bg_active, transparent)
     if not implot3d.begin_plot("##region_3d", ImVec2(-1, height - imgui.get_text_line_height_with_spacing()), flags):
+        implot3d.pop_style_color(2)
         return
     no_ticks = implot3d.AxisFlags_.no_tick_labels | implot3d.AxisFlags_.no_label
     implot3d.setup_axes("", "", "", no_ticks, no_ticks, no_ticks)
@@ -593,6 +639,7 @@ def gui_3d(v: CtViewer, height: float) -> None:
         qx, qy, qz = (np.ascontiguousarray(quad[:, i]) for i in range(3))
         implot3d.plot_quad("slice", qx, qy, qz, plane)
     implot3d.end_plot()
+    implot3d.pop_style_color(2)
 
 
 def gui_ct_credit() -> None:
@@ -605,34 +652,50 @@ def gui_ct_credit() -> None:
 
 def gui_ct(v: CtViewer) -> None:
     gui_intro("Chest CT")
-    if imgui.get_content_region_avail().x < em_size(NARROW_WIDTH_EM):  # a phone: everything in one column
-        gui_views(v, imgui.get_content_region_avail().x, em_size(40), narrow=True)
+    avail = imgui.get_content_region_avail()
+    line = imgui.get_frame_height_with_spacing()
+    views_chrome = 2 * line + em_size(1)  # the legend and the zoom buttons
+    if avail.x < em_size(NARROW_WIDTH_EM):  # a phone: one view at a time, then the controls
+        pinned = avail.y >= em_size(PINNED_MIN_HEIGHT_EM)  # the viewer stays, the controls scroll under it
+        size = min(avail.x, avail.y * PINNED_VIEW_SHARE if pinned else em_size(40))
+        if pinned:
+            imgui.begin_child("viewer", ImVec2(0, 2 * line + size + views_chrome))
+        gui_view_switch(v, narrow=True)
+        gui_one_view(v, avail.x, size, narrow=True)
+        if pinned:  # the slider at the viewer's bottom, whatever the view: it stays under the finger
+            imgui.set_cursor_pos_y(imgui.get_window_height() - imgui.get_frame_height())
         gui_slice(v)
+        if pinned:
+            imgui.end_child()
+            imgui.begin_child("controls")
         imgui.separator_text("Window")
         gui_window(v)
         imgui.separator_text("Segmentation")
         gui_segmentation(v)
-        imgui.separator_text("In 3D")
-        gui_3d(v, em_size(19))
         gui_ct_credit()
+        if pinned:
+            imgui.end_child()
         return
 
-    # The controls at the left: the segmentation and the region in 3D
+    # The controls at the left: the segmentation and the region in 3D (unless the viewer shows it, larger)
     imgui.begin_child("controls", ImVec2(em_size(CONTROLS_WIDTH_EM), 0))
     imgui.separator_text("Segmentation")
     gui_segmentation(v)
-    imgui.separator_text("In 3D")
-    gui_3d(v, max(imgui.get_content_region_avail().y, em_size(14)))
+    if v.view != "3D":
+        imgui.separator_text("In 3D")
+        gui_3d(v, max(imgui.get_content_region_avail().y, em_size(14)))
     imgui.end_child()
     imgui.same_line()
 
     # The views, the slider under them (it moves the views and the plane in 3D at once), the window, and the credit
     imgui.begin_group()
-    line = imgui.get_frame_height_with_spacing()
+    gui_view_switch(v, narrow=False)
     below_views = 4 * line + em_size(HISTOGRAM_HEIGHT_EM) + 2 * imgui.get_text_line_height_with_spacing()
-    views_chrome = 2 * line + em_size(1)  # the legend and the zoom buttons
     max_height = imgui.get_content_region_avail().y - below_views - views_chrome
-    gui_views(v, imgui.get_content_region_avail().x, max_height, narrow=False)
+    if v.view == "Both":
+        gui_views(v, imgui.get_content_region_avail().x, max_height, narrow=False)
+    else:
+        gui_one_view(v, imgui.get_content_region_avail().x, max_height, narrow=False)
     gui_slice(v)
     imgui.separator_text("Window")
     gui_window(v)
