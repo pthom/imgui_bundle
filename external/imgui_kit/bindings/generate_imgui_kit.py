@@ -27,7 +27,8 @@ def main() -> None:
     # ImGuiKitIcon_ -> Icon_, as ImPlot drops its own prefix
     options.type_replacements.add_last_replacement(r"ImGuiKit([A-Z][a-zA-Z0-9]*)", r"\1")
     # A C function pointer, set from C++ by the bundle (which installs a Markdown renderer)
-    options.fn_exclude_by_name__regex = "^SetHelpMarkerTextRenderer$"
+    # ResizeHandle is bound by hand (pybind_imgui_kit.cpp): it returns (changed, size), size being an ImVec2
+    options.fn_exclude_by_name__regex = "^(SetHelpMarkerTextRenderer|ResizeHandle)$"
     # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
     options.comments_python_names_in_backticks = True
     options.comments_python_modules = {"ImGuiKit": "imgui_kit", "ImGui": "imgui"}

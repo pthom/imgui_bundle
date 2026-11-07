@@ -36,6 +36,11 @@ class _State:
     balance = 0.0
     fit_width_em = 16.0
     fit_lines = 2
+    gamma = 1.0
+    flip = False
+    resizable_text = "A text field that the reader can make larger.\nDrag its corner."
+    text_size = ImVec2(0, 0)  # set at the first frame, in em (the font must exist)
+    child_size = ImVec2(0, 0)
     muted = False
 
 
@@ -195,6 +200,27 @@ def demo_label_column() -> None:
     imgui.tree_pop()
 
 
+def demo_group_panel() -> None:
+    IMGUI_DEMO_MARKER("Layout/Group panel")
+    if not imgui.tree_node("Group panel"):
+        return
+    imgui.text_wrapped("A group in a frame, its label in the frame's top border. The look of thedmd's group panel "
+                       "(Dear ImGui issue #1496).")
+    with imgui_kit.group_panel("Image info"):
+        imgui.text("Size: 640 x 480")
+        imgui.text("Channels: 3")
+        imgui.text("Depth: 8 bits")
+    imgui.same_line()
+    with imgui_kit.group_panel("Display"):
+        with imgui_kit.label_column("display"):
+            imgui_kit.label("Gamma")
+            imgui.set_next_item_width(imgui_kit.em_size(8))
+            _, state.gamma = imgui.slider_float("##gamma", state.gamma, 0.2, 3.0)
+            imgui_kit.label("Flip")
+            _, state.flip = imgui.checkbox("##flip", state.flip)
+    imgui.tree_pop()
+
+
 def demo_flow() -> None:
     IMGUI_DEMO_MARKER("Layout/Flow")
     if not imgui.tree_node("Flow"):
@@ -224,6 +250,7 @@ def demo_layout() -> None:
     demo_aligned_group()
     demo_column()
     demo_label_column()
+    demo_group_panel()
     demo_flow()
 
 
@@ -326,6 +353,25 @@ def demo_fit_text() -> None:
     imgui.tree_pop()
 
 
+def demo_resize_handle() -> None:
+    IMGUI_DEMO_MARKER("Widgets/Resize handle")
+    if not imgui.tree_node("Resize handle"):
+        return
+    imgui.text_wrapped("Drag the grip at the bottom-right corner: the widget before it takes the new size. "
+                       "Any widget that takes a size: a text field, a child window, a plot.")
+    if state.text_size.x == 0:
+        state.text_size = imgui_kit.em_to_vec2(20, 4)
+        state.child_size = imgui_kit.em_to_vec2(20, 6)
+    _, state.resizable_text = imgui.input_text_multiline("##text", state.resizable_text, state.text_size)
+    _, state.text_size = imgui_kit.resize_handle("##text_size", state.text_size, imgui_kit.em_to_vec2(6, 2))
+
+    imgui.begin_child("##child", state.child_size, imgui.ChildFlags_.borders)
+    imgui.text(f"A child window, {state.child_size.x:.0f} x {state.child_size.y:.0f} px")
+    imgui.end_child()
+    _, state.child_size = imgui_kit.resize_handle("##child_size", state.child_size, imgui_kit.em_to_vec2(10, 3))
+    imgui.tree_pop()
+
+
 def demo_widgets() -> None:
     IMGUI_DEMO_MARKER("Widgets")
     if not imgui.collapsing_header("Widgets"):
@@ -334,6 +380,7 @@ def demo_widgets() -> None:
     demo_icon_button()
     demo_segmented_switch()
     demo_fit_text()
+    demo_resize_handle()
 
 
 # =============================================================================
