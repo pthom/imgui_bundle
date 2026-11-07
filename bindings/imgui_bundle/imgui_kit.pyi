@@ -174,20 +174,28 @@ def end_flow() -> None:
 # [SECTION] Widgets
 # -----------------------------------------------------------------------------
 
-# IMGUI_API void   HelpMarker(const char* text);    /* original C++ signature */
-def help_marker(text: str) -> None:
+# IMGUI_API void   HelpMarker(const char* text, float width_em = 0.0f);    /* original C++ signature */
+def help_marker(text: str, width_em: float = 0.0) -> None:
     """Help marker: a small drawn (i). It shows its text:
       - with a mouse: in a tooltip while hovered; a click pins it in a popup, until a click elsewhere or Escape;
       - on a touch screen (which has no hover): in a popup, opened by a tap.
+    width_em: the window's width, in em (a parameter named _em is in em; the kit's other sizes are in pixels, as
+    Dear ImGui's); 0 = the text's width on one line, up to 35 em (Dear ImGui's tooltips do not wrap; its demo wraps
+    its help at 35 em). Never wider than the screen. The height: at most 60% of the screen; a
+    longer text scrolls in the popup, and the tooltip says to click to read it all.
+    The text: '\n' starts a line with the default renderer; with a Markdown renderer, Markdown's rules apply (a
+    single '\n' joins the lines of a paragraph, an empty line separates paragraphs).
     It goes to the next line when the current one has no room for it. Its ID is its text: two markers with the
     same text in the same ID scope share their popup (use PushID() or BeginHelpMarker() to tell them apart).
     """
     pass
 
 # The same, with any content: draw it between the two calls when BeginHelpMarker() returns True.
+# width_em: 0 = the content sizes the window (its text wraps at 35 em); give a width for a content that wraps to
+# its window (Markdown).
 #     if (ImGuiKit::BeginHelpMarker("##level_help")) { ImGui::Text("..."); ImGuiKit::EndHelpMarker(); }
-# IMGUI_API bool   BeginHelpMarker(const char* str_id);    /* original C++ signature */
-def begin_help_marker(str_id: str) -> bool:
+# IMGUI_API bool   BeginHelpMarker(const char* str_id, float width_em = 0.0f);    /* original C++ signature */
+def begin_help_marker(str_id: str, width_em: float = 0.0) -> bool:
     pass
 
 # IMGUI_API void   EndHelpMarker();    /* original C++ signature */
@@ -280,7 +288,7 @@ class HelpMarkerContext:
     def __enter__(self) -> "HelpMarkerContext": ...
     def __exit__(self, *args: object) -> None: ...
 
-def help_marker_ctx(str_id: str) -> HelpMarkerContext:
+def help_marker_ctx(str_id: str, width_em: float = 0.0) -> HelpMarkerContext:
     """A help marker with any content, as a context manager: `begin_help_marker()`, then `end_help_marker()` when
     it returned true."""
     ...

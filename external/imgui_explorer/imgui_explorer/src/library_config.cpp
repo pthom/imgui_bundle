@@ -187,7 +187,7 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
     // imgui_kit
     {
         LibraryConfig cfg;
-        cfg.name = "imgui_kit";
+        cfg.name = "ImGuiKit";
         cfg.files = {
             {"imgui_kit_demo", true, false,
              "https://github.com/pthom/imgui_kit/blob/main/imgui_kit_demo.cpp",
@@ -201,12 +201,12 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
             ImGui::SetNextWindowPos(pos);
             ImGui::SetNextWindowSize(size);
-            if (ImGui::Begin("imgui_kit Demo", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+            if (ImGui::Begin("ImGuiKit Demo", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
                 ImGuiKit::ShowDemoContents();
             ImGui::End();
         };
-        cfg.demoWindowName = "imgui_kit Demo";
-        cfg.introText = "imgui_kit - Small, standalone additions to Dear ImGui";
+        cfg.demoWindowName = "ImGuiKit Demo";
+        cfg.introText = "ImGuiKit - Small, standalone additions to Dear ImGui";
         cfg.apiModules = {"imgui_kit"};
         cfg.links = {
             {"Repository", "https://github.com/pthom/imgui_kit"},

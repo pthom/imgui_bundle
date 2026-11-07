@@ -92,7 +92,7 @@ int main(int argc, char** argv)
         if (sl == "implot")  return ImGuiExplorerLibrary::ImPlot;
         if (sl == "implot3d")return ImGuiExplorerLibrary::ImPlot3D;
         if (sl == "imanim")  return ImGuiExplorerLibrary::ImAnim;
-        if (sl == "imgui_kit") return ImGuiExplorerLibrary::ImGuiKit;
+        if (sl == "imguikit" || sl == "imgui_kit") return ImGuiExplorerLibrary::ImGuiKit;
         return std::nullopt;
     };
     std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));

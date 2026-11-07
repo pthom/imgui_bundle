@@ -39,15 +39,15 @@ def install_context_managers(kit: ModuleType) -> None:
             self._end()
 
     class HelpMarkerContext:
-        def __init__(self, str_id: str) -> None:
-            self._str_id = str_id
+        def __init__(self, str_id: str, width_em: float) -> None:
+            self._str_id, self._width_em = str_id, width_em
             self.shown = False
 
         def __bool__(self) -> bool:
             return self.shown
 
         def __enter__(self) -> "HelpMarkerContext":
-            self.shown = kit.begin_help_marker(self._str_id)
+            self.shown = kit.begin_help_marker(self._str_id, self._width_em)
             return self
 
         def __exit__(self, *args: Any) -> None:
@@ -63,8 +63,8 @@ def install_context_managers(kit: ModuleType) -> None:
     def flow(str_id: str) -> _BlockContext:
         return _BlockContext(lambda: kit.begin_flow(str_id), kit.end_flow)
 
-    def help_marker_ctx(str_id: str) -> HelpMarkerContext:
-        return HelpMarkerContext(str_id)
+    def help_marker_ctx(str_id: str, width_em: float = 0.0) -> HelpMarkerContext:
+        return HelpMarkerContext(str_id, width_em)
 
     for fn in (fill_row, aligned_group, flow, help_marker_ctx):
         setattr(kit, fn.__name__, fn)

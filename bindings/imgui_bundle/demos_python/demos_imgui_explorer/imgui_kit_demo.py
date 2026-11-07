@@ -204,7 +204,7 @@ def demo_widgets() -> None:
 # Demo window
 # =============================================================================
 def show_demo_contents() -> None:
-    imgui.text("imgui_kit: small, standalone additions to Dear ImGui")
+    imgui.text("ImGuiKit: small, standalone additions to Dear ImGui")
     imgui.separator()
     demo_em_units()
     demo_layout()

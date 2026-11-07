@@ -109,11 +109,11 @@ void py_init_module_imgui_kit(nb::module_& m)
 
     m.def("help_marker",
         ImGuiKit::HelpMarker,
-        nb::arg("text"),
-        " Help marker: a small drawn (i). It shows its text:\n   - with a mouse: in a tooltip while hovered; a click pins it in a popup, until a click elsewhere or Escape;\n   - on a touch screen (which has no hover): in a popup, opened by a tap.\n It goes to the next line when the current one has no room for it. Its ID is its text: two markers with the\n same text in the same ID scope share their popup (use PushID() or BeginHelpMarker() to tell them apart).");
+        nb::arg("text"), nb::arg("width_em") = 0.0f,
+        " Help marker: a small drawn (i). It shows its text:\n   - with a mouse: in a tooltip while hovered; a click pins it in a popup, until a click elsewhere or Escape;\n   - on a touch screen (which has no hover): in a popup, opened by a tap.\n width_em: the window's width, in em (a parameter named _em is in em; the kit's other sizes are in pixels, as\n Dear ImGui's); 0 = the text's width on one line, up to 35 em (Dear ImGui's tooltips do not wrap; its demo wraps\n its help at 35 em). Never wider than the screen. The height: at most 60% of the screen; a\n longer text scrolls in the popup, and the tooltip says to click to read it all.\n The text: '\n' starts a line with the default renderer; with a Markdown renderer, Markdown's rules apply (a\n single '\n' joins the lines of a paragraph, an empty line separates paragraphs).\n It goes to the next line when the current one has no room for it. Its ID is its text: two markers with the\n same text in the same ID scope share their popup (use PushID() or BeginHelpMarker() to tell them apart).");
 
     m.def("begin_help_marker",
-        ImGuiKit::BeginHelpMarker, nb::arg("str_id"));
+        ImGuiKit::BeginHelpMarker, nb::arg("str_id"), nb::arg("width_em") = 0.0f);
 
     m.def("end_help_marker",
         ImGuiKit::EndHelpMarker);
