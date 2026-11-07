@@ -6,25 +6,18 @@
 #include "implot3d/implot3d.h"
 #include "immapp/runner.h"
 #include "imgui_rich_md/rich_md.h"
+#include "imgui_kit/imgui_kit.h"
 #include <algorithm>
 #include <vector>
 
 namespace
 {
 
-// An (i) at the right of the last widget: a click, or a tap, shows the text (a tooltip would need a mouse)
+// An (i) at the right of the last widget: hovering shows the text, a click or a tap keeps it open
 void InfoButton(const char* text)
 {
     ImGui::SameLine();
-    ImGui::PushID(text);
-    if (ImGui::SmallButton("(i)"))
-        ImGui::OpenPopup("info");
-    if (ImGui::BeginPopup("info"))
-    {
-        ImGui::TextUnformatted(text);
-        ImGui::EndPopup();
-    }
-    ImGui::PopID();
+    ImGuiKit::HelpMarker(text);
 }
 
 struct LorenzParams {

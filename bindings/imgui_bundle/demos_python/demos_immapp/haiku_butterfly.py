@@ -10,18 +10,14 @@ namely that tiny changes in initial conditions evolve to completely different tr
 """
 
 import numpy as np
-from imgui_bundle import implot3d, immapp, imgui, rich_md, hello_imgui, ImVec2
+from imgui_bundle import implot3d, immapp, imgui, imgui_kit, rich_md, hello_imgui, ImVec2
 from dataclasses import dataclass
 
 
 def info_button(text: str) -> None:
-    """An (i) at the right of the last widget: a click, or a tap, shows the text (a tooltip would need a mouse)"""
+    """An (i) at the right of the last widget: hovering shows the text, a click or a tap keeps it open"""
     imgui.same_line()
-    if imgui.small_button(f"(i)##{text}"):
-        imgui.open_popup(f"info##{text}")
-    if imgui.begin_popup(f"info##{text}"):
-        imgui.text(text)
-        imgui.end_popup()
+    imgui_kit.help_marker(text)
 
 
 @dataclass
