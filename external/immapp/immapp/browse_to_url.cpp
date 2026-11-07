@@ -70,7 +70,7 @@ namespace ImmApp
         std::string urlJs = JsStringLiteral(url);
         // The new tab gets no handle on this one (w.opener): it could otherwise replace the app's page
         std::string js_command =
-            "if (window.helloImGuiPointerType === 1) window.location.assign(" + urlJs + ");"
+            "if (window.imguiKitPointerType === 1) window.location.assign(" + urlJs + ");"
             " else { const w = window.open(" + urlJs + "); if (w) w.opener = null; else window.location.assign(" + urlJs + "); }";
         emscripten_run_script(js_command.c_str());
 #elif defined(_WIN32)
