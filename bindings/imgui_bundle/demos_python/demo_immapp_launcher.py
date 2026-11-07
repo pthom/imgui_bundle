@@ -376,7 +376,7 @@ def theme_switch() -> None:
         apply_theme(DARK_THEME)
     elif picked == 1 and current != 1:
         apply_theme(LIGHT_THEME)
-    elif picked == 2 and imgui.is_item_deactivated() and imgui.is_item_hovered():  # "...", pressed again or not
+    elif picked == 2 and imgui.is_item_activated():  # "...", at its press (the switch changes at the press)
         imgui.open_popup("##themes")
     imgui.set_item_tooltip("The theme: dark, light, or one of all the themes")
     if imgui.begin_popup("##themes"):
