@@ -71,7 +71,7 @@ namespace
 
     const char* LibraryName(ImGuiExplorerLibrary library)
     {
-        static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim" };
+        static const char* names[] = { "ImGui", "ImPlot", "ImPlot3D", "ImAnim", "imgui_kit" };
         return names[static_cast<int>(library)];
     }
 

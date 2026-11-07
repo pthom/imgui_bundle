@@ -81,3 +81,6 @@
 	path = external/imgui_rich_md/imgui_rich_md
 	url = https://github.com/pthom/imgui_rich_md.git
 	branch = main
+[submodule "external/imgui_kit/imgui_kit"]
+	path = external/imgui_kit/imgui_kit
+	url = https://github.com/pthom/imgui_kit.git

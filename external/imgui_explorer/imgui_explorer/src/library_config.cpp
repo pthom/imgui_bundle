@@ -5,6 +5,7 @@
 #endif
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
+#include "imgui_kit/imgui_kit.h"
 #include <algorithm>
 #include <cctype>
 
@@ -179,6 +180,30 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.apiModules = {"implot3d", "implot3d.internal"};
         cfg.links = {
             {"Repository", "https://github.com/brenocq/implot3d/"},
+        };
+        configs.push_back(std::move(cfg));
+    }
+
+    // imgui_kit
+    {
+        LibraryConfig cfg;
+        cfg.name = "imgui_kit";
+        cfg.files = {
+            {"imgui_kit_demo", false, false, "https://github.com/pthom/imgui_kit/blob/main/imgui_kit_demo.cpp"},
+            {"imgui_kit", false, true, "https://github.com/pthom/imgui_kit/blob/main/imgui_kit.h"},
+        };
+        cfg.frameSetup = nullptr;
+        cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
+            ImGui::SetNextWindowPos(pos);
+            ImGui::SetNextWindowSize(size);
+            if (ImGui::Begin("imgui_kit Demo", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+                ImGuiKit::ShowDemoContents();
+            ImGui::End();
+        };
+        cfg.demoWindowName = "imgui_kit Demo";
+        cfg.introText = "imgui_kit - Small, standalone additions to Dear ImGui";
+        cfg.links = {
+            {"Repository", "https://github.com/pthom/imgui_kit"},
         };
         configs.push_back(std::move(cfg));
     }

@@ -412,6 +412,8 @@ endif()
 ###############################################################################
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
+# Build imgui_kit (its tests and its own CMakeLists.txt are for the standalone build)
+add_simple_external_library_with_sources(imgui_kit imgui_kit)
 # Build imspinner
 add_simple_external_library(imspinner imspinner)
 target_sources(imspinner PRIVATE ${CMAKE_CURRENT_LIST_DIR}/imspinner/imspinner_bundle.cpp)
