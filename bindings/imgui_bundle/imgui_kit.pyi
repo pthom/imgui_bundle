@@ -301,6 +301,11 @@ def segmented_switch(str_id: str, current: int, labels: List[str]) -> Tuple[bool
     """
     pass
 
+# IMGUI_API float  SegmentedSwitchWidth(const char* const labels[], int labels_count);    /* original C++ signature */
+def segmented_switch_width(labels: List[str]) -> float:
+    """The width a segmented switch takes, to place it: e.g. on the next line when the current one is too short"""
+    pass
+
 # IMGUI_API const char* FitText(const char* text, float wrap_width, int max_lines);    /* original C++ signature */
 def fit_text(text: str, wrap_width: float, max_lines: int) -> str:
     """Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at

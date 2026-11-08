@@ -209,6 +209,26 @@ void py_init_module_imgui_kit(nb::module_& m)
         nb::arg("str_id"), nb::arg("current"), nb::arg("labels"),
         " Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's\n FrameRounding, as buttons and sliders do.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.");
 
+    m.def("segmented_switch_width",
+        [](const std::vector<std::string> & labels) -> float
+        {
+            auto SegmentedSwitchWidth_adapt_c_string_list = [](const std::vector<std::string> & labels) -> float
+            {
+                std::vector<const char *> labels_ptrs;
+                labels_ptrs.reserve(labels.size());
+                for (const auto& v: labels)
+                    labels_ptrs.push_back(v.c_str());
+                int labels_count = static_cast<int>(labels.size());
+
+                auto lambda_result = ImGuiKit::SegmentedSwitchWidth(labels_ptrs.data(), labels_count);
+                return lambda_result;
+            };
+
+            return SegmentedSwitchWidth_adapt_c_string_list(labels);
+        },
+        nb::arg("labels"),
+        "The width a segmented switch takes, to place it: e.g. on the next line when the current one is too short");
+
     m.def("fit_text",
         ImGuiKit::FitText,
         nb::arg("text"), nb::arg("wrap_width"), nb::arg("max_lines"),

@@ -58,6 +58,13 @@ state = _State()
 # =============================================================================
 # Toolbar: theme, font size, frame rounding
 # =============================================================================
+def next_line_if_too_wide(widget_width: float) -> None:
+    """After a label, a widget too wide for the rest of the line goes under it: a narrow window (a phone) keeps its
+    rows on screen"""
+    if widget_width > imgui.get_content_region_avail().x:
+        imgui.new_line()
+
+
 def demo_toolbar() -> None:
     """The theme and the frame rounding apply to the whole application; "App" restores the colors it had.
     The font size applies to the demo."""
@@ -72,7 +79,9 @@ def demo_toolbar() -> None:
     # Each row: a label, then its widgets, aligned at the widest label
     with imgui_kit.label_column("toolbar"):
         imgui_kit.label("Theme")
-        changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, ["App", "Dark", "Light", "Classic"])
+        themes = ["App", "Dark", "Light", "Classic"]
+        next_line_if_too_wide(imgui_kit.segmented_switch_width(themes))
+        changed, state.theme = imgui_kit.segmented_switch("##theme", state.theme, themes)
         if changed:
             if state.theme == 0:
                 for i, c in enumerate(state.app_colors):
@@ -84,21 +93,22 @@ def demo_toolbar() -> None:
             else:
                 imgui.style_colors_classic()
 
+        # The sliders fill their rows (fill rows): the rows fit a phone's width
         imgui_kit.label("Font size")
-        imgui.set_next_item_width(imgui_kit.em_size(8))
-        _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "%.0f px")
+        with imgui_kit.fill_row("font_size"):
+            _, state.font_size = imgui.slider_float("##font_size", state.font_size, 8.0, 40.0, "%.0f px")
 
         imgui_kit.label("Frame rounding")
-        imgui.set_next_item_width(imgui_kit.em_size(8))
-        _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0, "%.0f px")
-        imgui.same_line()
-        imgui_kit.help_marker("The style's frame_rounding: imgui.get_style().frame_rounding. Buttons, sliders, input "
-                              "fields and the segmented switch round their corners with it. 0 gives square frames; "
-                              "half the frame's height gives a pill.")
-        imgui.same_line()
-        if imgui.button("Reset"):  # the application's font size and frame rounding
-            state.font_size = style.font_size_base
-            style.frame_rounding = state.app_rounding
+        with imgui_kit.fill_row("rounding") as row:
+            _, style.frame_rounding = imgui.slider_float("##rounding", style.frame_rounding, 0.0, 12.0, "%.0f px")
+            row.tail()
+            imgui_kit.help_marker("The style's frame_rounding: imgui.get_style().frame_rounding. Buttons, sliders, "
+                                  "input fields and the segmented switch round their corners with it. 0 gives square "
+                                  "frames; half the frame's height gives a pill.")
+            imgui.same_line()
+            if imgui.button("Reset"):  # the application's font size and frame rounding
+                state.font_size = style.font_size_base
+                style.frame_rounding = state.app_rounding
 
 # =============================================================================
 # Em units
@@ -398,9 +408,9 @@ def demo_widgets() -> None:
 # =============================================================================
 def zoomable_canvas(str_id: str, size: ImVec2) -> None:
     """A canvas that zooms with the wheel and pans with a drag, as a plot or an image viewer does. It claims the wheel
-    while hovered (imgui.set_item_key_owner), takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags), and a
-    pinch (imgui_kit.touch.set_item_takes_pinch: its zoom per notch is 10%, and it uses the wheel's exact value; two
-    fingers pan it, with the left button)."""
+    while hovered (imgui.set_item_key_owner), takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags),
+    and a pinch (imgui_kit.touch.set_item_takes_pinch: its zoom per notch is 10%, and it uses the wheel's exact value;
+    two fingers pan it, with the left button)."""
     io = imgui.get_io()
     p0 = imgui.get_cursor_screen_pos()
     p1 = ImVec2(p0.x + size.x, p0.y + size.y)
@@ -480,13 +490,16 @@ def demo_touch() -> None:
                                   "- Press and hold, then release: a long press, which opens the zone's context menu "
                                   "(a right click).")
         imgui_kit.label("Swipe")
-        _, config.scroll_mode = imgui_kit.segmented_switch(
-            "##scroll_mode", config.scroll_mode, ["Touch screens", "Always", "Off"])
+        scroll_modes = ["Touch", "Always", "Off"]
+        next_line_if_too_wide(imgui_kit.segmented_switch_width(scroll_modes))
+        _, config.scroll_mode = imgui_kit.segmented_switch("##scroll_mode", config.scroll_mode, scroll_modes)
         imgui.same_line()
-        imgui_kit.help_marker("Touch screens: the swipe follows a finger only. Always: the mouse's left button drags the "
+        imgui_kit.help_marker("Touch: the swipe follows a finger only. Always: the mouse's left button drags the "
                               "content too, while the mouse stays a mouse.")
         imgui_kit.label("Pinch")
-        _, config.pinch_mode = imgui_kit.segmented_switch("##pinch_mode", config.pinch_mode, ["Font scale", "Off"])
+        pinch_modes = ["Font scale", "Off"]
+        next_line_if_too_wide(imgui_kit.segmented_switch_width(pinch_modes))
+        _, config.pinch_mode = imgui_kit.segmented_switch("##pinch_mode", config.pinch_mode, pinch_modes)
         imgui_kit.label("Long press")
         _, config.long_press_is_right_click = imgui.checkbox("is a right click", config.long_press_is_right_click)
         imgui_kit.label("Scroll bars")
@@ -570,7 +583,7 @@ def demo_touch_keyboard() -> None:
 # Demo window
 # =============================================================================
 def show_demo_contents() -> None:
-    imgui.text("ImGuiKit: small, standalone additions to Dear ImGui")
+    imgui.text_wrapped("ImGuiKit: small, standalone additions to Dear ImGui")
     if state.font_size == 0.0:
         state.font_size = imgui.get_style().font_size_base
     demo_toolbar()
