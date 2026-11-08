@@ -43,7 +43,6 @@ class _State:
     text_size = ImVec2(0, 0)  # set at the first frame, in em (the font must exist)
     child_size = ImVec2(0, 0)
     muted = False
-    touch_value = 0.5
     taps = [0] * 8  # the taps of the sideways row's cards
     row_value = 0.5  # the sideways row's slider
     keyboard_line = ""
@@ -453,6 +452,11 @@ def zoomable_canvas(str_id: str, size: ImVec2) -> None:
                        imgui.get_color_u32(imgui.Col_.text), f"zoom x{state.canvas_zoom:.2f}")
 
 
+# The text to select in the touch zone (read-only)
+SELECTABLE_TEXT = ("Napoleon's army crossed the Niemen in June 1812, with more than four hundred thousand men. "
+                   "Six months later, fewer than ten thousand came back.")
+
+
 TOUCH_SETUP_CODE = """imgui.create_context()
 imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch
 imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
@@ -504,7 +508,7 @@ def demo_touch() -> None:
         imgui_kit.label("Long press")
         _, config.long_press_is_right_click = imgui.checkbox("is a right click", config.long_press_is_right_click)
         imgui_kit.label("Scroll bars")
-        _, config.thin_scrollbars = imgui.checkbox("thin on a touch screen", config.thin_scrollbars)
+        _, config.thin_scrollbars = imgui.checkbox("thin", config.thin_scrollbars)
 
     imgui.begin_child("##touch_zone", ImVec2(0.0, imgui_kit.em_size(16)), imgui.ChildFlags_.borders)
     imgui.bullet()
@@ -512,18 +516,17 @@ def demo_touch() -> None:
     imgui.bullet()
     imgui.text_wrapped("Tap: a click, when the finger lifts.")
     imgui.bullet()
-    imgui.text_wrapped("Hold, then drag: the widget under the finger takes it (the slider below).")
+    imgui.text_wrapped("Hold, then drag: the widget under the finger takes it (the text below: it selects).")
     imgui.bullet()
     imgui.text_wrapped("Long press, then lift: a right click (this zone's context menu).")
     imgui.bullet()
     imgui.text_wrapped("Two fingers: a pinch scales the font (on the canvas, it zooms the canvas); moved together, a "
                        "right drag.")
-    imgui.set_next_item_width(imgui_kit.em_size(12))
-    _, state.touch_value = imgui.slider_float("a short hold, then a drag", state.touch_value, 0.0, 1.0)
-    imgui.same_line()
-    imgui_kit.help_marker("This slider does not call imgui_kit.touch.set_item_takes_drags(): to drag it with a finger, "
-                          "hold it a moment first (a ring shows when the hold took effect). A drag that starts at once "
-                          "scrolls the zone. The canvas below reacts at once.")
+    # A text to select: a drag that starts on it scrolls the zone; a short hold, then a drag, selects (as on a
+    # phone). A ring shows when the hold took effect.
+    imgui.text_wrapped("Select a few words: a short hold, then a drag.")
+    imgui.input_text_multiline("##select", SELECTABLE_TEXT, ImVec2(-imgui.FLT_MIN, imgui_kit.em_size(4)),
+                               imgui.InputTextFlags_.read_only | imgui.InputTextFlags_.word_wrap)
 
     zoomable_canvas("##canvas", imgui_kit.em_to_vec2(16, 8))
     imgui.same_line()
