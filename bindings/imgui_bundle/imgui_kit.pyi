@@ -18,6 +18,9 @@ from typing import Optional, List, Tuple, overload
 import enum
 
 from imgui_bundle.imgui import ImVec2, ImVec2Like
+from imgui_bundle import imgui
+
+ImGuiMouseButton = imgui.MouseButton
 
 Icon = int
 TouchScrollMode = int
@@ -459,7 +462,8 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     """ namespace ImGuiTouch"""
     # Installs the touch layer in the current Dear ImGui context, once (a second call only changes the config); it creates
     # the layer's state, freed with the context. Call it first: the other ImGuiTouch functions assert without it, except
-    # IsAnimating(), SetItemTakesDrags() and GetKeyboardInsets(), which do nothing (or return zero) then.
+    # IsAnimating(), SetItemTakesDrags(), SetItemTakesPinch(), SetRectTakesPinch() and GetKeyboardInsets(), which do
+    # nothing (or return zero) then.
     # IMGUI_API void   Setup(const ImGuiTouchConfig& config = ImGuiTouchConfig());    /* original C++ signature */
     @staticmethod
     def setup(config: Optional[TouchConfig] = None) -> None:
@@ -483,6 +487,35 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     def set_item_takes_drags(long_press_is_right_click: bool = True) -> None:
         """Right after a widget that a finger drags (a plot, a knob, a node editor's canvas): a drag that starts on it goes to
         it, not to the swipe. long_press_is_right_click: a long press on it is still a right click.
+        """
+        pass
+    # IMGUI_API void   SetItemTakesPinch(float zoom_per_notch = 0.1f, ImGuiMouseButton pan_button = ImGuiMouseButton_Right);    /* original C++ signature */
+    @staticmethod
+    def set_item_takes_pinch(
+        zoom_per_notch: float = 0.1, pan_button: Optional[ImGuiMouseButton] = None
+    ) -> None:
+        """Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of
+         scaling the font. The pinch reaches it as wheel events, one notch each time the fingers' spread changed by
+         zoom_per_notch (the widget's own zoom per notch: ImPlot's is 0.1), at the first finger's position. Two fingers that
+         move together on it drag it with pan_button (a plot pans with the left button). Nothing without the touch layer.
+
+        Python bindings defaults:
+            If pan_button is None, then its default value will be: ImGuiMouseButton_Right
+        """
+        pass
+    # IMGUI_API void   SetRectTakesPinch(const ImVec2& min, const ImVec2& max, float zoom_per_notch = 0.1f,    /* original C++ signature */
+    #                                    ImGuiMouseButton pan_button = ImGuiMouseButton_Right);
+    @staticmethod
+    def set_rect_takes_pinch(
+        min: ImVec2Like,
+        max: ImVec2Like,
+        zoom_per_notch: float = 0.1,
+        pan_button: Optional[ImGuiMouseButton] = None,
+    ) -> None:
+        """The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot)
+
+        Python bindings defaults:
+            If pan_button is None, then its default value will be: ImGuiMouseButton_Right
         """
         pass
     # IMGUI_API void   AddFingerEvent(int id, const ImVec2& pos, bool down);    /* original C++ signature */
