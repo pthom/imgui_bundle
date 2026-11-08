@@ -496,7 +496,7 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     ) -> None:
         """Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of
          scaling the font. The pinch reaches it as wheel events, one notch each time the fingers' spread changed by
-         zoom_per_notch (the widget's own zoom per notch: ImPlot's is 0.1), at the first finger's position. Two fingers that
+         zoom_per_notch (the widget's own zoom per notch: ImPlot's is 0.1), at the fingers' center. Two fingers that
          move together on it drag it with pan_button (a plot pans with the left button). Nothing without the touch layer.
 
         Python bindings defaults:
