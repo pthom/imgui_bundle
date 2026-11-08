@@ -7,6 +7,12 @@
 - Python 3.10 is no longer supported: `imgui-bundle` needs Python 3.11 or later, like its wheels (3.11 to 3.15). Python 3.10 reaches its end of life in October 2026.
 - The touch settings of `hello_imgui.RunnerParams` are one field, `touch_config`, an `imgui_kit.TouchConfig`: `touch_scroll_mode` becomes `touch_config.scroll_mode` (`imgui_kit.TouchScrollMode_`), and so on for `long_press_is_right_click`, `thin_scrollbars`, `pinch_mode`, `pinch_interrupts_widgets`. The enums `hello_imgui.TouchScrollMode` and `TouchPinchMode` are gone. C++: `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always`.
 
+## New
+
+- **ImGuiKit** (`imgui_bundle.imgui_kit`): small, standalone additions to Dear ImGui, with Python bindings: em units, layout helpers (fill rows, aligned groups, label columns, flows), a few widgets. See the [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-kit/).
+- **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer and wheel session moved to ImGuiKit (`imgui_kit.touch`, `imgui_kit.setup_wheel_session()`), where an app with its own backend can set them up. Hello ImGui and ImmApp still set them up by themselves.
+- **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes the pinch with `imgui_kit.touch.set_item_takes_pinch()`.
+
 # v1.93.0
 
 This is a big release, with 911 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
