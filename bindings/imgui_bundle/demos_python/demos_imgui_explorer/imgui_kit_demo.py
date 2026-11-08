@@ -403,8 +403,12 @@ def demo_touch() -> None:
         _, config.scroll_mode = imgui_kit.segmented_switch(
             "##scroll_mode", config.scroll_mode, ["Touch screens", "Always", "Off"])
         imgui.same_line()
-        imgui_kit.help_marker("Always: the mouse's left button drags the content too. Try the phone's behavior on a "
-                              "desktop, in the zone below.")
+        imgui_kit.help_marker('By default, the swipe works only on touch screens. Select "Always" to emulate it on '
+                              "a desktop, with the mouse's left button. Then, in the zone below, as on a phone:\n\n"
+                              "- Drag up or down to scroll the content. Start moving as soon as you press, as with a "
+                              "finger.\n"
+                              "- Press and hold, then release: a long press, which opens the zone's context menu (a "
+                              "right click).")
         imgui_kit.label("Pinch")
         _, config.pinch_mode = imgui_kit.segmented_switch("##pinch_mode", config.pinch_mode, ["Font scale", "Off"])
         imgui_kit.label("Long press")
@@ -417,6 +421,10 @@ def demo_touch() -> None:
                        "going after a quick throw.")
     imgui.set_next_item_width(imgui_kit.em_size(12))
     _, state.touch_value = imgui.slider_float("a short hold, then a drag", state.touch_value, 0.0, 1.0)
+    imgui.same_line()
+    imgui_kit.help_marker("This slider does not call imgui_kit.touch.set_item_takes_drags(): to drag it with a finger, "
+                          "hold it a moment first (a ring shows when the hold took effect). A drag that starts at once "
+                          "scrolls the zone. The pad below reacts at once.")
 
     imgui.text_wrapped("The pad takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags()): the zone stays.")
     pad_min = imgui.get_cursor_screen_pos()
@@ -434,9 +442,15 @@ def demo_touch() -> None:
     draw_list.add_rect(pad_min, pad_max, imgui.get_color_u32(imgui.Col_.border), rounding)
     center = ImVec2(pad_min.x + state.dot.x * pad_size.x, pad_min.y + state.dot.y * pad_size.y)
     draw_list.add_circle_filled(center, imgui_kit.em_size(0.5), imgui.get_color_u32(imgui.Col_.slider_grab_active))
+    imgui.same_line()
+    imgui_kit.help_marker("This pad calls imgui_kit.touch.set_item_takes_drags() right after it: a drag that starts on "
+                          "it moves the dot at once. So the zone cannot be scrolled from inside the pad.")
 
     for i in range(1, 21):
         imgui.text(f"Line {i}: more content, to scroll")
+    if imgui.begin_popup_context_window("##zone_menu"):
+        imgui.text_unformatted("The zone's context menu: a right click, or a long press")
+        imgui.end_popup()
     imgui.end_child()
     # is_animating(): an application that sleeps when nothing happens keeps drawing frames meanwhile
     imgui.text(f"Moving on its own: {'yes' if imgui_kit.touch.is_animating() else 'no'}")
