@@ -14,6 +14,10 @@
 - **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes the pinch with `imgui_kit.touch.set_item_takes_pinch()`.
 - **Sliders and drags follow a finger at once**: on a touch screen, a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS (before, a slider needed a short hold). A widget of your own: `imgui_kit.touch.set_item_takes_drags_along()`.
 
+## Fixes
+
+- Hello ImGui, on Windows: a borderless full-screen window with `borderless_resizable` keeps its size when it is minimized and restored, or after an Alt-Tab. It came back at 640x480 ([hello_imgui#171](https://github.com/pthom/hello_imgui/issues/171)).
+
 # v1.93.0
 
 This is a big release, with 911 commits since v1.92.900: Dear ImGui 1.93, a Markdown library of its own, the node editor on its upstream version, and a renewed Bundle Explorer and playground.
