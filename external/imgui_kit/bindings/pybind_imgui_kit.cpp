@@ -220,6 +220,16 @@ void py_init_module_imgui_kit(nb::module_& m)
         " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
 
 
+    auto pyEnumIcon_ =
+        nb::enum_<ImGuiKitIcon_>(m, "Icon_", nb::is_arithmetic(), "The symbols of IconButton()")
+            .value("minus", ImGuiKitIcon_Minus, "")
+            .value("plus", ImGuiKitIcon_Plus, "")
+            .value("zoom_in", ImGuiKitIcon_ZoomIn, "")
+            .value("zoom_out", ImGuiKitIcon_ZoomOut, "")
+            .value("zoom_one_to_one", ImGuiKitIcon_ZoomOneToOne, "")
+            .value("zoom_fit", ImGuiKitIcon_ZoomFit, "");
+
+
     auto pyEnumTouchScrollMode_ =
         nb::enum_<ImGuiTouchScrollMode_>(m, "TouchScrollMode_", nb::is_arithmetic(), "Whether a finger that drags the content of a window scrolls it (the swipe)")
             .value("auto", ImGuiTouchScrollMode_Auto, "only when the input is a touch screen (io.MouseSource)")
@@ -282,16 +292,6 @@ void py_init_module_imgui_kit(nb::module_& m)
         .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, " When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text\n selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)")
         .def_rw("simulate_touch", &ImGuiTouchConfig::SimulateTouch, " The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a\n touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them")
         ;
-
-
-    auto pyEnumIcon_ =
-        nb::enum_<ImGuiKitIcon_>(m, "Icon_", nb::is_arithmetic(), "The symbols of IconButton()")
-            .value("minus", ImGuiKitIcon_Minus, "")
-            .value("plus", ImGuiKitIcon_Plus, "")
-            .value("zoom_in", ImGuiKitIcon_ZoomIn, "")
-            .value("zoom_out", ImGuiKitIcon_ZoomOut, "")
-            .value("zoom_one_to_one", ImGuiKitIcon_ZoomOneToOne, "")
-            .value("zoom_fit", ImGuiKitIcon_ZoomFit, "");
 
     { // <namespace ImGuiTouch>
         nb::module_ pyNsImGuiTouch = m.def_submodule("touch", "namespace ImGuiTouch");

@@ -6,7 +6,7 @@ local web build of the explorer (`build_imex_ems`, built by `just imex_ems_build
 (`?lib=implot&demo=Plots/Line Plots`). The explorer scrolls the section into view, and gives its place to the page
 (`window.imguiExplorerSection`: its marker's place, the y of the markers after it, its window's edges). The picture is
 the section's window from its title (above its marker, when the source shows one there) to its end: a marker after it,
-between MIN_HEIGHT and MAX_HEIGHTS, or, before that, a closed header of a sibling or a parent (text left of the
+between MIN_HEIGHTS and MAX_HEIGHTS, or, before that, a closed header of a sibling or a parent (text left of the
 section's indentation). CROPS adjusts a section's crop. The pictures are JPEG, 480 pixels wide at most, in the website
 resources: docs/clone_website_resources/imgui-bundle.pages.dev/resources/api/<lib>/<section>.jpg.
 
@@ -49,8 +49,9 @@ REPO = Path(__file__).resolve().parent.parent
 BUILD = REPO / "build_imex_ems/bin"
 PORT = 7016  # the local server of the web build, started and stopped by this script
 VIEWPORT = (1400, 900)  # the page's size, in CSS pixels (the device scale is 1)
-MIN_HEIGHT = 140  # a picture's height before its resize, in CSS pixels
-MAX_HEIGHTS = {"imgui": 420, "implot": 420, "implot3d": 600}  # (ImPlot3D: a square plot under its controls)
+MIN_HEIGHTS = {"imgui": 140, "implot": 140, "implot3d": 140, "imguikit": 60}  # a picture's height before its resize, in
+# CSS pixels, at least (ImGuiKit: short sections, which end at the next marker)
+MAX_HEIGHTS = {"imgui": 420, "implot": 420, "implot3d": 600, "imguikit": 420}  # (ImPlot3D: a square plot under its controls)
 WIDTH = 480  # the width of the pictures, in pixels at most
 HASHES = API_PICTURES / "picture_hashes.json"
 
@@ -101,10 +102,14 @@ def _selected(sections: list[DemoSection], names: list[str]) -> list[DemoSection
 
 def _title_above(section: DemoSection) -> bool:
     """Whether the section's title is drawn just above its marker: the code line before the marker draws one, or
-    starts the function that the demo calls under its title (ImPlot's Demo_LinePlots)"""
+    starts the function that the demo calls under its title (ImPlot's Demo_LinePlots). Not when the line after the
+    marker draws it (ImGuiKit's demo: the marker, then `if (!ImGui::TreeNode("..."))`)"""
     source = next(path for lib, path in DEMO_SOURCES.values() if lib == section.library)
     lines = (REPO / source).read_text().splitlines()
     mark = next(i for i, line in enumerate(lines) if f'IMGUI_DEMO_MARKER("{section.path}")' in line)
+    after = lines[mark + 1].strip() if mark + 1 < len(lines) else ""
+    if any(call in after for call in TITLE_CALLS):
+        return False
     before = next((line.strip() for line in reversed(lines[:mark])
                    if line.strip() and line.strip() != "{" and not line.strip().startswith("//")), "")
     return any(call in before for call in TITLE_CALLS) or bool(re.match(r"(static\s+)?void\s+\w+\(.*\)\s*\{?$", before))
@@ -130,10 +135,10 @@ def _crop(shot: Path, section: DemoSection, place: dict[str, float], output: Pat
     page = Image.open(shot)
     if crop.height:
         bottom = top + crop.height
-    else:  # a marker after it, at MIN_HEIGHT or below, else the last one above MIN_HEIGHT, else the maximum
+    else:  # a marker after it, at MIN_HEIGHTS or below, else the last one above MIN_HEIGHTS, else the maximum
         limit = top + MAX_HEIGHTS[section.library]
         ends = sorted(n for n in place["next"] if top + 30 < n <= limit)
-        bottom = next((n for n in ends if n >= top + MIN_HEIGHT), ends[-1] if ends else limit)
+        bottom = next((n for n in ends if n >= top + MIN_HEIGHTS[section.library]), ends[-1] if ends else limit)
         bottom = min(bottom, place["windowBottom"])
         bottom = _closed_header(page, place, top, bottom) or bottom
     bottom = min(bottom, place["windowBottom"])

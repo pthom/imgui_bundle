@@ -468,7 +468,7 @@ def read_stub(path: Path, headers_dir: Optional[Path] = None) -> list[Entry]:
         if not isinstance(node, (ast.FunctionDef, ast.ClassDef, ast.Assign)):
             continue
         entry = _read_node(lines, node)
-        if entry is None:
+        if entry is None or entry.name.startswith("_"):  # (a private helper: imgui_kit's _BlockContext)
             continue
         entry.header = next((h for (ln, h) in reversed(headers) if ln < node.lineno), "")
         entry.generated = generated_start < node.lineno < generated_end
@@ -600,11 +600,13 @@ DEMO_SOURCES = {  # the modules whose demo the ImGui Explorer shows: its name fo
     "imgui_bundle.imgui": ("imgui", "external/imgui/imgui/imgui_demo.cpp"),
     "imgui_bundle.implot": ("implot", "external/implot/implot/implot_demo.cpp"),
     "imgui_bundle.implot3d": ("implot3d", "external/implot3d/implot3d/implot3d_demo.cpp"),
+    "imgui_bundle.imgui_kit": ("imguikit", "external/imgui_kit/imgui_kit/imgui_kit_demo.cpp"),
 }
 DEMO_PYTHON = {  # the Python ports of these demos, by library: the same sections (IMGUI_DEMO_MARKERs)
     "imgui": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_demo.py",
     "implot": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot_demo.py",
     "implot3d": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/implot3d_demo.py",
+    "imguikit": "bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_kit_demo.py",
 }
 DEMO_EXTRACT_LINES = 14  # an extract's lines at most ("..." when cut)
 DEMO_PARTS_SKIPPED = ("Configuration", "Config", "Tools", "Help")  # the demo's parts that use widgets in passing: a
@@ -668,7 +670,7 @@ API_PICTURES = REPO / "docs/clone_website_resources/imgui-bundle.pages.dev/resou
 
 @dataclass
 class DemoSection:
-    library: str  # the explorer's name for it: imgui, implot, implot3d
+    library: str  # the explorer's name for it: imgui, implot, implot3d, imguikit
     path: str  # the section's IMGUI_DEMO_MARKER: "Widgets/Basic/SliderInt, SliderFloat"
     others: int  # the number of the other sections that use the entry
 
@@ -1625,7 +1627,7 @@ def demo_markers(library: str) -> list[str]:
 def write_llms_explorers() -> None:
     """The explorers in plain text, for AI assistants: their pages are a canvas, with no text to read. What each one
     shows, its links, and the ImGui Explorer's sections with theirs"""
-    titles = {"imgui": "Dear ImGui", "implot": "ImPlot", "implot3d": "ImPlot3D"}
+    titles = {"imgui": "Dear ImGui", "implot": "ImPlot", "implot3d": "ImPlot3D", "imguikit": "ImGuiKit"}
     out = ["# Dear ImGui Bundle: the explorers", "",
            "Two web apps show the demos live, each beside its code, in C++ and Python. They draw in a canvas (WebGL): "
            "a fetch of their pages gets no text. This file says what they show, and how to link to a demo: give these "

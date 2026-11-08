@@ -444,6 +444,11 @@ namespace
                 for (int i = node->line - 1; i >= 0 && i >= node->line - 5 && callLine < 0; --i)
                     if (!(call = TreeCallOn(lines[(size_t)i])).label.empty())
                         callLine = i;
+            // or on the line after it: the marker, then `if (!ImGui::TreeNode("..."))` (ImGuiKit's demo, a few of
+            // Dear ImGui's)
+            if (node->hasMarker && callLine < 0 && node->line < (int)lines.size()  // (line: 1-based)
+                && !(call = TreeCallOn(lines[(size_t)node->line])).label.empty())
+                callLine = node->line;
             if (callLine < 0 && !(last && node->hasMarker))  // no marker: by its name
                 callLine = FindTreeCall(lines, part, level == 0, call);
             if (callLine < 0)
@@ -565,13 +570,14 @@ namespace
         return chain;
     }
 
-    // The calls to open for a section: in the Dear ImGui demo, its nested tree nodes; in the plot demos, a tab and a
-    // node. Empty when not found
+    // The calls to open for a section: in the Dear ImGui demo and ImGuiKit's (built the same way), its nested tree
+    // nodes; in the plot demos, a tab and a node. Empty when not found
     std::vector<TreeCall> SectionChain(const std::vector<std::string>& lines, const OutlineNode& root,
                                        const std::string& path)
     {
-        return GetCurrentLibrary().name == "ImGui" ? RevealChain(lines, root, path)
-                                                   : TabRevealChain(lines, root, path);
+        const std::string& library = GetCurrentLibrary().name;
+        return (library == "ImGui" || library == "ImGuiKit") ? RevealChain(lines, root, path)
+                                                             : TabRevealChain(lines, root, path);
     }
 
     // The window of the current library's demo, or null (no reveal there)
