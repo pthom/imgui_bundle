@@ -42,6 +42,8 @@ class _State:
     text_size = ImVec2(0, 0)  # set at the first frame, in em (the font must exist)
     child_size = ImVec2(0, 0)
     muted = False
+    touch_value = 0.5
+    dot = ImVec2(0.5, 0.5)  # in the touch demo's pad, from 0 to 1
 
 
 state = _State()
@@ -384,6 +386,63 @@ def demo_widgets() -> None:
 
 
 # =============================================================================
+# Touch
+# =============================================================================
+def demo_touch() -> None:
+    """The settings change the application's touch layer, live: "Always" lets a mouse try the swipe on a desktop."""
+    IMGUI_DEMO_MARKER("Touch")
+    if not imgui.collapsing_header("Touch"):
+        return
+    imgui.text_wrapped("The gestures of a phone: a finger drags the content (with inertia, and a bounce at the end), "
+                       "a long press is a right click, two fingers pinch the font. The application installs the "
+                       "layer once: imgui_kit.touch.setup() (Hello ImGui does it).")
+
+    config = imgui_kit.touch.get_config()
+    with imgui_kit.label_column("touch_settings"):
+        imgui_kit.label("Swipe")
+        _, config.scroll_mode = imgui_kit.segmented_switch(
+            "##scroll_mode", config.scroll_mode, ["Touch screens", "Always", "Off"])
+        imgui.same_line()
+        imgui_kit.help_marker("Always: the mouse's left button drags the content too. Try the phone's behavior on a "
+                              "desktop, in the zone below.")
+        imgui_kit.label("Pinch")
+        _, config.pinch_mode = imgui_kit.segmented_switch("##pinch_mode", config.pinch_mode, ["Font scale", "Off"])
+        imgui_kit.label("Long press")
+        _, config.long_press_is_right_click = imgui.checkbox("is a right click", config.long_press_is_right_click)
+        imgui_kit.label("Scroll bars")
+        _, config.thin_scrollbars = imgui.checkbox("thin on a touch screen", config.thin_scrollbars)
+
+    imgui.begin_child("##touch_zone", ImVec2(0.0, imgui_kit.em_size(14)), imgui.ChildFlags_.borders)
+    imgui.text_wrapped('Drag this zone with a finger (or with the mouse, in "Always" mode): it scrolls, and keeps '
+                       "going after a quick throw.")
+    imgui.set_next_item_width(imgui_kit.em_size(12))
+    _, state.touch_value = imgui.slider_float("a short hold, then a drag", state.touch_value, 0.0, 1.0)
+
+    imgui.text_wrapped("The pad takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags()): the zone stays.")
+    pad_min = imgui.get_cursor_screen_pos()
+    pad_size = imgui_kit.em_to_vec2(12, 6)
+    imgui.invisible_button("##pad", pad_size)
+    imgui_kit.touch.set_item_takes_drags()
+    if imgui.is_item_active():
+        mouse = imgui.get_io().mouse_pos
+        state.dot = ImVec2(min(max((mouse.x - pad_min.x) / pad_size.x, 0.0), 1.0),
+                           min(max((mouse.y - pad_min.y) / pad_size.y, 0.0), 1.0))
+    draw_list = imgui.get_window_draw_list()
+    pad_max = ImVec2(pad_min.x + pad_size.x, pad_min.y + pad_size.y)
+    rounding = imgui.get_style().frame_rounding
+    draw_list.add_rect_filled(pad_min, pad_max, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
+    draw_list.add_rect(pad_min, pad_max, imgui.get_color_u32(imgui.Col_.border), rounding)
+    center = ImVec2(pad_min.x + state.dot.x * pad_size.x, pad_min.y + state.dot.y * pad_size.y)
+    draw_list.add_circle_filled(center, imgui_kit.em_size(0.5), imgui.get_color_u32(imgui.Col_.slider_grab_active))
+
+    for i in range(1, 21):
+        imgui.text(f"Line {i}: more content, to scroll")
+    imgui.end_child()
+    # is_animating(): an application that sleeps when nothing happens keeps drawing frames meanwhile
+    imgui.text(f"Moving on its own: {'yes' if imgui_kit.touch.is_animating() else 'no'}")
+
+
+# =============================================================================
 # Demo window
 # =============================================================================
 def show_demo_contents() -> None:
@@ -396,6 +455,7 @@ def show_demo_contents() -> None:
     demo_em_units()
     demo_layout()
     demo_widgets()
+    demo_touch()
     imgui.pop_font()
 
 
