@@ -974,7 +974,9 @@ def gui_retina_controls(r: RetinaViewer) -> None:
         "CLAHE", lambda: imgui_knobs.knob("CLAHE", r.clahe_clip, 1.0, 6.0, 0.02, "%.1f", knob, size))
     c, size_px = knob_column(
         "Top-hat", lambda: imgui_knobs.knob_int("Top-hat", r.tophat_size, 5, 41, 0.15, "%d px", knob, size))
-    r.tophat_size, changed = size_px | 1, changed or c  # odd: the kernel has a center
+    if size_px % 2 == 0:  # odd: the kernel has a center; rounded the way the knob turns
+        size_px += 1 if size_px > r.tophat_size else -1
+    r.tophat_size, changed = size_px, changed or c
     c, r.threshold = knob_column(
         "Threshold", lambda: imgui_knobs.knob_int("Threshold", r.threshold, 1, 60, 0.2, "%d", knob, size))
     changed |= c
