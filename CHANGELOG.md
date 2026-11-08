@@ -17,6 +17,8 @@
 ## Fixes
 
 - Hello ImGui, on Windows: a borderless full-screen window with `borderless_resizable` keeps its size when it is minimized and restored, or after an Alt-Tab. It came back at 640x480 ([hello_imgui#171](https://github.com/pthom/hello_imgui/issues/171)).
+- Hello ImGui, borderless windows: a full-screen window has no resize handle (a drag on it changed the monitor's video mode), and the resize handle follows a slow drag (it moved only when the mouse moved more than 6 px in one frame).
+- C++, on Windows: `main()` gets the command line in an app made with `imgui_bundle_add_app` or `hello_imgui_add_app`. Hello ImGui's `WinMain` called `main(0, NULL)`.
 
 # v1.93.0
 
