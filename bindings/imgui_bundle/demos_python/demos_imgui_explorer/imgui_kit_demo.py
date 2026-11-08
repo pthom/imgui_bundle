@@ -440,8 +440,8 @@ def zoomable_canvas(str_id: str, size: ImVec2) -> None:
 
 
 TOUCH_SETUP_CODE = """imgui.create_context()
-imgui_kit.touch.setup()                # the touch layer: swipe, long press, pinch
-imgui_kit.touch.setup_wheel_session()  # the wheel stays with the window it scrolls
+imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch
+imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
 
 # The render loop: nothing to add, the kit runs inside imgui.new_frame() and imgui.render().
 # - An app that sleeps when idle keeps drawing while imgui_kit.touch.is_animating().

@@ -214,6 +214,11 @@ void py_init_module_imgui_kit(nb::module_& m)
         nb::arg("text"), nb::arg("wrap_width"), nb::arg("max_lines"),
         " Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at\n wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the\n next call (copy it to keep two results).\n\n     ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);\n     ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then \"...\"\n     ImGui::PopTextWrapPos();");
 
+    m.def("setup_wheel_session",
+        ImGuiKit::SetupWheelSession,
+        nb::arg("enabled") = true,
+        " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
+
 
     auto pyEnumTouchScrollMode_ =
         nb::enum_<ImGuiTouchScrollMode_>(m, "TouchScrollMode_", nb::is_arithmetic(), "Whether a finger that drags the content of a window scrolls it (the swipe)")
@@ -307,11 +312,6 @@ void py_init_module_imgui_kit(nb::module_& m)
 
         pyNsImGuiTouch.def("get_config",
             ImGuiTouch::GetConfig, nb::rv_policy::reference);
-
-        pyNsImGuiTouch.def("setup_wheel_session",
-            ImGuiTouch::SetupWheelSession,
-            nb::arg("enabled") = true,
-            " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
 
         pyNsImGuiTouch.def("is_animating",
             ImGuiTouch::IsAnimating, " True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when\n nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it.");

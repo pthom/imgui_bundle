@@ -41,7 +41,8 @@ TouchPinchMode = int
 # // [SECTION] Em units
 # // [SECTION] Layout
 # // [SECTION] Widgets
-# // [SECTION] Input (ImGuiTouch)
+# // [SECTION] Wheel session
+# // [SECTION] Touch (ImGuiTouch)
 #
 #
 
@@ -308,11 +309,23 @@ def fit_text(text: str, wrap_width: float, max_lines: int) -> str:
     pass
 
 # -----------------------------------------------------------------------------
-# [SECTION] Input (ImGuiTouch)
+# [SECTION] Wheel session
 # -----------------------------------------------------------------------------
-# The input layer: a touch screen, and the mouse wheel. Each part is set up once, after ImGui::CreateContext(), and
-# then runs at each frame through Dear ImGui's context hooks.
-#
+
+# IMGUI_API void   SetupWheelSession(bool enabled = true);    /* original C++ signature */
+def setup_wheel_session(enabled: bool = True) -> None:
+    """The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with
+    the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that
+    starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.
+    A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):
+        if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);
+    Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).
+    """
+    pass
+
+# -----------------------------------------------------------------------------
+# [SECTION] Touch (ImGuiTouch)
+# -----------------------------------------------------------------------------
 # A touch screen, as on a phone:
 #   - the swipe: a finger that drags a window's content scrolls it, with inertia and a bounce at the end. A tap still
 #     clicks; a short hold, then a drag, goes to the widget (a slider, a text selection); a long press is a right
@@ -457,17 +470,6 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     # IMGUI_API ImGuiTouchConfig& GetConfig();    /* original C++ signature */
     @staticmethod
     def get_config() -> TouchConfig:
-        pass
-    # IMGUI_API void   SetupWheelSession(bool enabled = true);    /* original C++ signature */
-    @staticmethod
-    def setup_wheel_session(enabled: bool = True) -> None:
-        """The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with
-        the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that
-        starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.
-        A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):
-            if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);
-        Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).
-        """
         pass
     # IMGUI_API bool   IsAnimating();    /* original C++ signature */
     @staticmethod
