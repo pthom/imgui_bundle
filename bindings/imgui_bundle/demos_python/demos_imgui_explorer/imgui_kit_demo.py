@@ -399,14 +399,14 @@ def demo_widgets() -> None:
 def zoomable_canvas(str_id: str, size: ImVec2) -> None:
     """A canvas that zooms with the wheel and pans with a drag, as a plot or an image viewer does. It claims the wheel
     while hovered (imgui.set_item_key_owner), takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags), and a
-    pinch (imgui_kit.touch.set_item_takes_pinch: as wheel notches of 10%, its own zoom per notch; two fingers pan it,
-    with the left button)."""
+    pinch (imgui_kit.touch.set_item_takes_pinch: its zoom per notch is 10%, and it uses the wheel's exact value; two
+    fingers pan it, with the left button)."""
     io = imgui.get_io()
     p0 = imgui.get_cursor_screen_pos()
     p1 = ImVec2(p0.x + size.x, p0.y + size.y)
     imgui.invisible_button(str_id, size)
     imgui_kit.touch.set_item_takes_drags()
-    imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left)
+    imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left, imgui_kit.TouchPinchDelivery_.wheel_continuous)
     if imgui.is_item_active():
         state.canvas_offset = ImVec2(state.canvas_offset.x + io.mouse_delta.x, state.canvas_offset.y + io.mouse_delta.y)
     if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and io.mouse_wheel != 0.0:

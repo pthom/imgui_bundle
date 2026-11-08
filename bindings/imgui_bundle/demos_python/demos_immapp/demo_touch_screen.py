@@ -3,8 +3,8 @@ On a touch screen: the gestures of a phone, in the browser
 
 The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
 On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
-a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button
-appears next to a text field.
+a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image,
+two fingers pan, and a keyboard button appears next to a text field.
 
 Nothing to write in the app: the gestures come from `RunnerParams.touch_config` (`scroll_mode`, `pinch_mode`,
 `long_press_is_right_click`...). On a desktop, tick "Simulate a touch source" to try them with the mouse.
@@ -22,7 +22,7 @@ GESTURES = """
 - **Swipe** anywhere, on this text, on the button below or on a scroll bar: the content scrolls, with inertia, and a bounce at the end.
 - **Tap** a button: a click. **Hold** a slider a moment, then drag it.
 - **Hold** a word of this text half a second, until a ring shows, then lift: the menu of a right click (Copy, Select All). The same on the button: its menu.
-- **Pinch** with two fingers: the app (its font) scales.
+- **Pinch** with two fingers: the app (its font) scales. On a plot or an image, the pinch zooms it.
 - **Drag with two fingers**: a right drag, which box-selects in the plot.
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
@@ -34,15 +34,19 @@ GESTURES = """
 
 PLOTS = """
 - **Box select**: a right drag on a desktop, a **two-finger drag** on a touch screen.
+- **Zoom**: the mouse wheel on a desktop, a **pinch** on a touch screen, around the fingers.
 - **Pan**: a left drag on a desktop. With a finger, **hold** a moment, then drag (a swipe scrolls the page).
 - The guide lines and the box of the second plot: drag them the same way.
 - A double click (a double tap) fits the plot.
+
+> [!NOTE]
+> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget that zooms with the wheel takes it with imgui_kit: `imgui_kit.touch.set_item_takes_pinch()` right after it, or `imgui_kit.touch.set_rect_takes_pinch()` for a rectangle.
 """
 
 IMAGES = """
 - **The first image** resizes by its bottom right corner: hold the corner, then drag.
 - **The second one** pans by a drag (hold, then drag), and zooms with the mouse wheel or its + / - buttons.
-- A pinch scales the app, not the image.
+- A **pinch** zooms it too, around the fingers.
 """
 
 BUTTON_NAMES = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranus", "Neptune"]

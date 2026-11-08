@@ -233,6 +233,12 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("disabled", ImGuiTouchPinchMode_Disabled, "");
 
 
+    auto pyEnumTouchPinchDelivery_ =
+        nb::enum_<ImGuiTouchPinchDelivery_>(m, "TouchPinchDelivery_", nb::is_arithmetic(), "How a pinch reaches a widget that takes it (ImGuiTouch::SetItemTakesPinch)")
+            .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)")
+            .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's value");
+
+
     auto pyClassImGuiTouchKeyboardInsets =
         nb::class_<ImGuiTouchKeyboardInsets>
             (m, "TouchKeyboardInsets", "The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets()")
@@ -322,9 +328,9 @@ void py_init_module_imgui_kit(nb::module_& m)
             " Right after a widget that a finger drags (a plot, a knob, a node editor's canvas): a drag that starts on it goes to\n it, not to the swipe. long_press_is_right_click: a long press on it is still a right click.");
 
         pyNsImGuiTouch.def("set_item_takes_pinch",
-            [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt)
+            [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
             {
-                auto SetItemTakesPinch_adapt_mutable_param_with_default_value = [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt)
+                auto SetItemTakesPinch_adapt_mutable_param_with_default_value = [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
                 {
 
                     const ImGuiMouseButton& pan_button_or_default = [&]() -> const ImGuiMouseButton {
@@ -334,18 +340,25 @@ void py_init_module_imgui_kit(nb::module_& m)
                             return ImGuiMouseButton_Right;
                     }();
 
-                    ImGuiTouch::SetItemTakesPinch(zoom_per_notch, pan_button_or_default);
+                    const ImGuiTouchPinchDelivery& delivery_or_default = [&]() -> const ImGuiTouchPinchDelivery {
+                        if (delivery.has_value())
+                            return delivery.value();
+                        else
+                            return ImGuiTouchPinchDelivery_WheelNotches;
+                    }();
+
+                    ImGuiTouch::SetItemTakesPinch(zoom_per_notch, pan_button_or_default, delivery_or_default);
                 };
 
-                SetItemTakesPinch_adapt_mutable_param_with_default_value(zoom_per_notch, pan_button);
+                SetItemTakesPinch_adapt_mutable_param_with_default_value(zoom_per_notch, pan_button, delivery);
             },
-            nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(),
-            " Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of\n scaling the font. The pinch reaches it as wheel events, one notch each time the fingers' spread changed by\n zoom_per_notch (the widget's own zoom per notch: ImPlot's is 0.1), at the fingers' center. Two fingers that\n move together on it drag it with pan_button (a plot pans with the left button). Nothing without the touch layer.\n\nPython bindings defaults:\n    If pan_button is None, then its default value will be: ImGuiMouseButton_Right");
+            nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(), nb::arg("delivery").none() = nb::none(),
+            " Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of\n scaling the font. The pinch reaches it as wheel events at the fingers' center: zoom_per_notch is the widget's own\n zoom per notch (ImPlot's is 0.1), delivery says whether it reads whole notches or the wheel's exact value. Two\n fingers that move together on it drag it with pan_button (a plot pans with the left button). Nothing without the\n touch layer.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
 
         pyNsImGuiTouch.def("set_rect_takes_pinch",
-            [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt)
+            [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
             {
-                auto SetRectTakesPinch_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt)
+                auto SetRectTakesPinch_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
                 {
 
                     const ImGuiMouseButton& pan_button_or_default = [&]() -> const ImGuiMouseButton {
@@ -355,13 +368,20 @@ void py_init_module_imgui_kit(nb::module_& m)
                             return ImGuiMouseButton_Right;
                     }();
 
-                    ImGuiTouch::SetRectTakesPinch(min, max, zoom_per_notch, pan_button_or_default);
+                    const ImGuiTouchPinchDelivery& delivery_or_default = [&]() -> const ImGuiTouchPinchDelivery {
+                        if (delivery.has_value())
+                            return delivery.value();
+                        else
+                            return ImGuiTouchPinchDelivery_WheelNotches;
+                    }();
+
+                    ImGuiTouch::SetRectTakesPinch(min, max, zoom_per_notch, pan_button_or_default, delivery_or_default);
                 };
 
-                SetRectTakesPinch_adapt_mutable_param_with_default_value(min, max, zoom_per_notch, pan_button);
+                SetRectTakesPinch_adapt_mutable_param_with_default_value(min, max, zoom_per_notch, pan_button, delivery);
             },
-            nb::arg("min"), nb::arg("max"), nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(),
-            " The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot)\n\nPython bindings defaults:\n    If pan_button is None, then its default value will be: ImGuiMouseButton_Right");
+            nb::arg("min"), nb::arg("max"), nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(), nb::arg("delivery").none() = nb::none(),
+            " The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot)\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
 
         pyNsImGuiTouch.def("add_finger_event",
             ImGuiTouch::AddFingerEvent,
