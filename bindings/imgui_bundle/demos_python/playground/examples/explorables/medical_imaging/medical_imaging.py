@@ -25,11 +25,12 @@ Run it:
 """
 
 import bz2
+import contextlib
 import io
 import re
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Callable, Dict, List, Optional, Tuple, TypeVar
+from typing import Callable, ContextManager, Dict, List, Optional, Tuple, TypeVar
 
 import cv2
 import numpy as np
@@ -328,6 +329,11 @@ def fit_views(params: Tuple[immvision.ImageParams, ...], width: float, max_heigh
     set_views_size(params, min((width - spacing) / 2 - imgui.get_frame_height(), max_height))
 
 
+def centered_on_phone(str_id: str, narrow: bool) -> ContextManager[object]:
+    """On a phone, centers what it encloses (a view narrower than the screen); elsewhere, changes nothing"""
+    return imgui_kit.aligned_group(str_id, 0.5) if narrow else contextlib.nullcontext()
+
+
 # ======================================================================================================================
 # The CT: its state
 # ======================================================================================================================
@@ -460,7 +466,8 @@ def gui_view_switch(views: Tuple[str, ...], current: str, narrow: bool) -> Tuple
     names = list(views[1:] if narrow else views)
     if current not in names:
         current = names[1]
-    changed, i = imgui_kit.segmented_switch("##view", names.index(current), names)
+    with centered_on_phone("switch_" + views[-1], narrow):
+        changed, i = imgui_kit.segmented_switch("##view", names.index(current), names)
     return changed, names[i]
 
 
@@ -480,10 +487,11 @@ def gui_one_view(v: CtViewer, width: float, max_size: float, narrow: bool) -> No
     v.original_params.show_pixel_info = not narrow
     set_views_size((v.original_params, v.processed_params), min(width - imgui.get_frame_height(), max_size))
     v.update()
-    if v.view == "Original":
-        immvision.image("Original, in HU##ct", v.hu[v.z], params)
-    else:
-        immvision.image("Window and segmentation##ct", v.processed, params)
+    with centered_on_phone("ct_view", narrow):
+        if v.view == "Original":
+            immvision.image("Original, in HU##ct", v.hu[v.z], params)
+        else:
+            immvision.image("Window and segmentation##ct", v.processed, params)
     take_click(v, v.view, params)
 
 
@@ -1028,9 +1036,9 @@ def gui_stages(r: RetinaViewer) -> None:
         r.run()
 
 
-def gui_retina_views(r: RetinaViewer, width: float, max_size: float) -> None:
-    """The photograph and the processed view, side by side, or the one chosen in the switch, alone; under the processed
-    view, the stage buttons. max_size includes the buttons."""
+def gui_retina_views(r: RetinaViewer, width: float, max_size: float, narrow: bool) -> None:
+    """The photograph and the processed view, side by side, or the one chosen in the switch, alone (centered on a
+    phone); under the processed view, the stage buttons. max_size includes the buttons."""
     with_stages = r.view != "Photograph"
     if with_stages:
         max_size -= r.stages_height
@@ -1041,13 +1049,15 @@ def gui_retina_views(r: RetinaViewer, width: float, max_size: float) -> None:
         set_views_size(params, min(width - imgui.get_frame_height(), max_size))
     clicks = []
     if r.view != "Processed":
-        immvision.image("Fundus photograph##retina", r.rgb, r.original_params)
+        with centered_on_phone("retina_photograph", narrow):
+            immvision.image("Fundus photograph##retina", r.rgb, r.original_params)
         clicks.append(r.click.take("original", r.original_params))
     if r.view == "Both":
         imgui.same_line()
     if r.view != "Photograph":
-        stages_x = imgui.get_cursor_pos_x()  # the stage buttons go under this view
-        immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
+        stages_x = imgui.get_cursor_pos_x()  # the stage buttons start here (on a phone, at the left: they wrap)
+        with centered_on_phone("retina_processed", narrow):
+            immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
         clicks.append(r.click.take("processed", r.processed_params))
         r.processed_params.refresh_image = False
     for clicked in clicks:
@@ -1069,7 +1079,7 @@ def gui_retina(r: RetinaViewer) -> None:
         if pinned:
             imgui.begin_child("retina_viewer", ImVec2(0, switch_height + size + views_chrome))
         _, r.view = gui_view_switch(RETINA_VIEWS, r.view, narrow=True)
-        gui_retina_views(r, avail.x, size)
+        gui_retina_views(r, avail.x, size, narrow=True)
         if pinned:
             imgui.end_child()
             imgui.begin_child("retina_controls")
@@ -1089,7 +1099,8 @@ def gui_retina(r: RetinaViewer) -> None:
     imgui.same_line()
     imgui.begin_group()
     _, r.view = gui_view_switch(RETINA_VIEWS, r.view, narrow=False)
-    gui_retina_views(r, imgui.get_content_region_avail().x, imgui.get_content_region_avail().y - views_chrome)
+    gui_retina_views(r, imgui.get_content_region_avail().x, imgui.get_content_region_avail().y - views_chrome,
+                     narrow=False)
     imgui.end_group()
 
 
