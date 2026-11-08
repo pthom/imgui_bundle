@@ -844,6 +844,7 @@ class RetinaViewer:
         self.measure_pending = False  # the segments wait until the knob is released (the skeleton takes a while)
         self.click = ViewClick()
         self.view = "Both"  # the viewer's switch
+        self.stages_height = 0.0  # the stage buttons under the views, as last drawn
         self.run()
 
     def run(self, with_measure: bool = True) -> None:
@@ -981,11 +982,6 @@ def gui_retina_controls(r: RetinaViewer) -> None:
         "Min. area", lambda: imgui_knobs.knob_int("Min. area", r.min_area, 0, 400, 1.0, "%d px", knob, size))
     changed |= c
     imgui.new_line()
-    imgui.separator_text("Show")
-    clicked = gui_buttons(STAGES, r.stage)
-    if clicked is not None:
-        r.stage, changed = clicked, True
-    help_marker("Stages")
     dragging = imgui.is_any_item_active()  # a knob held: the measure's segments wait for its release
     if changed or (r.measure_pending and not dragging):
         r.run(with_measure=not dragging)
@@ -1019,8 +1015,23 @@ def gui_retina_credit() -> None:
     imgui.text_link_open_url("commons.wikimedia.org: the photograph", url)
 
 
+def gui_stages(r: RetinaViewer) -> None:
+    """The stage the processed view shows: a row of buttons, which wraps on a phone"""
+    y = imgui.get_cursor_pos_y()
+    clicked = gui_buttons(STAGES, r.stage)
+    help_marker("Stages")
+    r.stages_height = imgui.get_cursor_pos_y() - y  # the views leave it room at the next frame
+    if clicked is not None:
+        r.stage = clicked
+        r.run()
+
+
 def gui_retina_views(r: RetinaViewer, width: float, max_size: float) -> None:
-    """The photograph and the processed view, side by side, or the one chosen in the switch, alone"""
+    """The photograph and the processed view, side by side, or the one chosen in the switch, alone; under the processed
+    view, the stage buttons. max_size includes the buttons."""
+    with_stages = r.view != "Photograph"
+    if with_stages:
+        max_size -= r.stages_height
     params = (r.original_params, r.processed_params)
     if r.view == "Both":
         fit_views(params, width, max_size)
@@ -1033,12 +1044,16 @@ def gui_retina_views(r: RetinaViewer, width: float, max_size: float) -> None:
     if r.view == "Both":
         imgui.same_line()
     if r.view != "Photograph":
+        stages_x = imgui.get_cursor_pos_x()  # the stage buttons go under this view
         immvision.image(f"{r.stage}##retina_processed", r.processed, r.processed_params)
         clicks.append(r.click.take("processed", r.processed_params))
         r.processed_params.refresh_image = False
     for clicked in clicks:
         if clicked is not None and r.stage == "Measure" and r.segments:
             r.select(*clicked)
+    if with_stages:
+        imgui.set_cursor_pos_x(stages_x)
+        gui_stages(r)
 
 
 def gui_retina(r: RetinaViewer) -> None:
