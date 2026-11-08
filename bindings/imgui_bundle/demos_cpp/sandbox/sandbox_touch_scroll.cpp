@@ -1,4 +1,4 @@
-// A bench for the swipe (HelloImGui::RunnerParams::touchScrollMode) with a RichMd zone: a markdown page (whose text
+// A bench for the swipe (HelloImGui::RunnerParams::touchConfig.ScrollMode) with a RichMd zone: a markdown page (whose text
 // selects on a drag), widgets, a child window. For a desktop without a touch screen, a checkbox makes ImGui believe
 // the mouse is a finger (ImGui's touch tooltips and press trickling apply too): then a tap clicks, a drag scrolls,
 // and a short hold then a drag goes to the widget (the slider, a text selection).
@@ -67,9 +67,7 @@ int main()
         ImGui::Checkbox("Simulate a touch source", &simulateTouch);
         const char* sourceNames[] = {"Mouse", "TouchScreen", "Pen"};
         ImGui::Text("io.MouseSource: %s", sourceNames[io.MouseSource]);
-        int mode = (int)params.touchScrollMode;
-        ImGui::Combo("touchScrollMode", &mode, "Auto\0Always\0Disabled\0");
-        params.touchScrollMode = (HelloImGui::TouchScrollMode)mode;
+        ImGui::Combo("ScrollMode", &params.touchConfig.ScrollMode, "Auto\0Always\0Disabled\0");
         ImGui::Separator();
         ImGui::Text("Clicks: %d   Slider: %.2f", nbClicks, slider);
         static char text[64] = "";

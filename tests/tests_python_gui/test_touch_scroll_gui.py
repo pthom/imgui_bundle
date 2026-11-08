@@ -1,8 +1,8 @@
-"""The swipe of a touch screen (hello_imgui.RunnerParams.touch_scroll_mode), driven by the ImGui Test Engine with a
+"""The swipe of a touch screen (hello_imgui.RunnerParams.touch_config.scroll_mode), driven by the ImGui Test Engine with a
 touch source injected each frame: a swipe on the text and from a button scrolls, a tap clicks when the finger lifts,
 a hold then a drag goes to a slider, a swipe on a RichMd zone scrolls instead of selecting."""
 
-from imgui_bundle import hello_imgui, imgui, rich_md
+from imgui_bundle import hello_imgui, imgui, imgui_kit, rich_md
 from imgui_bundle.immapp import testing
 
 MARKDOWN = """
@@ -87,7 +87,7 @@ def test_touch_scroll() -> None:
     params = hello_imgui.RunnerParams()
     params.callbacks.show_gui = gui
     params.app_window_params.window_geometry.size = (500, 400)
-    params.touch_scroll_mode = hello_imgui.TouchScrollMode.auto
+    params.touch_config.scroll_mode = imgui_kit.TouchScrollMode_.auto
     testing.run(test_function=test_fn, runner_params=params, with_markdown=True)
 
     assert results["scroll_after_button_swipe"] > 30, results

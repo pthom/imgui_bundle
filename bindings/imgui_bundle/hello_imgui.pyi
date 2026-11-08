@@ -39,6 +39,7 @@ from imgui_bundle.imgui import (
 )
 
 from imgui_bundle.imgui import test_engine
+from imgui_bundle.imgui_kit import TouchConfig
 
 # Notebook convenience API (injected at runtime)
 from . import hello_imgui_nb as nb  # noqa: F401
@@ -51,6 +52,7 @@ ImGuiDefaultSettings = imgui_default_settings  # noqa: F821
 
 ImGuiDockNodeFlags_ = DockNodeFlags_
 ImGuiDockNodeFlags = DockNodeFlags
+ImGuiTouchConfig = TouchConfig
 
 DockSpaceName = str
 ImGuiTestEngine = test_engine.TestEngine
@@ -2938,38 +2940,6 @@ class FpsIdling:
 
 # --------------------------------------------------------------------------------------------------------------------
 
-# enum class TouchScrollMode    /* original C++ signature */
-class TouchScrollMode(enum.IntEnum):
-    """TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia and a
-    bounce at the end), as on a phone. See RunnerParams::touchScrollMode.
-    """
-
-    # Auto,          /* original C++ signature */
-    auto = (
-        enum.auto()
-    )  # (= 0)  # only when the input is a touch screen (io.MouseSource)
-    # Always,        /* original C++ signature */
-    always = (
-        enum.auto()
-    )  # (= 1)  # also with the mouse (left button), e.g. to test on a desktop
-    # Disabled    /* original C++ signature */
-    # }
-    disabled = enum.auto()  # (= 2)
-
-# enum class TouchPinchMode    /* original C++ signature */
-class TouchPinchMode(enum.IntEnum):
-    """TouchPinchMode: what two fingers do (in the browser; a desktop touch screen reports no second finger).
-    Two fingers that spread or close are a pinch; two fingers that move together are a right drag (the pan of a node
-    editor, the box of a plot). See RunnerParams::touchPinchMode.
-    """
-
-    # FontScale,      /* original C++ signature */
-    font_scale = (
-        enum.auto()
-    )  # (= 0)  # the pinch scales the font (ImGui's style.FontScaleMain), as on a phone; the two-finger drag is a right drag
-    # Disabled        /* original C++ signature */
-    disabled = enum.auto()  # (= 1)  # neither
-
 # struct RunnerParams    /* original C++ signature */
 class RunnerParams:
     """RunnerParams contains the settings and callbacks needed to run an application."""
@@ -3115,41 +3085,13 @@ class RunnerParams:
     # (only used on emscripten: 0 stands for "let the app or the browser decide")
     emscripten_fps: int = 0
 
-    # TouchScrollMode touchScrollMode = TouchScrollMode::Auto;    /* original C++ signature */
-    # `touch_scroll_mode`: _TouchScrollMode, default = TouchScrollMode::Auto_.
-    # Scroll a window by dragging its content with a finger (a swipe, with inertia), as on a phone, even from a
-    # button: a tap still clicks it (when the finger lifts), and a short hold then a drag goes to the widget
-    # (a slider, a text selection). Auto: only when the input is a touch screen (io.MouseSource);
-    # Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.
-    touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto
-
-    # bool touchLongPressIsRightClick = true;    /* original C++ signature */
-    # `touch_long_press_is_right_click`: _bool, default = true_.
-    # On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the
-    # context menus), as Windows' press-and-hold; a ring around the finger shows when the lift will right click. The
-    # release reaches no widget, so that a long press on a button is not a click. A move after the ring cancels it:
-    # the widget under the finger keeps its press (a slider dragged after a pause, a text selection that grows).
-    touch_long_press_is_right_click: bool = True
-
-    # bool touchThinScrollbars = true;    /* original C++ signature */
-    # `touch_thin_scrollbars`: _bool, default = true_.
-    # On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
-    # controls, since a swipe scrolls anywhere (on a bar too). Applied at each frame (after a theme, a pinch).
-    # A hold on a bar hands its thumb over, drawn wider over the content while held (as on iOS).
-    # False keeps the theme's bars.
-    touch_thin_scrollbars: bool = True
-
-    # TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;    /* original C++ signature */
-    # `touch_pinch_mode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
-    # Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers
-    # that move together are a right drag.
-    touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale
-
-    # bool touchPinchInterruptsWidgets = false;    /* original C++ signature */
-    # `touch_pinch_interrupts_widgets`: _bool, default = false_.
-    # When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text
-    # selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True).
-    touch_pinch_interrupts_widgets: bool = False
+    # ImGuiTouchConfig touchConfig;    /* original C++ signature */
+    # `touch_config`: _ImGuiTouchConfig (from imgui_kit)_.
+    # The touch layer, as on a phone: the swipe (a finger drags the content, with inertia and a bounce), the long
+    # press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h,
+    # e.g. `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always` to try the swipe with a mouse.
+    # Applied when it changes (a change through ImGuiTouch::GetConfig() then stays).
+    touch_config: ImGuiTouchConfig
 
     # bool wheelSession = true;    /* original C++ signature */
     # `wheel_session`: _bool, default = true_.
@@ -3184,11 +3126,7 @@ class RunnerParams:
         dpi_aware_params: Optional[DpiAwareParams] = None,
         use_imgui_test_engine: bool = False,
         emscripten_fps: int = 0,
-        touch_scroll_mode: TouchScrollMode = TouchScrollMode.auto,
-        touch_long_press_is_right_click: bool = True,
-        touch_thin_scrollbars: bool = True,
-        touch_pinch_mode: TouchPinchMode = TouchPinchMode.font_scale,
-        touch_pinch_interrupts_widgets: bool = False,
+        touch_config: Optional[ImGuiTouchConfig] = None,
         wheel_session: bool = True,
     ) -> None:
         """Auto-generated default constructor with named params
@@ -3204,6 +3142,7 @@ class RunnerParams:
                 * rendererBackendOptions: RendererBackendOptions()
                 * fpsIdling: FpsIdling()
                 * dpiAwareParams: DpiAwareParams()
+                * touchConfig: ImGuiTouchConfig()
         """
         pass
 

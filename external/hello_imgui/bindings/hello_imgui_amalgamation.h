@@ -2188,6 +2188,7 @@ struct OpenGlOptionsFilled_
 //                       hello_imgui/runner_params.h continued                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+#include "imgui_kit/imgui_kit.h"  // ImGuiTouchConfig
 
 namespace HelloImGui
 {
@@ -2417,32 +2418,6 @@ struct FpsIdling
 
 // --------------------------------------------------------------------------------------------------------------------
 
-// ::code TouchScrollMode
-
-// TouchScrollMode: whether a finger that drags the content of a window scrolls it (the swipe, with inertia and a
-// bounce at the end), as on a phone. See RunnerParams::touchScrollMode.
-enum class TouchScrollMode
-{
-    Auto,      // only when the input is a touch screen (io.MouseSource)
-    Always,    // also with the mouse (left button), e.g. to test on a desktop
-    Disabled
-};
-// ::endcode
-
-
-// ::code TouchPinchMode
-
-// TouchPinchMode: what two fingers do (in the browser; a desktop touch screen reports no second finger).
-// Two fingers that spread or close are a pinch; two fingers that move together are a right drag (the pan of a node
-// editor, the box of a plot). See RunnerParams::touchPinchMode.
-enum class TouchPinchMode
-{
-    FontScale,  // the pinch scales the font (ImGui's style.FontScaleMain), as on a phone; the two-finger drag is a right drag
-    Disabled    // neither
-};
-// ::endcode
-
-
 // ::code RunnerParams
 
 // RunnerParams contains the settings and callbacks needed to run an application.
@@ -2574,36 +2549,12 @@ struct RunnerParams
     // (only used on emscripten: 0 stands for "let the app or the browser decide")
     int emscripten_fps = 0;
 
-    // `touchScrollMode`: _TouchScrollMode, default = TouchScrollMode::Auto_.
-    // Scroll a window by dragging its content with a finger (a swipe, with inertia), as on a phone, even from a
-    // button: a tap still clicks it (when the finger lifts), and a short hold then a drag goes to the widget
-    // (a slider, a text selection). Auto: only when the input is a touch screen (io.MouseSource);
-    // Always: also with the mouse (left button), e.g. to try the phone behaviour on a desktop; Disabled: never.
-    TouchScrollMode touchScrollMode = TouchScrollMode::Auto;
-
-    // `touchLongPressIsRightClick`: _bool, default = true_.
-    // On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the
-    // context menus), as Windows' press-and-hold; a ring around the finger shows when the lift will right click. The
-    // release reaches no widget, so that a long press on a button is not a click. A move after the ring cancels it:
-    // the widget under the finger keeps its press (a slider dragged after a pause, a text selection that grows).
-    bool touchLongPressIsRightClick = true;
-
-    // `touchThinScrollbars`: _bool, default = true_.
-    // On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
-    // controls, since a swipe scrolls anywhere (on a bar too). Applied at each frame (after a theme, a pinch).
-    // A hold on a bar hands its thumb over, drawn wider over the content while held (as on iOS).
-    // False keeps the theme's bars.
-    bool touchThinScrollbars = true;
-
-    // `touchPinchMode`: _TouchPinchMode, default = TouchPinchMode::FontScale_.
-    // Two fingers that pinch scale the font (ImGui's style.FontScaleMain) while they stay on the screen; two fingers
-    // that move together are a right drag.
-    TouchPinchMode touchPinchMode = TouchPinchMode::FontScale;
-
-    // `touchPinchInterruptsWidgets`: _bool, default = false_.
-    // When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text
-    // selection): the widget keeps its drag and the pinch is ignored (false), or the pinch takes over (true).
-    bool touchPinchInterruptsWidgets = false;
+    // `touchConfig`: _ImGuiTouchConfig (from imgui_kit)_.
+    // The touch layer, as on a phone: the swipe (a finger drags the content, with inertia and a bounce), the long
+    // press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h,
+    // e.g. `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always` to try the swipe with a mouse.
+    // Applied when it changes (a change through ImGuiTouch::GetConfig() then stays).
+    ImGuiTouchConfig touchConfig;
 
     // `wheelSession`: _bool, default = true_.
     // The mouse wheel stays with the window it scrolls, as in a browser: a page scrolled with the wheel keeps

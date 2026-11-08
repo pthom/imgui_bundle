@@ -6,8 +6,8 @@ On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: 
 a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button
 appears next to a text field.
 
-Nothing to write in the app: the gestures come from `RunnerParams.touch_scroll_mode`, `touch_pinch_mode` and
-`touch_long_press_is_right_click`. On a desktop, tick "Simulate a touch source" to try them with the mouse.
+Nothing to write in the app: the gestures come from `RunnerParams.touch_config` (`scroll_mode`, `pinch_mode`,
+`long_press_is_right_click`...). On a desktop, tick "Simulate a touch source" to try them with the mouse.
 """
 
 from typing import Any
@@ -29,7 +29,7 @@ GESTURES = """
 > [!NOTE]
 > * Those gestures are only available when running an application with hello_imgui or immapp. They are not available when using your own backend / loop (such as with a pure Python backend).
 > * They are enabled by default. You do not need to change anything to get them.
-> * Configure them with `RunnerParams.touch_scroll_mode`, `touch_pinch_mode` and `touch_long_press_is_right_click`.
+> * Configure them with `RunnerParams.touch_config` (`scroll_mode`, `pinch_mode`, `long_press_is_right_click`...).
 """
 
 PLOTS = """

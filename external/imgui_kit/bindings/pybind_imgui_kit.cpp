@@ -221,14 +221,14 @@ void py_init_module_imgui_kit(nb::module_& m)
 
 
     auto pyEnumTouchScrollMode_ =
-        nb::enum_<ImGuiTouchScrollMode_>(m, "TouchScrollMode_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiTouchScrollMode_>(m, "TouchScrollMode_", nb::is_arithmetic(), "Whether a finger that drags the content of a window scrolls it (the swipe)")
             .value("auto", ImGuiTouchScrollMode_Auto, "only when the input is a touch screen (io.MouseSource)")
             .value("always", ImGuiTouchScrollMode_Always, "also with the mouse (left button): to try the phone's behavior on a desktop")
             .value("disabled", ImGuiTouchScrollMode_Disabled, "");
 
 
     auto pyEnumTouchPinchMode_ =
-        nb::enum_<ImGuiTouchPinchMode_>(m, "TouchPinchMode_", nb::is_arithmetic(), "")
+        nb::enum_<ImGuiTouchPinchMode_>(m, "TouchPinchMode_", nb::is_arithmetic(), "What two fingers do (in a browser; a desktop touch screen reports no second finger)")
             .value("font_scale", ImGuiTouchPinchMode_FontScale, "the pinch scales the font (style.FontScaleMain); two fingers dragged together are a right drag")
             .value("disabled", ImGuiTouchPinchMode_Disabled, "");
 
@@ -254,11 +254,11 @@ void py_init_module_imgui_kit(nb::module_& m)
         },
         nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_mode").none() = nb::none(), nb::arg("pinch_interrupts_widgets") = false
         )
-        .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, "")
-        .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, "a finger still for half a second, then lifted, is a right click")
-        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, "on a touch screen: thin scroll bars (indicators: a swipe scrolls anywhere)")
-        .def_rw("pinch_mode", &ImGuiTouchConfig::PinchMode, "")
-        .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, "a second finger while a widget holds the first: the widget keeps it (False)")
+        .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, " The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still\n clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).")
+        .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, " On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the\n context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:\n a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.")
+        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars.")
+        .def_rw("pinch_mode", &ImGuiTouchConfig::PinchMode, " Two fingers that pinch scale the font while they stay on the screen; two fingers that move together are a\n right drag (the pan of a node editor, the box of a plot)")
+        .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, " When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text\n selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)")
         ;
 
 
