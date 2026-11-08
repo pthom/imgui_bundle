@@ -45,6 +45,7 @@ class _State:
     muted = False
     touch_value = 0.5
     simulate_touch = False
+    taps = [0] * 8  # the taps of the sideways row's cards
     canvas_zoom = 1.0
     canvas_offset = ImVec2(0.0, 0.0)  # where the canvas's content origin is, from its corner, in pixels
 
@@ -513,6 +514,17 @@ def demo_touch() -> None:
     if imgui.begin_popup_context_window("##zone_menu"):
         imgui.text_unformatted("The zone's context menu: a right click, or a long press")
         imgui.end_popup()
+
+    # A child that scrolls sideways: a swipe inside scrolls it, not the zone. Its buttons count their taps.
+    imgui.text_unformatted("A sideways swipe scrolls this row; a tap clicks a button:")
+    imgui.begin_child("##sideways", ImVec2(0.0, imgui_kit.em_size(5)), imgui.ChildFlags_.borders,
+                      imgui.WindowFlags_.horizontal_scrollbar)
+    for i in range(len(state.taps)):
+        if i > 0:
+            imgui.same_line()
+        if imgui.button(f"Card {i + 1}\n{state.taps[i]} taps###card{i}", imgui_kit.em_to_vec2(6, 3)):
+            state.taps[i] += 1
+    imgui.end_child()
     for i in range(1, 9):
         imgui.text(f"More content, to scroll ({i})")
     imgui.end_child()
