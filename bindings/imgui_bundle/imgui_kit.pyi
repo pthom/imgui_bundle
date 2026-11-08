@@ -373,12 +373,12 @@ class TouchPinchMode_(enum.IntEnum):
 class TouchKeyboardInsets:
     """The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets()"""
 
-    # float Top = 0.0f;    /* original C++ signature */
-    top: float = 0.0
-    # float Bottom = 0.0f;    /* original C++ signature */
-    bottom: float = 0.0
+    # float Top;    /* original C++ signature */
+    top: float
+    # float Bottom;    /* original C++ signature */
+    bottom: float
+    # ImGuiTouchKeyboardInsets(float top = 0.0f, float bottom = 0.0f) : Top(top), Bottom(bottom);    /* original C++ signature */
     def __init__(self, top: float = 0.0, bottom: float = 0.0) -> None:
-        """Auto-generated default constructor with named params"""
         pass
 
 # struct ImGuiTouchConfig    /* original C++ signature */
@@ -403,6 +403,11 @@ class TouchConfig:
     # Two fingers that pinch scale the font while they stay on the screen; two fingers that move together are a
     # right drag (the pan of a node editor, the box of a plot)
     pinch_mode: TouchPinchMode = TouchPinchMode_.font_scale
+    # The pinch's range of style.FontScaleMain
+    # float PinchFontScaleMin = 0.5f;    /* original C++ signature */
+    pinch_font_scale_min: float = 0.5
+    # float PinchFontScaleMax = 5.0f;    /* original C++ signature */
+    pinch_font_scale_max: float = 5.0
     # bool PinchInterruptsWidgets = false;    /* original C++ signature */
     # When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text
     # selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)
@@ -417,6 +422,8 @@ class TouchConfig:
         long_press_is_right_click: bool = True,
         thin_scrollbars: bool = True,
         pinch_mode: Optional[TouchPinchMode] = None,
+        pinch_font_scale_min: float = 0.5,
+        pinch_font_scale_max: float = 5.0,
         pinch_interrupts_widgets: bool = False,
         simulate_touch: bool = False,
     ) -> None:
@@ -451,7 +458,9 @@ class Icon_(enum.IntEnum):
 class touch:  # Proxy class that introduces typings for the *submodule* touch
     pass  # (This corresponds to a C++ namespace. All methods are static!)
     """ namespace ImGuiTouch"""
-    # Installs the touch layer in the current context, once (a second call only changes the config)
+    # Installs the touch layer in the current Dear ImGui context, once (a second call only changes the config); it creates
+    # the layer's state, freed with the context. Call it first: the other ImGuiTouch functions assert without it, except
+    # IsAnimating(), SetItemTakesDrags() and GetKeyboardInsets(), which do nothing (or return zero) then.
     # IMGUI_API void   Setup(const ImGuiTouchConfig& config = ImGuiTouchConfig());    /* original C++ signature */
     @staticmethod
     def setup(config: Optional[TouchConfig] = None) -> None:
@@ -491,7 +500,15 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     @staticmethod
     def get_keyboard_insets() -> TouchKeyboardInsets:
         """The parts of the screen hidden by a phone's keyboard (in Dear ImGui's coordinates): a full-screen window keeps out
-        of them. Zero when no keyboard shows, and outside a browser (SetupEmscriptenKeyboard).
+        of them. Zero when no keyboard shows.
+        """
+        pass
+    # IMGUI_API void   SetKeyboardInsets(const ImGuiTouchKeyboardInsets& insets);    /* original C++ signature */
+    @staticmethod
+    def set_keyboard_insets(insets: TouchKeyboardInsets) -> None:
+        """A native app tells where its keyboard is (iOS: UIKeyboardWillChangeFrameNotification), and zero when it hides.
+        While a keyboard shows, the windows that hold the text field scroll its caret into view, above the keyboard.
+        In a browser, SetupEmscriptenKeyboard() sets them.
         """
         pass
 
