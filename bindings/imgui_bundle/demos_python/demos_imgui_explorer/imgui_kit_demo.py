@@ -45,6 +45,9 @@ class _State:
     muted = False
     touch_value = 0.5
     taps = [0] * 8  # the taps of the sideways row's cards
+    keyboard_line = ""
+    keyboard_lines = "Several lines:\nmove the caret from the keyboard's space bar."
+    keyboard_deep = ""
     canvas_zoom = 1.0
     canvas_offset = ImVec2(0.0, 0.0)  # where the canvas's content origin is, from its corner, in pixels
 
@@ -533,6 +536,29 @@ def demo_touch() -> None:
     imgui.text(f"Moving on its own: {'yes' if imgui_kit.touch.is_animating() else 'no'}")
 
 
+def demo_touch_keyboard() -> None:
+    """The phone's keyboard, in a browser: the fields of all kinds, one of them in a child that scrolls."""
+    IMGUI_DEMO_MARKER("Touch keyboard")
+    if not imgui.collapsing_header("Touch keyboard"):
+        return
+    imgui.text_wrapped("In a browser on a phone: tap a field, then the keyboard button that shows next to it (or the "
+                       "field again). The phone's keyboard opens, and a full-screen window keeps out of it "
+                       "(imgui_kit.touch.get_keyboard_insets()). Hello ImGui sets it up (in C++: "
+                       "ImGuiTouch::SetupEmscriptenKeyboard()).")
+    _, state.keyboard_line = imgui.input_text_with_hint("a text field", "type here", state.keyboard_line)
+    _, state.keyboard_lines = imgui.input_text_multiline("a multiline field", state.keyboard_lines,
+                                                         ImVec2(0.0, imgui_kit.em_size(5)))
+
+    imgui.text_unformatted("A field in a child that scrolls: it stays above the keyboard.")
+    imgui.begin_child("##keyboard_child", ImVec2(0.0, imgui_kit.em_size(10)), imgui.ChildFlags_.borders)
+    for i in range(1, 13):
+        imgui.text(f"Content above the field ({i})")
+    _, state.keyboard_deep = imgui.input_text_with_hint("a field down there", "type here", state.keyboard_deep)
+    for i in range(1, 13):
+        imgui.text(f"Content below the field ({i})")
+    imgui.end_child()
+
+
 # =============================================================================
 # Demo window
 # =============================================================================
@@ -547,6 +573,7 @@ def show_demo_contents() -> None:
     demo_layout()
     demo_widgets()
     demo_touch()
+    demo_touch_keyboard()
     imgui.pop_font()
 
 

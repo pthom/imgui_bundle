@@ -369,6 +369,18 @@ class TouchPinchMode_(enum.IntEnum):
     # }
     disabled = enum.auto()  # (= 1)
 
+# struct ImGuiTouchKeyboardInsets    /* original C++ signature */
+class TouchKeyboardInsets:
+    """The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets()"""
+
+    # float Top = 0.0f;    /* original C++ signature */
+    top: float = 0.0
+    # float Bottom = 0.0f;    /* original C++ signature */
+    bottom: float = 0.0
+    def __init__(self, top: float = 0.0, bottom: float = 0.0) -> None:
+        """Auto-generated default constructor with named params"""
+        pass
+
 # struct ImGuiTouchConfig    /* original C++ signature */
 class TouchConfig:
     """The settings, read at each frame: change them through ImGuiTouch::GetConfig()"""
@@ -473,6 +485,13 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
         and whether it is down. Dear ImGui sees only the first finger, as the mouse: these events let the kit see the others.
         With two fingers down: they spread or close, a pinch (the font scales); they move together, a right drag.
         A desktop app with a mouse never calls it.
+        """
+        pass
+    # IMGUI_API ImGuiTouchKeyboardInsets GetKeyboardInsets();    /* original C++ signature */
+    @staticmethod
+    def get_keyboard_insets() -> TouchKeyboardInsets:
+        """The parts of the screen hidden by a phone's keyboard (in Dear ImGui's coordinates): a full-screen window keeps out
+        of them. Zero when no keyboard shows, and outside a browser (SetupEmscriptenKeyboard).
         """
         pass
 

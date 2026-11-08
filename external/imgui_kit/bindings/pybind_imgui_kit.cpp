@@ -233,6 +233,23 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("disabled", ImGuiTouchPinchMode_Disabled, "");
 
 
+    auto pyClassImGuiTouchKeyboardInsets =
+        nb::class_<ImGuiTouchKeyboardInsets>
+            (m, "TouchKeyboardInsets", "The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets()")
+        .def("__init__", [](ImGuiTouchKeyboardInsets * self, float Top = 0.0f, float Bottom = 0.0f)
+        {
+            new (self) ImGuiTouchKeyboardInsets();  // placement new
+            auto r_ctor_ = self;
+            r_ctor_->Top = Top;
+            r_ctor_->Bottom = Bottom;
+        },
+        nb::arg("top") = 0.0f, nb::arg("bottom") = 0.0f
+        )
+        .def_rw("top", &ImGuiTouchKeyboardInsets::Top, "")
+        .def_rw("bottom", &ImGuiTouchKeyboardInsets::Bottom, "")
+        ;
+
+
     auto pyClassImGuiTouchConfig =
         nb::class_<ImGuiTouchConfig>
             (m, "TouchConfig", "The settings, read at each frame: change them through ImGuiTouch::GetConfig()")
@@ -311,6 +328,9 @@ void py_init_module_imgui_kit(nb::module_& m)
             ImGuiTouch::AddFingerEvent,
             nb::arg("id"), nb::arg("pos"), nb::arg("down"),
             " A finger on a touch screen, as the platform reports it (a browser's touch or pointer events, SDL's finger events):\n its id (any number the platform gives, stable while the finger is down), its position (in the mouse's coordinates),\n and whether it is down. Dear ImGui sees only the first finger, as the mouse: these events let the kit see the others.\n With two fingers down: they spread or close, a pinch (the font scales); they move together, a right drag.\n A desktop app with a mouse never calls it.");
+
+        pyNsImGuiTouch.def("get_keyboard_insets",
+            ImGuiTouch::GetKeyboardInsets, " The parts of the screen hidden by a phone's keyboard (in Dear ImGui's coordinates): a full-screen window keeps out\n of them. Zero when no keyboard shows, and outside a browser (SetupEmscriptenKeyboard).");
     } // </namespace ImGuiTouch>
     ////////////////////    </generated_from:imgui_kit.h>    ////////////////////
 
