@@ -232,7 +232,9 @@ def demo_flow() -> None:
         return
     imgui.text_wrapped("The buttons stay on a line while they fit. Resize the window: they flow to the next line.")
     presets = ["Coral", "Lavender", "Mint", "Sunflower yellow", "Sky", "Peach", "Forest green",
-               "Sand", "Honey", "Midnight blue", "Rose", "Turquoise", "Custom"]
+               "Sand", "Honey", "Midnight blue", "Rose", "Turquoise", "Olive", "Salmon",
+               "Steel blue", "Plum", "Ivory", "Terracotta", "Sea green", "Mustard", "Slate gray",
+               "Cherry red", "Teal", "Custom"]  # enough to flow onto several lines in a wide window
     with imgui_kit.flow("presets"):
         for i, preset in enumerate(presets):
             imgui_kit.flow_next()
@@ -517,10 +519,11 @@ def demo_touch() -> None:
     imgui.text_unformatted("A sideways swipe scrolls this row; a tap clicks a button:")
     imgui.begin_child("##sideways", ImVec2(0.0, imgui_kit.em_size(5)), imgui.ChildFlags_.borders,
                       imgui.WindowFlags_.horizontal_scrollbar)
+    card_width = max(imgui_kit.em_size(6), imgui.get_content_region_avail().x * 0.3)  # 3 per screen: it scrolls
     for i in range(len(state.taps)):
         if i > 0:
             imgui.same_line()
-        if imgui.button(f"Card {i + 1}\n{state.taps[i]} taps###card{i}", imgui_kit.em_to_vec2(6, 3)):
+        if imgui.button(f"Card {i + 1}\n{state.taps[i]} taps###card{i}", ImVec2(card_width, imgui_kit.em_size(3))):
             state.taps[i] += 1
     imgui.end_child()
     for i in range(1, 9):
