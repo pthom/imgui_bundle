@@ -263,6 +263,12 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("disabled", ImGuiTouchPinchMode_Disabled, "");
 
 
+    auto pyEnumTouchAxis_ =
+        nb::enum_<ImGuiTouchAxis_>(m, "TouchAxis_", nb::is_arithmetic(), " The axis along which a widget takes a finger's drags (ImGuiTouch::SetItemTakesDragsAlong); the values of Dear\n ImGui's internal ImGuiAxis")
+            .value("x", ImGuiTouchAxis_X, "a slider")
+            .value("y", ImGuiTouchAxis_Y, "a vertical slider");
+
+
     auto pyEnumTouchPinchDelivery_ =
         nb::enum_<ImGuiTouchPinchDelivery_>(m, "TouchPinchDelivery_", nb::is_arithmetic(), "How a pinch reaches a widget that takes it (ImGuiTouch::SetItemTakesPinch)")
             .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)")
@@ -346,6 +352,11 @@ void py_init_module_imgui_kit(nb::module_& m)
             ImGuiTouch::SetItemTakesDrags,
             nb::arg("long_press_is_right_click") = true,
             " Right after a widget that a finger drags (a plot, a knob, a node editor's canvas): a drag that starts on it goes to\n it, not to the swipe. long_press_is_right_click: a long press on it is still a right click.");
+
+        pyNsImGuiTouch.def("set_item_takes_drags_along",
+            ImGuiTouch::SetItemTakesDragsAlong,
+            nb::arg("axis"), nb::arg("long_press_is_right_click") = true,
+            " Right after a widget that a finger drags along one axis (a slider: ImGuiTouchAxis_X; a vertical one: _Y): a\n drag that starts on it along that axis goes to it, once the finger moved a little; along the other axis, it scrolls\n the window. long_press_is_right_click: a long press on it is still a right click.");
 
         pyNsImGuiTouch.def("set_item_takes_pinch",
             [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)

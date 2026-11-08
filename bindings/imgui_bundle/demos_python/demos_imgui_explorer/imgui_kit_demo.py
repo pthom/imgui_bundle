@@ -45,6 +45,7 @@ class _State:
     muted = False
     touch_value = 0.5
     taps = [0] * 8  # the taps of the sideways row's cards
+    row_value = 0.5  # the sideways row's slider
     keyboard_line = ""
     keyboard_lines = "Several lines:\nmove the caret from the keyboard's space bar."
     keyboard_deep = ""
@@ -538,14 +539,17 @@ def demo_touch() -> None:
         imgui.text_unformatted("The zone's context menu: a right click, or a long press")
         imgui.end_popup()
 
-    # A child that scrolls sideways: a swipe inside scrolls it, not the zone. Its buttons count their taps.
-    imgui.text_unformatted("A sideways swipe scrolls this row; a tap clicks a button:")
+    # A child that scrolls sideways: a swipe inside scrolls it, not the zone. Its buttons count their taps. Its slider
+    # takes the sideways drags (imgui_kit.touch.set_item_takes_drags_along): a sideways drag on it moves it at once
+    imgui.text_wrapped("A sideways swipe scrolls this row; a tap clicks a button; a sideways drag moves the slider:")
     imgui.begin_child("##sideways", ImVec2(0.0, imgui_kit.em_size(5)), imgui.ChildFlags_.borders,
                       imgui.WindowFlags_.horizontal_scrollbar)
     card_width = max(imgui_kit.em_size(6), imgui.get_content_region_avail().x * 0.3)  # 3 per screen: it scrolls
+    imgui.set_next_item_width(card_width)
+    _, state.row_value = imgui.slider_float("##row_slider", state.row_value, 0.0, 1.0)
+    imgui_kit.touch.set_item_takes_drags_along(imgui_kit.TouchAxis_.x)
     for i in range(len(state.taps)):
-        if i > 0:
-            imgui.same_line()
+        imgui.same_line()
         if imgui.button(f"Card {i + 1}\n{state.taps[i]} taps###card{i}", ImVec2(card_width, imgui_kit.em_size(3))):
             state.taps[i] += 1
     imgui.end_child()
