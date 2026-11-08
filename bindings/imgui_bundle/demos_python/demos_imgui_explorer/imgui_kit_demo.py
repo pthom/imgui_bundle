@@ -44,7 +44,6 @@ class _State:
     child_size = ImVec2(0, 0)
     muted = False
     touch_value = 0.5
-    simulate_touch = False
     taps = [0] * 8  # the taps of the sideways row's cards
     canvas_zoom = 1.0
     canvas_offset = ImVec2(0.0, 0.0)  # where the canvas's content origin is, from its corner, in pixels
@@ -459,20 +458,14 @@ def demo_touch() -> None:
         imgui.text_unformatted(TOUCH_SETUP_CODE)
         imgui.tree_pop()
 
-    # The mouse plays a finger: the source applies to the events that follow
-    if state.simulate_touch:
-        io.add_mouse_source_event(imgui.MouseSource.touch_screen)
-
     config = imgui_kit.touch.get_config()
     with imgui_kit.label_column("touch_settings"):
         if not (io.config_flags & imgui.ConfigFlags_.is_touch_screen):
             imgui_kit.label("On a desktop")
-            changed, state.simulate_touch = imgui.checkbox("Simulate a touch source", state.simulate_touch)
-            if changed and not state.simulate_touch:
-                io.add_mouse_source_event(imgui.MouseSource.mouse)
+            _, config.simulate_touch = imgui.checkbox("Simulate a touch source", config.simulate_touch)
             imgui.same_line()
-            imgui_kit.help_marker("The mouse plays a finger (io.add_mouse_source_event(imgui.MouseSource.touch_screen)): "
-                                  "every gesture works in the zone below, as on a phone:\n\n"
+            imgui_kit.help_marker("The mouse plays a finger (imgui_kit.TouchConfig.simulate_touch): every gesture works "
+                                  "in the zone below, as on a phone:\n\n"
                                   "- Drag up or down to scroll the content. Start moving as soon as you press, as with "
                                   "a finger.\n"
                                   "- Press and hold, then release: a long press, which opens the zone's context menu "

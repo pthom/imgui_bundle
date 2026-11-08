@@ -236,7 +236,7 @@ void py_init_module_imgui_kit(nb::module_& m)
     auto pyClassImGuiTouchConfig =
         nb::class_<ImGuiTouchConfig>
             (m, "TouchConfig", "The settings, read at each frame: change them through ImGuiTouch::GetConfig()")
-        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, const std::optional<const ImGuiTouchPinchMode> & PinchMode = std::nullopt, bool PinchInterruptsWidgets = false)
+        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, const std::optional<const ImGuiTouchPinchMode> & PinchMode = std::nullopt, bool PinchInterruptsWidgets = false, bool SimulateTouch = false)
         {
             new (self) ImGuiTouchConfig();  // placement new
             auto r_ctor_ = self;
@@ -251,14 +251,16 @@ void py_init_module_imgui_kit(nb::module_& m)
             else
                 r_ctor_->PinchMode = ImGuiTouchPinchMode_FontScale;
             r_ctor_->PinchInterruptsWidgets = PinchInterruptsWidgets;
+            r_ctor_->SimulateTouch = SimulateTouch;
         },
-        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_mode").none() = nb::none(), nb::arg("pinch_interrupts_widgets") = false
+        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_mode").none() = nb::none(), nb::arg("pinch_interrupts_widgets") = false, nb::arg("simulate_touch") = false
         )
         .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, " The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still\n clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).")
         .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, " On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the\n context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:\n a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.")
         .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars.")
         .def_rw("pinch_mode", &ImGuiTouchConfig::PinchMode, " Two fingers that pinch scale the font while they stay on the screen; two fingers that move together are a\n right drag (the pan of a node editor, the box of a plot)")
         .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, " When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text\n selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)")
+        .def_rw("simulate_touch", &ImGuiTouchConfig::SimulateTouch, " The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a\n touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them")
         ;
 
 

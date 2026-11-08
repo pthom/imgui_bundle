@@ -11,6 +11,7 @@
 #include "implot/implot.h"
 #include "demo_utils/api_demos.h"
 #include "hello_imgui/hello_imgui.h"
+#include "imgui_kit/imgui_kit.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
@@ -55,7 +56,6 @@ const std::vector<std::string> BUTTON_NAMES = {"Mercury", "Venus", "Earth", "Mar
 constexpr float PHONE_WIDTH_EM = 26.f;  // on a desktop, the page shows in a column of this width: the layout of a phone
 
 // The state of the widgets
-bool simulateTouch = false;
 int clicks = 0;
 std::string menuChoice;
 float slider = 0.5f;
@@ -89,8 +89,6 @@ void Label(const char* name)
 void Page()
 {
     ImGuiIO& io = ImGui::GetIO();
-    if (simulateTouch)
-        io.AddMouseSourceEvent(ImGuiMouseSource_TouchScreen);
     if (pointsX.empty())
     {
         std::mt19937 rng(42);
@@ -113,9 +111,8 @@ void Page()
     ImGui::PopStyleColor();
     if (!(io.ConfigFlags & ImGuiConfigFlags_IsTouchScreen))
     {
-        // A desktop, in the browser too: the mouse plays the finger (the source applies to the events that follow)
-        if (ImGui::Checkbox("Simulate a touch source", &simulateTouch) && !simulateTouch)
-            io.AddMouseSourceEvent(ImGuiMouseSource_Mouse);
+        // A desktop, in the browser too: the mouse plays the finger
+        ImGui::Checkbox("Simulate a touch source", &ImGuiTouch::GetConfig().SimulateTouch);
         ImGui::SameLine();
         const char* source = io.MouseSource == ImGuiMouseSource_TouchScreen ? "touch screen"
                              : io.MouseSource == ImGuiMouseSource_Pen ? "pen" : "mouse";

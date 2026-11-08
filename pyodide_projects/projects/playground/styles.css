@@ -233,6 +233,11 @@ html, body {
 #gallery-library {
     margin-left: 10px;
 }
+@media (pointer: coarse) {  /* Safari on iOS zooms into a field under 16 px when it gets the focus, and stays zoomed */
+    #gallery-library, #gallery-search {
+        font-size: 16px;
+    }
+}
 #gallery-search {
     width: 14em;
 }

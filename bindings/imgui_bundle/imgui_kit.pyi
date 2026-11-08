@@ -395,6 +395,10 @@ class TouchConfig:
     # When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text
     # selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)
     pinch_interrupts_widgets: bool = False
+    # bool SimulateTouch = false;    /* original C++ signature */
+    # The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a
+    # touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them
+    simulate_touch: bool = False
     def __init__(
         self,
         scroll_mode: Optional[TouchScrollMode] = None,
@@ -402,6 +406,7 @@ class TouchConfig:
         thin_scrollbars: bool = True,
         pinch_mode: Optional[TouchPinchMode] = None,
         pinch_interrupts_widgets: bool = False,
+        simulate_touch: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
 

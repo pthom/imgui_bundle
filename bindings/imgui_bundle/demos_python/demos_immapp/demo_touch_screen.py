@@ -13,7 +13,7 @@ Nothing to write in the app: the gestures come from `RunnerParams.touch_config` 
 from typing import Any
 
 import numpy as np
-from imgui_bundle import ImVec2, ImVec4, hello_imgui, imgui, immapp, immvision, implot, rich_md
+from imgui_bundle import ImVec2, ImVec4, hello_imgui, imgui, imgui_kit, immapp, immvision, implot, rich_md
 from imgui_bundle import register_demos_assets_folder
 
 register_demos_assets_folder()
@@ -49,7 +49,6 @@ BUTTON_NAMES = ["Mercury", "Venus", "Earth", "Mars", "Jupiter", "Saturn", "Uranu
 PHONE_WIDTH_EM = 26  # on a desktop, the page shows in a column of this width: the layout of a phone
 
 # The state of the widgets
-simulate_touch = False
 clicks = 0
 menu_choice = ""
 slider = 0.5
@@ -82,10 +81,8 @@ def gui() -> None:
 
 
 def page() -> None:
-    global simulate_touch, clicks, menu_choice, slider, text, lines, guide_x, guide_y
+    global clicks, menu_choice, slider, text, lines, guide_x, guide_y
     io = imgui.get_io()
-    if simulate_touch:
-        io.add_mouse_source_event(imgui.MouseSource.touch_screen)
 
     # The help, in a colored child: a swipe inside scrolls it, a swipe elsewhere scrolls the page
     rich_md.render("# On a touch screen")
@@ -99,10 +96,9 @@ def page() -> None:
     imgui.end_child()
     imgui.pop_style_color()
     if not (io.config_flags & imgui.ConfigFlags_.is_touch_screen):
-        # A desktop, in the browser too: the mouse plays the finger (the source applies to the events that follow)
-        changed, simulate_touch = imgui.checkbox("Simulate a touch source", simulate_touch)
-        if changed and not simulate_touch:
-            io.add_mouse_source_event(imgui.MouseSource.mouse)
+        # A desktop, in the browser too: the mouse plays the finger
+        config = imgui_kit.touch.get_config()
+        _, config.simulate_touch = imgui.checkbox("Simulate a touch source", config.simulate_touch)
         imgui.same_line()
         sources = {imgui.MouseSource.mouse: "mouse", imgui.MouseSource.touch_screen: "touch screen", imgui.MouseSource.pen: "pen"}
         imgui.text_disabled(f"(the input is a {sources.get(io.mouse_source, '?')})")
