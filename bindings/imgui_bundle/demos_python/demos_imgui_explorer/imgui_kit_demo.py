@@ -545,15 +545,15 @@ def demo_touch_keyboard() -> None:
                        "field again). The phone's keyboard opens, and a full-screen window keeps out of it "
                        "(imgui_kit.touch.get_keyboard_insets()). Hello ImGui sets it up (in C++: "
                        "ImGuiTouch::SetupEmscriptenKeyboard()).")
-    _, state.keyboard_line = imgui.input_text_with_hint("a text field", "type here", state.keyboard_line)
-    _, state.keyboard_lines = imgui.input_text_multiline("a multiline field", state.keyboard_lines,
+    _, state.keyboard_line = imgui.input_text_with_hint("text", "type here", state.keyboard_line)
+    _, state.keyboard_lines = imgui.input_text_multiline("lines", state.keyboard_lines,
                                                          ImVec2(0.0, imgui_kit.em_size(5)))
 
-    imgui.text_unformatted("A field in a child that scrolls: it stays above the keyboard.")
+    imgui.text_wrapped("A field in a child that scrolls: it stays above the keyboard.")
     imgui.begin_child("##keyboard_child", ImVec2(0.0, imgui_kit.em_size(10)), imgui.ChildFlags_.borders)
     for i in range(1, 13):
         imgui.text(f"Content above the field ({i})")
-    _, state.keyboard_deep = imgui.input_text_with_hint("a field down there", "type here", state.keyboard_deep)
+    _, state.keyboard_deep = imgui.input_text_with_hint("field", "type here", state.keyboard_deep)
     for i in range(1, 13):
         imgui.text(f"Content below the field ({i})")
     imgui.end_child()
