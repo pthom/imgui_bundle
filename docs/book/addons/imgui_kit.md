@@ -68,7 +68,8 @@ An app run by Hello ImGui or ImmApp gets the touch layer and the wheel session w
 
 On a touch screen:
 - *A swipe* scrolls any window, with inertia, even when it starts on a button. A tap still clicks it.
-- *A hold, then a drag*, goes to the widget under the finger (a slider, a text selection).
+- *A hold, then a drag*, goes to the widget under the finger (a text selection).
+- *A slider or a drag*: a drag along its axis moves it at once, a drag across scrolls the window (Dear ImGui Bundle's Dear ImGui tells the kit about its draggable widgets). A widget of your own does the same with `imgui_kit.touch.set_item_takes_drags_along(imgui_kit.TouchAxis_.x)` right after it.
 - *A long press* is a right click: the context menus.
 - *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D) or an image (ImmVision), it zooms it, around the fingers.
 - *Two fingers that move together* are a right drag (the box selection of a plot, the pan of a node editor).

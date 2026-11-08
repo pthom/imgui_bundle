@@ -12,6 +12,7 @@
 - **ImGuiKit** (`imgui_bundle.imgui_kit`): small, standalone additions to Dear ImGui, with Python bindings: em units, layout helpers (fill rows, aligned groups, label columns, flows), a few widgets. See the [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-kit/).
 - **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer and wheel session moved to ImGuiKit (`imgui_kit.touch`, `imgui_kit.setup_wheel_session()`), where an app with its own backend can set them up. Hello ImGui and ImmApp still set them up by themselves.
 - **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes the pinch with `imgui_kit.touch.set_item_takes_pinch()`.
+- **Sliders and drags follow a finger at once**: on a touch screen, a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS (before, a slider needed a short hold). A widget of your own: `imgui_kit.touch.set_item_takes_drags_along()`.
 
 # v1.93.0
 

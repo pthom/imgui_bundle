@@ -299,6 +299,7 @@ An app run by Hello ImGui or ImmApp works on a touch screen with nothing to writ
 
 A widget of your own may need one call, right after it:
 - a widget that a finger drags (a canvas, a knob): `imgui_kit.touch.set_item_takes_drags()`, else a drag scrolls the page, and the widget gets the finger only after a hold;
+- a widget dragged along one axis: `imgui_kit.touch.set_item_takes_drags_along(imgui_kit.TouchAxis_.x)`, so that a drag along it moves it and a drag across scrolls the page (the bundle's own sliders and drags need nothing);
 - a widget that zooms with the wheel: `imgui_kit.touch.set_item_takes_pinch(zoom_per_notch, pan_button, delivery)`, so that a pinch zooms it instead of scaling the app.
 
 ```python
