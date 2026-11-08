@@ -8,6 +8,7 @@ section.
 # imgui_kit_demo.py is a port of imgui_kit_demo.cpp (https://github.com/pthom/imgui_kit). In Python, the
 # Begin/End pairs are also context managers: `with imgui_kit.fill_row("slice") as row: ... row.tail() ...`.
 ###############################################################################
+import math
 from typing import List
 
 from imgui_bundle import ImVec2, imgui, imgui_kit, immapp
@@ -43,7 +44,9 @@ class _State:
     child_size = ImVec2(0, 0)
     muted = False
     touch_value = 0.5
-    dot = ImVec2(0.5, 0.5)  # in the touch demo's pad, from 0 to 1
+    simulate_touch = False
+    canvas_zoom = 1.0
+    canvas_offset = ImVec2(0.0, 0.0)  # where the canvas's content origin is, from its corner, in pixels
 
 
 state = _State()
@@ -388,27 +391,97 @@ def demo_widgets() -> None:
 # =============================================================================
 # Touch
 # =============================================================================
+def zoomable_canvas(str_id: str, size: ImVec2) -> None:
+    """A canvas that zooms with the wheel and pans with a drag, as a plot or an image viewer does. It claims the wheel
+    while hovered (imgui.set_item_key_owner), and takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags)."""
+    io = imgui.get_io()
+    p0 = imgui.get_cursor_screen_pos()
+    p1 = ImVec2(p0.x + size.x, p0.y + size.y)
+    imgui.invisible_button(str_id, size)
+    imgui_kit.touch.set_item_takes_drags()
+    if imgui.is_item_active():
+        state.canvas_offset = ImVec2(state.canvas_offset.x + io.mouse_delta.x, state.canvas_offset.y + io.mouse_delta.y)
+    if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and io.mouse_wheel != 0.0:
+        # Zoom around the mouse: the point under it stays there
+        new_zoom = min(max(state.canvas_zoom * 1.1**io.mouse_wheel, 0.25), 8.0)
+        mx, my = io.mouse_pos.x - p0.x, io.mouse_pos.y - p0.y
+        state.canvas_offset = ImVec2(mx - (mx - state.canvas_offset.x) * new_zoom / state.canvas_zoom,
+                                     my - (my - state.canvas_offset.y) * new_zoom / state.canvas_zoom)
+        state.canvas_zoom = new_zoom
+
+    draw_list = imgui.get_window_draw_list()
+    rounding = imgui.get_style().frame_rounding
+    draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
+    draw_list.push_clip_rect(p0, p1, True)
+    step = imgui_kit.em_size() * state.canvas_zoom  # a grid of 1 em at zoom 1
+    grid_color = imgui.get_color_u32(imgui.Col_.border)
+    x = p0.x + math.fmod(state.canvas_offset.x, step)
+    while x < p1.x:
+        draw_list.add_line(ImVec2(x, p0.y), ImVec2(x, p1.y), grid_color)
+        x += step
+    y = p0.y + math.fmod(state.canvas_offset.y, step)
+    while y < p1.y:
+        draw_list.add_line(ImVec2(p0.x, y), ImVec2(p1.x, y), grid_color)
+        y += step
+    center = ImVec2(p0.x + state.canvas_offset.x + 4.0 * step, p0.y + state.canvas_offset.y + 3.0 * step)
+    draw_list.add_circle_filled(center, 1.5 * step, imgui.get_color_u32(imgui.Col_.slider_grab_active))
+    draw_list.add_rect_filled(ImVec2(center.x + 3.0 * step, center.y - step),
+                              ImVec2(center.x + 6.0 * step, center.y + step),
+                              imgui.get_color_u32(imgui.Col_.button_active))
+    draw_list.pop_clip_rect()
+    draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.border), rounding)
+    draw_list.add_text(ImVec2(p0.x + imgui.get_style().frame_padding.x, p1.y - imgui.get_text_line_height_with_spacing()),
+                       imgui.get_color_u32(imgui.Col_.text), f"zoom x{state.canvas_zoom:.2f}")
+
+
+TOUCH_SETUP_CODE = """imgui.create_context()
+imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch
+imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
+
+# The render loop: nothing to add, the kit runs inside imgui.new_frame() and imgui.render().
+# - An app that sleeps when idle keeps drawing while imgui_kit.touch.is_animating().
+# - A widget that a finger drags: imgui_kit.touch.set_item_takes_drags() right after it.
+# - A widget that reads the wheel claims it: if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y): ...
+# Hello ImGui does the setup itself (RunnerParams.touch_config)."""
+
+
 def demo_touch() -> None:
-    """The settings change the application's touch layer, live: "Always" lets a mouse try the swipe on a desktop."""
+    """The settings change the application's touch layer, live. "Simulate a touch source" lets the mouse play a
+    finger."""
     IMGUI_DEMO_MARKER("Touch")
     if not imgui.collapsing_header("Touch"):
         return
+    io = imgui.get_io()
     imgui.text_wrapped("The gestures of a phone: a finger drags the content (with inertia, and a bounce at the end), "
-                       "a long press is a right click, two fingers pinch the font. The application installs the "
-                       "layer once: imgui_kit.touch.setup() (Hello ImGui does it).")
+                       "a long press is a right click, two fingers pinch the font.")
+    if imgui.tree_node("The setup code"):
+        imgui.text_unformatted(TOUCH_SETUP_CODE)
+        imgui.tree_pop()
+
+    # The mouse plays a finger: the source applies to the events that follow
+    if state.simulate_touch:
+        io.add_mouse_source_event(imgui.MouseSource.touch_screen)
 
     config = imgui_kit.touch.get_config()
     with imgui_kit.label_column("touch_settings"):
+        if not (io.config_flags & imgui.ConfigFlags_.is_touch_screen):
+            imgui_kit.label("On a desktop")
+            changed, state.simulate_touch = imgui.checkbox("Simulate a touch source", state.simulate_touch)
+            if changed and not state.simulate_touch:
+                io.add_mouse_source_event(imgui.MouseSource.mouse)
+            imgui.same_line()
+            imgui_kit.help_marker("The mouse plays a finger (io.add_mouse_source_event(imgui.MouseSource.touch_screen)): "
+                                  "every gesture works in the zone below, as on a phone:\n\n"
+                                  "- Drag up or down to scroll the content. Start moving as soon as you press, as with "
+                                  "a finger.\n"
+                                  "- Press and hold, then release: a long press, which opens the zone's context menu "
+                                  "(a right click).")
         imgui_kit.label("Swipe")
         _, config.scroll_mode = imgui_kit.segmented_switch(
             "##scroll_mode", config.scroll_mode, ["Touch screens", "Always", "Off"])
         imgui.same_line()
-        imgui_kit.help_marker('By default, the swipe works only on touch screens. Select "Always" to emulate it on '
-                              "a desktop, with the mouse's left button. Then, in the zone below, as on a phone:\n\n"
-                              "- Drag up or down to scroll the content. Start moving as soon as you press, as with a "
-                              "finger.\n"
-                              "- Press and hold, then release: a long press, which opens the zone's context menu (a "
-                              "right click).")
+        imgui_kit.help_marker("Touch screens: the swipe follows a finger only. Always: the mouse's left button drags the "
+                              "content too, while the mouse stays a mouse.")
         imgui_kit.label("Pinch")
         _, config.pinch_mode = imgui_kit.segmented_switch("##pinch_mode", config.pinch_mode, ["Font scale", "Off"])
         imgui_kit.label("Long press")
@@ -416,41 +489,32 @@ def demo_touch() -> None:
         imgui_kit.label("Scroll bars")
         _, config.thin_scrollbars = imgui.checkbox("thin on a touch screen", config.thin_scrollbars)
 
-    imgui.begin_child("##touch_zone", ImVec2(0.0, imgui_kit.em_size(14)), imgui.ChildFlags_.borders)
-    imgui.text_wrapped('Drag this zone with a finger (or with the mouse, in "Always" mode): it scrolls, and keeps '
-                       "going after a quick throw.")
+    imgui.begin_child("##touch_zone", ImVec2(0.0, imgui_kit.em_size(16)), imgui.ChildFlags_.borders)
+    imgui.bullet_text("Swipe: a finger that drags this zone scrolls it, with inertia, and a bounce at the end.")
+    imgui.bullet_text("Tap: a click, when the finger lifts.")
+    imgui.bullet_text("Hold, then drag: the widget under the finger takes it (the slider below).")
+    imgui.bullet_text("Long press, then lift: a right click (this zone's context menu).")
+    imgui.bullet_text("Two fingers: a pinch scales the font; moved together, a right drag.")
     imgui.set_next_item_width(imgui_kit.em_size(12))
     _, state.touch_value = imgui.slider_float("a short hold, then a drag", state.touch_value, 0.0, 1.0)
     imgui.same_line()
     imgui_kit.help_marker("This slider does not call imgui_kit.touch.set_item_takes_drags(): to drag it with a finger, "
                           "hold it a moment first (a ring shows when the hold took effect). A drag that starts at once "
-                          "scrolls the zone. The pad below reacts at once.")
+                          "scrolls the zone. The canvas below reacts at once.")
 
-    imgui.text_wrapped("The pad takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags()): the zone stays.")
-    pad_min = imgui.get_cursor_screen_pos()
-    pad_size = imgui_kit.em_to_vec2(12, 6)
-    imgui.invisible_button("##pad", pad_size)
-    imgui_kit.touch.set_item_takes_drags()
-    if imgui.is_item_active():
-        mouse = imgui.get_io().mouse_pos
-        state.dot = ImVec2(min(max((mouse.x - pad_min.x) / pad_size.x, 0.0), 1.0),
-                           min(max((mouse.y - pad_min.y) / pad_size.y, 0.0), 1.0))
-    draw_list = imgui.get_window_draw_list()
-    pad_max = ImVec2(pad_min.x + pad_size.x, pad_min.y + pad_size.y)
-    rounding = imgui.get_style().frame_rounding
-    draw_list.add_rect_filled(pad_min, pad_max, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
-    draw_list.add_rect(pad_min, pad_max, imgui.get_color_u32(imgui.Col_.border), rounding)
-    center = ImVec2(pad_min.x + state.dot.x * pad_size.x, pad_min.y + state.dot.y * pad_size.y)
-    draw_list.add_circle_filled(center, imgui_kit.em_size(0.5), imgui.get_color_u32(imgui.Col_.slider_grab_active))
+    zoomable_canvas("##canvas", imgui_kit.em_to_vec2(16, 8))
     imgui.same_line()
-    imgui_kit.help_marker("This pad calls imgui_kit.touch.set_item_takes_drags() right after it: a drag that starts on "
-                          "it moves the dot at once. So the zone cannot be scrolled from inside the pad.")
-
-    for i in range(1, 21):
-        imgui.text(f"Line {i}: more content, to scroll")
+    imgui_kit.help_marker("A canvas that zooms and pans, as a plot or an image viewer does:\n\n"
+                          "- It calls imgui_kit.touch.set_item_takes_drags() right after it: a drag that starts on it "
+                          "pans it at once. So the zone cannot be scrolled from inside the canvas.\n"
+                          "- It claims the wheel while hovered: if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y). "
+                          "With the wheel session, a wheel that scrolls the zone keeps scrolling it when the canvas "
+                          "passes under the mouse; a wheel that starts on the canvas zooms it.")
     if imgui.begin_popup_context_window("##zone_menu"):
         imgui.text_unformatted("The zone's context menu: a right click, or a long press")
         imgui.end_popup()
+    for i in range(1, 9):
+        imgui.text(f"More content, to scroll ({i})")
     imgui.end_child()
     # is_animating(): an application that sleeps when nothing happens keeps drawing frames meanwhile
     imgui.text(f"Moving on its own: {'yes' if imgui_kit.touch.is_animating() else 'no'}")

@@ -33,7 +33,7 @@ const char* GESTURES = R"(
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
 > [!NOTE]
-> * Those gestures are only available when running an application with hello_imgui or immapp. They are not available when using your own backend / loop.
+> * Hello ImGui and ImmApp install them. With your own backend and loop, add them with imgui_kit: `ImGuiTouch::Setup()` (see the ImGuiKit manual, section Touch).
 > * They are enabled by default. You do not need to change anything to get them.
 > * Configure them with `RunnerParams::touchConfig` (`ScrollMode`, `PinchMode`, `LongPressIsRightClick`...).
 )";

@@ -27,7 +27,7 @@ GESTURES = """
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
 > [!NOTE]
-> * Those gestures are only available when running an application with hello_imgui or immapp. They are not available when using your own backend / loop (such as with a pure Python backend).
+> * Hello ImGui and ImmApp install them. With your own backend and loop (such as a pure Python backend), add them with imgui_kit: `imgui_kit.touch.setup()` (see the ImGuiKit manual, section Touch).
 > * They are enabled by default. You do not need to change anything to get them.
 > * Configure them with `RunnerParams.touch_config` (`scroll_mode`, `pinch_mode`, `long_press_is_right_click`...).
 """
