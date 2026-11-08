@@ -83,7 +83,7 @@ int main() {
 
 ::::{card}
 :link: https://github.com/cmdwtf/imgui_toggle
-```{figure} https://github.com/cmdwtf/imgui_toggle/raw/main/.meta/imgui_toggle_example.gif
+```{figure} https://raw.githubusercontent.com/cmdwtf/imgui_toggle/main/.meta/imgui_toggle_example.gif
 :width: 350
 imgui_toggle: iOS-style toggle switches with animations.
 ```
