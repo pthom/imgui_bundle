@@ -46,7 +46,7 @@ https://imgui-bundle.pages.dev/llms-full.txt holds the book's pages for users, o
 **The API, in plain text (if needed):**
 https://imgui-bundle.pages.dev/llms/api/index.txt lists one file per module (a large module, such as imgui or implot, is cut into a few files), for example https://imgui-bundle.pages.dev/llms/api/hello_imgui.txt (Hello ImGui).
 - Each file lists every function, class and enum of the module, with its Python signature, its C++ declaration, and the first paragraph of its doc.
-- In Dear ImGui, ImPlot and ImPlot3D, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++.
+- In Dear ImGui, ImPlot, ImPlot3D and ImGuiKit, an entry that a demo shows also has the link to that demo, live in the ImGui Explorer, and the demo's code that uses it, in Python and in C++.
 - Read the file that a question needs, to check that a name exists and how to call it.
 
 **The demos, in plain text (if needed):**
@@ -54,7 +54,7 @@ https://imgui-bundle.pages.dev/llms/demos.txt lists the demos of the catalog by 
 
 **The explorers, where the demos run live (if needed):**
 Two web apps show the demos in the browser, each beside its code:
-- the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/): Dear ImGui, ImPlot, ImPlot3D and ImAnim, section by section;
+- the Dear ImGui Explorer (https://pthom.github.io/imgui_explorer/): Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit, section by section;
 - the Dear ImGui Bundle Explorer (https://imgui-bundle.pages.dev/explorer/): all the libraries.
 
 Their pages draw in a canvas, with no text to read. https://imgui-bundle.pages.dev/llms/explorers.txt says what they show, and how to link to a demo section (e.g. https://pthom.github.io/imgui_explorer/?lib=implot&demo=Plots%2FLine%20Plots). Give such a link to a user who wants to see a feature in action.
@@ -246,6 +246,37 @@ imgui.end_horizontal()
 
 The same in C++, and when to use it: https://imgui-bundle.pages.dev/doc/core-libs/imgui/#horizontal-and-vertical-layouts-stacklayout
 
+### Layout helpers and small widgets (ImGuiKit)
+
+ImGuiKit (`imgui_bundle.imgui_kit`) adds small helpers to Dear ImGui. Prefer them to hand-computed widths and offsets:
+- a *fill row*: a slider or an input fills the line, and the items after `tail()` stay on its right;
+- a *label column*: labels on the left, the widgets after them aligned at the widest label;
+- an *aligned group* (right or centered), a *column*, a *group panel* (a frame with a label), a *flow* (items that wrap, as words);
+- a *help marker*: an (i) with a tooltip, which a tap also opens (a touch screen has no hover); *icon buttons*, a *segmented switch*.
+
+```python
+from imgui_bundle import imgui, imgui_kit
+
+with imgui_kit.fill_row("volume") as row:
+    _, volume = imgui.slider_float("##volume", volume, 0.0, 1.0)  # fills the line
+    row.tail()  # the items after this call stay on the right
+    imgui_kit.help_marker("Drag to change the volume.")
+
+with imgui_kit.label_column("audio"):
+    imgui_kit.label("Gain")
+    _, gain = imgui.slider_float("##gain", gain, 0.0, 2.0)
+```
+
+```cpp
+ImGuiKit::BeginFillRow("volume");
+ImGui::SliderFloat("##volume", &volume, 0.0f, 1.0f);  // fills the line
+ImGuiKit::FillRowTail();                              // the items after this call stay on the right
+ImGuiKit::HelpMarker("Drag to change the volume.");
+ImGuiKit::EndFillRow();
+```
+
+Each `begin_x()` / `end_x()` pair is also a context manager named `x` in Python. The page: https://imgui-bundle.pages.dev/doc/addons/imgui-kit/, the API: https://imgui-bundle.pages.dev/llms/api/imgui_kit.txt
+
 ### A widget that reads the mouse wheel
 
 Hello ImGui keeps the wheel on the window it scrolls: a page scrolled with the wheel keeps scrolling over a plot. A widget that reads `io.mouse_wheel` itself (a value changed by the wheel, a zoom) must claim the wheel while hovered. Otherwise the page takes it, and the widget never sees it.
@@ -261,6 +292,24 @@ ImGui::InvisibleButton("zoom", HelloImGui::EmToVec2(10, 10));
 if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY))  // hovered: the wheel is this widget's
     zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
 ```
+
+### Touch screens (phones, tablets)
+
+An app run by Hello ImGui or ImmApp works on a touch screen with nothing to write: a swipe scrolls, a long press is a right click, a pinch scales the app or zooms a plot or an image, and a browser opens the phone's keyboard for text fields. Its settings: `RunnerParams.touch_config`. An app with its own backend sets the touch layer up once: `imgui_kit.touch.setup()`.
+
+A widget of your own may need one call, right after it:
+- a widget that a finger drags (a canvas, a knob): `imgui_kit.touch.set_item_takes_drags()`, else a drag scrolls the page, and the widget gets the finger only after a hold;
+- a widget that zooms with the wheel: `imgui_kit.touch.set_item_takes_pinch(zoom_per_notch, pan_button, delivery)`, so that a pinch zooms it instead of scaling the app.
+
+```python
+imgui.invisible_button("canvas", em_to_vec2(20, 12))
+imgui_kit.touch.set_item_takes_drags()  # a finger's drag pans the canvas at once
+imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left, imgui_kit.TouchPinchDelivery_.wheel_continuous)
+if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # the wheel, and the pinch, zoom it: 10% per notch
+    zoom *= 1.1 ** imgui.get_io().mouse_wheel
+```
+
+On a desktop, `imgui_kit.touch.get_config().simulate_touch = True` lets the mouse play a finger, to try it.
 
 ### Animations and live data: idling
 
