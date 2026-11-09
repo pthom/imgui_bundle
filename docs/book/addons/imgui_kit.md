@@ -114,7 +114,7 @@ A widget that already zooms with the wheel and pans with a mouse button (an imag
 
 Where the gestures work:
 - *In a browser* (the web explorer, Pyodide, an Emscripten build): all of them, the pinch and the phone's keyboard included.
-- *A native app* (desktop, iOS, Android through SDL): a swipe and a long press work where the backend tells a finger from the mouse (SDL, and Windows). The pinch does not yet: Hello ImGui's native runners forward no fingers. On Linux and macOS with GLFW, a finger is seen as a mouse.
+- *A native app* (desktop, iOS, Android through SDL): a swipe and a long press work where the backend tells a finger from the mouse (SDL, and Windows). The pinch needs the fingers, which Dear ImGui's backends do not pass on: Hello ImGui's SDL2 runner forwards them to the kit (so an app run by Hello ImGui or ImmApp on SDL has the pinch, on a Windows touch screen, on iOS and on Android), its GLFW runner cannot (GLFW reports no fingers). An app with its own SDL loop forwards them with a dozen lines, `imgui_kit.touch.add_finger_event()` for each finger: the kit's README shows them ([The fingers from SDL](https://github.com/pthom/imgui_kit#the-fingers-from-sdl)), its `examples/sdl3_touch_demo` is a whole app (stock Dear ImGui on SDL3, desktop and iOS), and the pure Python example `example_python_backend_sdl2_imgui_kit.py` does the same in Python. On Linux and macOS with GLFW, a finger is seen as a mouse.
 - The details, backend by backend, and what an app with its own backend adds: [ImGuiKit's README](https://github.com/pthom/imgui_kit#what-each-backend-reports).
 
 ## Learn more
