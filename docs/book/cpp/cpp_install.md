@@ -88,6 +88,8 @@ Consumers declare `imgui_bundle/<version>` in their `conanfile.txt` or `conanfil
 `CMakeToolchain` generators, and then `find_package(imgui_bundle CONFIG REQUIRED)` as above: the package ships its own
 CMake config (see `conan/test_package` for a complete example).
 
+The guide for a Conan server of your own (profiles, upload, use in an app, limits): [conan/README.md](https://github.com/pthom/imgui_bundle/blob/main/conan/README.md).
+
 ## Run the C++ demo
 
 If you built ImGuiBundle from source, Simply run build/bin/demo_imgui_bundle.
