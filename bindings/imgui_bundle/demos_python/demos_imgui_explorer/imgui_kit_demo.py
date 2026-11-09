@@ -509,11 +509,23 @@ imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
 # Hello ImGui does the setup itself (RunnerParams.touch_config)."""
 
 
+def has_touch_layer() -> bool:
+    """Without the touch layer (an app that shows this demo without imgui_kit.touch.setup()), a note instead of the
+    section"""
+    if imgui_kit.touch.is_installed():
+        return True
+    imgui.text_wrapped("This application did not set up the touch layer: imgui_kit.touch.setup(), once after "
+                       "imgui.create_context() (Hello ImGui does it).")
+    return False
+
+
 def demo_touch() -> None:
     """The settings change the application's touch layer, live. "Simulate a touch source" lets the mouse play a
     finger."""
     IMGUI_DEMO_MARKER("Touch")
     if not imgui.collapsing_header("Touch"):
+        return
+    if not has_touch_layer():
         return
     io = imgui.get_io()
     imgui.text_wrapped("The gestures of a phone: a finger drags the content (with inertia, and a bounce at the end), "
@@ -543,8 +555,17 @@ def demo_touch() -> None:
                               "content too, while the mouse stays a mouse.")
         imgui_kit.label("Pinch")
         _, config.pinch_scales_font = imgui.checkbox("scales the font", config.pinch_scales_font)
+        imgui_kit.label("Hold")
+        imgui.set_next_item_width(imgui_kit.em_size(8))
+        _, config.hold_seconds = imgui.slider_float("##hold", config.hold_seconds, 0.0, 1.0, "%.2f s")
+        imgui.same_line()
+        imgui_kit.help_marker("A finger still for this long hands its press to the widget under it, which then gets "
+                              "the drag (a slider, a text selection). At zero, the widgets get every press at once.")
         imgui_kit.label("Long press")
         _, config.long_press_is_right_click = imgui.checkbox("is a right click", config.long_press_is_right_click)
+        imgui.same_line()
+        imgui.set_next_item_width(imgui_kit.em_size(8))
+        _, config.long_press_seconds = imgui.slider_float("##long_press", config.long_press_seconds, 0.3, 2.0, "%.2f s")
         imgui_kit.label("Scroll bars")
         _, config.thin_scrollbars = imgui.checkbox("thin", config.thin_scrollbars)
 
@@ -608,6 +629,8 @@ def demo_touch_keyboard() -> None:
     """The phone's keyboard, in a browser: the fields of all kinds, one of them in a child that scrolls."""
     IMGUI_DEMO_MARKER("Touch keyboard")
     if not imgui.collapsing_header("Touch keyboard"):
+        return
+    if not has_touch_layer():
         return
     imgui.text_wrapped("In a browser on a phone: tap a field, then the keyboard button that shows next to it (or the "
                        "field again). The phone's keyboard opens, and a full-screen window keeps out of it "
