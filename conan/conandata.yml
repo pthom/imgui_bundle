@@ -1,7 +1,8 @@
 # Full source archives of the releases (built by .github/workflows/git_archive_all.yml, they include all submodules).
-# Only releases that contain the installable C++ package (post 1.92.900) can be listed here.
-# Add an entry per release, e.g.:
-#   "1.92.901":
-#     url: "https://github.com/pthom/imgui_bundle/releases/download/v1.92.901/srcs-full-v1.92.901.tar.gz"
-#     sha256: "<sha256 of the archive>"
-sources: {}
+# Only releases that contain the installable C++ package (v1.93.0 and later) can be listed here.
+# Add an entry per release; the sha256 is shown on the release page, or by
+#   gh release view <tag> --json assets -q '.assets[] | select(.name|startswith("srcs-full")) | .digest'
+sources:
+  "1.93.0":
+    url: "https://github.com/pthom/imgui_bundle/releases/download/v1.93.0/srcs-full-v1.93.0.tar.gz"
+    sha256: "e0e50dbcb882873980af773241f6de1b27d954777cd52e530c2f1373e33520f0"

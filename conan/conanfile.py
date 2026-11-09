@@ -9,16 +9,21 @@
 # Usage:
 #     # from a release (sources listed in conandata.yml):
 #     conan create conan --version=<version> --build=missing
-#     # from a local checkout (e.g. this one):
+#     # from a commit of the repository (a nightly; the commit pins every submodule):
+#     conan create conan --version=<version>-dev.<date> -c user.imgui_bundle:commit=<sha> --build=missing
+#     # from a local checkout (e.g. this one; its tracked files, as they are on disk):
 #     conan create conan -c user.imgui_bundle:source_dir=$PWD --build=missing
 import os
 import re
+import shutil
+import subprocess
 
 from conan import ConanFile
 from conan.errors import ConanException
 from conan.tools.build import check_min_cppstd
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import copy, get, load
+from conan.tools.scm import Git
 
 
 class ImGuiBundleConan(ConanFile):
@@ -82,20 +87,40 @@ class ImGuiBundleConan(ConanFile):
             self.requires("libcurl/8.21.0")
 
     def source(self):
-        # Either a local checkout (development), or the full source archive of a release
-        # (srcs-full-<tag>.tar.gz, which includes all submodules; see conandata.yml)
+        # A local checkout (development), a commit of the repository (a nightly), or the full source archive of a
+        # release (srcs-full-<tag>.tar.gz, which includes all submodules; see conandata.yml)
         local_source_dir = self.conf.get("user.imgui_bundle:source_dir", default=None, check_type=str)
         if local_source_dir:
-            self.output.info(f"Copying sources from {local_source_dir}")
-            copy(self, "*", src=local_source_dir, dst=self.source_folder,
-                 excludes=["builds/*", "build/*", "build_*/*", "conan_experiments/*", "v314/*", "dist/*",
-                           ".git", "**/.git", "**/__pycache__/*", "_example_integration/build*/*", "_example_integration/external/*"])
+            # The tracked files only: a checkout also holds build folders, caches and venvs (several GB)
+            self.output.info(f"Copying the tracked files of {local_source_dir} (submodules included)")
+            listing = subprocess.run(["git", "ls-files", "--recurse-submodules", "-z"], cwd=local_source_dir,
+                                     check=True, capture_output=True).stdout.decode()
+            for rel in filter(None, listing.split("\0")):
+                src, dst = os.path.join(local_source_dir, rel), os.path.join(self.source_folder, rel)
+                if not os.path.lexists(src):
+                    continue
+                os.makedirs(os.path.dirname(dst), exist_ok=True)
+                if os.path.islink(src):
+                    os.symlink(os.readlink(src), dst)
+                elif os.path.isfile(src):
+                    shutil.copy2(src, dst)
+            return
+        commit = self.conf.get("user.imgui_bundle:commit", default=None, check_type=str)
+        if commit:
+            # The commit pins every submodule (the forks): a shallow fetch of it, then of its submodules
+            self.output.info(f"Fetching {self.url} at {commit}, with its submodules")
+            git = Git(self)
+            git.run("init -q")
+            git.run(f"fetch -q --depth 1 {self.url} {commit}")
+            git.run("checkout -q FETCH_HEAD")
+            git.run("submodule update -q --init --recursive --depth 1")
             return
         sources = self.conan_data.get("sources", {}).get(str(self.version))
         if not sources:
             raise ConanException(
                 f"No source archive known for imgui_bundle/{self.version} (see conan/conandata.yml). "
-                "To build from a local checkout: conan create conan -c user.imgui_bundle:source_dir=/path/to/imgui_bundle")
+                "To build from a commit: -c user.imgui_bundle:commit=<sha>; "
+                "from a local checkout: -c user.imgui_bundle:source_dir=/path/to/imgui_bundle")
         get(self, **sources, strip_root=True)
 
     def generate(self):

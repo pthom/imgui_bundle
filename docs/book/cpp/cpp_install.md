@@ -74,9 +74,13 @@ private Conan remote (it is not published on Conan Center).
 ```bash
 # from a release listed in conan/conandata.yml
 conan create conan --version=<version> --build=missing
-# or from a local checkout (e.g. this one)
+# or from a commit of the repository (a nightly: the commit pins every submodule)
+conan create conan --version=<version>-dev.<date> -c user.imgui_bundle:commit=<sha> --build=missing
+# or from a local checkout (e.g. this one; its tracked files, as they are on disk)
 conan create conan -c user.imgui_bundle:source_dir=$PWD --build=missing
 ```
+
+In this repository, `just conan_create` runs the last one, with Conan through `uvx` (nothing to install).
 
 Options: `platform_backend` (`glfw`, default, or `sdl2`), `rendering_backend` (`opengl3`), `with_test_engine` (default `True`),
 `with_image_download` (markdown images from URLs via libcurl, default `True`).

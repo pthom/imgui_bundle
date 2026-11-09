@@ -160,6 +160,8 @@ _cpp_pkg_build := "builds/cpp_package/build"
 _cpp_pkg_install := justfile_directory() + "/builds/cpp_package/install"
 _example_dir := justfile_directory() + "/_example_integration"
 _example_app := "imgui_bundle_example_integration"
+# Conan 2, run through uv: nothing to install
+_conan := "uvx --from conan conan"
 
 # Build imgui_bundle (C++ only, no demos) and install it into builds/cpp_package/install
 [group('cpp_package')]
@@ -217,12 +219,12 @@ test_cpp_compat:
 # Create the Conan package from this checkout (conan/conanfile.py), and build its test_package
 [group('cpp_package')]
 conan_create *ARGS:
-    conan create conan -c user.imgui_bundle:source_dir="{{ justfile_directory() }}" --build=missing {{ ARGS }}
+    {{ _conan }} create conan -c user.imgui_bundle:source_dir="{{ justfile_directory() }}" --build=missing {{ ARGS }}
 
 # Remove the imgui_bundle packages from the local Conan cache
 [group('cpp_package')]
 conan_clean:
-    conan remove "imgui_bundle/*" -c
+    {{ _conan }} remove "imgui_bundle/*" -c
 
 
 # ==============================================================
