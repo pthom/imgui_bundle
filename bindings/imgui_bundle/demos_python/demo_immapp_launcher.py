@@ -264,6 +264,15 @@ def open_url(url: str) -> None:
         js.window.open(url, "_blank")
 
 
+def open_url_on_item_click(clicked: bool, url: str) -> None:
+    """For an item (a button) that opens a url: call it right after the item, each frame, with the item's own click.
+    In a browser, the page opens the url from the click's own handler, in a new tab (a click seen by Dear ImGui comes
+    too late for Safari to allow one); elsewhere, the click opens it."""
+    page_opens = hello_imgui.set_tap_opens_url(imgui.get_item_rect_min(), imgui.get_item_rect_max(), url)
+    if clicked and not page_opens:
+        open_url(url)
+
+
 def playground_url(demo: Demo) -> str:
     return f"{SITE}/playground/?demo={demo.filename}"
 
@@ -808,6 +817,10 @@ class Launcher:
         imgui.set_item_tooltip(tooltip)
         return clicked
 
+    def link_action(self, label: str, tooltip: str, url: str) -> None:
+        """An action that opens a url"""
+        open_url_on_item_click(self.action(label, tooltip), url)
+
     def detail(self) -> None:
         """The selected demo: its picture, its description, and what to do with it"""
         demo = self.selected
@@ -826,10 +839,9 @@ class Launcher:
         imgui.dummy(ImVec2(0, em_size(0.6)))
 
         if demo.page:  # a page entry: its page and its video, nothing to run
-            if self.action(fa.ICON_FA_BOOK + "  Read the page", "Opens the page in your browser"):
-                open_url(demo.page)
-            if demo.video and self.action(fa.ICON_FA_FILM + "  Watch the video", "Opens the video in your browser"):
-                open_url(demo.video)
+            self.link_action(fa.ICON_FA_BOOK + "  Read the page", "Opens the page in your browser", demo.page)
+            if demo.video:
+                self.link_action(fa.ICON_FA_FILM + "  Watch the video", "Opens the video in your browser", demo.video)
             imgui.pop_style_var()
             return
         path = demo.path
@@ -849,13 +861,12 @@ class Launcher:
                 files.append(code_file(demo.cpp_path, "C++"))
             self.code_view = (demo, files)
         if demo.where != "desktop":
-            if self.action(fa.ICON_FA_GLOBE + "  Open in the Python playground",
-                           "Opens it in your browser, in the Python playground: edit its code, and run it again"):
-                open_url(playground_url(demo))
+            self.link_action(fa.ICON_FA_GLOBE + "  Open in the Python playground",
+                             "Opens it in your browser, in the Python playground: edit its code, and run it again",
+                             playground_url(demo))
         if demo.cpp_path is not None and demo.cpp_url:
-            if self.action(fa.ICON_FA_GLOBE + "  Run the C++ version online",
-                           "Opens its C++ version in your browser, compiled to WebAssembly"):
-                open_url(demo.cpp_url)
+            self.link_action(fa.ICON_FA_GLOBE + "  Run the C++ version online",
+                             "Opens its C++ version in your browser, compiled to WebAssembly", demo.cpp_url)
         imgui.pop_style_var()
 
     def show_code(self) -> None:
@@ -899,8 +910,8 @@ class Launcher:
             if file.github_url is not None:
                 if not (small and first_button):
                     imgui.same_line()
-                if imgui.small_button(fa.ICON_FA_GLOBE + "  GitHub"):
-                    open_url(file.github_url)
+                clicked = imgui.small_button(fa.ICON_FA_GLOBE + "  GitHub")
+                open_url_on_item_click(clicked, file.github_url)
             imgui.pop_id()
         shown = files
         if len(files) == 2:  # one language, or both side by side

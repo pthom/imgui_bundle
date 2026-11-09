@@ -2045,8 +2045,8 @@ namespace
         auto pythonDocButton = [&]()
         {
             SameLineIfFits(ButtonWidth(ICON_FA4_EXTERNAL_LINK " Python"));
-            if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " Python"))
-                ImmApp::BrowseToUrl(ref.Url().c_str());
+            bool clicked = ImGui::Button(ICON_FA4_EXTERNAL_LINK " Python");
+            ImmApp::BrowseToUrlOnItemClick(clicked, ref.Url().c_str());
             ImGui::SetItemTooltip("%s", ref.Url().c_str());
         };
         auto cppDocButton = [&]()
@@ -2054,8 +2054,8 @@ namespace
             if (cppUrl.empty())
                 return;
             SameLineIfFits(ButtonWidth(ICON_FA4_EXTERNAL_LINK " C++"));
-            if (ImGui::Button(ICON_FA4_EXTERNAL_LINK " C++"))
-                ImmApp::BrowseToUrl(cppUrl.c_str());
+            bool clicked = ImGui::Button(ICON_FA4_EXTERNAL_LINK " C++");
+            ImmApp::BrowseToUrlOnItemClick(clicked, cppUrl.c_str());
             ImGui::SetItemTooltip("%s", cppUrl.c_str());
         };
         if (python)  // the shown language first
@@ -2663,8 +2663,8 @@ void DemoCodeViewer_Show()
         if (!githubUrl.empty())
         {
             ImGui::TextColored(ImVec4(1.f, 1.f, 0.5f, 1.f), "%s is not available locally.", displayName.c_str());
-            if (ImGui::SmallButton(("View " + displayName + " on GitHub").c_str()))
-                ImmApp::BrowseToUrl(githubUrl.c_str());
+            bool clicked = ImGui::SmallButton(("View " + displayName + " on GitHub").c_str());
+            ImmApp::BrowseToUrlOnItemClick(clicked, githubUrl.c_str());
         }
         else
         {
@@ -2703,12 +2703,12 @@ void DemoCodeViewer_Show()
 
         ImGui::SameLine();
 
-        if (ImGui::SmallButton(ICON_FA4_GITHUB " GitHub"))
         {
+            bool clicked = ImGui::SmallButton(ICON_FA4_GITHUB " GitHub");
             auto pos = editor.GetMainCursorPosition();
             const std::string& githubUrl = showingPython ? currentFile.pyGithubUrl : currentFile.cppGithubUrl;
             if (!githubUrl.empty())
-                ImmApp::BrowseToUrl((githubUrl + "#L" + std::to_string(pos.line + 1)).c_str());
+                ImmApp::BrowseToUrlOnItemClick(clicked, (githubUrl + "#L" + std::to_string(pos.line + 1)).c_str());
         }
         ImGui::SetItemTooltip("View this file on GitHub, at the cursor's line");
 

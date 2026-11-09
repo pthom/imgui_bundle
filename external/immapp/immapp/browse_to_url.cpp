@@ -1,5 +1,7 @@
 // A platform specific utility to open an url in a browser
 // (especially useful with emscripten version)
+#include "imgui.h"
+#include "hello_imgui/hello_imgui.h"
 #include <cctype>
 #include <string>
 
@@ -64,9 +66,15 @@ namespace ImmApp
         if (!IsWebAddress(url))
             return;
 #if defined(__EMSCRIPTEN__)
-        // A new tab, when the browser allows it. On a touch screen (the pointer probe of hello_imgui knows), the page
-        // itself goes there: a popup blocker refuses a new tab when the click did not come from a user gesture, and
-        // on a phone ImGui learns of a tap two frames after the finger lifted. The browser's back button returns.
+        // The application's opener when it has one (imgui_kit's, installed by Hello ImGui: a new tab where the
+        // browser allows it, else the page itself, as for Dear ImGui's TextLinkOpenURL)
+        if (ImGui::GetCurrentContext() && ImGui::GetPlatformIO().Platform_OpenInShellFn)
+        {
+            ImGui::GetPlatformIO().Platform_OpenInShellFn(ImGui::GetCurrentContext(), url);
+            return;
+        }
+        // Without one: a new tab, when the browser allows it; on a touch screen (the page's pointer probe knows), the
+        // page itself goes there. The browser's back button returns.
         std::string urlJs = JsStringLiteral(url);
         // The new tab gets no handle on this one (w.opener): it could otherwise replace the app's page
         std::string js_command =
@@ -105,5 +113,12 @@ namespace ImmApp
                 waitpid(pid, nullptr, 0);
         }
 #endif
+    }
+
+    void BrowseToUrlOnItemClick(bool clicked, const char* url)
+    {
+        bool pageOpens = HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+        if (clicked && !pageOpens)
+            BrowseToUrl(url);
     }
 }

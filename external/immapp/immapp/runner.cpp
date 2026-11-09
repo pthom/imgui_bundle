@@ -229,8 +229,11 @@ namespace ImmApp
             gImmAppContext._MarkdownPreviousContext = RichMd::GetCurrentContext();
             gImmAppContext._MarkdownContext = RichMd::CreateContext(addOnsParams.withMarkdownOptions.value());
             RichMd::SetCurrentContext(gImmAppContext._MarkdownContext);
-            // imgui_kit's help markers render their text as Markdown
-            ImGuiKit::SetHelpMarkerTextRenderer([](const char* text) { RichMd::Render(text); });
+            // imgui_kit's help markers render their text as Markdown (a setting of the ImGui context: once it exists)
+            runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
+                runnerParams.callbacks.PostInit,
+                [] { ImGuiKit::SetHelpMarkerTextRenderer([](const char* text) { RichMd::Render(text); }); }
+            );
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before

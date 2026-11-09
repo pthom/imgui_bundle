@@ -1135,9 +1135,9 @@ void DemoLauncher::Detail()
     if (Action(ICON_FA_CODE "  View code", "Shows its code: Python, and C++ side by side when there is a C++ version"))
         ShowCodeOf(demo);
     if (demo.where != "desktop")
-        if (Action(ICON_FA_GLOBE "  Open in the Python playground",
-                   "Opens it in your browser, in the Python playground: edit its code, and run it again"))
-            ImmApp::BrowseToUrl(PlaygroundUrl(demo).c_str());
+        LinkAction(ICON_FA_GLOBE "  Open in the Python playground",
+                   "Opens it in your browser, in the Python playground: edit its code, and run it again",
+                   PlaygroundUrl(demo).c_str());
 #ifndef __EMSCRIPTEN__
     if (!demo.cppFile.empty() && !demo.cppUrl.empty())
         if (Action(ICON_FA_GLOBE "  Run the C++ version online",
@@ -1198,8 +1198,8 @@ void DemoLauncher::ShowCode()
         {
             if (!(small && firstButton))
                 ImGui::SameLine();
-            if (ImGui::SmallButton(ICON_FA_GLOBE "  GitHub"))
-                ImmApp::BrowseToUrl(file.GithubUrl().c_str());
+            bool clicked = ImGui::SmallButton(ICON_FA_GLOBE "  GitHub");
+            ImmApp::BrowseToUrlOnItemClick(clicked, file.GithubUrl().c_str());
         }
         ImGui::PopID();
     }
