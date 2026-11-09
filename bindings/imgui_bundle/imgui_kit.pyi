@@ -115,7 +115,7 @@ def pixel_size_to_em(pixel_size: float) -> float:
 # Dear ImGui sizes an item when it is called, before the items that follow it exist. Most helpers below measure
 # what they need on the previous frame (kept in the window's state storage, under their str_id: keep it stable), so
 # a row can know the width of its end, or a group its own width, before drawing them. Each helper says what its
-# first frame does.
+# first frame does; what is hidden then takes no input either.
 
 # Fill row: the next item takes the line's width, minus the items after FillRowTail().
 #
@@ -219,7 +219,8 @@ def end_label_column() -> None:
 #     | Size: 640 x 480       |
 #     +-----------------------+
 #
-# No measurement: it draws its frame around its content in the same frame.
+# No measurement: it draws its frame around its content in the same frame. The label is an ID scope: two panels may
+# hold items with the same labels.
 # IMGUI_API void   BeginGroupPanel(const char* label, const ImVec2& size = ImVec2(0, 0));    /* original C++ signature */
 def begin_group_panel(label: str, size: Optional[ImVec2Like] = None) -> None:
     """Python bindings defaults:
@@ -725,6 +726,24 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
         into view, above the keyboard. In a browser, SetupEmscriptenKeyboard() sets them (zero included). It works before
         Setup() too: a native app may report its keyboard first.
         """
+        pass
+    # A link that opens in a new tab, in a browser, whatever the browser and the pointer. Right after the link's item, at
+    # each frame. The page opens the url from inside the tap's or the click's own handler, where every browser allows a
+    # new tab (WebKit allows none from the frame loop, where Dear ImGui sees the click). A finger: a tap (lifted within
+    # half a second, not moved); a mouse: a press and its release on the link.
+    # Returns True when the page takes the link: the caller then does nothing on the click. False outside a browser,
+    # without SetupEmscripten(), or for a scheme other than http, https and mailto: the caller opens the url itself.
+    #     ImGui::TextLink("Read the docs");
+    #     if (!ImGuiTouch::SetItemOpensUrl(url) && ImGui::IsItemClicked())
+    #         OpenInBrowser(url);
+    # The same, for a rectangle in screen coordinates (a link that is not one item).
+    # IMGUI_API bool   SetItemOpensUrl(const char* url);    /* original C++ signature */
+    @staticmethod
+    def set_item_opens_url(url: str) -> bool:
+        pass
+    # IMGUI_API bool   SetRectOpensUrl(const ImVec2& min, const ImVec2& max, const char* url);    /* original C++ signature */
+    @staticmethod
+    def set_rect_opens_url(min: ImVec2Like, max: ImVec2Like, url: str) -> bool:
         pass
 
 # </submodule touch>

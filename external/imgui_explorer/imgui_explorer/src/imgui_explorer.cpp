@@ -29,13 +29,10 @@ namespace
         ImGui::TextUnformatted(text);
         ImGui::PopStyleColor();
         ImGui::SetItemTooltip("%s", url);
-        // In the browser, on a touch screen, the page opens the url from the touch itself (a tap seen by ImGui comes
-        // too late for the browser): the click then does nothing more. A mouse click on such a device still opens it.
-        bool tapOpensUrl = (ImGui::GetIO().ConfigFlags & ImGuiConfigFlags_IsTouchScreen) != 0;
-        if (tapOpensUrl)
-            HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
-        bool isTap = tapOpensUrl && ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen;
-        if (ImGui::IsItemClicked() && !isTap)
+        // In the browser, the page opens the url from the tap's or the click's own handler (a click seen by ImGui
+        // comes too late for WebKit): the click then does nothing more. Elsewhere, the click opens it.
+        bool pageOpens = HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+        if (ImGui::IsItemClicked() && !pageOpens)
             ImmApp::BrowseToUrl(url);
         if (ImGui::IsItemHovered())
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);

@@ -464,6 +464,12 @@ void py_init_module_imgui_kit(nb::module_& m)
             ImGuiTouch::SetKeyboardInsets,
             nb::arg("insets"),
             " A native app tells where its keyboard is (iOS: UIKeyboardWillChangeFrameNotification), and zero when it hides: the\n values stay until the next call. While a keyboard shows, the windows that hold the text field scroll its caret\n into view, above the keyboard. In a browser, SetupEmscriptenKeyboard() sets them (zero included). It works before\n Setup() too: a native app may report its keyboard first.");
+
+        pyNsImGuiTouch.def("set_item_opens_url",
+            ImGuiTouch::SetItemOpensUrl, nb::arg("url"));
+
+        pyNsImGuiTouch.def("set_rect_opens_url",
+            ImGuiTouch::SetRectOpensUrl, nb::arg("min"), nb::arg("max"), nb::arg("url"));
     } // </namespace ImGuiTouch>
     ////////////////////    </generated_from:imgui_kit.h>    ////////////////////
 

@@ -1857,7 +1857,7 @@ void py_init_module_hello_imgui(nb::module_& m)
     m.def("set_tap_opens_url",
         HelloImGui::SetTapOpensUrl,
         nb::arg("rect_min"), nb::arg("rect_max"), nb::arg("url"),
-        " `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, on a touch screen, a tap on this rectangle (screen\n  coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown (several\n  rectangles per frame: the links of a text).\n  A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes\n  two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing\n  more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.");
+        " `SetTapOpensUrl(rectMin, rectMax, url)`: in the browser, a tap or a click on this rectangle (screen coordinates)\n  opens the url in a new tab, whatever the browser and the pointer. Call it each frame while the button or the link\n  is shown (several rectangles per frame: the links of a text). Returns True when the page takes the link: the\n  caller then does nothing on the click. False outside the browser: the caller opens the url itself on the click.\n  (imgui_kit's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place\n  every browser allows one; ImGui sees the click two frames later, too late for WebKit.)");
 
     m.def("set_item_takes_touch_drags",
         HelloImGui::SetItemTakesTouchDrags,

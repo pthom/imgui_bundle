@@ -1046,13 +1046,8 @@ void DemoLauncher::ShowCodeOf(const DemoEntry& demo)
 void DemoLauncher::LinkAction(const char* label, const char* tooltip, const char* url)
 {
     bool clicked = Action(label, tooltip);
-#ifdef __EMSCRIPTEN__
-    if (ImGui::GetIO().MouseSource == ImGuiMouseSource_TouchScreen)
-    {
-        HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
-        return;
-    }
-#endif
+    if (HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url))
+        return;  // in the browser, the page opens it from the click itself
     if (clicked)
         ImmApp::BrowseToUrl(url);
 }
@@ -1122,9 +1117,8 @@ void DemoLauncher::Detail()
             bool clicked = Action(touch ? ICON_FA_PLAY "  Run in a new tab" : ICON_FA_PLAY "  Run in a new window",
                                   "Runs its C++ version in a browser window of its own");
             std::string url = ExplorerPage(demo) ? demo.stem + ".html" : demo.cppUrl;
-            if (touch)
-                HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
-            else if (clicked)
+            bool pageOpens = HelloImGui::SetTapOpensUrl(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), url);
+            if (clicked && !pageOpens)  // in the browser, the page opens it from the click itself
             {
                 if (ExplorerPage(demo))
                     SpawnDemo(demo.stem);

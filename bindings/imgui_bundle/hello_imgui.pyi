@@ -3483,14 +3483,14 @@ def init_gl_loader() -> bool:
     """
     pass
 
-# void SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);    /* original C++ signature */
-def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> None:
-    """`set_tap_opens_url(rect_min, rect_max, url)`: in the browser, on a touch screen, a tap on this rectangle (screen
-    coordinates) opens the url in a new tab. Call it each frame while the button or the link is shown (several
-    rectangles per frame: the links of a text).
-    A browser allows a new tab only from inside its touch handler, where ImGui has not seen the tap yet (it comes
-    two frames later): the page opens the tab itself. The tap then reaches the widget too, which should do nothing
-    more on a touch screen (io.MouseSource == ImGuiMouseSource_TouchScreen). Does nothing outside the browser.
+# bool SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);    /* original C++ signature */
+def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> bool:
+    """`set_tap_opens_url(rect_min, rect_max, url)`: in the browser, a tap or a click on this rectangle (screen coordinates)
+    opens the url in a new tab, whatever the browser and the pointer. Call it each frame while the button or the link
+    is shown (several rectangles per frame: the links of a text). Returns True when the page takes the link: the
+    caller then does nothing on the click. False outside the browser: the caller opens the url itself on the click.
+    (imgui_kit's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place
+    every browser allows one; ImGui sees the click two frames later, too late for WebKit.)
     """
     pass
 
