@@ -62,8 +62,8 @@ void py_init_module_imgui_kit(nb::module_& m)
 
     m.def("em_size",
         nb::overload_cast<float>(ImGuiKit::EmSize),
-        nb::arg("nb_lines"),
-        "The height of nb_lines lines of text, in pixels");
+        nb::arg("lines"),
+        "The height of this many lines of text, in pixels");
 
     m.def("em_to_vec2",
         nb::overload_cast<float, float>(ImGuiKit::EmToVec2),
@@ -232,13 +232,12 @@ void py_init_module_imgui_kit(nb::module_& m)
     m.def("fit_text",
         ImGuiKit::FitText,
         nb::arg("text"), nb::arg("wrap_width"), nb::arg("max_lines"),
-        " Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at\n wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the\n next call (copy it to keep two results).\n\n     ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);\n     ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then \"...\"\n     ImGui::PopTextWrapPos();");
+        " Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at\n wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid for this\n frame (a small cache: the cut is computed once per text and width, not at each frame; copy it to keep it).\n\n     ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);\n     ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then \"...\"\n     ImGui::PopTextWrapPos();");
 
     m.def("setup_wheel_session",
         ImGuiKit::SetupWheelSession,
         nb::arg("enabled") = true,
         " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
-
 
     m.def("is_animating",
         ImGuiKit::IsAnimating, " True while something of the kit moves on its own: a widget's animation (a segmented switch that slides), or the\n touch layer's (ImGuiTouch::IsAnimating(): a fling, a bounce, a long press's ring). An app that sleeps when nothing\n happens keeps drawing frames meanwhile; one that draws every frame can ignore it. With or without the touch layer.");

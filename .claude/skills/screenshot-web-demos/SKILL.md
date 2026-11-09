@@ -105,7 +105,7 @@ For what only a touch screen shows: the touch layer, `ImGuiConfigFlags_IsTouchSc
 
 ```bash
 xcrun simctl list devices available | grep iPhone     # pick one, note its UDID
-xcrun simctl boot <udid> && open -a Simulator        # a visible window
+xcrun simctl boot <udid>                             # a visible window: `open -a Simulator` (Xcode 26); Xcode 27 has no Simulator.app, its device app is DeviceHub (in Xcode.app/Contents/Applications)
 xcrun simctl openurl booted http://localhost:8642/demo_imgui_bundle.html
 xcrun simctl io booted screenshot /tmp/web_shots/sim.png
 idb ui tap --udid <udid> X Y                          # in points: the screenshot's pixels / 3 (iPhone 17: 1206 x 2622 px)

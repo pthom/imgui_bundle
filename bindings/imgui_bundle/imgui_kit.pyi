@@ -48,7 +48,7 @@ TouchAxis = int
 # // [SECTION] Widgets
 # // [SECTION] Wheel session
 # // [SECTION] Idling
-# // [SECTION] Enums
+# // [SECTION] Enums (ImGuiKit)
 # // [SECTION] Touch (ImGuiTouch)
 #
 #
@@ -76,17 +76,21 @@ def show_demo_contents() -> None:
 # -----------------------------------------------------------------------------
 # Sizes in multiples of the current font size, as the em unit of CSS: they follow the font,
 # so they stay right on high-DPI screens and when the user zooms the text.
-
+# Size your widgets in em rather than in bare pixels (whose size in millimeters varies with the DPI):
+#     ImGui::Button("Click", ImVec2(130, 39));                 // 130 x 39 pixels: small on a high-DPI screen
+#     ImGui::Button("Click", ImGuiKit::EmToVec2(10, 3));       // 10 em x 3 em (the same at the default font size of
+#                                                            // 13 px): the same size on every screen, it follows
+#                                                            // the font
 # IMGUI_API float  EmSize();                              /* original C++ signature */
 @overload
 def em_size() -> float:
     """The current font size, in pixels"""
     pass
 
-# IMGUI_API float  EmSize(float nb_lines);                /* original C++ signature */
+# IMGUI_API float  EmSize(float lines);                   /* original C++ signature */
 @overload
-def em_size(nb_lines: float) -> float:
-    """The height of nb_lines lines of text, in pixels"""
+def em_size(lines: float) -> float:
+    """The height of this many lines of text, in pixels"""
     pass
 
 # IMGUI_API ImVec2 EmToVec2(float x, float y);            /* original C++ signature */
@@ -326,8 +330,8 @@ def segmented_switch_width(labels: List[str]) -> float:
 # IMGUI_API const char* FitText(const char* text, float wrap_width, int max_lines);    /* original C++ signature */
 def fit_text(text: str, wrap_width: float, max_lines: int) -> str:
     """Fit text: the text, cut at a word and ended with an ellipsis, so that it takes at most max_lines once wrapped at
-    wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid until the
-    next call (copy it to keep two results).
+    wrap_width (in the current font). Returns the text itself when it fits; else a buffer of the kit, valid for this
+    frame (a small cache: the cut is computed once per text and width, not at each frame; copy it to keep it).
 
         ImGui::PushTextWrapPos(ImGui::GetCursorPosX() + width);
         ImGui::TextUnformatted(ImGuiKit::FitText(summary, width, 2));   // two lines at most, then "..."
@@ -369,7 +373,7 @@ def request_animation() -> None:
     pass
 
 # -----------------------------------------------------------------------------
-# [SECTION] Enums
+# [SECTION] Enums (ImGuiKit)
 # -----------------------------------------------------------------------------
 
 # enum ImGuiKitIcon_    /* original C++ signature */
