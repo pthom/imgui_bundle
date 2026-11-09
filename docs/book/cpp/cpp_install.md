@@ -83,7 +83,7 @@ conan create conan -c user.imgui_bundle:source_dir=$PWD --build=missing
 In this repository, `just conan_create` runs the last one, with Conan through `uvx` (nothing to install).
 
 Options: `platform_backend` (`glfw`, default, or `sdl2`), `rendering_backend` (`opengl3`), `with_test_engine` (default `True`),
-`with_image_download` (markdown images from URLs via libcurl, default `True`).
+`with_image_download` (markdown images from URLs via libcurl, default `True`; on Windows, libcurl uses the TLS of Windows, schannel, instead of OpenSSL).
 Consumers declare `imgui_bundle/<version>` in their `conanfile.txt` or `conanfile.py`, use the `CMakeDeps` and
 `CMakeToolchain` generators, and then `find_package(imgui_bundle CONFIG REQUIRED)` as above: the package ships its own
 CMake config (see `conan/test_package` for a complete example).

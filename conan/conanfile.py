@@ -68,6 +68,11 @@ class ImGuiBundleConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def configure(self):
+        if self.settings.os == "Windows" and self.options.with_image_download:
+            # TLS through Windows itself (schannel): no OpenSSL to build, and the certificates Windows trusts
+            self.options["libcurl"].with_ssl = "schannel"
+
     def validate(self):
         check_min_cppstd(self, 17)
 
