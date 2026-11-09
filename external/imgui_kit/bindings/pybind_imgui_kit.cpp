@@ -257,14 +257,9 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("disabled", ImGuiTouchScrollMode_Disabled, "");
 
 
-    auto pyEnumTouchPinchMode_ =
-        nb::enum_<ImGuiTouchPinchMode_>(m, "TouchPinchMode_", nb::is_arithmetic(), "What two fingers do (in a browser; a desktop touch screen reports no second finger)")
-            .value("font_scale", ImGuiTouchPinchMode_FontScale, "the pinch scales the font (style.FontScaleMain); two fingers dragged together are a right drag")
-            .value("disabled", ImGuiTouchPinchMode_Disabled, "");
-
-
     auto pyEnumTouchAxis_ =
-        nb::enum_<ImGuiTouchAxis_>(m, "TouchAxis_", nb::is_arithmetic(), " The axis along which a widget takes a finger's drags (ImGuiTouch::SetItemTakesDragsAlong); the values of Dear\n ImGui's internal ImGuiAxis")
+        nb::enum_<ImGuiTouchAxis_>(m, "TouchAxis_", nb::is_arithmetic(), " The direction in which a widget takes a finger's drags (ImGuiTouch::SetItemTakesDrags); the values of Dear ImGui's\n internal ImGuiAxis")
+            .value("any", ImGuiTouchAxis_Any, "every direction, at once: a canvas, a knob, a plot")
             .value("x", ImGuiTouchAxis_X, "a slider")
             .value("y", ImGuiTouchAxis_Y, "a vertical slider");
 
@@ -275,9 +270,17 @@ void py_init_module_imgui_kit(nb::module_& m)
             .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's value");
 
 
+    auto pyEnumTouchPhase_ =
+        nb::enum_<ImGuiTouchPhase_>(m, "TouchPhase_", nb::is_arithmetic(), "The phase of a finger, as the platforms report it (ImGuiTouch::AddFingerEvent)")
+            .value("began", ImGuiTouchPhase_Began, "the finger landed")
+            .value("moved", ImGuiTouchPhase_Moved, "it is still down (moved or not)")
+            .value("ended", ImGuiTouchPhase_Ended, "it lifted")
+            .value("cancelled", ImGuiTouchPhase_Cancelled, "the system took the touch over (a system gesture, a call): it lifted, and its press");
+
+
     auto pyClassImGuiTouchKeyboardInsets =
         nb::class_<ImGuiTouchKeyboardInsets>
-            (m, "TouchKeyboardInsets", "The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets()")
+            (m, "TouchKeyboardInsets", " The parts of the screen hidden by a phone's keyboard: see ImGuiTouch::GetKeyboardInsets(). Top and Bottom are\n distances inward from the display's top and bottom edges, in Dear ImGui's coordinates: the visible part is\n [Top, io.DisplaySize.y - Bottom]. Zero when no keyboard shows.")
         .def_rw("top", &ImGuiTouchKeyboardInsets::Top, "")
         .def_rw("bottom", &ImGuiTouchKeyboardInsets::Bottom, "")
         .def(nb::init<float, float>(),
@@ -288,7 +291,7 @@ void py_init_module_imgui_kit(nb::module_& m)
     auto pyClassImGuiTouchConfig =
         nb::class_<ImGuiTouchConfig>
             (m, "TouchConfig", "The settings, read at each frame: change them through ImGuiTouch::GetConfig()")
-        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, const std::optional<const ImGuiTouchPinchMode> & PinchMode = std::nullopt, float PinchFontScaleMin = 0.5f, float PinchFontScaleMax = 5.0f, bool PinchInterruptsWidgets = false, bool SimulateTouch = false)
+        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, bool PinchScalesFont = true, float PinchFontScaleMin = 0.5f, float PinchFontScaleMax = 5.0f, bool SimulateTouch = false)
         {
             new (self) ImGuiTouchConfig();  // placement new
             auto r_ctor_ = self;
@@ -298,25 +301,20 @@ void py_init_module_imgui_kit(nb::module_& m)
                 r_ctor_->ScrollMode = ImGuiTouchScrollMode_Auto;
             r_ctor_->LongPressIsRightClick = LongPressIsRightClick;
             r_ctor_->ThinScrollbars = ThinScrollbars;
-            if (PinchMode.has_value())
-                r_ctor_->PinchMode = PinchMode.value();
-            else
-                r_ctor_->PinchMode = ImGuiTouchPinchMode_FontScale;
+            r_ctor_->PinchScalesFont = PinchScalesFont;
             r_ctor_->PinchFontScaleMin = PinchFontScaleMin;
             r_ctor_->PinchFontScaleMax = PinchFontScaleMax;
-            r_ctor_->PinchInterruptsWidgets = PinchInterruptsWidgets;
             r_ctor_->SimulateTouch = SimulateTouch;
         },
-        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_mode").none() = nb::none(), nb::arg("pinch_font_scale_min") = 0.5f, nb::arg("pinch_font_scale_max") = 5.0f, nb::arg("pinch_interrupts_widgets") = false, nb::arg("simulate_touch") = false
+        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_scales_font") = true, nb::arg("pinch_font_scale_min") = 0.5f, nb::arg("pinch_font_scale_max") = 5.0f, nb::arg("simulate_touch") = false
         )
         .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, " The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still\n clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).")
         .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, " On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the\n context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:\n a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.")
-        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars.")
-        .def_rw("pinch_mode", &ImGuiTouchConfig::PinchMode, " Two fingers that pinch scale the font while they stay on the screen; two fingers that move together are a\n right drag (the pan of a node editor, the box of a plot)")
+        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars: turned off (or when the input\n stops being a touch screen), the layer puts back the style's ScrollbarSize and ScrollbarRounding.")
+        .def_rw("pinch_scales_font", &ImGuiTouchConfig::PinchScalesFont, " Two fingers that pinch outside the widgets that take the pinch (ImGuiTouch::SetItemTakesPinch) scale the font\n (style.FontScaleMain) while they stay on the screen. False: such a pinch does nothing, and the font keeps its\n size. Either way, a widget that takes the pinch zooms, and two fingers that move together are a right drag (the\n pan of a node editor, the box of a plot). A second finger that lands while a widget holds the first one (a slider\n dragged after a hold, a text selection) leaves the widget its drag. A desktop touch screen reports no second\n finger.")
         .def_rw("pinch_font_scale_min", &ImGuiTouchConfig::PinchFontScaleMin, "")
         .def_rw("pinch_font_scale_max", &ImGuiTouchConfig::PinchFontScaleMax, "")
-        .def_rw("pinch_interrupts_widgets", &ImGuiTouchConfig::PinchInterruptsWidgets, " When the second finger lands while a widget holds the first one (a slider dragged after a hold, a text\n selection): the widget keeps its drag and the pinch is ignored (False), or the pinch takes over (True)")
-        .def_rw("simulate_touch", &ImGuiTouchConfig::SimulateTouch, " The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a\n touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them")
+        .def_rw("simulate_touch", &ImGuiTouchConfig::SimulateTouch, " The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a\n touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them. Everything that depends on a\n touch screen follows: no hover tooltips, the long press, the hold before a widget's drag. (ScrollMode_Always\n differs: the mouse's drag scrolls, but the mouse stays a mouse.)")
         ;
 
     { // <namespace ImGuiTouch>
@@ -346,17 +344,28 @@ void py_init_module_imgui_kit(nb::module_& m)
             ImGuiTouch::GetConfig, nb::rv_policy::reference);
 
         pyNsImGuiTouch.def("is_animating",
-            ImGuiTouch::IsAnimating, " True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when\n nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it.");
+            ImGuiTouch::IsAnimating, " True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when\n nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it. False without the\n touch layer.");
 
         pyNsImGuiTouch.def("set_item_takes_drags",
-            ImGuiTouch::SetItemTakesDrags,
-            nb::arg("long_press_is_right_click") = true,
-            " Right after a widget that a finger drags (a plot, a knob, a node editor's canvas): a drag that starts on it goes to\n it, not to the swipe. long_press_is_right_click: a long press on it is still a right click.");
+            [](const std::optional<const ImGuiTouchAxis> & axis = std::nullopt, bool long_press_is_right_click = true)
+            {
+                auto SetItemTakesDrags_adapt_mutable_param_with_default_value = [](const std::optional<const ImGuiTouchAxis> & axis = std::nullopt, bool long_press_is_right_click = true)
+                {
 
-        pyNsImGuiTouch.def("set_item_takes_drags_along",
-            ImGuiTouch::SetItemTakesDragsAlong,
-            nb::arg("axis"), nb::arg("long_press_is_right_click") = true,
-            " Right after a widget that a finger drags along one axis (a slider: ImGuiTouchAxis_X; a vertical one: _Y): a\n drag that starts on it along that axis goes to it, once the finger moved a little; along the other axis, it scrolls\n the window. long_press_is_right_click: a long press on it is still a right click.");
+                    const ImGuiTouchAxis& axis_or_default = [&]() -> const ImGuiTouchAxis {
+                        if (axis.has_value())
+                            return axis.value();
+                        else
+                            return ImGuiTouchAxis_Any;
+                    }();
+
+                    ImGuiTouch::SetItemTakesDrags(axis_or_default, long_press_is_right_click);
+                };
+
+                SetItemTakesDrags_adapt_mutable_param_with_default_value(axis, long_press_is_right_click);
+            },
+            nb::arg("axis").none() = nb::none(), nb::arg("long_press_is_right_click") = true,
+            " Right after a widget that a finger drags: a drag that starts on it goes to it, not to the swipe.\n   - ImGuiTouchAxis_Any (a canvas, a knob, a plot): the widget gets the press at once, in every direction.\n   - ImGuiTouchAxis_X or _Y (a slider, a vertical slider): the layer waits until the finger moved a little, then gives\n     the drag to the widget if it goes along that axis, or scrolls the window if it goes across.\n long_press_is_right_click: a long press on it is still a right click. Nothing without the touch layer.\n Dear ImGui's own sliders and drags call it themselves when the build has IMGUI_HAS_ITEM_DRAG_AXIS_CALLBACK.\n\nPython bindings defaults:\n    If axis is None, then its default value will be: TouchAxis_.any");
 
         pyNsImGuiTouch.def("set_item_takes_pinch",
             [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
@@ -412,20 +421,20 @@ void py_init_module_imgui_kit(nb::module_& m)
                 SetRectTakesPinch_adapt_mutable_param_with_default_value(min, max, zoom_per_notch, pan_button, delivery);
             },
             nb::arg("min"), nb::arg("max"), nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(), nb::arg("delivery").none() = nb::none(),
-            " The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot)\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
+            " The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot). Nothing without the\n touch layer.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
 
         pyNsImGuiTouch.def("add_finger_event",
             ImGuiTouch::AddFingerEvent,
-            nb::arg("id"), nb::arg("pos"), nb::arg("down"),
-            " A finger on a touch screen, as the platform reports it (a browser's touch or pointer events, SDL's finger events):\n its id (any number the platform gives, stable while the finger is down), its position (in the mouse's coordinates),\n and whether it is down. Dear ImGui sees only the first finger, as the mouse: these events let the kit see the others.\n With two fingers down: they spread or close, a pinch (the font scales); they move together, a right drag.\n A desktop app with a mouse never calls it.");
+            nb::arg("id"), nb::arg("pos"), nb::arg("phase"),
+            " A finger on a touch screen, as the platform reports it: its id (any number the platform gives, stable while the\n finger is down), its position (in the mouse's coordinates), and its phase. Report every finger, the first one\n included: Dear ImGui sees only the first finger, as the mouse; these events let the kit see the others. With two\n fingers down: they spread or close, a pinch; they move together, a right drag. A desktop app with a mouse never\n calls it. The platforms' phases: iOS (UITouchPhase), Android (ACTION_DOWN, _MOVE, _UP, _CANCEL), SDL (finger down,\n motion, up, and canceled in SDL3), Windows (WM_POINTER, its canceled flag). GLFW reports no fingers.\n Cancelled: the system took the touch over. The finger lifts, and the press it made ends with no click (a widget\n under it is not clicked, a swipe does not fling).");
 
         pyNsImGuiTouch.def("get_keyboard_insets",
-            ImGuiTouch::GetKeyboardInsets, " The parts of the screen hidden by a phone's keyboard (in Dear ImGui's coordinates): a full-screen window keeps out\n of them. Zero when no keyboard shows.");
+            ImGuiTouch::GetKeyboardInsets, " The parts of the screen hidden by a phone's keyboard (in Dear ImGui's coordinates): a full-screen window keeps out\n of them. Zero when no keyboard shows, and without the touch layer.");
 
         pyNsImGuiTouch.def("set_keyboard_insets",
             ImGuiTouch::SetKeyboardInsets,
             nb::arg("insets"),
-            " A native app tells where its keyboard is (iOS: UIKeyboardWillChangeFrameNotification), and zero when it hides.\n While a keyboard shows, the windows that hold the text field scroll its caret into view, above the keyboard.\n In a browser, SetupEmscriptenKeyboard() sets them.");
+            " A native app tells where its keyboard is (iOS: UIKeyboardWillChangeFrameNotification), and zero when it hides: the\n values stay until the next call. While a keyboard shows, the windows that hold the text field scroll its caret\n into view, above the keyboard. In a browser, SetupEmscriptenKeyboard() sets them (zero included). It works before\n Setup() too: a native app may report its keyboard first.");
     } // </namespace ImGuiTouch>
     ////////////////////    </generated_from:imgui_kit.h>    ////////////////////
 

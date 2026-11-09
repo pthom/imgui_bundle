@@ -69,7 +69,7 @@ An app run by Hello ImGui or ImmApp gets the touch layer and the wheel session w
 On a touch screen:
 - *A swipe* scrolls any window, with inertia, even when it starts on a button. A tap still clicks it.
 - *A hold, then a drag*, goes to the widget under the finger (a text selection).
-- *A slider or a drag*: a drag along its axis moves it at once, a drag across scrolls the window (Dear ImGui Bundle's Dear ImGui tells the kit about its draggable widgets). A widget of your own does the same with `imgui_kit.touch.set_item_takes_drags_along(imgui_kit.TouchAxis_.x)` right after it.
+- *A slider or a drag*: a drag along its axis moves it at once, a drag across scrolls the window (Dear ImGui Bundle's Dear ImGui tells the kit about its draggable widgets). A widget of your own does the same with `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)` right after it.
 - *A long press* is a right click: the context menus.
 - *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D) or an image (ImmVision), it zooms it, around the fingers.
 - *Two fingers that move together* are a right drag (the box selection of a plot, the pan of a node editor).
@@ -106,6 +106,11 @@ if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY) && ImGui::GetIO().MouseWheel !=
 ::::
 
 A widget that reads only the wheel's sign (ImPlot) keeps the default delivery, whole notches. For a widget that is not one item, `set_rect_takes_pinch()` takes its rectangle. The demo "Touch screens (phones, tablets)" shows every gesture; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse.
+
+Where the gestures work:
+- *In a browser* (the web explorer, Pyodide, an Emscripten build): all of them, the pinch and the phone's keyboard included.
+- *A native app* (desktop, iOS, Android through SDL): a swipe and a long press work where the backend tells a finger from the mouse (SDL, and Windows). The pinch does not yet: Hello ImGui's native runners forward no fingers. On Linux and macOS with GLFW, a finger is seen as a mouse.
+- The details, backend by backend, and what an app with its own backend adds: [ImGuiKit's README](https://github.com/pthom/imgui_kit#what-each-backend-reports).
 
 ## Learn more
 

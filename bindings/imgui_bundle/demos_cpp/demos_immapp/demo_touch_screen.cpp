@@ -3,7 +3,7 @@
 // On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held
 // finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image, two fingers pan, and a
 // keyboard button appears next to a text field. Nothing to write in the app: the gestures come from
-// RunnerParams::touchConfig (ScrollMode, PinchMode, LongPressIsRightClick...). On a desktop, tick "Simulate a touch
+// RunnerParams::touchConfig (ScrollMode, PinchScalesFont, LongPressIsRightClick...). On a desktop, tick "Simulate a touch
 // source" to try them with the mouse.
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #define IMGUI_DEFINE_MATH_OPERATORS
@@ -37,7 +37,7 @@ const char* GESTURES = R"(
 > [!NOTE]
 > * Hello ImGui and ImmApp install them. With your own backend and loop, add them with imgui_kit: `ImGuiTouch::Setup()` (see the ImGuiKit manual, section Touch).
 > * They are enabled by default. You do not need to change anything to get them.
-> * Configure them with `RunnerParams::touchConfig` (`ScrollMode`, `PinchMode`, `LongPressIsRightClick`...).
+> * Configure them with `RunnerParams::touchConfig` (`ScrollMode`, `PinchScalesFont`, `LongPressIsRightClick`...).
 )";
 
 const char* PLOTS = R"(
