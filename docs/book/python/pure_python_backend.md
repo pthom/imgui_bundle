@@ -12,6 +12,7 @@ Pure Python backends in ImGui Bundle let you use ImGui with Python-only windowin
 
 See [examples](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bundle/python_backends/examples) where you will find:
 * example_python_backend_glfw3.py
+* example_python_backend_glfw3_imgui_kit.py: the same, with imgui_kit's touch layer and wheel session, and an app that sleeps when nothing moves
 * example_python_backend_pygame.py
 * example_python_backend_pyglet.py
 * example_python_backend_sdl2.py
