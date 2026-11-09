@@ -313,7 +313,8 @@ def segmented_switch(str_id: str, current: int, labels: List[str]) -> Tuple[bool
 
         ( Demo | Code )        <- current = 1: "Code" is filled
 
-    It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.
+    It reacts at the press, not the release, which suits touch screens. With the keyboard or a gamepad: activated
+    (Space, Enter), Left and Right move the choice, and the same key leaves it. Returns True when *current changed.
     """
     pass
 
@@ -442,11 +443,13 @@ class TouchPinchDelivery_(enum.IntEnum):
     # ImGuiTouchPinchDelivery_WheelContinuous,      /* original C++ signature */
     wheel_continuous = (
         enum.auto()
-    )  # (= 0)  # the exact amount at each frame: a widget that zooms by the wheel's value
+    )  # (= 0)  # the exact amount at each frame: a widget that zooms by the wheel's
+    # value
     # ImGuiTouchPinchDelivery_WheelNotches,         /* original C++ signature */
     wheel_notches = (
         enum.auto()
-    )  # (= 1)  # whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)
+    )  # (= 1)  # whole notches (+1, -1): a widget that reads only the wheel's sign
+    # (ImPlot)
 
 # enum ImGuiTouchPinchKind_    /* original C++ signature */
 class TouchPinchKind_(enum.IntEnum):
@@ -455,7 +458,7 @@ class TouchPinchKind_(enum.IntEnum):
     # ImGuiTouchPinchKind_Undecided,      /* original C++ signature */
     undecided = (
         enum.auto()
-    )  # (= 0)  # until their distance changed by 12%, or their middle moved by 0.6 em
+    )  # (= 0)  # until their distance changed a little, or their middle moved a little
     # ImGuiTouchPinchKind_Pinch,          /* original C++ signature */
     pinch = enum.auto()  # (= 1)  # they spread or close
     # ImGuiTouchPinchKind_Pan,            /* original C++ signature */
@@ -541,16 +544,24 @@ class TouchConfig:
     # The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still
     # clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).
     scroll_mode: TouchScrollMode = TouchScrollMode_.auto
-    # bool LongPressIsRightClick = true;    /* original C++ signature */
-    # On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the
+    # float HoldSeconds = 0.15f;    /* original C++ signature */
+    # A finger still for this long hands its press to the widget under it, which then gets the drag (iOS: 150 ms).
+    # Zero: the widget gets the press at once, and a swipe scrolls only from where no widget is.
+    hold_seconds: float = 0.15
+    # On a touch screen (never with a mouse): a finger still for LongPressSeconds, then lifted, is a right click (the
     # context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:
     # a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.
+    # bool LongPressIsRightClick = true;    /* original C++ signature */
     long_press_is_right_click: bool = True
+    # float LongPressSeconds = 0.5f;    /* original C++ signature */
+    long_press_seconds: float = 0.5  # iOS: about 500 ms
     # bool ThinScrollbars = true;    /* original C++ signature */
     # On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than
     # controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands
-    # its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars: turned off (or when the input
-    # stops being a touch screen), the layer puts back the style's ScrollbarSize and ScrollbarRounding.
+    # its thumb over, drawn wider while held (as on iOS). While the pointer in use is a mouse (io.MouseSource: a touch
+    # laptop driven by its mouse), the theme's bars; thin again at the next finger. False keeps the theme's bars:
+    # turned off (or when the input stops being a touch screen), the layer puts back the style's ScrollbarSize and
+    # ScrollbarRounding.
     thin_scrollbars: bool = True
 
     #
@@ -584,7 +595,9 @@ class TouchConfig:
     def __init__(
         self,
         scroll_mode: Optional[TouchScrollMode] = None,
+        hold_seconds: float = 0.15,
         long_press_is_right_click: bool = True,
+        long_press_seconds: float = 0.5,
         thin_scrollbars: bool = True,
         pinch_scales_font: bool = True,
         pinch_font_scale_min: float = 0.5,
@@ -611,6 +624,11 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
         """Python bindings defaults:
         If config is None, then its default value will be: TouchConfig()
         """
+        pass
+    # IMGUI_API bool   IsInstalled();      /* original C++ signature */
+    @staticmethod
+    def is_installed() -> bool:
+        """True once a setup was called in the current context"""
         pass
     # IMGUI_API ImGuiTouchConfig& GetConfig();    /* original C++ signature */
     @staticmethod

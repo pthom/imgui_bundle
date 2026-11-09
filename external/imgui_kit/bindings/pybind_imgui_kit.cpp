@@ -207,7 +207,7 @@ void py_init_module_imgui_kit(nb::module_& m)
             return SegmentedSwitch_adapt_c_string_list(str_id, current, labels);
         },
         nb::arg("str_id"), nb::arg("current"), nb::arg("labels"),
-        " Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's\n FrameRounding, as buttons and sliders do.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. Returns True when *current changed.");
+        " Segmented switch: exclusive choices in one frame, the current one filled. Its corners follow the style's\n FrameRounding, as buttons and sliders do.\n\n     ( Demo | Code )        <- current = 1: \"Code\" is filled\n\n It reacts at the press, not the release, which suits touch screens. With the keyboard or a gamepad: activated\n (Space, Enter), Left and Right move the choice, and the same key leaves it. Returns True when *current changed.");
 
     m.def("segmented_switch_width",
         [](const std::vector<std::string> & labels) -> float
@@ -273,13 +273,13 @@ void py_init_module_imgui_kit(nb::module_& m)
 
     auto pyEnumTouchPinchDelivery_ =
         nb::enum_<ImGuiTouchPinchDelivery_>(m, "TouchPinchDelivery_", nb::is_arithmetic(), "How a pinch reaches a widget as wheel events (ImGuiTouch::SetItemPinchAsWheel)")
-            .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's value")
-            .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)");
+            .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's")
+            .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign");
 
 
     auto pyEnumTouchPinchKind_ =
         nb::enum_<ImGuiTouchPinchKind_>(m, "TouchPinchKind_", nb::is_arithmetic(), "What two fingers do, as the layer decides it once per gesture (ImGuiTouchPinch::Kind)")
-            .value("undecided", ImGuiTouchPinchKind_Undecided, "until their distance changed by 12%, or their middle moved by 0.6 em")
+            .value("undecided", ImGuiTouchPinchKind_Undecided, "until their distance changed a little, or their middle moved a little")
             .value("pinch", ImGuiTouchPinchKind_Pinch, "they spread or close")
             .value("pan", ImGuiTouchPinchKind_Pan, "they move together");
 
@@ -320,7 +320,7 @@ void py_init_module_imgui_kit(nb::module_& m)
     auto pyClassImGuiTouchConfig =
         nb::class_<ImGuiTouchConfig>
             (m, "TouchConfig", "The settings, read at each frame: change them through ImGuiTouch::GetConfig()")
-        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, bool LongPressIsRightClick = true, bool ThinScrollbars = true, bool PinchScalesFont = true, float PinchFontScaleMin = 0.5f, float PinchFontScaleMax = 5.0f, bool SimulateTouch = false)
+        .def("__init__", [](ImGuiTouchConfig * self, const std::optional<const ImGuiTouchScrollMode> & ScrollMode = std::nullopt, float HoldSeconds = 0.15f, bool LongPressIsRightClick = true, float LongPressSeconds = 0.5f, bool ThinScrollbars = true, bool PinchScalesFont = true, float PinchFontScaleMin = 0.5f, float PinchFontScaleMax = 5.0f, bool SimulateTouch = false)
         {
             new (self) ImGuiTouchConfig();  // placement new
             auto r_ctor_ = self;
@@ -328,18 +328,22 @@ void py_init_module_imgui_kit(nb::module_& m)
                 r_ctor_->ScrollMode = ScrollMode.value();
             else
                 r_ctor_->ScrollMode = ImGuiTouchScrollMode_Auto;
+            r_ctor_->HoldSeconds = HoldSeconds;
             r_ctor_->LongPressIsRightClick = LongPressIsRightClick;
+            r_ctor_->LongPressSeconds = LongPressSeconds;
             r_ctor_->ThinScrollbars = ThinScrollbars;
             r_ctor_->PinchScalesFont = PinchScalesFont;
             r_ctor_->PinchFontScaleMin = PinchFontScaleMin;
             r_ctor_->PinchFontScaleMax = PinchFontScaleMax;
             r_ctor_->SimulateTouch = SimulateTouch;
         },
-        nb::arg("scroll_mode").none() = nb::none(), nb::arg("long_press_is_right_click") = true, nb::arg("thin_scrollbars") = true, nb::arg("pinch_scales_font") = true, nb::arg("pinch_font_scale_min") = 0.5f, nb::arg("pinch_font_scale_max") = 5.0f, nb::arg("simulate_touch") = false
+        nb::arg("scroll_mode").none() = nb::none(), nb::arg("hold_seconds") = 0.15f, nb::arg("long_press_is_right_click") = true, nb::arg("long_press_seconds") = 0.5f, nb::arg("thin_scrollbars") = true, nb::arg("pinch_scales_font") = true, nb::arg("pinch_font_scale_min") = 0.5f, nb::arg("pinch_font_scale_max") = 5.0f, nb::arg("simulate_touch") = false
         )
         .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, " The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still\n clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).")
-        .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, " On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the\n context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:\n a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.")
-        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars: turned off (or when the input\n stops being a touch screen), the layer puts back the style's ScrollbarSize and ScrollbarRounding.")
+        .def_rw("hold_seconds", &ImGuiTouchConfig::HoldSeconds, " A finger still for this long hands its press to the widget under it, which then gets the drag (iOS: 150 ms).\n Zero: the widget gets the press at once, and a swipe scrolls only from where no widget is.")
+        .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, "")
+        .def_rw("long_press_seconds", &ImGuiTouchConfig::LongPressSeconds, "iOS: about 500 ms")
+        .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). While the pointer in use is a mouse (io.MouseSource: a touch\n laptop driven by its mouse), the theme's bars; thin again at the next finger. False keeps the theme's bars:\n turned off (or when the input stops being a touch screen), the layer puts back the style's ScrollbarSize and\n ScrollbarRounding.")
         .def_rw("pinch_scales_font", &ImGuiTouchConfig::PinchScalesFont, " Two fingers that pinch outside the widgets that claim them (ImGuiTouch::ItemPinch and its kin) scale the font\n (style.FontScaleMain) while they stay on the screen. False: such a pinch does nothing, and the font keeps its\n size. Either way, a widget that takes the pinch zooms, and two fingers that move together are a right drag (the\n pan of a node editor, the box of a plot). A second finger that lands while a widget holds the first one (a slider\n dragged after a hold, a text selection) leaves the widget its drag. A desktop touch screen reports no second\n finger.")
         .def_rw("pinch_font_scale_min", &ImGuiTouchConfig::PinchFontScaleMin, "")
         .def_rw("pinch_font_scale_max", &ImGuiTouchConfig::PinchFontScaleMax, "")
@@ -368,6 +372,9 @@ void py_init_module_imgui_kit(nb::module_& m)
             },
             nb::arg("config").none() = nb::none(),
             "Python bindings defaults:\n    If config is None, then its default value will be: TouchConfig()");
+
+        pyNsImGuiTouch.def("is_installed",
+            ImGuiTouch::IsInstalled, "True once a setup was called in the current context");
 
         pyNsImGuiTouch.def("get_config",
             ImGuiTouch::GetConfig, nb::rv_policy::reference);
