@@ -16,6 +16,7 @@ See [examples](https://github.com/pthom/imgui_bundle/tree/main/bindings/imgui_bu
 * example_python_backend_pygame.py
 * example_python_backend_pyglet.py
 * example_python_backend_sdl2.py
+* example_python_backend_sdl2_imgui_kit.py: the same, with imgui_kit's touch layer (the fingers of a touch screen forwarded: the pinch) and wheel session
 * example_python_backend_sdl3.py
 * example_python_backend_wgpu.py
 
