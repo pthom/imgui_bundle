@@ -40,7 +40,7 @@ PLOTS = """
 - A double click (a double tap) fits the plot.
 
 > [!NOTE]
-> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget that zooms with the wheel takes it with imgui_kit: `imgui_kit.touch.set_item_takes_pinch()` right after it, or `imgui_kit.touch.set_rect_takes_pinch()` for a rectangle.
+> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget takes it with imgui_kit, right after it: `imgui_kit.touch.item_pinch()` returns the gesture; a widget that zooms with the wheel calls `imgui_kit.touch.set_item_pinch_as_wheel()` instead.
 """
 
 IMAGES = """

@@ -300,13 +300,15 @@ An app run by Hello ImGui or ImmApp works on a touch screen with nothing to writ
 A widget of your own may need one call, right after it:
 - a widget that a finger drags (a canvas, a knob): `imgui_kit.touch.set_item_takes_drags()`, else a drag scrolls the page, and the widget gets the finger only after a hold;
 - a widget dragged along one axis: `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)`, so that a drag along it moves it and a drag across scrolls the page (the bundle's own sliders and drags need nothing);
-- a widget that zooms with the wheel: `imgui_kit.touch.set_item_takes_pinch(zoom_per_notch, pan_button, delivery)`, so that a pinch zooms it instead of scaling the app.
+- a widget that zooms: `imgui_kit.touch.item_pinch()` returns two fingers' gesture (`center`, `center_delta`, `scale_delta`), so that a pinch zooms it and moves it instead of scaling the app; a widget that already zooms with the wheel: `imgui_kit.touch.set_item_pinch_as_wheel(1.1)` (and `set_item_two_finger_pan_as_mouse_drag(button)`).
 
 ```python
 imgui.invisible_button("canvas", em_to_vec2(20, 12))
 imgui_kit.touch.set_item_takes_drags()  # a finger's drag pans the canvas at once
-imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left, imgui_kit.TouchPinchDelivery_.wheel_continuous)
-if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # the wheel, and the pinch, zoom it: 10% per notch
+pinch = imgui_kit.touch.item_pinch()  # two fingers: zoom by their spread (around pinch.center)
+if pinch.active:
+    zoom *= pinch.scale_delta
+if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # the wheel zooms it too: 10% per notch
     zoom *= 1.1 ** imgui.get_io().mouse_wheel
 ```
 

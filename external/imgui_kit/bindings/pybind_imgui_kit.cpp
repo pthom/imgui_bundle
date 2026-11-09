@@ -265,9 +265,31 @@ void py_init_module_imgui_kit(nb::module_& m)
 
 
     auto pyEnumTouchPinchDelivery_ =
-        nb::enum_<ImGuiTouchPinchDelivery_>(m, "TouchPinchDelivery_", nb::is_arithmetic(), "How a pinch reaches a widget that takes it (ImGuiTouch::SetItemTakesPinch)")
-            .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)")
-            .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's value");
+        nb::enum_<ImGuiTouchPinchDelivery_>(m, "TouchPinchDelivery_", nb::is_arithmetic(), "How a pinch reaches a widget as wheel events (ImGuiTouch::SetItemPinchAsWheel)")
+            .value("wheel_continuous", ImGuiTouchPinchDelivery_WheelContinuous, "the exact amount at each frame: a widget that zooms by the wheel's value")
+            .value("wheel_notches", ImGuiTouchPinchDelivery_WheelNotches, "whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)");
+
+
+    auto pyEnumTouchPinchKind_ =
+        nb::enum_<ImGuiTouchPinchKind_>(m, "TouchPinchKind_", nb::is_arithmetic(), "What two fingers do, as the layer decides it once per gesture (ImGuiTouchPinch::Kind)")
+            .value("undecided", ImGuiTouchPinchKind_Undecided, "until their distance changed by 12%, or their middle moved by 0.6 em")
+            .value("pinch", ImGuiTouchPinchKind_Pinch, "they spread or close")
+            .value("pan", ImGuiTouchPinchKind_Pan, "they move together");
+
+
+    auto pyClassImGuiTouchPinch =
+        nb::class_<ImGuiTouchPinch>
+            (m, "TouchPinch", " Two fingers on a widget, at this frame (ImGuiTouch::ItemPinch). A widget applies both the zoom and the pan at each\n frame: the content stays under the fingers, as on a map.\n     ImGuiTouchPinch p = ImGuiTouch::ItemPinch();\n     if (p.Active)\n     {\n         offset = p.Center - (p.Center - offset) * p.ScaleDelta;  // zoom around the fingers\n         zoom *= p.ScaleDelta;\n         offset += p.CenterDelta;                                 // follow their middle\n     }")
+        .def_rw("active", &ImGuiTouchPinch::Active, "two fingers are on this widget's gesture (False: the deltas are neutral)")
+        .def_rw("started", &ImGuiTouchPinch::Started, "the gesture's first frame")
+        .def_rw("ended", &ImGuiTouchPinch::Ended, "the fingers lifted (or were cancelled) since the last frame: Active is False then")
+        .def_rw("center", &ImGuiTouchPinch::Center, "the fingers' middle, in screen coordinates")
+        .def_rw("center_delta", &ImGuiTouchPinch::CenterDelta, "its move since the last frame: the pan")
+        .def_rw("scale_delta", &ImGuiTouchPinch::ScaleDelta, "the fingers' distance over the last frame's: 1 when unchanged")
+        .def_rw("scale", &ImGuiTouchPinch::Scale, "their distance over the distance at the start: 1 at the start")
+        .def_rw("kind", &ImGuiTouchPinch::Kind, "pinch or pan, for a widget that wants one at a time")
+        .def(nb::init<>())
+        ;
 
 
     auto pyEnumTouchPhase_ =
@@ -311,7 +333,7 @@ void py_init_module_imgui_kit(nb::module_& m)
         .def_rw("scroll_mode", &ImGuiTouchConfig::ScrollMode, " The swipe: a finger that drags a window's content scrolls it, with inertia, even from a button: a tap still\n clicks it (when the finger lifts), and a short hold then a drag goes to the widget (a slider, a text selection).")
         .def_rw("long_press_is_right_click", &ImGuiTouchConfig::LongPressIsRightClick, " On a touch screen (never with a mouse): a finger still for half a second, then lifted, is a right click (the\n context menus); a ring around the finger shows when the lift will right click. The release reaches no widget:\n a long press on a button is not a click. A move after the ring cancels it: the widget keeps its press.")
         .def_rw("thin_scrollbars", &ImGuiTouchConfig::ThinScrollbars, " On a touch screen (ImGuiConfigFlags_IsTouchScreen): thin scroll bars (0.3 em, rounded), indicators rather than\n controls, since a swipe scrolls anywhere. Applied at each frame (after a theme, a pinch). A hold on a bar hands\n its thumb over, drawn wider while held (as on iOS). False keeps the theme's bars: turned off (or when the input\n stops being a touch screen), the layer puts back the style's ScrollbarSize and ScrollbarRounding.")
-        .def_rw("pinch_scales_font", &ImGuiTouchConfig::PinchScalesFont, " Two fingers that pinch outside the widgets that take the pinch (ImGuiTouch::SetItemTakesPinch) scale the font\n (style.FontScaleMain) while they stay on the screen. False: such a pinch does nothing, and the font keeps its\n size. Either way, a widget that takes the pinch zooms, and two fingers that move together are a right drag (the\n pan of a node editor, the box of a plot). A second finger that lands while a widget holds the first one (a slider\n dragged after a hold, a text selection) leaves the widget its drag. A desktop touch screen reports no second\n finger.")
+        .def_rw("pinch_scales_font", &ImGuiTouchConfig::PinchScalesFont, " Two fingers that pinch outside the widgets that claim them (ImGuiTouch::ItemPinch and its kin) scale the font\n (style.FontScaleMain) while they stay on the screen. False: such a pinch does nothing, and the font keeps its\n size. Either way, a widget that takes the pinch zooms, and two fingers that move together are a right drag (the\n pan of a node editor, the box of a plot). A second finger that lands while a widget holds the first one (a slider\n dragged after a hold, a text selection) leaves the widget its drag. A desktop touch screen reports no second\n finger.")
         .def_rw("pinch_font_scale_min", &ImGuiTouchConfig::PinchFontScaleMin, "")
         .def_rw("pinch_font_scale_max", &ImGuiTouchConfig::PinchFontScaleMax, "")
         .def_rw("simulate_touch", &ImGuiTouchConfig::SimulateTouch, " The mouse plays a finger, to try the phone's behavior on a desktop: the layer tags the mouse's events as a\n touch screen's (io.MouseSource), with any backend, before Dear ImGui reads them. Everything that depends on a\n touch screen follows: no hover tooltips, the long press, the hold before a widget's drag. (ScrollMode_Always\n differs: the mouse's drag scrolls, but the mouse stays a mouse.)")
@@ -367,61 +389,61 @@ void py_init_module_imgui_kit(nb::module_& m)
             nb::arg("axis").none() = nb::none(), nb::arg("long_press_is_right_click") = true,
             " Right after a widget that a finger drags: a drag that starts on it goes to it, not to the swipe.\n   - ImGuiTouchAxis_Any (a canvas, a knob, a plot): the widget gets the press at once, in every direction.\n   - ImGuiTouchAxis_X or _Y (a slider, a vertical slider): the layer waits until the finger moved a little, then gives\n     the drag to the widget if it goes along that axis, or scrolls the window if it goes across.\n long_press_is_right_click: a long press on it is still a right click. Nothing without the touch layer.\n Dear ImGui's own sliders and drags call it themselves when the build has IMGUI_HAS_ITEM_DRAG_AXIS_CALLBACK.\n\nPython bindings defaults:\n    If axis is None, then its default value will be: TouchAxis_.any");
 
-        pyNsImGuiTouch.def("set_item_takes_pinch",
-            [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
-            {
-                auto SetItemTakesPinch_adapt_mutable_param_with_default_value = [](float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
-                {
+        pyNsImGuiTouch.def("item_pinch",
+            ImGuiTouch::ItemPinch, " Two fingers on a widget: by default they scale the font (a pinch) or are a right drag (moved together). A widget\n changes that with one of these calls, right after it, at each frame (the claims of the last frame decide where the\n fingers land). When claims nest, the smallest holding both fingers wins; the gesture stays with it until they lift.\n Nothing without the touch layer.\n\n 1. The gesture itself (a canvas, a map): returns its data at this frame. The widget gets nothing else: no font\n    scale, no wheel, no mouse drag. The item needs an id (an InvisibleButton, not an Image). Not with 2 or 3.");
 
-                    const ImGuiMouseButton& pan_button_or_default = [&]() -> const ImGuiMouseButton {
-                        if (pan_button.has_value())
-                            return pan_button.value();
-                        else
-                            return ImGuiMouseButton_Right;
-                    }();
+        pyNsImGuiTouch.def("rect_pinch",
+            ImGuiTouch::RectPinch,
+            nb::arg("id"), nb::arg("min"), nb::arg("max"),
+            "The same, for a rectangle in screen coordinates and an id of the caller's: a widget that is not one item");
+
+        pyNsImGuiTouch.def("set_item_pinch_as_wheel",
+            [](float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+            {
+                auto SetItemPinchAsWheel_adapt_mutable_param_with_default_value = [](float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+                {
 
                     const ImGuiTouchPinchDelivery& delivery_or_default = [&]() -> const ImGuiTouchPinchDelivery {
                         if (delivery.has_value())
                             return delivery.value();
                         else
-                            return ImGuiTouchPinchDelivery_WheelNotches;
+                            return ImGuiTouchPinchDelivery_WheelContinuous;
                     }();
 
-                    ImGuiTouch::SetItemTakesPinch(zoom_per_notch, pan_button_or_default, delivery_or_default);
+                    ImGuiTouch::SetItemPinchAsWheel(wheel_zoom_factor, delivery_or_default);
                 };
 
-                SetItemTakesPinch_adapt_mutable_param_with_default_value(zoom_per_notch, pan_button, delivery);
+                SetItemPinchAsWheel_adapt_mutable_param_with_default_value(wheel_zoom_factor, delivery);
             },
-            nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(), nb::arg("delivery").none() = nb::none(),
-            " Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of\n scaling the font. The pinch reaches it as wheel events at the fingers' center: zoom_per_notch is the widget's own\n zoom per notch (ImPlot's is 0.1), delivery says whether it reads whole notches or the wheel's exact value. Two\n fingers that move together on it drag it with pan_button (a plot pans with the left button). Nothing without the\n touch layer.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
+            nb::arg("wheel_zoom_factor"), nb::arg("delivery").none() = nb::none(),
+            "Python bindings defaults:\n    If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous");
 
-        pyNsImGuiTouch.def("set_rect_takes_pinch",
-            [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+        pyNsImGuiTouch.def("set_rect_pinch_as_wheel",
+            [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
             {
-                auto SetRectTakesPinch_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float zoom_per_notch = 0.1f, const std::optional<const ImGuiMouseButton> & pan_button = std::nullopt, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+                auto SetRectPinchAsWheel_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
                 {
-
-                    const ImGuiMouseButton& pan_button_or_default = [&]() -> const ImGuiMouseButton {
-                        if (pan_button.has_value())
-                            return pan_button.value();
-                        else
-                            return ImGuiMouseButton_Right;
-                    }();
 
                     const ImGuiTouchPinchDelivery& delivery_or_default = [&]() -> const ImGuiTouchPinchDelivery {
                         if (delivery.has_value())
                             return delivery.value();
                         else
-                            return ImGuiTouchPinchDelivery_WheelNotches;
+                            return ImGuiTouchPinchDelivery_WheelContinuous;
                     }();
 
-                    ImGuiTouch::SetRectTakesPinch(min, max, zoom_per_notch, pan_button_or_default, delivery_or_default);
+                    ImGuiTouch::SetRectPinchAsWheel(min, max, wheel_zoom_factor, delivery_or_default);
                 };
 
-                SetRectTakesPinch_adapt_mutable_param_with_default_value(min, max, zoom_per_notch, pan_button, delivery);
+                SetRectPinchAsWheel_adapt_mutable_param_with_default_value(min, max, wheel_zoom_factor, delivery);
             },
-            nb::arg("min"), nb::arg("max"), nb::arg("zoom_per_notch") = 0.1f, nb::arg("pan_button").none() = nb::none(), nb::arg("delivery").none() = nb::none(),
-            " The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot). Nothing without the\n touch layer.\n\nPython bindings defaults:\n    If any of the params below is None, then its default value below will be used:\n        * pan_button: ImGuiMouseButton_Right\n        * delivery: TouchPinchDelivery_.wheel_notches");
+            nb::arg("min"), nb::arg("max"), nb::arg("wheel_zoom_factor"), nb::arg("delivery").none() = nb::none(),
+            "Python bindings defaults:\n    If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous");
+
+        pyNsImGuiTouch.def("set_item_two_finger_pan_as_mouse_drag",
+            ImGuiTouch::SetItemTwoFingerPanAsMouseDrag, nb::arg("button"));
+
+        pyNsImGuiTouch.def("set_rect_two_finger_pan_as_mouse_drag",
+            ImGuiTouch::SetRectTwoFingerPanAsMouseDrag, nb::arg("min"), nb::arg("max"), nb::arg("button"));
 
         pyNsImGuiTouch.def("add_finger_event",
             ImGuiTouch::AddFingerEvent,

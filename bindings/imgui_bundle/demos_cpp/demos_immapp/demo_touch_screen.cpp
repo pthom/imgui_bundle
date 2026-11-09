@@ -48,7 +48,7 @@ const char* PLOTS = R"(
 - A double click (a double tap) fits the plot.
 
 > [!NOTE]
-> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget that zooms with the wheel takes it with imgui_kit: `ImGuiTouch::SetItemTakesPinch()` right after it, or `ImGuiTouch::SetRectTakesPinch()` for a rectangle.
+> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget takes it with imgui_kit, right after it: `ImGuiTouch::ItemPinch()` returns the gesture; a widget that zooms with the wheel calls `ImGuiTouch::SetItemPinchAsWheel()` instead.
 )";
 
 const char* IMAGES = R"(

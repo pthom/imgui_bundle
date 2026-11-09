@@ -21,10 +21,12 @@ from imgui_bundle.imgui import ImVec2, ImVec2Like
 from imgui_bundle import imgui
 
 ImGuiMouseButton = imgui.MouseButton
+ImGuiID = imgui.ID
 
 Icon = int
 TouchScrollMode = int
 TouchPhase = int
+TouchPinchKind = int
 TouchPinchDelivery = int
 TouchAxis = int
 
@@ -415,16 +417,66 @@ class TouchAxis_(enum.IntEnum):
 
 # enum ImGuiTouchPinchDelivery_    /* original C++ signature */
 class TouchPinchDelivery_(enum.IntEnum):
-    """How a pinch reaches a widget that takes it (ImGuiTouch::SetItemTakesPinch)"""
+    """How a pinch reaches a widget as wheel events (ImGuiTouch::SetItemPinchAsWheel)"""
 
-    # ImGuiTouchPinchDelivery_WheelNotches,         /* original C++ signature */
-    wheel_notches = (
-        enum.auto()
-    )  # (= 0)  # whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)
     # ImGuiTouchPinchDelivery_WheelContinuous,      /* original C++ signature */
     wheel_continuous = (
         enum.auto()
-    )  # (= 1)  # the exact amount at each frame: a widget that zooms by the wheel's value
+    )  # (= 0)  # the exact amount at each frame: a widget that zooms by the wheel's value
+    # ImGuiTouchPinchDelivery_WheelNotches,         /* original C++ signature */
+    wheel_notches = (
+        enum.auto()
+    )  # (= 1)  # whole notches (+1, -1): a widget that reads only the wheel's sign (ImPlot)
+
+# enum ImGuiTouchPinchKind_    /* original C++ signature */
+class TouchPinchKind_(enum.IntEnum):
+    """What two fingers do, as the layer decides it once per gesture (ImGuiTouchPinch::Kind)"""
+
+    # ImGuiTouchPinchKind_Undecided,      /* original C++ signature */
+    undecided = (
+        enum.auto()
+    )  # (= 0)  # until their distance changed by 12%, or their middle moved by 0.6 em
+    # ImGuiTouchPinchKind_Pinch,          /* original C++ signature */
+    pinch = enum.auto()  # (= 1)  # they spread or close
+    # ImGuiTouchPinchKind_Pan,            /* original C++ signature */
+    pan = enum.auto()  # (= 2)  # they move together
+
+# struct ImGuiTouchPinch    /* original C++ signature */
+class TouchPinch:
+    """Two fingers on a widget, at this frame (ImGuiTouch::ItemPinch). A widget applies both the zoom and the pan at each
+    frame: the content stays under the fingers, as on a map.
+        ImGuiTouchPinch p = ImGuiTouch::ItemPinch();
+        if (p.Active)
+        {
+            offset = p.Center - (p.Center - offset) * p.ScaleDelta;  // zoom around the fingers
+            zoom *= p.ScaleDelta;
+            offset += p.CenterDelta;                                 // follow their middle
+        }
+    """
+
+    # bool   Active;    /* original C++ signature */
+    active: (
+        bool  # two fingers are on this widget's gesture (False: the deltas are neutral)
+    )
+    # bool   Started;    /* original C++ signature */
+    started: bool  # the gesture's first frame
+    # bool   Ended;    /* original C++ signature */
+    ended: bool  # the fingers lifted (or were cancelled) since the last frame: Active is False then
+    # ImVec2 Center;    /* original C++ signature */
+    center: ImVec2  # the fingers' middle, in screen coordinates
+    # ImVec2 CenterDelta;    /* original C++ signature */
+    center_delta: ImVec2  # its move since the last frame: the pan
+    # float  ScaleDelta;    /* original C++ signature */
+    scale_delta: float  # the fingers' distance over the last frame's: 1 when unchanged
+    # float  Scale;    /* original C++ signature */
+    scale: float  # their distance over the distance at the start: 1 at the start
+    # ImGuiTouchPinchKind Kind;    /* original C++ signature */
+    kind: TouchPinchKind  # pinch or pan, for a widget that wants one at a time
+
+    # ImGuiTouchPinch() : Active(false), Started(false), Ended(false), ScaleDelta(1.0f), Scale(1.0f),    /* original C++ signature */
+    #                         Kind(ImGuiTouchPinchKind_Undecided);
+    def __init__(self) -> None:
+        pass
 
 # enum ImGuiTouchPhase_    /* original C++ signature */
 class TouchPhase_(enum.IntEnum):
@@ -486,7 +538,7 @@ class TouchConfig:
     #
 
     # bool PinchScalesFont = true;    /* original C++ signature */
-    # Two fingers that pinch outside the widgets that take the pinch (ImGuiTouch::SetItemTakesPinch) scale the font
+    # Two fingers that pinch outside the widgets that claim them (ImGuiTouch::ItemPinch and its kin) scale the font
     # (style.FontScaleMain) while they stay on the screen. False: such a pinch does nothing, and the font keeps its
     # size. Either way, a widget that takes the pinch zooms, and two fingers that move together are a right drag (the
     # pan of a node editor, the box of a plot). A second finger that lands while a widget holds the first one (a slider
@@ -568,45 +620,63 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
             If axis is None, then its default value will be: TouchAxis_.any
         """
         pass
-    # IMGUI_API void   SetItemTakesPinch(float zoom_per_notch = 0.1f, ImGuiMouseButton pan_button = ImGuiMouseButton_Right,    /* original C++ signature */
-    #                                    ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelNotches);
+    # IMGUI_API ImGuiTouchPinch ItemPinch();    /* original C++ signature */
     @staticmethod
-    def set_item_takes_pinch(
-        zoom_per_notch: float = 0.1,
-        pan_button: Optional[ImGuiMouseButton] = None,
-        delivery: Optional[TouchPinchDelivery] = None,
-    ) -> None:
-        """Right after a widget that zooms with the wheel (a plot, an image): two fingers that pinch on it zoom it, instead of
-         scaling the font. The pinch reaches it as wheel events at the fingers' center: zoom_per_notch is the widget's own
-         zoom per notch (ImPlot's is 0.1), delivery says whether it reads whole notches or the wheel's exact value. Two
-         fingers that move together on it drag it with pan_button (a plot pans with the left button). Nothing without the
-         touch layer.
+    def item_pinch() -> TouchPinch:
+        """Two fingers on a widget: by default they scale the font (a pinch) or are a right drag (moved together). A widget
+        changes that with one of these calls, right after it, at each frame (the claims of the last frame decide where the
+        fingers land). When claims nest, the smallest holding both fingers wins; the gesture stays with it until they lift.
+        Nothing without the touch layer.
 
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * pan_button: ImGuiMouseButton_Right
-                * delivery: TouchPinchDelivery_.wheel_notches
+        1. The gesture itself (a canvas, a map): returns its data at this frame. The widget gets nothing else: no font
+           scale, no wheel, no mouse drag. The item needs an id (an InvisibleButton, not an Image). Not with 2 or 3.
         """
         pass
-    # IMGUI_API void   SetRectTakesPinch(const ImVec2& min, const ImVec2& max, float zoom_per_notch = 0.1f,    /* original C++ signature */
-    #                                    ImGuiMouseButton pan_button = ImGuiMouseButton_Right,
-    #                                    ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelNotches);
+    # IMGUI_API ImGuiTouchPinch RectPinch(ImGuiID id, const ImVec2& min, const ImVec2& max);    /* original C++ signature */
     @staticmethod
-    def set_rect_takes_pinch(
+    def rect_pinch(id: ImGuiID, min: ImVec2Like, max: ImVec2Like) -> TouchPinch:
+        """The same, for a rectangle in screen coordinates and an id of the caller's: a widget that is not one item"""
+        pass
+    #
+    # 2. A widget that zooms with the wheel (a plot, an image): a pinch on it becomes wheel events, at the fingers' center.
+    #    wheel_zoom_factor: the widget's zoom for one wheel unit (1.1: +10%). delivery: WheelNotches for a widget that
+    #    reads only the wheel's sign (ImPlot).
+    # IMGUI_API void   SetItemPinchAsWheel(float wheel_zoom_factor,    /* original C++ signature */
+    #                                      ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelContinuous);
+    @staticmethod
+    def set_item_pinch_as_wheel(
+        wheel_zoom_factor: float, delivery: Optional[TouchPinchDelivery] = None
+    ) -> None:
+        """Python bindings defaults:
+        If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous
+        """
+        pass
+    # IMGUI_API void   SetRectPinchAsWheel(const ImVec2& min, const ImVec2& max, float wheel_zoom_factor,    /* original C++ signature */
+    #                                      ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelContinuous);
+    @staticmethod
+    def set_rect_pinch_as_wheel(
         min: ImVec2Like,
         max: ImVec2Like,
-        zoom_per_notch: float = 0.1,
-        pan_button: Optional[ImGuiMouseButton] = None,
+        wheel_zoom_factor: float,
         delivery: Optional[TouchPinchDelivery] = None,
     ) -> None:
-        """The same, for a rectangle in screen coordinates: a widget that is not one item (an ImPlot plot). Nothing without the
-         touch layer.
-
-        Python bindings defaults:
-            If any of the params below is None, then its default value below will be used:
-                * pan_button: ImGuiMouseButton_Right
-                * delivery: TouchPinchDelivery_.wheel_notches
+        """Python bindings defaults:
+        If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous
         """
+        pass
+    #
+    # 3. A widget that pans with a mouse button (a plot: left; a node editor: right): two fingers moved together on it
+    #    become a drag with that button. Combines with 2. Alone, a pinch on the widget does nothing (the font keeps its
+    #    size); with 2 alone, two fingers moved together are a right drag.
+    # IMGUI_API void   SetItemTwoFingerPanAsMouseDrag(ImGuiMouseButton button);    /* original C++ signature */
+    @staticmethod
+    def set_item_two_finger_pan_as_mouse_drag(button: ImGuiMouseButton) -> None:
+        pass
+    # IMGUI_API void   SetRectTwoFingerPanAsMouseDrag(const ImVec2& min, const ImVec2& max, ImGuiMouseButton button);    /* original C++ signature */
+    @staticmethod
+    def set_rect_two_finger_pan_as_mouse_drag(
+        min: ImVec2Like, max: ImVec2Like, button: ImGuiMouseButton
+    ) -> None:
         pass
     # IMGUI_API void   AddFingerEvent(int id, const ImVec2& pos, ImGuiTouchPhase phase);    /* original C++ signature */
     @staticmethod

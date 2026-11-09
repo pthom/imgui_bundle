@@ -407,25 +407,33 @@ def demo_widgets() -> None:
 # Touch
 # =============================================================================
 def zoomable_canvas(str_id: str, size: ImVec2) -> None:
-    """A canvas that zooms with the wheel and pans with a drag, as a plot or an image viewer does. It claims the wheel
-    while hovered (imgui.set_item_key_owner), takes a finger's drag at once (imgui_kit.touch.set_item_takes_drags),
-    and a pinch (imgui_kit.touch.set_item_takes_pinch: its zoom per notch is 10%, and it uses the wheel's exact value;
-    two fingers pan it, with the left button)."""
+    """A canvas that zooms and pans, as a map or an image viewer does. With a mouse: the wheel zooms (it claims the
+    wheel while hovered: imgui.set_item_key_owner), a drag pans. With fingers: one finger pans at once
+    (imgui_kit.touch.set_item_takes_drags), two fingers zoom and pan at once (imgui_kit.touch.item_pinch: the
+    gesture's data)."""
     io = imgui.get_io()
     p0 = imgui.get_cursor_screen_pos()
     p1 = ImVec2(p0.x + size.x, p0.y + size.y)
+
+    def zoom_around(point: ImVec2, factor: float) -> None:
+        """Zoom by `factor` around a point of the screen: the content under it stays there."""
+        new_zoom = min(max(state.canvas_zoom * factor, 0.25), 8.0)
+        px, py = point.x - p0.x, point.y - p0.y
+        state.canvas_offset = ImVec2(px - (px - state.canvas_offset.x) * new_zoom / state.canvas_zoom,
+                                     py - (py - state.canvas_offset.y) * new_zoom / state.canvas_zoom)
+        state.canvas_zoom = new_zoom
+
     imgui.invisible_button(str_id, size)
     imgui_kit.touch.set_item_takes_drags()
-    imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left, imgui_kit.TouchPinchDelivery_.wheel_continuous)
-    if imgui.is_item_active():
+    pinch = imgui_kit.touch.item_pinch()
+    if pinch.active:
+        zoom_around(pinch.center, pinch.scale_delta)
+        state.canvas_offset = ImVec2(state.canvas_offset.x + pinch.center_delta.x,
+                                     state.canvas_offset.y + pinch.center_delta.y)
+    elif imgui.is_item_active():
         state.canvas_offset = ImVec2(state.canvas_offset.x + io.mouse_delta.x, state.canvas_offset.y + io.mouse_delta.y)
     if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and io.mouse_wheel != 0.0:
-        # Zoom around the mouse: the point under it stays there
-        new_zoom = min(max(state.canvas_zoom * 1.1**io.mouse_wheel, 0.25), 8.0)
-        mx, my = io.mouse_pos.x - p0.x, io.mouse_pos.y - p0.y
-        state.canvas_offset = ImVec2(mx - (mx - state.canvas_offset.x) * new_zoom / state.canvas_zoom,
-                                     my - (my - state.canvas_offset.y) * new_zoom / state.canvas_zoom)
-        state.canvas_zoom = new_zoom
+        zoom_around(io.mouse_pos, 1.1**io.mouse_wheel)
 
     draw_list = imgui.get_window_draw_list()
     rounding = imgui.get_style().frame_rounding
@@ -464,7 +472,7 @@ imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
 # The render loop: nothing to add, the kit runs inside imgui.new_frame() and imgui.render().
 # - An app that sleeps when idle keeps drawing while imgui_kit.touch.is_animating().
 # - A widget that a finger drags: imgui_kit.touch.set_item_takes_drags() right after it.
-# - A widget that zooms with the wheel: imgui_kit.touch.set_item_takes_pinch() right after it.
+# - A widget that zooms: imgui_kit.touch.item_pinch() right after it (set_item_pinch_as_wheel() if it zooms by the wheel).
 # - A widget that reads the wheel claims it: if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y): ...
 # Hello ImGui does the setup itself (RunnerParams.touch_config)."""
 
@@ -534,8 +542,8 @@ def demo_touch() -> None:
                           "- It claims the wheel while hovered: if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y). "
                           "With the wheel session, a wheel that scrolls the zone keeps scrolling it when the canvas "
                           "passes under the mouse; a wheel that starts on the canvas zooms it.\n"
-                          "- It calls imgui_kit.touch.set_item_takes_pinch(): a pinch on it zooms it, instead of the "
-                          "font, and two fingers moved together pan it.")
+                          "- It reads two fingers' gesture with imgui_kit.touch.item_pinch(): their spread zooms it and "
+                          "their move pans it, both at once, as on a map. The font keeps its size.")
     if imgui.begin_popup_context_window("##zone_menu"):
         imgui.text_unformatted("The zone's context menu: a right click, or a long press")
         imgui.end_popup()

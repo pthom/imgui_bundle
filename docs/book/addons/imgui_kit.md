@@ -74,7 +74,7 @@ On a touch screen:
 - *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D) or an image (ImmVision), it zooms it, around the fingers.
 - *Two fingers that move together* are a right drag (the box selection of a plot, the pan of a node editor).
 
-A widget of your own that zooms with the wheel takes the pinch with one call, right after it. The pinch then reaches it as wheel events: `zoom_per_notch` is its zoom per wheel notch, and the delivery says whether it reads whole notches or the wheel's exact value.
+A widget of your own takes two fingers with one call, right after it: `item_pinch()` returns their gesture at each frame (its center, its spread and its move since the last frame). The widget then zooms and pans at once, as a map does on a phone.
 
 ::::{tab-set}
 
@@ -82,12 +82,14 @@ A widget of your own that zooms with the wheel takes the pinch with one call, ri
 ```python
 from imgui_bundle import imgui, imgui_kit, ImVec2
 
-zoom = 1.0  # in your app's state
+zoom, origin = 1.0, ImVec2(0, 0)  # in your app's state: the content's scale, and its origin on the screen
 imgui.invisible_button("##canvas", ImVec2(300, 200))
-# A pinch on the canvas zooms it: 10% per notch, the wheel's exact value (the zoom below uses it)
-imgui_kit.touch.set_item_takes_pinch(0.1, imgui.MouseButton_.left, imgui_kit.TouchPinchDelivery_.wheel_continuous)
-if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and imgui.get_io().mouse_wheel != 0.0:
-    zoom *= 1.1 ** imgui.get_io().mouse_wheel
+pinch = imgui_kit.touch.item_pinch()  # two fingers on the canvas
+if pinch.active:
+    c, k = pinch.center, pinch.scale_delta
+    origin = ImVec2(c.x - (c.x - origin.x) * k + pinch.center_delta.x,  # zoom around the fingers,
+                    c.y - (c.y - origin.y) * k + pinch.center_delta.y)  # and follow their move
+    zoom *= k
 ```
 :::
 
@@ -96,16 +98,19 @@ if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and imgui.get_io().mouse_wh
 #include "imgui_kit/imgui_kit.h"
 
 ImGui::InvisibleButton("##canvas", ImVec2(300.f, 200.f));
-// A pinch on the canvas zooms it: 10% per notch, the wheel's exact value (the zoom below uses it)
-ImGuiTouch::SetItemTakesPinch(0.1f, ImGuiMouseButton_Left, ImGuiTouchPinchDelivery_WheelContinuous);
-if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY) && ImGui::GetIO().MouseWheel != 0.f)
-    zoom *= powf(1.1f, ImGui::GetIO().MouseWheel);
+ImGuiTouchPinch pinch = ImGuiTouch::ItemPinch();  // two fingers on the canvas
+if (pinch.Active)
+{
+    // Zoom around the fingers, and follow their move
+    origin = pinch.Center - (pinch.Center - origin) * pinch.ScaleDelta + pinch.CenterDelta;
+    zoom *= pinch.ScaleDelta;
+}
 ```
 :::
 
 ::::
 
-A widget that reads only the wheel's sign (ImPlot) keeps the default delivery, whole notches. For a widget that is not one item, `set_rect_takes_pinch()` takes its rectangle. The demo "Touch screens (phones, tablets)" shows every gesture; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse.
+A widget that already zooms with the wheel and pans with a mouse button (an image viewer, a plot) needs no new code: `set_item_pinch_as_wheel(wheel_zoom_factor)` turns the pinch into wheel events (1.1 for +10% per wheel unit; `TouchPinchDelivery_.wheel_notches` for a widget that reads only the wheel's sign, as ImPlot), and `set_item_two_finger_pan_as_mouse_drag(button)` turns two fingers moved together into a drag. For a widget that is not one item, the `set_rect_...` and `rect_pinch()` variants take its rectangle. The demo "Touch screens (phones, tablets)" shows every gesture; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse.
 
 Where the gestures work:
 - *In a browser* (the web explorer, Pyodide, an Emscripten build): all of them, the pinch and the phone's keyboard included.
