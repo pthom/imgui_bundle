@@ -110,9 +110,13 @@ int main(int argc, char** argv)
     runnerParams.imGuiWindowParams.enableViewports = false;
 
     runnerParams.callbacks.ShowGui = [library]() { ShowImGuiExplorerGui_Cpp(library, true); };
-    runnerParams.callbacks.PostInit = [lang]() {
+    runnerParams.callbacks.PostInit = [lang, library]() {
         if (lang == "python" || lang == "cpp")  // a link's language becomes the remembered one (a lasting pref)
             HelloImGui::SaveLastingPref("code_language", lang);
+        // ImGuiKit is a preview: out of the main page's switch, shown alone when a link asks for it (?lib=imguikit)
+        if (!library.has_value())
+            SetImGuiExplorerLibraries({ImGuiExplorerLibrary::ImGui, ImGuiExplorerLibrary::ImPlot,
+                                       ImGuiExplorerLibrary::ImPlot3D, ImGuiExplorerLibrary::ImAnim});
     };
 
     runnerParams.fpsIdling.fpsIdle = 30.f; // The demos animate, and are not ours to mark as live (SetItemIsLive)
