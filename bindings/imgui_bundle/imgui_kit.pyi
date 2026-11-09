@@ -47,6 +47,7 @@ TouchAxis = int
 # // [SECTION] Layout
 # // [SECTION] Widgets
 # // [SECTION] Wheel session
+# // [SECTION] Idling
 # // [SECTION] Enums
 # // [SECTION] Touch (ImGuiTouch)
 #
@@ -348,6 +349,24 @@ def setup_wheel_session(enabled: bool = True) -> None:
     pass
 
 # -----------------------------------------------------------------------------
+# [SECTION] Idling
+# -----------------------------------------------------------------------------
+
+# IMGUI_API bool   IsAnimating();    /* original C++ signature */
+def is_animating() -> bool:
+    """True while something of the kit moves on its own: a widget's animation (a segmented switch that slides), or the
+    touch layer's (ImGuiTouch::IsAnimating(): a fling, a bounce, a long press's ring). An app that sleeps when nothing
+    happens keeps drawing frames meanwhile; one that draws every frame can ignore it. With or without the touch layer.
+    """
+    pass
+
+# IMGUI_API void   RequestAnimation();    /* original C++ signature */
+# }
+def request_animation() -> None:
+    """A widget that animates calls it at each frame of its animation, so that IsAnimating() is True"""
+    pass
+
+# -----------------------------------------------------------------------------
 # [SECTION] Enums
 # -----------------------------------------------------------------------------
 
@@ -599,9 +618,9 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     # IMGUI_API bool   IsAnimating();    /* original C++ signature */
     @staticmethod
     def is_animating() -> bool:
-        """True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when
-        nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it. False without the
-        touch layer.
+        """True while the touch layer moves something on its own (a fling's inertia, the bounce, a long press's ring): an app
+        that sleeps when nothing happens keeps drawing frames meanwhile. False without the touch layer. An app uses
+        ImGuiKit::IsAnimating() instead, which adds the kit's widgets.
         """
         pass
     # IMGUI_API void   SetItemTakesDrags(ImGuiTouchAxis axis = ImGuiTouchAxis_Any, bool long_press_is_right_click = true);    /* original C++ signature */

@@ -50,6 +50,12 @@ class _State:
     keyboard_deep = ""
     canvas_zoom = 1.0
     canvas_offset = ImVec2(0.0, 0.0)  # where the canvas's content origin is, from its corner, in pixels
+    # The gesture drawn on the canvas: its opacity (it fades once the fingers lift), one or two fingers, where
+    gesture_alpha = 0.0
+    gesture_two = False
+    gesture_pos = ImVec2(0.0, 0.0)
+    gesture_scale = 1.0
+    gesture_kind = 0  # imgui_kit.TouchPinchKind_
 
 
 state = _State()
@@ -435,6 +441,19 @@ def zoomable_canvas(str_id: str, size: ImVec2) -> None:
     if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y) and io.mouse_wheel != 0.0:
         zoom_around(io.mouse_pos, 1.1**io.mouse_wheel)
 
+    # The gesture, as the canvas sees it: a dot under one finger (or the mouse); for two fingers, a ring at their
+    # middle that follows their spread, and the layer's decision (pinch or pan). It fades once they lift.
+    if pinch.active:
+        state.gesture_two, state.gesture_pos = True, pinch.center
+        state.gesture_scale, state.gesture_kind = pinch.scale, pinch.kind
+        state.gesture_alpha = 1.0
+    elif imgui.is_item_active():
+        state.gesture_two, state.gesture_pos = False, io.mouse_pos
+        state.gesture_alpha = 1.0
+    elif state.gesture_alpha > 0.0:
+        state.gesture_alpha = max(0.0, state.gesture_alpha - io.delta_time * 3.0)
+        imgui_kit.request_animation()  # an app that idles still draws the fade
+
     draw_list = imgui.get_window_draw_list()
     rounding = imgui.get_style().frame_rounding
     draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.frame_bg), rounding)
@@ -454,6 +473,19 @@ def zoomable_canvas(str_id: str, size: ImVec2) -> None:
     draw_list.add_rect_filled(ImVec2(center.x + 3.0 * step, center.y - step),
                               ImVec2(center.x + 6.0 * step, center.y + step),
                               imgui.get_color_u32(imgui.Col_.button_active))
+    if state.gesture_alpha > 0.0:
+        color = imgui.get_color_u32(imgui.Col_.text, state.gesture_alpha)
+        em = imgui_kit.em_size()
+        pos = state.gesture_pos
+        if not state.gesture_two:
+            draw_list.add_circle_filled(pos, 0.4 * em, color)
+        else:
+            radius = 1.5 * em * state.gesture_scale
+            draw_list.add_circle(pos, radius, color, 0, 2.0)
+            draw_list.add_circle_filled(pos, 0.15 * em, color)
+            kind = ("pinch" if state.gesture_kind == imgui_kit.TouchPinchKind_.pinch
+                    else "pan" if state.gesture_kind == imgui_kit.TouchPinchKind_.pan else "two fingers")
+            draw_list.add_text(ImVec2(pos.x + radius + 0.3 * em, pos.y - 0.5 * em), color, kind)
     draw_list.pop_clip_rect()
     draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.border), rounding)
     draw_list.add_text(ImVec2(p0.x + imgui.get_style().frame_padding.x, p1.y - imgui.get_text_line_height_with_spacing()),
@@ -470,7 +502,7 @@ imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch
 imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
 
 # The render loop: nothing to add, the kit runs inside imgui.new_frame() and imgui.render().
-# - An app that sleeps when idle keeps drawing while imgui_kit.touch.is_animating().
+# - An app that sleeps when idle keeps drawing while imgui_kit.is_animating().
 # - A widget that a finger drags: imgui_kit.touch.set_item_takes_drags() right after it.
 # - A widget that zooms: imgui_kit.touch.item_pinch() right after it (set_item_pinch_as_wheel() if it zooms by the wheel).
 # - A widget that reads the wheel claims it: if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y): ...
@@ -565,8 +597,11 @@ def demo_touch() -> None:
     for i in range(1, 9):
         imgui.text(f"More content, to scroll ({i})")
     imgui.end_child()
-    # is_animating(): an application that sleeps when nothing happens keeps drawing frames meanwhile
-    imgui.text(f"Moving on its own: {'yes' if imgui_kit.touch.is_animating() else 'no'}")
+    # is_animating(): an application that sleeps when nothing happens keeps drawing frames meanwhile.
+    # imgui_kit.is_animating() adds the kit's widgets (a segmented switch that slides) to the touch layer's.
+    touch_moves = "yes" if imgui_kit.touch.is_animating() else "no"
+    kit_moves = "yes" if imgui_kit.is_animating() else "no"
+    imgui.text(f"Moving on its own: touch {touch_moves}, kit {kit_moves}")
 
 
 def demo_touch_keyboard() -> None:

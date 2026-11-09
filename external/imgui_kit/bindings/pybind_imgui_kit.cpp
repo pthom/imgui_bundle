@@ -240,6 +240,13 @@ void py_init_module_imgui_kit(nb::module_& m)
         " The wheel session: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled with\n the wheel keeps scrolling when a plot or an image passes under the mouse, and the plot does not zoom; a wheel that\n starts on the plot zooms it. The page lets go of the wheel when the mouse moves, or 0.7 s after its last event.\n A widget that reads the wheel claims it while hovered, with Dear ImGui's own idiom (as ImPlot does):\n     if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY)) zoom *= powf(1.1, ImGui::GetIO().MouseWheel);\n Call it once, after ImGui::CreateContext(); a later call changes `enabled` (False: Dear ImGui's own behavior).");
 
 
+    m.def("is_animating",
+        ImGuiKit::IsAnimating, " True while something of the kit moves on its own: a widget's animation (a segmented switch that slides), or the\n touch layer's (ImGuiTouch::IsAnimating(): a fling, a bounce, a long press's ring). An app that sleeps when nothing\n happens keeps drawing frames meanwhile; one that draws every frame can ignore it. With or without the touch layer.");
+
+    m.def("request_animation",
+        ImGuiKit::RequestAnimation, "A widget that animates calls it at each frame of its animation, so that IsAnimating() is True");
+
+
     auto pyEnumIcon_ =
         nb::enum_<ImGuiKitIcon_>(m, "Icon_", nb::is_arithmetic(), "The symbols of IconButton()")
             .value("minus", ImGuiKitIcon_Minus, "")
@@ -366,7 +373,7 @@ void py_init_module_imgui_kit(nb::module_& m)
             ImGuiTouch::GetConfig, nb::rv_policy::reference);
 
         pyNsImGuiTouch.def("is_animating",
-            ImGuiTouch::IsAnimating, " True while the content moves on its own (a fling's inertia, the bounce, an animation): an app that sleeps when\n nothing happens keeps drawing frames meanwhile. An app that draws every frame can ignore it. False without the\n touch layer.");
+            ImGuiTouch::IsAnimating, " True while the touch layer moves something on its own (a fling's inertia, the bounce, a long press's ring): an app\n that sleeps when nothing happens keeps drawing frames meanwhile. False without the touch layer. An app uses\n ImGuiKit::IsAnimating() instead, which adds the kit's widgets.");
 
         pyNsImGuiTouch.def("set_item_takes_drags",
             [](const std::optional<const ImGuiTouchAxis> & axis = std::nullopt, bool long_press_is_right_click = true)
