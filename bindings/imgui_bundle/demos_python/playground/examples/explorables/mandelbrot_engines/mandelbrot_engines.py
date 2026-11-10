@@ -377,6 +377,45 @@ BUILT_IN_PLACES = [
 ]
 
 
+# A trip by Pascal Thomet, made with the card's bookmark button: views in the format of my_places.json
+BUILT_IN_VIEWS: list[dict[str, Any]] = [
+    {"name": "Needle Deep Dive", "width": 3.4, "iterations": 300,
+     "re": "-0.60000000",
+     "im": "0.00000000",
+     "short": "The whole",
+     "sentence": "This trip starts from the whole set, then zoom of the left end of the needle"},
+    {"name": "Needle Deep Dive", "width": 9.371630623154783e-09, "iterations": 300,
+     "re": "-1.9999858810619333",
+     "im": "-0.0000000001894534",
+     "short": "Mini Mandel",
+     "sentence": "a mini mandelbrot appears on the far left edge of the needle"},
+    {"name": "Needle Deep Dive", "width": 2.6032307286541063e-10, "iterations": 300,
+     "re": "-1.99998588119244568",
+     "im": "-0.00000000000122789",
+     "short": "An amoeba around the mini mandel",
+     "sentence": "When zooming, the mini mandel morphs into an amoeba"},
+    {"name": "Needle Deep Dive", "width": 1.8776137166035917e-17, "iterations": 2277,
+     "re": "-1.999985881240652195615686",
+     "im": "0.000000000000432227361740",
+     "short": "Several Neurons and dendrites",
+     "sentence": "When we keep zooming, neuron-like structures appear"},
+    {"name": "Needle Deep Dive", "width": 3.1293561943393195e-18, "iterations": 2277,
+     "re": "-1.9999858812406521929502505",
+     "im": "0.0000000000004322277392028",
+     "short": "The amoeba spikes",
+     "sentence": "Lifelike spikes around what looks like the tail of an amoeba"},
+    {"name": "Needle Deep Dive", "width": 8.042892975399273e-31, "iterations": 5122,
+     "re": "-1.99998588124065219219346279015941288390",
+     "im": "0.00000000000043222799302968800564580248",
+     "short": "The burning eye",
+     "sentence": "At 4x10^30 zoom, an eye appears"},
+    {"name": "Needle Deep Dive", "width": 2.2341369376109095e-32, "iterations": 7683,
+     "re": "-1.999985881240652192193462790159410354691",
+     "im": "0.000000000000432227993029688005649686627",
+     "short": "The pupil: a mini mandel",
+     "sentence": "Inside the pupil, the set again: the trip could start over from here."},
+]
+
 # My places: the views added with the card's bookmark button, kept in a file beside this one (git ignores it)
 MY_PLACES_FILE = HERE / "my_places.json"
 MY_VIEWS: list[dict[str, Any]] = []  # the file's content: a name, a point, a width, iterations, two texts
@@ -385,11 +424,11 @@ PLACES: list[tuple[str, tuple[str, str], list[Zoom]]] = []  # the built-in place
 
 
 def load_places() -> None:
-    """Fills PLACES: the built-in places, then my views. A view named as a place is one more zoom of that place
-    (with its own point); another name is a new place."""
+    """Fills PLACES: the built-in places, the built-in views, then mine. A view named as a place is one more zoom
+    of that place (with its own point); another name is a new place."""
     places = {name: (point, [(*zoom, point) for zoom in zooms]) for name, point, zooms in BUILT_IN_PLACES}
     MY_VIEWS[:] = json.loads(MY_PLACES_FILE.read_text()) if MY_PLACES_FILE.exists() else []
-    for view in MY_VIEWS:
+    for view in (*BUILT_IN_VIEWS, *MY_VIEWS):
         point = (view["re"], view["im"])
         zooms = places.setdefault(view["name"], (point, []))[1]
         zooms.append((view["width"], view["iterations"], view["short"], view["sentence"], point))
