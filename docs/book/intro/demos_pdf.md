@@ -962,12 +962,12 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 
 The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
 On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
-a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button
-appears next to a text field.
+a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image,
+two fingers pan, and a keyboard button appears next to a text field.
 
 *Python, C++*
 
-*Uses: ImPlot, ImmVision*
+*Uses: ImPlot, ImmVision, ImGuiKit*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
 
@@ -1011,6 +1011,19 @@ each point, the two sets look alike.
 *Uses: ImmVision*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map/julia_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py)
+
+### One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
+
+One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
+Dive to famous places, split the view to compare two engines, and read how each one works beside its code.
+Python draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the
+desktop and in the browser.
+
+*Python*
+
+*Uses: ImmVision, ImGuiKit*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/mandelbrot_engines/mandelbrot_engines.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py)
 
 ### A tiny neural network learns two spirals
 

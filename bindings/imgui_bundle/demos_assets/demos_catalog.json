@@ -1074,11 +1074,12 @@
           "filename": "demo_touch_screen.py",
           "stem": "demo_touch_screen",
           "where": "both",
-          "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button\nappears next to a text field.",
+          "text": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.\nOn a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,\na tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image,\ntwo fingers pan, and a keyboard button appears next to a text field.",
           "summary": "The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.",
           "uses": [
             "ImPlot",
-            "ImmVision"
+            "ImmVision",
+            "ImGuiKit"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp",
@@ -1127,6 +1128,25 @@
           "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py",
           "cpp_file": null,
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/julia_map.html",
+          "in_place": false,
+          "page": "",
+          "video": "",
+          "variants": []
+        },
+        {
+          "label": "One Mandelbrot set, four engines: Python, numpy, C++, deep zoom",
+          "filename": "explorables/mandelbrot_engines/mandelbrot_engines.py",
+          "stem": "mandelbrot_engines",
+          "where": "both",
+          "text": "One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.\nDive to famous places, split the view to compare two engines, and read how each one works beside its code.\nPython draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the\ndesktop and in the browser.",
+          "summary": "One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.",
+          "uses": [
+            "ImmVision",
+            "ImGuiKit"
+          ],
+          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py",
+          "cpp_file": null,
+          "cpp_url": "https://imgui-bundle.pages.dev/explorer/mandelbrot_engines.html",
           "in_place": false,
           "page": "",
           "video": "",

@@ -1160,10 +1160,10 @@ The HTML file below is a **complete, self-contained app** in about 80 lines - no
 The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
 
 :::{dropdown} More
-On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font), two fingers pan, and a keyboard button appears next to a text field.
+On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image, two fingers pan, and a keyboard button appears next to a text field.
 :::
 
-*Uses: ImPlot, ImmVision*
+*Uses: ImPlot, ImmVision, ImGuiKit*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
@@ -1217,6 +1217,21 @@ Fly to famous values of c, and zoom into both pictures: near each point, the two
 *Uses: ImmVision*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map/julia_map.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py)
+
+::::
+
+::::{card}
+### One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
+
+One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
+
+:::{dropdown} More
+Dive to famous places, split the view to compare two engines, and read how each one works beside its code. Python draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the desktop and in the browser.
+:::
+
+*Uses: ImmVision, ImGuiKit*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/mandelbrot_engines/mandelbrot_engines.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py)
 
 ::::
 

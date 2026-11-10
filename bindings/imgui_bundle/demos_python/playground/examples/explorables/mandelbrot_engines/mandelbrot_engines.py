@@ -1,7 +1,9 @@
-"""One Mandelbrot set, four engines: Python, numpy, C++, and C++ with perturbation (deep zoom)
+"""One Mandelbrot set, four engines: Python, numpy, C++, and a deep zoom
 
-The same picture, computed in four ways. Python draws the GUI; the engine only fills an array of numbers.
-Zoom with the wheel, drag to move, and switch engines to compare their speed and how deep they can go.
+One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
+Dive to famous places, split the view to compare two engines, and read how each one works beside its code.
+Python draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the
+desktop and in the browser.
 
 This file is its own narrative (narrative programming, see imgui_rich_md): the ::md sections below are the texts
 shown beside the picture, next to the code they explain. The C++ loops are in mandel_kernels.cpp.
