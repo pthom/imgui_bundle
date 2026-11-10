@@ -23,6 +23,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import threading
 import time
 from concurrent.futures import ThreadPoolExecutor
 from dataclasses import dataclass
@@ -31,7 +32,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
-from imgui_bundle import em_size, imgui, immapp, immvision, rich_md
+from imgui_bundle import em_size, hello_imgui, imgui, immapp, immvision, rich_md
 
 THREADS = os.cpu_count() or 4  # the bands of rows computed at once by the C++ engines (in a browser: one)
 MOVING_BUDGET = 0.04  # seconds for a picture while the view moves. An engine that cannot afford all the pixels
@@ -42,6 +43,13 @@ IN_BROWSER = sys.platform == "emscripten"
 HERE = Path(__file__).parent
 
 Counts = tuple[np.ndarray, np.ndarray]  # for each pixel: its number of steps, and |z|^2 at the last one
+PROGRESS = [0.0]  # of the picture computed in the background ("All the pixels"): 0 to 1
+
+
+def report(fraction: float) -> None:
+    """An engine says how far it is. Only the background picture has a progress bar."""
+    if threading.current_thread() is not threading.main_thread():
+        PROGRESS[0] = fraction
 
 
 @dataclass
@@ -74,6 +82,7 @@ def python_engine(view: View) -> Counts:
     x0, y0 = view.corner()
     count, size2 = np.empty((view.h, view.w), np.int32), np.empty((view.h, view.w), np.float32)
     for row in range(view.h):
+        report(row / view.h)
         for col in range(view.w):
             c = complex(x0 + col * view.pixel, y0 - row * view.pixel)
             z, n = 0j, 0
@@ -97,6 +106,7 @@ def numpy_engine(view: View) -> Counts:
     count, size2 = np.full(c.shape, view.max_iter, np.int32), np.zeros(c.shape, np.float32)
     alive = np.arange(c.size)  # the pixels still iterating
     for n in range(1, view.max_iter + 1):
+        report(n / view.max_iter)
         z[alive] = z[alive] * z[alive] + c[alive]
         s = z[alive].real ** 2 + z[alive].imag ** 2
         size2[alive] = s
@@ -217,11 +227,9 @@ def run_in_bands(view: View, kernel: Callable[[ctypes.c_void_p, ctypes.c_void_p,
     pointers = count.ctypes.data_as(PTR), size2.ctypes.data_as(PTR)
     rows = np.linspace(0, view.h, (THREADS if POOL else 1) * 4 + 1).astype(int)  # small bands: an even load
     bands = [(int(row0), int(row1)) for row0, row1 in zip(rows[:-1], rows[1:], strict=True)]
-    if POOL:
-        list(POOL.map(lambda band: kernel(*pointers, *band), bands))
-    else:
-        for band in bands:
-            kernel(*pointers, *band)
+    run_all = POOL.map if POOL else map  # in a browser: one band after the other
+    for i, _ in enumerate(run_all(lambda band: kernel(*pointers, *band), bands)):
+        report((i + 1) / len(bands))
     return count, size2
 
 
@@ -308,6 +316,27 @@ def colors(counts: Counts, max_iter: int) -> np.ndarray:
 # ======================================================================================================================
 #                                           The GUI
 # ======================================================================================================================
+class AllPixels(threading.Thread):
+    """A picture with all its pixels, computed in the background: the page stays alive, and shows a progress bar.
+    (In a browser, without threads: computed at once, the page waits.)"""
+    def __init__(self, engine: "Engine", view: View, wanted: tuple[Any, ...]) -> None:
+        super().__init__(daemon=True)
+        self.engine, self.view, self.wanted = engine, view, wanted
+        self.image: np.ndarray | None = None
+        self.start_time = time.perf_counter()
+        self.seconds = 0.0
+        PROGRESS[0] = 0.0
+        if POOL:
+            self.start()
+        else:
+            self.run()
+
+    def run(self) -> None:
+        image = colors(self.engine.compute(self.view), self.view.max_iter)
+        self.seconds = time.perf_counter() - self.start_time
+        self.image = image  # last: the page takes the picture as soon as it is there
+
+
 class State:
     def __init__(self) -> None:
         self.engine = ENGINES[2 if KERNELS else 1]
@@ -318,7 +347,7 @@ class State:
         self.seconds = 0.0  # the time of the last picture
         self.timed: View | None = None  # its view
         self.shrink = 8  # it holds one pixel out of shrink x shrink
-        self.all_pixels_of: tuple[str, Decimal, Decimal, float, int, int, int] | None = None  # see the button
+        self.all_pixels: AllPixels | None = None  # the picture computed in the background, see the button
         self.pixel_seconds: float | None = None  # the cost of a pixel, measured on the last picture
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
@@ -391,10 +420,14 @@ def picture(size: imgui.ImVec2) -> None:
         affordable = (MOVING_BUDGET if moving else STILL_BUDGET) / state.pixel_seconds
         shrink = next((k for k in (1, 2, 4) if (w // k) * (h // k) <= affordable), 8)
     wanted = (state.engine.name, *where, state.max_iter)
-    if state.all_pixels_of == wanted:  # asked with the button: whatever it costs
-        shrink = 1
     refresh = wanted != state.computed or shrink < state.shrink
-    if refresh:
+    job = state.all_pixels
+    if job is not None and job.image is not None:  # the background picture is ready: show it, if we are still there
+        if job.wanted == wanted:
+            state.image, state.seconds, state.timed = job.image, job.seconds, job.view
+            state.computed, state.shrink, refresh = wanted, 1, True
+        state.all_pixels = None
+    elif refresh:
         view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink,
                     state.max_iter)
         start_time = time.perf_counter()
@@ -405,6 +438,12 @@ def picture(size: imgui.ImVec2) -> None:
         state.computed, state.shrink = wanted, shrink
     imgui.set_cursor_screen_pos(top_left)
     immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=refresh)
+    if state.all_pixels is not None:  # a thin progress bar along the bottom of the picture
+        bottom, thick = top_left.y + h, em_size(0.3)
+        draw_list = imgui.get_window_draw_list()
+        draw_list.add_rect_filled((top_left.x, bottom - thick), (top_left.x + w, bottom), imgui.IM_COL32(0, 0, 0, 160))
+        draw_list.add_rect_filled((top_left.x, bottom - thick), (top_left.x + w * PROGRESS[0], bottom),
+                                  imgui.IM_COL32(255, 170, 0, 255))
 
 
 # To picture a zoom: if the whole set were as wide as the observable universe, what would the picture be as wide as?
@@ -459,12 +498,22 @@ def controls() -> None:
         imgui.text(f"{state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels")
         imgui.same_line()
         imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.2f} million pixels per second")
-        if state.shrink > 1:
+        job = state.all_pixels
+        if job is not None:  # all the pixels are on their way
+            elapsed = time.perf_counter() - job.start_time
+            left = elapsed * (1 - PROGRESS[0]) / max(PROGRESS[0], 0.02)
+            imgui.progress_bar(PROGRESS[0], (em_size(22), 0),
+                               f"All the pixels: {PROGRESS[0]:.0%}, about {left:.0f} s left")
+            hello_imgui.set_item_is_live()  # the bar moves on its own: no idling while it is visible
+        elif state.shrink > 1 and state.computed is not None:
             seconds = state.seconds * state.shrink ** 2
             imgui.text_disabled(f"One pixel out of {state.shrink ** 2}, to stay under {STILL_BUDGET} s.")
             imgui.same_line()
             if imgui.small_button(f"All the pixels (about {seconds:.0f} s)"):
-                state.all_pixels_of = state.computed
+                view = state.timed
+                full = View(view.center_re, view.center_im, view.pixel / state.shrink, view.w * state.shrink,
+                            view.h * state.shrink, view.max_iter)
+                state.all_pixels = AllPixels(state.engine, full, state.computed)
 
     imgui.separator_text("Where we are")
     imgui.text_wrapped(zoom_in_words(state.width))
