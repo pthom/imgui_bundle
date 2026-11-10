@@ -17,6 +17,29 @@ we are: its white part, down to a zoom of 10^13, is where every engine works. It
 perturbation only.
 """
 
+r"""::md Help
+**Moving around**
+* **Wheel**: zoom, around the mouse.
+* **Drag**: move the view.
+* **Double click**: dive towards the clicked point.
+* **Back**: return to the previous view. Places and double clicks are remembered.
+
+**Places**
+* A click on a name goes to its first zoom.
+* The arrow beside it lists its deeper zooms.
+
+**Engines**
+* Every engine gets the same time for a picture: 1.5 s, and much less while the view moves.
+* An engine that cannot afford all the pixels computes one out of 4, 16 or 64.
+  **All the pixels**, at the bottom right, then computes them all in the background.
+
+**Iterations**
+* *Automatic*: while you move by hand, the page raises them when the picture needs them.
+* The slider sets them by hand, and turns *automatic* off.
+
+**The gauge** on the right: how deep the view is. White: every engine works. Orange: the perturbation only.
+"""
+
 # ruff: noqa: E402  # the story comes first
 import ctypes
 import math
@@ -538,6 +561,10 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
         state.places_open = not state.places_open
     imgui.same_line()
     imgui.text("Go to" if state.places_open else "Places")
+    imgui.same_line()
+    with imgui_kit.help_marker_ctx("##help", width_em=28) as shown:  # an (i): how to move around, and the rest
+        if shown:
+            rich_md.render_this_file("Help")
     if not state.places_open:
         imgui.end_child()
         return
@@ -568,7 +595,6 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
                 imgui.end_popup()
     if state.story:
         imgui.text_wrapped(state.story)
-    imgui.text_disabled("Wheel: zoom.  Drag: move.  Double click: dive.")
 
     imgui.separator_text("Computed by")
     for i, engine in enumerate(ENGINES):
