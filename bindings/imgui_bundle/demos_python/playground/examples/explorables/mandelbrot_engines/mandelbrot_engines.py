@@ -426,6 +426,7 @@ class State:
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
         self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
+        self.place = ""
         self.history: list[tuple[Decimal, Decimal, float, int]] = []  # the views to come back to
         self.auto_iterations = True  # the page adapts the iterations when the view is moved by hand
         self.by_hand = False  # the view was moved by hand since the last place
@@ -443,7 +444,7 @@ class State:
         self.dive = None
         self.costs.clear()
 
-    def go_to(self, place: tuple[str, str, float], max_iter: int, animate: bool = True) -> None:
+    def go_to(self, place: tuple[str, str, float], max_iter: int, name: str = "", animate: bool = True) -> None:
         getcontext().prec = digits_for(place[2] / 2000)
         target_re, target_im = Decimal(place[0]), Decimal(place[1])
         # The dive starts from the current view when the target is inside it (another zoom of the same place),
@@ -456,6 +457,7 @@ class State:
         self.center_re, self.center_im, self.width = target_re, target_im, place[2]
         self.max_iter = max_iter
         self.costs.clear()  # a new place: new costs
+        self.place = name  # the place we went to: its name shows while its point is in view
         self.by_hand = False
         if animate:
             self.dive, self.width = (start, place[2], imgui.get_time()), start
@@ -725,7 +727,7 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
         if i > 0:
             same_line_if_room(name + "    ")
         if imgui.button(name):  # a click on the name: its first zoom
-            state.go_to((*point, zooms[0][0]), zooms[0][1])
+            state.go_to((*point, zooms[0][0]), zooms[0][1], name)
         below = imgui.ImVec2(imgui.get_item_rect_min().x, imgui.get_item_rect_max().y)
         if zooms[0][3]:  # an arrow beside it: the menu of its zooms, which opens under the button
             imgui.same_line(0, 1)
@@ -738,7 +740,7 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
                     zoom = math.floor(math.log10(WHOLE_SET[2] / width))
                     label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
                     if imgui.selectable(label, False, size=(em_size(17), 0))[0]:
-                        state.go_to((*point, width), max_iter)
+                        state.go_to((*point, width), max_iter, name)
                     imgui.same_line()
                     imgui_kit.help_marker(story)  # an (i): what to see there
                 imgui.end_popup()
@@ -787,10 +789,12 @@ def where_we_are() -> str:
     if state.where is None or state.width > WHOLE_SET[2] / 10:
         return PLACES[0][0]
     center_re, center_im, width, w, h = state.where
-    for name, point, _zooms in reversed(PLACES[1:]):  # the deepest places first: the hidden copy is in the valley
-        if abs(Decimal(point[0]) - center_re) < width / 2 and abs(Decimal(point[1]) - center_im) < width / 2 * h / w:
-            return name
-    return "Uncharted waters"
+    half_w, half_h = width / 2, width / 2 * h / w
+    in_view = [name for name, point, _zooms in PLACES[1:]
+               if abs(Decimal(point[0]) - center_re) < half_w and abs(Decimal(point[1]) - center_im) < half_h]
+    if state.place in in_view:  # the place we went to, while its point is in view (the hidden copy is in the valley)
+        return state.place
+    return in_view[0] if in_view else "Uncharted waters"
 
 
 def status(top_left: imgui.ImVec2, h: int) -> None:
