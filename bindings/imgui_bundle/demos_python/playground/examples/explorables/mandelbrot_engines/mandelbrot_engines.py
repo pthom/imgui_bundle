@@ -430,7 +430,9 @@ class State:
         self.auto_iterations = True  # the page adapts the iterations when the view is moved by hand
         self.by_hand = False  # the view was moved by hand since the last place
         self.late: float | None = None  # in the last picture: the count below which 90% of the escaped pixels are
-        self.places_open, self.notes_open = True, True  # the panel over the picture, the explanations beside it
+        self.places_open, self.notes_open = True, False  # the panel over the picture, the explanations beside it
+        self.explained = self.engine  # the engine that the explanations are about: it follows the engine chosen
+        self.shown_tab: Engine | None = None  # the tab open at the last frame
         self.go_to(WHOLE_SET, 300, animate=False)
 
     def remember(self) -> None:
@@ -747,7 +749,7 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
             same_line_if_room(engine.name)
         imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
         if imgui.radio_button(engine.name, state.engine is engine):
-            state.engine = engine
+            state.engine = state.explained = engine
         imgui.end_disabled()
     if KERNELS is None:
         imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
@@ -778,8 +780,21 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
     imgui.end_child()
 
 
+def where_we_are() -> str:
+    """The name of the place in view: the first place whose point is in the picture"""
+    state = STATE
+    assert state is not None
+    if state.where is None or state.width > WHOLE_SET[2] / 10:
+        return PLACES[0][0]
+    center_re, center_im, width, w, h = state.where
+    for name, point, _zooms in reversed(PLACES[1:]):  # the deepest places first: the hidden copy is in the valley
+        if abs(Decimal(point[0]) - center_re) < width / 2 and abs(Decimal(point[1]) - center_im) < width / 2 * h / w:
+            return name
+    return "Uncharted waters"
+
+
 def status(top_left: imgui.ImVec2, h: int) -> None:
-    """Bottom left: what the picture cost, and where it is"""
+    """Bottom left, a title card: where we are, the zoom, and what the picture cost"""
     state = STATE
     assert state is not None
     if not state.shrinks or not state.counts:
@@ -791,16 +806,26 @@ def status(top_left: imgui.ImVec2, h: int) -> None:
         cost = f"{state.engine.name}: {state.each_seconds[0] * 1000:.0f} ms for {megapixels:.2f} million pixels"
         if state.shrinks[0] > 1:
             cost += f" (1 pixel out of {state.shrinks[0] ** 2})"
-    margin, padding = em_size(0.6), imgui.get_style().window_padding
-    width = imgui.calc_text_size(cost).x + 2 * padding.x + em_size(1)
-    height = imgui.get_text_line_height() + imgui.get_frame_height_with_spacing() + 2 * padding.y
+    place, zoom = where_we_are(), f"zoom {zoom_number(state.width)}"
+    title_size = imgui.get_style().font_size_base * 1.45
+    imgui.push_font(None, title_size)
+    place_size = imgui.calc_text_size(place)
+    imgui.pop_font()
+    margin, padding, gap = em_size(0.6), imgui.get_style().window_padding, em_size(1.0)
+    first_line = place_size.x + gap + imgui.calc_text_size(zoom).x + imgui_kit.help_marker_width() + em_size(0.5)
+    width = max(first_line, imgui.calc_text_size(cost).x) + 2 * padding.x + em_size(0.5)
+    height = place_size.y + imgui.get_text_line_height_with_spacing() + 2 * padding.y + em_size(0.3)
     begin_over_picture("##status", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - height),
                        imgui.ImVec2(width, height))
-    imgui.text(cost)
-    imgui.align_text_to_frame_padding()
-    imgui.text(f"Zoom: {zoom_number(state.width)}")
+    imgui.push_font(None, title_size)
+    imgui.text(place)
+    imgui.pop_font()
+    imgui.same_line(0, gap)
+    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + place_size.y - imgui.get_text_line_height() - em_size(0.1))
+    imgui.text(zoom)  # on the baseline of the place's name
     imgui.same_line()
     imgui_kit.help_marker(zoom_in_words(state.width))  # an (i): the zoom as a comparison of sizes
+    imgui.text_disabled(cost)
     imgui.end_child()
 
 
@@ -863,7 +888,7 @@ def depth_gauge(right: float, top: float, bottom: float) -> None:
 
 
 def explanations() -> None:
-    """The side panel: the equation, how the selected engine works, and its code"""
+    """The side panel: the equation, then a tab per engine: how it works, and its code"""
     state = STATE
     assert state is not None
     if imgui.button(icons_fontawesome_6.ICON_FA_ANGLES_RIGHT):
@@ -872,12 +897,23 @@ def explanations() -> None:
     imgui.same_line()
     imgui.text_disabled("Explanations")
     rich_md.render_this_file("Intro")
-    rich_md.render_this_file(state.engine.section)
-    if imgui.collapsing_header("Its code"):
-        rich_md.render_this_file(state.engine.section + "#code")
-        if state.engine.cpp_region:
-            rich_md.render_file(str(HERE / "mandel_kernels.cpp"), state.engine.cpp_region)
-            rich_md.render_this_file("Pattern")
+    if imgui.begin_tab_bar("##engines"):
+        follow = state.explained is not state.shown_tab  # the engine changed: its tab comes forward
+        for engine in ENGINES:
+            flags = imgui.TabItemFlags_.set_selected if follow and engine is state.explained else 0
+            if imgui.begin_tab_item(engine.name, None, flags)[0]:
+                if not follow:
+                    state.explained = state.shown_tab = engine  # the tab open, or just clicked by the reader
+                elif engine is state.explained:
+                    state.shown_tab = engine
+                rich_md.render_this_file(engine.section)
+                if imgui.collapsing_header("Its code"):
+                    rich_md.render_this_file(engine.section + "#code")
+                    if engine.cpp_region:
+                        rich_md.render_file(str(HERE / "mandel_kernels.cpp"), engine.cpp_region)
+                        rich_md.render_this_file("Pattern")
+                imgui.end_tab_item()
+        imgui.end_tab_bar()
 
 
 def gui() -> None:
