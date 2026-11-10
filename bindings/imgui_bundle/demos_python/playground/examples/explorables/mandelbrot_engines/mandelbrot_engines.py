@@ -562,6 +562,13 @@ class State:
         self.costs.clear()  # a new place: new costs
         self.place = name  # the place we went to: its name shows while its point is in view
         self.stop, self.by_hand = stop, False
+        if stop is not None and KERNELS is not None:  # a saved view: an engine that can draw it
+            if target_width < WHOLE_SET[2] / 10.0 ** (DOUBLE_ENDS - 1):  # too deep for double precision
+                self.engine = self.explained = ENGINES[3]
+            elif self.playing:  # a trip that plays shows the fastest engine that is right
+                self.engine = self.explained = ENGINES[2]
+            if self.other is self.engine:
+                self.other = None
         if not animate:
             self.center_re, self.center_im, self.width, self.dive = target_re, target_im, target_width, None
             return
@@ -597,13 +604,14 @@ class State:
 
 
 STATE: State | None = None
-DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
+JOURNEY_SECONDS, JOURNEY_POWER = 1.45, 0.46  # the time of a journey: JOURNEY_SECONDS * decades ** JOURNEY_POWER
+CLICK_SPEED = 2.0  # a journey asked with a click is this many times faster than one of a trip that plays
 
 
 ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
 HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the top of the picture, in em
 GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
-PAN_SECONDS = 0.9  # a journey between two views of the same width: a slide
+PAN_SECONDS = 0.9  # a journey between two views of the same width: a slide (or a pause, when they are the same)
 PLAY_SECONDS = 5.0  # playing a place's views: the time to look at each, once its picture is complete
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
@@ -658,16 +666,19 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     if state.dive:
         (re0, im0, w0), (re1, im1, w1) = state.dive[0]
         elapsed = imgui.get_time() - state.leg_start
-        if abs(math.log10(w0 / w1)) > 0.004:  # a zoom, at a constant number of decades per second
-            progress = min(1.0, elapsed / max(0.5, abs(math.log10(w0 / w1)) * DIVE_SECONDS_PER_DECADE))
-        else:  # the same width: a slide
-            progress = min(1.0, elapsed / PAN_SECONDS)
+        decades = abs(math.log10(w0 / w1))  # the gap between the two zooms
+        # The time of a leg grows with its gap, but less than in proportion: 2 s for 2 decades, 7 s for 30.
+        # A journey asked with a click goes faster than one of a trip that plays.
+        seconds = JOURNEY_SECONDS * decades ** JOURNEY_POWER if decades > 0.004 else PAN_SECONDS
+        seconds = max(0.4, seconds / (1 if state.playing else CLICK_SPEED))
+        time_part = min(1.0, elapsed / seconds)
+        progress = time_part * time_part * (3 - 2 * time_part)  # slow at both ends
         state.width = w0 * (w1 / w0) ** progress
-        # In the picture, the target drifts to the center while the zoom goes on (slow at both ends): its
-        # distance to the center, counted in widths of the view, goes steadily from its first value to 0
-        left = Decimal((1 - progress * progress * (3 - 2 * progress)) * state.width / w0)
+        # In the picture, the target drifts to the center while the zoom goes on: its distance to the center,
+        # counted in widths of the view, goes from its first value to 0
+        left = Decimal((1 - progress) * state.width / w0)
         state.center_re, state.center_im = re1 + (re0 - re1) * left, im1 + (im0 - im1) * left
-        if progress >= 1.0:
+        if time_part >= 1.0:
             state.center_re, state.center_im, state.width = re1, im1, w1
             state.dive.pop(0)
             state.leg_start = imgui.get_time()
@@ -927,6 +938,8 @@ def where_we_are() -> str:
     """The name of the place in view: the first place with a point in the picture"""
     state = STATE
     assert state is not None
+    if state.stop is not None and state.place:  # on a view of a place, or on the way to it: at any zoom
+        return state.place
     if state.where is None or state.width > WHOLE_SET[2] / 10:
         return PLACES[0][0]
     center_re, center_im, width, w, h = state.where
@@ -1067,8 +1080,15 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
         if imgui.button(icons_fontawesome_6.ICON_FA_PAUSE if state.playing else icons_fontawesome_6.ICON_FA_PLAY):
             state.playing = not state.playing
             if state.playing and (state.stop is None or state.stop == len(deeper[0]) - 1):
-                view = deeper[0][0]  # from the first view
+                # From the start: the whole set for a moment, then the journey to the first view
+                state.remember()
+                whole = (Decimal(WHOLE_SET[0]), Decimal(WHOLE_SET[1]), float(WHOLE_SET[2]))
+                state.center_re, state.center_im, state.width = whole
+                view = deeper[0][0]
                 state.go_to((*view[4], view[0]), view[1], place, stop=0)
+                state.history.pop()  # one step for Back, not two
+                if state.dive is not None:
+                    state.dive.insert(0, (whole, whole))
         imgui.set_item_tooltip("Play: the views of this place, one after the other")
     imgui.same_line(0, em_size(1.0))
     imgui.dummy((imgui_kit.help_marker_width() + em_size(0.5), 1))  # room for the (i), drawn last in this corner
