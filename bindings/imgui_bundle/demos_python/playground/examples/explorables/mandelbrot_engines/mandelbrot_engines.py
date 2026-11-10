@@ -789,7 +789,9 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     # Second line: the engine and its cost, the split view, the settings
     if state.other is None:
         menu_button(state.engine.name, "engine")
-        state.engine = state.explained = engine_menu("engine", state.engine, None)
+        chosen = engine_menu("engine", state.engine, None)
+        if chosen is not state.engine:
+            state.engine = state.explained = chosen  # the explanations follow the engine, when it changes
         if state.counts and state.shrinks:
             imgui.same_line()
             imgui.text_disabled(cost_text(0))
@@ -865,10 +867,12 @@ def side_panel(side: int, x: float, y: float) -> None:
     engines = [state.engine, state.other]
     menu_button(engines[side].name, f"engine {side}", upwards=False)
     chosen = engine_menu(f"engine {side}", engines[side], engines[1 - side])
-    if side == 0:
-        state.engine = state.explained = chosen
-    else:
-        state.other = chosen
+    if chosen is not engines[side]:
+        state.explained = chosen  # the explanations follow the engine, when it changes
+        if side == 0:
+            state.engine = chosen
+        else:
+            state.other = chosen
     if side < len(state.shrinks) and side < len(state.counts):
         imgui.same_line()
         imgui.text_disabled(cost_text(side))
