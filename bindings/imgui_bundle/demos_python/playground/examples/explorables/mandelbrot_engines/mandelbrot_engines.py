@@ -231,14 +231,14 @@ class Engine:
     section: str  # its ::md section in this file
     compute: Callable[[View], Counts]
     shrink: int  # computes one pixel out of shrink x shrink
-    needs_cpp: bool = False
+    cpp_region: str = ""  # its function in mandel_kernels.cpp (empty: an engine in Python only)
 
 
 ENGINES = [
     Engine("Python", "Python", python_engine, shrink=8),
     Engine("numpy", "numpy", numpy_engine, shrink=2),
-    Engine("C++", "Cpp", cpp_engine, shrink=1, needs_cpp=True),
-    Engine("C++ with perturbation", "Perturbation", perturbation_engine, shrink=1, needs_cpp=True),
+    Engine("C++", "Cpp", cpp_engine, shrink=1, cpp_region="Double"),
+    Engine("C++ with perturbation", "Perturbation", perturbation_engine, shrink=1, cpp_region="Perturbation"),
 ]
 
 # Places to visit: a name, a view (center, width), a number of iterations, and what to see there
@@ -398,7 +398,7 @@ def controls() -> None:
     for i, engine in enumerate(ENGINES):
         if i > 0:
             same_line_if_room(engine.name)
-        imgui.begin_disabled(engine.needs_cpp and KERNELS is None)
+        imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
         if imgui.radio_button(engine.name, state.engine is engine):
             state.engine, state.seconds = engine, 0.0
         imgui.end_disabled()
@@ -433,8 +433,8 @@ def controls() -> None:
     rich_md.render_this_file(state.engine.section)
     if imgui.collapsing_header("Its code"):
         rich_md.render_this_file(state.engine.section + "#code")
-        if state.engine.needs_cpp:
-            rich_md.render_file(str(HERE / "mandel_kernels.cpp"))
+        if state.engine.cpp_region:
+            rich_md.render_file(str(HERE / "mandel_kernels.cpp"), state.engine.cpp_region)
             rich_md.render_this_file("Pattern")
 
 

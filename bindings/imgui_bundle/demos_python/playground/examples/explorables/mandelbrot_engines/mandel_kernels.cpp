@@ -3,10 +3,12 @@
 //   count[i]: the number of iterations before |z| > 16 (max_iter when the point never escapes)
 //   size2[i]: |z|^2 at that step (Python uses it to smooth the colors)
 // Python calls them from several threads, one band of rows each.
+// The ::code and ::endcode lines name the regions that the page shows beside each engine.
 extern "C" {
 
 const double ESCAPE2 = 256.0;  // |z| > 16
 
+// ::code Double
 // z <- z^2 + c in double precision. (x0, y0) is the center of the top left pixel; pixel is the size of a pixel.
 void mandel_double(double x0, double y0, double pixel, int w, int h, int row0, int row1, int max_iter,
                    int* count, float* size2)
@@ -29,7 +31,9 @@ void mandel_double(double x0, double y0, double pixel, int w, int h, int row0, i
             size2[row * w + col] = (float)(x2 + y2);
         }
 }
+// ::endcode Double
 
+// ::code Perturbation
 // Perturbation: the same picture, around a reference orbit Z computed once with many digits (by Python).
 // A pixel at c = C + dc has the orbit z(n) = Z(n) + d(n), and only d is iterated here, in double precision:
 //     d(n+1) = 2 * Z(n) * d(n) + d(n)^2 + dc
@@ -65,5 +69,6 @@ void mandel_perturbation(const double* ref, int n_ref, double dx0, double dy0, d
             size2[row * w + col] = (float)(zx * zx + zy * zy);
         }
 }
+// ::endcode Perturbation
 
 }  // extern "C"
