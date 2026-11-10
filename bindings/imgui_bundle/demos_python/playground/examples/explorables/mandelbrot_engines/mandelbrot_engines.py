@@ -262,6 +262,15 @@ KERNELS: Any = load_kernels()  # None without a C++ compiler
 POOL = None if IN_BROWSER else ThreadPoolExecutor(THREADS)
 
 
+r"""::md Bands
+### In bands, from several threads
+`run_in_bands` is what both C++ engines call. It creates the two arrays, cuts the picture into bands of rows,
+and calls the C++ loop on each band from a pool of threads, with pointers to the arrays: no copy.
+* The bands are small, four per thread: a band full of slow pixels does not keep a thread busy alone.
+* After each band, it reports the progress, which is also where a cancelled picture stops.
+* The C++ has no thread of its own: the parallelism is these few lines of Python.
+::code
+"""
 def run_in_bands(view: View, kernel: Callable[[ctypes.c_void_p, ctypes.c_void_p, int, int], None]) -> Counts:
     """Calls kernel(count, size2, row0, row1) for each band of rows, in the pool of threads"""
     count, size2 = np.empty((view.h, view.w), np.int32), np.empty((view.h, view.w), np.float32)
@@ -278,6 +287,7 @@ def run_in_bands(view: View, kernel: Callable[[ctypes.c_void_p, ctypes.c_void_p,
     for i, _ in enumerate(run_all(run, bands)):
         report((i + 1) / len(bands))
     return count, size2
+# ::endcode
 
 
 @dataclass
@@ -941,6 +951,9 @@ def explanations() -> None:
                 if imgui.collapsing_header("Its code"):
                     rich_md.render_this_file(engine.section + "#code")
                     if engine.cpp_region:
+                        rich_md.render_this_file("Bands")
+                        rich_md.render_this_file("Bands#code")
+                        rich_md.render("### The C++ loop")
                         rich_md.render_file(str(HERE / "mandel_kernels.cpp"), engine.cpp_region)
                         rich_md.render_this_file("Pattern")
                 imgui.end_tab_item()
