@@ -26,12 +26,15 @@ r"""::md Help
 * The arrow, bottom left, or **Backspace**: back to the view before your last jump, zoom or drag.
 
 **The card, bottom left**
-* The **place's name** is a menu of places. The **zoom** beside it is a menu of the views of that place.
-* The small arrows, or the **arrow keys**: the previous and the next view. **Play** shows them all in turn.
+* The **place's name** is a menu of places.
 * The **engine's name** is a menu: pick another one, and watch its time.
 * **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
 * The gear: the iterations and the colors. The bookmark: add this view to my places (a file beside the demo).
 * The copy button: this location as a line of text. The places menu pastes one, and travels there.
+
+**A place's views, top left**
+* The small arrows, or the **arrow keys**: the previous and the next view. The step between them ("3 / 7") is
+  a menu of all the views. **Play** shows them in turn, from the whole set.
 
 **Engines**
 * Every engine gets the same time for a picture: 0.3 s, and much less while the view moves.
@@ -1057,22 +1060,74 @@ def add_view_popup() -> None:
 
 
 def caption(top_left: imgui.ImVec2) -> None:
-    """Top left, at a view of a place: its number, its name, and what to see there"""
+    """Top left, in a place with views: the trip's player. Previous, the step (a menu of the views), next, play;
+    then, at a view, its name and what to see there."""
     state = STATE
     assert state is not None
-    views = next((zooms for name, _point, zooms in PLACES[1:] if name == state.place), None)
-    if state.stop is None or views is None or state.stop >= len(views):
+    place = where_we_are()
+    views = next((zooms for name, _point, zooms in PLACES[1:] if name == place), None)
+    at_view = state.stop is not None and views is not None and state.stop < len(views)
+    if views is None or (len(views) < 2 and not at_view):
         return
-    _width, _max_iter, short, story, _point = views[state.stop]
     margin = em_size(0.6)
     begin_over_picture("##caption", imgui.ImVec2(top_left.x + margin, top_left.y + margin),
-                       imgui.ImVec2(em_size(26), state.caption_height))
-    imgui.text_disabled(f"{state.place}   {state.stop + 1} / {len(views)}")
-    imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
-    imgui.text_wrapped(short)
-    imgui.pop_font()
-    if story:
-        imgui.text_wrapped(story)
+                       imgui.ImVec2(em_size(27), state.caption_height))
+    if len(views) > 1:
+        typing = imgui.get_io().want_text_input
+        if imgui.button(icons_fontawesome_6.ICON_FA_CHEVRON_LEFT) or \
+                (not typing and imgui.is_key_pressed(imgui.Key.left_arrow, False)):
+            state.playing = False
+            state.step(-1)
+        imgui.set_item_tooltip("Previous view (the left arrow key)")
+        imgui.same_line(0, em_size(0.2))
+        menu_button(f"{state.stop + 1} / {len(views)}" if at_view and state.stop is not None else f"{len(views)} views",
+                    "views", upwards=False)  # the step: a menu of the views, each with an (i) for what to see there
+        imgui.set_next_window_size_constraints((em_size(23), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
+        if imgui.begin_popup("views"):
+            for index, (width, max_iter, short, story, point) in enumerate(list(views)):
+                zoom = math.floor(math.log10(WHOLE_SET[2] / width))
+                label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
+                if imgui.selectable(f"{label}##{width}", index == state.stop, size=(em_size(17), 0))[0]:
+                    state.go_to((*point, width), max_iter, place, stop=index)
+                if story:
+                    imgui.same_line()
+                    imgui_kit.help_marker(story)
+                if any((view["name"], view["width"]) == (place, width) for view in MY_VIEWS):  # one of mine
+                    imgui.same_line(em_size(20.5))
+                    if imgui.small_button(f"{icons_fontawesome_6.ICON_FA_TRASH}##{width}"):
+                        state.remove_view(place, width)
+                    imgui.set_item_tooltip("Remove this view from my places")
+            imgui.end_popup()
+        imgui.same_line(0, em_size(0.2))
+        if imgui.button(icons_fontawesome_6.ICON_FA_CHEVRON_RIGHT) or \
+                (not typing and imgui.is_key_pressed(imgui.Key.right_arrow, False)):
+            state.playing = False
+            state.step(1)
+        imgui.set_item_tooltip("Next view (the right arrow key)")
+        imgui.same_line(0, em_size(0.6))
+        if imgui.button(icons_fontawesome_6.ICON_FA_PAUSE if state.playing else icons_fontawesome_6.ICON_FA_PLAY):
+            state.playing = not state.playing
+            if state.playing and (state.stop is None or state.stop == len(views) - 1):
+                # From the start: the whole set for a moment, then the journey to the first view
+                state.remember()
+                whole = (Decimal(WHOLE_SET[0]), Decimal(WHOLE_SET[1]), float(WHOLE_SET[2]))
+                state.center_re, state.center_im, state.width = whole
+                view = views[0]
+                state.go_to((*view[4], view[0]), view[1], place, stop=0)
+                state.history.pop()  # one step for Back, not two
+                if state.dive is not None:
+                    state.dive.insert(0, (whole, whole))
+        imgui.set_item_tooltip("Play: the views of this place, one after the other")
+        imgui.same_line(0, em_size(0.8))
+    imgui.align_text_to_frame_padding()
+    imgui.text_disabled(place)
+    if at_view and state.stop is not None:
+        _width, _max_iter, short, story, _point = views[state.stop]
+        imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
+        imgui.text_wrapped(short)
+        imgui.pop_font()
+        if story:
+            imgui.text_wrapped(story)
     state.caption_height = imgui.get_cursor_pos_y() + imgui.get_style().window_padding.y
     end_over_picture()
 
@@ -1113,53 +1168,10 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     if imgui.get_time() - state.paste_failed_at < 3:
         imgui.set_tooltip("The clipboard holds no location (a text with re=, im= and width=).")
 
-    deeper = [its_zooms for name, _point, its_zooms in PLACES[1:] if name == place]  # the zooms of this place
     imgui.same_line()
     imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + tall - imgui.get_frame_height())  # on the name's baseline
-    if not deeper:
-        imgui.align_text_to_frame_padding()
-        imgui.text(f"zoom {zoom_number(state.width)}")
-    else:  # the zoom: a menu of the place's zooms, each with an (i) that says what to see there
-        menu_button(f"zoom {zoom_number(state.width)}", "zooms")
-        imgui.set_next_window_size_constraints((em_size(23), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
-        if imgui.begin_popup("zooms"):
-            for index, (width, max_iter, short, story, point) in enumerate(list(deeper[0])):
-                zoom = math.floor(math.log10(WHOLE_SET[2] / width))
-                label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
-                if imgui.selectable(f"{label}##{width}", False, size=(em_size(17), 0))[0]:
-                    state.go_to((*point, width), max_iter, place, stop=index)
-                if story:
-                    imgui.same_line()
-                    imgui_kit.help_marker(story)
-                if any((view["name"], view["width"]) == (place, width) for view in MY_VIEWS):  # one of mine
-                    imgui.same_line(em_size(20.5))
-                    if imgui.small_button(f"{icons_fontawesome_6.ICON_FA_TRASH}##{width}"):
-                        state.remove_view(place, width)
-                    imgui.set_item_tooltip("Remove this view from my places")
-            imgui.end_popup()
-    if deeper and len(deeper[0]) > 1:  # several views: previous, next, and play them all
-        typing = imgui.get_io().want_text_input
-        for icon, by, key, tip in ((icons_fontawesome_6.ICON_FA_CHEVRON_LEFT, -1, imgui.Key.left_arrow, "Previous"),
-                                   (icons_fontawesome_6.ICON_FA_CHEVRON_RIGHT, 1, imgui.Key.right_arrow, "Next")):
-            imgui.same_line(0, em_size(0.3))
-            if imgui.button(icon) or (not typing and imgui.is_key_pressed(key, False)):
-                state.playing = False
-                state.step(by)
-            imgui.set_item_tooltip(f"{tip} view of this place (the arrow keys)")
-        imgui.same_line(0, em_size(0.3))
-        if imgui.button(icons_fontawesome_6.ICON_FA_PAUSE if state.playing else icons_fontawesome_6.ICON_FA_PLAY):
-            state.playing = not state.playing
-            if state.playing and (state.stop is None or state.stop == len(deeper[0]) - 1):
-                # From the start: the whole set for a moment, then the journey to the first view
-                state.remember()
-                whole = (Decimal(WHOLE_SET[0]), Decimal(WHOLE_SET[1]), float(WHOLE_SET[2]))
-                state.center_re, state.center_im, state.width = whole
-                view = deeper[0][0]
-                state.go_to((*view[4], view[0]), view[1], place, stop=0)
-                state.history.pop()  # one step for Back, not two
-                if state.dive is not None:
-                    state.dive.insert(0, (whole, whole))
-        imgui.set_item_tooltip("Play: the views of this place, one after the other")
+    imgui.align_text_to_frame_padding()
+    imgui.text(f"zoom {zoom_number(state.width)}")
     imgui.same_line(0, em_size(1.0))
     imgui.dummy((imgui_kit.help_marker_width() + em_size(0.5), 1))  # room for the (i), drawn last in this corner
 
