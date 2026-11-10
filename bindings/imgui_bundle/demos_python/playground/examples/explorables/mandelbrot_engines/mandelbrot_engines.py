@@ -522,6 +522,7 @@ DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
 
 
 ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
+HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the top of the picture, in em
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
 DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
@@ -691,7 +692,7 @@ def divider(top_left: imgui.ImVec2, w: int, h: int) -> None:
     assert state is not None and state.other is not None
     draw_list = imgui.get_window_draw_list()
     white, black = imgui.IM_COL32(255, 255, 255, 255), imgui.IM_COL32(0, 0, 0, 255)
-    x, y, r = top_left.x + state.split * w, top_left.y + h * 0.5, em_size(0.75)
+    x, y, r = top_left.x + state.split * w, top_left.y + HANDLE_EM * em_size(1), em_size(0.75)  # near the top
     draw_list.add_line((x, top_left.y), (x, top_left.y + h), black, 4)
     draw_list.add_line((x, top_left.y), (x, top_left.y + h), white, 2)
     draw_list.add_circle_filled((x, y), r + 2, black)
@@ -1060,7 +1061,7 @@ def gui() -> None:
             all_pixels_control(0, width)
             end_over_picture()
     elif len(state.shrinks) > 1:  # beside the divider: each side has its engine, its cost and its button
-        x, y = top_left.x + state.split * w, top_left.y + h * 0.5 - em_size(1.1)
+        x, y = top_left.x + state.split * w, top_left.y + (HANDLE_EM - 1.1) * em_size(1)
         side_panel(0, x - em_size(1.4), y)
         side_panel(1, x + em_size(1.4), y)
     if not state.notes_open:  # an arrow to bring the explanations back
