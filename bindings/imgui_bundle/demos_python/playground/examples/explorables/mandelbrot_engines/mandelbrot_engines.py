@@ -364,9 +364,6 @@ SEAHORSE = ("-0.743916538692433356599334896378352022720811393898656056544159"
             "34462016366377146254866440653871761911999857422",
             "0.131688791359494617577789121421345189627001256552777831155761"
             "33333081667103570998513450421077334266471040041")
-# The center of a small copy of the set, hidden in the spirals of the valley (found with Newton's method)
-HIDDEN_COPY = ("-0.74391653869243335659933489638638694153569553630943849046081220664810341437",
-               "0.13168879135949461757778912139905999762536756237320873041503736241957753062")
 BUILT_IN_PLACES = [
     ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "", "")]),
     ("Elephant valley", ("0.275", "0.0068"), [
@@ -375,9 +372,6 @@ BUILT_IN_PLACES = [
         (WHOLE_SET[2], 300, "The whole set",
          "This trip starts from the whole set, then dives into the valley between its two largest bulbs."),
         (6.5e-4, 2000, "The double spiral", "A spiral made of spirals, at the entrance of Seahorse valley.")]),
-    ("The needle", ("-1.7548776662466927", "0"), [
-        (0.07, 600, "a small copy", "A small copy of the whole set, on the needle that points to the left. "
-                                    "There are infinitely many copies: see also the hidden one.")]),
     ("Feigenbaum point", ("-1.401155189092050593", "0"), [
         (0.06, 2000, "bulbs", "Each bulb carries a smaller one, about 4.669 times smaller: Feigenbaum's constant."),
         (6e-5, 6000, "the same, 1000 times smaller", "A thousand times closer: the cascade of bulbs goes on.")]),
@@ -387,15 +381,7 @@ BUILT_IN_PLACES = [
         (2e-14, 4500, "the end of double",
          "The end of double: the C++ engine draws blocks, the perturbation draws the picture."),
         (1e-37, 9000, "perturbation only",
-         "Only the perturbation gets here. Its reference orbit is computed with 60 digits."),
-        (3e-100, 14000, "deeper still",
-         "Still spirals, 63 zooms of ten further. Each picture needs about 12 000 iterations per pixel.")]),
-    ("A hidden copy", HIDDEN_COPY, [
-        (1e-44, 30000, "rings", "Something is in the middle of the spirals: rings around a center."),
-        (1e-46, 30000, "closer", "Closer: the rings announce a copy of the set, 100 times smaller still."),
-        (4.5e-49, 60000, "the copy",
-         "A copy of the whole set, tilted, nearly 10^49 times smaller. Each pixel needs 20 000 to 60 000 "
-         "iterations.")]),
+         "Only the perturbation gets here. Its reference orbit is computed with 60 digits.")]),
     ("The point i", ("0", "1"), [
         (1e-8, 600, "a tree",
          "The point c = i is on the boundary: a branching tree, with detail at every scale."),
@@ -1118,7 +1104,7 @@ def where_we_are() -> str:
         return abs(Decimal(point[0]) - center_re) < half_w and abs(Decimal(point[1]) - center_im) < half_h
 
     in_view = [name for name, _point, zooms in PLACES[1:] if any(inside(zoom[4]) for zoom in zooms)]
-    if state.place in in_view:  # the place we went to, while its point is in view (the hidden copy is in the valley)
+    if state.place in in_view:  # the place we went to, while its point is in view (places can overlap)
         return state.place
     return in_view[0] if in_view else "Uncharted waters"
 
@@ -1175,6 +1161,9 @@ def caption(top_left: imgui.ImVec2) -> None:
     margin = em_size(0.6)
     begin_over_picture("##caption", imgui.ImVec2(top_left.x + margin, top_left.y + margin),
                        imgui.ImVec2(em_size(27), state.caption_height))
+    imgui.push_font(None, imgui.get_style().font_size_base * 1.45)  # the trip's name, first
+    imgui.text(place)
+    imgui.pop_font()
     if len(views) > 1:
         typing = imgui.get_io().want_text_input
         if imgui.button(icons_fontawesome_6.ICON_FA_CHEVRON_LEFT) or \
@@ -1214,12 +1203,12 @@ def caption(top_left: imgui.ImVec2) -> None:
                 view = views[0]  # from the start: the whole set
                 state.go_to((*view[4], view[0]), view[1], place, stop=0)
         imgui.set_item_tooltip("Play: the views of this place, one after the other")
-        imgui.same_line(0, em_size(0.8))
-    imgui.align_text_to_frame_padding()
-    imgui.text_disabled(place)
     if at_view and state.stop is not None:
         _width, _max_iter, short, story, _point = views[state.stop]
-        imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
+        if len(views) > 1:
+            imgui.same_line(0, em_size(0.8))
+        imgui.push_font(None, imgui.get_style().font_size_base * 1.15)
+        imgui.align_text_to_frame_padding()
         imgui.text_wrapped(short)
         imgui.pop_font()
         if story:
@@ -1258,6 +1247,7 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
                 if (len(zooms) > 1) != trips:
                     continue
                 if imgui.selectable(name, name == place)[0]:
+                    state.playing = trips  # a trip plays from its start
                     state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name, stop=0)
                 if trips:
                     imgui.same_line()
