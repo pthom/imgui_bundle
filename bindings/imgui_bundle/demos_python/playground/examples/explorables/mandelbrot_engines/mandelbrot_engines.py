@@ -367,7 +367,9 @@ SEAHORSE = ("-0.743916538692433356599334896378352022720811393898656056544159"
 BUILT_IN_PLACES = [
     ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "", "")]),
     ("Elephant valley", ("0.275", "0.0068"), [
-        (0.005, 3000, "trunks", "A parade of elephants, trunks up, along the right side of the set.")]),
+        (WHOLE_SET[2], 300, "The whole set",
+         "This trip starts from the whole set, then dives into the valley at its right end, near the cusp of the "
+         "heart shape.")]),
     ("The Sun King", ("-0.7453", "0.1127"), [
         (WHOLE_SET[2], 300, "The whole set",
          "This trip starts from the whole set, then dives into the valley between its two largest bulbs."),
@@ -392,7 +394,7 @@ BUILT_IN_PLACES = [
 ]
 
 
-# Two trips by Pascal Thomet, made with the card's bookmark button: views in the format of my_places.json
+# Trips by Pascal Thomet, made with the card's bookmark button: views in the format of my_places.json
 BUILT_IN_VIEWS: list[dict[str, Any]] = [
     {"name": "Needle Deep Dive", "width": 3.4, "iterations": 300,
      "re": "-0.60000000",
@@ -465,6 +467,31 @@ BUILT_IN_VIEWS: list[dict[str, Any]] = [
      "im": "0.11270949473799756674892671834947836",
      "short": "The king and his court",
      "sentence": "A mini Mandelbrot crowned with golden rays, surrounded by its court of galaxies."},
+    {"name": "Elephant valley", "width": 0.0007502998990046598, "iterations": 2000,
+     "re": "0.27493485230",
+     "im": "0.00619910634",
+     "short": "Playful elephants",
+     "sentence": "Elephants walk in a line along the right side of the set, trunks curled up."},
+    {"name": "Elephant valley", "width": 8.651031794249195e-07, "iterations": 2000,
+     "re": "0.27490961665873",
+     "im": "0.00627086059034",
+     "short": "A vulture",
+     "sentence": "A vulture's head, facing right: a spiral for its eye, a hooked beak below it, and a long bare neck."},
+    {"name": "Elephant valley", "width": 1.5510735245575236e-11, "iterations": 2000,
+     "re": "0.274909745695731252",
+     "im": "0.006270935898013176",
+     "short": "A queue of blue goats",
+     "sentence": "Blue goats wait in a long queue that winds into the center of a spiral."},
+    {"name": "Elephant valley", "width": 1.5391152149831903e-18, "iterations": 2000,
+     "re": "0.2749097456961807107890920",
+     "im": "0.0062709358989466025573247",
+     "short": "The eternal staircase",
+     "sentence": "A spiral staircase seen from above: its steps wind down forever."},
+    {"name": "Elephant valley", "width": 1.979314857118276e-22, "iterations": 2000,
+     "re": "0.27490974569618071077444993133",
+     "im": "0.00627093589894660255562656416",
+     "short": "The elephants again",
+     "sentence": "The elephants come back, 10^18 times smaller, and a goat has joined them."},
 ]
 
 # My places: the views added with the card's bookmark button, kept in a file beside this one (git ignores it)
@@ -477,7 +504,9 @@ PLACES: list[tuple[str, tuple[str, str], list[Zoom]]] = []  # the built-in place
 def load_places() -> None:
     """Fills PLACES: the built-in places, the built-in views, then mine. A view named as a place is one more zoom
     of that place (with its own point); another name is a new place."""
-    places = {name: (point, [(*zoom, point) for zoom in zooms]) for name, point, zooms in BUILT_IN_PLACES}
+    whole_center = (WHOLE_SET[0], WHOLE_SET[1])
+    places = {name: (point, [(*zoom, whole_center if zoom[0] >= WHOLE_SET[2] else point) for zoom in zooms])
+              for name, point, zooms in BUILT_IN_PLACES}
     MY_VIEWS[:] = json.loads(MY_PLACES_FILE.read_text()) if MY_PLACES_FILE.exists() else []
     for view in (*BUILT_IN_VIEWS, *MY_VIEWS):
         point = (view["re"], view["im"])
