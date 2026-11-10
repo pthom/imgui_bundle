@@ -1,6 +1,6 @@
 """Web Workers for mandelbrot_engines.py, in a browser: the C++ loops on all the cores of the machine.
 
-In a browser, Python has one thread. But the page can start Web Workers, one per core: each one runs
+In a browser, Python has one thread. But the page can start Web Workers, one per core but one: each runs
 mandel_workers.js, which loads the same C++ compiled as a standalone WebAssembly module, and computes bands of rows.
 The bands come back as messages, between two frames, and are copied into the picture's arrays.
 """
@@ -33,10 +33,11 @@ class WorkerJob:
 
 
 class WorkerPool:
-    """One Web Worker per core, started at the first job, and again after a cancel"""
+    """One Web Worker per core but one (left to the rest of the machine), started at the first job, and again
+    after a cancel"""
 
     def __init__(self) -> None:
-        self.size = int(navigator.hardwareConcurrency or 4)
+        self.size = max(1, int(navigator.hardwareConcurrency or 4) - 1)
         self.workers: list[Any] = []
         self.job: WorkerJob | None = None
         self.job_id = 0
