@@ -69,6 +69,7 @@ MOVING_BUDGET = 0.04  # seconds for a picture while the view moves. An engine th
 STILL_BUDGET = 0.3  # in its budget computes one out of 4, 16 or 64. This one: once the view stopped
 BAND_ROWS = 4  # the C++ engines compute the picture in bands of this many rows
 USE_WEB_WORKERS = True  # in a browser, "All the pixels" of the C++ engines on all the cores
+WORKERS_EFFICIENCY = 0.67  # n Web Workers compute about 0.67 n times as fast as the page's thread (measured)
 SLICE_SECONDS = 0.03  # "All the pixels" computes this long at each frame
 QUICK_SECONDS = 2.5  # and starts by itself, once the view stopped, when it would take less than this
 REPAINT_SECONDS = 0.4  # and its picture fills in at this pace
@@ -581,6 +582,15 @@ class State:
         per_pixel = (t_large - t_small) / (large - small) if large > small else t_large / large
         return max(t_large + per_pixel * (pixels - large), 0.0)
 
+    def all_pixels_seconds(self, engine: "Engine") -> float | None:
+        """The time all the pixels of the view should take. In a browser, the C++ engines have Web Workers."""
+        if self.where is None:
+            return None
+        seconds = self.seconds_for(engine, self.where[3] * self.where[4])
+        if seconds is not None and WORKERS is not None and engine.cpp_region:
+            seconds /= WORKERS.size * WORKERS_EFFICIENCY
+        return seconds
+
     def start_all_pixels(self, side: int, engine: "Engine") -> None:
         """All the pixels of an engine's picture, from now on computed a little at each frame"""
         if self.where is not None and self.computed is not None:
@@ -813,7 +823,7 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     if job is None and same_view and not moving and state.dive is None:
         # Once the view stopped: all the pixels by themselves, for the first engine that can have them quickly
         for side, engine in enumerate(engines):
-            quick = (state.seconds_for(engine, w * h) or math.inf) < QUICK_SECONDS
+            quick = (state.all_pixels_seconds(engine) or math.inf) < QUICK_SECONDS
             if state.shrinks[side] > 1 and (quick or state.playing) and state.cancelled != (wanted, side):
                 state.start_all_pixels(side, engine)
                 break
@@ -1280,7 +1290,7 @@ def all_pixels_control(side: int, width: float) -> None:
         imgui.begin_disabled(job is not None)  # one at a time
         engine = state.engine if side == 0 else state.other
         assert engine is not None
-        seconds = state.seconds_for(engine, state.where[3] * state.where[4]) or 0.0
+        seconds = state.all_pixels_seconds(engine) or 0.0
         if imgui.button(f"All the pixels (about {seconds:.0f} s)", (width, 0)):
             state.start_all_pixels(side, engine)
         imgui.end_disabled()
