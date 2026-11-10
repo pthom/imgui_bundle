@@ -31,6 +31,7 @@ r"""::md Help
 * The **engine's name** is a menu: pick another one, and watch its time.
 * **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
 * The gear: the iterations and the colors. The bookmark: add this view to my places (a file beside the demo).
+* The copy button: this location as a line of text. The places menu pastes one, and travels there.
 
 **Engines**
 * Every engine gets the same time for a picture: 0.3 s, and much less while the view moves.
@@ -46,6 +47,7 @@ import ctypes
 import json
 import math
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -520,6 +522,7 @@ class State:
         self.lowest: list[float] = []  # the lowest count of each engine's picture: the start of its palette
         self.cancelled: tuple[Any, int] | None = None  # the picture and the side of the last cancel
         self.gesture_at = -1e9  # the time of the last move of the view by hand
+        self.copied_at, self.paste_failed_at = -1e9, -1e9  # the times of the last copy, and of a paste not understood
         self.new_view = ["", "", ""]  # the texts typed for a view to add: its place, its short name, a sentence
         self.costs: dict[str, dict[int, float]] = {}  # for each engine, at this view: the seconds its pictures took,
         # by their number of pixels. Two sizes tell the fixed part of a picture's time from the part per pixel.
@@ -570,6 +573,27 @@ class State:
         load_places()
         self.place = name
 
+    def location_text(self) -> str:
+        """The current view as a line of text, to copy: its center, its width, its iterations"""
+        digits = max(6, int(-math.log10(self.width)) + 8)  # enough to find the view again
+        return (f"mandelbrot re={self.center_re:.{digits}f} im={self.center_im:.{digits}f} "
+                f"width={self.width:.6g} iterations={self.max_iter}")
+
+    def go_to_text(self, text: str) -> bool:
+        """Travels to the view of such a line (the iterations are optional). False: the text is not one."""
+        number = r"\s*=\s*([-+0-9.eE]+)"
+        found = re.search(rf"re{number}.*?im{number}.*?width{number}(?:.*?iterations\s*=\s*(\d+))?", text, re.DOTALL)
+        try:
+            center_re, center_im, width = found.group(1), found.group(2), float(found.group(3))  # type: ignore
+            Decimal(center_re), Decimal(center_im)
+        except (AttributeError, ArithmeticError, ValueError):
+            return False
+        if not 10.0 ** -DEEPEST < width < 8:
+            return False
+        self.go_to((center_re, center_im, width), int(found.group(4) or self.max_iter))  # type: ignore
+        self.by_hand = True  # the iterations adapt, if the text gave none
+        return True
+
     def remove_view(self, name: str, width: float) -> None:
         kept = [view for view in MY_VIEWS if (view["name"], view["width"]) != (name, width)]
         MY_PLACES_FILE.write_text(json.dumps(kept, indent=1) + "\n")
@@ -601,10 +625,10 @@ class State:
         self.costs.clear()  # a new place: new costs
         self.place = name  # the place we went to: its name shows while its point is in view
         self.stop, self.by_hand = stop, False
-        if stop is not None and KERNELS is not None:  # a saved view: an engine that can draw it
+        if KERNELS is not None:  # an engine that can draw the view
             if target_width < WHOLE_SET[2] / 10.0 ** (DOUBLE_ENDS - 1):  # too deep for double precision
                 self.engine = self.explained = ENGINES[3]
-            elif self.playing:  # a trip that plays shows the fastest engine that is right
+            elif self.playing and stop is not None:  # a trip that plays shows the fastest engine that is right
                 self.engine = self.explained = ENGINES[2]
             if self.other is self.engine:
                 self.other = None
@@ -1080,7 +1104,14 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
         for name, _point, zooms in PLACES:
             if imgui.selectable(name, name == place)[0]:
                 state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name, stop=0)
+        imgui.separator()
+        if imgui.selectable(f"{icons_fontawesome_6.ICON_FA_PASTE}  Paste a location", False)[0]:
+            if not state.go_to_text(imgui.get_clipboard_text() or ""):
+                state.paste_failed_at = imgui.get_time()
+        imgui.set_item_tooltip("Go to a location copied as text with the card's copy button")
         imgui.end_popup()
+    if imgui.get_time() - state.paste_failed_at < 3:
+        imgui.set_tooltip("The clipboard holds no location (a text with re=, im= and width=).")
 
     deeper = [its_zooms for name, _point, its_zooms in PLACES[1:] if name == place]  # the zooms of this place
     imgui.same_line()
@@ -1160,6 +1191,15 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
         imgui.open_popup("add view")
     imgui.set_item_tooltip("Add this view to my places")
     add_view_popup()
+    imgui.same_line()
+    if imgui.button(icons_fontawesome_6.ICON_FA_COPY):  # this location, as text
+        imgui.set_clipboard_text(state.location_text())
+        state.copied_at = imgui.get_time()
+    if imgui.get_time() - state.copied_at < 1.5:
+        imgui.set_tooltip("Copied")
+    else:
+        imgui.set_item_tooltip("Copy this location as text (its center, its width, its iterations).\n"
+                               "The places menu can paste it.")
     imgui.set_next_window_pos(imgui.get_item_rect_min(), imgui.Cond_.always, (0, 1))  # above the gear
     if imgui.begin_popup("settings"):
         imgui.set_next_item_width(em_size(9))
