@@ -347,16 +347,15 @@ def palette_colors(name: str, t: np.ndarray) -> np.ndarray:
                     axis=-1)
 
 
-def colors(counts: Counts, max_iter: int, palette: str, lowest: float | None = None) -> tuple[np.ndarray, float]:
+def colors(counts: Counts, max_iter: int, palette: str) -> np.ndarray:
     """An RGB picture. The count, minus log2(log2|z|), varies smoothly from a pixel to the next: no bands.
     The palette starts at the lowest count of the picture: a deep zoom, where all counts are high, keeps its
-    contrast. Returns this lowest count too: the two sides of a split view share it, to share their colors."""
+    contrast."""
     count, size2 = counts
     smooth = count + 1 - np.log2(np.log2(np.maximum(size2, 4.0)) / 2)
-    lowest = smooth.min() if lowest is None else lowest
-    rgb = palette_colors(palette, 0.45 * np.log2(1 + np.maximum(smooth - lowest, 0) / 6) % 1.0)
+    rgb = palette_colors(palette, 0.45 * np.log2(1 + (smooth - smooth.min()) / 6) % 1.0)
     rgb[count >= max_iter] = 0
-    return rgb.astype(np.uint8), float(lowest)
+    return rgb.astype(np.uint8)
 
 
 # ======================================================================================================================
@@ -551,9 +550,9 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     # Color the counts, when they or the palette changed: one picture per engine
     painted = (state.computed, state.shrink, state.palette)
     if painted != state.painted and state.counts and state.timed is not None:
-        state.sides, lowest = [], None
-        for counts in state.counts:
-            image, lowest = colors(counts, state.timed.max_iter, state.palette, lowest)
+        state.sides = []
+        for counts in state.counts:  # each with its own colors: an engine that is wrong does not spoil the other
+            image = colors(counts, state.timed.max_iter, state.palette)
             state.sides.append(image.repeat(state.shrink, axis=0).repeat(state.shrink, axis=1))
         state.painted = painted
     # The image: one picture, or the left of the first and the right of the second
