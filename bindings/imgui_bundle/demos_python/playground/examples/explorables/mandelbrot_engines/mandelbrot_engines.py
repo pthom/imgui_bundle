@@ -263,7 +263,6 @@ POOL = None if IN_BROWSER else ThreadPoolExecutor(THREADS)
 
 
 r"""::md Bands
-### In bands, from several threads
 `run_in_bands` is what both C++ engines call. It creates the two arrays, cuts the picture into bands of rows,
 and calls the C++ loop on each band from a pool of threads, with pointers to the arrays: no copy.
 * The bands are small, four per thread: a band full of slow pixels does not keep a thread busy alone.
@@ -951,8 +950,9 @@ def explanations() -> None:
                 if imgui.collapsing_header("Its code"):
                     rich_md.render_this_file(engine.section + "#code")
                     if engine.cpp_region:
-                        rich_md.render_this_file("Bands")
-                        rich_md.render_this_file("Bands#code")
+                        if imgui.collapsing_header("run_in_bands: in bands, from several threads"):
+                            rich_md.render_this_file("Bands")
+                            rich_md.render_this_file("Bands#code")
                         rich_md.render("### The C++ loop")
                         rich_md.render_file(str(HERE / "mandel_kernels.cpp"), engine.cpp_region)
                         rich_md.render_this_file("Pattern")
