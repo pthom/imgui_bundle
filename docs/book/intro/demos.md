@@ -1221,6 +1221,10 @@ Fly to famous values of c, and zoom into both pictures: near each point, the two
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/mandelbrot_engines.jpg
+:alt: One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
+:::
+
 ### One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
 
 One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
