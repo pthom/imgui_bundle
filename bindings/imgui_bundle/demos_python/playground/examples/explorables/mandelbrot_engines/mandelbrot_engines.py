@@ -379,11 +379,7 @@ BUILT_IN_PLACES = [
         (6e-5, 6000, "the same, 1000 times smaller", "A thousand times closer: the cascade of bulbs goes on.")]),
     ("Seahorse valley", SEAHORSE, [
         (3e-9, 3000, "spirals",
-         "Spirals within spirals. The C++ engine starts to drift here: compare it with the perturbation."),
-        (2e-14, 4500, "the end of double",
-         "The end of double: the C++ engine draws blocks, the perturbation draws the picture."),
-        (1e-37, 9000, "perturbation only",
-         "Only the perturbation gets here. Its reference orbit is computed with 60 digits.")]),
+         "Spirals within spirals. The C++ engine starts to drift here: compare it with the perturbation.")]),
     ("The point i", ("0", "1"), [
         (1e-8, 600, "a tree",
          "The point c = i is on the boundary: a branching tree, with detail at every scale."),
@@ -774,6 +770,7 @@ HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the
 GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
 PAN_SECONDS = 0.9  # a journey between two views of the same width: a slide (or a pause, when they are the same)
 PLAY_SECONDS = 5.0  # playing a place's views: the time to look at each, once its picture is complete
+PLAY_WHOLE_SECONDS = 1.5  # and at the whole set, where a trip starts
 FADE_DECADES = 2.0  # a journey that would zoom out by more decades fades instead
 FADE_SECONDS = 0.7
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
@@ -857,7 +854,8 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
         complete = state.all_pixels is None and state.shrinks and max(state.shrinks) == 1
         if not complete:
             state.arrived_at = imgui.get_time()  # the time to look starts once the picture is sharp
-        elif imgui.get_time() - state.arrived_at > PLAY_SECONDS:
+        elif imgui.get_time() - state.arrived_at > (PLAY_WHOLE_SECONDS if state.width >= WHOLE_SET[2]
+                                                     else PLAY_SECONDS):
             before = state.stop
             state.step(1)
             state.playing = state.stop != before  # the last view: the trip is over
