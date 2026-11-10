@@ -23,7 +23,7 @@ r"""::md Help
 **Moving around**
 * **Wheel**: zoom, around the mouse. **Drag**: move the view.
 * **Double click**: dive towards the clicked point.
-* The arrow, bottom left: back to the previous view.
+* The arrow, bottom left, or **Backspace**: back to the previous view.
 
 **The card, bottom left**
 * The **place's name** is a menu of places. The **zoom** beside it is a menu of deeper views of that place.
@@ -924,10 +924,12 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     tall = imgui.get_frame_height()
     imgui.pop_font()
     imgui.begin_disabled(not state.history)
-    if imgui.button(icons_fontawesome_6.ICON_FA_ARROW_LEFT, (tall, tall)):
+    typing = imgui.get_io().want_text_input  # in a text field, Backspace erases
+    shortcut = not typing and (imgui.is_key_pressed(imgui.Key.backspace, False) or imgui.is_mouse_clicked(3))
+    if imgui.button(icons_fontawesome_6.ICON_FA_ARROW_LEFT, (tall, tall)) or (shortcut and state.history):
         state.back()
     imgui.end_disabled()
-    imgui.set_item_tooltip("Back to the previous view")
+    imgui.set_item_tooltip("Back to the previous view (Backspace, or the mouse's back button)")
 
     imgui.same_line()
     menu_button(place, "places", title=True)  # the place: a menu of the places
