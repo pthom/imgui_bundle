@@ -353,29 +353,40 @@ def picture(size: imgui.ImVec2) -> None:
         state.image = colors(state.engine.compute(view), view.max_iter)
         if shrink > 1:
             state.image = np.ascontiguousarray(state.image.repeat(shrink, axis=0).repeat(shrink, axis=1))
-        if not moving:
+        if shrink == state.engine.shrink:  # a full picture
             state.seconds, state.timed = time.perf_counter() - start_time, view
         state.computed = wanted
     imgui.set_cursor_screen_pos(top_left)
     immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=refresh)
 
 
-def status() -> None:
-    state = STATE
-    assert state is not None
-    view = state.timed
-    if view is None:
-        return
-    megapixels = view.w * view.h / 1e6
-    imgui.text(f"{state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels")
+# To picture a zoom: if the whole set were as wide as the observable universe, what would the picture be as wide as?
+UNIVERSE = 8.8e26  # meters
+SIZES = [(8.8e26, "the observable universe"), (1e21, "a galaxy"), (9e12, "the solar system"), (1.3e7, "the Earth"),
+         (4e4, "a city"), (1.7, "a person"), (1e-4, "a hair's width"), (1e-6, "a bacterium"), (1e-10, "an atom"),
+         (1.7e-15, "a proton"), (1.6e-35, "the Planck length, the smallest length that physics describes")]
+
+
+def zoom_in_words(width: float) -> str:
+    zoom = WHOLE_SET[2] / width
+    if zoom < 10:
+        return f"Zoom: {zoom:.1f}."
+    exponent = math.floor(math.log10(zoom))
+    number = f"{zoom:,.0f}" if zoom < 1e6 else f"{zoom / 10 ** exponent:.1f} x 10^{exponent}"
+    size = UNIVERSE / zoom
+    if size < SIZES[-1][0] / 100:
+        thing = f"10^{round(math.log10(SIZES[-1][0] / size))} times smaller than the Planck length, the smallest " \
+                "length that physics describes"
+    else:
+        thing = "as wide as " + min(SIZES, key=lambda entry: abs(math.log10(entry[0] / size)))[1]
+    return f"Zoom: {number}. If the whole set were as wide as the observable universe, this picture would be {thing}."
+
+
+def same_line_if_room(next_label: str) -> None:
+    """Puts the next widget on the same line, when it fits"""
     imgui.same_line()
-    imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.1f} million pixels per second")
-    imgui.text(f"pixel size {state.width / view.w / state.engine.shrink:.1e}   up to {view.max_iter} iterations")
-    digits = max(3, int(-math.log10(state.width)) + 4)
-    shown = [f"{value:+.{digits}f}" for value in (state.center_re, state.center_im)]
-    if digits > 40:  # the first digits only
-        shown = [f"{text[:30]}... ({digits} digits)" for text in shown]
-    imgui.text_disabled(f"center  {shown[0]}  {shown[1]} i")
+    if imgui.get_cursor_pos_x() + imgui.calc_text_size(next_label).x + em_size(2.5) > imgui.get_window_width():
+        imgui.new_line()
 
 
 def controls() -> None:
@@ -384,33 +395,47 @@ def controls() -> None:
     rich_md.render_this_file("Intro")
 
     imgui.separator_text("Engine")
-    for engine in ENGINES:
-        available = KERNELS is not None or not engine.needs_cpp
-        imgui.begin_disabled(not available)
+    for i, engine in enumerate(ENGINES):
+        if i > 0:
+            same_line_if_room(engine.name)
+        imgui.begin_disabled(engine.needs_cpp and KERNELS is None)
         if imgui.radio_button(engine.name, state.engine is engine):
             state.engine, state.seconds = engine, 0.0
         imgui.end_disabled()
     if KERNELS is None:
         imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
-    status()
+    if state.timed is not None:
+        megapixels = state.timed.w * state.timed.h / 1e6
+        imgui.text(f"{state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels")
+        imgui.same_line()
+        imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.1f} million pixels per second")
+        if state.seconds > SLOW_SECONDS:
+            imgui.text_disabled("A coarse preview while the view moves, the full picture when it stops.")
 
-    imgui.separator_text("Places")
-    for name, place, max_iter, story in PLACES:
+    imgui.separator_text("Where we are")
+    imgui.text_wrapped(zoom_in_words(state.width))
+    digits = max(3, int(-math.log10(state.width)) + 4)
+    shown = [f"{value:+.{digits}f}" for value in (state.center_re, state.center_im)]
+    if digits > 40:  # the first digits only
+        shown = [f"{text[:22]}..." for text in shown]
+    imgui.text_disabled(f"center  {shown[0]}  {shown[1]} i" + (f"  ({digits} digits)" if digits > 40 else ""))
+    for i, (name, place, max_iter, story) in enumerate(PLACES):
+        if i > 0:
+            same_line_if_room(name)
         if imgui.button(name):
             state.go_to(place, max_iter)
         imgui.set_item_tooltip(story)
-        imgui.same_line()
-    imgui.new_line()
     imgui.set_next_item_width(em_size(10))
     _, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 50000, flags=imgui.SliderFlags_.logarithmic)
     imgui.set_item_tooltip("Black where there should be detail? Raise the iterations.")
 
     imgui.separator_text("How this engine works")
     rich_md.render_this_file(state.engine.section)
-    rich_md.render_this_file(state.engine.section + "#code")
-    if state.engine.needs_cpp:
-        rich_md.render_file(str(HERE / "mandel_kernels.cpp"))
-        rich_md.render_this_file("Pattern")
+    if imgui.collapsing_header("Its code"):
+        rich_md.render_this_file(state.engine.section + "#code")
+        if state.engine.needs_cpp:
+            rich_md.render_file(str(HERE / "mandel_kernels.cpp"))
+            rich_md.render_this_file("Pattern")
 
 
 def gui() -> None:
@@ -418,15 +443,15 @@ def gui() -> None:
     if STATE is None:
         STATE = State()
     available = imgui.get_content_region_avail()
-    side_by_side = available.x > em_size(60)  # else (a phone): the picture above the texts
-    picture_size = imgui.ImVec2(available.x * 0.58, available.y) if side_by_side else \
+    wide_window = available.x > em_size(60)  # else (a phone): the picture above the texts
+    picture_size = imgui.ImVec2(available.x * 0.58, available.y) if wide_window else \
         imgui.ImVec2(available.x, available.x * 0.75)
     picture(picture_size)
-    if side_by_side:
+    if wide_window:
         imgui.same_line()
         imgui.begin_child("##controls", imgui.ImVec2(0, available.y))
     controls()
-    if side_by_side:
+    if wide_window:
         imgui.end_child()
 
 
