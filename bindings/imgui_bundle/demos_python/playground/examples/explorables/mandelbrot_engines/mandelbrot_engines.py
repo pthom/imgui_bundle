@@ -33,7 +33,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 import numpy as np
-from imgui_bundle import em_size, hello_imgui, imgui, immapp, immvision, rich_md
+from imgui_bundle import em_size, hello_imgui, icons_fontawesome_6, imgui, imgui_kit, immapp, immvision, rich_md
 
 THREADS = os.cpu_count() or 4  # the bands of rows computed at once by the C++ engines (in a browser: one)
 MOVING_BUDGET = 0.04  # seconds for a picture while the view moves. An engine that cannot afford all the pixels
@@ -486,13 +486,15 @@ SIZES = [(8.8e26, "the observable universe"), (1e21, "a galaxy"), (9e12, "the so
          (1.7e-15, "a proton"), (1.6e-35, "the Planck length, the smallest length that physics describes")]
 
 
-def zoom_in_words(width: float) -> str:
+def zoom_number(width: float) -> str:
     zoom = WHOLE_SET[2] / width
-    if zoom < 10:
-        return f"Zoom: {zoom:.1f}."
     exponent = math.floor(math.log10(zoom))
-    number = f"{zoom:,.0f}" if zoom < 1e6 else f"{zoom / 10 ** exponent:.1f} x 10^{exponent}"
-    size = UNIVERSE / zoom
+    return f"{zoom:,.0f}" if zoom < 1e6 else f"{zoom / 10 ** exponent:.1f} x 10^{exponent}"
+
+
+def zoom_in_words(width: float) -> str:
+    """A zoom, as a comparison of sizes"""
+    size = UNIVERSE * width / WHOLE_SET[2]
     reference, name = min((entry for entry in SIZES if entry[0] >= size / 3), key=lambda entry: entry[0])
     ratio = reference / size  # the smallest thing that is not smaller than the picture
     if ratio < 30:
@@ -501,7 +503,7 @@ def zoom_in_words(width: float) -> str:
         thing = f"{round(ratio, -int(math.log10(ratio))):,.0f} times smaller than {name}"
     else:
         thing = f"10^{round(math.log10(ratio))} times smaller than {name}"
-    return f"Zoom: {number}. If the whole set were as wide as the observable universe, this picture would be {thing}."
+    return f"If the whole set were as wide as the observable universe, this picture would be {thing}."
 
 
 def same_line_if_room(next_label: str) -> None:
@@ -539,11 +541,13 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
     if not state.places_open:
         imgui.end_child()
         return
-    imgui.same_line(imgui.get_window_width() - em_size(4.5))
+    back = icons_fontawesome_6.ICON_FA_ARROW_LEFT + "  Back"
+    imgui.same_line(imgui.get_window_width() - imgui.calc_text_size(back).x - em_size(1.6))
     imgui.begin_disabled(not state.history)
-    if imgui.small_button("Back"):
+    if imgui.button(back):
         state.back()
     imgui.end_disabled()
+    imgui.set_item_tooltip("To the previous view")
 
     for i, (name, point, zooms) in enumerate(PLACES):
         if i > 0:
@@ -595,15 +599,19 @@ def status(top_left: imgui.ImVec2, h: int) -> None:
     if state.timed is None:
         return
     megapixels = state.timed.w * state.timed.h / 1e6
-    text = f"{state.engine.name}: {state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels"
+    cost = f"{state.engine.name}: {state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels"
     if state.shrink > 1:
-        text += f" (1 pixel out of {state.shrink ** 2})"
-    text += "\n" + zoom_in_words(state.width)
-    margin, padding, width = em_size(0.6), imgui.get_style().window_padding, em_size(34)
-    height = imgui.calc_text_size(text, wrap_width=width).y + 2 * padding.y
+        cost += f" (1 pixel out of {state.shrink ** 2})"
+    margin, padding = em_size(0.6), imgui.get_style().window_padding
+    width = imgui.calc_text_size(cost).x + 2 * padding.x + em_size(1)
+    height = imgui.get_text_line_height() + imgui.get_frame_height_with_spacing() + 2 * padding.y
     begin_over_picture("##status", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - height),
-                       imgui.ImVec2(width + 2 * padding.x, height), inputs=False)
-    imgui.text_wrapped(text)
+                       imgui.ImVec2(width, height))
+    imgui.text(cost)
+    imgui.align_text_to_frame_padding()
+    imgui.text(f"Zoom: {zoom_number(state.width)}")
+    imgui.same_line()
+    imgui_kit.help_marker(zoom_in_words(state.width))  # an (i): the zoom as a comparison of sizes
     imgui.end_child()
 
 
@@ -663,6 +671,11 @@ def explanations() -> None:
     """The side panel: the equation, how the selected engine works, and its code"""
     state = STATE
     assert state is not None
+    if imgui.button(icons_fontawesome_6.ICON_FA_ANGLES_RIGHT):
+        state.notes_open = False
+    imgui.set_item_tooltip("Hide the explanations: the picture takes the whole window")
+    imgui.same_line()
+    imgui.text_disabled("Explanations")
     rich_md.render_this_file("Intro")
     rich_md.render_this_file(state.engine.section)
     if imgui.collapsing_header("Its code"):
@@ -690,14 +703,15 @@ def gui() -> None:
     places_and_engine(top_left)
     status(top_left, h)
     all_pixels_button(right - gauge, bottom)
-    label = "Explanations" if not state.notes_open else "Hide the explanations"
-    padding = imgui.get_style().window_padding
-    width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x + 2 * padding.x
-    begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - width, top_left.y + em_size(0.6)),
-                       imgui.ImVec2(width, imgui.get_frame_height() + 2 * padding.y))
-    if imgui.button(label):
-        state.notes_open = not state.notes_open
-    imgui.end_child()
+    if not state.notes_open:  # a button to bring the explanations back
+        label = icons_fontawesome_6.ICON_FA_BOOK_OPEN + "  Explanations"
+        padding = imgui.get_style().window_padding
+        width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x + 2 * padding.x
+        begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - width, top_left.y + em_size(0.6)),
+                           imgui.ImVec2(width, imgui.get_frame_height() + 2 * padding.y))
+        if imgui.button(label):
+            state.notes_open = True
+        imgui.end_child()
 
     if state.notes_open:
         imgui.set_cursor_screen_pos(imgui.ImVec2(right + spacing, top_left.y))
