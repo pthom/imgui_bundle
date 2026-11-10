@@ -371,8 +371,9 @@ BUILT_IN_PLACES = [
     ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "", "")]),
     ("Elephant valley", ("0.275", "0.0068"), [
         (0.005, 3000, "trunks", "A parade of elephants, trunks up, along the right side of the set.")]),
-    ("Double spiral", ("-0.7453", "0.1127"), [
-        (6.5e-4, 2000, "a spiral", "A spiral made of spirals, at the entrance of Seahorse valley.")]),
+    ("The Sun King", ("-0.7453", "0.1127"), [
+        (6.5e-4, 2000, "The double spiral",
+         "A spiral made of spirals, at the entrance of Seahorse valley. The trip starts here.")]),
     ("The needle", ("-1.7548776662466927", "0"), [
         (0.07, 600, "a small copy", "A small copy of the whole set, on the needle that points to the left. "
                                     "There are infinitely many copies: see also the hidden one.")]),
@@ -404,7 +405,7 @@ BUILT_IN_PLACES = [
 ]
 
 
-# A trip by Pascal Thomet, made with the card's bookmark button: views in the format of my_places.json
+# Two trips by Pascal Thomet, made with the card's bookmark button: views in the format of my_places.json
 BUILT_IN_VIEWS: list[dict[str, Any]] = [
     {"name": "Needle Deep Dive", "width": 3.4, "iterations": 300,
      "re": "-0.60000000",
@@ -441,6 +442,42 @@ BUILT_IN_VIEWS: list[dict[str, Any]] = [
      "im": "0.000000000000432227993029688005649686627",
      "short": "The pupil: a mini Mandelbrot",
      "sentence": "Inside the pupil, the set again: the trip could start over from here."},
+    {"name": "The Sun King", "width": 5.12860613056932e-07, "iterations": 2000,
+     "re": "-0.74522928058969",
+     "im": "0.11270944083319",
+     "short": "The chameleon parade",
+     "sentence": "Chameleons appear, their tails curled into spirals."},
+    {"name": "The Sun King", "width": 1.4246128140470333e-08, "iterations": 2000,
+     "re": "-0.745229291360684",
+     "im": "0.112709494227371",
+     "short": "The chameleon's tapestry",
+     "sentence": "Fireworks in a chameleon's eye, woven like an ancient tapestry."},
+    {"name": "The Sun King", "width": 3.053439673454718e-13, "iterations": 4500,
+     "re": "-0.74522929143709509328",
+     "im": "0.11270949473803368298",
+     "short": "The golden wave",
+     "sentence": "A breaking wave, like Hokusai's Great Wave. It is a spiral again, like the one we started from."},
+    {"name": "The Sun King", "width": 2.2724238658972766e-19, "iterations": 6750,
+     "re": "-0.74522929143718330264307401",
+     "im": "0.11270949473799756675244593",
+     "short": "The cosmic waltz",
+     "sentence": "Two galaxies appear, dancing, with bright cores and interwoven spiral arms."},
+    {"name": "The Sun King", "width": 1.9079184336612477e-24, "iterations": 10125,
+     "re": "-0.7452292914371833026479430043569",
+     "im": "0.1127094947379975667489267029874",
+     "short": "The fabric of galaxies",
+     "sentence": "A whole galaxy cluster: four large glowing cores around smaller ones, and a delicate double "
+                 "spiral at the center. Their number doubles as we go."},
+    {"name": "The Sun King", "width": 4.52247340694124e-27, "iterations": 15187,
+     "re": "-0.7452292914371833026479430023859939",
+     "im": "0.1127094947379975667489267183438913",
+     "short": "At the heart of the galaxies",
+     "sentence": "A labyrinth of eight galaxies, hiding a miniature Mandelbrot at its heart."},
+    {"name": "The Sun King", "width": 1.2562426130392333e-28, "iterations": 15187,
+     "re": "-0.74522929143718330264794300241443713",
+     "im": "0.11270949473799756674892671834947836",
+     "short": "The king and his court",
+     "sentence": "A mini Mandelbrot crowned with golden rays, surrounded by its court of galaxies."},
 ]
 
 # My places: the views added with the card's bookmark button, kept in a file beside this one (git ignores it)
