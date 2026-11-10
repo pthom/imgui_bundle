@@ -37,6 +37,8 @@ r"""::md Help
 * *Automatic*: while you move by hand, the page raises them when the picture needs them.
 * The slider sets them by hand, and turns *automatic* off.
 
+**Compare with**: a second engine draws the right part of the picture. Drag the divider.
+
 **Colors**: click a gradient. The picture is recolored at once, not computed again.
 
 **The gauge** on the right: how deep the view is. White: every engine works. Orange: the perturbation only.
@@ -70,12 +72,13 @@ HERE = Path(__file__).parent
 
 Counts = tuple[np.ndarray, np.ndarray]  # for each pixel: its number of steps, and |z|^2 at the last one
 PROGRESS = [0.0]  # of the picture computed in the background ("All the pixels"): 0 to 1
+PROGRESS_SPAN = [0.0, 1.0]  # the part of it that the running engine covers (two engines in a split view): from, size
 
 
 def report(fraction: float) -> None:
     """An engine says how far it is. Only the background picture has a progress bar."""
     if threading.current_thread() is not threading.main_thread():
-        PROGRESS[0] = fraction
+        PROGRESS[0] = PROGRESS_SPAN[0] + fraction * PROGRESS_SPAN[1]
 
 
 @dataclass
@@ -344,15 +347,16 @@ def palette_colors(name: str, t: np.ndarray) -> np.ndarray:
                     axis=-1)
 
 
-def colors(counts: Counts, max_iter: int, palette: str) -> np.ndarray:
+def colors(counts: Counts, max_iter: int, palette: str, lowest: float | None = None) -> tuple[np.ndarray, float]:
     """An RGB picture. The count, minus log2(log2|z|), varies smoothly from a pixel to the next: no bands.
     The palette starts at the lowest count of the picture: a deep zoom, where all counts are high, keeps its
-    contrast."""
+    contrast. Returns this lowest count too: the two sides of a split view share it, to share their colors."""
     count, size2 = counts
     smooth = count + 1 - np.log2(np.log2(np.maximum(size2, 4.0)) / 2)
-    rgb = palette_colors(palette, 0.45 * np.log2(1 + (smooth - smooth.min()) / 6) % 1.0)
+    lowest = smooth.min() if lowest is None else lowest
+    rgb = palette_colors(palette, 0.45 * np.log2(1 + np.maximum(smooth - lowest, 0) / 6) % 1.0)
     rgb[count >= max_iter] = 0
-    return rgb.astype(np.uint8)
+    return rgb.astype(np.uint8), float(lowest)
 
 
 # ======================================================================================================================
@@ -361,10 +365,11 @@ def colors(counts: Counts, max_iter: int, palette: str) -> np.ndarray:
 class AllPixels(threading.Thread):
     """A picture with all its pixels, computed in the background: the page stays alive, and shows a progress bar.
     (In a browser, without threads: computed at once, the page waits.)"""
-    def __init__(self, engine: "Engine", view: View, wanted: tuple[Any, ...]) -> None:
+    def __init__(self, engines: list["Engine"], view: View, wanted: tuple[Any, ...]) -> None:
         super().__init__(daemon=True)
-        self.engine, self.view, self.wanted = engine, view, wanted
-        self.counts: Counts | None = None
+        self.engines, self.view, self.wanted = engines, view, wanted
+        self.counts: list[Counts] | None = None
+        self.each_seconds: list[float] = []
         self.start_time = time.perf_counter()
         self.seconds = 0.0
         PROGRESS[0] = 0.0
@@ -374,7 +379,13 @@ class AllPixels(threading.Thread):
             self.run()
 
     def run(self) -> None:
-        counts = self.engine.compute(self.view)
+        counts = []
+        for i, engine in enumerate(self.engines):
+            PROGRESS_SPAN[:] = i / len(self.engines), 1 / len(self.engines)
+            start = time.perf_counter()
+            counts.append(engine.compute(self.view))
+            self.each_seconds.append(time.perf_counter() - start)
+        PROGRESS_SPAN[:] = 0.0, 1.0
         self.seconds = time.perf_counter() - self.start_time
         self.counts = counts  # last: the page takes the picture as soon as it is there
 
@@ -384,7 +395,13 @@ class State:
         self.engine = ENGINES[2 if KERNELS else 1]
         self.max_iter = 300
         self.image = np.zeros((2, 2, 3), np.uint8)
-        self.counts: Counts | None = None  # the counts behind the image: a change of palette only recolors them
+        self.counts: list[Counts] = []  # the counts behind the image, per engine: a new palette only recolors them
+        self.each_seconds: list[float] = []  # the time of each engine
+        self.sides: list[np.ndarray] = []  # the picture of each engine
+        self.composed: tuple[Any, ...] | None = None  # what the image is made of
+        self.other: Engine | None = None  # the split view: a second engine, on the right of a divider
+        self.split = 0.5  # the place of the divider, 0 to 1
+        self.dragging_split = False
         self.palette = next(iter(PALETTES))
         self.painted: tuple[Any, ...] | None = None  # what the image shows: the computation, and its palette
         self.computed: tuple[str, Decimal, Decimal, float, int, int, int] | None = None  # what the image shows
@@ -457,7 +474,17 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     imgui.set_item_key_owner(imgui.Key.mouse_wheel_y)
     io = imgui.get_io()
     mx, my = io.mouse_pos.x - top_left.x - w / 2, io.mouse_pos.y - top_left.y - h / 2  # the mouse, from the center
-    if imgui.is_item_active() and (io.mouse_delta.x or io.mouse_delta.y):
+    on_divider = state.other is not None and imgui.is_item_hovered() and \
+        abs(io.mouse_pos.x - (top_left.x + state.split * w)) < em_size(0.8)
+    if imgui.is_item_activated() and on_divider:
+        state.dragging_split = True
+    if not imgui.is_item_active():
+        state.dragging_split = False
+    if on_divider or state.dragging_split:
+        imgui.set_mouse_cursor(imgui.MouseCursor_.resize_ew)
+    if state.dragging_split:  # the split view's divider follows the mouse
+        state.split = min(max((io.mouse_pos.x - top_left.x) / w, 0.03), 0.97)
+    elif imgui.is_item_active() and (io.mouse_delta.x or io.mouse_delta.y):
         state.move(-io.mouse_delta.x * pixel, io.mouse_delta.y * pixel)
     if imgui.is_item_hovered() and io.mouse_wheel and state.dive is None:
         factor = 0.8 ** io.mouse_wheel
@@ -465,7 +492,8 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
             state.move(mx * pixel * (1 - factor), -my * pixel * (1 - factor))
             state.width *= factor
             state.by_hand = True
-    if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0) and state.width > 10.0 ** (3 - DEEPEST):
+    if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0) and state.width > 10.0 ** (3 - DEEPEST) \
+            and not on_divider:
         state.remember()  # the clicked point comes to the center, and the view dives towards it
         state.move(mx * pixel, -my * pixel)
         state.dive = (state.width, state.width / DOUBLE_CLICK_ZOOM, imgui.get_time())
@@ -496,35 +524,78 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     if state.pixel_seconds is not None:
         affordable = (MOVING_BUDGET if moving else STILL_BUDGET) / state.pixel_seconds
         shrink = next((k for k in (1, 2, 4) if (w // k) * (h // k) <= affordable), 8)
-    wanted = (state.engine.name, *where, state.max_iter)
+    engines = [state.engine] + ([state.other] if state.other is not None else [])  # two: a split view
+    wanted = ("/".join(engine.name for engine in engines), *where, state.max_iter)
     refresh = wanted != state.computed or shrink < state.shrink
     job = state.all_pixels
     if job is not None and job.counts is not None:  # the background picture is ready: show it, if we are still there
         if job.wanted == wanted:
-            state.counts, state.seconds, state.timed = job.counts, job.seconds, job.view
+            state.counts, state.each_seconds, state.seconds, state.timed = \
+                job.counts, job.each_seconds, job.seconds, job.view
             state.computed, state.shrink = wanted, 1
         state.all_pixels = None
     elif refresh:
         view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink,
                     state.max_iter)
-        start_time = time.perf_counter()
-        state.counts = counts = state.engine.compute(view)
-        state.seconds, state.timed = time.perf_counter() - start_time, view
+        state.counts, state.each_seconds = [], []
+        for engine in engines:
+            start_time = time.perf_counter()
+            state.counts.append(engine.compute(view))
+            state.each_seconds.append(time.perf_counter() - start_time)
+        state.seconds, state.timed = sum(state.each_seconds), view
         state.pixel_seconds = state.seconds / (view.w * view.h)
         state.computed, state.shrink = wanted, shrink
-        escaped = counts[0][counts[0] < view.max_iter]
+        escaped = state.counts[0][0][state.counts[0][0] < view.max_iter]
         state.late = float(np.percentile(escaped, 90)) if escaped.size else math.inf
 
-    # Color the counts, when they or the palette changed
+    # Color the counts, when they or the palette changed: one picture per engine
     painted = (state.computed, state.shrink, state.palette)
-    repaint = painted != state.painted
-    if repaint and state.counts is not None and state.timed is not None:
-        image = colors(state.counts, state.timed.max_iter, state.palette)
-        state.image = np.ascontiguousarray(image.repeat(state.shrink, axis=0).repeat(state.shrink, axis=1))
+    if painted != state.painted and state.counts and state.timed is not None:
+        state.sides, lowest = [], None
+        for counts in state.counts:
+            image, lowest = colors(counts, state.timed.max_iter, state.palette, lowest)
+            state.sides.append(image.repeat(state.shrink, axis=0).repeat(state.shrink, axis=1))
         state.painted = painted
+    # The image: one picture, or the left of the first and the right of the second
+    composed = (state.painted, state.split if len(state.sides) > 1 else None)
+    recompose = composed != state.composed and bool(state.sides)
+    if recompose:
+        column = int(state.split * state.sides[0].shape[1])
+        state.image = np.ascontiguousarray(
+            state.sides[0] if len(state.sides) == 1 else
+            np.hstack([state.sides[0][:, :column], state.sides[1][:, column:]]))
+        state.composed = composed
     imgui.set_cursor_screen_pos(top_left)
-    immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=repaint)
+    immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=recompose)
+    if state.other is not None and len(state.each_seconds) > 1:
+        divider(top_left, w, h)
     return top_left, w, h
+
+
+def divider(top_left: imgui.ImVec2, w: int, h: int) -> None:
+    """The split view's divider: a line with a handle, and on each side its engine and its time"""
+    state = STATE
+    assert state is not None and state.other is not None
+    draw_list = imgui.get_window_draw_list()
+    white, black, shade = imgui.IM_COL32(255, 255, 255, 255), imgui.IM_COL32(0, 0, 0, 255), \
+        imgui.IM_COL32(0, 0, 0, 170)
+    x, y, r = top_left.x + state.split * w, top_left.y + h * 0.5, em_size(0.75)
+    draw_list.add_line((x, top_left.y), (x, top_left.y + h), black, 4)
+    draw_list.add_line((x, top_left.y), (x, top_left.y + h), white, 2)
+    draw_list.add_circle_filled((x, y), r + 2, black)
+    draw_list.add_circle_filled((x, y), r, white)
+    for sign in (-1, 1):  # two small arrows in the handle: it moves left and right
+        tip = x + sign * r * 0.72
+        back = tip - sign * r * 0.45
+        draw_list.add_triangle_filled((tip, y), (back, y - r * 0.4), (back, y + r * 0.4), black)
+    pad = em_size(0.35)
+    for sign, engine, seconds in ((-1, state.engine, state.each_seconds[0]), (1, state.other, state.each_seconds[1])):
+        label = f"{engine.name}: {seconds * 1000:.0f} ms"
+        size = imgui.calc_text_size(label)
+        left = x + r + 3 * pad if sign > 0 else x - r - 3 * pad - size.x
+        top, bottom = y - size.y / 2 - pad, y + size.y / 2 + pad
+        draw_list.add_rect_filled((left - pad, top), (left + size.x + pad, bottom), shade, em_size(0.3))
+        draw_list.add_text((left, y - size.y / 2), white, label)
 
 
 # To picture a zoom: if the whole set were as wide as the observable universe, what would the picture be as wide as?
@@ -655,6 +726,19 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
         imgui.end_disabled()
     if KERNELS is None:
         imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
+    if state.other is state.engine:
+        state.other = None
+    imgui.align_text_to_frame_padding()
+    imgui.text("Compare with")  # a split view: a second engine on the right of a divider
+    imgui.same_line()
+    imgui.set_next_item_width(em_size(13))
+    if imgui.begin_combo("##compare", state.other.name if state.other else "nothing"):
+        choices: list[Engine | None] = [None, *ENGINES]
+        for choice in choices:
+            usable = choice is None or (choice is not state.engine and not (choice.cpp_region and KERNELS is None))
+            if usable and imgui.selectable(choice.name if choice else "nothing", choice is state.other)[0]:
+                state.other, state.pixel_seconds, state.computed = choice, None, None
+        imgui.end_combo()
     imgui.set_next_item_width(em_size(9))
     changed, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 500000,
                                                flags=imgui.SliderFlags_.logarithmic)
@@ -676,6 +760,8 @@ def status(top_left: imgui.ImVec2, h: int) -> None:
         return
     megapixels = state.timed.w * state.timed.h / 1e6
     cost = f"{state.engine.name}: {state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels"
+    if state.other is not None and len(state.each_seconds) > 1:
+        cost = f"Two engines: {state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels each"
     if state.shrink > 1:
         cost += f" (1 pixel out of {state.shrink ** 2})"
     margin, padding = em_size(0.6), imgui.get_style().window_padding
@@ -712,7 +798,8 @@ def all_pixels_button(right: float, bottom: float) -> None:
         assert view is not None
         full = View(view.center_re, view.center_im, view.pixel / state.shrink, view.w * state.shrink,
                     view.h * state.shrink, view.max_iter)
-        state.all_pixels = AllPixels(state.engine, full, state.computed or ())
+        state.all_pixels = AllPixels([state.engine] + ([state.other] if state.other else []), full,
+                                     state.computed or ())
     imgui.end_child()
 
 
