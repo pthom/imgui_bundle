@@ -602,6 +602,7 @@ class State:
         self.stop: int | None = None  # the view of the place we are at, in its list: its caption shows
         self.arrived_at = 0.0  # when the journey to it ended
         self.playing = False  # the views of the place, one after the other
+        self.fade: tuple[np.ndarray, float] | None = None  # a fade from this picture, since this time
         self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
         self.place = ""
         self.history: list[tuple[Decimal, Decimal, float, int]] = []  # the views to come back to
@@ -721,6 +722,11 @@ class State:
             high = min(max(self.width, target_width, 2.5 * distance), float(WHOLE_SET[2]))
             middle = ((self.center_re + target_re) / 2, (self.center_im + target_im) / 2, high)
             self.dive = [(here, middle), (middle, there)]
+        leg_end = self.dive[0][1]
+        if math.log10(leg_end[2] / self.width) > FADE_DECADES:  # a long zoom out: a fade to its end instead
+            self.fade = (self.image.copy(), imgui.get_time())
+            self.center_re, self.center_im, self.width = leg_end
+            self.dive.pop(0)
         self.leg_start = imgui.get_time()
 
     def step(self, by: int) -> None:
@@ -753,6 +759,8 @@ HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the
 GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
 PAN_SECONDS = 0.9  # a journey between two views of the same width: a slide (or a pause, when they are the same)
 PLAY_SECONDS = 5.0  # playing a place's views: the time to look at each, once its picture is complete
+FADE_DECADES = 2.0  # a journey that would zoom out by more decades fades instead
+FADE_SECONDS = 0.7
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
 DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
@@ -917,8 +925,21 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
             state.sides[0] if len(state.sides) == 1 else
             np.hstack([state.sides[0][:, :column], state.sides[1][:, column:]]))
         state.composed = composed
+    # A fade from the picture we left (a long zoom out) to this one
+    shown, refresh = state.image, recompose
+    if state.fade is not None:
+        left_picture, start = state.fade
+        mix = int(256 * min(1.0, (imgui.get_time() - start) / FADE_SECONDS))
+        if mix >= 256 or left_picture.shape != state.image.shape:
+            state.fade, refresh = None, True
+        else:
+            mixed = left_picture.astype(np.uint16) * (256 - mix) + state.image.astype(np.uint16) * mix
+            shown = (mixed // 256).astype(np.uint8)
+            refresh = True
     imgui.set_cursor_screen_pos(top_left)
-    immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=recompose)
+    immvision.image_display("##mandelbrot", shown, (w, h), refresh_image=refresh)
+    if state.fade is not None:
+        hello_imgui.set_item_is_live()  # the fade goes on by itself: no idling meanwhile
     if state.other is not None and len(state.each_seconds) > 1 and len(state.shrinks) > 1:
         divider(top_left, w, h)
     return top_left, w, h
