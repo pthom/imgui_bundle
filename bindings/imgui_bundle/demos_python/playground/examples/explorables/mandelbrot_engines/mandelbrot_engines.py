@@ -37,6 +37,8 @@ r"""::md Help
 * *Automatic*: while you move by hand, the page raises them when the picture needs them.
 * The slider sets them by hand, and turns *automatic* off.
 
+**Colors**: click a gradient. The picture is recolored at once, not computed again.
+
 **The gauge** on the right: how deep the view is. White: every engine works. Orange: the perturbation only.
 """
 
@@ -321,18 +323,34 @@ PLACES = [
 # ======================================================================================================================
 #                                           From counts to colors
 # ======================================================================================================================
-PALETTE = np.array([(0, 7, 100), (32, 107, 203), (237, 255, 255), (255, 170, 0), (0, 2, 0), (0, 7, 100)])
-PALETTE_AT = [0.0, 0.16, 0.42, 0.6425, 0.8575, 1.0]  # a cyclic gradient: night blue, white, orange, black
+# The palettes: cyclic gradients (the last color is the first), as (position, color) stops
+PALETTES: dict[str, list[tuple[float, tuple[int, int, int]]]] = {
+    "Night and gold": [(0.0, (0, 7, 100)), (0.16, (32, 107, 203)), (0.42, (237, 255, 255)), (0.64, (255, 170, 0)),
+                       (0.86, (0, 2, 0)), (1.0, (0, 7, 100))],
+    "Fire": [(0.0, (10, 0, 0)), (0.25, (150, 10, 0)), (0.5, (255, 110, 0)), (0.7, (255, 225, 90)),
+             (0.82, (255, 255, 240)), (1.0, (10, 0, 0))],
+    "Lagoon": [(0.0, (68, 1, 84)), (0.25, (59, 82, 139)), (0.5, (33, 145, 140)), (0.72, (94, 201, 98)),
+               (0.88, (253, 231, 37)), (1.0, (68, 1, 84))],
+    "Twilight": [(0.0, (226, 217, 226)), (0.25, (104, 132, 196)), (0.5, (48, 20, 56)), (0.75, (186, 92, 98)),
+                 (1.0, (226, 217, 226))],
+    "Ink": [(0.0, (250, 248, 240)), (0.5, (20, 22, 30)), (1.0, (250, 248, 240))],
+}
 
 
-def colors(counts: Counts, max_iter: int) -> np.ndarray:
+def palette_colors(name: str, t: np.ndarray) -> np.ndarray:
+    """The colors of the palette at t (0 to 1), as an array of RGB values"""
+    stops = PALETTES[name]
+    return np.stack([np.interp(t, [at for at, _ in stops], [color[k] for _, color in stops]) for k in range(3)],
+                    axis=-1)
+
+
+def colors(counts: Counts, max_iter: int, palette: str) -> np.ndarray:
     """An RGB picture. The count, minus log2(log2|z|), varies smoothly from a pixel to the next: no bands.
     The palette starts at the lowest count of the picture: a deep zoom, where all counts are high, keeps its
     contrast."""
     count, size2 = counts
     smooth = count + 1 - np.log2(np.log2(np.maximum(size2, 4.0)) / 2)
-    t = 0.45 * np.log2(1 + (smooth - smooth.min()) / 6) % 1.0
-    rgb = np.stack([np.interp(t, PALETTE_AT, PALETTE[:, k]) for k in range(3)], axis=-1)
+    rgb = palette_colors(palette, 0.45 * np.log2(1 + (smooth - smooth.min()) / 6) % 1.0)
     rgb[count >= max_iter] = 0
     return rgb.astype(np.uint8)
 
@@ -346,7 +364,7 @@ class AllPixels(threading.Thread):
     def __init__(self, engine: "Engine", view: View, wanted: tuple[Any, ...]) -> None:
         super().__init__(daemon=True)
         self.engine, self.view, self.wanted = engine, view, wanted
-        self.image: np.ndarray | None = None
+        self.counts: Counts | None = None
         self.start_time = time.perf_counter()
         self.seconds = 0.0
         PROGRESS[0] = 0.0
@@ -356,9 +374,9 @@ class AllPixels(threading.Thread):
             self.run()
 
     def run(self) -> None:
-        image = colors(self.engine.compute(self.view), self.view.max_iter)
+        counts = self.engine.compute(self.view)
         self.seconds = time.perf_counter() - self.start_time
-        self.image = image  # last: the page takes the picture as soon as it is there
+        self.counts = counts  # last: the page takes the picture as soon as it is there
 
 
 class State:
@@ -366,6 +384,9 @@ class State:
         self.engine = ENGINES[2 if KERNELS else 1]
         self.max_iter = 300
         self.image = np.zeros((2, 2, 3), np.uint8)
+        self.counts: Counts | None = None  # the counts behind the image: a change of palette only recolors them
+        self.palette = next(iter(PALETTES))
+        self.painted: tuple[Any, ...] | None = None  # what the image shows: the computation, and its palette
         self.computed: tuple[str, Decimal, Decimal, float, int, int, int] | None = None  # what the image shows
         self.where: tuple[Decimal, Decimal, float, int, int] | None = None  # the view at the last frame
         self.seconds = 0.0  # the time of the last picture
@@ -480,25 +501,31 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     wanted = (state.engine.name, *where, state.max_iter)
     refresh = wanted != state.computed or shrink < state.shrink
     job = state.all_pixels
-    if job is not None and job.image is not None:  # the background picture is ready: show it, if we are still there
+    if job is not None and job.counts is not None:  # the background picture is ready: show it, if we are still there
         if job.wanted == wanted:
-            state.image, state.seconds, state.timed = job.image, job.seconds, job.view
-            state.computed, state.shrink, refresh = wanted, 1, True
+            state.counts, state.seconds, state.timed = job.counts, job.seconds, job.view
+            state.computed, state.shrink = wanted, 1
         state.all_pixels = None
     elif refresh:
         view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink,
                     state.max_iter)
         start_time = time.perf_counter()
-        counts = state.engine.compute(view)
-        state.image = colors(counts, view.max_iter)
-        state.image = np.ascontiguousarray(state.image.repeat(shrink, axis=0).repeat(shrink, axis=1))
+        state.counts = counts = state.engine.compute(view)
         state.seconds, state.timed = time.perf_counter() - start_time, view
         state.pixel_seconds = state.seconds / (view.w * view.h)
         state.computed, state.shrink = wanted, shrink
         escaped = counts[0][counts[0] < view.max_iter]
         state.late = float(np.percentile(escaped, 90)) if escaped.size else math.inf
+
+    # Color the counts, when they or the palette changed
+    painted = (state.computed, state.shrink, state.palette)
+    repaint = painted != state.painted
+    if repaint and state.counts is not None and state.timed is not None:
+        image = colors(state.counts, state.timed.max_iter, state.palette)
+        state.image = np.ascontiguousarray(image.repeat(state.shrink, axis=0).repeat(state.shrink, axis=1))
+        state.painted = painted
     imgui.set_cursor_screen_pos(top_left)
-    immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=refresh)
+    immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=repaint)
     return top_left, w, h
 
 
@@ -548,6 +575,28 @@ def begin_over_picture(name: str, pos: imgui.ImVec2, size: imgui.ImVec2, inputs:
     child_flags = imgui.ChildFlags_.borders | (imgui.ChildFlags_.auto_resize_y if size.y == 0 else 0)
     imgui.begin_child(name, size, child_flags, 0 if inputs else imgui.WindowFlags_.no_inputs)
     imgui.pop_style_color()
+
+
+def palette_swatches() -> None:
+    """A row of gradients: a click picks the palette. The picture is recolored at once, not computed again."""
+    state = STATE
+    assert state is not None
+    draw_list, size, steps = imgui.get_window_draw_list(), imgui.ImVec2(em_size(5.3), em_size(1.3)), 48
+    for name in PALETTES:
+        if imgui.invisible_button(f"##palette {name}", size):
+            state.palette = name
+        imgui.set_item_tooltip(name)
+        low, high = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+        for i, (r, g, b) in enumerate(palette_colors(name, (np.arange(steps) + 0.5) / steps)):
+            x0, x1 = low.x + size.x * i / steps, low.x + size.x * (i + 1) / steps
+            draw_list.add_rect_filled((x0, low.y), (x1 + 1, high.y), imgui.IM_COL32(int(r), int(g), int(b), 255))
+        if name == state.palette:  # the chosen one: a frame
+            draw_list.add_rect((low.x - 1, low.y - 1), (high.x + 1, high.y + 1), imgui.get_color_u32(imgui.Col_.text),
+                               thickness=2.5)
+        elif imgui.is_item_hovered():
+            draw_list.add_rect(low, high, imgui.get_color_u32(imgui.Col_.text_disabled))
+        imgui.same_line(0, em_size(0.35))
+    imgui.new_line()
 
 
 def places_and_engine(top_left: imgui.ImVec2) -> None:
@@ -615,6 +664,7 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
     _, state.auto_iterations = imgui.checkbox("automatic", state.auto_iterations)
     imgui.set_item_tooltip("While you move the view by hand, the page raises the iterations when the boundary\n"
                            "needs them (black where there should be detail), and lowers them when it can.")
+    palette_swatches()
     imgui.end_child()
 
 
@@ -729,14 +779,14 @@ def gui() -> None:
     places_and_engine(top_left)
     status(top_left, h)
     all_pixels_button(right - gauge, bottom)
-    if not state.notes_open:  # a button to bring the explanations back
-        label = icons_fontawesome_6.ICON_FA_BOOK_OPEN + "  Explanations"
-        padding = imgui.get_style().window_padding
-        width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x + 2 * padding.x
-        begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - width, top_left.y + em_size(0.6)),
-                           imgui.ImVec2(width, imgui.get_frame_height() + 2 * padding.y))
-        if imgui.button(label):
+    if not state.notes_open:  # an arrow to bring the explanations back
+        padding, side = imgui.get_style().window_padding, imgui.get_frame_height()
+        begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - side - 2 * padding.x,
+                                                          top_left.y + em_size(0.6)),
+                           imgui.ImVec2(side + 2 * padding.x, side + 2 * padding.y))
+        if imgui.button(icons_fontawesome_6.ICON_FA_ANGLES_LEFT, (side, side)):
             state.notes_open = True
+        imgui.set_item_tooltip("Show the explanations: the equation, how the engine works, its code")
         imgui.end_child()
 
     if state.notes_open:
