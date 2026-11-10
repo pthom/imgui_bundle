@@ -34,8 +34,8 @@ import numpy as np
 from imgui_bundle import em_size, imgui, immapp, immvision, rich_md
 
 THREADS = os.cpu_count() or 4  # the bands of rows computed at once by the C++ engines (in a browser: one)
-PREVIEW_SHRINK = 4  # while the view moves, a slow engine computes one pixel out of 4 x 4
-SLOW_SECONDS = 0.05  # an engine is slow when a full picture takes longer
+MOVING_BUDGET = 0.04  # seconds for a picture while the view moves. An engine that cannot afford all the pixels
+STILL_BUDGET = 1.5  # in its budget computes one out of 4, 16 or 64. This one: once the view stopped
 WHOLE_SET = ("-0.6", "0", 3.4)  # a view: the center (re, im), with as many digits as needed, and the width
 ESCAPE2 = 256.0  # |z| > 16, squared
 IN_BROWSER = sys.platform == "emscripten"
@@ -66,7 +66,8 @@ class View:
 
 r"""::md Python
 ### Python
-The definition, as two loops. It is the slowest by far, so it computes one pixel out of 64.
+The definition, as two loops. It is the slowest by far: in the time given to a picture, it can only afford
+one pixel out of 16 or 64.
 ::code
 """
 def python_engine(view: View) -> Counts:
@@ -87,7 +88,6 @@ def python_engine(view: View) -> Counts:
 r"""::md numpy
 ### numpy
 All the pixels advance together, one step per line of Python. The pixels that escaped leave the computation.
-It computes one pixel out of 4.
 ::code
 """
 def numpy_engine(view: View) -> Counts:
@@ -230,29 +230,59 @@ class Engine:
     name: str
     section: str  # its ::md section in this file
     compute: Callable[[View], Counts]
-    shrink: int  # computes one pixel out of shrink x shrink
     cpp_region: str = ""  # its function in mandel_kernels.cpp (empty: an engine in Python only)
 
 
 ENGINES = [
-    Engine("Python", "Python", python_engine, shrink=8),
-    Engine("numpy", "numpy", numpy_engine, shrink=2),
-    Engine("C++", "Cpp", cpp_engine, shrink=1, cpp_region="Double"),
-    Engine("C++ with perturbation", "Perturbation", perturbation_engine, shrink=1, cpp_region="Perturbation"),
+    Engine("Python", "Python", python_engine),
+    Engine("numpy", "numpy", numpy_engine),
+    Engine("C++", "Cpp", cpp_engine, cpp_region="Double"),
+    Engine("C++ with perturbation", "Perturbation", perturbation_engine, cpp_region="Perturbation"),
 ]
 
-# Places to visit: a name, a point (re, im), and its zooms: (the width of the view, the iterations, what to see)
-SEAHORSE = ("-0.743916538692433356599334896378352022720811396866", "0.131688791359494617577789121421345189627001255958")
+# Places to visit: a name, a point (re, im), and its zooms: the width of the view, the iterations, a short name,
+# and what to see there. The digits of a point limit its zooms: 110 digits for a zoom of 10^100.
+SEAHORSE = ("-0.743916538692433356599334896378352022720811393898656056544159"
+            "34462016366377146254866440653871761911999857422",
+            "0.131688791359494617577789121421345189627001256552777831155761"
+            "33333081667103570998513450421077334266471040041")
+# The center of a small copy of the set, hidden in the spirals of the valley (found with Newton's method)
+HIDDEN_COPY = ("-0.74391653869243335659933489638638694153569553630943849046081220664810341437",
+               "0.13168879135949461757778912139905999762536756237320873041503736241957753062")
 PLACES = [
-    ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "")]),
+    ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "", "")]),
+    ("Elephant valley", ("0.275", "0.0068"), [
+        (0.005, 3000, "trunks", "A parade of elephants, trunks up, along the right side of the set.")]),
+    ("Double spiral", ("-0.7453", "0.1127"), [
+        (6.5e-4, 2000, "a spiral", "A spiral made of spirals, at the entrance of Seahorse valley.")]),
+    ("The needle", ("-1.7548776662466927", "0"), [
+        (0.07, 600, "a small copy", "A small copy of the whole set, on the needle that points to the left. "
+                                    "There are infinitely many copies: see also the hidden one.")]),
+    ("Feigenbaum point", ("-1.401155189092050593", "0"), [
+        (0.06, 2000, "bulbs", "Each bulb carries a smaller one, about 4.669 times smaller: Feigenbaum's constant."),
+        (6e-5, 6000, "the same, 1000 times smaller", "A thousand times closer: the cascade of bulbs goes on.")]),
     ("Seahorse valley", SEAHORSE, [
-        (3e-9, 3000, "spirals within spirals. The C++ engine starts to drift: compare with the perturbation"),
-        (2e-14, 4500, "the end of double. The C++ engine draws blocks, the perturbation draws the picture"),
-        (1e-37, 9000, "only the perturbation gets here. Its reference orbit has 60 digits")]),
+        (3e-9, 3000, "spirals",
+         "Spirals within spirals. The C++ engine starts to drift here: compare it with the perturbation."),
+        (2e-14, 4500, "the end of double",
+         "The end of double: the C++ engine draws blocks, the perturbation draws the picture."),
+        (1e-37, 9000, "perturbation only",
+         "Only the perturbation gets here. Its reference orbit is computed with 60 digits."),
+        (3e-100, 14000, "deeper still",
+         "Still spirals, 63 zooms of ten further. Each picture needs about 12 000 iterations per pixel.")]),
+    ("A hidden copy", HIDDEN_COPY, [
+        (1e-44, 30000, "rings", "Something is in the middle of the spirals: rings around a center."),
+        (1e-46, 30000, "closer", "Closer: the rings announce a copy of the set, 100 times smaller still."),
+        (4.5e-49, 60000, "the copy",
+         "A copy of the whole set, tilted, nearly 10^49 times smaller. Each pixel needs 20 000 to 60 000 "
+         "iterations.")]),
     ("The point i", ("0", "1"), [
-        (1e-8, 600, "c = i is on the boundary: a branching tree, with detail at every scale"),
-        (1e-57, 1200, "the same tree. A proton next to the observable universe is only a zoom of 10^41"),
-        (1e-287, 2000, "the same tree again, near the smallest number that a double can hold")]),
+        (1e-8, 600, "a tree",
+         "The point c = i is on the boundary: a branching tree, with detail at every scale."),
+        (1e-57, 1200, "the same tree",
+         "The same tree. A proton next to the observable universe is only a zoom of 10^41."),
+        (1e-287, 2000, "the limit",
+         "The same tree again, near the smallest number that a double can hold: the limit of this page.")]),
 ]
 
 
@@ -283,18 +313,23 @@ class State:
         self.engine = ENGINES[2 if KERNELS else 1]
         self.max_iter = 300
         self.image = np.zeros((2, 2, 3), np.uint8)
-        self.computed: tuple[str, View] | None = None  # what the image shows
+        self.computed: tuple[str, Decimal, Decimal, float, int, int, int] | None = None  # what the image shows
         self.where: tuple[Decimal, Decimal, float, int, int] | None = None  # the view at the last frame
-        self.seconds = 0.0  # the time of the last full picture
+        self.seconds = 0.0  # the time of the last picture
         self.timed: View | None = None  # its view
+        self.shrink = 8  # it holds one pixel out of shrink x shrink
+        self.all_pixels_of: tuple[str, Decimal, Decimal, float, int, int, int] | None = None  # see the button
+        self.pixel_seconds: float | None = None  # the cost of a pixel, measured on the last picture
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
         self.go_to(WHOLE_SET, 300, animate=False)
 
-    def go_to(self, place: tuple[str, str, float], max_iter: int, animate: bool = True) -> None:
+    def go_to(self, place: tuple[str, str, float], max_iter: int, story: str = "", animate: bool = True) -> None:
         getcontext().prec = digits_for(place[2] / 2000)
         self.center_re, self.center_im, self.width = Decimal(place[0]), Decimal(place[1]), place[2]
         self.max_iter = max_iter
+        self.story = story  # what to see at this place
+        self.pixel_seconds = None  # a new place: a new cost
         if animate:
             self.dive, self.width = (float(WHOLE_SET[2]), place[2], imgui.get_time()), float(WHOLE_SET[2])
 
@@ -328,6 +363,7 @@ def picture(size: imgui.ImVec2) -> None:
             mx, my = io.mouse_pos.x - top_left.x - w / 2, io.mouse_pos.y - top_left.y - h / 2
             state.move(mx * pixel * (1 - factor), -my * pixel * (1 - factor))
             state.width *= factor
+            state.story = ""
 
     # A dive to a place: the width shrinks at a constant number of decades per second
     if state.dive is not None:
@@ -338,23 +374,28 @@ def picture(size: imgui.ImVec2) -> None:
         if progress >= 1.0:
             state.dive = None
 
-    # Compute, when the view or the engine changed. While the view moves, a slow engine gives a coarse preview.
+    # Compute, when the view or the engine changed, and again once the view stopped, with a larger budget
     where = (state.center_re, state.center_im, state.width, w, h)
     if where != state.where:
         state.where, state.moved_at = where, imgui.get_time()
     moving = imgui.get_time() - state.moved_at < 0.15
-    shrink = state.engine.shrink * (PREVIEW_SHRINK if moving and state.seconds > SLOW_SECONDS else 1)
-    view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink, state.max_iter)
-    wanted = (state.engine.name, view)
-    refresh = wanted != state.computed
+    shrink = 8  # for a first picture: it measures the cost of a pixel. Then: what the budget affords
+    if state.pixel_seconds is not None:
+        affordable = (MOVING_BUDGET if moving else STILL_BUDGET) / state.pixel_seconds
+        shrink = next((k for k in (1, 2, 4) if (w // k) * (h // k) <= affordable), 8)
+    wanted = (state.engine.name, *where, state.max_iter)
+    if state.all_pixels_of == wanted:  # asked with the button: whatever it costs
+        shrink = 1
+    refresh = wanted != state.computed or shrink < state.shrink
     if refresh:
+        view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink,
+                    state.max_iter)
         start_time = time.perf_counter()
         state.image = colors(state.engine.compute(view), view.max_iter)
-        if shrink > 1:
-            state.image = np.ascontiguousarray(state.image.repeat(shrink, axis=0).repeat(shrink, axis=1))
-        if shrink == state.engine.shrink:  # a full picture
-            state.seconds, state.timed = time.perf_counter() - start_time, view
-        state.computed = wanted
+        state.image = np.ascontiguousarray(state.image.repeat(shrink, axis=0).repeat(shrink, axis=1))
+        state.seconds, state.timed = time.perf_counter() - start_time, view
+        state.pixel_seconds = state.seconds / (view.w * view.h)
+        state.computed, state.shrink = wanted, shrink
     imgui.set_cursor_screen_pos(top_left)
     immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=refresh)
 
@@ -373,11 +414,14 @@ def zoom_in_words(width: float) -> str:
     exponent = math.floor(math.log10(zoom))
     number = f"{zoom:,.0f}" if zoom < 1e6 else f"{zoom / 10 ** exponent:.1f} x 10^{exponent}"
     size = UNIVERSE / zoom
-    if size < SIZES[-1][0] / 100:
-        thing = f"10^{round(math.log10(SIZES[-1][0] / size))} times smaller than the Planck length, the smallest " \
-                "length that physics describes"
+    reference, name = min((entry for entry in SIZES if entry[0] >= size / 3), key=lambda entry: entry[0])
+    ratio = reference / size  # the smallest thing that is not smaller than the picture
+    if ratio < 30:
+        thing = f"about as wide as {name}"
+    elif ratio < 1e6:
+        thing = f"{round(ratio, -int(math.log10(ratio))):,.0f} times smaller than {name}"
     else:
-        thing = "as wide as " + min(SIZES, key=lambda entry: abs(math.log10(entry[0] / size)))[1]
+        thing = f"10^{round(math.log10(ratio))} times smaller than {name}"
     return f"Zoom: {number}. If the whole set were as wide as the observable universe, this picture would be {thing}."
 
 
@@ -399,7 +443,7 @@ def controls() -> None:
             same_line_if_room(engine.name)
         imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
         if imgui.radio_button(engine.name, state.engine is engine):
-            state.engine, state.seconds = engine, 0.0
+            state.engine, state.pixel_seconds, state.computed = engine, None, None
         imgui.end_disabled()
     if KERNELS is None:
         imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
@@ -407,9 +451,13 @@ def controls() -> None:
         megapixels = state.timed.w * state.timed.h / 1e6
         imgui.text(f"{state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels")
         imgui.same_line()
-        imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.1f} million pixels per second")
-        if state.seconds > SLOW_SECONDS:
-            imgui.text_disabled("A coarse preview while the view moves, the full picture when it stops.")
+        imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.2f} million pixels per second")
+        if state.shrink > 1:
+            seconds = state.seconds * state.shrink ** 2
+            imgui.text_disabled(f"One pixel out of {state.shrink ** 2}, to stay under {STILL_BUDGET} s.")
+            imgui.same_line()
+            if imgui.small_button(f"All the pixels (about {seconds:.0f} s)"):
+                state.all_pixels_of = state.computed
 
     imgui.separator_text("Where we are")
     imgui.text_wrapped(zoom_in_words(state.width))
@@ -422,18 +470,26 @@ def controls() -> None:
         if i > 0:
             same_line_if_room(name + "    ")
         if imgui.button(name):  # a click on the name: its first zoom
-            state.go_to((*point, zooms[0][0]), zooms[0][1])
-        if len(zooms) > 1:  # an arrow beside it: the menu of its zooms
+            state.go_to((*point, zooms[0][0]), zooms[0][1], zooms[0][3])
+        below = imgui.ImVec2(imgui.get_item_rect_min().x, imgui.get_item_rect_max().y)
+        if len(zooms) > 1:  # an arrow beside it: the menu of its zooms, which opens under the button
             imgui.same_line(0, 1)
             if imgui.arrow_button(f"##zooms of {name}", imgui.Dir.down):
                 imgui.open_popup(f"zooms of {name}")
+            imgui.set_next_window_pos(below)
             if imgui.begin_popup(f"zooms of {name}"):
-                for width, max_iter, story in zooms:
-                    if imgui.selectable(f"Zoom 10^{math.floor(math.log10(WHOLE_SET[2] / width))}: {story}", False)[0]:
-                        state.go_to((*point, width), max_iter)
+                for width, max_iter, short, story in zooms:
+                    zoom = math.floor(math.log10(WHOLE_SET[2] / width))
+                    if imgui.selectable(f"Zoom 10^{zoom}: {short}", False)[0]:
+                        state.go_to((*point, width), max_iter, story)
                 imgui.end_popup()
+    if state.story:
+        imgui.text_wrapped(state.story)
     imgui.set_next_item_width(em_size(10))
-    _, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 50000, flags=imgui.SliderFlags_.logarithmic)
+    changed, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 500000,
+                                               flags=imgui.SliderFlags_.logarithmic)
+    if changed:
+        state.pixel_seconds = None
     imgui.set_item_tooltip("Black where there should be detail? Raise the iterations.")
 
     imgui.separator_text("How this engine works")
