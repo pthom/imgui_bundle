@@ -774,7 +774,8 @@ PLAY_WHOLE_SECONDS = 1.5  # and at the whole set, where a trip starts
 FADE_DECADES = 2.0  # a journey that would zoom out by more decades fades instead
 FADE_SECONDS = 0.7
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
-DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
+DEEPEST = 300  # the deepest zoom, in decades: a double holds numbers down to 1e-308
+GAUGE_DECADES = 60  # the gauge's last decade: deeper pictures take minutes
 DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
 
 
@@ -1406,7 +1407,8 @@ def side_panel(side: int, x: float, y: float) -> None:
 
 
 def depth_gauge(right: float, top: float, bottom: float) -> None:
-    """Along the right edge: how deep we are, from a zoom of 1 to 10^300, and where double precision ends"""
+    """Along the right edge: how deep we are, from a zoom of 1 to 10^60, and where double precision ends. A deeper
+    view stays at its bottom, with its decade."""
     state = STATE
     assert state is not None
     draw_list = imgui.get_window_draw_list()
@@ -1415,18 +1417,21 @@ def depth_gauge(right: float, top: float, bottom: float) -> None:
     x, line_height = right - em_size(0.9), imgui.get_text_line_height()
 
     def y_of(decade: float) -> float:
-        return top + (bottom - top) * min(max(decade, 0), DEEPEST) / DEEPEST
+        return top + (bottom - top) * min(max(decade, 0), GAUGE_DECADES) / GAUGE_DECADES
 
     draw_list.add_rect_filled((right - em_size(4.6), top - em_size(0.8)), (right, bottom + em_size(0.8)),
                               imgui.IM_COL32(0, 0, 0, 170), em_size(0.4))
     draw_list.add_line((x, top), (x, y_of(DOUBLE_ENDS)), white, 3)  # where every engine works
     draw_list.add_line((x, y_of(DOUBLE_ENDS)), (x, bottom), orange, 3)  # the perturbation only
-    for decade in (DOUBLE_ENDS, *range(50, DEEPEST + 1, 50)):  # the end of double, then every 50 decades
+    depth = math.log10(WHOLE_SET[2] / state.width)
+    for decade in (DOUBLE_ENDS, *range(20, GAUGE_DECADES + 1, 10)):  # the end of double, then every 10 decades
         label, color = f"10^{decade}", white if decade == DOUBLE_ENDS else dim
+        if decade == GAUGE_DECADES and depth > GAUGE_DECADES:  # deeper than the gauge: the view's decade
+            label, color = f"10^{depth:.0f}", white
         draw_list.add_line((x - em_size(0.3), y_of(decade)), (x, y_of(decade)), color, 1)
         draw_list.add_text((x - em_size(0.6) - imgui.calc_text_size(label).x, y_of(decade) - line_height / 2), color,
                            label)
-    here = y_of(math.log10(WHOLE_SET[2] / state.width))
+    here = y_of(depth)
     draw_list.add_circle_filled((x, here), em_size(0.45), white)
     draw_list.add_circle_filled((x, here), em_size(0.28), orange if here > y_of(DOUBLE_ENDS) else imgui.IM_COL32(
         32, 107, 203, 255))
