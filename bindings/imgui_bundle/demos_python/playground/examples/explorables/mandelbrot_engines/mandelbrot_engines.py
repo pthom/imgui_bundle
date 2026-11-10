@@ -397,8 +397,7 @@ class State:
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
         self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
-        self.story = ""
-        self.history: list[tuple[Decimal, Decimal, float, int, str]] = []  # the views to come back to
+        self.history: list[tuple[Decimal, Decimal, float, int]] = []  # the views to come back to
         self.auto_iterations = True  # the page adapts the iterations when the view is moved by hand
         self.by_hand = False  # the view was moved by hand since the last place
         self.late: float | None = None  # in the last picture: the count below which 90% of the escaped pixels are
@@ -406,13 +405,13 @@ class State:
         self.go_to(WHOLE_SET, 300, animate=False)
 
     def remember(self) -> None:
-        self.history.append((self.center_re, self.center_im, self.width, self.max_iter, self.story))
+        self.history.append((self.center_re, self.center_im, self.width, self.max_iter))
 
     def back(self) -> None:
-        self.center_re, self.center_im, self.width, self.max_iter, self.story = self.history.pop()
+        self.center_re, self.center_im, self.width, self.max_iter = self.history.pop()
         self.dive, self.pixel_seconds = None, None
 
-    def go_to(self, place: tuple[str, str, float], max_iter: int, story: str = "", animate: bool = True) -> None:
+    def go_to(self, place: tuple[str, str, float], max_iter: int, animate: bool = True) -> None:
         getcontext().prec = digits_for(place[2] / 2000)
         target_re, target_im = Decimal(place[0]), Decimal(place[1])
         # The dive starts from the current view when the target is inside it (another zoom of the same place),
@@ -424,7 +423,6 @@ class State:
             start = self.width
         self.center_re, self.center_im, self.width = target_re, target_im, place[2]
         self.max_iter = max_iter
-        self.story = story  # what to see at this place
         self.pixel_seconds = None  # a new place: a new cost
         self.by_hand = False
         if animate:
@@ -466,12 +464,12 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
         if 10.0 ** -DEEPEST < state.width * factor < 8:  # zoom around the mouse: the point under it stays there
             state.move(mx * pixel * (1 - factor), -my * pixel * (1 - factor))
             state.width *= factor
-            state.story, state.by_hand = "", True
+            state.by_hand = True
     if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0) and state.width > 10.0 ** (3 - DEEPEST):
         state.remember()  # the clicked point comes to the center, and the view dives towards it
         state.move(mx * pixel, -my * pixel)
         state.dive = (state.width, state.width / DOUBLE_CLICK_ZOOM, imgui.get_time())
-        state.story, state.by_hand = "", True
+        state.by_hand = True
 
     # A dive to a place: the width shrinks at a constant number of decades per second
     if state.dive is not None:
@@ -629,21 +627,23 @@ def places_and_engine(top_left: imgui.ImVec2) -> None:
         if i > 0:
             same_line_if_room(name + "    ")
         if imgui.button(name):  # a click on the name: its first zoom
-            state.go_to((*point, zooms[0][0]), zooms[0][1], zooms[0][3])
+            state.go_to((*point, zooms[0][0]), zooms[0][1])
         below = imgui.ImVec2(imgui.get_item_rect_min().x, imgui.get_item_rect_max().y)
-        if len(zooms) > 1:  # an arrow beside it: the menu of its zooms, which opens under the button
+        if zooms[0][3]:  # an arrow beside it: the menu of its zooms, which opens under the button
             imgui.same_line(0, 1)
             if imgui.arrow_button(f"##zooms of {name}", imgui.Dir.down):
                 imgui.open_popup(f"zooms of {name}")
             imgui.set_next_window_pos(below)
+            imgui.set_next_window_size_constraints((em_size(21), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for (i)
             if imgui.begin_popup(f"zooms of {name}"):
                 for width, max_iter, short, story in zooms:
                     zoom = math.floor(math.log10(WHOLE_SET[2] / width))
-                    if imgui.selectable(f"Zoom 10^{zoom}: {short}", False)[0]:
-                        state.go_to((*point, width), max_iter, story)
+                    label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
+                    if imgui.selectable(label, False, size=(em_size(17), 0))[0]:
+                        state.go_to((*point, width), max_iter)
+                    imgui.same_line()
+                    imgui_kit.help_marker(story)  # an (i): what to see there
                 imgui.end_popup()
-    if state.story:
-        imgui.text_wrapped(state.story)
 
     imgui.separator_text("Computed by")
     for i, engine in enumerate(ENGINES):
