@@ -12,34 +12,27 @@ r"""::md Intro
 Every pixel is a number $c$. Iterate $z \leftarrow z^2 + c$ from $z = 0$, and count the steps until $|z| > 16$:
 the count gives the color. Points that never escape are in the set, in black.
 
-Pick a place, change the engine, and watch the time under the picture. The gauge on the right shows how deep
+Pick a place and an engine on the card at the bottom left, and watch the time. The gauge on the right shows how deep
 we are: its white part, down to a zoom of 10^13, is where every engine works. Its orange part is for the
 perturbation only.
 """
 
 r"""::md Help
 **Moving around**
-* **Wheel**: zoom, around the mouse.
-* **Drag**: move the view.
+* **Wheel**: zoom, around the mouse. **Drag**: move the view.
 * **Double click**: dive towards the clicked point.
-* **Back**: return to the previous view. Places and double clicks are remembered.
+* The arrow, bottom left: back to the previous view.
 
-**Places**
-* A click on a name goes to its first zoom.
-* The arrow beside it lists its deeper zooms.
+**The card, bottom left**
+* The **place's name** is a menu of places. The **zoom** beside it is a menu of deeper views of that place.
+* The **engine's name** is a menu: pick another one, and watch its time.
+* **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
+* The gear: the iterations and the colors.
 
 **Engines**
 * Every engine gets the same time for a picture: 1.5 s, and much less while the view moves.
 * An engine that cannot afford all the pixels computes one out of 4, 16 or 64.
   **All the pixels** then computes them all in the background, and can be cancelled.
-
-**Iterations**
-* *Automatic*: while you move by hand, the page raises them when the picture needs them.
-* The slider sets them by hand, and turns *automatic* off.
-
-**Compare with**: a second engine draws the right part of the picture. Drag the divider.
-
-**Colors**: click a gradient. The picture is recolored at once, not computed again.
 
 **The gauge** on the right: how deep the view is. White: every engine works. Orange: the perturbation only.
 """
@@ -431,7 +424,9 @@ class State:
         self.auto_iterations = True  # the page adapts the iterations when the view is moved by hand
         self.by_hand = False  # the view was moved by hand since the last place
         self.late: float | None = None  # in the last picture: the count below which 90% of the escaped pixels are
-        self.places_open, self.notes_open = True, False  # the panel over the picture, the explanations beside it
+        self.notes_open = False  # the explanations beside the picture
+        self.card_height = em_size(5.0)  # the sizes of the panels over the picture, measured at the last frame
+        self.side_widths = [em_size(20), em_size(20)]
         self.explained = self.engine  # the engine that the explanations are about: it follows the engine chosen
         self.shown_tab: Engine | None = None  # the tab open at the last frame
         self.go_to(WHOLE_SET, 300, animate=False)
@@ -600,12 +595,11 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
 
 
 def divider(top_left: imgui.ImVec2, w: int, h: int) -> None:
-    """The split view's divider: a line with a handle, and on each side its engine and its time"""
+    """The split view's divider: a line with a handle"""
     state = STATE
     assert state is not None and state.other is not None
     draw_list = imgui.get_window_draw_list()
-    white, black, shade = imgui.IM_COL32(255, 255, 255, 255), imgui.IM_COL32(0, 0, 0, 255), \
-        imgui.IM_COL32(0, 0, 0, 170)
+    white, black = imgui.IM_COL32(255, 255, 255, 255), imgui.IM_COL32(0, 0, 0, 255)
     x, y, r = top_left.x + state.split * w, top_left.y + h * 0.5, em_size(0.75)
     draw_list.add_line((x, top_left.y), (x, top_left.y + h), black, 4)
     draw_list.add_line((x, top_left.y), (x, top_left.y + h), white, 2)
@@ -615,17 +609,6 @@ def divider(top_left: imgui.ImVec2, w: int, h: int) -> None:
         tip = x + sign * r * 0.72
         back = tip - sign * r * 0.45
         draw_list.add_triangle_filled((tip, y), (back, y - r * 0.4), (back, y + r * 0.4), black)
-    pad = em_size(0.35)
-    for sign, engine, seconds in ((-1, state.engine, state.each_seconds[0]), (1, state.other, state.each_seconds[1])):
-        label = f"{engine.name}: {seconds * 1000:.0f} ms"
-        if state.shrinks[0 if sign < 0 else 1] > 1:
-            label += f" (1 pixel out of {state.shrinks[0 if sign < 0 else 1] ** 2})"
-        size = imgui.calc_text_size(label)
-        left = x + r + 3 * pad if sign > 0 else x - r - 3 * pad - size.x
-        top, bottom = y - size.y / 2 - pad, y + size.y / 2 + pad
-        draw_list.add_rect_filled((left - pad, top), (left + size.x + pad, bottom), shade, em_size(0.3))
-        draw_list.add_text((left, y - size.y / 2), white, label)
-
 
 # To picture a zoom: if the whole set were as wide as the observable universe, what would the picture be as wide as?
 UNIVERSE = 8.8e26  # meters
@@ -664,15 +647,57 @@ def same_line_if_room(next_label: str) -> None:
 # ======================================================================================================================
 #                             The panels over the picture, and the explanations beside it
 # ======================================================================================================================
-def begin_over_picture(name: str, pos: imgui.ImVec2, size: imgui.ImVec2, inputs: bool = True) -> None:
-    """A semi-transparent panel at a fixed place over the picture (a height of 0: as tall as its content).
-    To be closed with imgui.end_child()."""
+def begin_over_picture(name: str, pos: imgui.ImVec2, size: imgui.ImVec2 | None = None) -> None:
+    """A semi-transparent panel at a fixed place over the picture (no size: as large as its content).
+    To be closed with end_over_picture(), which returns its size."""
     background = imgui.get_style_color_vec4(imgui.Col_.window_bg)
     imgui.set_cursor_screen_pos(pos)
     imgui.push_style_color(imgui.Col_.child_bg, imgui.ImVec4(background.x, background.y, background.z, 0.82))
-    child_flags = imgui.ChildFlags_.borders | (imgui.ChildFlags_.auto_resize_y if size.y == 0 else 0)
-    imgui.begin_child(name, size, child_flags, 0 if inputs else imgui.WindowFlags_.no_inputs)
+    fit = imgui.ChildFlags_.auto_resize_x | imgui.ChildFlags_.auto_resize_y | imgui.ChildFlags_.always_auto_resize
+    imgui.begin_child(name, size or (0, 0), imgui.ChildFlags_.borders | (0 if size else fit))
     imgui.pop_style_color()
+
+
+def end_over_picture() -> imgui.ImVec2:
+    imgui.end_child()
+    return imgui.get_item_rect_size()
+
+
+def menu_button(label: str, popup: str, title: bool = False, upwards: bool = True) -> None:
+    """A text with a small arrow, which opens a menu above it (the card is at the bottom of the picture) or under
+    it: `if imgui.begin_popup(popup): ...` follows"""
+    imgui.push_style_color(imgui.Col_.button, imgui.ImVec4(0, 0, 0, 0))
+    if title:
+        imgui.push_font(None, imgui.get_style().font_size_base * 1.45)
+    if imgui.button(f"{label}  {icons_fontawesome_6.ICON_FA_CARET_DOWN}###{popup}"):
+        imgui.open_popup(popup)
+    if title:
+        imgui.pop_font()
+    imgui.pop_style_color()
+    low, high = imgui.get_item_rect_min(), imgui.get_item_rect_max()
+    imgui.set_next_window_pos((low.x, low.y if upwards else high.y), imgui.Cond_.always, (0, 1 if upwards else 0))
+
+
+def engine_menu(popup: str, current: Engine, other: Engine | None) -> Engine:
+    """The menu of the engines, opened by a menu_button: returns the chosen one"""
+    chosen = current
+    if imgui.begin_popup(popup):
+        for engine in ENGINES:
+            imgui.begin_disabled(engine is other or (bool(engine.cpp_region) and KERNELS is None))
+            if imgui.selectable(engine.name, engine is current)[0]:
+                chosen = engine
+            imgui.end_disabled()
+        if KERNELS is None:
+            imgui.text_disabled("The C++ engines need a C++ compiler (c++ or cl) at the first run.")
+        imgui.end_popup()
+    return chosen
+
+
+def cost_text(side: int) -> str:
+    state = STATE
+    assert state is not None
+    text = f"{state.each_seconds[side] * 1000:.0f} ms for {state.counts[side][0].size / 1e6:.2f} million pixels"
+    return text + (f" (1 out of {state.shrinks[side] ** 2})" if state.shrinks[side] > 1 else "")
 
 
 def palette_swatches() -> None:
@@ -697,91 +722,6 @@ def palette_swatches() -> None:
     imgui.new_line()
 
 
-def places_and_engine(top_left: imgui.ImVec2) -> None:
-    """Top left: where to go, then how to compute"""
-    state = STATE
-    assert state is not None
-    margin = em_size(0.6)
-    begin_over_picture("##places", imgui.ImVec2(top_left.x + margin, top_left.y + margin),
-                       imgui.ImVec2(em_size(31) if state.places_open else em_size(9), 0))
-    if imgui.arrow_button("##fold", imgui.Dir.down if state.places_open else imgui.Dir.right):
-        state.places_open = not state.places_open
-    imgui.same_line()
-    imgui.text("Go to" if state.places_open else "Places")
-    imgui.same_line()
-    with imgui_kit.help_marker_ctx("##help", width_em=28) as shown:  # an (i): how to move around, and the rest
-        if shown:
-            rich_md.render_this_file("Help")
-    if not state.places_open:
-        imgui.end_child()
-        return
-    back = icons_fontawesome_6.ICON_FA_ARROW_LEFT + "  Back"
-    imgui.same_line(imgui.get_window_width() - imgui.calc_text_size(back).x - em_size(1.6))
-    imgui.begin_disabled(not state.history)
-    if imgui.button(back):
-        state.back()
-    imgui.end_disabled()
-    imgui.set_item_tooltip("To the previous view")
-
-    for i, (name, point, zooms) in enumerate(PLACES):
-        if i > 0:
-            same_line_if_room(name + "    ")
-        if imgui.button(name):  # a click on the name: its first zoom
-            state.go_to((*point, zooms[0][0]), zooms[0][1], name)
-        below = imgui.ImVec2(imgui.get_item_rect_min().x, imgui.get_item_rect_max().y)
-        if zooms[0][3]:  # an arrow beside it: the menu of its zooms, which opens under the button
-            imgui.same_line(0, 1)
-            if imgui.arrow_button(f"##zooms of {name}", imgui.Dir.down):
-                imgui.open_popup(f"zooms of {name}")
-            imgui.set_next_window_pos(below)
-            imgui.set_next_window_size_constraints((em_size(21), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for (i)
-            if imgui.begin_popup(f"zooms of {name}"):
-                for width, max_iter, short, story in zooms:
-                    zoom = math.floor(math.log10(WHOLE_SET[2] / width))
-                    label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
-                    if imgui.selectable(label, False, size=(em_size(17), 0))[0]:
-                        state.go_to((*point, width), max_iter, name)
-                    imgui.same_line()
-                    imgui_kit.help_marker(story)  # an (i): what to see there
-                imgui.end_popup()
-
-    imgui.separator_text("Computed by")
-    for i, engine in enumerate(ENGINES):
-        if i > 0:
-            same_line_if_room(engine.name)
-        imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
-        if imgui.radio_button(engine.name, state.engine is engine):
-            state.engine = state.explained = engine
-        imgui.end_disabled()
-    if KERNELS is None:
-        imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
-    if state.other is state.engine:
-        state.other = None
-    imgui.align_text_to_frame_padding()
-    imgui.text("Compare with")  # a split view: a second engine on the right of a divider
-    imgui.same_line()
-    imgui.set_next_item_width(em_size(13))
-    if imgui.begin_combo("##compare", state.other.name if state.other else "nothing"):
-        choices: list[Engine | None] = [None, *ENGINES]
-        for choice in choices:
-            usable = choice is None or (choice is not state.engine and not (choice.cpp_region and KERNELS is None))
-            if usable and imgui.selectable(choice.name if choice else "nothing", choice is state.other)[0]:
-                state.other = choice
-        imgui.end_combo()
-    imgui.set_next_item_width(em_size(9))
-    changed, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 500000,
-                                               flags=imgui.SliderFlags_.logarithmic)
-    if changed:
-        state.auto_iterations = False  # set by hand: the page stops adapting them
-        state.costs.clear()
-    imgui.same_line()
-    _, state.auto_iterations = imgui.checkbox("automatic", state.auto_iterations)
-    imgui.set_item_tooltip("While you move the view by hand, the page raises the iterations when the boundary\n"
-                           "needs them (black where there should be detail), and lowers them when it can.")
-    palette_swatches()
-    imgui.end_child()
-
-
 def where_we_are() -> str:
     """The name of the place in view: the first place whose point is in the picture"""
     state = STATE
@@ -797,71 +737,143 @@ def where_we_are() -> str:
     return in_view[0] if in_view else "Uncharted waters"
 
 
-def status(top_left: imgui.ImVec2, h: int) -> None:
-    """Bottom left, a title card: where we are, the zoom, and what the picture cost"""
+def title_card(top_left: imgui.ImVec2, h: int) -> None:
+    """Bottom left: where we are, and the controls. First line: back, the place and its zoom (two menus), the
+    help. Second line: the engine (a menu) and its cost, the split view, the settings."""
     state = STATE
     assert state is not None
-    if not state.shrinks or not state.counts:
-        return
-    if state.other is not None and len(state.each_seconds) > 1:  # each side of the divider says its own cost
-        cost = "Two engines, one on each side of the divider"
+    margin = em_size(0.6)
+    begin_over_picture("##card", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - state.card_height))
+    place = where_we_are()
+
+    # Back, in the height of the place's name
+    imgui.push_font(None, imgui.get_style().font_size_base * 1.45)
+    tall = imgui.get_frame_height()
+    imgui.pop_font()
+    imgui.begin_disabled(not state.history)
+    if imgui.button(icons_fontawesome_6.ICON_FA_ARROW_LEFT, (tall, tall)):
+        state.back()
+    imgui.end_disabled()
+    imgui.set_item_tooltip("Back to the previous view")
+
+    imgui.same_line()
+    menu_button(place, "places", title=True)  # the place: a menu of the places
+    if imgui.begin_popup("places"):
+        for name, point, zooms in PLACES:
+            if imgui.selectable(name, name == place)[0]:
+                state.go_to((*point, zooms[0][0]), zooms[0][1], name)
+        imgui.end_popup()
+
+    deeper = [its_zooms for name, _point, its_zooms in PLACES[1:] if name == place]  # the zooms of this place
+    imgui.same_line()
+    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + tall - imgui.get_frame_height())  # on the name's baseline
+    if not deeper:
+        imgui.align_text_to_frame_padding()
+        imgui.text(f"zoom {zoom_number(state.width)}")
+    else:  # the zoom: a menu of the place's zooms, each with an (i) that says what to see there
+        menu_button(f"zoom {zoom_number(state.width)}", "zooms")
+        imgui.set_next_window_size_constraints((em_size(21), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
+        if imgui.begin_popup("zooms"):
+            point = next(point for name, point, _zooms in PLACES if name == place)
+            for width, max_iter, short, story in deeper[0]:
+                zoom = math.floor(math.log10(WHOLE_SET[2] / width))
+                label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
+                if imgui.selectable(label, False, size=(em_size(17), 0))[0]:
+                    state.go_to((*point, width), max_iter, place)
+                imgui.same_line()
+                imgui_kit.help_marker(story)
+            imgui.end_popup()
+    imgui.same_line(0, em_size(1.0))
+    imgui.dummy((imgui_kit.help_marker_width() + em_size(0.5), 1))  # room for the (i), drawn last in this corner
+
+    # Second line: the engine and its cost, the split view, the settings
+    if state.other is None:
+        menu_button(state.engine.name, "engine")
+        state.engine = state.explained = engine_menu("engine", state.engine, None)
+        if state.counts and state.shrinks:
+            imgui.same_line()
+            imgui.text_disabled(cost_text(0))
     else:
-        megapixels = state.counts[0][0].size / 1e6
-        cost = f"{state.engine.name}: {state.each_seconds[0] * 1000:.0f} ms for {megapixels:.2f} million pixels"
-        if state.shrinks[0] > 1:
-            cost += f" (1 pixel out of {state.shrinks[0] ** 2})"
-    place, zoom = where_we_are(), f"zoom {zoom_number(state.width)}"
-    title_size = imgui.get_style().font_size_base * 1.45
-    imgui.push_font(None, title_size)
-    place_size = imgui.calc_text_size(place)
-    imgui.pop_font()
-    margin, padding, gap = em_size(0.6), imgui.get_style().window_padding, em_size(1.0)
-    first_line = place_size.x + gap + imgui.calc_text_size(zoom).x + imgui_kit.help_marker_width() + em_size(1.2)
-    width = max(first_line, imgui.calc_text_size(cost).x) + 2 * padding.x + em_size(0.5)
-    height = place_size.y + imgui.get_text_line_height_with_spacing() + 2 * padding.y + em_size(0.3)
-    begin_over_picture("##status", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - height),
-                       imgui.ImVec2(width, height))
-    imgui.push_font(None, title_size)
-    imgui.text(place)
-    imgui.pop_font()
-    imgui.same_line(0, gap)
-    imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + place_size.y - imgui.get_text_line_height() - em_size(0.1))
-    imgui.text(zoom)  # on the baseline of the place's name
-    imgui.text_disabled(cost)
-    imgui.set_cursor_pos((width - imgui_kit.help_marker_width() - padding.x * 0.5, padding.y))  # the top right corner
-    imgui_kit.help_marker(zoom_in_words(state.width))  # an (i): the zoom as a comparison of sizes
-    imgui.end_child()
+        imgui.align_text_to_frame_padding()
+        imgui.text_disabled("Two engines: pick each one beside the divider")
+    imgui.same_line(0, em_size(1.5))
+    split = state.other is not None
+    if imgui.checkbox("Split", split)[0]:  # a second engine draws the right part of the picture
+        fallback = ENGINES[3] if state.engine is not ENGINES[3] else ENGINES[2]
+        state.other = None if split else (fallback if KERNELS is not None else ENGINES[1 - ENGINES.index(state.engine)])
+    imgui.same_line()
+    if imgui.button(icons_fontawesome_6.ICON_FA_GEAR):
+        imgui.open_popup("settings")
+    imgui.set_item_tooltip("Iterations and colors")
+    imgui.set_next_window_pos(imgui.get_item_rect_min(), imgui.Cond_.always, (0, 1))  # above the gear
+    if imgui.begin_popup("settings"):
+        imgui.set_next_item_width(em_size(9))
+        changed, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 500000,
+                                                   flags=imgui.SliderFlags_.logarithmic)
+        if changed:
+            state.auto_iterations = False  # set by hand: the page stops adapting them
+            state.costs.clear()
+        imgui.same_line()
+        _, state.auto_iterations = imgui.checkbox("automatic", state.auto_iterations)
+        imgui.same_line()
+        imgui_kit.help_marker("Automatic: while you move the view by hand, the page raises the iterations when the "
+                              "boundary needs them (black where there should be detail), and lowers them when it can.")
+        palette_swatches()
+        imgui.end_popup()
+    padding = imgui.get_style().window_padding
+    imgui.set_cursor_pos((imgui.get_window_width() - imgui_kit.help_marker_width() - padding.x, padding.y))
+    with imgui_kit.help_marker_ctx("##help", width_em=28) as shown:  # an (i): the zoom in words, then the guide
+        if shown:
+            imgui.text_wrapped(zoom_in_words(state.width))
+            imgui.separator()
+            rich_md.render_this_file("Help")
+    state.card_height = end_over_picture().y
 
 
-def all_pixels_button(side: int, left: float, top: float, width: float) -> None:
+def all_pixels_control(side: int, width: float) -> None:
     """For one engine's picture, when the budget did not afford all its pixels: a button to compute them in the
     background, then their progress and a button to cancel"""
     state = STATE
     assert state is not None
     job = state.all_pixels
-    running = job is not None and job.side == side
-    if side >= len(state.shrinks) or state.where is None or (state.shrinks[side] == 1 and not running):
-        return
-    begin_over_picture(f"##all pixels {side}", imgui.ImVec2(left, top),
-                       imgui.ImVec2(width, imgui.get_frame_height() + 2 * imgui.get_style().window_padding.y))
-    if running and job is not None:
+    if job is not None and job.side == side:
         seconds_left = (time.perf_counter() - job.start_time) * (1 - PROGRESS[0]) / max(PROGRESS[0], 0.02)
-        imgui.progress_bar(PROGRESS[0], (-em_size(4.8), 0), f"{PROGRESS[0]:.0%}, {seconds_left:.0f} s left")
+        imgui.progress_bar(PROGRESS[0], (width - em_size(5), 0), f"{PROGRESS[0]:.0%}, {seconds_left:.0f} s left")
         hello_imgui.set_item_is_live()  # the bar moves on its own: no idling while it is visible
         imgui.same_line()
-        if imgui.button("Cancel", (-1, 0)):
+        if imgui.button("Cancel", (em_size(4.4), 0)):
             CANCEL.set()  # the engine stops at its next row or band, and the picture stays as it is
-    else:
+    elif side < len(state.shrinks) and state.shrinks[side] > 1 and state.where is not None:
         imgui.begin_disabled(job is not None)  # one at a time
         seconds = state.each_seconds[side] * state.shrinks[side] ** 2
-        if imgui.button(f"All the pixels (about {seconds:.0f} s)", (-1, 0)):
-            center_re, center_im, width, w, h = state.where
-            full = View(center_re, center_im, width / w, w, h, state.max_iter)
+        if imgui.button(f"All the pixels (about {seconds:.0f} s)", (width, 0)):
+            center_re, center_im, view_width, w, h = state.where
             engine = state.engine if side == 0 else state.other
             if engine is not None:
+                full = View(center_re, center_im, view_width / w, w, h, state.max_iter)
                 state.all_pixels = AllPixels(engine, side, full, state.computed or ())
         imgui.end_disabled()
-    imgui.end_child()
+
+
+def side_panel(side: int, x: float, y: float) -> None:
+    """In a split view, beside the divider: the engine of this side (a menu), its cost, and "All the pixels".
+    The left one ends at x, the right one starts there."""
+    state = STATE
+    assert state is not None and state.other is not None
+    left = x - state.side_widths[side] if side == 0 else x
+    begin_over_picture(f"##side {side}", imgui.ImVec2(left, y))
+    engines = [state.engine, state.other]
+    menu_button(engines[side].name, f"engine {side}", upwards=False)
+    chosen = engine_menu(f"engine {side}", engines[side], engines[1 - side])
+    if side == 0:
+        state.engine = state.explained = chosen
+    else:
+        state.other = chosen
+    if side < len(state.shrinks) and side < len(state.counts):
+        imgui.same_line()
+        imgui.text_disabled(cost_text(side))
+    all_pixels_control(side, em_size(17))
+    state.side_widths[side] = end_over_picture().x
 
 
 def depth_gauge(right: float, top: float, bottom: float) -> None:
@@ -932,19 +944,23 @@ def gui() -> None:
                                           available.y))
     right, bottom = top_left.x + w, top_left.y + h
 
-    # Over the picture: the places and the engine, the status, the gauge, and two buttons on the right
+    # Over the picture: the gauge, the title card with the controls, and "All the pixels"
     gauge = em_size(5.2)  # the width kept for the gauge, along the right edge
     depth_gauge(right - em_size(0.6), top_left.y + em_size(4.2), bottom - em_size(4.2))
-    places_and_engine(top_left)
-    status(top_left, h)
-    button_width = em_size(19)
+    title_card(top_left, h)
     if state.other is None:  # bottom right
-        frame = imgui.get_frame_height() + 2 * imgui.get_style().window_padding.y
-        all_pixels_button(0, right - gauge - em_size(0.6) - button_width, bottom - em_size(0.6) - frame, button_width)
-    else:  # one on each side of the divider, under the label of its engine
-        x, y = top_left.x + state.split * w, top_left.y + h * 0.5 + em_size(1.3)
-        all_pixels_button(0, x - em_size(1.8) - button_width, y, button_width)
-        all_pixels_button(1, x + em_size(1.8), y, button_width)
+        job = state.all_pixels
+        if job is not None or (state.shrinks and state.shrinks[0] > 1):
+            width = em_size(18)
+            frame = imgui.get_frame_height() + 2 * imgui.get_style().window_padding.y
+            begin_over_picture("##all pixels", imgui.ImVec2(right - gauge - em_size(1.8) - width,
+                                                            bottom - em_size(0.6) - frame))
+            all_pixels_control(0, width)
+            end_over_picture()
+    elif len(state.shrinks) > 1:  # beside the divider: each side has its engine, its cost and its button
+        x, y = top_left.x + state.split * w, top_left.y + h * 0.5 - em_size(1.1)
+        side_panel(0, x - em_size(1.4), y)
+        side_panel(1, x + em_size(1.4), y)
     if not state.notes_open:  # an arrow to bring the explanations back
         padding, side = imgui.get_style().window_padding, imgui.get_frame_height()
         begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - side - 2 * padding.x,
