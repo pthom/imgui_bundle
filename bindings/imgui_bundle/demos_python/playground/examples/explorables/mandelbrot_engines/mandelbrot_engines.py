@@ -23,7 +23,7 @@ r"""::md Help
 **Moving around**
 * **Wheel**: zoom, around the mouse. **Drag**: move the view.
 * **Double click**: dive towards the clicked point.
-* The arrow, bottom left, or **Backspace**: back to the previous view.
+* The arrow, bottom left, or **Backspace**: back to the view before your last jump, zoom or drag.
 
 **The card, bottom left**
 * The **place's name** is a menu of places. The **zoom** beside it is a menu of deeper views of that place.
@@ -476,6 +476,7 @@ class State:
         self.all_pixels: AllPixels | None = None  # the picture being computed frame after frame, see the button
         self.lowest: list[float] = []  # the lowest count of each engine's picture: the start of its palette
         self.cancelled: tuple[Any, int] | None = None  # the picture and the side of the last cancel
+        self.gesture_at = -1e9  # the time of the last move of the view by hand
         self.new_view = ["", "", ""]  # the texts typed for a view to add: its place, its short name, a sentence
         self.costs: dict[str, dict[int, float]] = {}  # for each engine, at this view: the seconds its pictures took,
         # by their number of pixels. Two sizes tell the fixed part of a picture's time from the part per pixel.
@@ -524,6 +525,14 @@ class State:
         MY_PLACES_FILE.write_text(json.dumps(kept, indent=1) + "\n")
         load_places()
 
+    def gesture(self) -> None:
+        """Called at each move of the view by hand (the wheel, a drag). The moves that follow each other without
+        a pause are one gesture: the view before it is remembered once, for Back."""
+        now = imgui.get_time()
+        if now - self.gesture_at > GESTURE_PAUSE:
+            self.remember()
+        self.gesture_at = now
+
     def remember(self) -> None:
         self.history.append((self.center_re, self.center_im, self.width, self.max_iter))
 
@@ -562,6 +571,7 @@ DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
 
 ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
 HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the top of the picture, in em
+GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
 DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
@@ -591,10 +601,12 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     if state.dragging_split:  # the split view's divider follows the mouse
         state.split = min(max((io.mouse_pos.x - top_left.x) / w, 0.03), 0.97)
     elif imgui.is_item_active() and (io.mouse_delta.x or io.mouse_delta.y):
+        state.gesture()
         state.move(-io.mouse_delta.x * pixel, io.mouse_delta.y * pixel)
     if imgui.is_item_hovered() and io.mouse_wheel and state.dive is None:
         factor = 0.8 ** io.mouse_wheel
         if 10.0 ** -DEEPEST < state.width * factor < 8:  # zoom around the mouse: the point under it stays there
+            state.gesture()
             state.move(mx * pixel * (1 - factor), -my * pixel * (1 - factor))
             state.width *= factor
             state.by_hand = True
