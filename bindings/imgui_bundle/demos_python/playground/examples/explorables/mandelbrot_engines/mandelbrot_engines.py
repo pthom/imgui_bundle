@@ -883,7 +883,19 @@ def add_view_popup() -> None:
     hints = ["An existing place: one more of its zooms. A new name: a new place.", "A few words, for the menu.", ""]
     for i, (label, hint) in enumerate(zip(labels, hints, strict=True)):
         imgui.set_next_item_width(em_size(22 if i == 2 else 14))
-        _, state.new_view[i] = imgui.input_text(label, state.new_view[i])
+        _, state.new_view[i] = imgui.input_text(f"##{label}", state.new_view[i])
+        if i == 0:  # an arrow beside the place's field: the list of the existing places
+            imgui.same_line(0, 1)
+            if imgui.arrow_button("##pick a place", imgui.Dir.down):
+                imgui.open_popup("pick a place")
+            imgui.set_item_tooltip("Pick an existing place")
+            if imgui.begin_popup("pick a place"):
+                for name, _point, _zooms in PLACES[1:]:
+                    if imgui.selectable(name, name == state.new_view[0])[0]:
+                        state.new_view[0] = name
+                imgui.end_popup()
+        imgui.same_line()
+        imgui.text(label)
         if hint:
             imgui.same_line()
             imgui_kit.help_marker(hint)
