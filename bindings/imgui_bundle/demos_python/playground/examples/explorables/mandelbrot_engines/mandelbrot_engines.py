@@ -12,8 +12,9 @@ r"""::md Intro
 Every pixel is a number $c$. Iterate $z \leftarrow z^2 + c$ from $z = 0$, and count the steps until $|z| > 16$:
 the count gives the color. Points that never escape are in the set, in black.
 
-**Wheel** to zoom, **drag** to move. Then change the engine, and watch the time.
-Black where there should be detail? Raise the iterations.
+Pick a place, change the engine, and watch the time under the picture. The gauge on the right shows how deep
+we are: its white part, down to a zoom of 10^13, is where every engine works. Its orange part is for the
+perturbation only.
 """
 
 # ruff: noqa: E402  # the story comes first
@@ -352,7 +353,20 @@ class State:
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
         self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
+        self.story = ""
+        self.history: list[tuple[Decimal, Decimal, float, int, str]] = []  # the views to come back to
+        self.auto_iterations = True  # the page adapts the iterations when the view is moved by hand
+        self.by_hand = False  # the view was moved by hand since the last place
+        self.late: float | None = None  # in the last picture: the count below which 90% of the escaped pixels are
+        self.places_open, self.notes_open = True, True  # the panel over the picture, the explanations beside it
         self.go_to(WHOLE_SET, 300, animate=False)
+
+    def remember(self) -> None:
+        self.history.append((self.center_re, self.center_im, self.width, self.max_iter, self.story))
+
+    def back(self) -> None:
+        self.center_re, self.center_im, self.width, self.max_iter, self.story = self.history.pop()
+        self.dive, self.pixel_seconds = None, None
 
     def go_to(self, place: tuple[str, str, float], max_iter: int, story: str = "", animate: bool = True) -> None:
         getcontext().prec = digits_for(place[2] / 2000)
@@ -360,12 +374,15 @@ class State:
         # The dive starts from the current view when the target is inside it (another zoom of the same place),
         # else from the whole set
         start = float(WHOLE_SET[2])
+        if animate:
+            self.remember()
         if animate and max(abs(target_re - self.center_re), abs(target_im - self.center_im)) < self.width / 2:
             start = self.width
         self.center_re, self.center_im, self.width = target_re, target_im, place[2]
         self.max_iter = max_iter
         self.story = story  # what to see at this place
         self.pixel_seconds = None  # a new place: a new cost
+        self.by_hand = False
         if animate:
             self.dive, self.width = (start, place[2], imgui.get_time()), start
 
@@ -379,27 +396,38 @@ STATE: State | None = None
 DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
 
 
-def picture(size: imgui.ImVec2) -> None:
-    """The picture, its mouse handling, and its computation when something changed"""
+ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
+DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
+DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
+DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
+
+
+def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
+    """The picture, its mouse handling, and its computation when something changed. Returns its place."""
     state = STATE
     assert state is not None
     w, h = max(int(size.x), 16), max(int(size.y), 16)
     pixel = state.width / w
 
-    # The mouse: an invisible button under the picture takes the wheel and the drags
+    # The mouse: an invisible button under the picture takes the wheel, the drags and the double clicks
     top_left = imgui.get_cursor_screen_pos()
     imgui.invisible_button("##picture", imgui.ImVec2(w, h))
     imgui.set_item_key_owner(imgui.Key.mouse_wheel_y)
     io = imgui.get_io()
+    mx, my = io.mouse_pos.x - top_left.x - w / 2, io.mouse_pos.y - top_left.y - h / 2  # the mouse, from the center
     if imgui.is_item_active() and (io.mouse_delta.x or io.mouse_delta.y):
         state.move(-io.mouse_delta.x * pixel, io.mouse_delta.y * pixel)
     if imgui.is_item_hovered() and io.mouse_wheel and state.dive is None:
         factor = 0.8 ** io.mouse_wheel
-        if 1e-300 < state.width * factor < 8:  # zoom around the mouse: the point under it stays there
-            mx, my = io.mouse_pos.x - top_left.x - w / 2, io.mouse_pos.y - top_left.y - h / 2
+        if 10.0 ** -DEEPEST < state.width * factor < 8:  # zoom around the mouse: the point under it stays there
             state.move(mx * pixel * (1 - factor), -my * pixel * (1 - factor))
             state.width *= factor
-            state.story = ""
+            state.story, state.by_hand = "", True
+    if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0) and state.width > 10.0 ** (3 - DEEPEST):
+        state.remember()  # the clicked point comes to the center, and the view dives towards it
+        state.move(mx * pixel, -my * pixel)
+        state.dive = (state.width, state.width / DOUBLE_CLICK_ZOOM, imgui.get_time())
+        state.story, state.by_hand = "", True
 
     # A dive to a place: the width shrinks at a constant number of decades per second
     if state.dive is not None:
@@ -415,6 +443,13 @@ def picture(size: imgui.ImVec2) -> None:
     if where != state.where:
         state.where, state.moved_at = where, imgui.get_time()
     moving = imgui.get_time() - state.moved_at < 0.15
+    if not moving and state.auto_iterations and state.by_hand and state.late is not None:
+        # Many pixels escape late: the boundary needs more iterations. Nearly all escape early: fewer will do.
+        # No pixel escapes (a black picture): more too, up to a point, since the inside of the set stays black.
+        if state.late > 0.4 * state.max_iter and (state.late < math.inf or state.max_iter < ALL_BLACK_LIMIT):
+            state.max_iter, state.late = min(int(state.max_iter * 1.5), 500000), None
+        elif state.late < 0.05 * state.max_iter and state.max_iter > 300:
+            state.max_iter, state.late = max(int(state.max_iter / 1.5), 300), None
     shrink = 8  # for a first picture: it measures the cost of a pixel. Then: what the budget affords
     if state.pixel_seconds is not None:
         affordable = (MOVING_BUDGET if moving else STILL_BUDGET) / state.pixel_seconds
@@ -431,19 +466,17 @@ def picture(size: imgui.ImVec2) -> None:
         view = View(state.center_re, state.center_im, state.width / w * shrink, w // shrink, h // shrink,
                     state.max_iter)
         start_time = time.perf_counter()
-        state.image = colors(state.engine.compute(view), view.max_iter)
+        counts = state.engine.compute(view)
+        state.image = colors(counts, view.max_iter)
         state.image = np.ascontiguousarray(state.image.repeat(shrink, axis=0).repeat(shrink, axis=1))
         state.seconds, state.timed = time.perf_counter() - start_time, view
         state.pixel_seconds = state.seconds / (view.w * view.h)
         state.computed, state.shrink = wanted, shrink
+        escaped = counts[0][counts[0] < view.max_iter]
+        state.late = float(np.percentile(escaped, 90)) if escaped.size else math.inf
     imgui.set_cursor_screen_pos(top_left)
     immvision.image_display("##mandelbrot", state.image, (w, h), refresh_image=refresh)
-    if state.all_pixels is not None:  # a thin progress bar along the bottom of the picture
-        bottom, thick = top_left.y + h, em_size(0.3)
-        draw_list = imgui.get_window_draw_list()
-        draw_list.add_rect_filled((top_left.x, bottom - thick), (top_left.x + w, bottom), imgui.IM_COL32(0, 0, 0, 160))
-        draw_list.add_rect_filled((top_left.x, bottom - thick), (top_left.x + w * PROGRESS[0], bottom),
-                                  imgui.IM_COL32(255, 170, 0, 255))
+    return top_left, w, h
 
 
 # To picture a zoom: if the whole set were as wide as the observable universe, what would the picture be as wide as?
@@ -478,50 +511,40 @@ def same_line_if_room(next_label: str) -> None:
         imgui.new_line()
 
 
-def controls() -> None:
+# ======================================================================================================================
+#                             The panels over the picture, and the explanations beside it
+# ======================================================================================================================
+def begin_over_picture(name: str, pos: imgui.ImVec2, size: imgui.ImVec2, inputs: bool = True) -> None:
+    """A semi-transparent panel at a fixed place over the picture (a height of 0: as tall as its content).
+    To be closed with imgui.end_child()."""
+    background = imgui.get_style_color_vec4(imgui.Col_.window_bg)
+    imgui.set_cursor_screen_pos(pos)
+    imgui.push_style_color(imgui.Col_.child_bg, imgui.ImVec4(background.x, background.y, background.z, 0.82))
+    child_flags = imgui.ChildFlags_.borders | (imgui.ChildFlags_.auto_resize_y if size.y == 0 else 0)
+    imgui.begin_child(name, size, child_flags, 0 if inputs else imgui.WindowFlags_.no_inputs)
+    imgui.pop_style_color()
+
+
+def places_and_engine(top_left: imgui.ImVec2) -> None:
+    """Top left: where to go, then how to compute"""
     state = STATE
     assert state is not None
-    rich_md.render_this_file("Intro")
+    margin = em_size(0.6)
+    begin_over_picture("##places", imgui.ImVec2(top_left.x + margin, top_left.y + margin),
+                       imgui.ImVec2(em_size(31) if state.places_open else em_size(9), 0))
+    if imgui.arrow_button("##fold", imgui.Dir.down if state.places_open else imgui.Dir.right):
+        state.places_open = not state.places_open
+    imgui.same_line()
+    imgui.text("Go to" if state.places_open else "Places")
+    if not state.places_open:
+        imgui.end_child()
+        return
+    imgui.same_line(imgui.get_window_width() - em_size(4.5))
+    imgui.begin_disabled(not state.history)
+    if imgui.small_button("Back"):
+        state.back()
+    imgui.end_disabled()
 
-    imgui.separator_text("Engine")
-    for i, engine in enumerate(ENGINES):
-        if i > 0:
-            same_line_if_room(engine.name)
-        imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
-        if imgui.radio_button(engine.name, state.engine is engine):
-            state.engine, state.pixel_seconds, state.computed = engine, None, None
-        imgui.end_disabled()
-    if KERNELS is None:
-        imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
-    if state.timed is not None:
-        megapixels = state.timed.w * state.timed.h / 1e6
-        imgui.text(f"{state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels")
-        imgui.same_line()
-        imgui.text_disabled(f"  {megapixels / max(state.seconds, 1e-6):.2f} million pixels per second")
-        job = state.all_pixels
-        if job is not None:  # all the pixels are on their way
-            elapsed = time.perf_counter() - job.start_time
-            left = elapsed * (1 - PROGRESS[0]) / max(PROGRESS[0], 0.02)
-            imgui.progress_bar(PROGRESS[0], (em_size(22), 0),
-                               f"All the pixels: {PROGRESS[0]:.0%}, about {left:.0f} s left")
-            hello_imgui.set_item_is_live()  # the bar moves on its own: no idling while it is visible
-        elif state.shrink > 1 and state.computed is not None:
-            seconds = state.seconds * state.shrink ** 2
-            imgui.text_disabled(f"One pixel out of {state.shrink ** 2}, to stay under {STILL_BUDGET} s.")
-            imgui.same_line()
-            if imgui.small_button(f"All the pixels (about {seconds:.0f} s)"):
-                view = state.timed
-                full = View(view.center_re, view.center_im, view.pixel / state.shrink, view.w * state.shrink,
-                            view.h * state.shrink, view.max_iter)
-                state.all_pixels = AllPixels(state.engine, full, state.computed)
-
-    imgui.separator_text("Where we are")
-    imgui.text_wrapped(zoom_in_words(state.width))
-    digits = max(3, int(-math.log10(state.width)) + 4)
-    shown = [f"{value:+.{digits}f}" for value in (state.center_re, state.center_im)]
-    if digits > 40:  # the first digits only
-        shown = [f"{text[:22]}..." for text in shown]
-    imgui.text_disabled(f"center  {shown[0]}  {shown[1]} i" + (f"  ({digits} digits)" if digits > 40 else ""))
     for i, (name, point, zooms) in enumerate(PLACES):
         if i > 0:
             same_line_if_room(name + "    ")
@@ -541,14 +564,106 @@ def controls() -> None:
                 imgui.end_popup()
     if state.story:
         imgui.text_wrapped(state.story)
-    imgui.set_next_item_width(em_size(10))
+    imgui.text_disabled("Wheel: zoom.  Drag: move.  Double click: dive.")
+
+    imgui.separator_text("Computed by")
+    for i, engine in enumerate(ENGINES):
+        if i > 0:
+            same_line_if_room(engine.name)
+        imgui.begin_disabled(bool(engine.cpp_region) and KERNELS is None)
+        if imgui.radio_button(engine.name, state.engine is engine):
+            state.engine, state.pixel_seconds, state.computed = engine, None, None
+        imgui.end_disabled()
+    if KERNELS is None:
+        imgui.text_wrapped("The C++ engines need a C++ compiler (c++ or cl) at the first run: none was found.")
+    imgui.set_next_item_width(em_size(9))
     changed, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 500000,
                                                flags=imgui.SliderFlags_.logarithmic)
     if changed:
-        state.pixel_seconds = None
-    imgui.set_item_tooltip("Black where there should be detail? Raise the iterations.")
+        state.pixel_seconds, state.auto_iterations = None, False  # set by hand: the page stops adapting them
+    imgui.same_line()
+    _, state.auto_iterations = imgui.checkbox("automatic", state.auto_iterations)
+    imgui.set_item_tooltip("While you move the view by hand, the page raises the iterations when the boundary\n"
+                           "needs them (black where there should be detail), and lowers them when it can.")
+    imgui.end_child()
 
-    imgui.separator_text("How this engine works")
+
+def status(top_left: imgui.ImVec2, h: int) -> None:
+    """Bottom left: what the picture cost, and where it is"""
+    state = STATE
+    assert state is not None
+    if state.timed is None:
+        return
+    megapixels = state.timed.w * state.timed.h / 1e6
+    text = f"{state.engine.name}: {state.seconds * 1000:.0f} ms for {megapixels:.2f} million pixels"
+    if state.shrink > 1:
+        text += f" (1 pixel out of {state.shrink ** 2})"
+    text += "\n" + zoom_in_words(state.width)
+    margin, padding, width = em_size(0.6), imgui.get_style().window_padding, em_size(34)
+    height = imgui.calc_text_size(text, wrap_width=width).y + 2 * padding.y
+    begin_over_picture("##status", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - height),
+                       imgui.ImVec2(width + 2 * padding.x, height), inputs=False)
+    imgui.text_wrapped(text)
+    imgui.end_child()
+
+
+def all_pixels_button(right: float, bottom: float) -> None:
+    """Bottom right, when the budget did not afford all the pixels: a button to compute them in the background,
+    then their progress"""
+    state = STATE
+    assert state is not None
+    job = state.all_pixels
+    if job is None and (state.shrink == 1 or state.computed is None or state.timed is None):
+        return
+    margin, padding = em_size(0.6), imgui.get_style().window_padding
+    width, height = em_size(19), imgui.get_frame_height() + 2 * padding.y
+    begin_over_picture("##all pixels", imgui.ImVec2(right - margin - width, bottom - margin - height),
+                       imgui.ImVec2(width, height))
+    if job is not None:
+        left = (time.perf_counter() - job.start_time) * (1 - PROGRESS[0]) / max(PROGRESS[0], 0.02)
+        imgui.progress_bar(PROGRESS[0], (-1, 0), f"All the pixels: {PROGRESS[0]:.0%}, {left:.0f} s left")
+        hello_imgui.set_item_is_live()  # the bar moves on its own: no idling while it is visible
+    elif imgui.button(f"All the pixels (about {state.seconds * state.shrink ** 2:.0f} s)", (-1, 0)):
+        view = state.timed
+        assert view is not None
+        full = View(view.center_re, view.center_im, view.pixel / state.shrink, view.w * state.shrink,
+                    view.h * state.shrink, view.max_iter)
+        state.all_pixels = AllPixels(state.engine, full, state.computed or ())
+    imgui.end_child()
+
+
+def depth_gauge(right: float, top: float, bottom: float) -> None:
+    """Along the right edge: how deep we are, from a zoom of 1 to 10^300, and where double precision ends"""
+    state = STATE
+    assert state is not None
+    draw_list = imgui.get_window_draw_list()
+    white, dim, orange = imgui.IM_COL32(255, 255, 255, 255), imgui.IM_COL32(255, 255, 255, 190), \
+        imgui.IM_COL32(255, 170, 0, 255)
+    x, line_height = right - em_size(0.9), imgui.get_text_line_height()
+
+    def y_of(decade: float) -> float:
+        return top + (bottom - top) * min(max(decade, 0), DEEPEST) / DEEPEST
+
+    draw_list.add_rect_filled((right - em_size(4.6), top - em_size(0.8)), (right, bottom + em_size(0.8)),
+                              imgui.IM_COL32(0, 0, 0, 170), em_size(0.4))
+    draw_list.add_line((x, top), (x, y_of(DOUBLE_ENDS)), white, 3)  # where every engine works
+    draw_list.add_line((x, y_of(DOUBLE_ENDS)), (x, bottom), orange, 3)  # the perturbation only
+    for decade in (DOUBLE_ENDS, *range(50, DEEPEST + 1, 50)):  # the end of double, then every 50 decades
+        label, color = f"10^{decade}", white if decade == DOUBLE_ENDS else dim
+        draw_list.add_line((x - em_size(0.3), y_of(decade)), (x, y_of(decade)), color, 1)
+        draw_list.add_text((x - em_size(0.6) - imgui.calc_text_size(label).x, y_of(decade) - line_height / 2), color,
+                           label)
+    here = y_of(math.log10(WHOLE_SET[2] / state.width))
+    draw_list.add_circle_filled((x, here), em_size(0.45), white)
+    draw_list.add_circle_filled((x, here), em_size(0.28), orange if here > y_of(DOUBLE_ENDS) else imgui.IM_COL32(
+        32, 107, 203, 255))
+
+
+def explanations() -> None:
+    """The side panel: the equation, how the selected engine works, and its code"""
+    state = STATE
+    assert state is not None
+    rich_md.render_this_file("Intro")
     rich_md.render_this_file(state.engine.section)
     if imgui.collapsing_header("Its code"):
         rich_md.render_this_file(state.engine.section + "#code")
@@ -561,16 +676,33 @@ def gui() -> None:
     global STATE
     if STATE is None:
         STATE = State()
+    state = STATE
     available = imgui.get_content_region_avail()
-    wide_window = available.x > em_size(60)  # else (a phone): the picture above the texts
-    picture_size = imgui.ImVec2(available.x * 0.58, available.y) if wide_window else \
-        imgui.ImVec2(available.x, available.x * 0.75)
-    picture(picture_size)
-    if wide_window:
-        imgui.same_line()
-        imgui.begin_child("##controls", imgui.ImVec2(0, available.y))
-    controls()
-    if wide_window:
+    spacing = imgui.get_style().item_spacing.x
+    notes_width = min(em_size(34), available.x * 0.45) if state.notes_open else 0.0
+    top_left, w, h = picture(imgui.ImVec2(available.x - notes_width - (spacing if state.notes_open else 0),
+                                          available.y))
+    right, bottom = top_left.x + w, top_left.y + h
+
+    # Over the picture: the places and the engine, the status, the gauge, and two buttons on the right
+    gauge = em_size(5.2)  # the width kept for the gauge, along the right edge
+    depth_gauge(right - em_size(0.6), top_left.y + em_size(4.2), bottom - em_size(4.2))
+    places_and_engine(top_left)
+    status(top_left, h)
+    all_pixels_button(right - gauge, bottom)
+    label = "Explanations" if not state.notes_open else "Hide the explanations"
+    padding = imgui.get_style().window_padding
+    width = imgui.calc_text_size(label).x + 2 * imgui.get_style().frame_padding.x + 2 * padding.x
+    begin_over_picture("##notes button", imgui.ImVec2(right - em_size(0.6) - width, top_left.y + em_size(0.6)),
+                       imgui.ImVec2(width, imgui.get_frame_height() + 2 * padding.y))
+    if imgui.button(label):
+        state.notes_open = not state.notes_open
+    imgui.end_child()
+
+    if state.notes_open:
+        imgui.set_cursor_screen_pos(imgui.ImVec2(right + spacing, top_left.y))
+        imgui.begin_child("##explanations", imgui.ImVec2(notes_width, available.y))
+        explanations()
         imgui.end_child()
 
 
