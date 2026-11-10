@@ -68,6 +68,7 @@ THREADS = os.cpu_count() or 4  # the bands of rows computed at once by the C++ e
 MOVING_BUDGET = 0.04  # seconds for a picture while the view moves. An engine that cannot afford all the pixels
 STILL_BUDGET = 0.3  # in its budget computes one out of 4, 16 or 64. This one: once the view stopped
 BAND_ROWS = 4  # the C++ engines compute the picture in bands of this many rows
+USE_WEB_WORKERS = True  # in a browser, "All the pixels" of the C++ engines on all the cores
 SLICE_SECONDS = 0.03  # "All the pixels" computes this long at each frame
 QUICK_SECONDS = 2.5  # and starts by itself, once the view stopped, when it would take less than this
 REPAINT_SECONDS = 0.4  # and its picture fills in at this pace
@@ -110,6 +111,7 @@ class View:
     w: int
     h: int
     max_iter: int
+    background: bool = False  # computed over several frames ("All the pixels"): in a browser, by Web Workers
 
     def corner(self) -> tuple[float, float]:
         """The top left pixel, in double precision"""
@@ -174,9 +176,9 @@ The same two loops as the Python engine, in C++ (`mandel_double`, below). Python
 fill, through `ctypes`: no copy, no wrapper to generate.
 
 *On the desktop*, `ctypes` releases Python's lock during the call, so a pool of threads computes several bands
-of rows at once. *In a browser*, Python has one thread: the same C++, compiled to WebAssembly, computes the bands
-one after the other, about ten times slower than a desktop with ten cores. (The threaded version is for the
-desktop only.)
+of rows at once. *In a browser*, Python has one thread: the same C++, compiled to WebAssembly, computes the quick
+pictures on it. **All the pixels** goes to Web Workers instead, one per core, each with its own copy of the C++
+(see `mandel_web_workers.py`): on a machine with ten cores, about ten times faster.
 
 It is fast, but a `double` holds 16 digits. Below a pixel size of about 1e-13, pixels start to be wrong; at
 1e-16, neighbours get the same $c$ and the picture turns into blocks.
@@ -184,8 +186,7 @@ It is fast, but a `double` holds 16 digits. Below a pixel size of about 1e-13, p
 """
 def cpp_engine(view: View) -> Steps:
     x0, y0 = view.corner()
-    return run_in_bands(view, lambda count, size2, row0, row1: KERNELS.mandel_double(
-        D(x0), D(y0), D(view.pixel), view.w, view.h, row0, row1, view.max_iter, count, size2))
+    return run_in_bands(view, "mandel_double", [x0, y0, view.pixel])
 # ::endcode
 
 
@@ -224,9 +225,7 @@ def reference_orbit(view: View) -> np.ndarray:
 def perturbation_engine(view: View) -> Steps:
     ref = reference_orbit(view)
     dx0, dy0 = -view.w / 2 * view.pixel, view.h / 2 * view.pixel  # the top left pixel, from the center
-    return run_in_bands(view, lambda count, size2, row0, row1: KERNELS.mandel_perturbation(
-        ref.ctypes.data_as(PTR), len(ref), D(dx0), D(dy0), D(view.pixel),
-        view.w, view.h, row0, row1, view.max_iter, count, size2))
+    return run_in_bands(view, "mandel_perturbation", [ref, len(ref), dx0, dy0, view.pixel])
 # ::endcode
 
 
@@ -238,7 +237,7 @@ package (version, options, compiler). An array has no such needs.
 
 The C++ file is compiled once, into a small library: on the desktop by your compiler at the first run, and
 for the browser into a WebAssembly module of 1.3 KB (`mandel_kernels.wasm`, beside this file), loaded the same
-way by `ctypes`.
+way by `ctypes`. A second build of it (`mandel_kernels_standalone.wasm`, 8 KB) runs in the Web Workers.
 """
 
 
@@ -278,6 +277,13 @@ def load_kernels() -> ctypes.CDLL | None:
 
 KERNELS: Any = load_kernels()  # None without a C++ compiler
 POOL = None if IN_BROWSER else ThreadPoolExecutor(THREADS)
+WORKERS: Any = None  # in a browser: Web Workers, for "All the pixels" (see mandel_web_workers.py)
+if IN_BROWSER and USE_WEB_WORKERS and KERNELS is not None:
+    try:
+        from mandel_web_workers import WorkerPool
+        WORKERS = WorkerPool()
+    except Exception as error:  # noqa: BLE001  # then one thread, as without
+        print("Web Workers are not available:", error)
 
 
 r"""::md Bands
@@ -285,29 +291,44 @@ r"""::md Bands
 rows, and calls the C++ loop on each band, with pointers to the arrays: no copy.
 * *On the desktop*, all the bands go to a pool of threads, and a step waits for some of them to finish.
   `ctypes` releases Python's lock during a call, so the bands truly run at once.
-* *In a browser* there are no threads (`POOL` is `None`): a step computes one band.
+* *In a browser* Python has no threads (`POOL` is `None`): a step computes one band. Except for
+  **All the pixels**: the bands go to Web Workers (`WORKERS`), and arrive between two frames.
 * The C++ has no thread of its own: on the desktop, the parallelism is these few lines of Python.
 ::code
 """
-def run_in_bands(view: View, kernel: Callable[[ctypes.c_void_p, ctypes.c_void_p, int, int], None]) -> Steps:
-    """Calls kernel(count, size2, row0, row1) for each band of rows: a step is some bands done"""
+def run_in_bands(view: View, kernel: str, args: list[Any]) -> Steps:
+    """Calls the C++ function `kernel`, with args then (w, h, row0, row1, max_iter, count, size2), for each band of
+    rows: a step is some bands done"""
     count, size2 = np.zeros((view.h, view.w), np.int32), np.zeros((view.h, view.w), np.float32)
     ready = np.zeros(view.h, bool)
-    pointers = count.ctypes.data_as(PTR), size2.ctypes.data_as(PTR)
     bands = [(row0, min(row0 + BAND_ROWS, view.h)) for row0 in range(0, view.h, BAND_ROWS)]
+    if WORKERS is not None and view.background:  # in a browser: Web Workers, one per core
+        job = WORKERS.start(kernel, args, view.w, view.h, view.max_iter, bands, count, size2)
+        try:
+            while job.waiting:
+                for row0, row1 in job.take_finished():  # the bands arrive between two frames
+                    ready[row0:row1] = True
+                yield 1 - job.waiting / job.total, (count, size2), ready
+            yield 1.0, (count, size2), np.ones(view.h, bool)
+        finally:  # left before the end (a cancelled picture): the workers stop
+            WORKERS.cancel()
+        return
+    c_args = [arg.ctypes.data_as(PTR) if isinstance(arg, np.ndarray) else D(arg) if isinstance(arg, float) else arg
+              for arg in args]
+    function = getattr(KERNELS, kernel)
+
+    def compute(row0: int, row1: int) -> None:
+        function(*c_args, view.w, view.h, row0, row1, view.max_iter,
+                 count.ctypes.data_as(PTR), size2.ctypes.data_as(PTR))
+
     if POOL is None:  # in a browser: one band after the other
         for i, (row0, row1) in enumerate(bands):
-            kernel(*pointers, row0, row1)
+            compute(row0, row1)
             ready[row0:row1] = True
             yield (i + 1) / len(bands), (count, size2), ready
         return
-    waiting = {POOL.submit(kernel, *pointers, row0, row1): (row0, row1) for row0, row1 in bands}
+    waiting = {POOL.submit(compute, row0, row1): (row0, row1) for row0, row1 in bands}
 
-    def keep_arrays(_future: Any, _arrays: Counts = (count, size2)) -> None:
-        """The arrays live as long as a band may write into them, even after a cancel"""
-
-    for future in waiting:
-        future.add_done_callback(keep_arrays)
     try:
         while waiting:
             for future in wait(waiting, timeout=0.005, return_when=FIRST_COMPLETED).done:
@@ -564,7 +585,7 @@ class State:
         """All the pixels of an engine's picture, from now on computed a little at each frame"""
         if self.where is not None and self.computed is not None:
             center_re, center_im, width, w, h = self.where
-            full = View(center_re, center_im, width / w, w, h, self.max_iter)
+            full = View(center_re, center_im, width / w, w, h, self.max_iter, background=True)
             self.all_pixels = AllPixels(side, engine.compute(full), self.computed, time.perf_counter())
 
     def add_view(self, name: str, short: str, sentence: str) -> None:
@@ -856,7 +877,10 @@ def all_pixels_slice(job: AllPixels, w: int, h: int) -> None:
         if step is None:  # the end: the last step holds the complete arrays
             complete = True
         else:
+            progressed = job.last is None or step[0] > job.last[0]
             job.last = step
+            if not progressed:  # waiting for threads or workers: the frame can go on
+                break
     if job.last is None:
         return
     job.fraction, counts, ready = job.last

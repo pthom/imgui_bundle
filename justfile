@@ -326,8 +326,9 @@ api_pictures *args:
 playground_screenshots *names:
     python ci_scripts/playground_screenshots.py {{names}}
 
-# Playground: the C++ loops of the "Mandelbrot engines" example, compiled to the WebAssembly module that the browser
-# loads with ctypes (commit it with mandel_kernels.cpp). It needs emsdk (~/emsdk), in the version of the Pyodide build
+# Playground: the C++ loops of the "Mandelbrot engines" example, compiled to the WebAssembly modules of the browser:
+# one loaded with ctypes, one for its Web Workers (commit both with mandel_kernels.cpp). It needs emsdk (~/emsdk), in
+# the version of the Pyodide build
 [group('pyodide')]
 playground_mandelbrot_wasm:
     #!/usr/bin/env bash
@@ -335,7 +336,11 @@ playground_mandelbrot_wasm:
     source ~/emsdk/emsdk_env.sh > /dev/null
     cd bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines
     em++ -O3 -std=c++20 -sSIDE_MODULE=1 -fPIC mandel_kernels.cpp -o mandel_kernels.wasm
-    ls -l mandel_kernels.wasm
+    # The same, standalone: for the Web Workers (mandel_workers.js)
+    em++ -O3 -std=c++20 mandel_kernels.cpp -o mandel_kernels_standalone.wasm --no-entry -sSTANDALONE_WASM \
+        -sALLOW_MEMORY_GROWTH -sEXPORTED_FUNCTIONS=_mandel_double,_mandel_perturbation,_malloc,_free
+    chmod 644 mandel_kernels.wasm mandel_kernels_standalone.wasm
+    ls -l mandel_kernels.wasm mandel_kernels_standalone.wasm
 
 # The narration clips of an explorable (`just narrator_audio rich_md_tour`): synthesized beside its scenario (git ignores
 # them), then copied into the website resources, where the site serves them (commit them there)

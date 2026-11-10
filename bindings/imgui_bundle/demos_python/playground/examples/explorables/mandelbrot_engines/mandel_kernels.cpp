@@ -3,7 +3,8 @@
 //   count[i]: the number of iterations before |z| > 16 (max_iter when the point never escapes)
 //   size2[i]: |z|^2 at that step (Python uses it to smooth the colors)
 // Python calls them from several threads, one band of rows each.
-// For the browser, this file is compiled to mandel_kernels.wasm (commit both): `just playground_mandelbrot_wasm`.
+// For the browser, this file is compiled to mandel_kernels.wasm and mandel_kernels_standalone.wasm (commit them):
+// `just playground_mandelbrot_wasm`.
 // The ::code and ::endcode lines name the regions that the page shows beside each engine.
 extern "C" {
 

@@ -1,4 +1,7 @@
 [
   "mandel_kernels.cpp",
-  "mandel_kernels.wasm"
+  "mandel_kernels.wasm",
+  "mandel_kernels_standalone.wasm",
+  "mandel_web_workers.py",
+  "mandel_workers.js"
 ]
