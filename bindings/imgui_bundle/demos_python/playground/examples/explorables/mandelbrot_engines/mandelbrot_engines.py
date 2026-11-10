@@ -457,6 +457,9 @@ class AllPixels:
     painted_at: float = 0.0
 
 
+Leg = tuple[Decimal, Decimal, float]  # an end of a journey's leg: a center and a width
+
+
 class State:
     def __init__(self) -> None:
         self.engine = ENGINES[2 if KERNELS else 1]
@@ -482,9 +485,9 @@ class State:
         self.costs: dict[str, dict[int, float]] = {}  # for each engine, at this view: the seconds its pictures took,
         # by their number of pixels. Two sizes tell the fixed part of a picture's time from the part per pixel.
         self.moved_at = 0.0  # when the view last changed
-        # A journey to a view: its legs, one after the other. ("zoom", from width, to width) around the current
-        # center, or ("pan", from center, to center) at the current width. None: the view is still.
-        self.dive: list[tuple[str, Any, Any]] | None = None
+        # A journey to a view: its legs, one after the other, each from a view (re, im, width) to another.
+        # A leg moves and zooms in one go. None: the view is still.
+        self.dive: list[tuple[Leg, Leg]] | None = None
         self.leg_start = 0.0  # when the current leg started
         self.stop: int | None = None  # the view of the place we are at, in its list: its caption shows
         self.arrived_at = 0.0  # when the journey to it ended
@@ -552,7 +555,7 @@ class State:
 
     def go_to(self, place: tuple[str, str, float], max_iter: int, name: str = "", animate: bool = True,
               stop: int | None = None) -> None:
-        """To a view (its center and its width). Animated: zoom out until both views fit, slide, zoom in."""
+        """To a view (its center and its width). Animated: one zoom towards it, or out then in when it is far."""
         getcontext().prec = digits_for(min(place[2], self.width) / 2000)
         target_re, target_im, target_width = Decimal(place[0]), Decimal(place[1]), place[2]
         self.max_iter = max_iter
@@ -563,15 +566,14 @@ class State:
             self.center_re, self.center_im, self.width, self.dive = target_re, target_im, target_width, None
             return
         self.remember()
+        here, there = (self.center_re, self.center_im, self.width), (target_re, target_im, target_width)
         distance = float(max(abs(target_re - self.center_re), abs(target_im - self.center_im)))
-        high = min(max(self.width, target_width, 2.5 * distance), float(WHOLE_SET[2]))  # where both views fit
-        self.dive = []
-        if high > self.width * 1.01:
-            self.dive.append(("zoom", self.width, high))
-        if distance > 0:
-            self.dive.append(("pan", (self.center_re, self.center_im), (target_re, target_im)))
-        if abs(math.log10(high / target_width)) > 0.004 or not self.dive:
-            self.dive.append(("zoom", high, target_width))
+        if distance < 0.5 * max(self.width, target_width):  # one view holds the other's center: one zoom
+            self.dive = [(here, there)]
+        else:  # out towards the middle until both fit, then in
+            high = min(max(self.width, target_width, 2.5 * distance), float(WHOLE_SET[2]))
+            middle = ((self.center_re + target_re) / 2, (self.center_im + target_im) / 2, high)
+            self.dive = [(here, middle), (middle, there)]
         self.leg_start = imgui.get_time()
 
     def step(self, by: int) -> None:
@@ -601,7 +603,7 @@ DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
 ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
 HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the top of the picture, in em
 GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
-PAN_SECONDS = 0.9  # the slide of a journey, between its zoom out and its zoom in
+PAN_SECONDS = 0.9  # a journey between two views of the same width: a slide
 PLAY_SECONDS = 5.0  # playing a place's views: the time to look at each, once its picture is complete
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
@@ -643,28 +645,30 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
             state.by_hand = True
     if imgui.is_item_hovered() and imgui.is_mouse_double_clicked(0) and state.width > 10.0 ** (3 - DEEPEST) \
             and not on_divider:
-        state.remember()  # the clicked point comes to the center, and the view dives towards it
+        state.remember()  # the view dives towards the clicked point, which comes to the center
+        here = (state.center_re, state.center_im, state.width)
         state.move(mx * pixel, -my * pixel)
-        state.dive, state.leg_start = [("zoom", state.width, state.width / DOUBLE_CLICK_ZOOM)], imgui.get_time()
+        there = (state.center_re, state.center_im, state.width / DOUBLE_CLICK_ZOOM)
+        state.center_re, state.center_im = here[0], here[1]
+        state.dive, state.leg_start = [(here, there)], imgui.get_time()
         state.stop, state.playing = None, False
         state.by_hand = True
 
-    # A journey: its current leg moves the view, at a constant number of decades per second for a zoom
+    # A journey: its current leg moves the view
     if state.dive:
-        kind, start, end = state.dive[0]
+        (re0, im0, w0), (re1, im1, w1) = state.dive[0]
         elapsed = imgui.get_time() - state.leg_start
-        if kind == "zoom":
-            decades = abs(math.log10(start / end))  # a zoom goes in, or out
-            progress = min(1.0, elapsed / max(0.5, decades * DIVE_SECONDS_PER_DECADE))
-            state.width = start * (end / start) ** progress
-        else:  # a pan: slow at both ends
+        if abs(math.log10(w0 / w1)) > 0.004:  # a zoom, at a constant number of decades per second
+            progress = min(1.0, elapsed / max(0.5, abs(math.log10(w0 / w1)) * DIVE_SECONDS_PER_DECADE))
+        else:  # the same width: a slide
             progress = min(1.0, elapsed / PAN_SECONDS)
-            eased = Decimal(progress * progress * (3 - 2 * progress))
-            state.center_re = start[0] + (end[0] - start[0]) * eased
-            state.center_im = start[1] + (end[1] - start[1]) * eased
-            if progress >= 1.0:
-                state.center_re, state.center_im = end
+        state.width = w0 * (w1 / w0) ** progress
+        # In the picture, the target drifts to the center while the zoom goes on (slow at both ends): its
+        # distance to the center, counted in widths of the view, goes steadily from its first value to 0
+        left = Decimal((1 - progress * progress * (3 - 2 * progress)) * state.width / w0)
+        state.center_re, state.center_im = re1 + (re0 - re1) * left, im1 + (im0 - im1) * left
         if progress >= 1.0:
+            state.center_re, state.center_im, state.width = re1, im1, w1
             state.dive.pop(0)
             state.leg_start = imgui.get_time()
     if state.dive is not None and not state.dive:
