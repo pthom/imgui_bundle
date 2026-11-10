@@ -29,7 +29,7 @@ r"""::md Help
 * The **place's name** is a menu of places. The **zoom** beside it is a menu of deeper views of that place.
 * The **engine's name** is a menu: pick another one, and watch its time.
 * **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
-* The gear: the iterations and the colors.
+* The gear: the iterations and the colors. The bookmark: add this view to my places (a file beside the demo).
 
 **Engines**
 * Every engine gets the same time for a picture: 0.3 s, and much less while the view moves.
@@ -42,6 +42,7 @@ r"""::md Help
 
 # ruff: noqa: E402  # the story comes first
 import ctypes
+import json
 import math
 import os
 import subprocess
@@ -338,7 +339,7 @@ SEAHORSE = ("-0.743916538692433356599334896378352022720811393898656056544159"
 # The center of a small copy of the set, hidden in the spirals of the valley (found with Newton's method)
 HIDDEN_COPY = ("-0.74391653869243335659933489638638694153569553630943849046081220664810341437",
                "0.13168879135949461757778912139905999762536756237320873041503736241957753062")
-PLACES = [
+BUILT_IN_PLACES = [
     ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "", "")]),
     ("Elephant valley", ("0.275", "0.0068"), [
         (0.005, 3000, "trunks", "A parade of elephants, trunks up, along the right side of the set.")]),
@@ -373,6 +374,29 @@ PLACES = [
         (1e-287, 2000, "the limit",
          "The same tree again, near the smallest number that a double can hold: the limit of this page.")]),
 ]
+
+
+# My places: the views added with the card's bookmark button, kept in a file beside this one (git ignores it)
+MY_PLACES_FILE = HERE / "my_places.json"
+MY_VIEWS: list[dict[str, Any]] = []  # the file's content: a name, a point, a width, iterations, two texts
+Zoom = tuple[float, int, str, str, tuple[str, str]]  # a width, iterations, a short name, what to see, its point
+PLACES: list[tuple[str, tuple[str, str], list[Zoom]]] = []  # the built-in places and mine, see load_places()
+
+
+def load_places() -> None:
+    """Fills PLACES: the built-in places, then my views. A view named as a place is one more zoom of that place
+    (with its own point); another name is a new place."""
+    places = {name: (point, [(*zoom, point) for zoom in zooms]) for name, point, zooms in BUILT_IN_PLACES}
+    MY_VIEWS[:] = json.loads(MY_PLACES_FILE.read_text()) if MY_PLACES_FILE.exists() else []
+    for view in MY_VIEWS:
+        point = (view["re"], view["im"])
+        zooms = places.setdefault(view["name"], (point, []))[1]
+        zooms.append((view["width"], view["iterations"], view["short"], view["sentence"], point))
+        zooms.sort(key=lambda zoom: -zoom[0])  # the widest view first
+    PLACES[:] = [(name, point, zooms) for name, (point, zooms) in places.items()]
+
+
+load_places()
 
 
 # ======================================================================================================================
@@ -452,6 +476,7 @@ class State:
         self.all_pixels: AllPixels | None = None  # the picture being computed frame after frame, see the button
         self.lowest: list[float] = []  # the lowest count of each engine's picture: the start of its palette
         self.cancelled: tuple[Any, int] | None = None  # the picture and the side of the last cancel
+        self.new_view = ["", "", ""]  # the texts typed for a view to add: its place, its short name, a sentence
         self.costs: dict[str, dict[int, float]] = {}  # for each engine, at this view: the seconds its pictures took,
         # by their number of pixels. Two sizes tell the fixed part of a picture's time from the part per pixel.
         self.moved_at = 0.0  # when the view last changed
@@ -484,6 +509,20 @@ class State:
             center_re, center_im, width, w, h = self.where
             full = View(center_re, center_im, width / w, w, h, self.max_iter)
             self.all_pixels = AllPixels(side, engine.compute(full), self.computed, time.perf_counter())
+
+    def add_view(self, name: str, short: str, sentence: str) -> None:
+        """The current view joins my places, and their file"""
+        digits = max(6, int(-math.log10(self.width)) + 8)  # enough to find the view again
+        MY_VIEWS.append({"name": name, "re": f"{self.center_re:.{digits}f}", "im": f"{self.center_im:.{digits}f}",
+                         "width": self.width, "iterations": self.max_iter, "short": short, "sentence": sentence})
+        MY_PLACES_FILE.write_text(json.dumps(MY_VIEWS, indent=1) + "\n")
+        load_places()
+        self.place = name
+
+    def remove_view(self, name: str, width: float) -> None:
+        kept = [view for view in MY_VIEWS if (view["name"], view["width"]) != (name, width)]
+        MY_PLACES_FILE.write_text(json.dumps(kept, indent=1) + "\n")
+        load_places()
 
     def remember(self) -> None:
         self.history.append((self.center_re, self.center_im, self.width, self.max_iter))
@@ -815,18 +854,48 @@ def palette_swatches() -> None:
 
 
 def where_we_are() -> str:
-    """The name of the place in view: the first place whose point is in the picture"""
+    """The name of the place in view: the first place with a point in the picture"""
     state = STATE
     assert state is not None
     if state.where is None or state.width > WHOLE_SET[2] / 10:
         return PLACES[0][0]
     center_re, center_im, width, w, h = state.where
     half_w, half_h = width / 2, width / 2 * h / w
-    in_view = [name for name, point, _zooms in PLACES[1:]
-               if abs(Decimal(point[0]) - center_re) < half_w and abs(Decimal(point[1]) - center_im) < half_h]
+
+    def inside(point: tuple[str, str]) -> bool:
+        return abs(Decimal(point[0]) - center_re) < half_w and abs(Decimal(point[1]) - center_im) < half_h
+
+    in_view = [name for name, _point, zooms in PLACES[1:] if any(inside(zoom[4]) for zoom in zooms)]
     if state.place in in_view:  # the place we went to, while its point is in view (the hidden copy is in the valley)
         return state.place
     return in_view[0] if in_view else "Uncharted waters"
+
+
+def add_view_popup() -> None:
+    """Three texts, and the current view joins my places"""
+    state = STATE
+    assert state is not None
+    imgui.set_next_window_pos(imgui.get_item_rect_min(), imgui.Cond_.always, (0, 1))  # above its button
+    if not imgui.begin_popup("add view"):
+        return
+    imgui.text(f"Add this view to my places (zoom {zoom_number(state.width)})")
+    labels = ["Place", "Name of this view", "What to see there"]
+    hints = ["An existing place: one more of its zooms. A new name: a new place.", "A few words, for the menu.", ""]
+    for i, (label, hint) in enumerate(zip(labels, hints, strict=True)):
+        imgui.set_next_item_width(em_size(22 if i == 2 else 14))
+        _, state.new_view[i] = imgui.input_text(label, state.new_view[i])
+        if hint:
+            imgui.same_line()
+            imgui_kit.help_marker(hint)
+    name, short, sentence = (text.strip() for text in state.new_view)
+    imgui.begin_disabled(not name or not short)
+    if imgui.button("Add"):
+        state.add_view(name, short, sentence)
+        imgui.close_current_popup()
+    imgui.end_disabled()
+    imgui.same_line()
+    imgui.text_disabled(f"Saved in {MY_PLACES_FILE.name}, beside this demo")
+    imgui.end_popup()
 
 
 def title_card(top_left: imgui.ImVec2, h: int) -> None:
@@ -851,9 +920,9 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     imgui.same_line()
     menu_button(place, "places", title=True)  # the place: a menu of the places
     if imgui.begin_popup("places"):
-        for name, point, zooms in PLACES:
+        for name, _point, zooms in PLACES:
             if imgui.selectable(name, name == place)[0]:
-                state.go_to((*point, zooms[0][0]), zooms[0][1], name)
+                state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name)
         imgui.end_popup()
 
     deeper = [its_zooms for name, _point, its_zooms in PLACES[1:] if name == place]  # the zooms of this place
@@ -864,16 +933,21 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
         imgui.text(f"zoom {zoom_number(state.width)}")
     else:  # the zoom: a menu of the place's zooms, each with an (i) that says what to see there
         menu_button(f"zoom {zoom_number(state.width)}", "zooms")
-        imgui.set_next_window_size_constraints((em_size(21), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
+        imgui.set_next_window_size_constraints((em_size(23), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
         if imgui.begin_popup("zooms"):
-            point = next(point for name, point, _zooms in PLACES if name == place)
-            for width, max_iter, short, story in deeper[0]:
+            for width, max_iter, short, story, point in list(deeper[0]):
                 zoom = math.floor(math.log10(WHOLE_SET[2] / width))
                 label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
-                if imgui.selectable(label, False, size=(em_size(17), 0))[0]:
+                if imgui.selectable(f"{label}##{width}", False, size=(em_size(17), 0))[0]:
                     state.go_to((*point, width), max_iter, place)
-                imgui.same_line()
-                imgui_kit.help_marker(story)
+                if story:
+                    imgui.same_line()
+                    imgui_kit.help_marker(story)
+                if any((view["name"], view["width"]) == (place, width) for view in MY_VIEWS):  # one of mine
+                    imgui.same_line(em_size(20.5))
+                    if imgui.small_button(f"{icons_fontawesome_6.ICON_FA_TRASH}##{width}"):
+                        state.remove_view(place, width)
+                    imgui.set_item_tooltip("Remove this view from my places")
             imgui.end_popup()
     imgui.same_line(0, em_size(1.0))
     imgui.dummy((imgui_kit.help_marker_width() + em_size(0.5), 1))  # room for the (i), drawn last in this corner
@@ -899,6 +973,13 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     if imgui.button(icons_fontawesome_6.ICON_FA_GEAR):
         imgui.open_popup("settings")
     imgui.set_item_tooltip("Iterations and colors")
+    imgui.same_line()
+    if imgui.button(icons_fontawesome_6.ICON_FA_BOOKMARK):  # add this view to my places
+        known = place not in (PLACES[0][0], "Uncharted waters")
+        state.new_view = [place if known else "", "", ""]
+        imgui.open_popup("add view")
+    imgui.set_item_tooltip("Add this view to my places")
+    add_view_popup()
     imgui.set_next_window_pos(imgui.get_item_rect_min(), imgui.Cond_.always, (0, 1))  # above the gear
     if imgui.begin_popup("settings"):
         imgui.set_next_item_width(em_size(9))

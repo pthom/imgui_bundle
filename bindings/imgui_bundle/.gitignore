@@ -7,3 +7,6 @@ include/
 *.so
 *.dylib
 *.so.*
+
+# The views a user adds in the Mandelbrot engines demo
+demos_python/playground/examples/explorables/mandelbrot_engines/my_places.json
