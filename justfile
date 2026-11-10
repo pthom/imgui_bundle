@@ -459,10 +459,11 @@ cf_stage:
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
     # demos_python/: only its top-level files are examples (its folders are other sources, or not examples; its .ini
     # files are the settings of local runs). demo_code/ links to the web explorer's (the manuals fetch their code there)
+    # my_places.json: the places a user saved in the Mandelbrot example (git-ignored, personal)
     python ci_scripts/playground_examples_docs.py
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
     rsync -a --copy-unsafe-links --exclude='/demos_python/*/' --exclude='/demos_python/*.ini' \
-        pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
+        --exclude='my_places.json' pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
     # projects/local_wheels/ ships both the wheel (gitignored) and a tracked
     # index.html landing page served at imgui-bundle.pages.dev/local_wheels/.
     rsync -a pyodide_projects/projects/local_wheels/ {{_CF_STAGING}}/local_wheels/
@@ -515,6 +516,12 @@ cf_stage:
 cf_deploy:
     wrangler pages deploy {{_CF_STAGING}} --project-name={{_CF_PROJECT}} --commit-dirty=true
     echo "Deployed to https://imgui-bundle.pages.dev/"
+
+# Upload the current staging dir as a preview, at https://<branch>.imgui-bundle.pages.dev/: the site stays as it is
+[group('cloudflare')]
+cf_deploy_preview branch:
+    wrangler pages deploy {{_CF_STAGING}} --project-name={{_CF_PROJECT}} --branch={{branch}} --commit-dirty=true
+    echo "Deployed to https://{{branch}}.imgui-bundle.pages.dev/"
 
 # Update Cloudflare Pages from GitHub (same result as cf_deploy_all_in_one, but runs on GH)
 [group('cloudflare')]

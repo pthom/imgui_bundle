@@ -39,6 +39,11 @@ A preview is a build shown to a few people before its public deploy, at an unlis
 - A deploy from CI (below) has no `_cf_previews/`: it removes the previews from the site.
 - Remove a preview's folder once it is public.
 
+A preview of the whole site, e.g. to try a playground example on a phone before it is public: `just cf_stage`, then `just cf_deploy_preview <branch>`.
+- It is served at `https://<branch>.imgui-bundle.pages.dev/`. The site itself stays as it is.
+- A new deploy to the same branch replaces it.
+- It is public to anyone with its address.
+
 
 ## One-time setup
 
