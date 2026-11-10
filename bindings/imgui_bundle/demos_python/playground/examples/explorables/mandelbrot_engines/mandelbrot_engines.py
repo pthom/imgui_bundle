@@ -26,7 +26,7 @@ r"""::md Help
 * The arrow, bottom left, or **Backspace**: back to the view before your last jump, zoom or drag.
 
 **The card, bottom left**
-* The **place's name** is a menu of places.
+* The **place's name** is a menu: the places, then the trips (a trip has several views, from the whole set).
 * The **engine's name** is a menu: pick another one, and watch its time.
 * **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
 * The gear: the iterations and the colors. The bookmark: add this view to my places (a file beside the demo).
@@ -372,8 +372,9 @@ BUILT_IN_PLACES = [
     ("Elephant valley", ("0.275", "0.0068"), [
         (0.005, 3000, "trunks", "A parade of elephants, trunks up, along the right side of the set.")]),
     ("The Sun King", ("-0.7453", "0.1127"), [
-        (6.5e-4, 2000, "The double spiral",
-         "A spiral made of spirals, at the entrance of Seahorse valley. The trip starts here.")]),
+        (WHOLE_SET[2], 300, "The whole set",
+         "This trip starts from the whole set, then dives into the valley between its two largest bulbs."),
+        (6.5e-4, 2000, "The double spiral", "A spiral made of spirals, at the entrance of Seahorse valley.")]),
     ("The needle", ("-1.7548776662466927", "0"), [
         (0.07, 600, "a small copy", "A small copy of the whole set, on the needle that points to the left. "
                                     "There are infinitely many copies: see also the hidden one.")]),
@@ -497,6 +498,11 @@ def load_places() -> None:
         zooms = places.setdefault(view["name"], (point, []))[1]
         zooms.append((view["width"], view["iterations"], view["short"], view["sentence"], point))
         zooms.sort(key=lambda zoom: -zoom[0])  # the widest view first
+    whole: Zoom = (WHOLE_SET[2], 300, "The whole set", "The trip starts here: press Play, or step with the arrow keys.",
+                   (WHOLE_SET[0], WHOLE_SET[1]))
+    for _point, zooms in places.values():  # a trip (several views) starts at the whole set
+        if len(zooms) > 1 and zooms[0][0] < WHOLE_SET[2] / 2:
+            zooms.insert(0, whole)
     PLACES[:] = [(name, point, zooms) for name, (point, zooms) in places.items()]
 
 
@@ -808,10 +814,15 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
         time_part = min(1.0, elapsed / seconds)
         progress = time_part * time_part * (3 - 2 * time_part)  # slow at both ends
         state.width = w0 * (w1 / w0) ** progress
-        # In the picture, the target drifts to the center while the zoom goes on: its distance to the center,
-        # counted in widths of the view, goes from its first value to 0
-        left = Decimal((1 - progress) * state.width / w0)
-        state.center_re, state.center_im = re1 + (re0 - re1) * left, im1 + (im0 - im1) * left
+        # In the picture, the point the view zooms towards drifts to the center while the zoom goes on: its
+        # distance to the center, in widths of the view, goes from its first value to 0. Zooming out, the same
+        # backwards: the point the view leaves drifts away from the center.
+        if w1 <= w0:
+            left = Decimal((1 - progress) * state.width / w0)
+            state.center_re, state.center_im = re1 + (re0 - re1) * left, im1 + (im0 - im1) * left
+        else:
+            gone = Decimal(progress * state.width / w1)
+            state.center_re, state.center_im = re0 + (re1 - re0) * gone, im0 + (im1 - im0) * gone
         if time_part >= 1.0:
             state.center_re, state.center_im, state.width = re1, im1, w1
             state.dive.pop(0)
@@ -1179,15 +1190,8 @@ def caption(top_left: imgui.ImVec2) -> None:
         if imgui.button(icons_fontawesome_6.ICON_FA_PAUSE if state.playing else icons_fontawesome_6.ICON_FA_PLAY):
             state.playing = not state.playing
             if state.playing and (state.stop is None or state.stop == len(views) - 1):
-                # From the start: the whole set for a moment, then the journey to the first view
-                state.remember()
-                whole = (Decimal(WHOLE_SET[0]), Decimal(WHOLE_SET[1]), float(WHOLE_SET[2]))
-                state.center_re, state.center_im, state.width = whole
-                view = views[0]
+                view = views[0]  # from the start: the whole set
                 state.go_to((*view[4], view[0]), view[1], place, stop=0)
-                state.history.pop()  # one step for Back, not two
-                if state.dive is not None:
-                    state.dive.insert(0, (whole, whole))
         imgui.set_item_tooltip("Play: the views of this place, one after the other")
         imgui.same_line(0, em_size(0.8))
     imgui.align_text_to_frame_padding()
@@ -1227,9 +1231,16 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     imgui.same_line()
     menu_button(place, "places", title=True)  # the place: a menu of the places
     if imgui.begin_popup("places"):
-        for name, _point, zooms in PLACES:
-            if imgui.selectable(name, name == place)[0]:
-                state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name, stop=0)
+        for title, trips in (("Places", False), ("Trips", True)):  # a trip: several views, played in turn
+            imgui.separator_text(title)
+            for name, _point, zooms in PLACES:
+                if (len(zooms) > 1) != trips:
+                    continue
+                if imgui.selectable(name, name == place)[0]:
+                    state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name, stop=0)
+                if trips:
+                    imgui.same_line()
+                    imgui.text_disabled(f"{len(zooms)} views")
         imgui.separator()
         if imgui.selectable(f"{icons_fontawesome_6.ICON_FA_PASTE}  Paste a location", False)[0]:
             if not state.go_to_text(imgui.get_clipboard_text() or ""):
@@ -1392,6 +1403,7 @@ def explanations() -> None:
     imgui.set_item_tooltip("Hide the explanations: the picture takes the whole window")
     imgui.same_line()
     imgui.text_disabled("Explanations")
+    imgui.begin_child("##explanations text")  # under the header, which stays: the text scrolls
     rich_md.render_this_file("Intro")
     rich_md.render_this_file("View")
     if imgui.collapsing_header("The view's code"):
@@ -1463,6 +1475,7 @@ def gui() -> None:
         imgui.set_cursor_screen_pos(imgui.ImVec2(right + spacing, top_left.y))
         imgui.begin_child("##explanations", imgui.ImVec2(notes_width, available.y))
         explanations()
+        imgui.end_child()  # the text
         imgui.end_child()
 
 
