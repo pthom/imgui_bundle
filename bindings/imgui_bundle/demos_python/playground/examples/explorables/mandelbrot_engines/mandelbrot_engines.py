@@ -85,6 +85,13 @@ def report(fraction: float) -> None:
         PROGRESS[0] = fraction
 
 
+r"""::md View
+### What an engine receives, and returns
+Every engine is one function. It receives a **view**: the rectangle of the plane to compute, as a center, the
+size of a pixel, and a grid of `w` x `h` pixels. It returns two arrays of that shape: for each pixel, its count
+of steps, and $|z|^2$ at the last one (which smooths the colors). The page turns them into a picture.
+::code
+"""
 @dataclass
 class View:
     """What to compute: a rectangle of the plane, on a grid of pixels. The center is a Decimal: at a zoom of
@@ -99,6 +106,7 @@ class View:
     def corner(self) -> tuple[float, float]:
         """The top left pixel, in double precision"""
         return float(self.center_re) - self.w / 2 * self.pixel, float(self.center_im) + self.h / 2 * self.pixel
+# ::endcode
 
 
 # ======================================================================================================================
@@ -917,6 +925,9 @@ def explanations() -> None:
     imgui.same_line()
     imgui.text_disabled("Explanations")
     rich_md.render_this_file("Intro")
+    rich_md.render_this_file("View")
+    if imgui.collapsing_header("The view's code"):
+        rich_md.render_this_file("View#code")
     if imgui.begin_tab_bar("##engines"):
         follow = state.explained is not state.shown_tab  # the engine changed: its tab comes forward
         for engine in ENGINES:
