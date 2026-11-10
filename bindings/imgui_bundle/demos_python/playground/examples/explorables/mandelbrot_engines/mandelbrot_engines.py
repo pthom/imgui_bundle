@@ -32,7 +32,8 @@ r"""::md Help
 **Engines**
 * Every engine gets the same time for a picture: 1.5 s, and much less while the view moves.
 * An engine that cannot afford all the pixels computes one out of 4, 16 or 64.
-  **All the pixels** then computes them all in the background, and can be cancelled.
+  **All the pixels** then computes them all. On the desktop: in the background, with its progress and a
+  button to cancel. In a browser, which has one thread: the page waits until it is done.
 
 **The gauge** on the right: how deep the view is. White: every engine works. Orange: the perturbation only.
 """
@@ -161,8 +162,11 @@ def numpy_engine(view: View) -> Counts:
 r"""::md Cpp
 ### C++
 The same two loops as the Python engine, in C++ (`mandel_double`, below). Python gives it two numpy arrays to
-fill, through `ctypes`: no copy, no wrapper to generate. `ctypes` releases Python's lock during the call, so a
-pool of threads computes several bands of rows at once.
+fill, through `ctypes`: no copy, no wrapper to generate.
+
+*On the desktop*, `ctypes` releases Python's lock during the call, so a pool of threads computes several bands
+of rows at once. *In a browser*, Python has one thread: the same C++, compiled to WebAssembly, computes the bands
+one after the other, about ten times slower than a desktop with ten cores.
 
 It is fast, but a `double` holds 16 digits. Below a pixel size of about 1e-13, pixels start to be wrong; at
 1e-16, neighbours get the same $c$ and the picture turns into blocks.
@@ -223,7 +227,8 @@ one call. A C++ library that draws with Dear ImGui by itself would need the very
 package (version, options, compiler). An array has no such needs.
 
 The C++ file is compiled once, into a small library: on the desktop by your compiler at the first run, and
-for the browser into a WebAssembly module of a few hundred bytes.
+for the browser into a WebAssembly module of 1.3 KB (`mandel_kernels.wasm`, beside this file), loaded the same
+way by `ctypes`.
 """
 
 
@@ -243,7 +248,10 @@ def load_kernels() -> ctypes.CDLL | None:
     On the desktop: compiled at the first run into the temporary folder (it needs a C++ compiler)."""
     source = HERE / "mandel_kernels.cpp"
     if IN_BROWSER:
-        return ctypes.CDLL(str(HERE / "mandel_kernels.wasm.so"))
+        try:
+            return ctypes.CDLL(str(HERE / "mandel_kernels.wasm"))
+        except OSError:
+            return None
     library = Path(tempfile.gettempdir()) / f"mandel_kernels_{int(source.stat().st_mtime)}.lib"
     try:
         if not library.exists():
@@ -264,10 +272,12 @@ POOL = None if IN_BROWSER else ThreadPoolExecutor(THREADS)
 
 r"""::md Bands
 `run_in_bands` is what both C++ engines call. It creates the two arrays, cuts the picture into bands of rows,
-and calls the C++ loop on each band from a pool of threads, with pointers to the arrays: no copy.
-* The bands are small, four per thread: a band full of slow pixels does not keep a thread busy alone.
+and calls the C++ loop on each band, with pointers to the arrays: no copy.
+* *On the desktop*, the bands run in a pool of threads. They are small, four per thread: a band full of slow
+  pixels does not keep a thread busy alone.
+* *In a browser* there are no threads (`POOL` is `None`): the bands run one after the other.
 * After each band, it reports the progress, which is also where a cancelled picture stops.
-* The C++ has no thread of its own: the parallelism is these few lines of Python.
+* The C++ has no thread of its own: on the desktop, the parallelism is these few lines of Python.
 ::code
 """
 def run_in_bands(view: View, kernel: Callable[[ctypes.c_void_p, ctypes.c_void_p, int, int], None]) -> Counts:
@@ -865,7 +875,7 @@ def all_pixels_control(side: int, width: float) -> None:
     elif side < len(state.shrinks) and state.shrinks[side] > 1 and state.where is not None:
         imgui.begin_disabled(job is not None)  # one at a time
         seconds = state.each_seconds[side] * state.shrinks[side] ** 2
-        if imgui.button(f"All the pixels (about {seconds:.0f} s)", (width, 0)):
+        if imgui.button(f"All the pixels (about {seconds:.0f} s)", (width, 0)):  # in a browser: the page waits
             center_re, center_im, view_width, w, h = state.where
             engine = state.engine if side == 0 else state.other
             if engine is not None:

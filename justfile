@@ -326,6 +326,17 @@ api_pictures *args:
 playground_screenshots *names:
     python ci_scripts/playground_screenshots.py {{names}}
 
+# Playground: the C++ loops of the "Mandelbrot engines" example, compiled to the WebAssembly module that the browser
+# loads with ctypes (commit it with mandel_kernels.cpp). It needs emsdk (~/emsdk), in the version of the Pyodide build
+[group('pyodide')]
+playground_mandelbrot_wasm:
+    #!/usr/bin/env bash
+    set -euo pipefail
+    source ~/emsdk/emsdk_env.sh > /dev/null
+    cd bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines
+    em++ -O3 -std=c++20 -sSIDE_MODULE=1 -fPIC mandel_kernels.cpp -o mandel_kernels.wasm
+    ls -l mandel_kernels.wasm
+
 # The narration clips of an explorable (`just narrator_audio rich_md_tour`): synthesized beside its scenario (git ignores
 # them), then copied into the website resources, where the site serves them (commit them there)
 [group('pyodide')]

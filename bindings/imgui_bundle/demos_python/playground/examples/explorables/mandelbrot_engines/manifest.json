@@ -1,0 +1,4 @@
+[
+  "mandel_kernels.cpp",
+  "mandel_kernels.wasm"
+]
