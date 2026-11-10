@@ -241,19 +241,18 @@ ENGINES = [
     Engine("C++ with perturbation", "Perturbation", perturbation_engine, shrink=1, cpp_region="Perturbation"),
 ]
 
-# Places to visit: a name, a view (center, width), a number of iterations, and what to see there
+# Places to visit: a name, a point (re, im), and its zooms: (the width of the view, the iterations, what to see)
 SEAHORSE = ("-0.743916538692433356599334896378352022720811396866", "0.131688791359494617577789121421345189627001255958")
 PLACES = [
-    ("The whole set", WHOLE_SET, 300, "The starting point."),
-    ("Seahorse valley", (*SEAHORSE, 3e-9), 3000,
-     "Spirals within spirals. The C++ engine starts to drift here: compare it with the perturbation."),
-    ("The end of double", (*SEAHORSE, 2e-14), 4500,
-     "With the C++ engine: blocks. With the perturbation: the picture."),
-    ("Seahorse, at 1e-40", (*SEAHORSE, 1e-37), 9000,
-     "Only the perturbation gets here. Its reference orbit has 60 digits."),
-    ("i, at 1e-290", ("0", "1", 1e-287), 2000,
-     "The point c = i is on the boundary: there is detail at every scale. A proton next to the observable universe "
-     "is a ratio of 1e-41: this is far beyond."),
+    ("The whole set", WHOLE_SET[:2], [(WHOLE_SET[2], 300, "")]),
+    ("Seahorse valley", SEAHORSE, [
+        (3e-9, 3000, "spirals within spirals. The C++ engine starts to drift: compare with the perturbation"),
+        (2e-14, 4500, "the end of double. The C++ engine draws blocks, the perturbation draws the picture"),
+        (1e-37, 9000, "only the perturbation gets here. Its reference orbit has 60 digits")]),
+    ("The point i", ("0", "1"), [
+        (1e-8, 600, "c = i is on the boundary: a branching tree, with detail at every scale"),
+        (1e-57, 1200, "the same tree. A proton next to the observable universe is only a zoom of 10^41"),
+        (1e-287, 2000, "the same tree again, near the smallest number that a double can hold")]),
 ]
 
 
@@ -419,12 +418,20 @@ def controls() -> None:
     if digits > 40:  # the first digits only
         shown = [f"{text[:22]}..." for text in shown]
     imgui.text_disabled(f"center  {shown[0]}  {shown[1]} i" + (f"  ({digits} digits)" if digits > 40 else ""))
-    for i, (name, place, max_iter, story) in enumerate(PLACES):
+    for i, (name, point, zooms) in enumerate(PLACES):
         if i > 0:
-            same_line_if_room(name)
-        if imgui.button(name):
-            state.go_to(place, max_iter)
-        imgui.set_item_tooltip(story)
+            same_line_if_room(name + "    ")
+        if imgui.button(name):  # a click on the name: its first zoom
+            state.go_to((*point, zooms[0][0]), zooms[0][1])
+        if len(zooms) > 1:  # an arrow beside it: the menu of its zooms
+            imgui.same_line(0, 1)
+            if imgui.arrow_button(f"##zooms of {name}", imgui.Dir.down):
+                imgui.open_popup(f"zooms of {name}")
+            if imgui.begin_popup(f"zooms of {name}"):
+                for width, max_iter, story in zooms:
+                    if imgui.selectable(f"Zoom 10^{math.floor(math.log10(WHOLE_SET[2] / width))}: {story}", False)[0]:
+                        state.go_to((*point, width), max_iter)
+                imgui.end_popup()
     imgui.set_next_item_width(em_size(10))
     _, state.max_iter = imgui.slider_int("iterations", state.max_iter, 50, 50000, flags=imgui.SliderFlags_.logarithmic)
     imgui.set_item_tooltip("Black where there should be detail? Raise the iterations.")
