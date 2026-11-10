@@ -816,7 +816,7 @@ def status(top_left: imgui.ImVec2, h: int) -> None:
     place_size = imgui.calc_text_size(place)
     imgui.pop_font()
     margin, padding, gap = em_size(0.6), imgui.get_style().window_padding, em_size(1.0)
-    first_line = place_size.x + gap + imgui.calc_text_size(zoom).x + imgui_kit.help_marker_width() + em_size(0.5)
+    first_line = place_size.x + gap + imgui.calc_text_size(zoom).x + imgui_kit.help_marker_width() + em_size(1.2)
     width = max(first_line, imgui.calc_text_size(cost).x) + 2 * padding.x + em_size(0.5)
     height = place_size.y + imgui.get_text_line_height_with_spacing() + 2 * padding.y + em_size(0.3)
     begin_over_picture("##status", imgui.ImVec2(top_left.x + margin, top_left.y + h - margin - height),
@@ -827,9 +827,9 @@ def status(top_left: imgui.ImVec2, h: int) -> None:
     imgui.same_line(0, gap)
     imgui.set_cursor_pos_y(imgui.get_cursor_pos_y() + place_size.y - imgui.get_text_line_height() - em_size(0.1))
     imgui.text(zoom)  # on the baseline of the place's name
-    imgui.same_line()
-    imgui_kit.help_marker(zoom_in_words(state.width))  # an (i): the zoom as a comparison of sizes
     imgui.text_disabled(cost)
+    imgui.set_cursor_pos((width - imgui_kit.help_marker_width() - padding.x * 0.5, padding.y))  # the top right corner
+    imgui_kit.help_marker(zoom_in_words(state.width))  # an (i): the zoom as a comparison of sizes
     imgui.end_child()
 
 
