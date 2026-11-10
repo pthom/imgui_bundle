@@ -73,6 +73,14 @@ def _julia_rabbit(g: dict[str, Any], frame: int) -> None:
         g["state"].go_to(g["FAMOUS_C"][name][0], g["ARRIVAL_WIDTH"][name])
 
 
+def _sun_king_galaxies(g: dict[str, Any], frame: int) -> None:
+    """Mandelbrot engines: a view of the trip "The Sun King", with its caption"""
+    if frame == 3:
+        zooms = next(zooms for name, _point, zooms in g["PLACES"] if name == "The Sun King")
+        k = next(k for k, zoom in enumerate(zooms) if zoom[2] == "The fabric of galaxies")
+        g["STATE"].go_to((*zooms[k][4], zooms[k][0]), zooms[k][1], "The Sun King", animate=False, stop=k)
+
+
 def _train(g: dict[str, Any], frame: int) -> None:
     g["state"].training = True
 
@@ -227,6 +235,8 @@ SHOTS: dict[str, Shot] = {
     "layout_child.py": Shot(crop=(0.0, 0.43, 1.0, 1.0)),
     "layout_docking.py": Shot(crop=(0.0, 0.0, 1.0, 0.75)),
     "explorables/julia_map/julia_map.py": Shot(frames=240, action=_julia_rabbit, crop=(0.0, 0.12, 0.51, 0.47)),
+    # the picture computed in full (about 1.5 s), the caption at the top left, the navigator at the bottom left
+    "explorables/mandelbrot_engines/mandelbrot_engines.py": Shot(frames=300, action=_sun_king_galaxies),
     "explorables/neural_spiral/neural_spiral.py": Shot(frames=320, action=_train, crop=(0.0, 0.11, 0.77, 0.49)),
     "explorables/lesson_harmonic_motion.py": Shot(frames=360, crop=(0.0, 0.5, 0.98, 0.94)),
     "explorables/double_pendulum.py": Shot(frames=900, crop=(0.3, 0.0, 0.85, 0.7)),
