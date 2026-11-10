@@ -26,7 +26,8 @@ r"""::md Help
 * The arrow, bottom left, or **Backspace**: back to the view before your last jump, zoom or drag.
 
 **The card, bottom left**
-* The **place's name** is a menu of places. The **zoom** beside it is a menu of deeper views of that place.
+* The **place's name** is a menu of places. The **zoom** beside it is a menu of the views of that place.
+* The small arrows, or the **arrow keys**: the previous and the next view. **Play** shows them all in turn.
 * The **engine's name** is a menu: pick another one, and watch its time.
 * **Split**: a second engine draws the right part of the picture. Drag the divider; each side has its own menu.
 * The gear: the iterations and the colors. The bookmark: add this view to my places (a file beside the demo).
@@ -481,7 +482,13 @@ class State:
         self.costs: dict[str, dict[int, float]] = {}  # for each engine, at this view: the seconds its pictures took,
         # by their number of pixels. Two sizes tell the fixed part of a picture's time from the part per pixel.
         self.moved_at = 0.0  # when the view last changed
-        self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
+        # A journey to a view: its legs, one after the other. ("zoom", from width, to width) around the current
+        # center, or ("pan", from center, to center) at the current width. None: the view is still.
+        self.dive: list[tuple[str, Any, Any]] | None = None
+        self.leg_start = 0.0  # when the current leg started
+        self.stop: int | None = None  # the view of the place we are at, in its list: its caption shows
+        self.arrived_at = 0.0  # when the journey to it ended
+        self.playing = False  # the views of the place, one after the other
         self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
         self.place = ""
         self.history: list[tuple[Decimal, Decimal, float, int]] = []  # the views to come back to
@@ -489,6 +496,7 @@ class State:
         self.by_hand = False  # the view was moved by hand since the last place
         self.late: float | None = None  # in the last picture: the count below which 90% of the escaped pixels are
         self.notes_open = False  # the explanations beside the picture
+        self.caption_height = em_size(5.0)
         self.card_height = em_size(5.0)  # the sizes of the panels over the picture, measured at the last frame
         self.side_widths = [em_size(20), em_size(20)]
         self.explained = self.engine  # the engine that the explanations are about: it follows the engine chosen
@@ -532,32 +540,53 @@ class State:
         if now - self.gesture_at > GESTURE_PAUSE:
             self.remember()
         self.gesture_at = now
+        self.stop, self.playing, self.dive = None, False, None  # by hand: no caption, and the trip stops
 
     def remember(self) -> None:
         self.history.append((self.center_re, self.center_im, self.width, self.max_iter))
 
     def back(self) -> None:
         self.center_re, self.center_im, self.width, self.max_iter = self.history.pop()
-        self.dive = None
+        self.dive, self.stop, self.playing = None, None, False
         self.costs.clear()
 
-    def go_to(self, place: tuple[str, str, float], max_iter: int, name: str = "", animate: bool = True) -> None:
-        getcontext().prec = digits_for(place[2] / 2000)
-        target_re, target_im = Decimal(place[0]), Decimal(place[1])
-        # The dive starts from the current view when the target is inside it (another zoom of the same place),
-        # else from the whole set
-        start = float(WHOLE_SET[2])
-        if animate:
-            self.remember()
-        if animate and max(abs(target_re - self.center_re), abs(target_im - self.center_im)) < self.width / 2:
-            start = self.width
-        self.center_re, self.center_im, self.width = target_re, target_im, place[2]
+    def go_to(self, place: tuple[str, str, float], max_iter: int, name: str = "", animate: bool = True,
+              stop: int | None = None) -> None:
+        """To a view (its center and its width). Animated: zoom out until both views fit, slide, zoom in."""
+        getcontext().prec = digits_for(min(place[2], self.width) / 2000)
+        target_re, target_im, target_width = Decimal(place[0]), Decimal(place[1]), place[2]
         self.max_iter = max_iter
         self.costs.clear()  # a new place: new costs
         self.place = name  # the place we went to: its name shows while its point is in view
-        self.by_hand = False
-        if animate:
-            self.dive, self.width = (start, place[2], imgui.get_time()), start
+        self.stop, self.by_hand = stop, False
+        if not animate:
+            self.center_re, self.center_im, self.width, self.dive = target_re, target_im, target_width, None
+            return
+        self.remember()
+        distance = float(max(abs(target_re - self.center_re), abs(target_im - self.center_im)))
+        high = min(max(self.width, target_width, 2.5 * distance), float(WHOLE_SET[2]))  # where both views fit
+        self.dive = []
+        if high > self.width * 1.01:
+            self.dive.append(("zoom", self.width, high))
+        if distance > 0:
+            self.dive.append(("pan", (self.center_re, self.center_im), (target_re, target_im)))
+        if abs(math.log10(high / target_width)) > 0.004 or not self.dive:
+            self.dive.append(("zoom", high, target_width))
+        self.leg_start = imgui.get_time()
+
+    def step(self, by: int) -> None:
+        """To the next or the previous view of the place we are in"""
+        views = next((zooms for name, _point, zooms in PLACES if name == self.place), None)
+        if not views or len(views) < 2:
+            return
+        if self.stop is None:  # moved by hand since: the first view deeper than this one, or the last wider
+            deeper = [i for i, view in enumerate(views) if view[0] < self.width * 0.99]
+            index = (deeper[0] if deeper else len(views)) - (1 if by < 0 else 0)
+        else:
+            index = self.stop + by
+        if 0 <= index < len(views):
+            width, max_iter, _short, _story, point = views[index]
+            self.go_to((*point, width), max_iter, self.place, stop=index)
 
     def move(self, d_re: float, d_im: float) -> None:
         getcontext().prec = digits_for(self.width / 2000)
@@ -572,6 +601,8 @@ DIVE_SECONDS_PER_DECADE = 0.12  # the speed of the zoom animation
 ALL_BLACK_LIMIT = 50000  # the automatic iterations stop here when no pixel escapes
 HANDLE_EM = 1.8  # the split view's handle and its two panels: this far from the top of the picture, in em
 GESTURE_PAUSE = 0.5  # seconds without a move of the view: the next wheel or drag is a new step for Back
+PAN_SECONDS = 0.9  # the slide of a journey, between its zoom out and its zoom in
+PLAY_SECONDS = 5.0  # playing a place's views: the time to look at each, once its picture is complete
 DOUBLE_CLICK_ZOOM = 6.0  # a double click zooms in by this factor, around the clicked point
 DEEPEST = 300  # the gauge's last decade: a double holds numbers down to 1e-308
 DOUBLE_ENDS = 13  # the decade where the engines in double precision start to be wrong
@@ -614,17 +645,40 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
             and not on_divider:
         state.remember()  # the clicked point comes to the center, and the view dives towards it
         state.move(mx * pixel, -my * pixel)
-        state.dive = (state.width, state.width / DOUBLE_CLICK_ZOOM, imgui.get_time())
+        state.dive, state.leg_start = [("zoom", state.width, state.width / DOUBLE_CLICK_ZOOM)], imgui.get_time()
+        state.stop, state.playing = None, False
         state.by_hand = True
 
-    # A dive to a place: the width shrinks at a constant number of decades per second
-    if state.dive is not None:
-        start, end, t0 = state.dive
-        decades = abs(math.log10(start / end))  # a dive goes in, or out
-        progress = min(1.0, (imgui.get_time() - t0) / max(0.5, decades * DIVE_SECONDS_PER_DECADE))
-        state.width = start * (end / start) ** progress
+    # A journey: its current leg moves the view, at a constant number of decades per second for a zoom
+    if state.dive:
+        kind, start, end = state.dive[0]
+        elapsed = imgui.get_time() - state.leg_start
+        if kind == "zoom":
+            decades = abs(math.log10(start / end))  # a zoom goes in, or out
+            progress = min(1.0, elapsed / max(0.5, decades * DIVE_SECONDS_PER_DECADE))
+            state.width = start * (end / start) ** progress
+        else:  # a pan: slow at both ends
+            progress = min(1.0, elapsed / PAN_SECONDS)
+            eased = Decimal(progress * progress * (3 - 2 * progress))
+            state.center_re = start[0] + (end[0] - start[0]) * eased
+            state.center_im = start[1] + (end[1] - start[1]) * eased
+            if progress >= 1.0:
+                state.center_re, state.center_im = end
         if progress >= 1.0:
-            state.dive = None
+            state.dive.pop(0)
+            state.leg_start = imgui.get_time()
+    if state.dive is not None and not state.dive:
+        state.dive, state.arrived_at = None, imgui.get_time()
+    # Playing: once the picture of a view is complete and was shown for a while, on to the next
+    if state.playing and state.dive is None:
+        complete = state.all_pixels is None and state.shrinks and max(state.shrinks) == 1
+        if not complete:
+            state.arrived_at = imgui.get_time()  # the time to look starts once the picture is sharp
+        elif imgui.get_time() - state.arrived_at > PLAY_SECONDS:
+            before = state.stop
+            state.step(1)
+            state.playing = state.stop != before  # the last view: the trip is over
+        state.playing = state.playing and state.stop is not None
 
     # Compute, when the view or the engine changed, and again once the view stopped, with a larger budget
     where = (state.center_re, state.center_im, state.width, w, h)
@@ -657,8 +711,8 @@ def picture(size: imgui.ImVec2) -> tuple[imgui.ImVec2, int, int]:
     if job is None and same_view and not moving and state.dive is None:
         # Once the view stopped: all the pixels by themselves, for the first engine that can have them quickly
         for side, engine in enumerate(engines):
-            if state.shrinks[side] > 1 and (state.seconds_for(engine, w * h) or math.inf) < QUICK_SECONDS \
-                    and state.cancelled != (wanted, side):
+            quick = (state.seconds_for(engine, w * h) or math.inf) < QUICK_SECONDS
+            if state.shrinks[side] > 1 and (quick or state.playing) and state.cancelled != (wanted, side):
                 state.start_all_pixels(side, engine)
                 break
         job = state.all_pixels
@@ -922,6 +976,27 @@ def add_view_popup() -> None:
     imgui.end_popup()
 
 
+def caption(top_left: imgui.ImVec2) -> None:
+    """Top left, at a view of a place: its number, its name, and what to see there"""
+    state = STATE
+    assert state is not None
+    views = next((zooms for name, _point, zooms in PLACES[1:] if name == state.place), None)
+    if state.stop is None or views is None or state.stop >= len(views):
+        return
+    _width, _max_iter, short, story, _point = views[state.stop]
+    margin = em_size(0.6)
+    begin_over_picture("##caption", imgui.ImVec2(top_left.x + margin, top_left.y + margin),
+                       imgui.ImVec2(em_size(26), state.caption_height))
+    imgui.text_disabled(f"{state.place}   {state.stop + 1} / {len(views)}")
+    imgui.push_font(None, imgui.get_style().font_size_base * 1.3)
+    imgui.text_wrapped(short)
+    imgui.pop_font()
+    if story:
+        imgui.text_wrapped(story)
+    state.caption_height = imgui.get_cursor_pos_y() + imgui.get_style().window_padding.y
+    end_over_picture()
+
+
 def title_card(top_left: imgui.ImVec2, h: int) -> None:
     """Bottom left: where we are, and the controls. First line: back, the place and its zoom (two menus), the
     help. Second line: the engine (a menu) and its cost, the split view, the settings."""
@@ -948,7 +1023,7 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
     if imgui.begin_popup("places"):
         for name, _point, zooms in PLACES:
             if imgui.selectable(name, name == place)[0]:
-                state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name)
+                state.go_to((*zooms[0][4], zooms[0][0]), zooms[0][1], name, stop=0)
         imgui.end_popup()
 
     deeper = [its_zooms for name, _point, its_zooms in PLACES[1:] if name == place]  # the zooms of this place
@@ -961,11 +1036,11 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
         menu_button(f"zoom {zoom_number(state.width)}", "zooms")
         imgui.set_next_window_size_constraints((em_size(23), 0), (imgui.FLT_MAX, imgui.FLT_MAX))  # room for the (i)
         if imgui.begin_popup("zooms"):
-            for width, max_iter, short, story, point in list(deeper[0]):
+            for index, (width, max_iter, short, story, point) in enumerate(list(deeper[0])):
                 zoom = math.floor(math.log10(WHOLE_SET[2] / width))
                 label = f"Zoom 10^{zoom}: {short}" if zoom >= 6 else f"Zoom {WHOLE_SET[2] / width:,.0f}: {short}"
                 if imgui.selectable(f"{label}##{width}", False, size=(em_size(17), 0))[0]:
-                    state.go_to((*point, width), max_iter, place)
+                    state.go_to((*point, width), max_iter, place, stop=index)
                 if story:
                     imgui.same_line()
                     imgui_kit.help_marker(story)
@@ -975,6 +1050,22 @@ def title_card(top_left: imgui.ImVec2, h: int) -> None:
                         state.remove_view(place, width)
                     imgui.set_item_tooltip("Remove this view from my places")
             imgui.end_popup()
+    if deeper and len(deeper[0]) > 1:  # several views: previous, next, and play them all
+        typing = imgui.get_io().want_text_input
+        for icon, by, key, tip in ((icons_fontawesome_6.ICON_FA_CHEVRON_LEFT, -1, imgui.Key.left_arrow, "Previous"),
+                                   (icons_fontawesome_6.ICON_FA_CHEVRON_RIGHT, 1, imgui.Key.right_arrow, "Next")):
+            imgui.same_line(0, em_size(0.3))
+            if imgui.button(icon) or (not typing and imgui.is_key_pressed(key, False)):
+                state.playing = False
+                state.step(by)
+            imgui.set_item_tooltip(f"{tip} view of this place (the arrow keys)")
+        imgui.same_line(0, em_size(0.3))
+        if imgui.button(icons_fontawesome_6.ICON_FA_PAUSE if state.playing else icons_fontawesome_6.ICON_FA_PLAY):
+            state.playing = not state.playing
+            if state.playing and (state.stop is None or state.stop == len(deeper[0]) - 1):
+                view = deeper[0][0]  # from the first view
+                state.go_to((*view[4], view[0]), view[1], place, stop=0)
+        imgui.set_item_tooltip("Play: the views of this place, one after the other")
     imgui.same_line(0, em_size(1.0))
     imgui.dummy((imgui_kit.help_marker_width() + em_size(0.5), 1))  # room for the (i), drawn last in this corner
 
@@ -1158,6 +1249,7 @@ def gui() -> None:
     gauge = em_size(5.2)  # the width kept for the gauge, along the right edge
     depth_gauge(right - em_size(0.6), top_left.y + em_size(4.2), bottom - em_size(4.2))
     title_card(top_left, h)
+    caption(top_left)
     if state.other is None:  # bottom right
         job = state.all_pixels
         if job is not None or (state.shrinks and state.shrinks[0] > 1):
