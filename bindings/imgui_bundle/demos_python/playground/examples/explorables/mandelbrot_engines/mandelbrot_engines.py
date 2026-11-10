@@ -322,16 +322,23 @@ class State:
         self.pixel_seconds: float | None = None  # the cost of a pixel, measured on the last picture
         self.moved_at = 0.0  # when the view last changed
         self.dive: tuple[float, float, float] | None = None  # a zoom animation: from width, to width, start time
+        self.center_re, self.center_im, self.width = Decimal(0), Decimal(0), float(WHOLE_SET[2])
         self.go_to(WHOLE_SET, 300, animate=False)
 
     def go_to(self, place: tuple[str, str, float], max_iter: int, story: str = "", animate: bool = True) -> None:
         getcontext().prec = digits_for(place[2] / 2000)
-        self.center_re, self.center_im, self.width = Decimal(place[0]), Decimal(place[1]), place[2]
+        target_re, target_im = Decimal(place[0]), Decimal(place[1])
+        # The dive starts from the current view when the target is inside it (another zoom of the same place),
+        # else from the whole set
+        start = float(WHOLE_SET[2])
+        if animate and max(abs(target_re - self.center_re), abs(target_im - self.center_im)) < self.width / 2:
+            start = self.width
+        self.center_re, self.center_im, self.width = target_re, target_im, place[2]
         self.max_iter = max_iter
         self.story = story  # what to see at this place
         self.pixel_seconds = None  # a new place: a new cost
         if animate:
-            self.dive, self.width = (float(WHOLE_SET[2]), place[2], imgui.get_time()), float(WHOLE_SET[2])
+            self.dive, self.width = (start, place[2], imgui.get_time()), start
 
     def move(self, d_re: float, d_im: float) -> None:
         getcontext().prec = digits_for(self.width / 2000)
@@ -368,7 +375,7 @@ def picture(size: imgui.ImVec2) -> None:
     # A dive to a place: the width shrinks at a constant number of decades per second
     if state.dive is not None:
         start, end, t0 = state.dive
-        decades = math.log10(start / end)
+        decades = abs(math.log10(start / end))  # a dive goes in, or out
         progress = min(1.0, (imgui.get_time() - t0) / max(0.5, decades * DIVE_SECONDS_PER_DECADE))
         state.width = start * (end / start) ** progress
         if progress >= 1.0:
