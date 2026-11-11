@@ -598,7 +598,7 @@ real app: typed pins, links refused with a reason, a node created by dropping a 
 
 *Python, C++*
 
-*Uses: ImPlot, ImmVision, node editor, OpenCV*
+*Uses: ImPlot, ImmVision, node editor, ImGuiKit, OpenCV*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_node_editor_image_pipeline.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_image_pipeline.cpp)
 
@@ -962,8 +962,8 @@ Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://p
 
 The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
 On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
-a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image,
-two fingers pan, and a keyboard button appears next to a text field.
+a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a
+node editor, two fingers pan, and a keyboard button appears next to a text field.
 
 *Python, C++*
 

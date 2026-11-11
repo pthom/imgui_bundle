@@ -210,7 +210,7 @@ The libraries in the bundle: full demos, widget tours, showcases.
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_color_mixer.py
   Run, C++: https://imgui-bundle.pages.dev/explorer/demo_node_editor_color_mixer.html
 - Node editor: an image pipeline: An image flows through a graph of filters, and each node shows its result. Change a parameter, and the nodes downstream follow at once. The patterns of imgui-node-editor for a real app: typed pins, links refused with a reason, a node created by dropping a link in empty space, menus, a group.
-  Uses: ImPlot, ImmVision, node editor, OpenCV
+  Uses: ImPlot, ImmVision, node editor, ImGuiKit, OpenCV
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_node_editor/demo_node_editor_image_pipeline.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_node_editor/demo_node_editor_image_pipeline.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_node_editor_image_pipeline.py
@@ -320,7 +320,7 @@ Deploy to the web, and use the browser's WebAudio and WebGL from Python.
   Uses: code editor
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=minimal_example.py
-- Touch screens (phones, tablets): The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard. On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image, two fingers pan, and a keyboard button appears next to a text field.
+- Touch screens (phones, tablets): The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard. On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
   Uses: ImPlot, ImmVision, ImGuiKit
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp
