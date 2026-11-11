@@ -29,9 +29,10 @@ macro(imgui_bundle_resolve_early_dependencies)
         message(WARNING "Auto-disabling immapp (immapp depends on hello_imgui)")
         set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on hello_imgui" FORCE)
     endif()
-    if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP)
-        message(STATUS "Auto-disabling immapp (immapp depends on imgui_node_editor)")
-        set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp depends on imgui_node_editor" FORCE)
+    # immapp's C++ code works without the node editor, but its Python bindings use the node editor's types
+    if(NOT IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR AND IMGUI_BUNDLE_WITH_IMMAPP AND IMGUI_BUNDLE_BUILD_PYTHON)
+        message(STATUS "Auto-disabling immapp in the Python build (its bindings depend on imgui_node_editor)")
+        set(IMGUI_BUNDLE_WITH_IMMAPP OFF CACHE BOOL "Auto-disabled: immapp's Python bindings depend on imgui_node_editor" FORCE)
     endif()
 endmacro()
 

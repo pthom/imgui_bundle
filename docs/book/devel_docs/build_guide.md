@@ -28,7 +28,7 @@ Each library can be individually enabled or disabled. All default to ON.
 | Option | Library | Notes |
 |--------|---------|-------|
 | `IMGUI_BUNDLE_WITH_HELLO_IMGUI` | Hello ImGui | Disabling also disables immapp, rich_md, test_engine |
-| `IMGUI_BUNDLE_WITH_IMMAPP` | ImmApp | Depends on hello_imgui + imgui_node_editor |
+| `IMGUI_BUNDLE_WITH_IMMAPP` | ImmApp | Depends on hello_imgui. Works without the node editor, except in a Python build (its bindings need it) |
 | `IMGUI_BUNDLE_WITH_IMPLOT` | ImPlot | 2D plotting |
 | `IMGUI_BUNDLE_WITH_IMPLOT3D` | ImPlot3D | 3D plotting |
 | `IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR` | Node editor | |
