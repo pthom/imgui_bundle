@@ -1034,6 +1034,7 @@ struct AppWindowParams
     // `hidden`: _bool, default = false_. Should the window be hidden.
     // This is taken into account dynamically (you can show/hide the window with this).
     // Full screen windows cannot be hidden.
+    // The environment variable HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 hides every window (for automated tests, screenshots).
     bool hidden = false;
 
     // `topMost`: _bool, default = false_. Should the window stay on top of other windows.

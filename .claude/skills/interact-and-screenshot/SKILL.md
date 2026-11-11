@@ -42,7 +42,7 @@ testing.run(gui, my_test, window_size=(600, 400))
 Run it and read the PNGs:
 
 ```bash
-python /tmp/shoot.py   # the Python where imgui_bundle is installed
+HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 python /tmp/shoot.py   # the Python where imgui_bundle is installed; the window stays hidden
 ```
 
 ```
@@ -151,6 +151,10 @@ Two or three extra steps per sequence are enough.
   subsequent operations, so fix the first error reported.
 - **Real GL context required.** Same as `screenshot-imgui-bundle`: not
   headless; needs Xvfb on headless CI.
+- **Hidden window.** `HELLOIMGUI_TEST_HIDDEN_WINDOWS=1` keeps the window
+  hidden, the viewports' windows included: the test engine still drives
+  and captures it (checked on macOS). Leave it out for a window the user
+  should see (`exit_after_test=False`).
 - **`<details>` (markdown collapsibles) are not ImGui widgets** and
   cannot be driven by `item_click` / `item_open`. For markdown-only
   captures, fall back to the one-shot flow.

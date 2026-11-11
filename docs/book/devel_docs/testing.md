@@ -34,6 +34,19 @@ These tests verify:
 - RunnerParams identity across Python/C++ boundary (`test_runner_params_identity.py`)
 - Async integration (`async/`)
 
+### Hidden windows
+
+The environment variable `HELLOIMGUI_TEST_HIDDEN_WINDOWS=1` keeps every window of a Hello ImGui app hidden, the viewports' windows included. The app still renders: the tests, the test engine's captures and the screenshots work, and nothing shows on the screen.
+
+```bash
+HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 pytest tests/tests_python_gui/
+HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 ./ci_node_editor_tests --auto
+```
+
+- Use it for local runs: the GUI tests, the node editor tests (`.github/ci_automation_tests`), the screenshots of `immapp.testing`.
+- Checked on macOS. On Windows and Linux, a hidden OpenGL window may render nothing: the CI keeps a visible window (Xvfb on Linux).
+- On macOS, the display must be awake, hidden or not: with no monitor, the app stops at startup. Run `caffeinate -u -d -t 240 &` first.
+
 ## Manual smoke testing
 
 The most thorough manual test is to run the main demo application, which exercises most libraries:

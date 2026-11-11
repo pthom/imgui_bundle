@@ -60,7 +60,7 @@ testing.capture_final_frame(
 Run it and read the PNG:
 
 ```bash
-python /tmp/shoot.py   # the Python where imgui_bundle is installed
+HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 python /tmp/shoot.py   # the Python where imgui_bundle is installed; the window stays hidden
 ```
 
 ```
@@ -131,7 +131,7 @@ Build and run:
 cd builds/claude_python_bindings           # a build folder of yours, with the C++ demos (AGENTS.md, "Build folders")
 cmake .                                    # rediscover the new sandbox file
 cmake --build . --target sandbox_shoot_xxx -j4
-./bin/sandbox_shoot_xxx.app/Contents/MacOS/sandbox_shoot_xxx   # macOS
+HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 ./bin/sandbox_shoot_xxx.app/Contents/MacOS/sandbox_shoot_xxx   # macOS
 # (on Linux/Windows the binary is at ./bin/sandbox_shoot_xxx[.exe])
 ```
 
@@ -150,8 +150,11 @@ rm bindings/imgui_bundle/demos_cpp/sandbox/sandbox_shoot_xxx.cpp
 - **Real GL context required.** Both helpers open a real window for a few
   frames; they're not headless. On macOS / Windows / Linux desktop they
   just work; on a headless Linux CI runner you'd need Xvfb.
-- **Window briefly flashes.** ~100-200 ms. By design: real frames render
-  to capture real output.
+- **Hidden window.** `HELLOIMGUI_TEST_HIDDEN_WINDOWS=1` keeps the window
+  hidden: real frames still render, and the capture works (checked on
+  macOS). Without it, the window flashes ~100-200 ms on the user's screen.
+  On Windows and Linux it is untested: a hidden OpenGL window may render
+  nothing there.
 - **`window_size` is logical pixels**, framebuffer is `size * scale`. On
   retina the PNG is 2× the logical size.
 - **Display-height clamp.** If you ask for a window taller than the
