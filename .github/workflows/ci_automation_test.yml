@@ -107,6 +107,13 @@ jobs:
           cd .github/ci_automation_tests/build
           ./ci_node_editor_tests --auto --viewports
 
+      - name: Run the wheel claims tests of the zoomable widgets (nixes)
+        shell: bash
+        if: ${{ matrix.platform != 'windows-latest' }}
+        run: |
+          cd .github/ci_automation_tests/build
+          ./ci_wheel_claims_tests
+
       - name: Upload the screenshots of the imgui-node-editor tests
         if: ${{ always() && matrix.platform != 'windows-latest' }}
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9  # v7.0.2

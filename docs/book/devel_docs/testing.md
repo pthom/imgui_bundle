@@ -43,7 +43,7 @@ HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 pytest tests/tests_python_gui/
 HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 ./ci_node_editor_tests --auto
 ```
 
-- Use it for local runs: the GUI tests, the node editor tests (`.github/ci_automation_tests`), the screenshots of `immapp.testing`.
+- Use it for local runs: the GUI tests, the test apps of `.github/ci_automation_tests` (`ci_node_editor_tests --auto`, `ci_wheel_claims_tests`), the screenshots of `immapp.testing`.
 - Checked on macOS. On Windows and Linux, a hidden OpenGL window may render nothing: the CI keeps a visible window (Xvfb on Linux).
 - On macOS, the hidden windows also work while the display sleeps: macOS then reports no monitor, and Hello ImGui uses a default work area. Not with viewports (`--viewports`): Dear ImGui needs a monitor for them. Run `caffeinate -u -d -t 240 &` first.
 
@@ -79,6 +79,6 @@ The project has extensive CI via GitHub Actions (`.github/workflows/`):
 | `DirectX.yml` | Windows DirectX |
 | `android.yml` | Android build |
 | `ios.yml` | iOS build |
-| `ci_automation_test.yml` | Automated GUI test (runs demo, takes screenshots) |
+| `ci_automation_test.yml` | Automated GUI tests (Linux, Xvfb): a demo app, the node editor's tests, the zoomable widgets' wheel claims (`.github/ci_automation_tests`) |
 
 Most workflows trigger on push to main and on pull requests.

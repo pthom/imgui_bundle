@@ -16,3 +16,6 @@ target_include_directories(ci_node_editor_tests PRIVATE ${node_editor_tests_dir}
 # The touch tests (a pinch on the view, on an image in a node) use imgui_kit, as the node editor does in the bundle
 target_link_libraries(ci_node_editor_tests PRIVATE imgui_kit)
 target_compile_definitions(ci_node_editor_tests PRIVATE IMGUI_BUNDLE_WITH_IMGUI_KIT)
+
+# The zoomable widgets keep the wheel in a page that scrolls (tex_inspect, ImGuizmo's editors, ImPlot, ImPlot3D)
+imgui_bundle_add_app(ci_wheel_claims_tests ci_wheel_claims_tests.cpp)
