@@ -58,12 +58,12 @@ conan create conan --version=1.93.0 -s compiler.cppstd=17 -s build_type=Debug --
 |---|---|---|---|
 | `platform_backend` | `glfw`, `sdl2` | `glfw` | The window and the inputs. The CI checks `glfw` only. |
 | `rendering_backend` | `opengl3` | `opengl3` | Only OpenGL 3 is packaged. |
-| `with_test_engine` | `True`, `False` | `True` | The ImGui Test Engine: automation and tests of a GUI. |
+| `with_test_engine` | `True`, `False` | `False` | The ImGui Test Engine: automation and tests of a GUI. |
 | `with_image_download` | `True`, `False` | `True` | The markdown images from URLs, through libcurl. |
 
-Set them with `-o`, e.g. `-o "imgui_bundle/*:with_test_engine=False"`.
+Set them with `-o`, e.g. `-o "imgui_bundle/*:with_image_download=False"`.
 
-- *The ImGui Test Engine has its own license:* free for individuals, education, open source and small businesses. Larger businesses need a paid license ([its license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)). Leave it out with `with_test_engine=False` when it does not apply to you.
+- *The ImGui Test Engine has its own license:* free for individuals, education, open source and small businesses. Larger businesses need a paid license ([its license](https://github.com/ocornut/imgui_test_engine/blob/main/imgui_test_engine/LICENSE.txt)). So the package leaves it out by default: add it with `-o "imgui_bundle/*:with_test_engine=True"` when its license fits you.
 - *The TLS of the image downloads:* libcurl uses OpenSSL on Linux and macOS. On Windows, it uses schannel, the TLS of Windows: no OpenSSL to build, and the certificates that Windows trusts.
 - *Without `with_image_download`,* the package needs neither libcurl nor OpenSSL.
 

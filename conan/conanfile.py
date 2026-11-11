@@ -41,7 +41,7 @@ class ImGuiBundleConan(ConanFile):
         "platform_backend": ["glfw", "sdl2"],
         # Hello ImGui rendering backend (metal / vulkan / directx: not packaged yet)
         "rendering_backend": ["opengl3"],
-        # ImGui Test Engine (automation and tests)
+        # ImGui Test Engine (automation and tests). Off by default: its license is not free for every user
         "with_test_engine": [True, False],
         # Markdown: download images from URLs (requires libcurl)
         "with_image_download": [True, False],
@@ -50,7 +50,7 @@ class ImGuiBundleConan(ConanFile):
         "fPIC": True,
         "platform_backend": "glfw",
         "rendering_backend": "opengl3",
-        "with_test_engine": True,
+        "with_test_engine": False,
         "with_image_download": True,
     }
 
