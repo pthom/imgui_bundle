@@ -17,7 +17,7 @@ It is a library of its own (MIT): one header, a few sources, and Dear ImGui as i
   - A *help marker*: an (i) that shows its text on hover, and on a tap (a touch screen has no hover). Its text can be rendered as Markdown.
   - *Icon buttons*: plus, minus, zoom in, zoom out, 1:1, fit, drawn with the draw list (no icon font needed).
   - A *segmented switch*: exclusive choices in one frame, such as "Demo | Code".
-- **Touch screens** (`imgui_kit.touch`): an app made for the mouse works with a finger. A swipe scrolls, a long press is a right click, a pinch scales the font or zooms a plot or an image, and a browser opens the phone's keyboard. See [Touch screens](#touch-screens).
+- **Touch screens** (`imgui_kit.touch`): an app made for the mouse works with a finger. A swipe scrolls, a long press is a right click, a pinch scales the font or zooms a plot, an image or a node editor, and a browser opens the phone's keyboard. See [Touch screens](#touch-screens).
 - **Wheel session**: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled over a plot keeps scrolling, and the plot zooms only with a wheel that starts on it.
 
 ## Quick example
@@ -71,7 +71,7 @@ On a touch screen:
 - *A hold, then a drag*, goes to the widget under the finger (a text selection).
 - *A slider or a drag*: a drag along its axis moves it at once, a drag across scrolls the window (Dear ImGui Bundle's Dear ImGui tells the kit about its draggable widgets). A widget of your own does the same with `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)` right after it.
 - *A long press* is a right click: the context menus.
-- *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D) or an image (ImmVision), it zooms it, around the fingers.
+- *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D), an image (ImmVision) or a node editor, it zooms it, around the fingers.
 - *Two fingers that move together* are a right drag (the box selection of a plot, the pan of a node editor).
 
 A widget of your own takes two fingers with one call, right after it: `item_pinch()` returns their gesture at each frame (its center, its spread and its move since the last frame). The widget then zooms and pans at once, as a map does on a phone.

@@ -61,6 +61,12 @@ Enable the node editor by passing `with_node_editor=True` (Python) or `addons.wi
 :::
 
 
+### Navigation
+
+- *With a mouse*: the wheel zooms, a right drag pans, `F` shows the whole graph.
+- *On a touch screen*: a pinch zooms around the fingers, two fingers pan, a long press is a right click. An image in a node keeps its own pinch.
+- All the gestures and keys: the [user guide](https://github.com/pthom/imgui-node-editor/blob/imgui_bundle/docs/README.md#default-bindings).
+
 ### Demos
 
 Each demo opens in the online playground from its name.

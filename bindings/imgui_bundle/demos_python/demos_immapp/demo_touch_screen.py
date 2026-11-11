@@ -3,8 +3,8 @@ On a touch screen: the gestures of a phone, in the browser
 
 The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
 On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
-a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot or an image,
-two fingers pan, and a keyboard button appears next to a text field.
+a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a
+node editor, two fingers pan, and a keyboard button appears next to a text field.
 
 Nothing to write in the app: the gestures come from `RunnerParams.touch_config` (`scroll_mode`, `pinch_scales_font`,
 `long_press_is_right_click`...). On a desktop, tick "Simulate a touch source" to try them with the mouse.
@@ -22,7 +22,7 @@ GESTURES = """
 - **Swipe** anywhere, on this text, on the button below or on a scroll bar: the content scrolls, with inertia, and a bounce at the end.
 - **Tap** a button: a click. **Hold** a slider a moment, then drag it.
 - **Hold** a word of this text half a second, until a ring shows, then lift: the menu of a right click (Copy, Select All). The same on the button: its menu.
-- **Pinch** with two fingers: the app (its font) scales. On a plot or an image, the pinch zooms it.
+- **Pinch** with two fingers: the app (its font) scales. On a plot, an image or a node editor, the pinch zooms it.
 - **Drag with two fingers**: a right drag, which box-selects in the plot.
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
@@ -40,7 +40,7 @@ PLOTS = """
 - A double click (a double tap) fits the plot.
 
 > [!NOTE]
-> In Dear ImGui Bundle, ImPlot, ImPlot3D and ImmVision take the pinch themselves. Another widget takes it with imgui_kit, right after it: `imgui_kit.touch.item_pinch()` returns the gesture; a widget that zooms with the wheel calls `imgui_kit.touch.set_item_pinch_as_wheel()` instead.
+> In Dear ImGui Bundle, ImPlot, ImPlot3D, ImmVision and the node editor take the pinch themselves. Another widget takes it with imgui_kit, right after it: `imgui_kit.touch.item_pinch()` returns the gesture; a widget that zooms with the wheel calls `imgui_kit.touch.set_item_pinch_as_wheel()` instead.
 """
 
 IMAGES = """

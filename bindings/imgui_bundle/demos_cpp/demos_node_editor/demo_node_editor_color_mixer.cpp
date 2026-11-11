@@ -9,6 +9,7 @@
 #include "imgui_rich_md/rich_md.h"
 #include "immapp/immapp.h"
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
 #include "imgui.h"
 #include "imgui_internal.h"  // ImLerp
 
@@ -28,12 +29,16 @@ const float PIN_RADIUS_EM = 0.4f;  // the radius of a pin's circle
 const float LINK_THICKNESS = 3.0f;  // the thickness of the links (they follow the zoom)
 const ImVec4 UNLINKED(0.3f, 0.3f, 0.3f, 1.0f);  // the color an input receives when no link reaches it
 
-// The gestures, in markdown ("  \n" ends a line)
-const char* HELP =
-    "**Link** two pins: drag from one to the other  ·  "
-    "**Delete** a node or a link: select it, then <kbd>Delete</kbd>  \n"
-    "**Add a node**: right-click the background  ·  **Pan**: right-drag  ·  **Zoom**: the wheel  ·  "
-    "**See the whole graph**: <kbd>F</kbd>";
+// The gestures, in markdown: a paragraph each, shown by the Help button
+const char* HELP = R"(**Link** two pins: drag from one to the other
+
+**Delete** a node or a link: select it, then <kbd>Delete</kbd>
+
+**Add a node**: right-click the background
+
+**Pan**: right-drag  ·  **Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>, or *See all*
+
+**On a touch screen**: a pinch zooms  ·  two fingers pan  ·  a long press is a right click)";
 
 // The kinds of node. Every kind has one output, except the swatch, which shows its input.
 enum class Kind { Color, Mix, Invert, Grayscale, Swatch };
@@ -368,6 +373,9 @@ struct MenuState
 {
     ImVec2 newNodePosition;  // where the background menu was opened
     ed::NodeId nodeId;  // the node whose menu is open
+    // The view's moves asked by the menus or the button: the navigation functions work after ed::End()
+    bool seeWholeGraph = false;
+    ed::NodeId zoomToNode;  // none by default
 };
 
 void HandleMenus(Graph& graph, MenuState& menu)
@@ -382,6 +390,9 @@ void HandleMenus(Graph& graph, MenuState& menu)
         for (size_t i = 0; i < KINDS.size(); i++)
             if (ImGui::MenuItem(KINDS[i].name))
                 graph.AddNode((Kind)i, menu.newNodePosition / HelloImGui::EmSize());
+        ImGui::Separator();
+        if (ImGui::MenuItem(ICON_FA_EXPAND "  See the whole graph", "F"))
+            menu.seeWholeGraph = true;
         ImGui::EndPopup();
     }
 
@@ -389,10 +400,71 @@ void HandleMenus(Graph& graph, MenuState& menu)
         ImGui::OpenPopup("Node");
     if (ImGui::BeginPopup("Node"))
     {
+        if (ImGui::MenuItem(ICON_FA_SEARCH_PLUS "  Zoom to this node", "Shift+F"))
+            menu.zoomToNode = menu.nodeId;
         if (ImGui::MenuItem("Delete"))
             ed::DeleteNode(menu.nodeId);  // the node then goes through HandleDeletions()
         ImGui::EndPopup();
     }
+}
+
+// The controls, in a panel at the top right corner of the editor, over the graph: the graph keeps all the room, which
+// a phone needs. A child window shows on top of its parent's content (the editor, drawn after it), and gets the
+// clicks there.
+void DrawControls(const ImRect& canvas, MenuState& menu)
+{
+    const float em = ImGui::GetFontSize();
+    const char* seeAll = ICON_FA_EXPAND "  See all";
+    const char* help = ICON_FA_QUESTION_CIRCLE "  Help";
+    const ImGuiStyle& style = ImGui::GetStyle();
+    const float buttonWidth =
+        std::max(ImGui::CalcTextSize(seeAll).x, ImGui::CalcTextSize(help).x) + style.FramePadding.x * 2;
+    const float panelWidth = buttonWidth + style.WindowPadding.x * 2;
+
+    const ImVec2 cursor = ImGui::GetCursorScreenPos();  // restored after: the editor starts there
+    ImGui::SetCursorScreenPos(ImVec2(canvas.Max.x - panelWidth - em * 0.5f, canvas.Min.y + em * 0.5f));
+    ImGui::BeginChild("controls", ImVec2(panelWidth, 0.0f), ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_NoScrollbar);
+    {
+        // The panel's frame, as a menu's, in the child's own draw list: the editor, drawn after it, would cover the
+        // child's background (Dear ImGui draws it in the parent's draw list)
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        const ImVec2 p0 = ImGui::GetWindowPos(), p1 = p0 + ImGui::GetWindowSize();
+        drawList->PushClipRect(p0, p1, false);
+        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_PopupBg), em * 0.4f);
+        // The outline: clear, in a dark or a light theme
+        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Text, 0.3f), em * 0.4f);
+        drawList->PopClipRect();
+    }
+    if (ImGui::Button(seeAll, ImVec2(buttonWidth, 0.0f)))
+        menu.seeWholeGraph = true;
+    if (ImGui::Button(help, ImVec2(buttonWidth, 0.0f)))
+        ImGui::OpenPopup("help");
+    // The help, in a popup under the panel, no wider than the screen (a phone shows it)
+    const float panelRight = ImGui::GetWindowPos().x + ImGui::GetWindowWidth();
+    const float helpTop = ImGui::GetItemRectMax().y + style.WindowPadding.y + em * 0.3f;  // under the Help button
+    ImGui::SetNextWindowPos(ImVec2(panelRight, helpTop), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(std::min(em * 36.0f, ImGui::GetMainViewport()->Size.x * 0.9f), 0.0f));
+    if (ImGui::BeginPopup("help"))
+    {
+        RichMd::Render(HELP);
+        ImGui::EndPopup();
+    }
+    ImGui::EndChild();
+    ImGui::SetCursorScreenPos(cursor);
+}
+
+// The view's moves asked during the frame, after ed::End()
+void ApplyNavigation(MenuState& menu)
+{
+    if (menu.seeWholeGraph)
+        ed::NavigateToContent();
+    if (menu.zoomToNode)
+    {
+        ed::SelectNode(menu.zoomToNode);
+        ed::NavigateToSelection(true);  // true: zoom in to fit it, as Shift+F
+    }
+    menu.seeWholeGraph = false;
+    menu.zoomToNode = ed::NodeId();
 }
 
 
@@ -434,7 +506,9 @@ ed::EditorContext* Editor()
 void gui_demo_node_editor_color_mixer()
 {
     AppState& state = State();
-    RichMd::Render(HELP);
+    // The editor takes all the room (its controls float over it, see DrawControls())
+    const ImRect canvas(ImGui::GetCursorScreenPos(), ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail());
+    DrawControls(canvas, state.menu);
     ed::EditorContext* previousEditor = ed::GetCurrentEditor();
     ed::SetCurrentEditor(Editor());
     ed::Begin("Color mixer");
@@ -447,6 +521,7 @@ void gui_demo_node_editor_color_mixer()
     HandleDeletions(*state.graph);
     HandleMenus(*state.graph, state.menu);
     ed::End();
+    ApplyNavigation(state.menu);
 
     // Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
     // fit has no effect). The navigation functions work after ed::End().

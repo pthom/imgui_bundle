@@ -13,8 +13,11 @@
 #include "immvision/immvision.h"
 #include "implot/implot.h"
 #include "hello_imgui/hello_imgui.h"
+#include "hello_imgui/icons_font_awesome_4.h"
+#include "imgui_kit/imgui_kit.h"  // HelpMarker
 #include "demo_utils/api_demos.h"  // DemosAssetsFolder
 #include "imgui.h"
+#include "imgui_internal.h"  // ImRect
 
 #include <opencv2/core.hpp>
 #include <opencv2/imgproc.hpp>
@@ -36,16 +39,24 @@ const float PIN_RADIUS_EM = 0.45f;  // the radius of a pin's icon
 const float LINK_THICKNESS = 3.0f;  // the thickness of the links (they follow the zoom)
 const std::vector<const char*> IMAGES = {"images/house.jpg", "images/tennis.jpg"};  // from the demos' assets
 
-// The gestures, in markdown ("  \n" ends a line)
-const char* HELP =
-    "**Link** two pins: drag from one to the other; drop a link in empty space to add a node there  \n"
-    "**Delete**: select, then <kbd>Delete</kbd>  ·  **Menus**: right-click  ·  **Pan**: right-drag  ·  "
-    "**Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>  ·  **Zoom in an image**: the wheel over it";
+// The gestures, in markdown: a paragraph each, shown by the Help button
+const char* HELP = R"(**Link** two pins: drag from one to the other; drop a link in empty space to add a node there
+
+**Delete**: select, then <kbd>Delete</kbd>  ·  **Menus**: right-click
+
+**Pan**: right-drag  ·  **Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>, or *See all*
+
+**Zoom in an image**: the wheel over it
+
+**On a touch screen**: a pinch zooms, the graph or the image under it  ·  two fingers pan  ·
+a long press is a right click
+
+**Pins**: round for a color image, square for a gray one)";
 
 // A note of the graph: how to look at the images (ImmVision)
 const char* TIPS = R"(**About the images**
 
-* Zoom with the wheel, and pan by dragging: all the images follow
+* Zoom with the wheel or a pinch, and pan by dragging: all the images follow
 * Zoom in far enough, and the values of the pixels show
 * The button at the bottom right of an image opens more options)";
 
@@ -183,9 +194,11 @@ struct Blur : Node
 
     bool DrawParams() override
     {
-        ImGui::SetNextItemWidth(HelloImGui::EmSize(IMAGE_WIDTH_EM));
+        ImGuiKit::BeginFillRow("sigma");  // the slider fills the line, the help marker ends it
         bool changed = ImGui::SliderFloat("##sigma", &sigma, 0.1f, 10.0f, "sigma = %.1f");
-        ImGui::SetItemTooltip("The standard deviation of the Gaussian, in pixels: the larger, the blurrier");
+        ImGuiKit::FillRowTail();
+        ImGuiKit::HelpMarker("The standard deviation of the Gaussian, in pixels: the larger, the blurrier");
+        ImGuiKit::EndFillRow();
         return changed;
     }
     cv::Mat Compute(const std::vector<cv::Mat>& inputs) override
@@ -207,13 +220,17 @@ struct Edges : Node
 
     bool DrawParams() override
     {
-        ImGui::SetNextItemWidth(HelloImGui::EmSize(IMAGE_WIDTH_EM));
+        ImGuiKit::BeginFillRow("low");  // the slider fills the line, the help marker ends it
         bool changedLow = ImGui::SliderFloat("##low", &low, 0.0f, 300.0f, "low = %.0f");
-        ImGui::SetItemTooltip("A pixel whose gradient is below this threshold is never an edge");
-        ImGui::SetNextItemWidth(HelloImGui::EmSize(IMAGE_WIDTH_EM));
+        ImGuiKit::FillRowTail();
+        ImGuiKit::HelpMarker("A pixel whose gradient is below this threshold is never an edge");
+        ImGuiKit::EndFillRow();
+        ImGuiKit::BeginFillRow("high");  // the slider fills the line, the help marker ends it
         bool changedHigh = ImGui::SliderFloat("##high", &high, 0.0f, 300.0f, "high = %.0f");
-        ImGui::SetItemTooltip("A pixel whose gradient is above this threshold is always an edge; between the two, "
-                              "only when it touches an edge");
+        ImGuiKit::FillRowTail();
+        ImGuiKit::HelpMarker("A pixel whose gradient is above this threshold is always an edge; between the two, "
+                             "only when it touches an edge");
+        ImGuiKit::EndFillRow();
         return changedLow || changedHigh;
     }
     cv::Mat Compute(const std::vector<cv::Mat>& inputs) override
@@ -258,9 +275,11 @@ struct Dilate : Node
 
     bool DrawParams() override
     {
-        ImGui::SetNextItemWidth(HelloImGui::EmSize(IMAGE_WIDTH_EM));
+        ImGuiKit::BeginFillRow("size");  // the slider fills the line, the help marker ends it
         bool changed = ImGui::SliderInt("##size", &size, 1, 9, "size = %d");
-        ImGui::SetItemTooltip("The size of the disk that dilates the image, in pixels (1: no change)");
+        ImGuiKit::FillRowTail();
+        ImGuiKit::HelpMarker("The size of the disk that dilates the image, in pixels (1: no change)");
+        ImGuiKit::EndFillRow();
         return changed;
     }
     cv::Mat Compute(const std::vector<cv::Mat>& inputs) override
@@ -351,9 +370,11 @@ struct Levels : Node
         // A plot inside a node, with a handle at its bottom right corner to resize it
         ImPlotFlags flags = ImPlotFlags_NoLegend | ImPlotFlags_NoMenus | ImPlotFlags_NoBoxSelect;
         histogramSizeEm = ImmApp::ShowResizablePlotInNodeEditor_Em("##histogram", histogramSizeEm, plotHistogram, flags);
-        ImGui::SetNextItemWidth(HelloImGui::EmSize(IMAGE_WIDTH_EM));
+        ImGuiKit::BeginFillRow("gamma");  // the slider fills the line, the help marker ends it
         bool changedGamma = ImGui::SliderFloat("##gamma", &gamma, 0.2f, 3.0f, "gamma = %.2f");
-        ImGui::SetItemTooltip("Above 1, the midtones get brighter");
+        ImGuiKit::FillRowTail();
+        ImGuiKit::HelpMarker("Above 1, the midtones get brighter");
+        ImGuiKit::EndFillRow();
         return changed || changedGamma;
     }
     cv::Mat Compute(const std::vector<cv::Mat>& inputs) override
@@ -743,6 +764,9 @@ struct MenuState
     ImVec2 position;  // where the add menu opened, in the editor's coordinates
     ed::NodeId nodeId;  // the node whose menu is open
     ed::LinkId linkId;  // the link whose menu is open
+    // The view's moves asked by the menus or the button: the navigation functions work after ed::End()
+    bool seeWholeGraph = false;
+    ed::NodeId zoomToNode;  // none by default
 };
 
 void OpenAddMenu(MenuState& menu, Pin* droppedPin)
@@ -840,6 +864,12 @@ void HandleMenus(Graph& graph, MenuState& menu)
                     graph.Connect(node->output.get(), pin);
             }
         }
+        if (pin == nullptr)  // the background's menu (not a link dropped in empty space)
+        {
+            ImGui::Separator();
+            if (ImGui::MenuItem(ICON_FA_EXPAND "  See the whole graph", "F"))
+                menu.seeWholeGraph = true;
+        }
         ImGui::EndPopup();
     }
 
@@ -847,6 +877,8 @@ void HandleMenus(Graph& graph, MenuState& menu)
         ImGui::OpenPopup("Node");
     if (ImGui::BeginPopup("Node"))
     {
+        if (ImGui::MenuItem(ICON_FA_SEARCH_PLUS "  Zoom to this node", "Shift+F"))
+            menu.zoomToNode = menu.nodeId;
         if (ImGui::MenuItem("Delete"))
             ed::DeleteNode(menu.nodeId);  // the node then goes through HandleDeletions()
         ImGui::EndPopup();
@@ -859,6 +891,20 @@ void HandleMenus(Graph& graph, MenuState& menu)
             ed::DeleteLink(menu.linkId);
         ImGui::EndPopup();
     }
+}
+
+// The view's moves asked during the frame, after ed::End()
+void ApplyNavigation(MenuState& menu)
+{
+    if (menu.seeWholeGraph)
+        ed::NavigateToContent();
+    if (menu.zoomToNode)
+    {
+        ed::SelectNode(menu.zoomToNode);
+        ed::NavigateToSelection(true);  // true: zoom in to fit it, as Shift+F
+    }
+    menu.seeWholeGraph = false;
+    menu.zoomToNode = ed::NodeId();
 }
 
 
@@ -896,18 +942,65 @@ ed::EditorContext* Editor()
     return state.editor;
 }
 
+// The controls, in a panel at the top right corner of the editor, over the graph: the graph keeps all the room, which
+// a phone needs. A child window shows on top of its parent's content (the editor, drawn after it), and gets the
+// clicks there.
+void DrawControls(const ImRect& canvas, AppState& state)
+{
+    const float em = ImGui::GetFontSize();
+    const char* labels[] = {ICON_FA_EXPAND "  See all", ICON_FA_UNDO "  Reset", ICON_FA_QUESTION_CIRCLE "  Help"};
+    const ImGuiStyle& style = ImGui::GetStyle();
+    float buttonWidth = 0.0f;
+    for (const char* label : labels)
+        buttonWidth = std::max(buttonWidth, ImGui::CalcTextSize(label).x + style.FramePadding.x * 2);
+    const float panelWidth = buttonWidth + style.WindowPadding.x * 2;
+
+    const ImVec2 cursor = ImGui::GetCursorScreenPos();  // restored after: the editor starts there
+    ImGui::SetCursorScreenPos(ImVec2(canvas.Max.x - panelWidth - em * 0.5f, canvas.Min.y + em * 0.5f));
+    ImGui::BeginChild("controls", ImVec2(panelWidth, 0.0f), ImGuiChildFlags_AutoResizeY, ImGuiWindowFlags_NoScrollbar);
+    {
+        // The panel's frame, as a menu's, in the child's own draw list: the editor, drawn after it, would cover the
+        // child's background (Dear ImGui draws it in the parent's draw list)
+        ImDrawList* drawList = ImGui::GetWindowDrawList();
+        const ImVec2 p0 = ImGui::GetWindowPos(), p1 = p0 + ImGui::GetWindowSize();
+        drawList->PushClipRect(p0, p1, false);
+        drawList->AddRectFilled(p0, p1, ImGui::GetColorU32(ImGuiCol_PopupBg), em * 0.4f);
+        // The outline: clear, in a dark or a light theme
+        drawList->AddRect(p0, p1, ImGui::GetColorU32(ImGuiCol_Text, 0.3f), em * 0.4f);
+        drawList->PopClipRect();
+    }
+    if (ImGui::Button(labels[0], ImVec2(buttonWidth, 0.0f)))
+        state.menu.seeWholeGraph = true;
+    if (ImGui::Button(labels[1], ImVec2(buttonWidth, 0.0f)))
+    {
+        state.graph.reset();  // created again at the next frame
+        state.frame = 0;
+    }
+    if (ImGui::Button(labels[2], ImVec2(buttonWidth, 0.0f)))
+        ImGui::OpenPopup("help");
+    // The help, in a popup under the panel, no wider than the screen (a phone shows it)
+    const float panelRight = ImGui::GetWindowPos().x + ImGui::GetWindowWidth();
+    const float helpTop = ImGui::GetItemRectMax().y + style.WindowPadding.y + em * 0.3f;  // under the Help button
+    ImGui::SetNextWindowPos(ImVec2(panelRight, helpTop), ImGuiCond_Always, ImVec2(1.0f, 0.0f));
+    ImGui::SetNextWindowSize(ImVec2(std::min(em * 36.0f, ImGui::GetMainViewport()->Size.x * 0.9f), 0.0f));
+    if (ImGui::BeginPopup("help"))
+    {
+        RichMd::Render(HELP);
+        ImGui::EndPopup();
+    }
+    ImGui::EndChild();
+    ImGui::SetCursorScreenPos(cursor);
+}
+
 }  // namespace
 
 
 void gui_demo_node_editor_image_pipeline()
 {
     AppState& state = State();
-    RichMd::Render(HELP);
-    if (ImGui::Button("Reset the graph"))
-    {
-        state.graph.reset();
-        state.frame = 0;
-    }
+    // The editor takes all the room (its controls float over it, see DrawControls())
+    const ImRect canvas(ImGui::GetCursorScreenPos(), ImGui::GetCursorScreenPos() + ImGui::GetContentRegionAvail());
+    DrawControls(canvas, state);
     ed::EditorContext* previousEditor = ed::GetCurrentEditor();
     ed::SetCurrentEditor(Editor());
     ed::Begin("Image pipeline");
@@ -927,6 +1020,7 @@ void gui_demo_node_editor_image_pipeline()
     HandleDeletions(graph);
     HandleMenus(graph, state.menu);
     ed::End();
+    ApplyNavigation(state.menu);
 
     // Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
     // fit has no effect). The navigation functions work after ed::End().

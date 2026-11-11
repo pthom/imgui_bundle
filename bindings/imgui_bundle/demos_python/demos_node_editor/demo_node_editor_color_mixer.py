@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import NamedTuple
 
-from imgui_bundle import imgui, immapp, imgui_node_editor as ed, rich_md, ImVec2, ImVec4, em_size
+from imgui_bundle import imgui, immapp, imgui_node_editor as ed, rich_md, icons_fontawesome_4, ImVec2, ImVec4, em_size
 
 NODE_WIDTH_EM = 9.0  # the width of a node's content
 SWATCH_SIZE_EM = 5.0  # the side of a swatch's square
@@ -18,13 +18,16 @@ LINK_THICKNESS = 3.0  # the thickness of the links (they follow the zoom)
 UNLINKED = ImVec4(0.3, 0.3, 0.3, 1.0)  # the color an input receives when no link reaches it
 WHITE = ImVec4(1.0, 1.0, 1.0, 1.0)
 
-# The gestures, in markdown ("  \n" ends a line)
-HELP = (
-    "**Link** two pins: drag from one to the other  ·  "
-    "**Delete** a node or a link: select it, then <kbd>Delete</kbd>  \n"
-    "**Add a node**: right-click the background  ·  **Pan**: right-drag  ·  **Zoom**: the wheel  ·  "
-    "**See the whole graph**: <kbd>F</kbd>"
-)
+# The gestures, in markdown: a paragraph each, shown by the Help button
+HELP = """**Link** two pins: drag from one to the other
+
+**Delete** a node or a link: select it, then <kbd>Delete</kbd>
+
+**Add a node**: right-click the background
+
+**Pan**: right-drag  ·  **Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>, or *See all*
+
+**On a touch screen**: a pinch zooms  ·  two fingers pan  ·  a long press is a right click"""
 
 
 class NodeKind(NamedTuple):
@@ -261,6 +264,9 @@ def handle_deletions(graph: Graph) -> None:
 class MenuState:
     new_node_position: ImVec2 = field(default_factory=ImVec2)  # where the background menu was opened
     node_id: ed.NodeId = field(default_factory=ed.NodeId)  # the node whose menu is open
+    # The view's moves asked by the menus or the button: the navigation functions work after ed.end()
+    see_whole_graph: bool = False
+    zoom_to_node: ed.NodeId | None = None
 
 
 def handle_menus(graph: Graph, menu: MenuState) -> None:
@@ -271,14 +277,30 @@ def handle_menus(graph: Graph, menu: MenuState) -> None:
         for kind in NODE_KINDS:
             if imgui.menu_item_simple(kind):
                 graph.add_node(kind, menu.new_node_position / em_size())
+        imgui.separator()
+        if imgui.menu_item_simple(icons_fontawesome_4.ICON_FA_EXPAND + "  See the whole graph", "F"):
+            menu.see_whole_graph = True
         imgui.end_popup()
 
     if ed.show_node_context_menu(menu.node_id):
         imgui.open_popup("Node")
     if imgui.begin_popup("Node"):
+        if imgui.menu_item_simple(icons_fontawesome_4.ICON_FA_SEARCH_PLUS + "  Zoom to this node", "Shift+F"):
+            menu.zoom_to_node = menu.node_id
         if imgui.menu_item_simple("Delete"):
             ed.delete_node(menu.node_id)  # the node then goes through handle_deletions()
         imgui.end_popup()
+
+
+def apply_navigation(menu: MenuState) -> None:
+    """The view's moves asked during the frame, after ed.end()"""
+    if menu.see_whole_graph:
+        ed.navigate_to_content()
+    if menu.zoom_to_node is not None:
+        ed.select_node(menu.zoom_to_node)
+        ed.navigate_to_selection(True)  # True: zoom in to fit it, as Shift+F
+    menu.see_whole_graph = False
+    menu.zoom_to_node = None
 
 
 # =====================================================================================================================
@@ -307,8 +329,51 @@ def editor() -> ed.EditorContext:
     return state.editor
 
 
+def draw_controls(canvas_min: ImVec2, canvas_max: ImVec2, menu: MenuState) -> None:
+    """The controls, in a panel at the top right corner of the editor, over the graph: the graph keeps all the room,
+    which a phone needs. A child window shows on top of its parent's content (the editor, drawn after it), and gets
+    the clicks there."""
+    em = imgui.get_font_size()
+    see_all = icons_fontawesome_4.ICON_FA_EXPAND + "  See all"
+    help_label = icons_fontawesome_4.ICON_FA_QUESTION_CIRCLE + "  Help"
+    style = imgui.get_style()
+    button_width = max(imgui.calc_text_size(see_all).x, imgui.calc_text_size(help_label).x) + style.frame_padding.x * 2
+    panel_width = button_width + style.window_padding.x * 2
+
+    cursor = imgui.get_cursor_screen_pos()  # restored after: the editor starts there
+    imgui.set_cursor_screen_pos(ImVec2(canvas_max.x - panel_width - em * 0.5, canvas_min.y + em * 0.5))
+    imgui.begin_child("controls", ImVec2(panel_width, 0), imgui.ChildFlags_.auto_resize_y,
+                      imgui.WindowFlags_.no_scrollbar)
+    # The panel's frame, as a menu's, in the child's own draw list: the editor, drawn after it, would cover the child's
+    # background (Dear ImGui draws it in the parent's draw list)
+    draw_list = imgui.get_window_draw_list()
+    p0 = imgui.get_window_pos()
+    p1 = p0 + imgui.get_window_size()
+    draw_list.push_clip_rect(p0, p1, False)
+    draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.popup_bg), em * 0.4)
+    draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.text, 0.3), em * 0.4)  # clear, in a dark or a light theme
+    draw_list.pop_clip_rect()
+    if imgui.button(see_all, ImVec2(button_width, 0)):
+        menu.see_whole_graph = True
+    if imgui.button(help_label, ImVec2(button_width, 0)):
+        imgui.open_popup("help")
+    # The help, in a popup under the panel, no wider than the screen (a phone shows it)
+    panel_right = imgui.get_window_pos().x + imgui.get_window_width()
+    help_top = imgui.get_item_rect_max().y + style.window_padding.y + em * 0.3  # under the Help button
+    imgui.set_next_window_pos(ImVec2(panel_right, help_top), imgui.Cond_.always, ImVec2(1, 0))
+    imgui.set_next_window_size(ImVec2(min(em * 36, imgui.get_main_viewport().size.x * 0.9), 0))
+    if imgui.begin_popup("help"):
+        rich_md.render(HELP)
+        imgui.end_popup()
+    imgui.end_child()
+    imgui.set_cursor_screen_pos(cursor)
+
+
 def gui() -> None:
-    rich_md.render(HELP)
+    # The editor takes all the room (its controls float over it, see draw_controls())
+    canvas_min = imgui.get_cursor_screen_pos()
+    canvas_max = canvas_min + imgui.get_content_region_avail()
+    draw_controls(canvas_min, canvas_max, state.menu)
     previous_editor = ed.get_current_editor()
     ed.set_current_editor(editor())
     ed.begin("Color mixer")
@@ -321,6 +386,7 @@ def gui() -> None:
     handle_deletions(state.graph)
     handle_menus(state.graph, state.menu)
     ed.end()
+    apply_navigation(state.menu)
 
     # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
     # fit has no effect). The navigation functions work after ed.end().

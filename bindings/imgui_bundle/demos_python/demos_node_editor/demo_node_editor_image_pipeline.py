@@ -14,8 +14,8 @@ import numpy as np
 from numpy.typing import NDArray
 
 from imgui_bundle import (
-    imgui, immapp, implot, immvision, imgui_node_editor as ed, rich_md, hello_imgui, ImVec2, ImVec4, em_size,
-    register_demos_assets_folder,
+    imgui, immapp, implot, immvision, imgui_node_editor as ed, imgui_kit, rich_md, hello_imgui, icons_fontawesome_4,
+    ImVec2, ImVec4, em_size, register_demos_assets_folder,
 )
 
 IMAGE_WIDTH_EM = 12.0  # the width of the images in the nodes: it also gives the nodes their width
@@ -24,16 +24,23 @@ PIN_RADIUS_EM = 0.45  # the radius of a pin's icon
 LINK_THICKNESS = 3.0  # the thickness of the links (they follow the zoom)
 IMAGES = ["images/house.jpg", "images/tennis.jpg"]  # the images an Image node can load, from the demos' assets
 
-HELP = (
-    "**Link** two pins: drag from one to the other; drop a link in empty space to add a node there  \n"
-    "**Delete**: select, then <kbd>Delete</kbd>  ·  **Menus**: right-click  ·  **Pan**: right-drag  ·  "
-    "**Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>  ·  **Zoom in an image**: the wheel over it"
-)
+HELP = """**Link** two pins: drag from one to the other; drop a link in empty space to add a node there
+
+**Delete**: select, then <kbd>Delete</kbd>  ·  **Menus**: right-click
+
+**Pan**: right-drag  ·  **Zoom**: the wheel  ·  **See the whole graph**: <kbd>F</kbd>, or *See all*
+
+**Zoom in an image**: the wheel over it
+
+**On a touch screen**: a pinch zooms, the graph or the image under it  ·  two fingers pan  ·
+a long press is a right click
+
+**Pins**: round for a color image, square for a gray one"""
 
 # A note of the graph: how to look at the images (ImmVision)
 TIPS = """**About the images**
 
-* Zoom with the wheel, and pan by dragging: all the images follow
+* Zoom with the wheel or a pinch, and pan by dragging: all the images follow
 * Zoom in far enough, and the values of the pixels show
 * The button at the bottom right of an image opens more options"""
 
@@ -145,9 +152,11 @@ class Blur(Node):
         self.sigma = 1.5
 
     def draw_params(self) -> bool:
-        imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
+        imgui_kit.begin_fill_row("sigma")  # the slider fills the line, the help marker ends it
         changed, self.sigma = imgui.slider_float("##sigma", self.sigma, 0.1, 10.0, "sigma = %.1f")
-        imgui.set_item_tooltip("The standard deviation of the Gaussian, in pixels: the larger, the blurrier")
+        imgui_kit.fill_row_tail()
+        imgui_kit.help_marker("The standard deviation of the Gaussian, in pixels: the larger, the blurrier")
+        imgui_kit.end_fill_row()
         return changed
 
     def compute(self, inputs: list[Image]) -> Image:
@@ -165,13 +174,17 @@ class Edges(Node):
         self.low, self.high = 40.0, 100.0
 
     def draw_params(self) -> bool:
-        imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
+        imgui_kit.begin_fill_row("low")  # the slider fills the line, the help marker ends it
         changed_low, self.low = imgui.slider_float("##low", self.low, 0.0, 300.0, "low = %.0f")
-        imgui.set_item_tooltip("A pixel whose gradient is below this threshold is never an edge")
-        imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
+        imgui_kit.fill_row_tail()
+        imgui_kit.help_marker("A pixel whose gradient is below this threshold is never an edge")
+        imgui_kit.end_fill_row()
+        imgui_kit.begin_fill_row("high")  # the slider fills the line, the help marker ends it
         changed_high, self.high = imgui.slider_float("##high", self.high, 0.0, 300.0, "high = %.0f")
-        imgui.set_item_tooltip("A pixel whose gradient is above this threshold is always an edge; between the two, "
-                               "only when it touches an edge")
+        imgui_kit.fill_row_tail()
+        imgui_kit.help_marker("A pixel whose gradient is above this threshold is always an edge; between the two, "
+                              "only when it touches an edge")
+        imgui_kit.end_fill_row()
         return changed_low or changed_high
 
     def compute(self, inputs: list[Image]) -> Image:
@@ -208,9 +221,11 @@ class Dilate(Node):
         self.size = 3
 
     def draw_params(self) -> bool:
-        imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
+        imgui_kit.begin_fill_row("size")  # the slider fills the line, the help marker ends it
         changed, self.size = imgui.slider_int("##size", self.size, 1, 9, "size = %d")
-        imgui.set_item_tooltip("The size of the disk that dilates the image, in pixels (1: no change)")
+        imgui_kit.fill_row_tail()
+        imgui_kit.help_marker("The size of the disk that dilates the image, in pixels (1: no change)")
+        imgui_kit.end_fill_row()
         return changed
 
     def compute(self, inputs: list[Image]) -> Image:
@@ -275,9 +290,11 @@ class Levels(Node):
         flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_box_select
         self.histogram_size_em = immapp.show_resizable_plot_in_node_editor_em(
             "##histogram", self.histogram_size_em, plot_histogram, flags)
-        imgui.set_next_item_width(em_size(IMAGE_WIDTH_EM))
+        imgui_kit.begin_fill_row("gamma")  # the slider fills the line, the help marker ends it
         changed_gamma, self.gamma = imgui.slider_float("##gamma", self.gamma, 0.2, 3.0, "gamma = %.2f")
-        imgui.set_item_tooltip("Above 1, the midtones get brighter")
+        imgui_kit.fill_row_tail()
+        imgui_kit.help_marker("Above 1, the midtones get brighter")
+        imgui_kit.end_fill_row()
         return changed or changed_gamma
 
     def compute(self, inputs: list[Image]) -> Image:
@@ -558,6 +575,9 @@ class MenuState:
         self.position = ImVec2(0, 0)  # where the add menu opened, in the editor's coordinates
         self.node_id = ed.NodeId()  # the node whose menu is open
         self.link_id = ed.LinkId()  # the link whose menu is open
+        # The view's moves asked by the menus or the button: the navigation functions work after ed.end()
+        self.see_whole_graph = False
+        self.zoom_to_node: ed.NodeId | None = None
 
 
 def handle_creations(graph: Graph, menu: MenuState) -> None:
@@ -622,11 +642,17 @@ def handle_menus(graph: Graph, menu: MenuState) -> None:
                     graph.connect(pin, next(i for i in node.inputs if accepts(i.type, pin.type)))
                 elif pin is not None:
                     graph.connect(node.output, pin)
+        if pin is None:  # the background's menu (not a link dropped in empty space)
+            imgui.separator()
+            if imgui.menu_item_simple(icons_fontawesome_4.ICON_FA_EXPAND + "  See the whole graph", "F"):
+                menu.see_whole_graph = True
         imgui.end_popup()
 
     if ed.show_node_context_menu(menu.node_id):
         imgui.open_popup("Node")
     if imgui.begin_popup("Node"):
+        if imgui.menu_item_simple(icons_fontawesome_4.ICON_FA_SEARCH_PLUS + "  Zoom to this node", "Shift+F"):
+            menu.zoom_to_node = menu.node_id
         if imgui.menu_item_simple("Delete"):
             ed.delete_node(menu.node_id)  # the node then goes through handle_deletions()
         imgui.end_popup()
@@ -636,6 +662,17 @@ def handle_menus(graph: Graph, menu: MenuState) -> None:
         if imgui.menu_item_simple("Delete"):
             ed.delete_link(menu.link_id)
         imgui.end_popup()
+
+
+def apply_navigation(menu: MenuState) -> None:
+    """The view's moves asked during the frame, after ed.end()"""
+    if menu.see_whole_graph:
+        ed.navigate_to_content()
+    if menu.zoom_to_node is not None:
+        ed.select_node(menu.zoom_to_node)
+        ed.navigate_to_selection(True)  # True: zoom in to fit it, as Shift+F
+    menu.see_whole_graph = False
+    menu.zoom_to_node = None
 
 
 # =====================================================================================================================
@@ -665,10 +702,53 @@ def editor() -> ed.EditorContext:
     return state.editor
 
 
+def draw_controls(canvas_min: ImVec2, canvas_max: ImVec2) -> None:
+    """The controls, in a panel at the top right corner of the editor, over the graph: the graph keeps all the room,
+    which a phone needs. A child window shows on top of its parent's content (the editor, drawn after it), and gets
+    the clicks there."""
+    em = imgui.get_font_size()
+    labels = [icons_fontawesome_4.ICON_FA_EXPAND + "  See all", icons_fontawesome_4.ICON_FA_UNDO + "  Reset",
+              icons_fontawesome_4.ICON_FA_QUESTION_CIRCLE + "  Help"]
+    style = imgui.get_style()
+    button_width = max(imgui.calc_text_size(label).x for label in labels) + style.frame_padding.x * 2
+    panel_width = button_width + style.window_padding.x * 2
+
+    cursor = imgui.get_cursor_screen_pos()  # restored after: the editor starts there
+    imgui.set_cursor_screen_pos(ImVec2(canvas_max.x - panel_width - em * 0.5, canvas_min.y + em * 0.5))
+    imgui.begin_child("controls", ImVec2(panel_width, 0), imgui.ChildFlags_.auto_resize_y,
+                      imgui.WindowFlags_.no_scrollbar)
+    # The panel's frame, as a menu's, in the child's own draw list: the editor, drawn after it, would cover the child's
+    # background (Dear ImGui draws it in the parent's draw list)
+    draw_list = imgui.get_window_draw_list()
+    p0 = imgui.get_window_pos()
+    p1 = p0 + imgui.get_window_size()
+    draw_list.push_clip_rect(p0, p1, False)
+    draw_list.add_rect_filled(p0, p1, imgui.get_color_u32(imgui.Col_.popup_bg), em * 0.4)
+    draw_list.add_rect(p0, p1, imgui.get_color_u32(imgui.Col_.text, 0.3), em * 0.4)  # clear, in a dark or a light theme
+    draw_list.pop_clip_rect()
+    if imgui.button(labels[0], ImVec2(button_width, 0)):
+        state.menu.see_whole_graph = True
+    if imgui.button(labels[1], ImVec2(button_width, 0)):
+        state.graph, state.frame = None, 0  # created again at the next frame
+    if imgui.button(labels[2], ImVec2(button_width, 0)):
+        imgui.open_popup("help")
+    # The help, in a popup under the panel, no wider than the screen (a phone shows it)
+    panel_right = imgui.get_window_pos().x + imgui.get_window_width()
+    help_top = imgui.get_item_rect_max().y + style.window_padding.y + em * 0.3  # under the Help button
+    imgui.set_next_window_pos(ImVec2(panel_right, help_top), imgui.Cond_.always, ImVec2(1, 0))
+    imgui.set_next_window_size(ImVec2(min(em * 36, imgui.get_main_viewport().size.x * 0.9), 0))
+    if imgui.begin_popup("help"):
+        rich_md.render(HELP)
+        imgui.end_popup()
+    imgui.end_child()
+    imgui.set_cursor_screen_pos(cursor)
+
+
 def gui() -> None:
-    rich_md.render(HELP)
-    if imgui.button("Reset the graph"):
-        state.graph, state.frame = None, 0
+    # The editor takes all the room (its controls float over it, see draw_controls())
+    canvas_min = imgui.get_cursor_screen_pos()
+    canvas_max = canvas_min + imgui.get_content_region_avail()
+    draw_controls(canvas_min, canvas_max)
     previous_editor = ed.get_current_editor()
     ed.set_current_editor(editor())
     ed.begin("Image pipeline")
@@ -687,6 +767,7 @@ def gui() -> None:
     handle_deletions(state.graph)
     handle_menus(state.graph, state.menu)
     ed.end()
+    apply_navigation(state.menu)
 
     # Fit the graph in the view, once the editor knows the size of the nodes: at the third frame (at the second, the
     # fit has no effect). The navigation functions work after ed.end().
