@@ -1,7 +1,7 @@
 name: "Conan"
 
 # Builds the Conan 2 package (conan/conanfile.py) from this checkout, then its test package (conan create),
-# on Windows (MSVC x64, Release and Debug), Linux (x64 and arm64) and macOS (arm64).
+# on Windows (MSVC x64), Linux (x64 and arm64) and macOS (arm64), each in Release and Debug.
 #
 # The dependencies (freetype, glfw, libcurl, ...) come from ConanCenter, built here when it has no binary
 # for the runner's compiler; a cache keeps them between runs. On Linux, Conan installs the system packages
@@ -25,17 +25,18 @@ permissions:
 
 jobs:
   build:
-    name: Conan (${{ matrix.name }})
-    runs-on: ${{ matrix.runner }}
+    name: Conan (${{ matrix.platform.name }}, ${{ matrix.build_type }})
+    runs-on: ${{ matrix.platform.runner }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - { name: windows-x64-release, runner: windows-latest, build_type: Release }
-          - { name: windows-x64-debug, runner: windows-latest, build_type: Debug }
-          - { name: linux-x64, runner: ubuntu-24.04, build_type: Release }
-          - { name: linux-arm64, runner: ubuntu-24.04-arm, build_type: Release }
-          - { name: macos-arm64, runner: macos-latest, build_type: Release }
+        platform:
+          - { name: windows-x64, runner: windows-latest }
+          - { name: linux-x64, runner: ubuntu-24.04 }
+          - { name: linux-arm64, runner: ubuntu-24.04-arm }
+          - { name: macos-arm64, runner: macos-latest }
+        # Each build type is a package of its own, with its own dependencies' binaries
+        build_type: [Release, Debug]
 
     steps:
     - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
@@ -58,8 +59,8 @@ jobs:
       uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9  # v6.1.0
       with:
         path: ${{ env.CONAN_HOME }}/p
-        key: conan-${{ matrix.name }}-${{ hashFiles('conan/conanfile.py') }}
-        restore-keys: conan-${{ matrix.name }}-
+        key: conan-${{ matrix.platform.name }}-${{ matrix.build_type }}-${{ hashFiles('conan/conanfile.py') }}
+        restore-keys: conan-${{ matrix.platform.name }}-${{ matrix.build_type }}-
 
     - name: conan create (from this checkout)
       shell: bash
