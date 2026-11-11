@@ -132,6 +132,8 @@ document.addEventListener('DOMContentLoaded', () => {
 const runButton = document.getElementById('run-button');
 runButton.addEventListener('click', async () => {
     if (narrowScreen.matches) setPane('demo');  // a phone: the result shows
+    // During the page's startup, its demo's files may still be downloading: Run waits for the demo to start, then runs
+    await pageReady.catch(() => {});
     await runEditorPythonCode();
     _lastRunCode = editor.getValue();
     runButton.classList.remove('needs-run');
@@ -153,7 +155,7 @@ document.addEventListener('keydown', (e) => {
         e.preventDefault();
         if (runButton.disabled) return;  // Pyodide not ready yet
         if (narrowScreen.matches) setPane('demo');
-        runEditorPythonCode();
+        pageReady.catch(() => {}).then(runEditorPythonCode);  // as the Run button: after the page's startup
     }
 });
 
@@ -308,4 +310,4 @@ async function initialize() {
     }
 }
 
-initialize();
+const pageReady = initialize();  // the page's own demo has started: a Run waits for it

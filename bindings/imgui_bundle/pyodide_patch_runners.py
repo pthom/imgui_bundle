@@ -208,6 +208,13 @@ class _ManualRenderJs:
     is_running: bool = False
     render_lifecycle_functions: _RenderLifeCycleFunctions | None = None
     gc_without_increments: _GcWithoutIncrements | None = None  # while the test engine runs
+    # Counts the run requests and the stops. A start delayed by a download (the LaTeX fonts) goes on only if no newer
+    # request came meanwhile: two runs requested at once (the page's demo starting, then Run) start the newer only.
+    start_generation: int = 0
+
+    def _new_start_request(self) -> int:
+        self.start_generation += 1
+        return self.start_generation
 
     def _stop(self) -> None:
         """Stops the current rendering loop and tears down the renderer."""
@@ -238,6 +245,7 @@ class _ManualRenderJs:
 
     def _run(self, himgui_or_immapp: _HelloImGuiOrImmApp, *args: Any, **kwargs: Any) -> None:
         _log(f"_ManualRenderJs._run() called with {himgui_or_immapp}, args: {args}, kwargs: {kwargs}")
+        self._new_start_request()  # a start still waiting for a download is dropped
         if self.is_running:
             _log("_ManualRenderJs._run() -> Stopping existing renderer before starting a new one.")
             self._stop()
@@ -312,6 +320,7 @@ class _ManualRenderJs:
             # globals from the new exec (playground reuses one namespace),
             # producing spurious AttributeErrors.
             # Note: when not using latex, self._run() will also call self._stop() if needed
+            generation = self._new_start_request()
             if self.is_running:
                 self._stop()
 
@@ -328,6 +337,9 @@ class _ManualRenderJs:
                         f"imgui_bundle: failed to fetch LaTeX fonts ({e}). "
                         f"Formulas will be shown as plain text."
                     )
+                if generation != self.start_generation:
+                    _log("_ManualRenderJs.run_immapp() -> a newer run or a stop came during the download: not started")
+                    return
                 self._run(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
             asyncio.ensure_future(_delayed_start())
@@ -352,6 +364,7 @@ class _ManualRenderJs:
         """
         if _wants_latex(args, kwargs):
             # Stop the previous renderer up front (see run_immapp).
+            generation = self._new_start_request()
             if self.is_running:
                 self._stop()
             try:
@@ -364,6 +377,9 @@ class _ManualRenderJs:
                     f"imgui_bundle: failed to fetch LaTeX fonts ({e}). "
                     f"Formulas will be shown as plain text."
                 )
+            if generation != self.start_generation:
+                _log("_ManualRenderJs.run_immapp_async() -> a newer run or a stop came during the download")
+                return
         await self._run_async(_HelloImGuiOrImmApp.IMMAPP, *args, **kwargs)
 
     async def run_hello_imgui_async(self, *args: Any, **kwargs: Any) -> None:
@@ -395,6 +411,7 @@ def stop_active_renderer() -> None:
     global _MANUAL_RENDER_JS
     if _MANUAL_RENDER_JS is None:
         return
+    _MANUAL_RENDER_JS._new_start_request()  # a start still waiting for a download is dropped too
     if not _MANUAL_RENDER_JS.is_running:
         return
     renderer = _MANUAL_RENDER_JS.js_animation_renderer
