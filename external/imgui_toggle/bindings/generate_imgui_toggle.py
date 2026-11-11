@@ -30,6 +30,10 @@ def main() -> None:
     options.srcmlcpp_options.functions_api_prefixes = "IMGUI_API"
     options.fn_exclude_non_api = False
     options.namespaces_root = ["ImGui", "ImGuiToggleConstants", "ImGuiTogglePresets"]
+    # `ImGui::GetFrameHeight()` in a comment becomes `imgui.get_frame_height()`, checked against imgui's stub
+    options.comments_python_names_of_other_modules = {
+        "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
+    }
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
     options.python_run_black_formatter = True
     options.struct_create_default_named_ctor__regex = ""

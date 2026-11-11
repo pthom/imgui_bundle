@@ -102,7 +102,7 @@ class ToggleConstants:
 # - animation_duration: Animation duration. Amount of time in seconds the toggle should animate. (0,...] default: 1.0 (Overloads with this parameter imply ImGuiToggleFlags_Animated)
 # - frame_rounding: A scalar that controls how rounded the toggle frame is. 0 is square, 1 is round. (0, 1) default 1.0
 # - knob_rounding: A scalar that controls how rounded the toggle knob is. 0 is square, 1 is round. (0, 1) default 1.0
-# - size: A width and height to draw the toggle at. Defaults to `ImGui::GetFrameHeight()` and that height * Phi for the width.
+# - size: A width and height to draw the toggle at. Defaults to `imgui.get_frame_height()` and that height * Phi for the width.
 # Config structure:
 # - The overload taking a reference to an ImGuiToggleConfig structure allows for more complete control over the widget.
 # IMGUI_API bool Toggle(const char* label, bool* v, const ImVec2& size = ImVec2());    /* original C++ signature */
@@ -282,7 +282,7 @@ class ToggleConfig:
 
     # ImVec2 Size = ImVec2(0.0f, 0.0f);    /* original C++ signature */
     # A custom size to draw the toggle with. Defaults to (0, 0). If `size.x` is zero, `width_ratio` will control the toggle width.
-    # If `size.y` is zero, the toggle height will be set by `ImGui::GetFrameHeight()`.
+    # If `size.y` is zero, the toggle height will be set by `imgui.get_frame_height()`.
     size: ImVec2 = ImVec2(0.0, 0.0)
 
     # ImGuiToggleStateConfig On;    /* original C++ signature */

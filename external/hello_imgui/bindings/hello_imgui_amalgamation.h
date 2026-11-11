@@ -172,7 +172,7 @@ Screen coordinates are the coordinates you use to place and size windows on the 
 
 The frame buffer size is the size of the internal buffer used by the rendering backend.
 It might be bigger than the actual window size.
-`ImVec2 ImGui::GetIO().DisplayFramebufferScale` is a factor by which the frame buffer size is bigger than the window size.
+`ImGui::GetIO().DisplayFramebufferScale` (an ImVec2) is a factor by which the frame buffer size is bigger than the window size.
 It is set by the platform backend after it was initialized, and typically reflects the scaling ratio between
 physical pixels and screen coordinates.
 
@@ -191,7 +191,7 @@ Notes:
  with the correct size, taking into account the DPI scaling.
 
 ### Using Dear ImGui
-`ImGui::GetIO().Fonts->AddFontFromFileTTF()` loads a font with a given size, in *physical pixels*.
+The font atlas, `ImGui::GetIO().Fonts`, loads a font with a given size, in *physical pixels*.
 KKDYNFONT: TBC...
 
 ## Reproducible physical window sizes (in mm or inches)
@@ -2552,8 +2552,9 @@ struct RunnerParams
 
     // `touchConfig`: _ImGuiTouchConfig (from imgui_kit)_.
     // The touch layer, as on a phone: the swipe (a finger drags the content, with inertia and a bounce), the long
-    // press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h,
-    // e.g. `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always` to try the swipe with a mouse.
+    // press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h.
+    // To try the swipe with a mouse, set its scroll mode to Always (C++: `ImGuiTouchScrollMode_Always`,
+    // Python: `imgui_kit.TouchScrollMode_.always`).
     // Applied when it changes (a change through ImGuiTouch::GetConfig() then stays).
     ImGuiTouchConfig touchConfig;
 

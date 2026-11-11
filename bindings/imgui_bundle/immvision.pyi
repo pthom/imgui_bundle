@@ -687,7 +687,7 @@ def clear_texture_cache() -> None:
     """Clears the internal texture cache of immvision (this is done automatically at exit time)
 
     Note: this function requires that both imgui and OpenGL were initialized.
-          (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)
+          (for example, `immapp.run` in Python, or `HelloImGui::Run` in C++)
     """
     pass
 

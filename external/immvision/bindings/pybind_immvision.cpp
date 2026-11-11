@@ -368,7 +368,7 @@ void py_init_module_immvision(nb::module_& m)
         ImmVision::AvailableColormaps, " Return the list of the available color maps\n Taken from https://github.com/yuki-koyama/tinycolormap, thanks to Yuki Koyama");
 
     m.def("clear_texture_cache",
-        ImmVision::ClearTextureCache, " Clears the internal texture cache of immvision (this is done automatically at exit time)\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, use `imgui_runner.run`for Python,  or `HelloImGui::Run` for C++)");
+        ImmVision::ClearTextureCache, " Clears the internal texture cache of immvision (this is done automatically at exit time)\n\n Note: this function requires that both imgui and OpenGL were initialized.\n       (for example, `immapp.run` in Python, or `HelloImGui::Run` in C++)");
 
     m.def("get_cached_rgba_image",
         ImmVision::GetCachedRgbaImage,
