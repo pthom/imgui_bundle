@@ -4,6 +4,10 @@ AI coding agents read this file (Claude Code through `CLAUDE.md`). It has two pa
 
 To write applications *with* Dear ImGui Bundle, read the guide written for AI assistants: `docs/book/intro/ai_guide.md`, published at https://imgui-bundle.pages.dev/llms.txt. Read it before writing demo or app code in this repository.
 
+## This codebase is ours
+
+You share this codebase with its maintainer, and you will keep building on it in later sessions. Write each change as one you will maintain: when a quick fix would leave a trap for later, say so and propose the lasting one.
+
 # Coding guidelines
 
 When helping users with coding tasks, please follow these guidelines to ensure high-quality, maintainable code.
