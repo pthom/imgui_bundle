@@ -39,7 +39,18 @@ conan create conan -c user.imgui_bundle:source_dir=/path/to/imgui_bundle -s comp
 
 `--build=missing` also builds the dependencies that ConanCenter has no binary for: its binaries cover a few compilers only. A build takes 6 to 11 minutes on GitHub's runners.
 
-Each build type is a package of its own. On Windows, a Debug app needs a Debug package (`-s build_type=Debug`): MSVC's debug and release runtimes do not mix.
+### Debug and Release
+
+Each build type is a package of its own, with its own binaries of the dependencies. Build one package per build type your apps use:
+
+```bash
+conan create conan --version=1.93.0 -s compiler.cppstd=17 --build=missing                      # Release, the profile's default
+conan create conan --version=1.93.0 -s compiler.cppstd=17 -s build_type=Debug --build=missing   # Debug
+```
+
+- *On Windows, a Debug app needs the Debug package:* MSVC's debug and release runtimes do not mix.
+- *On every platform, the Debug package keeps the libraries' debug information and their asserts* (Dear ImGui's `IM_ASSERT` included).
+- *Your app chooses one at `conan install`:* see [How to use it in your app](#how-to-use-it-in-your-app).
 
 ## The options
 
@@ -78,6 +89,21 @@ conan upload --list=pkglist.json -r my_server -c
 - *So your build machines do not need ConanCenter:* they find everything on your server. Checked with a local `conan_server`: an app's `conan install`, with ConanCenter removed, downloaded the package and its dependencies, and built nothing.
 - *Repeat for each profile your apps use:* OS, architecture, compiler, build type.
 
+### GitLab's package registry
+
+GitLab's Conan 2 registry is in beta in GitLab 19.5 ([its doc](https://docs.gitlab.com/19.5/user/packages/conan_2_repository/)). Its remote belongs to a project:
+
+```bash
+conan remote add gitlab https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan
+conan remote login -p <token> gitlab <user>
+```
+
+- *The token:* a personal access token with the `api` scope, or a deploy token with `write_package_registry` (`read_package_registry` is enough to install). In a GitLab CI job: `CONAN_LOGIN_USERNAME=ci_user CONAN_PASSWORD=${CI_JOB_TOKEN}`.
+- *GitLab's doc names each package with a user and a channel* (`hello/0.1@mycompany/beta`). Give them to the package when you build it, then require it by that name:
+  - `conan create conan --version=1.93.0 --user=<user> --channel=stable -s compiler.cppstd=17 --build=missing`
+  - `imgui_bundle/1.93.0@<user>/stable` in your `conanfile.txt`.
+- *The dependencies from ConanCenter (freetype, glfw, libcurl...) have no user and channel.* Whether GitLab's registry stores them as they are is not checked here. Build machines that reach ConanCenter can keep getting them from there.
+
 ## How to use it in your app
 
 A `conanfile.txt` beside your `CMakeLists.txt`:
@@ -114,6 +140,17 @@ cmake --preset conan-release          # on Windows: cmake --preset conan-default
 cmake --build --preset conan-release
 ```
 
+For a Debug build, the same with `-s build_type=Debug` and the `conan-debug` presets:
+
+```bash
+conan install . -s compiler.cppstd=17 -s build_type=Debug
+cmake --preset conan-debug            # on Windows: cmake --preset conan-default
+cmake --build --preset conan-debug
+```
+
+- *On Linux and macOS,* each build type has its own build folder and presets.
+- *On Windows,* Visual Studio builds both from one folder: after `conan install` for each build type, configure once with `conan-default`, then build with `conan-release` or `conan-debug`.
+
 When your server has no binary for your profile, add `--build=missing` to `conan install`: Conan then builds the package on your machine.
 
 ### From FetchContent to the package
@@ -125,9 +162,11 @@ When your server has no binary for your profile, add `--build=missing` to `conan
 
 `.github/workflows/conan.yml` runs `conan create` from the checkout, with the test package (`conan/test_package`, an app built against the package). Its jobs:
 
-- Windows x64, MSVC, Release and Debug
+- Windows x64, MSVC
 - Linux x64 and arm64: Ubuntu 24.04, GCC 13
 - macOS arm64
+
+Each in Release and Debug.
 
 It runs when `conan/` or the workflow changes, every Monday, and by hand. It uploads nothing.
 
