@@ -457,12 +457,15 @@ cf_stage:
     # 3. Copy python playground
     # ------------------------------------------------------------
     # --copy-unsafe-links resolves the examples/ symlink (points outside the tree)
-    # demos_python/: only its top-level files are examples (its folders are other sources, or not examples; its .ini
-    # files are the settings of local runs). demo_code/ links to the web explorer's (the manuals fetch their code there)
-    # my_places.json: the places a user saved in the Mandelbrot example (git-ignored, personal)
+    # demos_python/: only its top-level files are examples (its folders are other sources, or not examples).
+    # demo_code/ links to the web explorer's (the manuals fetch their code there)
+    # The .ini files are the window settings of local runs (git-ignored), except Fiatlight's tracked settings
+    # (examples/fiat_settings, which its examples read). my_places.json: the places a user saved in the Mandelbrot
+    # example (git-ignored, personal)
     python ci_scripts/playground_examples_docs.py
     rm -rf {{_CF_STAGING}}/playground {{_CF_STAGING}}/local_wheels
-    rsync -a --copy-unsafe-links --exclude='/demos_python/*/' --exclude='/demos_python/*.ini' \
+    rsync -a --copy-unsafe-links --exclude='/demos_python/*/' \
+        --include='/examples/fiat_settings/*.ini' --exclude='*.ini' \
         --exclude='my_places.json' pyodide_projects/projects/playground/ {{_CF_STAGING}}/playground/
     # projects/local_wheels/ ships both the wheel (gitignored) and a tracked
     # index.html landing page served at imgui-bundle.pages.dev/local_wheels/.
