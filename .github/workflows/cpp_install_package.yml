@@ -75,6 +75,14 @@ jobs:
               -DCMAKE_PREFIX_PATH="$workspace/builds/cpp_package/install;$DEPS_PREFIX"
         cmake --build build_cpp_compat --config Release -j 3
 
+    - name: Build tests/cpp_install_headers (every library's header, and one function of each) against the installed package
+      shell: bash
+      run: |
+        workspace="${GITHUB_WORKSPACE//\\//}"
+        cmake -S tests/cpp_install_headers -B build_cpp_install_headers -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_PREFIX_PATH="$workspace/builds/cpp_package/install;$DEPS_PREFIX"
+        cmake --build build_cpp_install_headers --config Release -j 3
+
     - name: List the installed package
       shell: bash
       run: |

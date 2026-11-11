@@ -216,6 +216,13 @@ test_cpp_compat:
     cmake -S tests/cpp_compat -B builds/cpp_package/cpp_compat -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}"
     cmake --build builds/cpp_package/cpp_compat --config Release -j
 
+# Check that the installed package holds every library: each one's main header compiles, and one function of each links
+[group('cpp_package')]
+test_cpp_install_headers:
+    @test -d "{{ _cpp_pkg_install }}" || { echo "{{ _cpp_pkg_install }} not found: run 'just cpp_package_install' first"; exit 1; }
+    cmake -S tests/cpp_install_headers -B builds/cpp_package/cpp_install_headers -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH="{{ _cpp_pkg_install }}"
+    cmake --build builds/cpp_package/cpp_install_headers --config Release -j
+
 # Create the Conan package from this checkout (conan/conanfile.py), and build its test_package
 [group('cpp_package')]
 conan_create *ARGS:
