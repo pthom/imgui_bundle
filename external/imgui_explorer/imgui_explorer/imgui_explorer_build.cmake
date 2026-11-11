@@ -127,7 +127,8 @@ function(iex_add_imgui_explorer_lib)
     endif()
 
     target_include_directories(imgui_explorer_lib
-        PUBLIC  $<BUILD_INTERFACE:${src}>        # for imgui_explorer.h
+        PUBLIC  $<BUILD_INTERFACE:${src}/..>     # for imgui_explorer/imgui_explorer.h, the path of an install
+        PUBLIC  $<BUILD_INTERFACE:${src}>        # for imgui_explorer.h (the library's own sources)
         PRIVATE $<BUILD_INTERFACE:${src}/src>    # for internal headers
     )
     # Desktop: demo code is read via std::ifstream from the binary-dir demo_code/ folder.

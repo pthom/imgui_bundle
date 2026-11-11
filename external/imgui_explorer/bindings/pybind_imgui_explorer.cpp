@@ -10,7 +10,7 @@
 #include <nanobind/stl/string.h>
 #include <nanobind/stl/vector.h>
 
-#include "imgui_explorer.h"
+#include "imgui_explorer/imgui_explorer.h"
 
 namespace nb = nanobind;
 

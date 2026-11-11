@@ -14,7 +14,7 @@
 #include "imgui_rich_md/rich_md.h"
 #include "demo_utils/api_demos.h"
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_EXPLORER_LIB
-#include "imgui_explorer.h"
+#include "imgui_explorer/imgui_explorer.h"
 #endif
 
 #include <algorithm>

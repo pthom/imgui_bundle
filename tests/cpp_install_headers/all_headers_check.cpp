@@ -2,7 +2,8 @@
 // function of each, which the linker must find. The calls never run (they would need a GUI): they make the link
 // check each library. The markdown API of v1.92.900 (imgui_md_wrapper.h) has its own check, in tests/cpp_compat.
 #include "imgui.h"
-#include "imgui_stdlib.h"
+#include "misc/cpp/imgui_stdlib.h"  // Dear ImGui's path
+#include "imgui_stdlib.h"           // the include root, as earlier installs had it: both work, even together
 #include "hello_imgui/hello_imgui.h"
 #include "immapp/immapp.h"
 #include "imgui_kit/imgui_kit.h"
