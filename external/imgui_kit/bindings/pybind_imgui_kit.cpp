@@ -403,7 +403,7 @@ void py_init_module_imgui_kit(nb::module_& m)
             " Right after a widget that a finger drags: a drag that starts on it goes to it, not to the swipe.\n   - ImGuiTouchAxis_Any (a canvas, a knob, a plot): the widget gets the press at once, in every direction.\n   - ImGuiTouchAxis_X or _Y (a slider, a vertical slider): the layer waits until the finger moved a little, then gives\n     the drag to the widget if it goes along that axis, or scrolls the window if it goes across.\n long_press_is_right_click: a long press on it is still a right click. Nothing without the touch layer.\n Dear ImGui's own sliders and drags call it themselves when the build has IMGUI_HAS_ITEM_DRAG_AXIS_CALLBACK.\n\nPython bindings defaults:\n    If axis is None, then its default value will be: TouchAxis_.any");
 
         pyNsImGuiTouch.def("item_pinch",
-            ImGuiTouch::ItemPinch, " Two fingers on a widget: by default they scale the font (a pinch) or are a right drag (moved together). A widget\n changes that with one of these calls, right after it, at each frame (the claims of the last frame decide where the\n fingers land). When claims nest, the smallest holding both fingers wins; the gesture stays with it until they lift.\n Nothing without the touch layer.\n\n 1. The gesture itself (a canvas, a map): returns its data at this frame. The widget gets nothing else: no font\n    scale, no wheel, no mouse drag. The item needs an id (an InvisibleButton, not an Image). Not with 2 or 3.");
+            ImGuiTouch::ItemPinch, " Two fingers on a widget: by default they scale the font (a pinch) or are a right drag (moved together). A widget\n changes that with one of these calls, right after it, at each frame, hovered or not (the claims of the last frame\n decide where the fingers land, and there is no mouse between two touches). When claims nest, the smallest holding\n both fingers wins; the gesture stays with it until they lift. Nothing without the touch layer.\n\n 1. The gesture itself (a canvas, a map): returns its data at this frame. The widget gets nothing else: no font\n    scale, no wheel, no mouse drag. The item needs an id (an InvisibleButton, not an Image). Not with 2 or 3.");
 
         pyNsImGuiTouch.def("rect_pinch",
             ImGuiTouch::RectPinch,
@@ -432,9 +432,9 @@ void py_init_module_imgui_kit(nb::module_& m)
             "Python bindings defaults:\n    If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous");
 
         pyNsImGuiTouch.def("set_rect_pinch_as_wheel",
-            [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+            [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt, ImGuiID id = 0)
             {
-                auto SetRectPinchAsWheel_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt)
+                auto SetRectPinchAsWheel_adapt_mutable_param_with_default_value = [](const ImVec2 & min, const ImVec2 & max, float wheel_zoom_factor, const std::optional<const ImGuiTouchPinchDelivery> & delivery = std::nullopt, ImGuiID id = 0)
                 {
 
                     const ImGuiTouchPinchDelivery& delivery_or_default = [&]() -> const ImGuiTouchPinchDelivery {
@@ -444,19 +444,25 @@ void py_init_module_imgui_kit(nb::module_& m)
                             return ImGuiTouchPinchDelivery_WheelContinuous;
                     }();
 
-                    ImGuiTouch::SetRectPinchAsWheel(min, max, wheel_zoom_factor, delivery_or_default);
+                    ImGuiTouch::SetRectPinchAsWheel(min, max, wheel_zoom_factor, delivery_or_default, id);
                 };
 
-                SetRectPinchAsWheel_adapt_mutable_param_with_default_value(min, max, wheel_zoom_factor, delivery);
+                SetRectPinchAsWheel_adapt_mutable_param_with_default_value(min, max, wheel_zoom_factor, delivery, id);
             },
-            nb::arg("min"), nb::arg("max"), nb::arg("wheel_zoom_factor"), nb::arg("delivery").none() = nb::none(),
+            nb::arg("min"), nb::arg("max"), nb::arg("wheel_zoom_factor"), nb::arg("delivery").none() = nb::none(), nb::arg("id") = 0,
             "Python bindings defaults:\n    If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous");
 
         pyNsImGuiTouch.def("set_item_two_finger_pan_as_mouse_drag",
             ImGuiTouch::SetItemTwoFingerPanAsMouseDrag, nb::arg("button"));
 
         pyNsImGuiTouch.def("set_rect_two_finger_pan_as_mouse_drag",
-            ImGuiTouch::SetRectTwoFingerPanAsMouseDrag, nb::arg("min"), nb::arg("max"), nb::arg("button"));
+            ImGuiTouch::SetRectTwoFingerPanAsMouseDrag, nb::arg("min"), nb::arg("max"), nb::arg("button"), nb::arg("id") = 0);
+
+        pyNsImGuiTouch.def("push_claim_transform",
+            ImGuiTouch::PushClaimTransform, nb::arg("scale"), nb::arg("offset"));
+
+        pyNsImGuiTouch.def("pop_claim_transform",
+            ImGuiTouch::PopClaimTransform);
 
         pyNsImGuiTouch.def("add_finger_event",
             ImGuiTouch::AddFingerEvent,

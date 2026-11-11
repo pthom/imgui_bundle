@@ -666,9 +666,9 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     @staticmethod
     def item_pinch() -> TouchPinch:
         """Two fingers on a widget: by default they scale the font (a pinch) or are a right drag (moved together). A widget
-        changes that with one of these calls, right after it, at each frame (the claims of the last frame decide where the
-        fingers land). When claims nest, the smallest holding both fingers wins; the gesture stays with it until they lift.
-        Nothing without the touch layer.
+        changes that with one of these calls, right after it, at each frame, hovered or not (the claims of the last frame
+        decide where the fingers land, and there is no mouse between two touches). When claims nest, the smallest holding
+        both fingers wins; the gesture stays with it until they lift. Nothing without the touch layer.
 
         1. The gesture itself (a canvas, a map): returns its data at this frame. The widget gets nothing else: no font
            scale, no wheel, no mouse drag. The item needs an id (an InvisibleButton, not an Image). Not with 2 or 3.
@@ -694,13 +694,15 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
         """
         pass
     # IMGUI_API void   SetRectPinchAsWheel(const ImVec2& min, const ImVec2& max, float wheel_zoom_factor,    /* original C++ signature */
-    #                                      ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelContinuous);
+    #                                      ImGuiTouchPinchDelivery delivery = ImGuiTouchPinchDelivery_WheelContinuous,
+    #                                      ImGuiID id = 0);
     @staticmethod
     def set_rect_pinch_as_wheel(
         min: ImVec2Like,
         max: ImVec2Like,
         wheel_zoom_factor: float,
         delivery: Optional[TouchPinchDelivery] = None,
+        id: ImGuiID = 0,
     ) -> None:
         """Python bindings defaults:
         If delivery is None, then its default value will be: TouchPinchDelivery_.wheel_continuous
@@ -714,11 +716,28 @@ class touch:  # Proxy class that introduces typings for the *submodule* touch
     @staticmethod
     def set_item_two_finger_pan_as_mouse_drag(button: ImGuiMouseButton) -> None:
         pass
-    # IMGUI_API void   SetRectTwoFingerPanAsMouseDrag(const ImVec2& min, const ImVec2& max, ImGuiMouseButton button);    /* original C++ signature */
+    # IMGUI_API void   SetRectTwoFingerPanAsMouseDrag(const ImVec2& min, const ImVec2& max, ImGuiMouseButton button,    /* original C++ signature */
+    #                                                 ImGuiID id = 0);
     @staticmethod
     def set_rect_two_finger_pan_as_mouse_drag(
-        min: ImVec2Like, max: ImVec2Like, button: ImGuiMouseButton
+        min: ImVec2Like, max: ImVec2Like, button: ImGuiMouseButton, id: ImGuiID = 0
     ) -> None:
+        pass
+    #
+    # The rectangle's id (optional): the widget's item that the first finger may hold when the second one lands (a
+    # canvas's background); the gesture takes that press over, as with the item's calls. Otherwise a widget that holds the
+    # press keeps it, and the two fingers do nothing.
+
+    # A canvas that shows its widgets zoomed and moved (a node editor) wraps them in these, so that their claims (above,
+    # and SetItemTakesDrags) are where the widgets show: on screen, local * scale + offset. Nests. The gesture's data
+    # (ItemPinch) stays in screen coordinates. Nothing without the touch layer.
+    # IMGUI_API void   PushClaimTransform(float scale, const ImVec2& offset);    /* original C++ signature */
+    @staticmethod
+    def push_claim_transform(scale: float, offset: ImVec2Like) -> None:
+        pass
+    # IMGUI_API void   PopClaimTransform();    /* original C++ signature */
+    @staticmethod
+    def pop_claim_transform() -> None:
         pass
     # IMGUI_API void   AddFingerEvent(int id, const ImVec2& pos, ImGuiTouchPhase phase);    /* original C++ signature */
     @staticmethod

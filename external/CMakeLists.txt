@@ -414,9 +414,9 @@ endif()
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
 # Build imgui_kit (its tests and its own CMakeLists.txt are for the standalone build)
 add_simple_external_library_with_sources(imgui_kit imgui_kit)
-# A pinch on a plot zooms it: ImPlot and ImPlot3D call imgui_kit's ImGuiTouch::SetRectTakesPinch() (a commit of their
-# forks, behind IMGUI_BUNDLE_WITH_IMGUI_KIT)
-foreach(lib implot implot3d)
+# A pinch on a plot or on a node editor zooms it: ImPlot, ImPlot3D and imgui-node-editor call imgui_kit's adapters
+# (ImGuiTouch::SetRectPinchAsWheel and its kin; a commit of their forks, behind IMGUI_BUNDLE_WITH_IMGUI_KIT)
+foreach(lib implot implot3d imgui_node_editor)
     if (TARGET ${lib})
         target_link_libraries(${lib} PRIVATE imgui_kit)
         target_compile_definitions(${lib} PRIVATE IMGUI_BUNDLE_WITH_IMGUI_KIT)
