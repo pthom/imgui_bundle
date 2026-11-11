@@ -169,6 +169,7 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
 
 * Tests leave `*.ini` files (imgui settings) in the repo root. Remove only the untracked ones, since `pytest.ini` and `hello_imgui_example.ini` are tracked: `git ls-files --others --exclude-standard '*.ini' | xargs rm -f`.
 * On macOS, GUI tests and screenshots crash at setup when the display is asleep (GLFW reports no monitor). Run `caffeinate -u -d -t 240 &` first.
+* GUI tests and screenshots run with `HELLOIMGUI_TEST_HIDDEN_WINDOWS=1`: their windows stay hidden (testing.md, "Hidden windows"). Leave it out for a window the user should see.
 * A visual check (a screenshot, a demo tried by hand) covers at least the dark and the light themes (`ImGui::StyleColorsLight()`, or the app's theme option): a color that reads well in one can vanish in the other, e.g. a field as white as its background.
 
 ## Build & Platform Notes
