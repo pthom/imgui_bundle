@@ -45,7 +45,7 @@ HELLOIMGUI_TEST_HIDDEN_WINDOWS=1 ./ci_node_editor_tests --auto
 
 - Use it for local runs: the GUI tests, the node editor tests (`.github/ci_automation_tests`), the screenshots of `immapp.testing`.
 - Checked on macOS. On Windows and Linux, a hidden OpenGL window may render nothing: the CI keeps a visible window (Xvfb on Linux).
-- On macOS, the display must be awake, hidden or not: with no monitor, the app stops at startup. Run `caffeinate -u -d -t 240 &` first.
+- On macOS, the hidden windows also work while the display sleeps: macOS then reports no monitor, and Hello ImGui uses a default work area. Not with viewports (`--viewports`): Dear ImGui needs a monitor for them. Run `caffeinate -u -d -t 240 &` first.
 
 ## Manual smoke testing
 
