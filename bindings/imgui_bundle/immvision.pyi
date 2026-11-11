@@ -358,8 +358,10 @@ class ImageParams:
     #
 
     # bool RefreshImage = false;    /* original C++ signature */
-    # Refresh Image: images textures are cached. Set to True if your image matrix/buffer has changed
-    # (for example, for live video images)
+    # Refresh Image: the image's texture is cached. Set to True when your image's pixels changed (live video...):
+    # it stays True until you set it back, and while True the texture is uploaded again at each frame.
+    # Simplest: set it at each frame, e.g. `params.RefreshImage = imageChanged;`
+    # (Python: `params.refresh_image = image_changed`)
     refresh_image: bool = False
 
     #
@@ -622,7 +624,8 @@ def image_display(
        width or the height given (e.g. `(300, 0)`), the other dimension follows the image's aspect ratio.
        A negative value is the remaining width (or height) of the window minus its absolute value, as ImGui's
        item widths: `(-1, 0)` fills the width of the window.
-     - `refresh_image`: the textures are cached: set it to True when the image changed (e.g. live video).
+     - `refresh_image`: the textures are cached: pass True when the image changed (e.g. live video).
+       It applies to this call only.
      - `show_options_button`: shows a button that opens the options panel; zoom, pan and watched pixels
        (double-click) then become possible.
 
@@ -661,7 +664,8 @@ def image_display_resizable(
     - `size`: the displayed size, in and out: the size chosen by the user is stored in it, when given.
       A negative value is the remaining width (or height) of the window (`(-1, 0)`: the width of the window),
       resolved once: the concrete size is stored back.
-    - `refresh_image`: the textures are cached: set it to True when the image changed (e.g. live video).
+    - `refresh_image`: the textures are cached: pass True when the image changed (e.g. live video).
+      It applies to this call only.
     - `resizable`: whether the user can resize the widget.
     - `show_options_button`: shows a button that opens the options panel.
 
