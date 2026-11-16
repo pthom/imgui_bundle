@@ -74,6 +74,8 @@ Join the [Discord server](https://discord.gg/xkzpKMeYN3) for questions, showcase
 
 **FAQ:** answers to common questions, in the [FAQ issues](https://github.com/pthom/imgui_bundle/issues?q=is%3Aissue+label%3AFAQ).
 
+**Sponsor:** the bundle is maintained by one person. If it helps you or your team, you can [sponsor its maintenance](https://github.com/sponsors/pthom).
+
 ### DeepWiki
 
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/pthom/imgui_bundle)
