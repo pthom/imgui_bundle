@@ -37,6 +37,10 @@ def main() -> None:
     options.python_run_black_formatter = True
     options.fn_return_force_policy_reference_for_references__regex = r".*"
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
+    # Their C++ accepts a null pointer param (no current editor, a pin not wanted): None in Python
+    options.fn_params_pointer_accept_none__regex = r"^SetCurrentEditor$|^GetLinkPins$"
+    # It returns nullptr when there is no current editor: Optional in the stub
+    options.fn_return_pointer_optional__regex = r"^GetCurrentEditor$"
     options.namespaces_root = ["ax", "NodeEditor", "ax::NodeEditor"]
     # In the comments' backticks, C++ names become Python names: `ImGui::Text()` -> `imgui.text()`
     options.comments_python_names_in_backticks = True

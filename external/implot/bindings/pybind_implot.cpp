@@ -816,7 +816,7 @@ void py_init_module_implot(nb::module_& m)
 
     m.def("set_current_context",
         ImPlot::SetCurrentContext,
-        nb::arg("ctx"),
+        nb::arg("ctx").none(),
         "Sets the current ImPlot context.");
 
     m.def("set_imgui_context",

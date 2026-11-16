@@ -458,12 +458,12 @@ class Style:
 # are persisted) or to override the default mouse buttons.
 
 # IMGUI_NODE_EDITOR_API void SetCurrentEditor(EditorContext* ctx);    /* original C++ signature */
-def set_current_editor(ctx: EditorContext) -> None:
+def set_current_editor(ctx: Optional[EditorContext]) -> None:
     """Makes this editor the current one: all the other functions apply to the current editor."""
     pass
 
 # IMGUI_NODE_EDITOR_API EditorContext* GetCurrentEditor();     /* original C++ signature */
-def get_current_editor() -> EditorContext:
+def get_current_editor() -> Optional[EditorContext]:
     """The current editor (None if none)"""
     pass
 
@@ -1264,7 +1264,9 @@ def get_background_double_click_button_index() -> ImGuiMouseButton:
     pass
 
 # IMGUI_NODE_EDITOR_API bool GetLinkPins(LinkId linkId, PinId* startPinId, PinId* endPinId);     /* original C++ signature */
-def get_link_pins(link_id: LinkId, start_pin_id: PinId, end_pin_id: PinId) -> bool:
+def get_link_pins(
+    link_id: LinkId, start_pin_id: Optional[PinId], end_pin_id: Optional[PinId]
+) -> bool:
     """pass None if particular pin do not interest you; False for an unknown link and a link whose pins were deleted"""
     pass
 

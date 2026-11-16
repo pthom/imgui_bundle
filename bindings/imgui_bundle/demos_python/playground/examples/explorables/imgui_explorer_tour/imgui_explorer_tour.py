@@ -201,7 +201,9 @@ NO_ERROR = imgui.test_engine.TestOpFlags_.no_error
 
 def _window(part: str) -> Any:
     """The active window whose name contains `part` (child windows' names end with a hash)"""
-    return next((w for w in imgui.get_current_context().windows if w.active and part in w.name), None)
+    context = imgui.get_current_context()
+    assert context is not None  # the tour runs inside the explorer
+    return next((w for w in context.windows if w.active and part in w.name), None)
 
 
 def _rect(info: Any) -> Optional[narrator.Rect]:

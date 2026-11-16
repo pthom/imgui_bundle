@@ -652,11 +652,11 @@ def destroy_context(context: Optional[Context] = None) -> None:
     pass
 
 # void SetCurrentContext(Context* context);    /* original C++ signature */
-def set_current_context(context: Context) -> None:
+def set_current_context(context: Optional[Context]) -> None:
     pass
 
 # Context* GetCurrentContext();    /* original C++ signature */
-def get_current_context() -> Context:
+def get_current_context() -> Optional[Context]:
     pass
 
 # void SetAssetsFolder(const std::string& folder);    /* original C++ signature */

@@ -162,6 +162,10 @@ def main() -> None:
     # same rationale as the getters above, and nanobind has no caster for those types.
     options.fn_exclude_by_param_type__regex = r"wstring_view|u8string_view|u16string_view|u32string_view"
 
+    # The language may be None (nullptr, the default: no syntax highlighting)
+    options.fn_params_pointer_accept_none__regex = r"^SetLanguage$"
+    options.fn_return_pointer_optional__regex = r"^GetLanguage$"
+
     options.srcmlcpp_options.code_preprocess_function = preprocess
 
     generator = litgen.LitgenGenerator(options)

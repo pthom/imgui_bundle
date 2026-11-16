@@ -72,7 +72,7 @@ void py_init_module_imgui_command_palette(nb::module_& m)
         ImCmd::GetStyleFont, nb::arg("type"));
 
     m.def("set_style_font",
-        ImCmd::SetStyleFont, nb::arg("type"), nb::arg("font"));
+        ImCmd::SetStyleFont, nb::arg("type"), nb::arg("font").none());
 
     m.def("get_style_color",
         ImCmd::GetStyleColor, nb::arg("type"));

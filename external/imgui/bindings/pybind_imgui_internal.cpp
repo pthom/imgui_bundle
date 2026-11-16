@@ -3842,7 +3842,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::SetNextWindowChildFlags, nb::arg("flags"), nb::arg("enabled"));
 
     m.def("focus_window",
-        ImGui::FocusWindow, nb::arg("window"), nb::arg("flags") = 0);
+        ImGui::FocusWindow, nb::arg("window").none(), nb::arg("flags") = 0);
 
     m.def("focus_top_most_window_under_one",
         ImGui::FocusTopMostWindowUnderOne, nb::arg("under_this_window"), nb::arg("ignore_window"), nb::arg("filter_viewport"), nb::arg("flags"));
@@ -4344,7 +4344,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         ImGui::NavUpdateCurrentWindowIsScrollPushableX);
 
     m.def("set_nav_window",
-        ImGui::SetNavWindow, nb::arg("window"));
+        ImGui::SetNavWindow, nb::arg("window").none());
 
     m.def("set_nav_id",
         ImGui::SetNavID, nb::arg("id_"), nb::arg("nav_layer"), nb::arg("focus_scope_id"), nb::arg("rect_rel"));

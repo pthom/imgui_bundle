@@ -691,11 +691,11 @@ def destroy_context(ctx: Optional[Context] = None) -> None:
     pass
 
 # IMGUI_API ImGuiContext* GetCurrentContext();    /* original C++ signature */
-def get_current_context() -> Context:
+def get_current_context() -> Optional[Context]:
     pass
 
 # IMGUI_API void          SetCurrentContext(ImGuiContext* ctx);    /* original C++ signature */
-def set_current_context(ctx: Context) -> None:
+def set_current_context(ctx: Optional[Context]) -> None:
     pass
 
 # Main
@@ -1098,6 +1098,11 @@ def set_scroll_from_pos_y(local_y: float, center_y_ratio: float = 0.5) -> None:
 #  - CORRECT:   PushFont(None, style.FontSizeBase * 2.0)  // use current unscaled size x2 == make text twice bigger
 #  - INCORRECT: PushFont(None, GetFontSize())              // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
 #  - INCORRECT: PushFont(None, GetFontSize() * 2.0)       // INCORRECT! using size after global factors already applied == GLOBAL SCALING FACTORS WILL APPLY TWICE!
+# IMGUI_API void          PushFont(ImFont* font, float font_size_base_unscaled);              /* original C++ signature */
+def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
+    """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
+    pass
+
 # IMGUI_API void          PopFont();    /* original C++ signature */
 def pop_font() -> None:
     pass
@@ -2820,7 +2825,7 @@ def get_style_color_name(idx: Col) -> str:
     pass
 
 # IMGUI_API void          SetStateStorage(ImGuiStorage* storage);                                 /* original C++ signature */
-def set_state_storage(storage: Storage) -> None:
+def set_state_storage(storage: Optional[Storage]) -> None:
     """replace current window storage with our own (if you want to manipulate it yourself, typically clear subsection of it)"""
     pass
 
@@ -12130,10 +12135,6 @@ def set_window_focus() -> None:
 @overload
 def set_window_focus(name: Optional[str]) -> None:
     """set named window to be focused / top-most. use None to remove focus."""
-    pass
-
-def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
-    """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
     pass
 
 # IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", ImGuiSliderFlags flags = 0);    /* original C++ signature */

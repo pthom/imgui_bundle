@@ -240,7 +240,6 @@ def _options_exclusions(options: LitgenOptions) -> None:
             r"^ColorConvertHSVtoRGB$",
             # Functions whose overload sets are entirely provided by custom bindings (_custom_bindings_imgui_h):
             # Python overloads must be consecutive in the stub, so the whole set is written there.
-            r"^PushFont$",
             r"^SetWindowFocus$",
             r"^SliderFloat2$", r"^SliderFloat4$", r"^InputFloat2$", r"^InputFloat4$",
             r"^ColorEdit3$", r"^ColorEdit4$", r"^ColorPicker3$", r"^ColorPicker4$",
@@ -410,6 +409,13 @@ def _options_adaptations(options: LitgenOptions) -> None:
 
     options.fn_return_force_policy_reference_for_pointers__regex = r".*"
     options.fn_return_force_policy_reference_for_references__regex = r".*"
+
+    # Their C++ accepts a null pointer param: None in Python. Not AddText: its text_begin is a pointer too.
+    options.fn_params_pointer_accept_none__regex = join_string_by_pipe_char(
+        [r"^SetCurrentContext$", r"^SetStateStorage$", r"^PushFont$", r"^FocusWindow$", r"^SetNavWindow$"]
+    )
+    # Their C++ may return a null pointer: Optional in the stub
+    options.fn_return_pointer_optional__regex = join_string_by_pipe_char([r"^GetCurrentContext$", r"^FindWindowByName$"])
 
     options.fn_params_replace_buffer_by_array__regex = r"^Plot"
 
@@ -761,7 +767,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     """,
     )
 
-    # SetWindowFocus() / SetWindowFocus(name) accept None, PushFont(ImFont* font, ...) accepts None
+    # SetWindowFocus() / SetWindowFocus(name) accept None
     options.custom_bindings.add_custom_bindings_to_main_module(
         stub_code='''
         @overload
@@ -772,9 +778,6 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
         def set_window_focus(name: Optional[str]) -> None:
             """set named window to be focused / top-most. use None to remove focus."""
             pass
-        def push_font(font: Optional[ImFont], font_size_base_unscaled: float) -> None:
-            """Use None as a shortcut to keep current font. Use 0.0 to keep current size."""
-            pass
     ''',
         pydef_code="""
         LG_MODULE.def("set_window_focus",
@@ -784,10 +787,6 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
             [](std::optional<std::string> name) { ImGui::SetWindowFocus(name.has_value() ? name->c_str() : nullptr); },
             nb::arg("name").none(),
             "set named window to be focused / top-most. use None to remove focus.");
-        LG_MODULE.def("push_font",
-            [](ImFont* font, float font_size_base_unscaled) { ImGui::PushFont(font, font_size_base_unscaled); },
-            nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
-            "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
     """,
     )
 

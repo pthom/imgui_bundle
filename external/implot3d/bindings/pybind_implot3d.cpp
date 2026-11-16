@@ -534,7 +534,7 @@ void py_init_module_implot3d(nb::module_& m)
 
     m.def("set_current_context",
         ImPlot3D::SetCurrentContext,
-        nb::arg("ctx"),
+        nb::arg("ctx").none(),
         "Sets the current ImPlot3D context");
 
     m.def("begin_plot",

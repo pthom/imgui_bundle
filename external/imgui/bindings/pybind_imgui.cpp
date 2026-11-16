@@ -244,7 +244,7 @@ void py_init_module_imgui_main(nb::module_& m)
         ImGui::GetCurrentContext, nb::rv_policy::reference);
 
     m.def("set_current_context",
-        ImGui::SetCurrentContext, nb::arg("ctx"));
+        ImGui::SetCurrentContext, nb::arg("ctx").none());
 
     m.def("get_io",
         nb::overload_cast<>(ImGui::GetIO),
@@ -679,6 +679,11 @@ void py_init_module_imgui_main(nb::module_& m)
         nb::overload_cast<float, float>(ImGui::SetScrollFromPosY),
         nb::arg("local_y"), nb::arg("center_y_ratio") = 0.5f,
         "adjust scrolling amount to make given position visible. Generally GetCursorStartPos() + offset to compute a valid position.");
+
+    m.def("push_font",
+        nb::overload_cast<ImFont *, float>(ImGui::PushFont),
+        nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
+        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
 
     m.def("pop_font",
         ImGui::PopFont);
@@ -2784,7 +2789,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("set_state_storage",
         ImGui::SetStateStorage,
-        nb::arg("storage"),
+        nb::arg("storage").none(),
         "replace current window storage with our own (if you want to manipulate it yourself, typically clear subsection of it)");
 
     m.def("get_state_storage",
@@ -8012,10 +8017,6 @@ void py_init_module_imgui_main(nb::module_& m)
         [](std::optional<std::string> name) { ImGui::SetWindowFocus(name.has_value() ? name->c_str() : nullptr); },
         nb::arg("name").none(),
         "set named window to be focused / top-most. use None to remove focus.");
-    m.def("push_font",
-        [](ImFont* font, float font_size_base_unscaled) { ImGui::PushFont(font, font_size_base_unscaled); },
-        nb::arg("font").none(), nb::arg("font_size_base_unscaled"),
-        "Use None as a shortcut to keep current font. Use 0.0 to keep current size.");
     m.def("slider_float2",
         [](const char* label, ImVec2 v, float v_min, float v_max, const char* format, ImGuiSliderFlags flags) -> std::tuple<bool, ImVec2> {
             bool changed = ImGui::SliderFloat2(label, &v.x, v_min, v_max, format, flags); return {changed, v}; },

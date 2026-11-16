@@ -28,6 +28,8 @@ def main() -> None:
         "imgui": litgen.python_names_in_stub(STUB_DIR + "/imgui/__init__.pyi")
     }
     options.fn_params_output_modifiable_immutable_to_return__regex = r".*"
+    # A null font means the default font: None in Python
+    options.fn_params_pointer_accept_none__regex = r"^SetStyleFont$"
     options.python_run_black_formatter = False
     options.struct_create_default_named_ctor__regex = ""
 

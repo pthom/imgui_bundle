@@ -387,7 +387,7 @@ void py_init_module_rich_md(nb::module_& m)
         RichMd::DestroyContext, nb::arg("context") = nb::none());
 
     m.def("set_current_context",
-        RichMd::SetCurrentContext, nb::arg("context"));
+        RichMd::SetCurrentContext, nb::arg("context").none());
 
     m.def("get_current_context",
         RichMd::GetCurrentContext, nb::rv_policy::reference);

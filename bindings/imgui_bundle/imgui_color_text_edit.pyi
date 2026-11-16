@@ -1305,10 +1305,10 @@ class TextEditor:
             pass
 
     # void SetLanguage(const Language* language);    /* original C++ signature */
-    def set_language(self, language: TextEditor.Language) -> None:
+    def set_language(self, language: Optional[TextEditor.Language]) -> None:
         pass
     # inline const Language* GetLanguage() const;    /* original C++ signature */
-    def get_language(self) -> TextEditor.Language:
+    def get_language(self) -> Optional[TextEditor.Language]:
         pass
     # inline bool HasLanguage() const;    /* original C++ signature */
     def has_language(self) -> bool:
@@ -1568,10 +1568,10 @@ class TextDiff:
     def is_show_scrollbar_mini_map_enabled(self) -> bool:
         pass
     # inline void SetLanguage(const TextEditor::Language* language);    /* original C++ signature */
-    def set_language(self, language: TextEditor.Language) -> None:
+    def set_language(self, language: Optional[TextEditor.Language]) -> None:
         pass
     # inline const TextEditor::Language* GetLanguage() const;    /* original C++ signature */
-    def get_language(self) -> TextEditor.Language:
+    def get_language(self) -> Optional[TextEditor.Language]:
         pass
     # inline void SetColors(ImU32 ac, ImU32 dc);    /* original C++ signature */
     def set_colors(self, ac: ImU32, dc: ImU32) -> None:

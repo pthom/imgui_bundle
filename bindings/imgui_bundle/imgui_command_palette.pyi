@@ -15,7 +15,7 @@ commands.
 Create a `Context`, register commands with `add_command()`, and show the palette with `command_palette_window()`.
 """
 
-from typing import List, Callable
+from typing import List, Callable, Optional
 import enum
 from imgui_bundle.imgui import ImFont, ImU32
 
@@ -90,7 +90,7 @@ def set_style_flag(type: ImCmdTextType, flag: ImCmdTextFlag, enabled: bool) -> N
 def get_style_font(type: ImCmdTextType) -> ImFont:
     pass
 # void SetStyleFont(ImCmdTextType type, ImFont* font);    /* original C++ signature */
-def set_style_font(type: ImCmdTextType, font: ImFont) -> None:
+def set_style_font(type: ImCmdTextType, font: Optional[ImFont]) -> None:
     pass
 # ImU32 GetStyleColor(ImCmdTextType type);    /* original C++ signature */
 def get_style_color(type: ImCmdTextType) -> ImU32:

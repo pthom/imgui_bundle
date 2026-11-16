@@ -307,7 +307,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("set_current_editor",
         ax::NodeEditor::SetCurrentEditor,
-        nb::arg("ctx"),
+        nb::arg("ctx").none(),
         "Makes this editor the current one: all the other functions apply to the current editor.");
 
     m.def("get_current_editor",
@@ -801,7 +801,7 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("get_link_pins",
         ax::NodeEditor::GetLinkPins,
-        nb::arg("link_id"), nb::arg("start_pin_id"), nb::arg("end_pin_id"),
+        nb::arg("link_id"), nb::arg("start_pin_id").none(), nb::arg("end_pin_id").none(),
         "pass None if particular pin do not interest you; False for an unknown link and a link whose pins were deleted");
 
     m.def("pin_had_any_links",

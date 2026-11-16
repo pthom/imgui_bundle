@@ -6289,7 +6289,7 @@ def find_window_by_id(id_: ID) -> Window:
     pass
 
 # IMGUI_API ImGuiWindow*  FindWindowByName(const char* name);    /* original C++ signature */
-def find_window_by_name(name: str) -> Window:
+def find_window_by_name(name: str) -> Optional[Window]:
     pass
 
 # IMGUI_API void          UpdateWindowParentAndRootLinks(ImGuiWindow* window, ImGuiWindowFlags flags, ImGuiWindow* parent_window);    /* original C++ signature */
@@ -6382,7 +6382,7 @@ def set_next_window_child_flags(flags: ChildFlags, enabled: bool) -> None:
 
 # Windows: Display Order and Focus Order
 # IMGUI_API void          FocusWindow(ImGuiWindow* window, ImGuiFocusRequestFlags flags = 0);    /* original C++ signature */
-def focus_window(window: Window, flags: FocusRequestFlags = 0) -> None:
+def focus_window(window: Optional[Window], flags: FocusRequestFlags = 0) -> None:
     pass
 
 # IMGUI_API void          FocusTopMostWindowUnderOne(ImGuiWindow* under_this_window, ImGuiWindow* ignore_window, ImGuiViewport* filter_viewport, ImGuiFocusRequestFlags flags);    /* original C++ signature */
@@ -6992,7 +6992,7 @@ def nav_update_current_window_is_scroll_pushable_x() -> None:
     pass
 
 # IMGUI_API void          SetNavWindow(ImGuiWindow* window);    /* original C++ signature */
-def set_nav_window(window: Window) -> None:
+def set_nav_window(window: Optional[Window]) -> None:
     pass
 
 # IMGUI_API void          SetNavID(ImGuiID id, ImGuiNavLayer nav_layer, ImGuiID focus_scope_id, const ImRect& rect_rel);    /* original C++ signature */

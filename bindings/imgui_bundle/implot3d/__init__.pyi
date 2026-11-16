@@ -782,12 +782,12 @@ def destroy_context(ctx: Optional[Context] = None) -> None:
     pass
 
 # IMPLOT3D_API ImPlot3DContext* GetCurrentContext();    /* original C++ signature */
-def get_current_context() -> Context:
+def get_current_context() -> Optional[Context]:
     """Returns the current ImPlot3D context. None if no context has been set"""
     pass
 
 # IMPLOT3D_API void SetCurrentContext(ImPlot3DContext* ctx);    /* original C++ signature */
-def set_current_context(ctx: Context) -> None:
+def set_current_context(ctx: Optional[Context]) -> None:
     """Sets the current ImPlot3D context"""
     pass
 

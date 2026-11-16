@@ -828,7 +828,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def_static("get_light_palette",
             &TextEditor::GetLightPalette, nb::rv_policy::reference)
         .def("set_language",
-            &TextEditor::SetLanguage, nb::arg("language"))
+            &TextEditor::SetLanguage, nb::arg("language").none())
         .def("get_language",
             &TextEditor::GetLanguage, nb::rv_policy::reference)
         .def("has_language",
@@ -888,7 +888,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
         .def("is_show_scrollbar_mini_map_enabled",
             &TextDiff::IsShowScrollbarMiniMapEnabled)
         .def("set_language",
-            &TextDiff::SetLanguage, nb::arg("language"))
+            &TextDiff::SetLanguage, nb::arg("language").none())
         .def("get_language",
             &TextDiff::GetLanguage, nb::rv_policy::reference)
         .def("set_colors",
