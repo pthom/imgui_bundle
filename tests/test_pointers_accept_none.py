@@ -8,26 +8,41 @@ def test_current_contexts_accept_none() -> None:
     if sys.platform == "win32":
         return
 
-    from imgui_bundle import imgui, implot, implot3d, imgui_node_editor, rich_md
+    import imgui_bundle
+    from imgui_bundle import imgui
 
     imgui_context = imgui.create_context()
 
-    implot_context = implot.create_context()
-    implot.set_current_context(None)
-    assert implot.get_current_context() is None
-    implot.set_current_context(implot_context)
-    implot.destroy_context(implot_context)
+    # The other libraries are tested when the build has them (the minimal wheels lack some of them)
+    if imgui_bundle.has_submodule("implot"):
+        from imgui_bundle import implot
 
-    implot3d_context = implot3d.create_context()
-    implot3d.set_current_context(None)
-    assert implot3d.get_current_context() is None
-    implot3d.set_current_context(implot3d_context)
-    implot3d.destroy_context(implot3d_context)
+        implot_context = implot.create_context()
+        implot.set_current_context(None)
+        assert implot.get_current_context() is None
+        implot.set_current_context(implot_context)
+        implot.destroy_context(implot_context)
 
-    imgui_node_editor.set_current_editor(None)
-    assert imgui_node_editor.get_current_editor() is None
-    rich_md.set_current_context(None)
-    assert rich_md.get_current_context() is None
+    if imgui_bundle.has_submodule("implot3d"):
+        from imgui_bundle import implot3d
+
+        implot3d_context = implot3d.create_context()
+        implot3d.set_current_context(None)
+        assert implot3d.get_current_context() is None
+        implot3d.set_current_context(implot3d_context)
+        implot3d.destroy_context(implot3d_context)
+
+    if imgui_bundle.has_submodule("imgui_node_editor"):
+        from imgui_bundle import imgui_node_editor
+
+        imgui_node_editor.set_current_editor(None)
+        assert imgui_node_editor.get_current_editor() is None
+
+    if imgui_bundle.has_submodule("rich_md"):
+        from imgui_bundle import rich_md
+
+        rich_md.set_current_context(None)
+        assert rich_md.get_current_context() is None
 
     imgui.set_current_context(None)
     assert imgui.get_current_context() is None
