@@ -8,6 +8,7 @@ Run with: pytest tests/test_imgui_microtex.py
 
 import sys
 import os
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -136,6 +137,46 @@ def test_rendering_structure():
 
     # a complex formula should be wider than a simple one
     assert big.width > x2.width, f"sum formula ({big.width}) should be wider than x^2 ({x2.width})"
+
+
+_HOSTILE_FORMULAS_SCRIPT = r'''
+import sys
+from imgui_bundle import imgui_microtex
+imgui_microtex.init(sys.argv[1], sys.argv[2])
+hostile = {
+    "a macro that expands to itself": r"\newcommand{\a}{\a}\a",
+    "the same macro, in the next formula": r"\a",
+    "a macro that doubles at each expansion": r"\newcommand{\t}{\frac{\t}{\t}}\t",
+    "an environment that opens itself": r"\newenvironment{e}{\begin{e}}{\end{e}}\begin{e}x\end{e}",
+    "40000 nested braces": "{" * 40000 + "x" + "}" * 40000,
+    "30000 nested scripts": "a^{" * 30000 + "x" + "}" * 30000,
+    "20000 nested fractions": r"\frac{" * 20000 + "x" + "}{1}" * 20000,
+}
+for name, latex in hostile.items():
+    try:
+        imgui_microtex.render(latex, 20.0)
+        sys.exit(f"no error for {name}")
+    except RuntimeError:
+        pass
+# Real formulas still render, deep ones too
+for latex in [r"x^2 + y^2", "{" * 40 + "x" + "}" * 40, r"\frac{" * 40 + "x" + "}{1}" * 40]:
+    imgui_microtex.render(latex, 20.0)
+print("ok")
+'''
+
+
+def test_hostile_formulas_fail_fast() -> None:
+    """A formula that loops or nests without end is an error: no hang, no stack overflow (the parser's limits)."""
+    if sys.platform == "win32":
+        return
+
+    # In a subprocess: a regression would hang or crash the interpreter
+    clm_file, otf_file = _find_font_files()
+    result = subprocess.run(
+        [sys.executable, "-c", _HOSTILE_FORMULAS_SCRIPT, clm_file, otf_file],
+        capture_output=True, text=True, timeout=120,
+    )
+    assert result.returncode == 0 and result.stdout.strip() == "ok", result.stdout + result.stderr
 
 
 # def test_save_formula_images():
