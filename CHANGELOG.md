@@ -23,6 +23,7 @@
 - LaTeX (MicroTeX): a formula that loops or nests without end (`\newcommand{\a}{\a}\a`, thousands of nested braces) is an error, and markdown shows its source. It hung the app, or crashed it.
 - Markdown: the items of an unordered list written with `-` or `+` get the dot, as those written with `*` did. They showed their character. By Mark Jansen ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2)).
 - Markdown: URLs with a port, a query or parentheses are whole links (`http://localhost:8080/`), and code blocks keep their tabs. md4c, the parser, follows its master, after v0.6.0.
+- Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
 
 # v1.93.0
 

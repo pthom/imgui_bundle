@@ -1,5 +1,14 @@
 from imgui_bundle import imgui
-import OpenGL.GL as gl  # pip install PyOpenGL
+
+try:
+    import OpenGL.GL as gl
+except ModuleNotFoundError as e:
+    if e.name != "OpenGL":
+        raise
+    raise ModuleNotFoundError(
+        "imgui_bundle's pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet) need PyOpenGL: pip install PyOpenGL",
+        name="OpenGL",
+    ) from e
 
 
 def _log__update_texture(msg: str) -> None:
