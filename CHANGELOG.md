@@ -13,6 +13,7 @@
 - **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer and wheel session moved to ImGuiKit (`imgui_kit.touch`, `imgui_kit.setup_wheel_session()`), where an app with its own backend can set them up. Hello ImGui and ImmApp still set them up by themselves.
 - **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes two fingers with `imgui_kit.touch.item_pinch()` (the gesture: it zooms and pans at once), or, if it zooms with the wheel, `imgui_kit.touch.set_item_pinch_as_wheel()`.
 - **Sliders and drags follow a finger at once**: on a touch screen, a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS (before, a slider needed a short hold). A widget of your own: `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)`.
+- **Markdown highlights `==text==`**, as Obsidian and Typora do (`rich_md.MarkdownOptions.highlight`, on by default). Two options, off by default, give subscripts and superscripts a shorter form: `subscripts` (`H~2~O`; a strikethrough then needs `~~x~~`) and `superscripts` (`E = mc^2^`). By Mark Jansen ([imgui_md#3](https://github.com/pthom/imgui_md/pull/3)).
 
 ## Fixes
 
@@ -21,6 +22,7 @@
 - C++, on Windows: `main()` gets the command line in an app made with `imgui_bundle_add_app` or `hello_imgui_add_app`. Hello ImGui's `WinMain` called `main(0, NULL)`.
 - LaTeX (MicroTeX): a formula that loops or nests without end (`\newcommand{\a}{\a}\a`, thousands of nested braces) is an error, and markdown shows its source. It hung the app, or crashed it.
 - Markdown: the items of an unordered list written with `-` or `+` get the dot, as those written with `*` did. They showed their character. By Mark Jansen ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2)).
+- Markdown: URLs with a port, a query or parentheses are whole links (`http://localhost:8080/`), and code blocks keep their tabs. md4c, the parser, follows its master, after v0.6.0.
 
 # v1.93.0
 

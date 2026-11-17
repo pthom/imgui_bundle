@@ -6,7 +6,7 @@ section shows its source, ready to copy. The page is a document: a table of cont
 and widgets between its renders (a live plot).
 """
 import numpy as np
-from imgui_bundle import imgui, implot, rich_md, immapp, hello_imgui
+from imgui_bundle import imgui, implot, rich_md, immapp, hello_imgui, has_submodule
 from imgui_bundle.immapp import icons_fontawesome_6 as fa
 
 # Filled by the on_heading callback (set when this demo runs standalone: see main())
@@ -85,7 +85,7 @@ with rich_md.document("tour", options=options):
 All the usual inline styling works:
 
 - *emphasis*, **bold**, ***both***, ~~strikethrough~~, <u>underlined</u>
-- <mark>highlighted passages</mark>, for what must stand out
+- ==highlighted passages==, for what must stand out
 - inline `code`, for tokens, flags and short snippets
 
 HTML-like spans render natively too, with no callback:
@@ -93,15 +93,17 @@ HTML-like spans render natively too, with no callback:
 - keyboard shortcuts: press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>, or <kbd>Cmd</kbd>+<kbd>K</kbd> on a Mac
 - chemistry: H<sub>2</sub>O, CO<sub>2</sub>, C<sub>8</sub>H<sub>10</sub>N<sub>4</sub>O<sub>2</sub>
 - exponents: x<sup>2</sup> + y<sup>2</sup> = r<sup>2</sup>
+- <mark>highlighted</mark>, the same as `==highlighted==`
 
-For an HTML span outside this set, wire `MarkdownCallbacks.on_html_span`.
+For an HTML span outside this set, wire `MarkdownCallbacks.on_html_span`. Two options give subscripts and
+superscripts a shorter form, `H~2~O` and `x^2^`: see [Subscripts and superscripts](#subscripts-and-superscripts).
 
 <details>
 <summary>Show source</summary>
 
 ```
 *emphasis*, **bold**, ***both***, ~~strikethrough~~, <u>underlined</u>
-<mark>highlighted</mark>, inline `code`
+==highlighted==, inline `code`
 <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>P</kbd>
 H<sub>2</sub>O, x<sup>2</sup> + y<sup>2</sup> = r<sup>2</sup>
 ```
@@ -645,6 +647,38 @@ A wikilink to [[Home]] and one with a label: [[Notes/todo|my todo list]].
 
 </details>
 
+### Subscripts and superscripts
+
+Two more options of `MarkdownOptions`, off by default, give `<sub>` and `<sup>` a shorter form, as Pandoc and
+Typora write them:
+
+- **Subscripts**: with `subscripts = True`, `~x~` is a subscript: H~2~O, CO~2~, C~8~H~10~N~4~O~2~. A
+  strikethrough then needs two tildes, `~~x~~`. Off, `~x~` strikes through, as on GitHub.
+- **Superscripts**: with `superscripts = True`, `^x^` is a superscript: E = mc^2^, the 1^st^ of July, 10^-3^ m.
+  Off by default, because math written as plain text breaks: in `x^2 + y^2`, the text from one caret to the next
+  would be raised. Formulas are safer in LaTeX, `$x^2 + y^2$`.
+
+@@SPANS_STATUS@@
+
+A third one, `highlight`, is on by default: `==x==` is ==highlighted==, as in Obsidian and Typora.
+
+<details>
+<summary>Show source</summary>
+
+```python
+options = rich_md.MarkdownOptions()
+options.subscripts = True    # ~x~ is a subscript, and a strikethrough needs ~~x~~
+options.superscripts = True  # ^x^ is a superscript
+immapp.run(gui, with_markdown_options=options)
+```
+
+```
+H~2~O, CO~2~, C~8~H~10~N~4~O~2~
+E = mc^2^, the 1^st^ of July, 10^-3^ m
+```
+
+</details>
+
 ### The headings callback
 
 `callbacks.on_heading(level, text)` is called after each heading is drawn: a table of contents of your own, the
@@ -705,6 +739,18 @@ def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
             "Run this demo standalone, `python demo_imgui_md.py`, to see it live.)*"
         )
         headings_status = "*(Not enabled in this hosted run.)*"
+    if not _standalone_options:
+        spans_status = (
+            "*(Not enabled in this hosted run: the examples above show as typed. "
+            "Run this demo standalone, `python demo_imgui_md.py`, to see them.)*"
+        )
+    elif has_submodule("imgui_microtex"):
+        spans_status = "*(Enabled in this run.)*"
+    else:
+        spans_status = (
+            "*(Subscripts are enabled in this run. Superscripts need LaTeX here: without it, the carets of the "
+            "formulas would pair up.)*"
+        )
     support_status = "This build: LaTeX **{}**, URL images **{}**, code editor **{}**.".format(
         "yes" if rich_md.has_latex() else "no",
         "yes" if rich_md.has_url_images() else "no",
@@ -712,6 +758,7 @@ def _fill_dynamic_parts(markdown: str, headings: list[str]) -> str:
     )
     return (
         markdown.replace("@@WIKILINKS_STATUS@@", wikilinks_status)
+        .replace("@@SPANS_STATUS@@", spans_status)
         .replace("@@HEADINGS_STATUS@@", headings_status)
         .replace("@@SUPPORT_STATUS@@", support_status)
         .replace("@@ICON_DOCUMENT@@", fa.ICON_FA_FILE_LINES)
@@ -768,9 +815,12 @@ def gui():
 
 def main():
     global _standalone_options
-    # Options that must be set before the first render: wikilinks, headings callback
+    # Options that must be set before the first render: wikilinks, headings callback, subscripts and superscripts
     options = rich_md.MarkdownOptions()
     options.callbacks.on_wiki_link = lambda target: print("wikilink clicked:", target)
+    options.subscripts = True  # H~2~O
+    # x^2^, safe only with LaTeX: otherwise the carets of the formulas pair up
+    options.superscripts = has_submodule("imgui_microtex")
     options.callbacks.on_heading = lambda level, text: _headings.append("  " * (level - 1) + text)
     _standalone_options = True
     immapp.run(gui, with_latex=True, with_implot=True, with_markdown_options=options, window_size=(1100, 850))

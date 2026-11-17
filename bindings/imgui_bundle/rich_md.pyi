@@ -613,6 +613,16 @@ class MarkdownOptions:
     # A newline in the source is a line break (as in GitHub comments and chat messages)
     hard_soft_breaks: bool = False
 
+    # bool subscripts = false;    /* original C++ signature */
+    # ~x~ is a subscript (H~2~O), and a strikethrough needs ~~x~~. Off: ~x~ strikes through, as on GitHub
+    subscripts: bool = False
+    # bool superscripts = false;    /* original C++ signature */
+    # ^x^ is a superscript (E = mc^2^). Off by default: math written as plain text (x^2 + y^2) would be raised
+    superscripts: bool = False
+    # bool highlight = true;    /* original C++ signature */
+    # ==x== is highlighted, as in Obsidian and Typora
+    highlight: bool = True
+
     # bool selectableText = true;    /* original C++ signature */
     # The text can be selected with the mouse and copied (SetSelectableTextDefault changes it later,
     # PushSelectableText for some renders)
