@@ -33,6 +33,7 @@
 - Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
 - Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
 - ImmVision: a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails. Fine detail showed moiré: the backend's sampler had no mipmaps. ImmVision now samples them (trilinear filtering) with Dear ImGui 1.93's `DrawCallback_SetSamplerFromTex`, on the OpenGL backends.
+- ImmVision: `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed: there was no OpenGL context yet.
 
 # v1.93.0
 
