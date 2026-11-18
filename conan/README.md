@@ -72,9 +72,12 @@ Set them with `-o`, e.g. `-o "imgui_bundle/*:with_image_download=False"`.
 Once, add your server and log in (Conan asks for the password):
 
 ```bash
-conan remote add my_server <url>
+conan remote add my_server <url> --index 0
 conan remote login my_server <user>
 ```
+
+- *`--index 0` puts your server first:* Conan looks for each package in the remotes' order, and takes the first one that has it. Without it, your server comes after ConanCenter, and a dependency that both hold comes from ConanCenter.
+- *Several servers of your own:* your internal one first, then ConanCenter last. `conan remote list` shows the order.
 
 Then build with a JSON graph, list what the graph holds, and upload that list:
 
@@ -94,7 +97,7 @@ conan upload --list=pkglist.json -r my_server -c
 GitLab's Conan 2 registry is in beta in GitLab 19.5 ([its doc](https://docs.gitlab.com/19.5/user/packages/conan_2_repository/)). Its remote belongs to a project:
 
 ```bash
-conan remote add gitlab https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan
+conan remote add gitlab https://gitlab.example.com/api/v4/projects/<project_id>/packages/conan --index 0
 conan remote login -p <token> gitlab <user>
 ```
 
@@ -152,6 +155,14 @@ cmake --build --preset conan-debug
 - *On Windows,* Visual Studio builds both from one folder: after `conan install` for each build type, configure once with `conan-default`, then build with `conan-release` or `conan-debug`.
 
 When your server has no binary for your profile, add `--build=missing` to `conan install`: Conan then builds the package on your machine.
+
+### Not with cmake-conan's provider
+
+[cmake-conan](https://github.com/conan-io/cmake-conan) runs `conan install` from CMake's configure step (`-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES=conan_provider.cmake`). It does not work with this package:
+
+- *The package brings its own CMake config* (`imgui_bundle-config.cmake`, with `imgui_bundle_add_app`), declared with `cmake_find_mode="none"`. The provider does not support such packages.
+- *Use the two steps above:* `conan install`, then `cmake --preset`.
+- *They are also faster:* the provider calls Conan at every configure, and an IDE (CLion, for one) configures often.
 
 ### From FetchContent to the package
 
