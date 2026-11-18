@@ -16,6 +16,8 @@ The site's `_headers` file is in the website resources repository (`pthom/imgui_
 - `Cross-Origin-Opener-Policy` / `Cross-Origin-Embedder-Policy` on `/explorer/*` only: site-wide COI would break the playground, which pulls Pyodide and CodeMirror from CDNs that don't set `Cross-Origin-Resource-Policy`. A third-party script on the explorer's pages loads only if its server sends that header, or with the `crossorigin` attribute if it allows CORS.
 - `Content-Type: application/wasm` on `/explorer/*.data`: the emscripten asset bundles (`application/octet-stream`) are not in the CF edge's compressible list, and CF Pages strips a user-set `Content-Encoding`. Emscripten ignores the type of a `.data` file.
 
+Its `_redirects` file is beside it: `/minard/` goes to <https://minard1812.org/>, Minard's own site. A redirect needs no file at its path in the staging: `_cf_previews/minard/` stays out of it.
+
 
 ## How the deploy works
 
