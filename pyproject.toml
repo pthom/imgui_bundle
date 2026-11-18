@@ -54,11 +54,11 @@ pydantic = ["pydantic>=2.0.0"]
 terminal = ["pyte"]
 # For pure python backends
 opengl = ["PyOpenGL"]
-glfw = ["glfw"]
-sdl2 = ["PySDL2"]
-sdl3 = ["PySDL3"]
+glfw = ["glfw", "PyOpenGL"]
+sdl2 = ["PySDL2", "PyOpenGL"]
+sdl3 = ["PySDL3", "PyOpenGL"]
 wgpu = ["wgpu", "rendercanvas"]
-pyglet = ["pyglet>=2.0.10"]  # 2.0.10: clipboard API
+pyglet = ["pyglet>=2.0.10", "PyOpenGL"]  # 2.0.10: clipboard API
 all_backends = [
     "PyOpenGL",
     "glfw",

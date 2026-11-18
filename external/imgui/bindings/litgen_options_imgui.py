@@ -1326,6 +1326,88 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
     """,
     )
 
+    _custom_bindings_standard_draw_callbacks(options)
+
+
+def _custom_bindings_standard_draw_callbacks(options: LitgenOptions) -> None:
+    """Dear ImGui's standard draw callbacks (ImGuiPlatformIO::DrawCallback_*, set by the renderer backend).
+    AddCallback() takes a C function pointer, which Python cannot pass: one method per callback on ImDrawList adds it,
+    and raises when the backend sets none; one method per callback on ImGuiPlatformIO tells it beforehand."""
+    # (method name, C++ name, what it does: one item per docstring line)
+    callbacks = [
+        ("set_sampler_nearest", "SetSamplerNearest", [
+            "Draws the images that follow with nearest sampling (sharp pixels when zoomed in),",
+            "until set_sampler_linear().",
+        ]),
+        ("set_sampler_linear", "SetSamplerLinear", [
+            "Draws the images that follow with linear sampling (smooth), Dear ImGui's default.",
+        ]),
+        ("set_sampler_from_tex", "SetSamplerFromTex", [
+            "Draws the images that follow with the filter set on each texture by its creator.",
+            "For a texture you created in OpenGL (glTexParameteri): a texture made by Dear ImGui (ImTextureData)",
+            "gets linear sampling. Supported by a few backends only: OpenGL2, OpenGL3, SDL_Renderer3.",
+            "Come back with reset_render_state(): in OpenGL, a set_sampler_linear() or set_sampler_nearest()",
+            "after it writes its filter into the textures that follow, which then lose their own.",
+        ]),
+        ("reset_render_state", "ResetRenderState", [
+            "Resets the renderer backend's render state to its defaults (linear sampling),",
+            "without changing the textures. The way back after set_sampler_from_tex().",
+        ]),
+    ]
+
+    def stub_doc(lines: list[str]) -> str:
+        return "\n            ".join(lines) + "\n            "
+
+    def cpp_doc(lines: list[str]) -> str:
+        return "\\n".join(lines)
+
+    stub_draw_list, pydef_draw_list, stub_platform_io, pydef_platform_io = "", "", "", ""
+    for snake, cpp, what in callbacks:
+        check = f"imgui.get_platform_io().has_draw_callback_{snake}()"
+        doc = what + [
+            "Raises RuntimeError when the renderer backend does not support it. Check with",
+            f"{check}.",
+            f"C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_{cpp})",
+        ]
+        error = (f"ImDrawList.{snake}(): the renderer backend sets no DrawCallback_{cpp} "
+                 f"(the pure-Python backends set none). Check with {check}.")
+        stub_draw_list += f'''
+        def {snake}(self) -> None:
+            """{stub_doc(doc)}"""
+            pass
+'''
+        pydef_draw_list += f"""
+        LG_CLASS.def("{snake}",
+            [](ImDrawList& self) {{
+                ImDrawCallback callback = ImGui::GetPlatformIO().DrawCallback_{cpp};
+                if (callback == nullptr)
+                    throw std::runtime_error("{error}");
+                self.AddCallback(callback, nullptr);
+            }},
+            "{cpp_doc(doc)}");
+"""
+        doc_check = [
+            f"True when the renderer backend supports DrawCallback_{cpp}:",
+            f"ImDrawList.{snake}() then works.",
+        ]
+        stub_platform_io += f'''
+        def has_draw_callback_{snake}(self) -> bool:
+            """{stub_doc(doc_check)}"""
+            pass
+'''
+        pydef_platform_io += f"""
+        LG_CLASS.def("has_draw_callback_{snake}",
+            [](const ImGuiPlatformIO& self) {{ return self.DrawCallback_{cpp} != nullptr; }},
+            "{cpp_doc(doc_check)}");
+"""
+
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImDrawList", stub_code=stub_draw_list, pydef_code=pydef_draw_list
+    )
+    options.custom_bindings.add_custom_bindings_to_class(
+        qualified_class="ImGuiPlatformIO", stub_code=stub_platform_io, pydef_code=pydef_platform_io
+    )
+
 
 
 # ================================================================================================

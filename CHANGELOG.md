@@ -14,6 +14,11 @@
 - **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes two fingers with `imgui_kit.touch.item_pinch()` (the gesture: it zooms and pans at once), or, if it zooms with the wheel, `imgui_kit.touch.set_item_pinch_as_wheel()`.
 - **Sliders and drags follow a finger at once**: on a touch screen, a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS (before, a slider needed a short hold). A widget of your own: `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)`.
 - **Markdown highlights `==text==`**, as Obsidian and Typora do (`rich_md.MarkdownOptions.highlight`, on by default). Two options, off by default, give subscripts and superscripts a shorter form: `subscripts` (`H~2~O`; a strikethrough then needs `~~x~~`) and `superscripts` (`E = mc^2^`). By Mark Jansen ([imgui_md#3](https://github.com/pthom/imgui_md/pull/3)).
+- **Sharp pixels in Python**: Dear ImGui's standard draw callbacks, which switch the sampling of the images that follow:
+  - `draw_list.set_sampler_nearest()`, then `set_sampler_linear()` to come back to the default;
+  - `set_sampler_from_tex()`: the filter of a texture you made in OpenGL (OpenGL only), then `reset_render_state()` to come back;
+  - each raises an error when the renderer backend does not support it: `imgui.get_platform_io().has_draw_callback_set_sampler_nearest()` (and the like) tells it beforehand;
+  - a demo: `demo_sampler_callbacks.py`.
 
 ## Fixes
 
@@ -24,6 +29,7 @@
 - Markdown: the items of an unordered list written with `-` or `+` get the dot, as those written with `*` did. They showed their character. By Mark Jansen ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2)).
 - Markdown: URLs with a port, a query or parentheses are whole links (`http://localhost:8080/`), and code blocks keep their tabs. md4c, the parser, follows its master, after v0.6.0.
 - Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
+- Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
 
 # v1.93.0
 
