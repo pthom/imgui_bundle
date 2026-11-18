@@ -132,7 +132,8 @@
             "category": "Interactive science",
             "bundle_folders": [
                 "explorables/mandelbrot_engines"
-            ]
+            ],
+            "hidden": true
         },
         {
             "label": "A tiny neural network learns two spirals",

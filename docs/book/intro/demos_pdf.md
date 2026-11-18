@@ -1029,24 +1029,6 @@ each point, the two sets look alike.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/julia_map/julia_map.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/julia_map/julia_map.py)
 
-### One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
-
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/mandelbrot_engines.jpg
-:alt: One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
-:width: 400px
-:::
-
-One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
-Dive to famous places, split the view to compare two engines, and read how each one works beside its code.
-Python draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the
-desktop and in the browser.
-
-*Python*
-
-*Uses: ImmVision, ImGuiKit*
-
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=explorables/mandelbrot_engines/mandelbrot_engines.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py)
-
 ### A tiny neural network learns two spirals
 
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/neural_spiral.jpg

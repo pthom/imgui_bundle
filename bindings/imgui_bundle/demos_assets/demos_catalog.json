@@ -1153,25 +1153,6 @@
           "variants": []
         },
         {
-          "label": "One Mandelbrot set, four engines: Python, numpy, C++, deep zoom",
-          "filename": "explorables/mandelbrot_engines/mandelbrot_engines.py",
-          "stem": "mandelbrot_engines",
-          "where": "both",
-          "text": "One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.\nDive to famous places, split the view to compare two engines, and read how each one works beside its code.\nPython draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the\ndesktop and in the browser.",
-          "summary": "One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.",
-          "uses": [
-            "ImmVision",
-            "ImGuiKit"
-          ],
-          "python_file": "bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py",
-          "cpp_file": null,
-          "cpp_url": "https://imgui-bundle.pages.dev/explorer/mandelbrot_engines.html",
-          "in_place": false,
-          "page": "",
-          "video": "",
-          "variants": []
-        },
-        {
           "label": "A tiny neural network learns two spirals",
           "filename": "explorables/neural_spiral/neural_spiral.py",
           "stem": "neural_spiral",

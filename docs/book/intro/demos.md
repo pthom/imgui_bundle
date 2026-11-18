@@ -1241,25 +1241,6 @@ Fly to famous values of c, and zoom into both pictures: near each point, the two
 ::::
 
 ::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/mandelbrot_engines.jpg
-:alt: One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
-:::
-
-### One Mandelbrot set, four engines: Python, numpy, C++, deep zoom
-
-One Mandelbrot picture, computed by the engine you choose: Python, numpy, C++, or a C++ deep zoom down to 10^300.
-
-:::{dropdown} More
-Dive to famous places, split the view to compare two engines, and read how each one works beside its code. Python draws the GUI; an engine only fills arrays of numbers, and the C++ is 70 lines loaded with ctypes, on the desktop and in the browser.
-:::
-
-*Uses: ImmVision, ImGuiKit*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=explorables/mandelbrot_engines/mandelbrot_engines.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/explorables/mandelbrot_engines/mandelbrot_engines.py)
-
-::::
-
-::::{card}
 :::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/neural_spiral.jpg
 :alt: A tiny neural network learns two spirals
 :::
