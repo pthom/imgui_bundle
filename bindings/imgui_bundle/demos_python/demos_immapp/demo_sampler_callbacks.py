@@ -48,19 +48,41 @@ def heatmap_texture_ref() -> imgui.ImTextureRef:
     return heatmap_texture.get_tex_ref()
 
 
-# The same heatmap as a texture made with OpenGL, with its own filter: GL_NEAREST
+# A pixel-art heart: "#" its outline, "x" its red, "o" its highlight, "." transparent
+HEART = [
+    "...........",
+    "..##...##..",
+    ".#xx#.#xx#.",
+    "#xoxx#xxxx#",
+    "#xoxxxxxxx#",
+    "#xxxxxxxxx#",
+    ".#xxxxxxx#.",
+    "..#xxxxx#..",
+    "...#xxx#...",
+    "....#x#....",
+    ".....#.....",
+]
+HEART_COLORS = {"#": (110, 20, 40, 255), "x": (225, 45, 70, 255), "o": (255, 180, 190, 255), ".": (0, 0, 0, 0)}
+
+
+def make_heart() -> NDArray[np.uint8]:
+    return np.array([[HEART_COLORS[c] for c in row] for row in HEART], dtype=np.uint8)
+
+
+# The heart as a texture made with OpenGL, with its own filter: GL_NEAREST
 opengl_texture_id = 0
 
 
 def opengl_texture_ref() -> imgui.ImTextureRef:
     global opengl_texture_id
     if opengl_texture_id == 0:
+        heart = make_heart()
         opengl_texture_id = int(gl.glGenTextures(1))
         gl.glBindTexture(gl.GL_TEXTURE_2D, opengl_texture_id)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
         gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
-        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, HEATMAP_PIXELS, HEATMAP_PIXELS, 0,
-                        gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, make_heatmap())
+        gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, heart.shape[1], heart.shape[0], 0,
+                        gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, heart)
     return imgui.ImTextureRef(opengl_texture_id)
 
 
