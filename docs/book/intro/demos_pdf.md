@@ -945,11 +945,11 @@ Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred
 the renderer decides the sampling: `set_sampler_nearest()` asks it for sharp pixels. A texture made with OpenGL has its
 own filter, which the renderer ignores, unless `set_sampler_from_tex()` gives it back.
 
-*Python*
+*Python, C++*
 
 *Uses: OpenGL*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_sampler_callbacks.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_sampler_callbacks.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_sampler_callbacks.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_sampler_callbacks.cpp)
 
 ## In the browser
 

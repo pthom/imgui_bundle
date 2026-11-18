@@ -1056,9 +1056,9 @@
             "OpenGL"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py",
-          "cpp_file": null,
+          "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_sampler_callbacks.cpp",
           "cpp_url": "https://imgui-bundle.pages.dev/explorer/demo_sampler_callbacks.html",
-          "in_place": false,
+          "in_place": true,
           "page": "",
           "video": "",
           "variants": []

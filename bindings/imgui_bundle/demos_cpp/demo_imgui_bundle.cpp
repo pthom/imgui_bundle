@@ -37,6 +37,7 @@ void gui_demo_drag_and_drop();
 void gui_haiku_implot_heart();
 void gui_demo_command_palette();
 void gui_demo_touch_screen();
+void gui_demo_sampler_callbacks();
 #ifdef IMGUI_BUNDLE_WITH_NANOVG
 void gui_demo_nanovg_heart();
 #endif
@@ -226,7 +227,7 @@ namespace
                 {"demo_implot_markdown", gui_demo_implot_markdown}, {"haiku_butterfly", gui_haiku_butterfly},
                 {"layout_child", gui_layout_child}, {"demo_drag_and_drop", gui_demo_drag_and_drop},
                 {"haiku_implot_heart", gui_haiku_implot_heart}, {"demo_command_palette", gui_demo_command_palette},
-                {"demo_touch_screen", gui_demo_touch_screen},
+                {"demo_touch_screen", gui_demo_touch_screen}, {"demo_sampler_callbacks", gui_demo_sampler_callbacks},
 #ifdef IMGUI_BUNDLE_WITH_NANOVG
                 {"demo_nanovg_heart", gui_demo_nanovg_heart},
 #endif

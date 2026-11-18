@@ -314,7 +314,9 @@ Draw behind the GUI or into a texture with OpenGL and WebGL shaders, from Python
 - Sharp or smooth pixels: Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. For a texture made by Dear ImGui, the renderer decides the sampling: set_sampler_nearest() asks it for sharp pixels. A texture made with OpenGL has its own filter, which the renderer ignores, unless set_sampler_from_tex() gives it back.
   Uses: OpenGL
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_sampler_callbacks.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_sampler_callbacks.py
+  Run, C++: https://imgui-bundle.pages.dev/explorer/demo_sampler_callbacks.html
 
 ## In the browser
 

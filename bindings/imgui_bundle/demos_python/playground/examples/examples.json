@@ -707,7 +707,8 @@
             "label": "Sharp or smooth pixels",
             "filename": "demo_sampler_callbacks.py",
             "category": "3D and shaders",
-            "source": "demos_immapp"
+            "source": "demos_immapp",
+            "in_place": true
         },
         {
             "label": "Minimal HTML page",

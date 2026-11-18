@@ -638,7 +638,7 @@
     "uses": [
       "OpenGL"
     ],
-    "cpp": false
+    "cpp": true
   },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
