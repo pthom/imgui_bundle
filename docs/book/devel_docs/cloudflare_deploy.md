@@ -76,7 +76,7 @@ just cf_stage_prepare
 
 # Stage everything into _cf_staging, then deploy
 just cf_stage
-just cf_deploy
+just cf_deploy             # runs `just cf_touch_check` first: a finger in the staged playground (headless Chrome)
 
 # Test the composed site locally before deploying
 just cf_serve_local        # http://localhost:8764/
@@ -167,7 +167,7 @@ After a change that search results should show soon (a page's title, its descrip
 
 - Cloudflare Pages refuses a file over 25 MiB. A stray folder can push a packed file over it: a `.mypy_cache/` left in a demo folder gets packed into the explorer's `.data` (run mypy from the repo root, and remove such caches before `just cf_stage`).
 - A missing file answers 404, with the site's `404.html` page (from the website resources).
-- After a deploy, check the live site: the book (`/doc/`) and its PDF (`/doc/assets/imgui_bundle_book.pdf`), the playground and its `examples/examples_docs.json`, the explorer, `/llms.txt`.
+- After a deploy, check the live site: the book (`/doc/`) and its PDF (`/doc/assets/imgui_bundle_book.pdf`), the playground and its `examples/examples_docs.json`, the explorer, `/llms.txt`. `just cf_touch_check https://imgui-bundle.pages.dev/` checks the touch screen on the live playground.
 
 ## Links on imgui-bundle pages at claoudflare
 

@@ -521,9 +521,14 @@ cf_stage:
     if [ -d _cf_previews ]; then rsync -a _cf_previews/ {{_CF_STAGING}}/; fi
 
 
-# Upload the current staging dir to Cloudflare Pages (does not build the elements, you shall do it yourself before)
+# A finger in the playground (headless Chrome): a drag scrolls by its length, a pinch zooms; target: a folder or a URL
 [group('cloudflare')]
-cf_deploy:
+cf_touch_check target=_CF_STAGING:
+    uv run --no-project --with playwright python ci_scripts/playground_touch_check.py {{target}}
+
+# Upload the current staging dir to Cloudflare Pages, after the touch check (build the elements before: not done here)
+[group('cloudflare')]
+cf_deploy: cf_touch_check
     wrangler pages deploy {{_CF_STAGING}} --project-name={{_CF_PROJECT}} --commit-dirty=true
     echo "Deployed to https://imgui-bundle.pages.dev/"
 

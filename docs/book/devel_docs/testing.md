@@ -20,6 +20,7 @@ cd bindings && ./mypy_bindings.sh # mypy
 - **`tests/test_imgui_md_compat.py`**: `imgui_md`, the former name of the markdown module, still offers the API of v1.92.900 (the last release before `rich_md`).
 - **`tests/cpp_compat/`**: the C++ side of the same promise (`imgui_md_wrapper.h`, namespace `ImGuiMd`) compiles and links against the installed package. Built by `just test_cpp_compat` (after `just cpp_package_install`), and by the CI workflow `cpp_install_package.yml` on the three desktop platforms.
 - **`tests/cpp_install_headers/`**: the installed package holds every library: each one's main header compiles (at the path an app includes it from), and one function of each links. Built by `just test_cpp_install_headers` (after `just cpp_package_install`), and by the CI workflow `cpp_install_package.yml` on the three desktop platforms.
+- **`just cf_touch_check`** (`ci_scripts/playground_touch_check.py`): in the playground, in headless Chrome with a phone's touch screen, one finger scrolls a document by the length of its drag, and two fingers scale the font. `just cf_deploy` runs it first, on the staged site. It also takes another folder (`pyodide_projects/projects`) or a site's URL.
 
 ## GUI tests
 
