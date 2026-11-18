@@ -438,7 +438,7 @@ def gui_figure_chips(figures: list[str], shown: str) -> None:
     for i, figure in enumerate(figures):
         if i > 0:
             imgui.same_line()
-        if chip(FIGURE_NAMES[figure], figure == shown):
+        if chip(f"{FIGURE_NAMES[figure]}##figure", figure == shown):
             app_state.focus = figure
         lesson.widget("focus", changed=imgui.is_item_clicked())
 
