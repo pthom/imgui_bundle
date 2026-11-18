@@ -122,7 +122,7 @@ def gui() -> None:
         `set_sampler_from_tex()` gives each texture its own filter back.
         """)
     if not HAS_PYOPENGL:
-        imgui.text("Install PyOpenGL to see this part: pip install PyOpenGL")
+        imgui.text("This part needs PyOpenGL, on the desktop: pip install PyOpenGL")
     elif not draw_list.can_set_sampler_from_tex():
         imgui.text("This renderer cannot use a texture's own filter (OpenGL only).")
     else:
