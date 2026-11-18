@@ -1,9 +1,8 @@
 """Sharp or smooth pixels
 
-Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. The draw list's
-`set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and
-`set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of
-a texture you made yourself.
+Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. For a texture made by Dear ImGui,
+the renderer decides the sampling: `set_sampler_nearest()` asks it for sharp pixels. A texture made with OpenGL has its
+own filter, which the renderer ignores, unless `set_sampler_from_tex()` gives it back.
 """
 
 import numpy as np
@@ -12,7 +11,7 @@ from numpy.typing import NDArray
 from imgui_bundle import hello_imgui, imgui, immapp, rich_md
 
 try:
-    import OpenGL.GL as gl  # optional (pip install PyOpenGL): the part on a texture made with OpenGL
+    import OpenGL.GL as gl  # optional (pip install PyOpenGL): the part on textures made with OpenGL
 
     HAS_PYOPENGL = True
 except ImportError:
@@ -21,9 +20,12 @@ except ImportError:
 # The heatmap's width and height, in pixels
 HEATMAP_PIXELS = 10
 # Each image's width and height on screen, in em (1 em = the height of a character)
-IMAGE_SIZE_EM = 12.0
+IMAGE_SIZE_EM = 10.0
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Part 1: a texture made by Dear ImGui, from pixels. Its renderer decides the sampling.
+# ---------------------------------------------------------------------------------------------------------------------
 def make_heatmap() -> NDArray[np.uint8]:
     """A small heatmap, as RGBA pixels: a smooth function of x and y, colored from dark blue to yellow (viridis)"""
     y, x = np.mgrid[0:HEATMAP_PIXELS, 0:HEATMAP_PIXELS] / (HEATMAP_PIXELS - 1)
@@ -35,7 +37,7 @@ def make_heatmap() -> NDArray[np.uint8]:
     return np.concatenate([rgb, alpha], axis=-1).astype(np.uint8)
 
 
-# The heatmap as a texture made by Dear ImGui: its renderer backend uploads it at the end of the frame that creates it
+# The renderer backend (OpenGL, Metal, Vulkan, WebGL...) uploads it at the end of the frame that creates it
 heatmap_texture = imgui.ImTextureData()
 
 
@@ -48,6 +50,10 @@ def heatmap_texture_ref() -> imgui.ImTextureRef:
     return heatmap_texture.get_tex_ref()
 
 
+# ---------------------------------------------------------------------------------------------------------------------
+# Part 2: textures made with OpenGL, each with its own filter (glTexParameteri). The renderer ignores it,
+# unless set_sampler_from_tex() asks it to use it.
+# ---------------------------------------------------------------------------------------------------------------------
 # A pixel-art heart: "#" its outline, "x" its red, "o" its highlight, "." transparent
 HEART = [
     "...........",
@@ -64,26 +70,24 @@ HEART = [
 ]
 HEART_COLORS = {"#": (110, 20, 40, 255), "x": (225, 45, 70, 255), "o": (255, 180, 190, 255), ".": (0, 0, 0, 0)}
 
-
-def make_heart() -> NDArray[np.uint8]:
-    return np.array([[HEART_COLORS[c] for c in row] for row in HEART], dtype=np.uint8)
+opengl_heart_ids: dict[int, int] = {}  # the OpenGL texture of the heart, by its filter
 
 
-# The heart as a texture made with OpenGL, with its own filter: GL_NEAREST
-opengl_texture_id = 0
-
-
-def opengl_texture_ref() -> imgui.ImTextureRef:
-    global opengl_texture_id
-    if opengl_texture_id == 0:
-        heart = make_heart()
-        opengl_texture_id = int(gl.glGenTextures(1))
-        gl.glBindTexture(gl.GL_TEXTURE_2D, opengl_texture_id)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_NEAREST)
-        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_NEAREST)
+def opengl_heart(gl_filter: int) -> imgui.ImTextureRef:
+    """The heart as a texture made with OpenGL, with its own filter: gl.GL_NEAREST or gl.GL_LINEAR"""
+    if gl_filter not in opengl_heart_ids:
+        heart = np.array([[HEART_COLORS[c] for c in row] for row in HEART], dtype=np.uint8)
+        texture_id = int(gl.glGenTextures(1))
+        gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl_filter)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl_filter)
+        # Clamp: by default, a linear filter at an edge blends in the opposite edge
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
+        gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
         gl.glTexImage2D(gl.GL_TEXTURE_2D, 0, gl.GL_RGBA, heart.shape[1], heart.shape[0], 0,
                         gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, heart)
-    return imgui.ImTextureRef(opengl_texture_id)
+        opengl_heart_ids[gl_filter] = texture_id
+    return imgui.ImTextureRef(opengl_heart_ids[gl_filter])
 
 
 def image_with_caption(tex_ref: imgui.ImTextureRef, caption: str) -> None:
@@ -98,38 +102,43 @@ def gui() -> None:
 
     rich_md.render("""
         # Sharp or smooth pixels
-        Dear ImGui draws images with *linear* sampling: shown large, a small image blurs, its pixels blend.
-        For a heatmap or pixel art, ask the renderer for *nearest* sampling: each pixel stays a sharp square.
+        Shown large, a small image blurs: Dear ImGui draws images with *linear* sampling.
+        For a heatmap or pixel art, each pixel should stay a sharp square: *nearest* sampling.
+
+        ## A texture made by Dear ImGui: the renderer decides
+        `set_sampler_nearest()` asks the renderer for nearest sampling, for the images that follow.
         """)
     if draw_list.can_set_sampler_nearest():
         draw_list.set_sampler_nearest()  # the images that follow: nearest sampling
-        image_with_caption(heatmap_texture_ref(), "Nearest: sharp")
+        image_with_caption(heatmap_texture_ref(), "set_sampler_nearest()\nsharp")
         draw_list.set_sampler_linear()  # back to the default, for what follows
         imgui.same_line()
-    image_with_caption(heatmap_texture_ref(), "Linear, the default")
+    image_with_caption(heatmap_texture_ref(), "The default\nsmooth")
 
     imgui.dummy(hello_imgui.em_to_vec2(0, 1))
     rich_md.render("""
-        ## A texture of your own, made with OpenGL
-        It has its own filter (here `GL_NEAREST`), but the renderer imposes its sampling.
-        `set_sampler_from_tex()` asks it to use the texture's own filter.
+        ## A texture made with OpenGL: it decides
+        Each texture has its own filter, but the renderer imposes its sampling (since Dear ImGui 1.92.8).
+        `set_sampler_from_tex()` gives each texture its own filter back.
         """)
     if not HAS_PYOPENGL:
         imgui.text("Install PyOpenGL to see this part: pip install PyOpenGL")
     elif not draw_list.can_set_sampler_from_tex():
         imgui.text("This renderer cannot use a texture's own filter (OpenGL only).")
     else:
-        draw_list.set_sampler_from_tex()  # the images that follow: their own filter
-        image_with_caption(opengl_texture_ref(), "From the texture: sharp")
-        # Back to the default. After set_sampler_from_tex(), set_sampler_linear() would write GL_LINEAR
-        # into the texture itself, which would then lose its GL_NEAREST.
+        draw_list.set_sampler_from_tex()  # the images that follow: each texture's own filter
+        image_with_caption(opengl_heart(gl.GL_NEAREST), "GL_NEAREST\nfrom_tex: sharp")
+        imgui.same_line()
+        image_with_caption(opengl_heart(gl.GL_LINEAR), "GL_LINEAR\nfrom_tex: smooth")
+        # Back to the renderer's sampling. After set_sampler_from_tex(), set_sampler_linear() would write GL_LINEAR
+        # into the textures that follow, which would lose their own filter.
         draw_list.reset_render_state()
         imgui.same_line()
-        image_with_caption(opengl_texture_ref(), "Linear, the default")
+        image_with_caption(opengl_heart(gl.GL_NEAREST), "GL_NEAREST\nthe default: blurred")
 
 
 def main() -> None:
-    immapp.run(gui, window_title="Sharp or smooth pixels", window_size=(540, 680), with_markdown=True)
+    immapp.run(gui, window_title="Sharp or smooth pixels", window_size=(540, 740), with_markdown=True)
 
 
 if __name__ == "__main__":

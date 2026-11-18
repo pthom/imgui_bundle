@@ -1133,7 +1133,7 @@ No copy between the GPU and the CPU at each frame.
 Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones.
 
 :::{dropdown} More
-The draw list's `set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and `set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of a texture you made yourself.
+For a texture made by Dear ImGui, the renderer decides the sampling: `set_sampler_nearest()` asks it for sharp pixels. A texture made with OpenGL has its own filter, which the renderer ignores, unless `set_sampler_from_tex()` gives it back.
 :::
 
 *Uses: OpenGL*

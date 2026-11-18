@@ -258,7 +258,7 @@ SHOTS: dict[str, Shot] = {
     "demo_docking.py": Shot(frames=90, crop=(0.0, 0.0, 1.0, 0.64)),
     "demo_custom_background.py": Shot(frames=120),
     "demo_powersave.py": Shot(crop=(0.0, 0.0, 1.0, 0.72)),
-    "demo_sampler_callbacks.py": Shot(crop=(0.0, 0.157, 0.72, 0.46)),  # the heatmap, sharp and smooth
+    "demo_sampler_callbacks.py": Shot(crop=(0.0, 0.248, 0.59, 0.505)),  # the heatmap, sharp and smooth
     "demo_chinese_font.py": Shot(setup=_cjk_font, crop=(0.0, 0.3, 0.8, 0.9)),  # the sample lines
     "demo_drag_and_drop.py": Shot(crop=(0.0, 0.0, 0.36, 0.44)),
     "demo_command_palette.py": Shot(test=_command_palette, frames=30, crop=(0.0, 0.0, 0.8, 0.3)),
