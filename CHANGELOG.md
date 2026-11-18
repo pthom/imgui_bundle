@@ -32,6 +32,7 @@
 - Markdown: the entities (`&amp;`, `&copy;`, `&#169;`, `&#x2192;`) show as their characters, in the text, the headings and the search; an invalid codepoint shows as U+FFFD, as in CommonMark. The spans inside a heading (`^sup^`, `~sub~`, `==highlight==`) are tested. By Mark Jansen ([imgui_rich_md#1](https://github.com/pthom/imgui_rich_md/pull/1), [imgui_rich_md#2](https://github.com/pthom/imgui_rich_md/pull/2)).
 - Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
 - Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
+- ImmVision: a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails. Fine detail showed moiré: the backend's sampler had no mipmaps. ImmVision now samples them (trilinear filtering) with Dear ImGui 1.93's `DrawCallback_SetSamplerFromTex`, on the OpenGL backends.
 
 # v1.93.0
 
