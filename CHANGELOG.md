@@ -29,6 +29,7 @@
 - LaTeX (MicroTeX): a formula that loops or nests without end (`\newcommand{\a}{\a}\a`, thousands of nested braces) is an error, and markdown shows its source. It hung the app, or crashed it.
 - Markdown: the items of an unordered list written with `-` or `+` get the dot, as those written with `*` did. They showed their character. By Mark Jansen ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2)).
 - Markdown: URLs with a port, a query or parentheses are whole links (`http://localhost:8080/`), and code blocks keep their tabs. md4c, the parser, follows its master, after v0.6.0.
+- Markdown: the entities (`&amp;`, `&copy;`, `&#169;`, `&#x2192;`) show as their characters, in the text, the headings and the search; an invalid codepoint shows as U+FFFD, as in CommonMark. The spans inside a heading (`^sup^`, `~sub~`, `==highlight==`) are tested. By Mark Jansen ([imgui_rich_md#1](https://github.com/pthom/imgui_rich_md/pull/1), [imgui_rich_md#2](https://github.com/pthom/imgui_rich_md/pull/2)).
 - Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
 - Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
 
