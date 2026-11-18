@@ -14,6 +14,7 @@ defaults:
 set_value("view", "none")
 set_value("clock", 0)
 set_value("step", 1000)
+set_value("knobs", False)
 ```
 In this lesson, we will watch a neural network learn a concept. This form of learning is called *grokking*.
 
@@ -103,7 +104,7 @@ set_value("table_view", "answers")
 set_value("focus", "table")
 animate("step", 100, over=8, at="Watch the table")
 ```
-The network is shown half of the sums: the blue cells. The other half, in red, stays hidden: that is the test. Watch the table while it trains. Within a hundred steps, every blue cell is right.
+The network is shown half of the sums: the grey cells. The other half, in red, stays hidden: that is the test. Watch the table while it trains. Within a hundred steps, every grey cell turns blue.
 
 ```cues
 highlight("step", at="still red")
@@ -143,12 +144,13 @@ decay: a memorized table costs large weights, a clock costs small ones (Nanda et
 [[The whole stage, with the weight decay and the seed under the table; back on the recorded run]]
 ```cues
 use_recorded()
+set_value("knobs", True)
 set_value("view", "full")
 set_value("table_view", "answers")
 set_value("focus", "accuracy")
 set_value("step", 1000)
 ```
-Now it is your turn. Under the table, two knobs: the weight decay, and the seed of the random start. The Train button trains a new network, live, in a few seconds.
+Now it is your turn. Above the figures, two knobs: the weight decay, and the seed of the random start. The Train button trains a new network, live, in a few seconds.
 
 [[The first challenge: without the weight decay, no grokking. The voice waits for the training to end.]]
 ```cues

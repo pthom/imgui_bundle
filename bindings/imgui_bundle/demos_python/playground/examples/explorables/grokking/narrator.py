@@ -48,9 +48,12 @@ LANDSCAPE_MAX_HEIGHT_EM = 30.0   # a window shorter than this, and wider than ta
 STRIP_MIN_WIDTH_EM = 18.0        # the strip's column, in landscape
 SIDE_PANEL_MIN_WIDTH_EM = 60.0   # a stage wider than this shows an open panel beside it; a narrower one, over it
 TOUCH_BUTTON_EM = 2.4            # the buttons' height in the phone's layout
+STRIP_MAX_SHARE = 0.6            # the strip's height, at most, in the window's height
+STRIP_MAX_SHARE_COMPACT = 0.42   # the same on a phone: a longer paragraph shows its spoken sentence alone
 PARAGRAPH_ESTIMATE_SCALE = 1.3   # rich_md's paragraphs are taller than imgui's text of the same width
 PROMPT_COLOR = ImVec4(1.0, 0.75, 0.3, 1.0)
 RESERVED_SECTIONS = ("More", "Code", "References")
+SECTION_ICONS = {"More": fa.ICON_FA_INFO_CIRCLE, "Code": fa.ICON_FA_CODE, "References": fa.ICON_FA_BOOK}
 IN_BROWSER = sys.platform == "emscripten"
 CLIPS_URL = "/resources/explorables"  # the clips on the site (the website resources), by lesson folder
 DEFAULT_VOICE = "en-US-AndrewMultilingualNeural"
@@ -1301,7 +1304,8 @@ class Lesson:
             imgui.same_line()
             self._gui_strip(ImVec2(strip_width, avail.y))
         else:
-            strip_height = min(self._strip_height(avail.x), 0.6 * avail.y)
+            share = STRIP_MAX_SHARE_COMPACT if self.compact else STRIP_MAX_SHARE
+            strip_height = min(self._strip_height(avail.x), share * avail.y)
             self._gui_stage(stage, ImVec2(avail.x, avail.y - strip_height - spacing.y))
             self._gui_strip(ImVec2(avail.x, strip_height))
         imgui.pop_id()
@@ -1451,8 +1455,23 @@ class Lesson:
 
     @staticmethod
     def _chip_labels(chapter: Chapter) -> list[str]:
-        icons = {"More": fa.ICON_FA_INFO_CIRCLE, "Code": fa.ICON_FA_CODE, "References": fa.ICON_FA_BOOK}
-        return [f"{icons.get(s.kind, '')} {s.title}" for s in chapter.sections]
+        return [f"{SECTION_ICONS.get(s.kind, '')} {s.title}" for s in chapter.sections]
+
+    def _chapter_label(self, i: int) -> str:
+        assert self.script is not None
+        chapters = self.script.chapters
+        return f"{fa.ICON_FA_BARS}  {chapters[i].title or f'Chapter {i + 1}'}   {i + 1}/{len(chapters)}"
+
+    def _sections_on_chapter_line(self, width: float) -> bool:
+        """On a phone, the sections are icons at the end of the chapter's line (one row less), if every chapter's
+        line has room for its icons"""
+        if not self.compact:
+            return False
+        assert self.script is not None
+        style = imgui.get_style()
+        icon = self._button_height() + style.item_spacing.x
+        return all(imgui.calc_text_size(self._chapter_label(i)).x + 2 * style.frame_padding.x
+                   + len(c.sections) * icon <= width for i, c in enumerate(self.script.chapters))
 
     def _chip_rows(self, chapter: Chapter, width: float) -> list[list[int]]:
         """The chips of a chapter's sections, in rows that fit the width: the indices of each row"""
@@ -1472,6 +1491,8 @@ class Lesson:
     def _chips_block_height(self, width: float) -> float:
         """As many rows as the chapter that has the most: the bar stays in place from a chapter to the next"""
         assert self.script is not None
+        if self._sections_on_chapter_line(width):
+            return 0.0
         rows = max((len(self._chip_rows(c, width)) for c in self.script.chapters), default=0)
         return rows * (self._button_height() + imgui.get_style().item_spacing.y)
 
@@ -1480,7 +1501,8 @@ class Lesson:
         assert self.script is not None
         style = imgui.get_style()
         bg = imgui.get_style_color_vec4(imgui.Col_.window_bg)
-        imgui.push_style_color(imgui.Col_.child_bg, ImVec4(bg.x + 0.05, bg.y + 0.05, bg.z + 0.06, 1.0))
+        shade = -0.045 if bg.x + bg.y + bg.z > 1.5 else 0.05     # apart from the stage: darker in a light theme
+        imgui.push_style_color(imgui.Col_.child_bg, ImVec4(bg.x + shade, bg.y + shade, bg.z + shade + 0.01, 1.0))
         imgui.begin_child("##strip", size, imgui.ChildFlags_.always_use_window_padding,
                           imgui.WindowFlags_.no_scrollbar | imgui.WindowFlags_.no_scroll_with_mouse)
         imgui.pop_style_color()
@@ -1488,11 +1510,14 @@ class Lesson:
         top = imgui.get_cursor_pos_y()
         inner = imgui.get_content_region_avail()
         chapter = self.script.chapters[self.current_chapter()]
-        self._gui_chapter_line(h)
+        sections_on_line = self._sections_on_chapter_line(inner.x)
+        self._gui_chapter_line(h, sections_on_line)
         paragraph_height = (inner.y - (h + sp) - sp - self._prompt_block_height(inner.x)
                             - self._chips_block_height(inner.x) - h)
+        imgui.push_style_color(imgui.Col_.child_bg, ImVec4(0.0, 0.0, 0.0, 0.0))   # on the strip's own shade
         imgui.begin_child("##paragraph", ImVec2(0, max(1.0, paragraph_height)))
-        self._gui_paragraph(inner.x)
+        imgui.pop_style_color()
+        self._gui_paragraph(inner.x, paragraph_height)
         imgui.end_child()
         if self.waiting is not None:
             imgui.push_text_wrap_pos(0.0)
@@ -1502,23 +1527,26 @@ class Lesson:
             imgui.pop_text_wrap_pos()
             if imgui.button(("Continue" if self.waiting.kind == "pause" else "Skip") + "###waiting", ImVec2(0, h)):
                 self._resume()
-        self._gui_chips(chapter, inner.x, h)
+        if not sections_on_line:
+            self._gui_chips(chapter, inner.x, h)
         imgui.set_cursor_pos_y(top + inner.y - h)
         self._gui_bar(h)
         imgui.end_child()
 
-    def _gui_chapter_line(self, h: float) -> None:
-        """The chapter's title: a tap opens the lesson's menu (the chapters, the full text, the sources)"""
+    def _gui_chapter_line(self, h: float, sections_on_line: bool) -> None:
+        """The chapter's title: a tap opens the lesson's menu (the chapters, the full text, the sources); on a phone,
+        the chapter's sections as icons at the end of the line"""
         assert self.script is not None
         chapters = self.script.chapters
         now = self.current_chapter()
-        title = chapters[now].title or f"Chapter {now + 1}"
-        if imgui.button(f"{fa.ICON_FA_BARS}  {title}   {now + 1}/{len(chapters)}###menu", ImVec2(0, h)):
+        if imgui.button(f"{self._chapter_label(now)}###menu", ImVec2(0, h)):
             imgui.open_popup("##lesson_menu")
         if self.gestures.unavailable:
             imgui.same_line()
             imgui.align_text_to_frame_padding()
             imgui.text_disabled("No test engine here: the gestures are skipped")
+        if sections_on_line and chapters[now].sections:
+            self._gui_section_icons(chapters[now], h)
         if not imgui.begin_popup("##lesson_menu"):
             return
         imgui.push_style_var(imgui.StyleVar_.selectable_text_align, ImVec2(0.0, 0.5))
@@ -1538,11 +1566,33 @@ class Lesson:
         imgui.pop_style_var()
         imgui.end_popup()
 
-    def _gui_paragraph(self, width: float) -> None:
-        """The paragraph being read, its spoken sentence in bold"""
+    def _gui_section_icons(self, chapter: Chapter, h: float) -> None:
+        """The chapter's sections (More, Code...) as icons at the end of the line: a tap opens or closes one"""
+        sp = imgui.get_style().item_spacing.x
+        n = len(chapter.sections)
+        imgui.same_line()
+        imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + imgui.get_content_region_avail().x - n * h - (n - 1) * sp)
+        for i, section in enumerate(chapter.sections):
+            if i > 0:
+                imgui.same_line()
+            selected = self.panel == "section" and self.open_section is section
+            if selected:
+                imgui.push_style_color(imgui.Col_.button, imgui.get_style_color_vec4(imgui.Col_.button_active))
+            if imgui.button(f"{SECTION_ICONS.get(section.kind, fa.ICON_FA_INFO_CIRCLE)}##section{i}", ImVec2(h, h)):
+                self._toggle_panel("section", section)
+            if selected:
+                imgui.pop_style_color()
+
+    def _gui_paragraph(self, width: float, height: float) -> None:
+        """The paragraph being read, its spoken sentence in bold; the spoken sentence alone if the paragraph is taller
+        than `height`"""
         paragraph = self.current_paragraph()
         sentence = self.current_sentence()
         if paragraph is None or sentence is None:
+            return
+        tall = imgui.calc_text_size(_spoken_text(paragraph.text), wrap_width=width).y * PARAGRAPH_ESTIMATE_SCALE
+        if tall > height:
+            rich_md.render(sentence.text)
             return
         parts = [f"**{s.text}**" if s is sentence else s.text for s in paragraph.sentences]
         top = imgui.get_cursor_pos_y()

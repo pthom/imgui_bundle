@@ -5,6 +5,7 @@ then, much later, it [groks](https://arxiv.org/abs/2201.02177) the rule and the 
 the training: the table of answers, the accuracies, and the geometry of the 53 numbers inside the network.
 """
 
+import colorsys
 import math
 import time
 from pathlib import Path
@@ -22,6 +23,14 @@ LIVE_TRAINING_BUDGET_S = 0.035                                     # the time sp
 ACCENT_BLINK_SECONDS = 4.0                                         # an accented curve blinks that long
 ONE_FIGURE_BELOW_EM = 36.0                                         # a narrower stage (a phone) shows one figure
 FIGURE_NAMES = {"table": "Table", "accuracy": "Accuracy", "clock": "Clock"}
+TITLE_SUBTITLE = ("A network learns by heart,", "then suddenly understands")   # under the title, on the opening card
+TITLE_EM = 2.6                                                     # the title's size, in the base font's size
+TITLE_TURN_SECONDS = 120.0                                         # the opening card's circle turns once in that time
+TITLE_CIRCLE_ALPHA = 0.35                                          # the opening card's circle, faint behind the title
+ACCENT = ImVec4(1.0, 0.75, 0.3, 1.0)                               # the narration's amber: the opening card's Play
+# The table's four cells: a seen sum wrong (grey), seen and right (blue), hidden and wrong (red), hidden and right (green)
+TABLE_COLORS = np.array([[0.72, 0.72, 0.78, 1.0], [0.25, 0.45, 0.85, 1.0],
+                         [0.85, 0.32, 0.32, 1.0], [0.25, 0.68, 0.38, 1.0]], np.float32)
 
 
 class TrainingPath:
@@ -122,6 +131,7 @@ class AppState:
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
         self.view = "full"            # "full", "curves" (accuracy and clock), "accuracy" (that plot alone), "none"
         self.focus = "accuracy"       # the figure the narration talks about: a narrow stage shows it alone
+        self.knobs = False            # the weight decay, the seed and Train shown (the Experiments chapter)
         self.accent_line = "none"     # the accuracy curve drawn thick: "seen", "hidden" or "none"
         self.accent_since = 0.0       # when the accent last changed: the accented curve blinks for a moment
         self._last_accent = "none"
@@ -188,6 +198,7 @@ lesson.param(name="view", owner=app_state)
 lesson.param(name="focus", owner=app_state)
 lesson.param(name="accent_line", owner=app_state)
 lesson.param(name="zone", owner=app_state)
+lesson.param(name="knobs", owner=app_state)
 
 
 def button_height() -> float:
@@ -206,13 +217,24 @@ def chip(label: str, selected: bool) -> bool:
 
 
 def table_colormap() -> int:
-    """Four cells: a seen sum wrong (grey), seen and right (blue), hidden and wrong (red), hidden and right (green)"""
+    """The table's four colors, as an ImPlot colormap"""
     cmap = implot.get_colormap_index("grokking_table")
     if cmap == -1:
-        colors = np.array([[0.72, 0.72, 0.78, 1.0], [0.25, 0.45, 0.85, 1.0],
-                           [0.85, 0.32, 0.32, 1.0], [0.25, 0.68, 0.38, 1.0]], np.float32)
-        cmap = implot.add_colormap("grokking_table", colors, qual=True)
+        cmap = implot.add_colormap("grokking_table", TABLE_COLORS, qual=True)
     return cmap
+
+
+_hour_colors: dict[tuple[int, float], np.ndarray] = {}
+
+
+def hour_colors(frequency: int, alpha: float = 1.0) -> np.ndarray:
+    """The color of each number on the clock of `frequency`: the hue of its hour there, frequency * n mod P.
+    Once the network groks, the numbers sit in that order around the circle: the colors make a wheel."""
+    key = (frequency, alpha)
+    if key not in _hour_colors:
+        colors = [ImVec4(*colorsys.hls_to_rgb(((frequency * n) % P) / P, 0.6, 0.75), alpha) for n in range(P)]
+        _hour_colors[key] = np.array([imgui.color_convert_float4_to_u32(c) for c in colors], np.uint32)
+    return _hour_colors[key]
 
 
 def table_cells(checkpoint: int) -> np.ndarray:
@@ -225,8 +247,9 @@ def table_cells(checkpoint: int) -> np.ndarray:
 
 
 def gui_table(size: ImVec2) -> None:
-    """The 53 x 53 table of sums, each cell colored by what the network answers at this step (a square, centered)"""
-    side = max(1.0, min(size.x, size.y))
+    """The 53 x 53 table of sums, each cell colored by what the network answers at this step (a square, centered),
+    and the colors' legend under it"""
+    side = max(1.0, min(size.x, size.y - 2 * imgui.get_text_line_height_with_spacing()))
     imgui.set_cursor_pos_x(imgui.get_cursor_pos_x() + (size.x - side) / 2)
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
     if implot.begin_plot("##table", ImVec2(side, side), flags):
@@ -238,6 +261,31 @@ def gui_table(size: ImVec2) -> None:
         implot.pop_colormap()
         implot.end_plot()
     lesson.widget("table_view")
+    gui_table_legend(size.x)
+
+
+def gui_table_legend(width: float) -> None:
+    """Two centered rows: what each color of the table means (in the split view, only seen and hidden)"""
+    if app_state.table_view == "split":
+        rows = [[(1, "seen"), (2, "hidden")]]
+    else:
+        rows = [[(1, "seen, right"), (0, "seen, wrong")], [(3, "hidden, right"), (2, "hidden, wrong")]]
+    square = 0.75 * imgui.get_font_size()
+    gap = imgui.get_style().item_spacing.x
+    column = max(square + gap + imgui.calc_text_size(label).x for row in rows for _, label in row) + 2 * gap
+    line = imgui.get_text_line_height()
+    draw_list = imgui.get_window_draw_list()
+    text_color = imgui.get_color_u32(imgui.Col_.text)
+    for row in rows:
+        start = imgui.get_cursor_screen_pos()
+        left = start.x + (width - column * len(row)) / 2
+        for i, (cell, label) in enumerate(row):
+            x = left + i * column
+            top = start.y + (line - square) / 2
+            draw_list.add_rect_filled(ImVec2(x, top), ImVec2(x + square, top + square),
+                                      imgui.color_convert_float4_to_u32(ImVec4(*TABLE_COLORS[cell])), 2.0)
+            draw_list.add_text(ImVec2(x + square + gap, start.y), text_color, label)
+        imgui.dummy(ImVec2(width, line))
 
 
 def gui_accuracy(size: ImVec2) -> None:
@@ -307,9 +355,9 @@ def gui_clocks(size: ImVec2) -> None:
         implot.setup_axes_limits(-extent, extent, -extent, extent, imgui.Cond_.always)
         points = path.clocks[app_state.checkpoint, app_state.clock]
         small = min(size.x, height) < 30 * em                       # a small clock: smaller labels, larger dots
-        implot.plot_scatter("##numbers", points[:, 0].astype(np.float64), points[:, 1].astype(np.float64),
-                            spec=implot.Spec(marker=implot.Marker_.circle, marker_size=4 if small else 3,
-                                             marker_fill_color=ImVec4(0.25, 0.45, 0.85, 1.0)))
+        spec = implot.Spec(marker=implot.Marker_.circle, marker_size=4 if small else 3)
+        spec.marker_fill_colors = spec.marker_line_colors = hour_colors(int(frequencies[app_state.clock]))
+        implot.plot_scatter("##numbers", points[:, 0].astype(np.float64), points[:, 1].astype(np.float64), spec=spec)
         label_scale = max(0.6, min(1.0, min(size.x, height) / (30 * em)))
         imgui.push_font(None, imgui.get_style().font_size_base * label_scale)
         offset = ImVec2(9 * label_scale, -7 * label_scale)
@@ -347,19 +395,31 @@ def gui_controls() -> None:
     if not lesson.compact:
         imgui.same_line()
         imgui.text(f"seen: {seen:4.0%}   hidden: {hidden:4.0%}")
-    gui_hyperparameters()
+    if app_state.knobs:
+        gui_hyperparameters()
 
 
 def gui_hyperparameters() -> None:
     """The weight decay, the seed, and Train: a live training replaces the recorded one in the figures"""
     em = hello_imgui.em_size()
     h = button_height()
-    imgui.set_next_item_width(12 * em)
-    changed, app_state.weight_decay = imgui.slider_float("Weight decay", app_state.weight_decay, 0.0, 1.0, "%.2f")
-    lesson.widget("weight_decay", changed=changed)
-    imgui.same_line()
-    imgui.set_next_item_width(6 * em)
-    changed, app_state.seed = imgui.input_int("Seed", app_state.seed, 0)
+    if lesson.compact:                            # a phone: the weight decay on its own row, the labels inside
+        imgui.set_next_item_width(-1)
+        changed, app_state.weight_decay = imgui.slider_float("##weight_decay", app_state.weight_decay, 0.0, 1.0,
+                                                             "weight decay %.2f")
+        lesson.widget("weight_decay", changed=changed)
+        imgui.align_text_to_frame_padding()
+        imgui.text("seed")
+        imgui.same_line()
+        imgui.set_next_item_width(5 * em)
+        changed, app_state.seed = imgui.input_int("##seed", app_state.seed, 0)
+    else:
+        imgui.set_next_item_width(12 * em)
+        changed, app_state.weight_decay = imgui.slider_float("Weight decay", app_state.weight_decay, 0.0, 1.0, "%.2f")
+        lesson.widget("weight_decay", changed=changed)
+        imgui.same_line()
+        imgui.set_next_item_width(6 * em)
+        changed, app_state.seed = imgui.input_int("Seed", app_state.seed, 0)
     lesson.widget("seed", changed=changed)
     imgui.same_line()
     if app_state.training_live:
@@ -392,9 +452,67 @@ def gui_figure(figure: str, size: ImVec2) -> None:
         gui_clocks(size)
 
 
+def gui_title_card() -> None:
+    """The stage before the first figure: the title, Play, the length; behind them, the final clock turns slowly"""
+    em = hello_imgui.em_size()
+    origin, size = imgui.get_cursor_screen_pos(), imgui.get_content_region_avail()
+    center = ImVec2(origin.x + size.x / 2, origin.y + size.y / 2)
+    draw_list = imgui.get_window_draw_list()
+
+    points = RECORDED.clocks[-1, 0]
+    scale = 0.46 * min(size.x, size.y) / float(np.abs(points).max())
+    angle = 2 * math.pi * imgui.get_time() / TITLE_TURN_SECONDS   # the idle frames are enough for this pace
+    c, s = math.cos(angle), math.sin(angle)
+    colors = hour_colors(int(RECORDED.clock_frequencies[0]), TITLE_CIRCLE_ALPHA)
+    for (x, y), color in zip(points, colors, strict=True):
+        dot = ImVec2(center.x + scale * (c * x - s * y), center.y - scale * (s * x + c * y))
+        draw_list.add_circle_filled(dot, 0.35 * em, int(color))
+
+    script = lesson.script
+    title = str(script.front_matter.get("title", "")) if script is not None else ""
+    duration = script.duration if script is not None else 0.0
+    length = f"{int(duration // 60)} min {int(duration % 60):02d}"
+    if lesson.audio is not None and lesson.audio_index:
+        length += "  ·  with sound"
+    title_size = TITLE_EM * imgui.get_style().font_size_base
+    line = imgui.get_text_line_height()
+    button = 3.6 * em
+    heights = [title_size, 0.4 * em, line * len(TITLE_SUBTITLE), 1.4 * em, button, 0.8 * em, line]
+    y = center.y - sum(heights) / 2
+    text, dim = imgui.get_color_u32(imgui.Col_.text), imgui.get_color_u32(imgui.Col_.text_disabled)
+
+    imgui.push_font(None, title_size)
+    draw_list.add_text(ImVec2(center.x - imgui.calc_text_size(title).x / 2, y), text, title)
+    imgui.pop_font()
+    y += title_size + 0.4 * em
+    for subtitle_line in TITLE_SUBTITLE:
+        draw_list.add_text(ImVec2(center.x - imgui.calc_text_size(subtitle_line).x / 2, y), dim, subtitle_line)
+        y += line
+    y += 1.4 * em
+
+    if not lesson.playing:                        # Play, drawn: a glyph sits off center in a round button
+        imgui.set_cursor_screen_pos(ImVec2(center.x - button / 2, y))
+        if imgui.invisible_button("##start", ImVec2(button, button)):
+            lesson.playing = True
+        r = button / 2
+        disc = ImVec2(center.x, y + r)
+        k = 1.15 if imgui.is_item_hovered() else 1.0
+        fill = ImVec4(min(1.0, ACCENT.x * k), min(1.0, ACCENT.y * k), min(1.0, ACCENT.z * k), 1.0)
+        halo = ImVec4(ACCENT.x, ACCENT.y, ACCENT.z, 0.18)
+        draw_list.add_circle_filled(disc, r + 0.45 * em, imgui.color_convert_float4_to_u32(halo))
+        draw_list.add_circle_filled(disc, r, imgui.color_convert_float4_to_u32(fill))
+        t = 0.42 * r                              # the triangle, centered on its own centroid
+        draw_list.add_triangle_filled(ImVec2(disc.x - 0.7 * t, disc.y - t), ImVec2(disc.x - 0.7 * t, disc.y + t),
+                                      ImVec2(disc.x + 1.3 * t, disc.y),
+                                      imgui.color_convert_float4_to_u32(ImVec4(0.11, 0.11, 0.13, 1.0)))
+    y += button + 0.8 * em
+    draw_list.add_text(ImVec2(center.x - imgui.calc_text_size(length).x / 2, y), dim, length)
+
+
 def gui_stage() -> None:
     """The figures, sized from the stage's region: side by side on a wide stage, one at a time on a narrow one"""
-    if app_state.view == "none":                  # an empty stage: the narration alone
+    if app_state.view == "none":                  # before the first figure: the narration alone, on the title card
+        gui_title_card()
         return
     if app_state.view == "accuracy":              # the first figure alone, as large as the stage
         gui_accuracy(imgui.get_content_region_avail())
