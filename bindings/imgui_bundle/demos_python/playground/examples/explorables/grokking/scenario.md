@@ -15,6 +15,7 @@ set_value("view", "none")
 set_value("clock", 0)
 set_value("step", 1000)
 set_value("knobs", False)
+set_value("pca", False)
 ```
 In this lesson, we will watch a neural network learn a concept. This form of learning is called *grokking*.
 
@@ -159,3 +160,50 @@ challenge("Set the weight decay to zero, press Train, and wait for the end of th
 Look at the hidden set. Without the weight decay, the network memorizes just as fast, and never groks: the green curve stays at zero. The decay is what pushes the network from the table to the clocks: a memorized table costs large weights, a clock costs small ones.
 
 Try another seed, with the decay back to one. The clocks change frequency; the story does not.
+
+## Looking inside
+
+[[The clock figure, back on the recorded run at its end: the clock of frequency 21]]
+```cues
+use_recorded()
+set_value("knobs", False)
+set_value("view", "curves")
+set_value("focus", "clock")
+set_value("step", 1000)
+set_value("pca", False)
+set_value("clock", 0)
+```
+One last question: how did we draw these clocks? Inside the network, each number is a list of thirty-two values. That makes a point in a space of thirty-two dimensions, and nobody can see thirty-two dimensions.
+
+So we look at a shadow. Hold a teapot under a lamp: its shadow on the table is flat, it has two dimensions. Some shadows tell more than others. From the side, you see the spout and the handle. From above, only a round lid.
+
+[[The PCA chip pulses, then the PCA view replaces the clock]]
+```cues
+highlight("pca", at="principal component")
+set_value("pca", True, at="Here is")
+```
+A classic tool chooses the shadow for us: the principal component analysis, or PCA. It turns the object until its shadow is as wide as possible, because the widest shadow keeps most of the differences between the points. Here is the PCA of our network.
+
+No clock: the numbers look scattered. The network did not build one clock, but four, all about the same size. The widest shadow mixes two of them, like two drawings traced on the same sheet.
+
+[[Back to the clock of frequency 21; the frequency chips pulse]]
+```cues
+set_value("pca", False, at="Four of them")
+highlight("clock", at="Four of them")
+```
+So we ask a sharper question. For a number k, is there a plane where each number n sits at the hour k times n? The Fourier transform answers it for every k at once. Four of them have a clock: twenty-one, nine, seventeen and seven.
+
+[[The training replays: the colors find their places]]
+```cues
+set_value("step", 0, at="During the training")
+animate("step", 1000, over=8, at="find their places")
+```
+Each color is an hour on that clock. During the training, the colors find their places around the circle. That is grokking, seen from the inside.
+
+### More: the PCA and the Fourier planes
+A PCA keeps the directions where the 53 embeddings vary the most. Here, the first components carry about 11 % of the variance each: several clocks share it, and the first plane of the PCA mixes the clocks of frequencies 21 and 9.
+
+The plane of frequency $k$ is spanned by two directions of the 32-dimensional space: $\sum_n \cos(2 \pi k n / 53)\, e_n$ and $\sum_n \sin(2 \pi k n / 53)\, e_n$, where $e_n$ is the embedding of the number $n$. The frequencies with the most energy in the Fourier transform of the embeddings, along $n$, give the four clocks.
+
+### Code
+![[grok_train.py#Clocks#code]]

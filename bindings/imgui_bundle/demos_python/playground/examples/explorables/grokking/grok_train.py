@@ -128,6 +128,12 @@ def clock_axes(embeddings: np.ndarray, k: int) -> np.ndarray:
     angles = 2 * np.pi * k * np.arange(P) / P
     axes = np.stack([np.cos(angles) @ embeddings, np.sin(angles) @ embeddings])
     return np.asarray(axes / np.linalg.norm(axes, axis=1, keepdims=True))
+
+
+def pca_axes(embeddings: np.ndarray) -> np.ndarray:
+    """The two directions where the 53 embeddings spread the most (a PCA): the widest shadow"""
+    _, _, vt = np.linalg.svd(embeddings - embeddings.mean(0), full_matrices=False)
+    return np.asarray(vt[:2])
 # ::endcode
 
 
@@ -159,12 +165,14 @@ def record_path(out: Path) -> None:
     axes = np.array([clock_axes(final, int(k)) for k in frequencies])                     # (CLOCKS, 2, D_EMBED)
     clocks = np.array([[(e - e.mean(0)) @ a.T for a in axes] for e in embeddings], np.float32)  # (steps, CLOCKS, P, 2)
     print(f"clocks: frequencies {frequencies.tolist()}")
+    pca = pca_axes(final)                                                                  # (2, D_EMBED)
+    pca_points = np.array([(e - e.mean(0)) @ pca.T for e in embeddings], np.float32)       # (steps, P, 2)
 
     np.savez_compressed(out, steps=np.array(steps), train_acc=np.array(train_acc, np.float32),
                         test_acc=np.array(test_acc, np.float32), train_loss=np.array(train_loss, np.float32),
                         test_loss=np.array(test_loss, np.float32), correct=np.array(correct, np.uint8),
                         train_mask=train_mask.reshape(P, P), clock_frequencies=frequencies, clocks=clocks,
-                        clock_axes=axes.astype(np.float32))
+                        clock_axes=axes.astype(np.float32), pca=pca_points, pca_axes=pca.astype(np.float32))
     print(f"wrote {out} ({out.stat().st_size // 1024} KB, {len(steps)} checkpoints)")
 
 

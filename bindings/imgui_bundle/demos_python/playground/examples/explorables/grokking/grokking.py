@@ -36,22 +36,25 @@ TABLE_COLORS = np.array([[0.72, 0.72, 0.78, 1.0], [0.25, 0.45, 0.85, 1.0],
 class TrainingPath:
     """What the figures show at every checkpoint of a training: the recorded run, or a live one"""
 
-    def __init__(self, train_mask: np.ndarray, clock_axes: np.ndarray, clock_frequencies: np.ndarray) -> None:
+    def __init__(self, train_mask: np.ndarray, clock_axes: np.ndarray, clock_frequencies: np.ndarray,
+                 pca_axes: np.ndarray) -> None:
         self.train_mask = train_mask                  # (P, P): the sums shown during the training
         self.clock_axes = clock_axes                  # (CLOCKS, 2, D_EMBED): the planes of the clock views
         self.clock_frequencies = clock_frequencies
+        self.pca_axes = pca_axes                      # (2, D_EMBED): the plane of the PCA view
         self.steps = np.zeros(0, np.int64)
         self.train_acc = np.zeros(0, np.float32)
         self.test_acc = np.zeros(0, np.float32)
         self.correct = np.zeros((0, P, P), np.uint8)
         self.clocks = np.zeros((0, len(clock_frequencies), P, 2), np.float32)   # (steps, CLOCKS, P, 2)
+        self.pca = np.zeros((0, P, 2), np.float32)                              # (steps, P, 2)
 
     @staticmethod
     def recorded(file: Path) -> "TrainingPath":
         data = np.load(file)
-        path = TrainingPath(data["train_mask"], data["clock_axes"], data["clock_frequencies"])
+        path = TrainingPath(data["train_mask"], data["clock_axes"], data["clock_frequencies"], data["pca_axes"])
         path.steps, path.train_acc, path.test_acc = data["steps"], data["train_acc"], data["test_acc"]
-        path.correct, path.clocks = data["correct"], data["clocks"]
+        path.correct, path.clocks, path.pca = data["correct"], data["clocks"], data["pca"]
         return path
 
     @property
@@ -68,12 +71,13 @@ class TrainingPath:
 class LiveTraining:
     """A network trained here, a few steps per frame, with the learner's hyperparameters"""
 
-    def __init__(self, weight_decay: float, seed: int, clock_axes: np.ndarray, frequencies: np.ndarray) -> None:
+    def __init__(self, weight_decay: float, seed: int, clock_axes: np.ndarray, frequencies: np.ndarray,
+                 pca_axes: np.ndarray) -> None:
         rng = np.random.default_rng(seed)
         self.pairs, train_mask = grok_train.make_data(rng)
         self.train = self.pairs[train_mask]
         self.trainer = grok_train.Trainer(grok_train.init_params(rng), weight_decay=weight_decay)
-        self.path = TrainingPath(train_mask.reshape(P, P), clock_axes, frequencies)
+        self.path = TrainingPath(train_mask.reshape(P, P), clock_axes, frequencies, pca_axes)
         self.embeddings: list[np.ndarray] = []
         self.step = 0
         self.done = False
@@ -91,6 +95,7 @@ class LiveTraining:
         p.correct = np.concatenate([p.correct, right.reshape(1, P, P).astype(np.uint8)])
         clocks = np.array([[e @ a.T for a in p.clock_axes]], np.float32)
         p.clocks = np.concatenate([p.clocks, clocks])
+        p.pca = np.concatenate([p.pca, np.array([e @ p.pca_axes.T], np.float32)])
 
     def run_some(self, budget_s: float) -> None:
         """Trains until the time budget of this frame is spent, or the run is over"""
@@ -111,6 +116,8 @@ class LiveTraining:
         p.clock_frequencies = grok_train.clock_frequencies(final, grok_train.CLOCKS)
         p.clock_axes = np.array([grok_train.clock_axes(final, int(k)) for k in p.clock_frequencies])
         p.clocks = np.array([[e @ a.T for a in p.clock_axes] for e in self.embeddings], np.float32)
+        p.pca_axes = grok_train.pca_axes(final)
+        p.pca = np.array([e @ p.pca_axes.T for e in self.embeddings], np.float32)
 
 
 RECORDED = TrainingPath.recorded(Path(__file__).parent / "grokking_data.npz")   # recorded by grok_train.py
@@ -128,6 +135,7 @@ class AppState:
         self.playing = False
         self.play_accumulator = 0.0
         self.clock = 0                # which of the recorded clocks is shown
+        self.pca = False              # the clock figure shows the PCA's plane instead of a clock
         self.table_view = "answers"   # "answers": right or wrong at this step; "split": seen or hidden only
         self.view = "full"            # "full", "curves" (accuracy and clock), "accuracy" (that plot alone), "none"
         self.focus = "accuracy"       # the figure the narration talks about: a narrow stage shows it alone
@@ -166,7 +174,8 @@ class AppState:
     def start_training(self) -> None:
         """A live training with the current hyperparameters; the figures follow it"""
         self.playing = False                      # while it trains, a live run is seen on the recorded run's planes
-        self.live = LiveTraining(self.weight_decay, int(self.seed), RECORDED.clock_axes, RECORDED.clock_frequencies)
+        self.live = LiveTraining(self.weight_decay, int(self.seed), RECORDED.clock_axes, RECORDED.clock_frequencies,
+                                 RECORDED.pca_axes)
         self.path, self.training_live, self.checkpoint = self.live.path, True, 0
 
     def use_recorded(self) -> None:
@@ -199,6 +208,7 @@ lesson.param(name="focus", owner=app_state)
 lesson.param(name="accent_line", owner=app_state)
 lesson.param(name="zone", owner=app_state)
 lesson.param(name="knobs", owner=app_state)
+lesson.param(name="pca", owner=app_state)
 
 
 def button_height() -> float:
@@ -337,26 +347,34 @@ def gui_clocks(size: ImVec2) -> None:
     imgui.push_style_var(imgui.StyleVar_.frame_padding,                # the label centered on the chips' height
                          ImVec2(imgui.get_style().frame_padding.x, (h - imgui.get_font_size()) / 2))
     imgui.align_text_to_frame_padding()
-    label = "The 53 numbers inside the network, on the clock of frequency"
-    if imgui.calc_text_size(label).x + len(frequencies) * 3 * em > size.x:
-        label = "Frequency"
+    label = "The 53 numbers inside the network, seen by a PCA, or on the clock of frequency"
+    if imgui.calc_text_size(label).x + (len(frequencies) + 2) * 3 * em > size.x:
+        label = "View"
     imgui.text(label)
+    imgui.same_line()
+    if chip("PCA##view", app_state.pca):
+        app_state.pca = True
+    lesson.widget("pca", changed=imgui.is_item_clicked())
     for i, k in enumerate(frequencies):
         imgui.same_line()
-        if chip(f"{int(k)}##frequency", app_state.clock == i):
-            app_state.clock = i
+        if chip(f"{int(k)}##frequency", app_state.clock == i and not app_state.pca):
+            app_state.clock, app_state.pca = i, False
+            lesson.touched("pca")
         lesson.widget("clock", changed=imgui.is_item_clicked())
     imgui.pop_style_var()
     height = size.y - h - imgui.get_style().item_spacing.y
     flags = implot.Flags_.no_legend | implot.Flags_.no_menus | implot.Flags_.no_mouse_text | implot.Flags_.equal
     if implot.begin_plot("##clock", ImVec2(max(1.0, size.x), max(1.0, height)), flags):
         implot.setup_axes("", "", implot.AxisFlags_.no_tick_labels, implot.AxisFlags_.no_tick_labels)
-        extent = float(np.abs(RECORDED.clocks).max()) * 1.1
+        extent = float(np.abs(RECORDED.pca if app_state.pca else RECORDED.clocks).max()) * 1.1
         implot.setup_axes_limits(-extent, extent, -extent, extent, imgui.Cond_.always)
-        points = path.clocks[app_state.checkpoint, app_state.clock]
+        if app_state.pca:                                           # colored by the hours of the strongest clock
+            points, frequency = path.pca[app_state.checkpoint], int(frequencies[0])
+        else:
+            points, frequency = path.clocks[app_state.checkpoint, app_state.clock], int(frequencies[app_state.clock])
         small = min(size.x, height) < 30 * em                       # a small clock: smaller labels, larger dots
         spec = implot.Spec(marker=implot.Marker_.circle, marker_size=4 if small else 3)
-        spec.marker_fill_colors = spec.marker_line_colors = hour_colors(int(frequencies[app_state.clock]))
+        spec.marker_fill_colors = spec.marker_line_colors = hour_colors(frequency)
         implot.plot_scatter("##numbers", points[:, 0].astype(np.float64), points[:, 1].astype(np.float64), spec=spec)
         label_scale = max(0.6, min(1.0, min(size.x, height) / (30 * em)))
         imgui.push_font(None, imgui.get_style().font_size_base * label_scale)
