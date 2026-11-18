@@ -10949,20 +10949,36 @@ class ImDrawList:
     def add_concave_poly_filled(self, points: List[ImVec2Like], col: ImU32) -> None:
         pass
 
+    def can_set_sampler_nearest(self) -> bool:
+        """True when the renderer backend supports set_sampler_nearest().
+        C++: ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest != NULL
+        """
+        pass
+
     def set_sampler_nearest(self) -> None:
         """Draws the images that follow with nearest sampling (sharp pixels when zoomed in),
         until set_sampler_linear().
-        Raises RuntimeError when the renderer backend does not support it. Check with
-        imgui.get_platform_io().has_draw_callback_set_sampler_nearest().
+        Raises RuntimeError when the renderer backend does not support it: check with can_set_sampler_nearest().
         C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest)
+        """
+        pass
+
+    def can_set_sampler_linear(self) -> bool:
+        """True when the renderer backend supports set_sampler_linear().
+        C++: ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear != NULL
         """
         pass
 
     def set_sampler_linear(self) -> None:
         """Draws the images that follow with linear sampling (smooth), Dear ImGui's default.
-        Raises RuntimeError when the renderer backend does not support it. Check with
-        imgui.get_platform_io().has_draw_callback_set_sampler_linear().
+        Raises RuntimeError when the renderer backend does not support it: check with can_set_sampler_linear().
         C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear)
+        """
+        pass
+
+    def can_set_sampler_from_tex(self) -> bool:
+        """True when the renderer backend supports set_sampler_from_tex().
+        C++: ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex != NULL
         """
         pass
 
@@ -10972,17 +10988,21 @@ class ImDrawList:
         gets linear sampling. Supported by a few backends only: OpenGL2, OpenGL3, SDL_Renderer3.
         Come back with reset_render_state(): in OpenGL, a set_sampler_linear() or set_sampler_nearest()
         after it writes its filter into the textures that follow, which then lose their own.
-        Raises RuntimeError when the renderer backend does not support it. Check with
-        imgui.get_platform_io().has_draw_callback_set_sampler_from_tex().
+        Raises RuntimeError when the renderer backend does not support it: check with can_set_sampler_from_tex().
         C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex)
+        """
+        pass
+
+    def can_reset_render_state(self) -> bool:
+        """True when the renderer backend supports reset_render_state().
+        C++: ImGui::GetPlatformIO().DrawCallback_ResetRenderState != NULL
         """
         pass
 
     def reset_render_state(self) -> None:
         """Resets the renderer backend's render state to its defaults (linear sampling),
         without changing the textures. The way back after set_sampler_from_tex().
-        Raises RuntimeError when the renderer backend does not support it. Check with
-        imgui.get_platform_io().has_draw_callback_reset_render_state().
+        Raises RuntimeError when the renderer backend does not support it: check with can_reset_render_state().
         C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_ResetRenderState)
         """
         pass
@@ -12075,29 +12095,6 @@ class PlatformIO:
     platform_get_clipboard_text_fn: Optional[Callable[[Context], str]]
     platform_set_clipboard_text_fn: Optional[Callable[[Context, str], None]]
     platform_open_in_shell_fn: Optional[Callable[[Context, str], bool]]
-    def has_draw_callback_set_sampler_nearest(self) -> bool:
-        """True when the renderer backend supports DrawCallback_SetSamplerNearest:
-        ImDrawList.set_sampler_nearest() then works.
-        """
-        pass
-
-    def has_draw_callback_set_sampler_linear(self) -> bool:
-        """True when the renderer backend supports DrawCallback_SetSamplerLinear:
-        ImDrawList.set_sampler_linear() then works.
-        """
-        pass
-
-    def has_draw_callback_set_sampler_from_tex(self) -> bool:
-        """True when the renderer backend supports DrawCallback_SetSamplerFromTex:
-        ImDrawList.set_sampler_from_tex() then works.
-        """
-        pass
-
-    def has_draw_callback_reset_render_state(self) -> bool:
-        """True when the renderer backend supports DrawCallback_ResetRenderState:
-        ImDrawList.reset_render_state() then works.
-        """
-        pass
 
 # struct ImGuiPlatformMonitor    /* original C++ signature */
 class PlatformMonitor:

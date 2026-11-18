@@ -1332,7 +1332,7 @@ def _custom_bindings_imgui_h(options: LitgenOptions) -> None:
 def _custom_bindings_standard_draw_callbacks(options: LitgenOptions) -> None:
     """Dear ImGui's standard draw callbacks (ImGuiPlatformIO::DrawCallback_*, set by the renderer backend).
     AddCallback() takes a C function pointer, which Python cannot pass: one method per callback on ImDrawList adds it,
-    and raises when the backend sets none; one method per callback on ImGuiPlatformIO tells it beforehand."""
+    and raises when the backend sets none; a can_ method beside it tells it beforehand."""
     # (method name, C++ name, what it does: one item per docstring line)
     callbacks = [
         ("set_sampler_nearest", "SetSamplerNearest", [
@@ -1361,21 +1361,32 @@ def _custom_bindings_standard_draw_callbacks(options: LitgenOptions) -> None:
     def cpp_doc(lines: list[str]) -> str:
         return "\\n".join(lines)
 
-    stub_draw_list, pydef_draw_list, stub_platform_io, pydef_platform_io = "", "", "", ""
+    stub_draw_list, pydef_draw_list = "", ""
     for snake, cpp, what in callbacks:
-        check = f"imgui.get_platform_io().has_draw_callback_{snake}()"
         doc = what + [
-            "Raises RuntimeError when the renderer backend does not support it. Check with",
-            f"{check}.",
+            f"Raises RuntimeError when the renderer backend does not support it: check with can_{snake}().",
             f"C++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_{cpp})",
         ]
         error = (f"ImDrawList.{snake}(): the renderer backend sets no DrawCallback_{cpp} "
-                 f"(the pure-Python backends set none). Check with {check}.")
+                 f"(the pure-Python backends set none). Check with draw_list.can_{snake}().")
+        doc_check = [
+            f"True when the renderer backend supports {snake}().",
+            f"C++: ImGui::GetPlatformIO().DrawCallback_{cpp} != NULL",
+        ]
         stub_draw_list += f'''
+        def can_{snake}(self) -> bool:
+            """{stub_doc(doc_check)}"""
+            pass
+
         def {snake}(self) -> None:
             """{stub_doc(doc)}"""
             pass
 '''
+        pydef_draw_list += f"""
+        LG_CLASS.def("can_{snake}",
+            [](const ImDrawList& self) {{ return ImGui::GetPlatformIO().DrawCallback_{cpp} != nullptr; }},
+            "{cpp_doc(doc_check)}");
+"""
         pydef_draw_list += f"""
         LG_CLASS.def("{snake}",
             [](ImDrawList& self) {{
@@ -1386,26 +1397,9 @@ def _custom_bindings_standard_draw_callbacks(options: LitgenOptions) -> None:
             }},
             "{cpp_doc(doc)}");
 """
-        doc_check = [
-            f"True when the renderer backend supports DrawCallback_{cpp}:",
-            f"ImDrawList.{snake}() then works.",
-        ]
-        stub_platform_io += f'''
-        def has_draw_callback_{snake}(self) -> bool:
-            """{stub_doc(doc_check)}"""
-            pass
-'''
-        pydef_platform_io += f"""
-        LG_CLASS.def("has_draw_callback_{snake}",
-            [](const ImGuiPlatformIO& self) {{ return self.DrawCallback_{cpp} != nullptr; }},
-            "{cpp_doc(doc_check)}");
-"""
 
     options.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ImDrawList", stub_code=stub_draw_list, pydef_code=pydef_draw_list
-    )
-    options.custom_bindings.add_custom_bindings_to_class(
-        qualified_class="ImGuiPlatformIO", stub_code=stub_platform_io, pydef_code=pydef_platform_io
     )
 
 

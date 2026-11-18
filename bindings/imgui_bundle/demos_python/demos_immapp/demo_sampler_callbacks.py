@@ -68,14 +68,13 @@ def image_with_caption(tex_ref: imgui.ImTextureRef, caption: str) -> None:
 
 def gui() -> None:
     draw_list = imgui.get_window_draw_list()
-    platform_io = imgui.get_platform_io()
 
     rich_md.render("""
         # Sharp or smooth pixels
         Dear ImGui draws images with *linear* sampling: shown large, a small image blurs, its pixels blend.
         For a heatmap or pixel art, ask the renderer for *nearest* sampling: each pixel stays a sharp square.
         """)
-    if platform_io.has_draw_callback_set_sampler_nearest():
+    if draw_list.can_set_sampler_nearest():
         draw_list.set_sampler_nearest()  # the images that follow: nearest sampling
         image_with_caption(heatmap_texture_ref(), "Nearest: sharp")
         draw_list.set_sampler_linear()  # back to the default, for what follows
@@ -90,7 +89,7 @@ def gui() -> None:
         """)
     if not HAS_PYOPENGL:
         imgui.text("Install PyOpenGL to see this part: pip install PyOpenGL")
-    elif not platform_io.has_draw_callback_set_sampler_from_tex():
+    elif not draw_list.can_set_sampler_from_tex():
         imgui.text("This renderer cannot use a texture's own filter (OpenGL only).")
     else:
         draw_list.set_sampler_from_tex()  # the images that follow: their own filter

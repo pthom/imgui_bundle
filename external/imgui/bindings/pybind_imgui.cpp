@@ -7383,41 +7383,57 @@ void py_init_module_imgui_main(nb::module_& m)
         [](ImDrawList& self, const std::vector<ImVec2>& points, ImU32 col) {
             self.AddConcavePolyFilled(points.data(), (int)points.size(), col); },
         nb::arg("points"), nb::arg("col"));
+    pyClassImDrawList.def("can_set_sampler_nearest",
+        [](const ImDrawList& self) { return ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest != nullptr; },
+        "True when the renderer backend supports set_sampler_nearest().\nC++: ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest != NULL");
+
     pyClassImDrawList.def("set_sampler_nearest",
         [](ImDrawList& self) {
             ImDrawCallback callback = ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest;
             if (callback == nullptr)
-                throw std::runtime_error("ImDrawList.set_sampler_nearest(): the renderer backend sets no DrawCallback_SetSamplerNearest (the pure-Python backends set none). Check with imgui.get_platform_io().has_draw_callback_set_sampler_nearest().");
+                throw std::runtime_error("ImDrawList.set_sampler_nearest(): the renderer backend sets no DrawCallback_SetSamplerNearest (the pure-Python backends set none). Check with draw_list.can_set_sampler_nearest().");
             self.AddCallback(callback, nullptr);
         },
-        "Draws the images that follow with nearest sampling (sharp pixels when zoomed in),\nuntil set_sampler_linear().\nRaises RuntimeError when the renderer backend does not support it. Check with\nimgui.get_platform_io().has_draw_callback_set_sampler_nearest().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest)");
+        "Draws the images that follow with nearest sampling (sharp pixels when zoomed in),\nuntil set_sampler_linear().\nRaises RuntimeError when the renderer backend does not support it: check with can_set_sampler_nearest().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerNearest)");
+
+    pyClassImDrawList.def("can_set_sampler_linear",
+        [](const ImDrawList& self) { return ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear != nullptr; },
+        "True when the renderer backend supports set_sampler_linear().\nC++: ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear != NULL");
 
     pyClassImDrawList.def("set_sampler_linear",
         [](ImDrawList& self) {
             ImDrawCallback callback = ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear;
             if (callback == nullptr)
-                throw std::runtime_error("ImDrawList.set_sampler_linear(): the renderer backend sets no DrawCallback_SetSamplerLinear (the pure-Python backends set none). Check with imgui.get_platform_io().has_draw_callback_set_sampler_linear().");
+                throw std::runtime_error("ImDrawList.set_sampler_linear(): the renderer backend sets no DrawCallback_SetSamplerLinear (the pure-Python backends set none). Check with draw_list.can_set_sampler_linear().");
             self.AddCallback(callback, nullptr);
         },
-        "Draws the images that follow with linear sampling (smooth), Dear ImGui's default.\nRaises RuntimeError when the renderer backend does not support it. Check with\nimgui.get_platform_io().has_draw_callback_set_sampler_linear().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear)");
+        "Draws the images that follow with linear sampling (smooth), Dear ImGui's default.\nRaises RuntimeError when the renderer backend does not support it: check with can_set_sampler_linear().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerLinear)");
+
+    pyClassImDrawList.def("can_set_sampler_from_tex",
+        [](const ImDrawList& self) { return ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex != nullptr; },
+        "True when the renderer backend supports set_sampler_from_tex().\nC++: ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex != NULL");
 
     pyClassImDrawList.def("set_sampler_from_tex",
         [](ImDrawList& self) {
             ImDrawCallback callback = ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex;
             if (callback == nullptr)
-                throw std::runtime_error("ImDrawList.set_sampler_from_tex(): the renderer backend sets no DrawCallback_SetSamplerFromTex (the pure-Python backends set none). Check with imgui.get_platform_io().has_draw_callback_set_sampler_from_tex().");
+                throw std::runtime_error("ImDrawList.set_sampler_from_tex(): the renderer backend sets no DrawCallback_SetSamplerFromTex (the pure-Python backends set none). Check with draw_list.can_set_sampler_from_tex().");
             self.AddCallback(callback, nullptr);
         },
-        "Draws the images that follow with the filter set on each texture by its creator.\nFor a texture you created in OpenGL (glTexParameteri): a texture made by Dear ImGui (ImTextureData)\ngets linear sampling. Supported by a few backends only: OpenGL2, OpenGL3, SDL_Renderer3.\nCome back with reset_render_state(): in OpenGL, a set_sampler_linear() or set_sampler_nearest()\nafter it writes its filter into the textures that follow, which then lose their own.\nRaises RuntimeError when the renderer backend does not support it. Check with\nimgui.get_platform_io().has_draw_callback_set_sampler_from_tex().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex)");
+        "Draws the images that follow with the filter set on each texture by its creator.\nFor a texture you created in OpenGL (glTexParameteri): a texture made by Dear ImGui (ImTextureData)\ngets linear sampling. Supported by a few backends only: OpenGL2, OpenGL3, SDL_Renderer3.\nCome back with reset_render_state(): in OpenGL, a set_sampler_linear() or set_sampler_nearest()\nafter it writes its filter into the textures that follow, which then lose their own.\nRaises RuntimeError when the renderer backend does not support it: check with can_set_sampler_from_tex().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_SetSamplerFromTex)");
+
+    pyClassImDrawList.def("can_reset_render_state",
+        [](const ImDrawList& self) { return ImGui::GetPlatformIO().DrawCallback_ResetRenderState != nullptr; },
+        "True when the renderer backend supports reset_render_state().\nC++: ImGui::GetPlatformIO().DrawCallback_ResetRenderState != NULL");
 
     pyClassImDrawList.def("reset_render_state",
         [](ImDrawList& self) {
             ImDrawCallback callback = ImGui::GetPlatformIO().DrawCallback_ResetRenderState;
             if (callback == nullptr)
-                throw std::runtime_error("ImDrawList.reset_render_state(): the renderer backend sets no DrawCallback_ResetRenderState (the pure-Python backends set none). Check with imgui.get_platform_io().has_draw_callback_reset_render_state().");
+                throw std::runtime_error("ImDrawList.reset_render_state(): the renderer backend sets no DrawCallback_ResetRenderState (the pure-Python backends set none). Check with draw_list.can_reset_render_state().");
             self.AddCallback(callback, nullptr);
         },
-        "Resets the renderer backend's render state to its defaults (linear sampling),\nwithout changing the textures. The way back after set_sampler_from_tex().\nRaises RuntimeError when the renderer backend does not support it. Check with\nimgui.get_platform_io().has_draw_callback_reset_render_state().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_ResetRenderState)");
+        "Resets the renderer backend's render state to its defaults (linear sampling),\nwithout changing the textures. The way back after set_sampler_from_tex().\nRaises RuntimeError when the renderer backend does not support it: check with can_reset_render_state().\nC++: draw_list->AddCallback(ImGui::GetPlatformIO().DrawCallback_ResetRenderState)");
 
 
 
@@ -7978,21 +7994,6 @@ void py_init_module_imgui_main(nb::module_& m)
         },
         nb::arg("f").none(),
         "Optional: Open link/folder/file in OS Shell. Callable[[Context, str], bool], expected to return False on failure.");
-    pyClassImGuiPlatformIO.def("has_draw_callback_set_sampler_nearest",
-        [](const ImGuiPlatformIO& self) { return self.DrawCallback_SetSamplerNearest != nullptr; },
-        "True when the renderer backend supports DrawCallback_SetSamplerNearest:\nImDrawList.set_sampler_nearest() then works.");
-
-    pyClassImGuiPlatformIO.def("has_draw_callback_set_sampler_linear",
-        [](const ImGuiPlatformIO& self) { return self.DrawCallback_SetSamplerLinear != nullptr; },
-        "True when the renderer backend supports DrawCallback_SetSamplerLinear:\nImDrawList.set_sampler_linear() then works.");
-
-    pyClassImGuiPlatformIO.def("has_draw_callback_set_sampler_from_tex",
-        [](const ImGuiPlatformIO& self) { return self.DrawCallback_SetSamplerFromTex != nullptr; },
-        "True when the renderer backend supports DrawCallback_SetSamplerFromTex:\nImDrawList.set_sampler_from_tex() then works.");
-
-    pyClassImGuiPlatformIO.def("has_draw_callback_reset_render_state",
-        [](const ImGuiPlatformIO& self) { return self.DrawCallback_ResetRenderState != nullptr; },
-        "True when the renderer backend supports DrawCallback_ResetRenderState:\nImDrawList.reset_render_state() then works.");
 
 
 

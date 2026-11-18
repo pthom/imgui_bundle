@@ -26,6 +26,6 @@ def draw_list() -> Iterator[imgui.ImDrawList]:
 
 @pytest.mark.parametrize("name", NAMES)
 def test_without_backend(draw_list: imgui.ImDrawList, name: str) -> None:
-    assert getattr(imgui.get_platform_io(), f"has_draw_callback_{name}")() is False
-    with pytest.raises(RuntimeError, match=f"has_draw_callback_{name}"):
+    assert getattr(draw_list, f"can_{name}")() is False
+    with pytest.raises(RuntimeError, match=f"can_{name}"):
         getattr(draw_list, name)()

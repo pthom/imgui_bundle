@@ -17,7 +17,7 @@
 - **Sharp pixels in Python**: Dear ImGui's standard draw callbacks, which switch the sampling of the images that follow:
   - `draw_list.set_sampler_nearest()`, then `set_sampler_linear()` to come back to the default;
   - `set_sampler_from_tex()`: the filter of a texture you made in OpenGL (OpenGL only), then `reset_render_state()` to come back;
-  - each raises an error when the renderer backend does not support it: `imgui.get_platform_io().has_draw_callback_set_sampler_nearest()` (and the like) tells it beforehand;
+  - each raises an error when the renderer backend does not support it: `draw_list.can_set_sampler_nearest()` (and the like) tells it beforehand;
   - a demo: `demo_sampler_callbacks.py`.
 
 ## Fixes
