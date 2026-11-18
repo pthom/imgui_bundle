@@ -1123,6 +1123,25 @@ No copy between the GPU and the CPU at each frame.
 
 ::::
 
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_sampler_callbacks.jpg
+:alt: Sharp or smooth pixels
+:::
+
+### Sharp or smooth pixels
+
+Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones.
+
+:::{dropdown} More
+The draw list's `set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and `set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of a texture you made yourself.
+:::
+
+*Uses: OpenGL*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_sampler_callbacks.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py)
+
+::::
+
 :::::
 
 ## In the browser

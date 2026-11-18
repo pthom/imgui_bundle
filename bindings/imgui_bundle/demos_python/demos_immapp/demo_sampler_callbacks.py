@@ -1,5 +1,10 @@
-"""Sharp or smooth pixels: a small image shown large, with nearest sampling (each pixel a sharp square) and with
-linear sampling, Dear ImGui's default (the pixels blend). The draw list's set_sampler_*() methods switch between them."""
+"""Sharp or smooth pixels
+
+Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. The draw list's
+`set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and
+`set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of
+a texture you made yourself.
+"""
 
 import numpy as np
 from numpy.typing import NDArray

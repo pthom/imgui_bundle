@@ -631,6 +631,15 @@
     ],
     "cpp": false
   },
+  "demo_sampler_callbacks.py": {
+    "title": "Sharp or smooth pixels",
+    "text": "Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. The draw list's\n`set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and\n`set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of\na texture you made yourself.",
+    "summary": "Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones.",
+    "uses": [
+      "OpenGL"
+    ],
+    "cpp": false
+  },
   "minimal_example.py": {
     "title": "Deploy to the Web: Minimal HTML Example",
     "text": "Dear ImGui Bundle apps can run entirely in the browser using [Pyodide](https://pyodide.org). The HTML file below is a **complete, self-contained app** in about 80 lines - no server, no build step.",

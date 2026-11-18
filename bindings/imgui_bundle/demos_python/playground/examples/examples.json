@@ -704,6 +704,12 @@
             "where": "browser"
         },
         {
+            "label": "Sharp or smooth pixels",
+            "filename": "demo_sampler_callbacks.py",
+            "category": "3D and shaders",
+            "source": "demos_immapp"
+        },
+        {
             "label": "Minimal HTML page",
             "filename": "minimal_example.py",
             "category": "In the browser"

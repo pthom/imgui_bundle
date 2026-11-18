@@ -934,6 +934,24 @@ shown in the GUI by `imgui.image()`. No copy between the GPU and the CPU at each
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=webgl_texture_in_image.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webgl_texture_in_image.py)
 
+### Sharp or smooth pixels
+
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_sampler_callbacks.jpg
+:alt: Sharp or smooth pixels
+:width: 400px
+:::
+
+Show a small image, a heatmap or pixel art, with sharp pixels instead of blurred ones. The draw list's
+`set_sampler_nearest()` draws the images that follow with nearest sampling (each pixel a sharp square), and
+`set_sampler_linear()` comes back to Dear ImGui's default. With PyOpenGL, `set_sampler_from_tex()` keeps the filter of
+a texture you made yourself.
+
+*Python*
+
+*Uses: OpenGL*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_sampler_callbacks.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_sampler_callbacks.py)
+
 ## In the browser
 
 Deploy to the web, and use the browser's WebAudio and WebGL from Python.
