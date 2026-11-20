@@ -270,6 +270,8 @@ void py_init_module_rich_md(nb::module_& m)
                 return self.headerSizeFactors;
             },
             "Multipliers for header sizes, from h1 to h6")
+        .def_rw("code_size_factor", &RichMd::MarkdownFontOptions::codeSizeFactor, " Multiplier for the code font size, relative to regularSize (0.1 at least): inline code, and the code blocks\n when codeBlockSizeFactor is negative")
+        .def_rw("code_block_size_factor", &RichMd::MarkdownFontOptions::codeBlockSizeFactor, "Multiplier for the font size of the code blocks, relative to regularSize. Negative: codeSizeFactor")
         .def_rw("merge_fonts", &RichMd::MarkdownFontOptions::mergeFonts, " Fonts merged into every markdown font (asset paths), e.g. an icon or a CJK font.\n Since Dear ImGui 1.92 glyphs are loaded on demand, so merging a large font costs nothing until it is used.")
         ;
 
@@ -430,8 +432,13 @@ void py_init_module_rich_md(nb::module_& m)
         ;
 
 
+    m.def("get_font_options",
+        RichMd::GetFontOptions,
+        " The font options of the current context. Their sizes (regularSize, headerSizeFactors, codeSizeFactor,\n codeBlockSizeFactor) may change at any time: the next render follows. The font files (and mergeFonts) are read\n once, when the fonts are loaded.",
+        nb::rv_policy::reference);
+
     m.def("get_code_font",
-        RichMd::GetCodeFont, "The markdown's fonts, at the size that a render would use now (see Render(): they follow a pushed size)");
+        RichMd::GetCodeFont, " The markdown's fonts, at the size that a render would use now (see Render(): they follow a pushed size).\n GetCodeFont(), called while a code block is drawn (e.g. from a HostServices::RenderCodeBlock), gives the\n block's size (codeBlockSizeFactor)");
 
 
     auto pyClassMarkdownFontSpec =

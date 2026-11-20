@@ -42,6 +42,8 @@ def main() -> None:
     options.struct_create_default_named_ctor__regex = ""
     # the contexts belong to rich_md (destroy_context), never to Python
     options.fn_return_force_policy_reference_for_pointers__regex = "GetCodeFont|GetFont|CreateContext|GetCurrentContext"
+    # the context's font options, changed in place (a copy would change nothing)
+    options.fn_return_force_policy_reference_for_references__regex = r"^GetFontOptions$"
     # The current context may be None
     options.fn_params_pointer_accept_none__regex = r"^SetCurrentContext$"
     options.fn_return_pointer_optional__regex = r"^GetCurrentContext$"
