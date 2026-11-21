@@ -3,6 +3,14 @@
 import subprocess
 import sys
 
+import pytest
+import imgui_bundle
+
+pytestmark = pytest.mark.skipif(
+    not imgui_bundle.has_submodule("immvision"),
+    reason="immvision submodule not available in this build",
+)
+
 ADD_BEFORE_THE_APP = """
 import numpy as np
 from imgui_bundle import immvision
