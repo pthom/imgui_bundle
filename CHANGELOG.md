@@ -36,6 +36,7 @@
 - Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
 - ImmVision: a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails. Fine detail showed moiré: the backend's sampler had no mipmaps. ImmVision now samples them (trilinear filtering) with Dear ImGui 1.93's `DrawCallback_SetSamplerFromTex`, on the OpenGL backends.
 - ImmVision: `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed: there was no OpenGL context yet.
+- ImPlot, on a screen at a high DPI scale (Windows at 250%): the axes' ticks are as far apart as at 100%, for the same window. They were 2.5 times denser, and their labels crowded or overlapped: ImPlot counted the spacing in pixels, while the labels grow with the scale. Reported by Diederick Niehorster ([#501](https://github.com/pthom/imgui_bundle/issues/501)).
 
 # v1.93.0
 
