@@ -191,6 +191,20 @@ void py_init_module_imgui_node_editor(nb::module_& m)
         nb::arg("value").none(),
         "File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file");
 
+    pyClassConfig.def_prop_rw("custom_zoom_levels",
+        [](const ax::NodeEditor::Config& self) {
+            return std::vector<float>(self.CustomZoomLevels.begin(), self.CustomZoomLevels.end());
+        },
+        [](ax::NodeEditor::Config& self, const std::vector<float>& levels) {
+            for (size_t i = 0; i < levels.size(); ++i)
+                if (!(levels[i] > 0.0f) || (i > 0 && !(levels[i] > levels[i - 1])))
+                    throw nb::value_error("custom_zoom_levels: positive values, in ascending order (e.g. [1.0, 2.0, 4.0])");
+            self.CustomZoomLevels.clear();
+            for (float level : levels)
+                self.CustomZoomLevels.push_back(level);
+        },
+        "The zoom levels the wheel steps through, as scales (2.0: twice as big), positive and ascending. []: the default levels");
+
 
 
 
@@ -768,6 +782,17 @@ void py_init_module_imgui_node_editor(nb::module_& m)
 
     m.def("get_current_zoom",
         ax::NodeEditor::GetCurrentZoom, " Returns the INVERSE of the zoom: the size of a pixel in canvas units.\n 1.0 at 100%, 2.0 when the content is drawn at half size (zoomed out), 0.5 when it is drawn twice as big (zoomed in).\n To convert positions, use ScreenToCanvas() / CanvasToScreen().");
+
+    m.def("get_zoom",
+        ax::NodeEditor::GetZoom, "The view's scale, as Config::CustomZoomLevels: 2.0 draws the content twice as big (the inverse of GetCurrentZoom()).");
+
+    m.def("set_zoom",
+        ax::NodeEditor::SetZoom,
+        nb::arg("zoom"),
+        "Sets the view's scale at once, around the view's center (e.g. to snap to a zoom level). A running navigation ends first.");
+
+    m.def("is_navigating",
+        ax::NodeEditor::IsNavigating, "True while the view animates: a wheel zoom, NavigateToContent(), NavigateToSelection(), the F key.");
 
     m.def("get_hovered_node",
         ax::NodeEditor::GetHoveredNode, "The node under the mouse (0 if none)");

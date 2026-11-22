@@ -20,6 +20,10 @@
   - `set_sampler_from_tex()`: the filter of a texture you made in OpenGL (OpenGL only), then `reset_render_state()` to come back;
   - each raises an error when the renderer backend does not support it: `draw_list.can_set_sampler_nearest()` (and the like) tells it beforehand;
   - a demo: `demo_sampler_callbacks.py`.
+- **Node editor: the zoom under the app's control** (C++ and Python), requested by monster-toys ([#515](https://github.com/pthom/imgui_bundle/issues/515)):
+  - `imgui_node_editor.Config.custom_zoom_levels`: the scales the wheel steps through, e.g. `[1.0, 2.0, 3.0, 4.0]` for pixel art;
+  - `get_zoom()` and `set_zoom()`: the view's scale, in that unit (`get_current_zoom()` returns its inverse);
+  - `is_navigating()`: true while the view animates, e.g. to snap the zoom to a level once a fit has ended.
 
 ## Fixes
 
@@ -37,6 +41,7 @@
 - ImmVision: a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails. Fine detail showed moiré: the backend's sampler had no mipmaps. ImmVision now samples them (trilinear filtering) with Dear ImGui 1.93's `DrawCallback_SetSamplerFromTex`, on the OpenGL backends.
 - ImmVision: `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed: there was no OpenGL context yet.
 - ImPlot and ImPlot3D, on a screen at a high DPI scale (Windows at 250%): the axes' ticks are as far apart as at 100%, for the same window. They were 2.5 times denser, and their labels crowded or overlapped: they counted the spacing in pixels, while the labels grow with the scale. Reported by Diederick Niehorster ([#501](https://github.com/pthom/imgui_bundle/issues/501)).
+- Node editor: a wheel step ends exactly on its zoom level (1.25, not 1.2499999).
 
 # v1.93.0
 

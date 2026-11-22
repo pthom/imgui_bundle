@@ -87,12 +87,17 @@ def main() -> None:
 
     # Config::SettingsFile is a `const char*`, and the editor keeps the pointer (it reads it at each load / save):
     # a Python str cannot be stored there. It is published as a property whose setter interns the string.
+    # Config::CustomZoomLevels is an ImVector<float> (skipped with the other ImVector members): published as a
+    # property that copies a list of floats.
     options.member_exclude_by_name__regex = "^SettingsFile$"
     options.custom_bindings.add_custom_bindings_to_class(
         qualified_class="ax::NodeEditor::Config",
         stub_code='''
         # File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file
         settings_file: Optional[str]
+        # The zoom levels the wheel steps through, as scales (2.0: twice as big), positive and ascending; read at each
+        # wheel step. []: the default levels (0.1 to 8). get_zoom() and set_zoom() use the same unit.
+        custom_zoom_levels: List[float]
     ''',
         pydef_code="""
         LG_CLASS.def_prop_rw("settings_file",
@@ -110,6 +115,20 @@ def main() -> None:
             },
             nb::arg("value").none(),
             "File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file");
+
+        LG_CLASS.def_prop_rw("custom_zoom_levels",
+            [](const ax::NodeEditor::Config& self) {
+                return std::vector<float>(self.CustomZoomLevels.begin(), self.CustomZoomLevels.end());
+            },
+            [](ax::NodeEditor::Config& self, const std::vector<float>& levels) {
+                for (size_t i = 0; i < levels.size(); ++i)
+                    if (!(levels[i] > 0.0f) || (i > 0 && !(levels[i] > levels[i - 1])))
+                        throw nb::value_error("custom_zoom_levels: positive values, in ascending order (e.g. [1.0, 2.0, 4.0])");
+                self.CustomZoomLevels.clear();
+                for (float level : levels)
+                    self.CustomZoomLevels.push_back(level);
+            },
+            "The zoom levels the wheel steps through, as scales (2.0: twice as big), positive and ascending. []: the default levels");
     """,
     )
 

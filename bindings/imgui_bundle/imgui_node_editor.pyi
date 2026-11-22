@@ -252,6 +252,9 @@ class Config:
         pass
     # File where the state of the editor is saved (positions of the nodes, view, selection). None: no settings file
     settings_file: Optional[str]
+    # The zoom levels the wheel steps through, as scales (2.0: twice as big), positive and ascending; read at each
+    # wheel step. []: the default levels (0.1 to 8). get_zoom() and set_zoom() use the same unit.
+    custom_zoom_levels: List[float]
 
 # ------------------------------------------------------------------------------
 #    Style
@@ -1206,6 +1209,21 @@ def get_current_zoom() -> float:
     1.0 at 100%, 2.0 when the content is drawn at half size (zoomed out), 0.5 when it is drawn twice as big (zoomed in).
     To convert positions, use ScreenToCanvas() / CanvasToScreen().
     """
+    pass
+
+# IMGUI_NODE_EDITOR_API float GetZoom();    /* original C++ signature */
+def get_zoom() -> float:
+    """The view's scale, as Config::CustomZoomLevels: 2.0 draws the content twice as big (the inverse of GetCurrentZoom())."""
+    pass
+
+# IMGUI_NODE_EDITOR_API void  SetZoom(float zoom);    /* original C++ signature */
+def set_zoom(zoom: float) -> None:
+    """Sets the view's scale at once, around the view's center (e.g. to snap to a zoom level). A running navigation ends first."""
+    pass
+
+# IMGUI_NODE_EDITOR_API bool  IsNavigating();    /* original C++ signature */
+def is_navigating() -> bool:
+    """True while the view animates: a wheel zoom, NavigateToContent(), NavigateToSelection(), the F key."""
     pass
 
 # --- Input queries (call between Begin and End) ---------------------------
