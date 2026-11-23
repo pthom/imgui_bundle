@@ -259,6 +259,10 @@ Em units, rows that fill, aligned groups, label columns, a help marker for mouse
 ::::
 
 ::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/manual_imgui_touch.jpg
+:alt: ImGuiTouch: the interactive manual
+:::
+
 ### ImGuiTouch: the interactive manual
 
 [ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe, the long press, the pinch, the phone's keyboard.
@@ -350,6 +354,26 @@ Content that changes on its own says so with `hello_imgui.set_item_is_live()`, a
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_powersave.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_powersave.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp)
+
+::::
+
+::::{card}
+:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_touch_screen.jpg
+:alt: Touch screens (phones, tablets)
+:::
+
+### Touch screens (phones, tablets)
+
+On a phone, a tablet or a touch laptop: a swipe, a tap, a long press, a pinch, the keyboard.
+
+:::{dropdown} More
+Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
+:::
+
+*Uses: ImPlot, ImmVision, ImGuiTouch*
+
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
 
 ::::
 
@@ -1182,26 +1206,6 @@ The HTML file below is a **complete, self-contained app** in about 80 lines - no
 *Uses: code editor*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=minimal_example.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py)
-
-::::
-
-::::{card}
-:::{image} ../../clone_website_resources/imgui-bundle.pages.dev/resources/playground/demo_touch_screen.jpg
-:alt: Touch screens (phones, tablets)
-:::
-
-### Touch screens (phones, tablets)
-
-The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
-
-:::{dropdown} More
-On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
-:::
-
-*Uses: ImPlot, ImmVision, ImGuiTouch*
-
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py)\
-{span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
 
 ::::
 

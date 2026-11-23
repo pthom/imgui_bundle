@@ -1,9 +1,9 @@
 """
-On a touch screen: the gestures of a phone, in the browser
+On a touch screen: the gestures of a phone
 
-The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard.
-On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls,
-a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a
+On a phone, a tablet or a touch laptop: a swipe, a tap, a long press, a pinch, the keyboard.
+Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger
+opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a
 node editor, two fingers pan, and a keyboard button appears next to a text field.
 
 Nothing to write in the app: the gestures come from `RunnerParams.touch_config` (`scroll_mode`, `pinch_scales_font`,

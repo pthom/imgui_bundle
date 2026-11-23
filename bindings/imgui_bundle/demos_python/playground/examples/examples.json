@@ -266,6 +266,16 @@
             "source": "demos_immapp"
         },
         {
+            "label": "Touch screens (phones, tablets)",
+            "filename": "demo_touch_screen.py",
+            "category": "Build an app",
+            "source": "demos_immapp",
+            "bundle_folders": [
+                "../demos_assets"
+            ],
+            "in_place": true
+        },
+        {
             "label": "Chinese and other non-Latin fonts",
             "filename": "demo_chinese_font.py",
             "category": "Build an app",
@@ -730,16 +740,6 @@
             "label": "Minimal HTML page",
             "filename": "minimal_example.py",
             "category": "In the browser"
-        },
-        {
-            "label": "Touch screens (phones, tablets)",
-            "filename": "demo_touch_screen.py",
-            "category": "In the browser",
-            "source": "demos_immapp",
-            "bundle_folders": [
-                "../demos_assets"
-            ],
-            "in_place": true
         },
         {
             "label": "WebAudio synthesizer",

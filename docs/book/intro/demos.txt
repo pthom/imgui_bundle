@@ -112,6 +112,12 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_powersave.py
   Run, C++: https://imgui-bundle.pages.dev/explorer/demo_powersave.html
+- Touch screens (phones, tablets): On a phone, a tablet or a touch laptop: a swipe, a tap, a long press, a pinch, the keyboard. Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
+  Uses: ImPlot, ImmVision, ImGuiTouch
+  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp
+  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py
+  Run, C++: https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html
 - Chinese and other non-Latin fonts: The bundled fonts cover Latin, Greek and Cyrillic only: other scripts show up as ???. The fix: load a font that has the glyphs you need. This demo shows two ways, with Noto Sans SC:
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_chinese_font.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_chinese_font.cpp
@@ -330,12 +336,6 @@ Deploy to the web, and use the browser's WebAudio and WebGL from Python.
   Uses: code editor
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/minimal_example.py
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=minimal_example.py
-- Touch screens (phones, tablets): The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, the keyboard. On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
-  Uses: ImPlot, ImmVision, ImGuiTouch
-  Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py
-  C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp
-  Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py
-  Run, C++: https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html
 - WebAudio synthesizer (browser only): A small synthesizer written in Python: play the piano with the mouse or the computer keyboard, or let it play a tune. Pick a waveform, add some echo, and watch the scope. Pyodide only: it plays through the browser's WebAudio API, via Pyodide's js interop.
   Uses: knobs, browser APIs
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/playground/examples/webaudio_synth.py

@@ -1,10 +1,10 @@
-// On a touch screen: the gestures of a phone, in the browser (the twin of demos_python/demos_immapp/demo_touch_screen.py)
+// On a touch screen: the gestures of a phone (the twin of demos_python/demos_immapp/demo_touch_screen.py)
 //
-// On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held
-// finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two
-// fingers pan, and a keyboard button appears next to a text field. Nothing to write in the app: the gestures come from
-// RunnerParams::touchConfig (ScrollMode, PinchScalesFont, LongPressIsRightClick...). On a desktop, tick "Simulate a touch
-// source" to try them with the mouse.
+// On a phone, a tablet or a touch laptop, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap
+// clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node
+// editor, two fingers pan, and a keyboard button appears next to a text field. Nothing to write in the app: the
+// gestures come from RunnerParams::touchConfig (ScrollMode, PinchScalesFont, LongPressIsRightClick...). On a desktop,
+// tick "Simulate a touch source" to try them with the mouse.
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
