@@ -76,13 +76,13 @@ Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section b
   C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/im_anim_demo_basics.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_im_anim.py
   Run, C++: https://pthom.github.io/imgui_explorer/?lib=imanim
-- ImGuiKit: the interactive manual: The additions of ImGuiKit to Dear ImGui, section by section, with the code of each beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+- ImGuiKit: the interactive manual: ImGuiKit: simple widgets and layout utilities for Dear ImGui. Its demo, section by section, with the code of each beside it: em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
   Uses: ImGuiKit
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py
   Run, C++: https://pthom.github.io/imgui_explorer/?lib=imguikit
-- ImGuiTouch: the interactive manual: ImGuiTouch makes Dear ImGui work on a touch screen, as on a phone. The swipe, the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+- ImGuiTouch: the interactive manual: ImGuiTouch: touch screen utilities for Dear ImGui. The swipe, the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
   Uses: ImGuiTouch
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_touch_demo.cpp

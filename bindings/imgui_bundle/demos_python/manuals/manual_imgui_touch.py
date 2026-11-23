@@ -1,9 +1,9 @@
 """ImGuiTouch: the interactive manual
 
-[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone. The swipe,
-the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in
-Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear
-ImGui and its libraries.
+[ImGuiTouch](https://github.com/pthom/imgui_touch): touch screen utilities for Dear ImGui. The swipe, the long press,
+the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++.
+From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its
+libraries.
 """
 from imgui_bundle import imgui, immapp
 

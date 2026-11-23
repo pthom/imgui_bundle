@@ -503,8 +503,8 @@
   },
   "manual_imgui_kit.py": {
     "title": "ImGuiKit: the interactive manual",
-    "text": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of\neach beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented\nswitch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual\nfor Dear ImGui and its libraries.",
-    "summary": "The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.",
+    "text": "[ImGuiKit](https://github.com/pthom/imgui_kit): simple widgets and layout utilities for Dear ImGui. Its demo, section by\nsection, with the code of each beside it: em units, rows that fill, aligned groups, label columns, a help marker for\nmouse and touch, a segmented switch, in Python and C++. From\n[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.",
+    "summary": "[ImGuiKit](https://github.com/pthom/imgui_kit): simple widgets and layout utilities for Dear ImGui.",
     "uses": [
       "ImGuiKit"
     ],
@@ -512,8 +512,8 @@
   },
   "manual_imgui_touch.py": {
     "title": "ImGuiTouch: the interactive manual",
-    "text": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone. The swipe,\nthe long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in\nPython and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear\nImGui and its libraries.",
-    "summary": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone.",
+    "text": "[ImGuiTouch](https://github.com/pthom/imgui_touch): touch screen utilities for Dear ImGui. The swipe, the long press,\nthe pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++.\nFrom [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its\nlibraries.",
+    "summary": "[ImGuiTouch](https://github.com/pthom/imgui_touch): touch screen utilities for Dear ImGui.",
     "uses": [
       "ImGuiTouch"
     ],

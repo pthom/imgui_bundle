@@ -245,10 +245,10 @@ Tweens, easings, oscillators, delays, callbacks, stagger, loops and chains, in P
 
 ### ImGuiKit: the interactive manual
 
-The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of each beside it.
+[ImGuiKit](https://github.com/pthom/imgui_kit): simple widgets and layout utilities for Dear ImGui.
 
 :::{dropdown} More
-Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+Its demo, section by section, with the code of each beside it: em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
 :::
 
 *Uses: ImGuiKit*
@@ -265,7 +265,7 @@ Em units, rows that fill, aligned groups, label columns, a help marker for mouse
 
 ### ImGuiTouch: the interactive manual
 
-[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone.
+[ImGuiTouch](https://github.com/pthom/imgui_touch): touch screen utilities for Dear ImGui.
 
 :::{dropdown} More
 The swipe, the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.

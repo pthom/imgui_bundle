@@ -1,9 +1,9 @@
 """ImGuiKit: the interactive manual
 
-The additions of [ImGuiKit](https://github.com/pthom/imgui_kit) to Dear ImGui, section by section, with the code of
-each beside it. Em units, rows that fill, aligned groups, label columns, a help marker for mouse and touch, a segmented
-switch, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual
-for Dear ImGui and its libraries.
+[ImGuiKit](https://github.com/pthom/imgui_kit): simple widgets and layout utilities for Dear ImGui. Its demo, section by
+section, with the code of each beside it: em units, rows that fill, aligned groups, label columns, a help marker for
+mouse and touch, a segmented switch, in Python and C++. From
+[Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
 """
 from imgui_bundle import imgui, immapp
 
