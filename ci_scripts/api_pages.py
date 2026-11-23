@@ -197,7 +197,7 @@ LIBRARIES = [
             "https://github.com/pthom/imgui_explorer", "intro/interactive_manuals",
             [("imgui_bundle.imgui_explorer", "imgui_explorer.pyi")],
             demos=["manual_imgui.py", "manual_implot.py", "manual_implot3d.py", "manual_im_anim.py",
-                   "manual_imgui_kit.py"]),
+                   "manual_imgui_kit.py", "manual_imgui_touch.py"]),
     Library("webgl", "WebGL helpers",
             "WebGL from Python, in Pyodide.",
             "https://github.com/pthom/imgui_bundle", "python/python_pyodide",

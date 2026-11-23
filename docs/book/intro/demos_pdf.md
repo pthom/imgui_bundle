@@ -214,6 +214,19 @@ for Dear ImGui and its libraries.
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=imguikit) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_kit.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp)
 
+### ImGuiTouch: the interactive manual
+
+[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe,
+the long press, the pinch, the phone's keyboard. Its demo, section by section, with the code of each beside it, in
+Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear
+ImGui and its libraries.
+
+*Python*
+
+*Uses: ImGuiTouch*
+
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py)
+
 ## Build an app
 
 Layouts, docking, backgrounds, fonts, testing: what a real application needs.

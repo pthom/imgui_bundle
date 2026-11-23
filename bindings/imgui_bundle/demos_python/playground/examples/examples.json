@@ -584,6 +584,21 @@
             ]
         },
         {
+            "label": "ImGuiTouch: the interactive manual",
+            "filename": "manual_imgui_touch.py",
+            "category": "Interactive manuals",
+            "source": "manuals",
+            "in_place": true,
+            "bundle_folders": [
+                "."
+            ],
+            "cpp": "external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_touch_demo.cpp",
+            "cpp_url": "https://pthom.github.io/imgui_explorer/?lib=imguitouch",
+            "uses": [
+                "ImGuiTouch"
+            ]
+        },
+        {
             "label": "Context managers (imgui_ctx)",
             "filename": "demo_python_context_manager.py",
             "category": "Python specifics",

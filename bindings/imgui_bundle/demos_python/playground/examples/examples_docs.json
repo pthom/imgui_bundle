@@ -499,6 +499,15 @@
     ],
     "cpp": true
   },
+  "manual_imgui_touch.py": {
+    "title": "ImGuiTouch: the interactive manual",
+    "text": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe,\nthe long press, the pinch, the phone's keyboard. Its demo, section by section, with the code of each beside it, in\nPython and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear\nImGui and its libraries.",
+    "summary": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe, the long press, the pinch, the phone's keyboard.",
+    "uses": [
+      "ImGuiTouch"
+    ],
+    "cpp": false
+  },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
     "text": "In Python, `with imgui_ctx.begin(\"Window\"):` replaces a `begin()` / `end()` pair, and the `end()` can no longer be\nforgotten. The same exists for child windows, menus, popups, tables, tabs, fonts and styles, and for ImPlot with\n`implot_ctx`. Open a section to try it and read its code. See the [Python\ntips](https://imgui-bundle.pages.dev/doc/python/python-tips/).",
