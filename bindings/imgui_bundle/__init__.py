@@ -204,6 +204,10 @@ if has_submodule("imgui_kit"):
     _install_imgui_kit_context_managers(imgui_kit)
     _publish("imgui_kit", imgui_kit)
     __all__.extend(["imgui_kit"])
+if has_submodule("imgui_touch"):
+    from imgui_bundle._imgui_bundle import imgui_touch as imgui_touch
+    _publish("imgui_touch", imgui_touch)
+    __all__.extend(["imgui_touch"])
 if has_submodule("im_file_dialog"):
     from imgui_bundle._imgui_bundle import im_file_dialog as im_file_dialog
     _publish("im_file_dialog", im_file_dialog)

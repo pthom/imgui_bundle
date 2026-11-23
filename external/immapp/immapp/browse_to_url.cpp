@@ -66,7 +66,7 @@ namespace ImmApp
         if (!IsWebAddress(url))
             return;
 #if defined(__EMSCRIPTEN__)
-        // The application's opener when it has one (imgui_kit's, installed by Hello ImGui: a new tab where the
+        // The application's opener when it has one (imgui_touch's, installed by Hello ImGui: a new tab where the
         // browser allows it, else the page itself, as for Dear ImGui's TextLinkOpenURL)
         if (ImGui::GetCurrentContext() && ImGui::GetPlatformIO().Platform_OpenInShellFn)
         {
@@ -78,7 +78,7 @@ namespace ImmApp
         std::string urlJs = JsStringLiteral(url);
         // The new tab gets no handle on this one (w.opener): it could otherwise replace the app's page
         std::string js_command =
-            "if (window.imguiKitPointerType === 1) window.location.assign(" + urlJs + ");"
+            "if (window.imguiTouchPointerType === 1) window.location.assign(" + urlJs + ");"
             " else { const w = window.open(" + urlJs + "); if (w) w.opener = null; else window.location.assign(" + urlJs + "); }";
         emscripten_run_script(js_command.c_str());
 #elif defined(_WIN32)

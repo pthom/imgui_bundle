@@ -984,7 +984,7 @@ node editor, two fingers pan, and a keyboard button appears next to a text field
 
 *Python, C++*
 
-*Uses: ImPlot, ImmVision, ImGuiKit*
+*Uses: ImPlot, ImmVision, ImGuiTouch*
 
 [Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [C++ version, in the explorer](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)
 

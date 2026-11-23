@@ -295,24 +295,24 @@ if (ImGui::SetItemKeyOwner(ImGuiKey_MouseWheelY))  // hovered: the wheel is this
 
 ### Touch screens (phones, tablets)
 
-An app run by Hello ImGui or ImmApp works on a touch screen with nothing to write: a swipe scrolls, a long press is a right click, a pinch scales the app or zooms a plot or an image, and a browser opens the phone's keyboard for text fields. Its settings: `RunnerParams.touch_config`. An app with its own backend sets the touch layer up once: `imgui_kit.touch.setup()`.
+An app run by Hello ImGui or ImmApp works on a touch screen with nothing to write: a swipe scrolls, a long press is a right click, a pinch scales the app or zooms a plot or an image, and a browser opens the phone's keyboard for text fields. Its settings: `RunnerParams.touch_config`. An app with its own backend sets the touch layer up once: `imgui_touch.setup()`.
 
 A widget of your own may need one call, right after it:
-- a widget that a finger drags (a canvas, a knob): `imgui_kit.touch.set_item_takes_drags()`, else a drag scrolls the page, and the widget gets the finger only after a hold;
-- a widget dragged along one axis: `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)`, so that a drag along it moves it and a drag across scrolls the page (the bundle's own sliders and drags need nothing);
-- a widget that zooms: `imgui_kit.touch.item_pinch()` returns two fingers' gesture (`center`, `center_delta`, `scale_delta`), so that a pinch zooms it and moves it instead of scaling the app; a widget that already zooms with the wheel: `imgui_kit.touch.set_item_pinch_as_wheel(1.1)` (and `set_item_two_finger_pan_as_mouse_drag(button)`).
+- a widget that a finger drags (a canvas, a knob): `imgui_touch.set_item_takes_drags()`, else a drag scrolls the page, and the widget gets the finger only after a hold;
+- a widget dragged along one axis: `imgui_touch.set_item_takes_drags(imgui_touch.Axis_.x)`, so that a drag along it moves it and a drag across scrolls the page (the bundle's own sliders and drags need nothing);
+- a widget that zooms: `imgui_touch.item_pinch()` returns two fingers' gesture (`center`, `center_delta`, `scale_delta`), so that a pinch zooms it and moves it instead of scaling the app; a widget that already zooms with the wheel: `imgui_touch.set_item_pinch_as_wheel(1.1)` (and `set_item_two_finger_pan_as_mouse_drag(button)`).
 
 ```python
 imgui.invisible_button("canvas", em_to_vec2(20, 12))
-imgui_kit.touch.set_item_takes_drags()  # a finger's drag pans the canvas at once
-pinch = imgui_kit.touch.item_pinch()  # two fingers: zoom by their spread (around pinch.center)
+imgui_touch.set_item_takes_drags()  # a finger's drag pans the canvas at once
+pinch = imgui_touch.item_pinch()  # two fingers: zoom by their spread (around pinch.center)
 if pinch.active:
     zoom *= pinch.scale_delta
 if imgui.set_item_key_owner(imgui.Key.mouse_wheel_y):  # the wheel zooms it too: 10% per notch
     zoom *= 1.1 ** imgui.get_io().mouse_wheel
 ```
 
-On a desktop, `imgui_kit.touch.get_config().simulate_touch = True` lets the mouse play a finger, to try it.
+On a desktop, `imgui_touch.get_config().simulate_touch = True` lets the mouse play a finger, to try it.
 
 ### Animations and live data: idling
 

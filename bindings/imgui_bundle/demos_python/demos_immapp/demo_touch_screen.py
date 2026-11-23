@@ -13,7 +13,7 @@ Nothing to write in the app: the gestures come from `RunnerParams.touch_config` 
 from typing import Any
 
 import numpy as np
-from imgui_bundle import ImVec2, ImVec4, hello_imgui, imgui, imgui_kit, immapp, immvision, implot, rich_md
+from imgui_bundle import ImVec2, ImVec4, hello_imgui, imgui, imgui_touch, immapp, immvision, implot, rich_md
 from imgui_bundle import register_demos_assets_folder
 
 register_demos_assets_folder()
@@ -27,7 +27,7 @@ GESTURES = """
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
 > [!NOTE]
-> * Hello ImGui and ImmApp install them. With your own backend and loop (such as a pure Python backend), add them with imgui_kit: `imgui_kit.touch.setup()` (see the ImGuiKit manual, section Touch).
+> * Hello ImGui and ImmApp install them. With your own backend and loop (such as a pure Python backend), add them with [imgui_touch](https://github.com/pthom/imgui_touch): `imgui_touch.setup()`.
 > * They are enabled by default. You do not need to change anything to get them.
 > * Configure them with `RunnerParams.touch_config` (`scroll_mode`, `pinch_scales_font`, `long_press_is_right_click`...).
 """
@@ -40,7 +40,7 @@ PLOTS = """
 - A double click (a double tap) fits the plot.
 
 > [!NOTE]
-> In Dear ImGui Bundle, ImPlot, ImPlot3D, ImmVision and the node editor take the pinch themselves. Another widget takes it with imgui_kit, right after it: `imgui_kit.touch.item_pinch()` returns the gesture; a widget that zooms with the wheel calls `imgui_kit.touch.set_item_pinch_as_wheel()` instead.
+> In Dear ImGui Bundle, ImPlot, ImPlot3D, ImmVision and the node editor take the pinch themselves. Another widget takes it with imgui_touch, right after it: `imgui_touch.item_pinch()` returns the gesture; a widget that zooms with the wheel calls `imgui_touch.set_item_pinch_as_wheel()` instead.
 """
 
 IMAGES = """
@@ -101,7 +101,7 @@ def page() -> None:
     imgui.pop_style_color()
     if not (io.config_flags & imgui.ConfigFlags_.is_touch_screen):
         # A desktop, in the browser too: the mouse plays the finger
-        config = imgui_kit.touch.get_config()
+        config = imgui_touch.get_config()
         _, config.simulate_touch = imgui.checkbox("Simulate a touch source", config.simulate_touch)
         imgui.same_line()
         sources = {imgui.MouseSource.mouse: "mouse", imgui.MouseSource.touch_screen: "touch screen", imgui.MouseSource.pen: "pen"}

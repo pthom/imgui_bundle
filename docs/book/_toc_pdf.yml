@@ -42,6 +42,7 @@ parts:
       - file: addons/tools
       - file: addons/widgets
       - file: addons/imgui_kit
+      - file: addons/imgui_touch
   - caption: Support
     chapters:
       - file: support/support_project

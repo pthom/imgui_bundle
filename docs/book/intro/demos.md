@@ -1183,7 +1183,7 @@ The gestures of a phone in the browser: a swipe, a tap, a long press, a pinch, t
 On a mobile or a tablet, Hello ImGui turns a finger into what its user expects: a swipe scrolls, a tap clicks, a held finger opens a context menu, a pinch scales the app (its font) or zooms a plot, an image or a node editor, two fingers pan, and a keyboard button appears next to a text field.
 :::
 
-*Uses: ImPlot, ImmVision, ImGuiKit*
+*Uses: ImPlot, ImmVision, ImGuiTouch*
 
 {span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=demo_touch_screen.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py)\
 {span .demo-lang}`C++:` [▶︎ Run](https://imgui-bundle.pages.dev/explorer/demo_touch_screen.html) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp)

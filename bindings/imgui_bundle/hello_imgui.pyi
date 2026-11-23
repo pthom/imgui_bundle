@@ -39,7 +39,7 @@ from imgui_bundle.imgui import (
 )
 
 from imgui_bundle.imgui import test_engine
-from imgui_bundle.imgui_kit import TouchConfig
+from imgui_bundle import imgui_touch
 
 # Notebook convenience API (injected at runtime)
 from . import hello_imgui_nb as nb  # noqa: F401
@@ -52,7 +52,7 @@ ImGuiDefaultSettings = imgui_default_settings  # noqa: F821
 
 ImGuiDockNodeFlags_ = DockNodeFlags_
 ImGuiDockNodeFlags = DockNodeFlags
-ImGuiTouchConfig = TouchConfig
+ImGuiTouchConfig = imgui_touch.Config
 
 DockSpaceName = str
 ImGuiTestEngine = test_engine.TestEngine
@@ -3087,11 +3087,11 @@ class RunnerParams:
     emscripten_fps: int = 0
 
     # ImGuiTouchConfig touchConfig;    /* original C++ signature */
-    # `touch_config`: _ImGuiTouchConfig (from imgui_kit)_.
+    # `touch_config`: _ImGuiTouchConfig (from imgui_touch)_.
     # The touch layer, as on a phone: the swipe (a finger drags the content, with inertia and a bounce), the long
-    # press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h.
+    # press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_touch.h.
     # To try the swipe with a mouse, set its scroll mode to Always (C++: `ImGuiTouchScrollMode_Always`,
-    # Python: `imgui_kit.TouchScrollMode_.always`).
+    # Python: `imgui_touch.ScrollMode_.always`).
     # Applied when it changes (a change through ImGuiTouch::GetConfig() then stays).
     touch_config: ImGuiTouchConfig
 
@@ -3491,7 +3491,7 @@ def set_tap_opens_url(rect_min: ImVec2Like, rect_max: ImVec2Like, url: str) -> b
     opens the url in a new tab, whatever the browser and the pointer. Call it each frame while the button or the link
     is shown (several rectangles per frame: the links of a text). Returns True when the page takes the link: the
     caller then does nothing on the click. False outside the browser: the caller opens the url itself on the click.
-    (imgui_kit's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place
+    (imgui_touch's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place
     every browser allows one; ImGui sees the click two frames later, too late for WebKit.)
     """
     pass

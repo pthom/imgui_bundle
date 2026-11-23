@@ -86,6 +86,14 @@ def lib_imgui_kit() -> ExternalLibrary:
     )
 
 
+def lib_imgui_touch() -> ExternalLibrary:
+    return ExternalLibrary(
+        name="imgui_touch",
+        official_git_url="https://github.com/pthom/imgui_touch.git",
+        official_branch="main",
+    )
+
+
 def lib_imgui_node_editor() -> ExternalLibrary:
     return ExternalLibrary(
         name="imgui-node-editor",
@@ -253,6 +261,7 @@ ALL_LIBS = [
     lib_imgui_command_palette(),
     lib_imgui_knobs(),
     lib_imgui_kit(),
+    lib_imgui_touch(),
     lib_imgui_node_editor(),
     lib_imgui_md(),
     lib_microtex(),

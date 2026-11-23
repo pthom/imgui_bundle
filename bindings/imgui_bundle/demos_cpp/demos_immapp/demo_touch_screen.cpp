@@ -12,7 +12,7 @@
 #include "implot/implot.h"
 #include "demo_utils/api_demos.h"
 #include "hello_imgui/hello_imgui.h"
-#include "imgui_kit/imgui_kit.h"
+#include "imgui_touch/imgui_touch.h"
 #include "imgui.h"
 #include "imgui_stdlib.h"
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
@@ -35,7 +35,7 @@ const char* GESTURES = R"(
 - **Tap a text field**, then the keyboard button that appears under it: type, move the caret from the keyboard's space bar.
 
 > [!NOTE]
-> * Hello ImGui and ImmApp install them. With your own backend and loop, add them with imgui_kit: `ImGuiTouch::Setup()` (see the ImGuiKit manual, section Touch).
+> * Hello ImGui and ImmApp install them. With your own backend and loop, add them with [imgui_touch](https://github.com/pthom/imgui_touch): `ImGuiTouch::Setup()`.
 > * They are enabled by default. You do not need to change anything to get them.
 > * Configure them with `RunnerParams::touchConfig` (`ScrollMode`, `PinchScalesFont`, `LongPressIsRightClick`...).
 )";
@@ -48,7 +48,7 @@ const char* PLOTS = R"(
 - A double click (a double tap) fits the plot.
 
 > [!NOTE]
-> In Dear ImGui Bundle, ImPlot, ImPlot3D, ImmVision and the node editor take the pinch themselves. Another widget takes it with imgui_kit, right after it: `ImGuiTouch::ItemPinch()` returns the gesture; a widget that zooms with the wheel calls `ImGuiTouch::SetItemPinchAsWheel()` instead.
+> In Dear ImGui Bundle, ImPlot, ImPlot3D, ImmVision and the node editor take the pinch themselves. Another widget takes it with imgui_touch, right after it: `ImGuiTouch::ItemPinch()` returns the gesture; a widget that zooms with the wheel calls `ImGuiTouch::SetItemPinchAsWheel()` instead.
 )";
 
 const char* IMAGES = R"(

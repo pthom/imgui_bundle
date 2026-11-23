@@ -84,3 +84,6 @@
 [submodule "external/imgui_kit/imgui_kit"]
 	path = external/imgui_kit/imgui_kit
 	url = https://github.com/pthom/imgui_kit.git
+[submodule "external/imgui_touch/imgui_touch"]
+	path = external/imgui_touch/imgui_touch
+	url = https://github.com/pthom/imgui_touch.git

@@ -1,15 +1,17 @@
 """
-imgui_kit in an SDL2 window you own: the touch layer with the fingers, and the wheel session, in pure Python.
+imgui_kit and imgui_touch in an SDL2 window you own: the touch layer with the fingers, and the wheel session, in pure
+Python.
 
-The same app as example_python_backend_sdl2.py, plus imgui_kit:
-- `imgui_kit.touch.setup()` and `imgui_kit.setup_wheel_session()`, once after the context;
-- the fingers of a touch screen, which SDL reports, forwarded to `imgui_kit.touch.add_finger_event()`: two fingers
+The same app as example_python_backend_sdl2.py, plus imgui_touch and imgui_kit:
+- `imgui_touch.setup()` and `imgui_kit.setup_wheel_session()`, once after the context;
+- the fingers of a touch screen, which SDL reports, forwarded to `imgui_touch.add_finger_event()`: two fingers
   pinch (the font, or a widget that claims them), moved together they are a right drag; a touch the system takes over
   ends with no click;
-- `imgui_kit.is_animating()`: the app sleeps when nothing happens, and keeps drawing while something of the kit moves.
+- `imgui_touch.is_animating()` and `imgui_kit.is_animating()`: the app sleeps when nothing happens, and keeps drawing
+  while something moves on its own.
 
-Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`. On a desktop without a touch screen, the demo's Touch
-section has "Simulate a touch source" (the mouse plays one finger); SDL can also turn the mouse into a touch device:
+Needs `pip install imgui-bundle[sdl2,opengl] pysdl2-dll`. On a desktop without a touch screen, the touch demo
+has "Simulate touch" (the mouse plays one finger); SDL can also turn the mouse into a touch device:
 `SDL_MOUSE_TOUCH_EVENTS=1` in the environment.
 """
 
@@ -18,7 +20,7 @@ import sys
 from typing import Any
 
 import OpenGL.GL as gl  # pip install PyOpenGL
-from imgui_bundle import imgui, imgui_kit
+from imgui_bundle import imgui, imgui_kit, imgui_touch
 from imgui_bundle.python_backends.sdl2_backend import SDL2Renderer
 from sdl2 import (  # type: ignore[import-untyped]
     SDL_Event, SDL_FINGERDOWN, SDL_FINGERMOTION, SDL_FINGERUP, SDL_GetTouchDeviceType, SDL_TOUCH_DEVICE_DIRECT,
@@ -34,14 +36,14 @@ from sdl2 import (  # type: ignore[import-untyped]
 IDLE_MS = 100  # the longest wait for an event when nothing happens (an event or an animation ends it)
 
 _FINGER_PHASES = {
-    SDL_FINGERDOWN: imgui_kit.TouchPhase_.began,
-    SDL_FINGERMOTION: imgui_kit.TouchPhase_.moved,
-    SDL_FINGERUP: imgui_kit.TouchPhase_.ended,
+    SDL_FINGERDOWN: imgui_touch.Phase_.began,
+    SDL_FINGERMOTION: imgui_touch.Phase_.moved,
+    SDL_FINGERUP: imgui_touch.Phase_.ended,
 }
 
 
 def forward_finger_event(event: SDL_Event, window: Any) -> None:
-    """A finger of a touch screen, to the kit. SDL gives its position as a fraction of the window: in the window's
+    """A finger of a touch screen, to imgui_touch. SDL gives its position as a fraction of the window: in the window's
     coordinates here, as the mouse's. A trackpad is a touch device too (an indirect one): only the screens, and the
     mouse when SDL makes it a touch device (SDL_MOUSE_TOUCH_EVENTS)."""
     if event.type not in _FINGER_PHASES:
@@ -54,7 +56,7 @@ def forward_finger_event(event: SDL_Event, window: Any) -> None:
     w, h = ctypes.c_int(), ctypes.c_int()
     SDL_GetWindowSize(window, ctypes.byref(w), ctypes.byref(h))
     finger_id = int(finger.fingerId) & 0x7FFFFFFF  # SDL's id, folded to an int
-    imgui_kit.touch.add_finger_event(finger_id, (finger.x * w.value, finger.y * h.value), _FINGER_PHASES[event.type])
+    imgui_touch.add_finger_event(finger_id, (finger.x * w.value, finger.y * h.value), _FINGER_PHASES[event.type])
 
 
 class AppState:
@@ -78,20 +80,21 @@ def gui() -> None:
         imgui.text(f"Line {i + 1}: content to scroll")
     imgui.end()
     imgui_kit.show_demo_window()
+    imgui_touch.show_demo_window()
 
 
 def main() -> None:
     window, gl_context = impl_pysdl2_init()
     imgui.create_context()
-    imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch (the fingers: the loop below)
+    imgui_touch.setup()                # the touch layer: swipe, long press, pinch (the fingers: the loop below)
     imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
     impl = SDL2Renderer(window)
 
     running = True
     event = SDL_Event()
     while running:
-        # Sleep until an event, unless something of the kit moves on its own (a fling, a bounce, a slide)
-        if not imgui_kit.is_animating():
+        # Sleep until an event, unless something moves on its own (a fling, a bounce, a slide)
+        if not (imgui_touch.is_animating() or imgui_kit.is_animating()):
             SDL_WaitEventTimeout(None, IDLE_MS)
         while SDL_PollEvent(ctypes.byref(event)) != 0:
             if event.type == SDL_QUIT:

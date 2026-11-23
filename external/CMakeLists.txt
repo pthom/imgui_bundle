@@ -412,14 +412,15 @@ endif()
 ###############################################################################
 # Build imgui-knobs
 add_simple_external_library_with_sources(imgui_knobs imgui-knobs)
-# Build imgui_kit (its tests and its own CMakeLists.txt are for the standalone build)
+# Build imgui_kit and imgui_touch (their tests and their own CMakeLists.txt are for the standalone builds)
 add_simple_external_library_with_sources(imgui_kit imgui_kit)
-# A pinch on a plot or on a node editor zooms it: ImPlot, ImPlot3D and imgui-node-editor call imgui_kit's adapters
-# (ImGuiTouch::SetRectPinchAsWheel and its kin; a commit of their forks, behind IMGUI_BUNDLE_WITH_IMGUI_KIT)
+add_simple_external_library_with_sources(imgui_touch imgui_touch)
+# A pinch on a plot or on a node editor zooms it: ImPlot, ImPlot3D and imgui-node-editor call imgui_touch's adapters
+# (ImGuiTouch::SetRectPinchAsWheel and its kin; a commit of their forks, behind IMGUI_BUNDLE_WITH_IMGUI_TOUCH)
 foreach(lib implot implot3d imgui_node_editor)
     if (TARGET ${lib})
-        target_link_libraries(${lib} PRIVATE imgui_kit)
-        target_compile_definitions(${lib} PRIVATE IMGUI_BUNDLE_WITH_IMGUI_KIT)
+        target_link_libraries(${lib} PRIVATE imgui_touch)
+        target_compile_definitions(${lib} PRIVATE IMGUI_BUNDLE_WITH_IMGUI_TOUCH)
     endif()
 endforeach()
 # Build imspinner

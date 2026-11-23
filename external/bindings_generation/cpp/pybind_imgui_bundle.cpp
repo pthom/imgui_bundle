@@ -20,6 +20,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m);
 void py_init_module_imgui_node_editor(nb::module_& m);
 void py_init_module_imgui_knobs(nb::module_& m);
 void py_init_module_imgui_kit(nb::module_& m);
+void py_init_module_imgui_touch(nb::module_& m);
 void py_init_module_im_file_dialog(nb::module_& m);
 void py_init_module_imspinner(nb::module_& m);
 void py_init_module_rich_md(nb::module_& m);
@@ -152,6 +153,10 @@ void py_init_module_imgui_bundle(nb::module_& m)
     _register_submodule("imgui_kit");
     auto module_imgui_kit =  m.def_submodule("imgui_kit");
     py_init_module_imgui_kit(module_imgui_kit);
+
+    _register_submodule("imgui_touch");
+    auto module_imgui_touch =  m.def_submodule("imgui_touch");
+    py_init_module_imgui_touch(module_imgui_touch);
 
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
     _register_submodule("im_file_dialog");

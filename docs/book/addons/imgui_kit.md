@@ -1,6 +1,6 @@
 # ImGuiKit
 
-[ImGuiKit](https://github.com/pthom/imgui_kit) brings small, standalone additions to Dear ImGui: rows that fill, groups that align, a few widgets, touch screens, and a mouse wheel that stays with what it scrolls.
+[ImGuiKit](https://github.com/pthom/imgui_kit) brings small, standalone additions to Dear ImGui: rows that fill, groups that align, a few widgets, and a mouse wheel that stays with what it scrolls.
 
 It is a library of its own (MIT): one header, a few sources, and Dear ImGui as its only dependency. Dear ImGui Bundle includes it, with Python bindings.
 
@@ -17,8 +17,9 @@ It is a library of its own (MIT): one header, a few sources, and Dear ImGui as i
   - A *help marker*: an (i) that shows its text on hover, and on a tap (a touch screen has no hover). Its text can be rendered as Markdown.
   - *Icon buttons*: plus, minus, zoom in, zoom out, 1:1, fit, drawn with the draw list (no icon font needed).
   - A *segmented switch*: exclusive choices in one frame, such as "Demo | Code".
-- **Touch screens** (`imgui_kit.touch`): an app made for the mouse works with a finger. A swipe scrolls, a long press is a right click, a pinch scales the font or zooms a plot, an image or a node editor, and a browser opens the phone's keyboard. See [Touch screens](#touch-screens).
-- **Wheel session**: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled over a plot keeps scrolling, and the plot zooms only with a wheel that starts on it.
+- **Wheel session**: the mouse wheel keeps scrolling the window it started on, as in a browser. A page scrolled over a plot keeps scrolling, and the plot zooms only with a wheel that starts on it. An app run by Hello ImGui or ImmApp has it (`RunnerParams.wheel_session`); another sets it up once: `imgui_kit.setup_wheel_session()`.
+
+Touch screens have a library of their own: [ImGuiTouch](imgui_touch.md).
 
 ## Quick example
 
@@ -61,61 +62,6 @@ ImGuiKit::EndFillRow();
 ::::
 
 In Python, each `begin_x()` / `end_x()` pair is also a context manager, named `x`: `fill_row`, `aligned_group`, `column`, `label_column`, `flow`. The help marker's is `help_marker_ctx`, since `help_marker(text)` is already a plain function.
-
-## Touch screens
-
-An app run by Hello ImGui or ImmApp gets the touch layer and the wheel session with nothing to write: the runner sets them up, and their settings are `RunnerParams.touch_config` and `RunnerParams.wheel_session`. An app with its own backend and loop sets them up once, after creating the context: `imgui_kit.touch.setup()` and `imgui_kit.setup_wheel_session()`.
-
-On a touch screen:
-- *A swipe* scrolls any window, with inertia, even when it starts on a button. A tap still clicks it.
-- *A hold, then a drag*, goes to the widget under the finger (a text selection).
-- *A slider or a drag*: a drag along its axis moves it at once, a drag across scrolls the window (Dear ImGui Bundle's Dear ImGui tells the kit about its draggable widgets). A widget of your own does the same with `imgui_kit.touch.set_item_takes_drags(imgui_kit.TouchAxis_.x)` right after it.
-- *A long press* is a right click: the context menus.
-- *A pinch* scales the app's font. On a plot (ImPlot, ImPlot3D), an image (ImmVision) or a node editor, it zooms it, around the fingers.
-- *Two fingers that move together* are a right drag (the box selection of a plot, the pan of a node editor).
-
-A widget of your own takes two fingers with one call, right after it: `item_pinch()` returns their gesture at each frame (its center, its spread and its move since the last frame). The widget then zooms and pans at once, as a map does on a phone.
-
-::::{tab-set}
-
-:::{tab-item} Python
-```python
-from imgui_bundle import imgui, imgui_kit, ImVec2
-
-zoom, origin = 1.0, ImVec2(0, 0)  # in your app's state: the content's scale, and its origin on the screen
-imgui.invisible_button("##canvas", ImVec2(300, 200))
-pinch = imgui_kit.touch.item_pinch()  # two fingers on the canvas
-if pinch.active:
-    c, k = pinch.center, pinch.scale_delta
-    origin = ImVec2(c.x - (c.x - origin.x) * k + pinch.center_delta.x,  # zoom around the fingers,
-                    c.y - (c.y - origin.y) * k + pinch.center_delta.y)  # and follow their move
-    zoom *= k
-```
-:::
-
-:::{tab-item} C++
-```cpp
-#include "imgui_kit/imgui_kit.h"
-
-ImGui::InvisibleButton("##canvas", ImVec2(300.f, 200.f));
-ImGuiTouchPinch pinch = ImGuiTouch::ItemPinch();  // two fingers on the canvas
-if (pinch.Active)
-{
-    // Zoom around the fingers, and follow their move
-    origin = pinch.Center - (pinch.Center - origin) * pinch.ScaleDelta + pinch.CenterDelta;
-    zoom *= pinch.ScaleDelta;
-}
-```
-:::
-
-::::
-
-A widget that already zooms with the wheel and pans with a mouse button (an image viewer, a plot) needs no new code: `set_item_pinch_as_wheel(wheel_zoom_factor)` turns the pinch into wheel events (1.1 for +10% per wheel unit; `TouchPinchDelivery_.wheel_notches` for a widget that reads only the wheel's sign, as ImPlot), and `set_item_two_finger_pan_as_mouse_drag(button)` turns two fingers moved together into a drag. For a widget that is not one item, the `set_rect_...` and `rect_pinch()` variants take its rectangle. The demo "Touch screens (phones, tablets)" shows every gesture; on a desktop, its "Simulate a touch source" checkbox plays the finger with the mouse.
-
-Where the gestures work:
-- *In a browser* (the web explorer, Pyodide, an Emscripten build): all of them, the pinch and the phone's keyboard included.
-- *A native app* (desktop, iOS, Android through SDL): a swipe and a long press work where the backend tells a finger from the mouse (SDL, and Windows). The pinch needs the fingers, which Dear ImGui's backends do not pass on: Hello ImGui's SDL2 runner forwards them to the kit (so an app run by Hello ImGui or ImmApp on SDL has the pinch, on a Windows touch screen, on iOS and on Android), its GLFW runner cannot (GLFW reports no fingers). An app with its own SDL loop forwards them with a dozen lines, `imgui_kit.touch.add_finger_event()` for each finger: the kit's README shows them ([The fingers from SDL](https://github.com/pthom/imgui_kit#the-fingers-from-sdl)), its `examples/sdl3_touch_demo` is a whole app (stock Dear ImGui on SDL3, desktop and iOS), and the pure Python example `example_python_backend_sdl2_imgui_kit.py` does the same in Python. On Linux and macOS with GLFW, a finger is seen as a mouse.
-- The details, backend by backend, and what an app with its own backend adds: [ImGuiKit's README](https://github.com/pthom/imgui_kit#what-each-backend-reports).
 
 ## Learn more
 

@@ -1098,7 +1098,7 @@
           "uses": [
             "ImPlot",
             "ImmVision",
-            "ImGuiKit"
+            "ImGuiTouch"
           ],
           "python_file": "bindings/imgui_bundle/demos_python/demos_immapp/demo_touch_screen.py",
           "cpp_file": "bindings/imgui_bundle/demos_cpp/demos_immapp/demo_touch_screen.cpp",

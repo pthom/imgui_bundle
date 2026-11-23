@@ -41,6 +41,7 @@ parts:
       - file: addons/tools
       - file: addons/widgets
       - file: addons/imgui_kit
+      - file: addons/imgui_touch
   # <api pages> written by ci_scripts/api_pages.py from the stubs: do not edit by hand
   - caption: Python API
     chapters:
@@ -97,6 +98,9 @@ parts:
       - file: api/imgui_kit/index
         sections:
           - file: api/imgui_kit/imgui_kit
+      - file: api/imgui_touch/index
+        sections:
+          - file: api/imgui_touch/imgui_touch
       - file: api/imgui_toggle/index
         sections:
           - file: api/imgui_toggle/imgui_toggle
@@ -176,6 +180,9 @@ parts:
       - file: api/imgui_kit/cpp_index
         sections:
           - file: api/imgui_kit/imgui_kit_cpp
+      - file: api/imgui_touch/cpp_index
+        sections:
+          - file: api/imgui_touch/imgui_touch_cpp
       - file: api/imgui_toggle/cpp_index
         sections:
           - file: api/imgui_toggle/imgui_toggle_cpp

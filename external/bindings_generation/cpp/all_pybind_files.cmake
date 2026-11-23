@@ -15,6 +15,7 @@ set(all_pybind_files
     ${external_dir}/imgui-command-palette/bindings/pybind_imgui_command_palette.cpp
     ${external_dir}/imgui-knobs/bindings/pybind_imgui_knobs.cpp
     ${external_dir}/imgui_kit/bindings/pybind_imgui_kit.cpp
+    ${external_dir}/imgui_touch/bindings/pybind_imgui_touch.cpp
     ${external_dir}/imgui-node-editor/bindings/pybind_imgui_node_editor.cpp
     ${external_dir}/imgui_rich_md/bindings/pybind_rich_md.cpp
     ${external_dir}/imgui_microtex/bindings/pybind_imgui_microtex.cpp

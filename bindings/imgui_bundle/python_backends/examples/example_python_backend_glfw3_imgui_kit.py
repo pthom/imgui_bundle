@@ -1,16 +1,16 @@
 """
-imgui_kit in a window you own: the touch layer and the wheel session, in a pure Python GLFW app.
+imgui_kit and imgui_touch in a window you own: the touch layer and the wheel session, in a pure Python GLFW app.
 
-The same app as example_python_backend_glfw3.py, plus four lines of imgui_kit:
-- `imgui_kit.touch.setup()`: the swipe, the long press, the pinch, through Dear ImGui's context hooks (nothing to call
+The same app as example_python_backend_glfw3.py, plus a few lines:
+- `imgui_touch.setup()`: the swipe, the long press, the pinch, through Dear ImGui's context hooks (nothing to call
   per frame);
 - `imgui_kit.setup_wheel_session()`: the wheel keeps scrolling the window it started on, even over a plot;
-- `imgui_kit.is_animating()`: an app that sleeps when nothing happens keeps drawing while something of the kit moves
-  (a fling, a bounce, a switch that slides);
-- `imgui_kit.touch.get_config().simulate_touch`: on a desktop, the mouse plays a finger (the demo's checkbox).
+- `imgui_touch.is_animating()` and `imgui_kit.is_animating()`: an app that sleeps when nothing happens keeps drawing
+  while something moves on its own (a fling, a bounce, a switch that slides);
+- `imgui_touch.get_config().simulate_touch`: on a desktop, the mouse plays a finger (the touch demo's checkbox).
 
 GLFW reports no fingers, so a real touch screen gets the swipe and the long press here, not the pinch: a backend that
-knows its fingers (SDL) forwards them with `imgui_kit.touch.add_finger_event()`.
+knows its fingers (SDL) forwards them with `imgui_touch.add_finger_event()`.
 `pip install imgui-bundle[glfw,opengl]`.
 """
 
@@ -27,7 +27,7 @@ from imgui_bundle.python_backends.glfw_backend import GlfwRenderer
 # When using a pure python backend, prefer to import glfw before imgui_bundle (so that you end up using the standard
 # glfw, not the one provided by imgui_bundle)
 import glfw
-from imgui_bundle import imgui, imgui_kit
+from imgui_bundle import imgui, imgui_kit, imgui_touch
 
 IDLE_SECONDS = 0.1  # the longest sleep between two frames when nothing happens (an event or an animation wakes it)
 
@@ -40,11 +40,11 @@ app_state = AppState()
 
 
 def gui() -> None:
-    """A window of our own, with the kit's layout helpers; the kit's demo window beside it"""
+    """A window of our own, with the kit's layout helpers; the kit's and imgui_touch's demo windows beside it"""
     imgui.set_next_window_size((420, 300), imgui.Cond_.first_use_ever)
     imgui.begin("A window with imgui_kit")
-    imgui.text_wrapped("Scroll with the wheel, or swipe with a finger (tick \"Simulate a touch source\" in the demo's "
-                       "Touch section to swipe with the mouse). The app sleeps when nothing moves.")
+    imgui.text_wrapped("Scroll with the wheel, or swipe with a finger (tick \"Simulate touch\" in the touch demo to "
+                       "swipe with the mouse). The app sleeps when nothing moves.")
     with imgui_kit.fill_row("volume") as row:  # the slider fills the line, the help marker stays on the right
         _, app_state.volume = imgui.slider_float("##volume", app_state.volume, 0.0, 1.0, "volume %.2f")
         row.tail()
@@ -53,19 +53,20 @@ def gui() -> None:
         imgui.text(f"Line {i + 1}: content to scroll")
     imgui.end()
     imgui_kit.show_demo_window()
+    imgui_touch.show_demo_window()
 
 
 
 def main() -> None:
     imgui.create_context()
-    imgui_kit.touch.setup()            # the touch layer: swipe, long press, pinch (the fingers come from the backend)
+    imgui_touch.setup()                # the touch layer: swipe, long press, pinch (the fingers come from the backend)
     imgui_kit.setup_wheel_session()    # the wheel stays with the window it scrolls
     window = impl_glfw_init()
     impl = GlfwRenderer(window)
 
     while not glfw.window_should_close(window):
-        # Sleep until an event, unless something of the kit moves on its own (a fling, a bounce, a slide)
-        if imgui_kit.is_animating():
+        # Sleep until an event, unless something moves on its own (a fling, a bounce, a slide)
+        if imgui_touch.is_animating() or imgui_kit.is_animating():
             glfw.poll_events()
         else:
             glfw.wait_events_timeout(IDLE_SECONDS)

@@ -2189,7 +2189,7 @@ struct OpenGlOptionsFilled_
 //                       hello_imgui/runner_params.h continued                                                  //
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#include "imgui_kit/imgui_kit.h"  // ImGuiTouchConfig
+#include "imgui_touch/imgui_touch.h"  // ImGuiTouchConfig
 
 namespace HelloImGui
 {
@@ -2550,11 +2550,11 @@ struct RunnerParams
     // (only used on emscripten: 0 stands for "let the app or the browser decide")
     int emscripten_fps = 0;
 
-    // `touchConfig`: _ImGuiTouchConfig (from imgui_kit)_.
+    // `touchConfig`: _ImGuiTouchConfig (from imgui_touch)_.
     // The touch layer, as on a phone: the swipe (a finger drags the content, with inertia and a bounce), the long
-    // press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_kit.h.
+    // press as a right click, thin scroll bars, the pinch (the font scales). See ImGuiTouchConfig in imgui_touch.h.
     // To try the swipe with a mouse, set its scroll mode to Always (C++: `ImGuiTouchScrollMode_Always`,
-    // Python: `imgui_kit.TouchScrollMode_.always`).
+    // Python: `imgui_touch.ScrollMode_.always`).
     // Applied when it changes (a change through ImGuiTouch::GetConfig() then stays).
     ImGuiTouchConfig touchConfig;
 
@@ -2935,7 +2935,7 @@ namespace ManualRender
 //  opens the url in a new tab, whatever the browser and the pointer. Call it each frame while the button or the link
 //  is shown (several rectangles per frame: the links of a text). Returns true when the page takes the link: the
 //  caller then does nothing on the click. False outside the browser: the caller opens the url itself on the click.
-//  (imgui_kit's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place
+//  (imgui_touch's ImGuiTouch::SetRectOpensUrl: the page opens the tab from inside the tap's own handler, the only place
 //  every browser allows one; ImGui sees the click two frames later, too late for WebKit.)
     bool SetTapOpensUrl(ImVec2 rectMin, ImVec2 rectMax, const std::string& url);
 
