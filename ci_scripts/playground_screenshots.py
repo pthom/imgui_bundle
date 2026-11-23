@@ -8,7 +8,7 @@ stb_image, which has no WebP. An example's file is in the folder of its "source"
 
 Usage:
     python ci_scripts/playground_screenshots.py                 # all the examples of SHOTS
-    python ci_scripts/playground_screenshots.py julia_map boids  # some of them
+    python ci_scripts/playground_screenshots.py julia_map boids  # some of them (julia_map.py too; an unknown name stops)
     python ci_scripts/playground_screenshots.py --raw DIR        # full windows as PNG, in DIR (to choose the crops)
     python ci_scripts/playground_screenshots.py --light --raw DIR  # the same, in the light theme (a visual check)
     python ci_scripts/playground_screenshots.py --browser DIR    # the examples of BROWSER_SHOTS, from Chrome pictures
@@ -522,7 +522,12 @@ def main() -> None:
     if args[:1] == ["--raw"]:
         raw_dir, args = Path(args[1]).resolve(), args[2:]  # absolute: each example runs in a temporary folder
         raw_dir.mkdir(parents=True, exist_ok=True)
-    names = [f for f in [*SHOTS, *CODE_SHOTS] if not args or Path(f).stem in args]
+    wanted = {Path(a).stem for a in args}  # a stem or a file name: julia_map, julia_map.py
+    unknown = wanted - {Path(f).stem for f in [*SHOTS, *CODE_SHOTS]}
+    if unknown:
+        sys.exit(f"no picture for: {', '.join(sorted(unknown))} (the names of SHOTS and CODE_SHOTS; BROWSER_SHOTS: "
+                 f"see --browser)")
+    names = [f for f in [*SHOTS, *CODE_SHOTS] if not args or Path(f).stem in wanted]
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     examples = _examples()
     for filename in names:
