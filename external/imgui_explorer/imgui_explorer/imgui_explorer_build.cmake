@@ -45,6 +45,7 @@ function(iex_setup_demo_code_dir)
     # C++ demo files
     _iex_copy(${b}/external/ImAnim/ImAnim/im_anim_demo_basics.cpp    ${dest})
     _iex_copy(${b}/external/imgui_kit/imgui_kit/imgui_kit_demo.cpp    ${dest})
+    _iex_copy(${b}/external/imgui_touch/imgui_touch/imgui_touch_demo.cpp ${dest})
     if(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS)
         _iex_copy(${b}/external/ImAnim/ImAnim/im_anim_demo.cpp           ${dest})
         _iex_copy(${b}/external/ImAnim/ImAnim/im_anim_doc.cpp            ${dest})
@@ -61,6 +62,7 @@ function(iex_setup_demo_code_dir)
     _iex_copy(${pydemos}/implot_demo.py         ${dest})
     _iex_copy(${pydemos}/implot3d_demo.py       ${dest})
     _iex_copy(${pydemos}/imgui_kit_demo.py      ${dest})
+    _iex_copy(${pydemos}/imgui_touch_demo.py    ${dest})
 
     # C++ API headers
     _iex_copy(${b}/external/imgui/imgui/imgui.h                      ${dest})
@@ -71,6 +73,7 @@ function(iex_setup_demo_code_dir)
     _iex_copy(${b}/external/implot3d/implot3d/implot3d_internal.h    ${dest})
     _iex_copy(${b}/external/ImAnim/ImAnim/im_anim.h                  ${dest})
     _iex_copy(${b}/external/imgui_kit/imgui_kit/imgui_kit.h            ${dest})
+    _iex_copy(${b}/external/imgui_touch/imgui_touch/imgui_touch.h      ${dest})
 
     # Python stubs (renamed: subdir/__init__.pyi → flat name)
     set(stubs ${b}/bindings/imgui_bundle)
@@ -82,11 +85,12 @@ function(iex_setup_demo_code_dir)
     _iex_copy_as(${stubs}/implot3d/internal.pyi  implot3d_internal.pyi ${dest})
     _iex_copy_as(${stubs}/im_anim.pyi            im_anim.pyi           ${dest})
     _iex_copy_as(${stubs}/imgui_kit.pyi          imgui_kit.pyi         ${dest})
+    _iex_copy_as(${stubs}/imgui_touch.pyi        imgui_touch.pyi       ${dest})
 
     # The API index (one JSON per module, read by the code viewer's API tab), written by `just api_pages`
     # into docs/book/api/json/ (ignored by git): copied when present
     set(api_json ${b}/docs/book/api/json)
-    set(api_modules imgui imgui.internal implot implot.internal implot3d implot3d.internal im_anim imgui_kit)
+    set(api_modules imgui imgui.internal implot implot.internal implot3d implot3d.internal im_anim imgui_kit imgui_touch)
     set(api_missing "")
     foreach(module ${api_modules})
         if(EXISTS ${api_json}/${module}.json)
@@ -118,7 +122,7 @@ function(iex_add_imgui_explorer_lib)
         ${src}/imgui_explorer.h
     )
     target_link_libraries(imgui_explorer_lib PUBLIC
-        imgui implot implot3d hello_imgui immapp imgui_color_text_edit imgui_rich_md imgui_kit)
+        imgui implot implot3d hello_imgui immapp imgui_color_text_edit imgui_rich_md imgui_kit imgui_touch)
     if(IMGUI_BUNDLE_WITH_IMANIM)
         target_link_libraries(imgui_explorer_lib PUBLIC imanim)
         if(IMGUI_BUNDLE_WITH_IMANIM_FULL_DEMOS)

@@ -570,14 +570,14 @@ namespace
         return chain;
     }
 
-    // The calls to open for a section: in the Dear ImGui demo and ImGuiKit's (built the same way), its nested tree
-    // nodes; in the plot demos, a tab and a node. Empty when not found
+    // The calls to open for a section: in the Dear ImGui demo, ImGuiKit's and ImGuiTouch's (built the same way), its
+    // nested tree nodes; in the plot demos, a tab and a node. Empty when not found
     std::vector<TreeCall> SectionChain(const std::vector<std::string>& lines, const OutlineNode& root,
                                        const std::string& path)
     {
         const std::string& library = GetCurrentLibrary().name;
-        return (library == "ImGui" || library == "ImGuiKit") ? RevealChain(lines, root, path)
-                                                             : TabRevealChain(lines, root, path);
+        bool imgui_like = library == "ImGui" || library == "ImGuiKit" || library == "ImGuiTouch";
+        return imgui_like ? RevealChain(lines, root, path) : TabRevealChain(lines, root, path);
     }
 
     // The window of the current library's demo, or null (no reveal there)

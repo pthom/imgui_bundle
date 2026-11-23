@@ -49,9 +49,10 @@ REPO = Path(__file__).resolve().parent.parent
 BUILD = REPO / "build_imex_ems/bin"
 PORT = 7016  # the local server of the web build, started and stopped by this script
 VIEWPORT = (1400, 900)  # the page's size, in CSS pixels (the device scale is 1)
-MIN_HEIGHTS = {"imgui": 140, "implot": 140, "implot3d": 140, "imguikit": 60}  # a picture's height before its resize, in
-# CSS pixels, at least (ImGuiKit: short sections, which end at the next marker)
-MAX_HEIGHTS = {"imgui": 420, "implot": 420, "implot3d": 600, "imguikit": 420}  # (ImPlot3D: a square plot under its controls)
+# A picture's height before its resize, in CSS pixels, at least (ImGuiKit: short sections, which end at the next marker)
+MIN_HEIGHTS = {"imgui": 140, "implot": 140, "implot3d": 140, "imguikit": 60, "imguitouch": 60}
+# At most (ImPlot3D: a square plot under its controls)
+MAX_HEIGHTS = {"imgui": 420, "implot": 420, "implot3d": 600, "imguikit": 420, "imguitouch": 420}
 WIDTH = 480  # the width of the pictures, in pixels at most
 HASHES = API_PICTURES / "picture_hashes.json"
 

@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-enum class ImGuiExplorerLibrary { ImGui, ImPlot, ImPlot3D, ImAnim, ImGuiKit };
+enum class ImGuiExplorerLibrary { ImGui, ImPlot, ImPlot3D, ImAnim, ImGuiKit, ImGuiTouch };
 
 // The libraries offered by the toolbar (all of them by default), e.g. {ImGui, ImPlot, ImPlot3D}.
 void SetImGuiExplorerLibraries(const std::vector<ImGuiExplorerLibrary>& libraries);

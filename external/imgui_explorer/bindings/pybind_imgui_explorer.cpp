@@ -33,7 +33,8 @@ void py_init_module_imgui_explorer(nb::module_& m)
             .value("implot", ImGuiExplorerLibrary::ImPlot, "")
             .value("implot3_d", ImGuiExplorerLibrary::ImPlot3D, "")
             .value("im_anim", ImGuiExplorerLibrary::ImAnim, "")
-            .value("imgui_kit", ImGuiExplorerLibrary::ImGuiKit, "");
+            .value("imgui_kit", ImGuiExplorerLibrary::ImGuiKit, "")
+            .value("imgui_touch", ImGuiExplorerLibrary::ImGuiTouch, "");
 
 
     m.def("set_imgui_explorer_libraries",

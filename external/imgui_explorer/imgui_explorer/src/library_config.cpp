@@ -6,6 +6,7 @@
 #include "implot/implot.h"
 #include "implot3d/implot3d.h"
 #include "imgui_kit/imgui_kit.h"
+#include "imgui_touch/imgui_touch.h"
 #include <algorithm>
 #include <cctype>
 
@@ -213,6 +214,39 @@ std::vector<LibraryConfig> CreateLibraryConfigs()
         cfg.apiModules = {"imgui_kit"};
         cfg.links = {
             {"Repository", "https://github.com/pthom/imgui_kit"},
+        };
+        configs.push_back(std::move(cfg));
+    }
+
+    // imgui_touch
+    {
+        LibraryConfig cfg;
+        cfg.name = "ImGuiTouch";
+        cfg.files = {
+            {"imgui_touch_demo", true, false,
+             "https://github.com/pthom/imgui_touch/blob/main/imgui_touch_demo.cpp",
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_imgui_explorer/imgui_touch_demo.py"},
+            {"imgui_touch", true, true,
+             "https://github.com/pthom/imgui_touch/blob/main/imgui_touch.h",
+             "https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/imgui_touch.pyi",
+             "imgui_touch.pyi"},
+        };
+        cfg.frameSetup = nullptr;
+        cfg.showDemoWindow = [](ImVec2 pos, ImVec2 size) {
+            ImGui::SetNextWindowPos(pos);
+            ImGui::SetNextWindowSize(size);
+            if (ImGui::Begin("ImGuiTouch Demo", nullptr, ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoResize))
+                ImGuiTouch::ShowDemoContents();
+            ImGui::End();
+        };
+        cfg.demoWindowName = "ImGuiTouch Demo";
+        cfg.introText = "ImGuiTouch - A touch screen for Dear ImGui, as on a phone";
+        cfg.noteMarkdown = "> [!NOTE]\n"
+                           "> **This is a preview**<br>"
+                           "ImGuiTouch comes with the next release of Dear ImGui Bundle (after 1.93.0); its API may still change.";
+        cfg.apiModules = {"imgui_touch"};
+        cfg.links = {
+            {"Repository", "https://github.com/pthom/imgui_touch"},
         };
         configs.push_back(std::move(cfg));
     }

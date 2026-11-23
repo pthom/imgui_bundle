@@ -93,6 +93,7 @@ int main(int argc, char** argv)
         if (sl == "implot3d")return ImGuiExplorerLibrary::ImPlot3D;
         if (sl == "imanim")  return ImGuiExplorerLibrary::ImAnim;
         if (sl == "imguikit" || sl == "imgui_kit") return ImGuiExplorerLibrary::ImGuiKit;
+        if (sl == "imguitouch" || sl == "imgui_touch") return ImGuiExplorerLibrary::ImGuiTouch;
         return std::nullopt;
     };
     std::optional<ImGuiExplorerLibrary> library = libraryFromString(ParseLibraryArg(argc, argv));
@@ -113,7 +114,8 @@ int main(int argc, char** argv)
     runnerParams.callbacks.PostInit = [lang, library]() {
         if (lang == "python" || lang == "cpp")  // a link's language becomes the remembered one (a lasting pref)
             HelloImGui::SaveLastingPref("code_language", lang);
-        // ImGuiKit is a preview: out of the main page's switch, shown alone when a link asks for it (?lib=imguikit)
+        // ImGuiKit and ImGuiTouch are previews: out of the main page's switch, shown alone when a link asks for them
+        // (?lib=imguikit, ?lib=imguitouch)
         if (!library.has_value())
             SetImGuiExplorerLibraries({ImGuiExplorerLibrary::ImGui, ImGuiExplorerLibrary::ImPlot,
                                        ImGuiExplorerLibrary::ImPlot3D, ImGuiExplorerLibrary::ImAnim});
