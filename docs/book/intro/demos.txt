@@ -82,10 +82,12 @@ Dear ImGui, ImPlot, ImPlot3D, ImAnim and ImGuiKit: all their features, section b
   C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_kit_demo.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_kit.py
   Run, C++: https://pthom.github.io/imgui_explorer/?lib=imguikit
-- ImGuiTouch: the interactive manual: ImGuiTouch makes Dear ImGui work on a touch screen, as on a phone: the swipe, the long press, the pinch, the phone's keyboard. Its demo, section by section, with the code of each beside it, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
+- ImGuiTouch: the interactive manual: ImGuiTouch makes Dear ImGui work on a touch screen, as on a phone. The swipe, the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++. From Dear ImGui Explorer, the interactive manual for Dear ImGui and its libraries.
   Uses: ImGuiTouch
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py
+  C++: https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_touch_demo.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py
+  Run, C++: https://pthom.github.io/imgui_explorer/?lib=imguitouch
 
 ## Build an app
 

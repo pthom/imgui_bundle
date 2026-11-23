@@ -265,15 +265,16 @@ Em units, rows that fill, aligned groups, label columns, a help marker for mouse
 
 ### ImGuiTouch: the interactive manual
 
-[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe, the long press, the pinch, the phone's keyboard.
+[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone.
 
 :::{dropdown} More
-Its demo, section by section, with the code of each beside it, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
+The swipe, the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear ImGui and its libraries.
 :::
 
 *Uses: ImGuiTouch*
 
-{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py)
+{span .demo-lang}`Python:` [▶︎ Run](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py) · [Code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py)\
+{span .demo-lang}`C++:` [▶︎ Run](https://pthom.github.io/imgui_explorer/?lib=imguitouch) · [Code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_touch_demo.cpp)
 
 ::::
 

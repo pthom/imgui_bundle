@@ -221,16 +221,16 @@ for Dear ImGui and its libraries.
 :width: 400px
 :::
 
-[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe,
-the long press, the pinch, the phone's keyboard. Its demo, section by section, with the code of each beside it, in
+[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone. The swipe,
+the long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in
 Python and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear
 ImGui and its libraries.
 
-*Python*
+*Python, C++*
 
 *Uses: ImGuiTouch*
 
-[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py)
+[Run it in the playground](https://imgui-bundle.pages.dev/playground/?demo=manual_imgui_touch.py) · [C++ version, in the explorer](https://pthom.github.io/imgui_explorer/?lib=imguitouch) · [Python code](https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/manuals/manual_imgui_touch.py) · [C++ code](https://github.com/pthom/imgui_bundle/blob/main/external/imgui_explorer/imgui_explorer_website/website/demo_code/imgui_touch_demo.cpp)
 
 ## Build an app
 

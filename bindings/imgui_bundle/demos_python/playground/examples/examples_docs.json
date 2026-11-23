@@ -512,12 +512,12 @@
   },
   "manual_imgui_touch.py": {
     "title": "ImGuiTouch: the interactive manual",
-    "text": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe,\nthe long press, the pinch, the phone's keyboard. Its demo, section by section, with the code of each beside it, in\nPython and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear\nImGui and its libraries.",
-    "summary": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone: the swipe, the long press, the pinch, the phone's keyboard.",
+    "text": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone. The swipe,\nthe long press, the pinch, the phone's keyboard: its demo, section by section, with the code of each beside it, in\nPython and C++. From [Dear ImGui Explorer](https://pthom.github.io/imgui_explorer/), the interactive manual for Dear\nImGui and its libraries.",
+    "summary": "[ImGuiTouch](https://github.com/pthom/imgui_touch) makes Dear ImGui work on a touch screen, as on a phone.",
     "uses": [
       "ImGuiTouch"
     ],
-    "cpp": false
+    "cpp": true
   },
   "demo_python_context_manager.py": {
     "title": "Context managers for Dear ImGui and ImPlot in Python.",
