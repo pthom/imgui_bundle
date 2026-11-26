@@ -511,9 +511,10 @@ cf_stage:
     rsync -a docs/clone_website_resources/imgui_bundle_pages_landing/final/assets/ {{_CF_STAGING}}/assets/
     cp docs/clone_website_resources/imgui_bundle_pages_landing/final/index.html {{_CF_STAGING}}/index.html
     #
-    # 8. generate sitemap.xml
+    # 8. generate sitemap.xml, then give each of its pages a canonical link to its sitemap URL
     # ------------------------------------------------------------
     python docs/clone_website_resources/tools/generate_sitemap.py
+    python docs/clone_website_resources/tools/add_canonicals.py
     #
     # 9. Put back the unlisted previews (after the sitemap, which must not list them)
     # ------------------------------------------------------------
