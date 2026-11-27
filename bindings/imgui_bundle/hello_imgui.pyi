@@ -1168,6 +1168,15 @@ class WindowGeometry:
     #  Note: this flag is intended to be used during execution, not at startup
     #  (use sizeAuto at startup).
     resize_app_window_at_next_frame: bool = False
+
+    # bool followMonitorScale = false;    /* original C++ signature */
+    # `follow_monitor_scale`: _bool_, default=False (experimental, Windows with GLFW only; with SDL, the window keeps
+    #  its size in pixels).
+    #  If True, the window and the GUI follow a change of scale when the window moves to a monitor
+    #  with another scale: Windows resizes the window, and the fonts and the style follow.
+    #  During a drag, the content is redrawn once when the window reaches the other monitor.
+    #  If False, the window keeps its size in pixels.
+    follow_monitor_scale: bool = False
     def __init__(
         self,
         size: Optional[ScreenSize] = None,
@@ -1179,6 +1188,7 @@ class WindowGeometry:
         monitor_idx: int = 0,
         full_screen_mode: FullScreenMode = FullScreenMode.no_full_screen,
         resize_app_window_at_next_frame: bool = False,
+        follow_monitor_scale: bool = False,
     ) -> None:
         """Auto-generated default constructor with named params
 

@@ -991,6 +991,14 @@ struct WindowGeometry
     //  Note: this flag is intended to be used during execution, not at startup
     //  (use sizeAuto at startup).
     bool resizeAppWindowAtNextFrame = false;
+
+    // `followMonitorScale`: _bool_, default=false (experimental, Windows with GLFW only; with SDL, the window keeps
+    //  its size in pixels).
+    //  If true, the window and the GUI follow a change of scale when the window moves to a monitor
+    //  with another scale: Windows resizes the window, and the fonts and the style follow.
+    //  During a drag, the content is redrawn once when the window reaches the other monitor.
+    //  If false, the window keeps its size in pixels.
+    bool followMonitorScale = false;
 };
 // ::endcode
 
