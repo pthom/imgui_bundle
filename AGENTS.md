@@ -140,6 +140,17 @@ Skills (procedures for agents, in the SKILL.md format) are in `.claude/skills/`:
 
 * C++ APIs: a function with several results (a status and a message, a value and an error) returns a small struct, e.g. `RenderResult { bool drawn; std::string error; }`. No output parameters: they bind badly to Python. This also holds for internal functions, which often become public later.
 
+* C++ code:
+  * A long condition gets named variables, one per line (`isPanning`, `isReleased`, `wasDragged`), so a human reads it at a glance.
+  * A member whose role is not obvious gets a comment where it is declared.
+  * A version guard (`#if IMGUI_VERSION_NUM >= 18900`) says what that version introduced, when applicable. If keeping the compatibility may raise maintenance issues later, say so, and we decide together.
+  * A number repeated three times or more in a file or a function becomes a named constant at its top.
+  * No check that can never be true: a reviewer will wonder why it is there.
+  * No unused variable or field, on any supported configuration: a member used only under a version guard is declared under the same guard.
+  * Older library versions stay supported when it is cheap (one constant, one guard).
+  * Modern C++ is welcome, but use taste and avoid unreadable idioms. `std::ref` only when strictly needed (a lambda is often clearer).
+  * In another project's code (a fork, a PR upstream), its author's style wins over these: match its conventions, and run its CI matrix locally (older library versions, MSVC `/W4 /WX`) before pushing.
+
 * Comments:
   * In public headers, say what the function does and how to call it, in one line if possible. The reasons behind it go to the .cpp file.
   * In .cpp files, keep what helps a maintainer: non-obvious invariants, workarounds. No history of how the code was found or discussed.
