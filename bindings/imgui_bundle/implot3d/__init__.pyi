@@ -126,7 +126,7 @@ ItemFlags_None = ItemFlags_.none
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024-2026 Breno Cunha Queiroz
 
-# ImPlot3D v0.5 WIP
+# ImPlot3D v0.6 WIP
 
 # Acknowledgments:
 #  ImPlot3D is heavily inspired by ImPlot
@@ -677,7 +677,7 @@ class Spec:
        spec.LineColor = ImVec4(1,0,0,1);
        spec.LineWeight = 2.0;
        spec.Marker = ImPlot3DMarker_Circle;
-       spec.Flags = ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;
+       spec.Flags = (ImPlot3DItemFlags)ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments;
        ImPlot3D::PlotLine("MyLine", xs, ys, zs, 100, spec);
 
     2. Inline using ImPlot3DProp,value pairs (order does NOT matter):
@@ -686,7 +686,7 @@ class Spec:
          ImPlot3DProp_LineColor, ImVec4(1,0,0,1),
          ImPlot3DProp_LineWeight, 2.0,
          ImPlot3DProp_Marker, ImPlot3DMarker_Circle,
-         ImPlot3DProp_Flags, ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments
+         ImPlot3DProp_Flags, (ImPlot3DItemFlags)ImPlot3DItemFlags_NoLegend | ImPlot3DLineFlags_Segments
        });
     """
 

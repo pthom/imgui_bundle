@@ -16,7 +16,7 @@ It may change between versions of ImPlot3D.
 from typing import Any, Optional, Tuple, overload
 import enum
 
-from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ID, ImVec2Like, ImVec4Like, ImDrawList
+from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ImU64, ID, ImVec2Like, ImVec4Like, ImDrawList
 from imgui_bundle.imgui.internal import ImRect
 from imgui_bundle.implot3d import (
     Colormap, Marker, Flags, Col, Point, LegendFlags, AxisFlags, Location,
@@ -30,7 +30,7 @@ from imgui_bundle.implot3d import (
 # SPDX-License-Identifier: MIT
 # SPDX-FileCopyrightText: 2024-2026 Breno Cunha Queiroz
 
-# ImPlot3D v0.5 WIP
+# ImPlot3D v0.6 WIP
 
 # Acknowledgments:
 #  ImPlot3D is heavily inspired by ImPlot
@@ -92,6 +92,14 @@ def im_asinh(x: float) -> float:
 # static inline int ImPosMod(int l, int r);    /* original C++ signature */
 def im_pos_mod(l: int, r: int) -> int:
     """ Returns always positive modulo (assumes r != 0)
+    (private API)
+    """
+    pass
+# static inline ImU64 ImDoubleBits(double val);    /* original C++ signature */
+def im_double_bits(val: float) -> ImU64:
+    """ Returns the IEEE-754 bit pattern of val. NaN and infinity are tested on these bits rather than with isnan() or
+     comparisons, so the tests need no <cmath>, don't depend on whether isnan is a macro or a function, and keep
+     working when -ffast-math (-ffinite-math-only) or /fp:fast lets the compiler assume floats are never NaN or infinite.
     (private API)
     """
     pass

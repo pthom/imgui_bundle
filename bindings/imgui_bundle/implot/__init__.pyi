@@ -209,7 +209,7 @@ ItemFlags_None = ItemFlags_.none
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v1.1 WIP
+# ImPlot v1.2 WIP
 
 # Table of Contents:
 #
@@ -382,59 +382,63 @@ class Flags_(enum.IntFlag):
 class AxisFlags_(enum.IntFlag):
     """Options for plot axes (see SetupAxis)."""
 
-    # ImPlotAxisFlags_None          = 0,           /* original C++ signature */
+    # ImPlotAxisFlags_None             = 0,           /* original C++ signature */
     none = enum.auto()  # (= 0)  # default
-    # ImPlotAxisFlags_NoLabel       = 1 << 0,      /* original C++ signature */
+    # ImPlotAxisFlags_NoLabel          = 1 << 0,      /* original C++ signature */
     no_label = (
         enum.auto()
     )  # (= 1 << 0)  # the axis label will not be displayed (axis labels are also hidden if the supplied string name is None)
-    # ImPlotAxisFlags_NoGridLines   = 1 << 1,      /* original C++ signature */
+    # ImPlotAxisFlags_NoGridLines      = 1 << 1,      /* original C++ signature */
     no_grid_lines = enum.auto()  # (= 1 << 1)  # no grid lines will be displayed
-    # ImPlotAxisFlags_NoTickMarks   = 1 << 2,      /* original C++ signature */
+    # ImPlotAxisFlags_NoTickMarks      = 1 << 2,      /* original C++ signature */
     no_tick_marks = enum.auto()  # (= 1 << 2)  # no tick marks will be displayed
-    # ImPlotAxisFlags_NoTickLabels  = 1 << 3,      /* original C++ signature */
+    # ImPlotAxisFlags_NoTickLabels     = 1 << 3,      /* original C++ signature */
     no_tick_labels = enum.auto()  # (= 1 << 3)  # no text labels will be displayed
-    # ImPlotAxisFlags_NoInitialFit  = 1 << 4,      /* original C++ signature */
+    # ImPlotAxisFlags_NoInitialFit     = 1 << 4,      /* original C++ signature */
     no_initial_fit = (
         enum.auto()
     )  # (= 1 << 4)  # axis will not be initially fit to data extents on the first rendered frame
-    # ImPlotAxisFlags_NoMenus       = 1 << 5,      /* original C++ signature */
+    # ImPlotAxisFlags_NoMenus          = 1 << 5,      /* original C++ signature */
     no_menus = enum.auto()  # (= 1 << 5)  # the user will not be able to open context menus with right-click
-    # ImPlotAxisFlags_NoSideSwitch  = 1 << 6,      /* original C++ signature */
+    # ImPlotAxisFlags_NoSideSwitch     = 1 << 6,      /* original C++ signature */
     no_side_switch = enum.auto()  # (= 1 << 6)  # the user will not be able to switch the axis side by dragging it
-    # ImPlotAxisFlags_NoHighlight   = 1 << 7,      /* original C++ signature */
+    # ImPlotAxisFlags_NoHighlight      = 1 << 7,      /* original C++ signature */
     no_highlight = enum.auto()  # (= 1 << 7)  # the axis will not have its background highlighted when hovered or held
-    # ImPlotAxisFlags_Opposite      = 1 << 8,      /* original C++ signature */
+    # ImPlotAxisFlags_Opposite         = 1 << 8,      /* original C++ signature */
     opposite = (
         enum.auto()
     )  # (= 1 << 8)  # axis ticks and labels will be rendered on the conventionally opposite side (i.e, right or top)
-    # ImPlotAxisFlags_Foreground    = 1 << 9,      /* original C++ signature */
+    # ImPlotAxisFlags_Foreground       = 1 << 9,      /* original C++ signature */
     foreground = (
         enum.auto()
     )  # (= 1 << 9)  # grid lines will be displayed in the foreground (i.e. on top of data) instead of the background
-    # ImPlotAxisFlags_Invert        = 1 << 10,     /* original C++ signature */
+    # ImPlotAxisFlags_Invert           = 1 << 10,     /* original C++ signature */
     invert = enum.auto()  # (= 1 << 10)  # the axis will be inverted
-    # ImPlotAxisFlags_AutoFit       = 1 << 11,     /* original C++ signature */
+    # ImPlotAxisFlags_AutoFit          = 1 << 11,     /* original C++ signature */
     auto_fit = enum.auto()  # (= 1 << 11)  # axis will be auto-fitting to data extents
-    # ImPlotAxisFlags_RangeFit      = 1 << 12,     /* original C++ signature */
+    # ImPlotAxisFlags_RangeFit         = 1 << 12,     /* original C++ signature */
     range_fit = (
         enum.auto()
     )  # (= 1 << 12)  # axis will only fit points if the point is in the visible range of the **orthogonal** axis
-    # ImPlotAxisFlags_PanStretch    = 1 << 13,     /* original C++ signature */
+    # ImPlotAxisFlags_PanStretch       = 1 << 13,     /* original C++ signature */
     pan_stretch = (
         enum.auto()
     )  # (= 1 << 13)  # panning in a locked or constrained state will cause the axis to stretch if possible
-    # ImPlotAxisFlags_LockMin       = 1 << 14,     /* original C++ signature */
+    # ImPlotAxisFlags_LockMin          = 1 << 14,     /* original C++ signature */
     lock_min = enum.auto()  # (= 1 << 14)  # the axis minimum value will be locked when panning/zooming
-    # ImPlotAxisFlags_LockMax       = 1 << 15,     /* original C++ signature */
+    # ImPlotAxisFlags_LockMax          = 1 << 15,     /* original C++ signature */
     lock_max = enum.auto()  # (= 1 << 15)  # the axis maximum value will be locked when panning/zooming
-    # ImPlotAxisFlags_Lock          = ImPlotAxisFlags_LockMin | ImPlotAxisFlags_LockMax,    /* original C++ signature */
+    # ImPlotAxisFlags_TickLabelsInside = 1 << 16,     /* original C++ signature */
+    tick_labels_inside = (
+        enum.auto()
+    )  # (= 1 << 16)  # axis tick labels will be drawn inside the plot area (applies only to the innermost axes)
+    # ImPlotAxisFlags_Lock             = ImPlotAxisFlags_LockMin | ImPlotAxisFlags_LockMax,    /* original C++ signature */
     lock = enum.auto()  # (= AxisFlags_LockMin | AxisFlags_LockMax)
-    # ImPlotAxisFlags_NoDecorations = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_NoTickMarks | ImPlotAxisFlags_NoTickLabels,    /* original C++ signature */
+    # ImPlotAxisFlags_NoDecorations    = ImPlotAxisFlags_NoLabel | ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_NoTickMarks | ImPlotAxisFlags_NoTickLabels,    /* original C++ signature */
     no_decorations = (
         enum.auto()
     )  # (= AxisFlags_NoLabel | AxisFlags_NoGridLines | AxisFlags_NoTickMarks | AxisFlags_NoTickLabels)
-    # ImPlotAxisFlags_AuxDefault    = ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite    /* original C++ signature */
+    # ImPlotAxisFlags_AuxDefault       = ImPlotAxisFlags_NoGridLines | ImPlotAxisFlags_Opposite    /* original C++ signature */
     # }
     aux_default = enum.auto()  # (= AxisFlags_NoGridLines | AxisFlags_Opposite)
 
@@ -539,6 +543,14 @@ class DragToolFlags_(enum.IntFlag):
     delayed = (
         enum.auto()
     )  # (= 1 << 3)  # tool rendering will be delayed one frame; useful when applying position-constraints
+    # ImPlotDragToolFlags_NoMove    = 1 << 4,     /* original C++ signature */
+    no_move = (
+        enum.auto()
+    )  # (= 1 << 4)  # the tool can't be moved; it still catches and reports clicks and hovers, but shows no move cursor
+    # ImPlotDragToolFlags_NoResize  = 1 << 5,     /* original C++ signature */
+    no_resize = (
+        enum.auto()
+    )  # (= 1 << 5)  # DragRect's corners and edges can't resize it; they still catch and report clicks and hovers, but show no resize cursor
 
 # enum ImPlotColormapScaleFlags_    /* original C++ signature */
 class ColormapScaleFlags_(enum.IntFlag):
@@ -998,7 +1010,7 @@ class Spec:
        spec.LineColor = ImVec4(1,0,0,1);
        spec.LineWeight = 2.0;
        spec.Marker = ImPlotMarker_Circle;
-       spec.Flags = ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;
+       spec.Flags = (ImPlotItemFlags)ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;
        ImPlot::PlotLine("MyLine", xs, ys, 100, spec);
 
     2. Inline using (ImPlotProp,value) pairs (order does NOT matter):
@@ -1007,7 +1019,7 @@ class Spec:
          ImPlotProp_LineColor, ImVec4(1,0,0,1),
          ImPlotProp_LineWeight, 2.0,
          ImPlotProp_Marker, ImPlotMarker_Circle,
-         ImPlotProp_Flags, ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments
+         ImPlotProp_Flags, (ImPlotItemFlags)ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments
        });
     """
 
@@ -2265,6 +2277,14 @@ def hide_next_item(hidden: bool = True, cond: Optional[Cond] = None) -> None:
     """
     pass
 
+# IMPLOT_API bool IsItemHidden(const char* label_id);    /* original C++ signature */
+def is_item_hidden(label_id: str) -> bool:
+    """Returns True if the plot item #label_id in the current plot is hidden (i.e. toggled off from the legend or by HideNextItem).
+    Can be called before the item is submitted (e.g. to skip expensive work for a hidden item), in which case it reports
+    the state from the previous frame. Returns False for items that have never been submitted. See also IsLastItemHidden.
+    """
+    pass
+
 # Use the following around calls to Begin/EndPlot to align l/r/t/b padding.
 # Consider using Begin/EndSubplots first. They are more feature rich and
 # accomplish the same behaviour by default. The functions below offer lower
@@ -2439,6 +2459,11 @@ def pop_style_var(count: int = 1) -> None:
 # IMPLOT_API ImVec4 GetLastItemColor();    /* original C++ signature */
 def get_last_item_color() -> ImVec4:
     """Gets the last item primary color (i.e. its legend icon color)"""
+    pass
+
+# IMPLOT_API bool IsLastItemHidden();    /* original C++ signature */
+def is_last_item_hidden() -> bool:
+    """Returns True if the last plot item is hidden (i.e. toggled off from the legend or by HideNextItem)."""
     pass
 
 # IMPLOT_API const char* GetStyleColorName(ImPlotCol idx);    /* original C++ signature */

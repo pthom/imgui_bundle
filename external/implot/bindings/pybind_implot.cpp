@@ -134,6 +134,7 @@ void py_init_module_implot(nb::module_& m)
             .value("pan_stretch", ImPlotAxisFlags_PanStretch, "panning in a locked or constrained state will cause the axis to stretch if possible")
             .value("lock_min", ImPlotAxisFlags_LockMin, "the axis minimum value will be locked when panning/zooming")
             .value("lock_max", ImPlotAxisFlags_LockMax, "the axis maximum value will be locked when panning/zooming")
+            .value("tick_labels_inside", ImPlotAxisFlags_TickLabelsInside, "axis tick labels will be drawn inside the plot area (applies only to the innermost axes)")
             .value("lock", ImPlotAxisFlags_Lock, "")
             .value("no_decorations", ImPlotAxisFlags_NoDecorations, "")
             .value("aux_default", ImPlotAxisFlags_AuxDefault, "");
@@ -182,7 +183,9 @@ void py_init_module_implot(nb::module_& m)
             .value("no_cursors", ImPlotDragToolFlags_NoCursors, "drag tools won't change cursor icons when hovered or held")
             .value("no_fit", ImPlotDragToolFlags_NoFit, "the drag tool won't be considered for plot fits")
             .value("no_inputs", ImPlotDragToolFlags_NoInputs, "lock the tool from user inputs")
-            .value("delayed", ImPlotDragToolFlags_Delayed, "tool rendering will be delayed one frame; useful when applying position-constraints");
+            .value("delayed", ImPlotDragToolFlags_Delayed, "tool rendering will be delayed one frame; useful when applying position-constraints")
+            .value("no_move", ImPlotDragToolFlags_NoMove, "the tool can't be moved; it still catches and reports clicks and hovers, but shows no move cursor")
+            .value("no_resize", ImPlotDragToolFlags_NoResize, "DragRect's corners and edges can't resize it; they still catch and report clicks and hovers, but show no resize cursor");
 
 
     auto pyEnumColormapScaleFlags_ =
@@ -439,7 +442,7 @@ void py_init_module_implot(nb::module_& m)
 
     auto pyClassImPlotSpec =
         nb::class_<ImPlotSpec>
-            (m, "Spec", nb::dynamic_attr(), " Plot item styling specification. Provide these to PlotX functions to override styling, specify\n offsetting or stride, or set optional flags. This struct can be used in the following ways:\n\n 1. By declaring and defining a struct instance:\n\n    ImPlotSpec spec;\n    spec.LineColor = ImVec4(1,0,0,1);\n    spec.LineWeight = 2.0;\n    spec.Marker = ImPlotMarker_Circle;\n    spec.Flags = ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;\n    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, spec);\n\n 2. Inline using (ImPlotProp,value) pairs (order does NOT matter):\n\n    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, {\n      ImPlotProp_LineColor, ImVec4(1,0,0,1),\n      ImPlotProp_LineWeight, 2.0,\n      ImPlotProp_Marker, ImPlotMarker_Circle,\n      ImPlotProp_Flags, ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments\n    });")
+            (m, "Spec", nb::dynamic_attr(), " Plot item styling specification. Provide these to PlotX functions to override styling, specify\n offsetting or stride, or set optional flags. This struct can be used in the following ways:\n\n 1. By declaring and defining a struct instance:\n\n    ImPlotSpec spec;\n    spec.LineColor = ImVec4(1,0,0,1);\n    spec.LineWeight = 2.0;\n    spec.Marker = ImPlotMarker_Circle;\n    spec.Flags = (ImPlotItemFlags)ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments;\n    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, spec);\n\n 2. Inline using (ImPlotProp,value) pairs (order does NOT matter):\n\n    ImPlot::PlotLine(\"MyLine\", xs, ys, 100, {\n      ImPlotProp_LineColor, ImVec4(1,0,0,1),\n      ImPlotProp_LineWeight, 2.0,\n      ImPlotProp_Marker, ImPlotMarker_Circle,\n      ImPlotProp_Flags, (ImPlotItemFlags)ImPlotItemFlags_NoLegend | ImPlotLineFlags_Segments\n    });")
         .def("__init__", [](ImPlotSpec * self, const std::optional<const ImVec4> & LineColor = std::nullopt, float LineWeight = 1.0f, const std::optional<const ImVec4> & FillColor = std::nullopt, float FillAlpha = 1.0f, const std::optional<const ImPlotMarker> & Marker = std::nullopt, float MarkerSize = 4, const std::optional<const ImVec4> & MarkerLineColor = std::nullopt, const std::optional<const ImVec4> & MarkerFillColor = std::nullopt, float Size = 4, int Offset = 0, int Stride = IMPLOT_AUTO, ImPlotItemFlags Flags = ImPlotItemFlags_None)
         {
             new (self) ImPlotSpec();  // placement new
@@ -4162,6 +4165,11 @@ void py_init_module_implot(nb::module_& m)
         nb::arg("hidden") = true, nb::arg("cond").none() = nb::none(),
         " Hides or shows the next plot item (i.e. as if it were toggled from the legend).\n Use ImPlotCond_Always if you need to forcefully set this every frame.\n\nPython bindings defaults:\n    If cond is None, then its default value will be: Cond_Once");
 
+    m.def("is_item_hidden",
+        ImPlot::IsItemHidden,
+        nb::arg("label_id"),
+        " Returns True if the plot item #label_id in the current plot is hidden (i.e. toggled off from the legend or by HideNextItem).\n Can be called before the item is submitted (e.g. to skip expensive work for a hidden item), in which case it reports\n the state from the previous frame. Returns False for items that have never been submitted. See also IsLastItemHidden.");
+
     m.def("begin_aligned_plots",
         ImPlot::BeginAlignedPlots,
         nb::arg("group_id"), nb::arg("vertical") = true,
@@ -4274,6 +4282,9 @@ void py_init_module_implot(nb::module_& m)
 
     m.def("get_last_item_color",
         ImPlot::GetLastItemColor, "Gets the last item primary color (i.e. its legend icon color)");
+
+    m.def("is_last_item_hidden",
+        ImPlot::IsLastItemHidden, "Returns True if the last plot item is hidden (i.e. toggled off from the legend or by HideNextItem).");
 
     m.def("get_style_color_name",
         ImPlot::GetStyleColorName,

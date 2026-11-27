@@ -10,6 +10,7 @@
 
 ## New
 
+- **Dear ImGui 1.93.1**, ImPlot 1.1 (tick labels inside the plot, drag tools with `NoMove` and `NoResize`), ImPlot3D 0.5, and the other libraries at their latest version. New in Python: `imgui.is_item_disabled()`, `style.symbol_arrow_size_factor` and `symbol_arrow_thickness_factor`.
 - **ImGuiKit** (`imgui_bundle.imgui_kit`): small, standalone additions to Dear ImGui, with Python bindings: em units, layout helpers (fill rows, aligned groups, label columns, flows), a few widgets. See the [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-kit/).
 - **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer moved to a library of its own, [ImGuiTouch](https://imgui-bundle.pages.dev/doc/addons/imgui-touch/) (`imgui_bundle.imgui_touch`, `imgui_touch.setup()`), and its wheel session to ImGuiKit (`imgui_kit.setup_wheel_session()`), where an app with its own backend can set them up. Hello ImGui and ImmApp still set them up by themselves.
 - **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes two fingers with `imgui_touch.item_pinch()` (the gesture: it zooms and pans at once), or, if it zooms with the wheel, `imgui_touch.set_item_pinch_as_wheel()`.

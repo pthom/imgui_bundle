@@ -70,6 +70,11 @@ void py_init_module_implot_internal(nb::module_& m)
         nb::arg("l"), nb::arg("r"),
         " Returns always positive modulo (assumes r != 0)\n(private API)");
 
+    m.def("im_double_bits",
+        ImDoubleBits,
+        nb::arg("val"),
+        " Returns the IEEE-754 bit pattern of val. NaN and infinity are tested on these bits rather than with isnan() or\n comparisons, so the tests need no <cmath>, don't depend on whether isnan is a macro or a function, and keep\n working when -ffast-math (-ffinite-math-only) or /fp:fast lets the compiler assume floats are never NaN or infinite.\n(private API)");
+
     m.def("im_nan",
         ImNan,
         nb::arg("val"),
@@ -553,6 +558,8 @@ void py_init_module_implot_internal(nb::module_& m)
             &ImPlotAxis::HasGridLines, "(private API)")
         .def("has_tick_labels",
             &ImPlotAxis::HasTickLabels, "(private API)")
+        .def("has_tick_labels_inside",
+            &ImPlotAxis::HasTickLabelsInside, "(private API)")
         .def("has_tick_marks",
             &ImPlotAxis::HasTickMarks, "(private API)")
         .def("will_render",
@@ -857,7 +864,7 @@ void py_init_module_implot_internal(nb::module_& m)
     auto pyClassImPlotContext =
         nb::class_<ImPlotContext>
             (m, "Context", "Holds state information that must persist between calls to BeginPlot()/EndPlot()")
-        .def("__init__", [](ImPlotContext * self, const std::optional<const ImPlotTicker> & CTicker = std::nullopt, const std::optional<const ImPlotAnnotationCollection> & Annotations = std::nullopt, const std::optional<const ImPlotTagCollection> & Tags = std::nullopt, const std::optional<const ImPlotStyle> & Style = std::nullopt, const std::optional<const ImVector<ImGuiColorMod>> & ColorModifiers = std::nullopt, const std::optional<const ImVector<ImGuiStyleMod>> & StyleModifiers = std::nullopt, const std::optional<const ImPlotColormapData> & ColormapData = std::nullopt, const std::optional<const ImVector<int>> & TempInt1 = std::nullopt, int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), const std::optional<const ImPlotNextPlotData> & NextPlotData = std::nullopt, const std::optional<const ImPlotNextItemData> & NextItemData = std::nullopt, const std::optional<const ImPlotInputMap> & InputMap = std::nullopt, bool OpenContextThisFrame = bool(), const std::optional<const ImGuiTextBuffer> & MousePosStringBuilder = std::nullopt, bool CanDragPlotInNodeEditor = false)
+        .def("__init__", [](ImPlotContext * self, const std::optional<const ImPlotTicker> & CTicker = std::nullopt, const std::optional<const ImPlotAnnotationCollection> & Annotations = std::nullopt, const std::optional<const ImPlotTagCollection> & Tags = std::nullopt, const std::optional<const ImPlotStyle> & Style = std::nullopt, const std::optional<const ImVector<ImGuiColorMod>> & ColorModifiers = std::nullopt, const std::optional<const ImVector<ImGuiStyleMod>> & StyleModifiers = std::nullopt, const std::optional<const ImPlotColormapData> & ColormapData = std::nullopt, const std::optional<const ImVector<int>> & TempInt1 = std::nullopt, const std::optional<const ImVector<ImRect>> & TempRect1 = std::nullopt, int DigitalPlotItemCnt = int(), int DigitalPlotOffset = int(), const std::optional<const ImPlotNextPlotData> & NextPlotData = std::nullopt, const std::optional<const ImPlotNextItemData> & NextItemData = std::nullopt, const std::optional<const ImPlotInputMap> & InputMap = std::nullopt, bool OpenContextThisFrame = bool(), const std::optional<const ImGuiTextBuffer> & MousePosStringBuilder = std::nullopt, bool CanDragPlotInNodeEditor = false)
         {
             new (self) ImPlotContext();  // placement new
             auto r_ctor_ = self;
@@ -893,6 +900,10 @@ void py_init_module_implot_internal(nb::module_& m)
                 r_ctor_->TempInt1 = TempInt1.value();
             else
                 r_ctor_->TempInt1 = ImVector<int>();
+            if (TempRect1.has_value())
+                r_ctor_->TempRect1 = TempRect1.value();
+            else
+                r_ctor_->TempRect1 = ImVector<ImRect>();
             r_ctor_->DigitalPlotItemCnt = DigitalPlotItemCnt;
             r_ctor_->DigitalPlotOffset = DigitalPlotOffset;
             if (NextPlotData.has_value())
@@ -914,7 +925,7 @@ void py_init_module_implot_internal(nb::module_& m)
                 r_ctor_->MousePosStringBuilder = ImGuiTextBuffer();
             r_ctor_->CanDragPlotInNodeEditor = CanDragPlotInNodeEditor;
         },
-        nb::arg("c_ticker").none() = nb::none(), nb::arg("annotations").none() = nb::none(), nb::arg("tags").none() = nb::none(), nb::arg("style").none() = nb::none(), nb::arg("color_modifiers").none() = nb::none(), nb::arg("style_modifiers").none() = nb::none(), nb::arg("colormap_data").none() = nb::none(), nb::arg("temp_int1").none() = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data").none() = nb::none(), nb::arg("next_item_data").none() = nb::none(), nb::arg("input_map").none() = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder").none() = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
+        nb::arg("c_ticker").none() = nb::none(), nb::arg("annotations").none() = nb::none(), nb::arg("tags").none() = nb::none(), nb::arg("style").none() = nb::none(), nb::arg("color_modifiers").none() = nb::none(), nb::arg("style_modifiers").none() = nb::none(), nb::arg("colormap_data").none() = nb::none(), nb::arg("temp_int1").none() = nb::none(), nb::arg("temp_rect1").none() = nb::none(), nb::arg("digital_plot_item_cnt") = int(), nb::arg("digital_plot_offset") = int(), nb::arg("next_plot_data").none() = nb::none(), nb::arg("next_item_data").none() = nb::none(), nb::arg("input_map").none() = nb::none(), nb::arg("open_context_this_frame") = bool(), nb::arg("mouse_pos_string_builder").none() = nb::none(), nb::arg("can_drag_plot_in_node_editor") = false
         )
         .def_rw("current_plot", &ImPlotContext::CurrentPlot, "")
         .def_rw("current_subplot", &ImPlotContext::CurrentSubplot, "")
@@ -929,6 +940,7 @@ void py_init_module_implot_internal(nb::module_& m)
         .def_rw("style_modifiers", &ImPlotContext::StyleModifiers, "")
         .def_rw("colormap_data", &ImPlotContext::ColormapData, "")
         .def_rw("temp_int1", &ImPlotContext::TempInt1, "")
+        .def_rw("temp_rect1", &ImPlotContext::TempRect1, "")
         .def_rw("digital_plot_item_cnt", &ImPlotContext::DigitalPlotItemCnt, "")
         .def_rw("digital_plot_offset", &ImPlotContext::DigitalPlotOffset, "")
         .def_rw("next_plot_data", &ImPlotContext::NextPlotData, "")

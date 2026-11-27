@@ -17,7 +17,7 @@ from typing import Any, Optional, Tuple, overload
 import numpy as np
 import enum
 
-from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ImDrawList, Storage, TextBuffer, ImVec2Like, ImVec4Like
+from imgui_bundle.imgui import ImVec2, ImVec4, ImU32, ImU64, ImDrawList, Storage, TextBuffer, ImVec2Like, ImVec4Like
 from imgui_bundle.imgui.internal import ImRect
 from imgui_bundle import imgui
 from imgui_bundle.implot import (
@@ -41,6 +41,7 @@ from imgui_bundle.implot import (
 
 from imgui_bundle.imgui import (
     ImVector_ImU32,
+    ImVector_ImRect,
     ImVector_float,
     ImVector_int,
     ImVector_ColorMod,
@@ -86,7 +87,7 @@ time_t = int
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 # SOFTWARE.
 
-# ImPlot v1.1 WIP
+# ImPlot v1.2 WIP
 
 # You may use this file to debug, understand or extend ImPlot features but we
 # don't provide any guarantee of forward compatibility!
@@ -121,6 +122,27 @@ time_t = int
 # [SECTION] Macros
 #-----------------------------------------------------------------------------
 
+# By default, templates are instantiated for `float`, `double`, and for the following integer types, which are defined in imgui.h:
+#     signed char         ImS8;   // 8-bit signed integer
+#     uchar       ImU8;   // 8-bit unsigned integer
+#     signed short        ImS16;  // 16-bit signed integer
+#     unsigned short      ImU16;  // 16-bit unsigned integer
+#     signed int          ImS32;  // 32-bit signed integer == int
+#     unsigned int        ImU32;  // 32-bit unsigned integer
+#     signed   long long  ImS64;  // 64-bit signed integer
+#     unsigned long long  ImU64;  // 64-bit unsigned integer
+# (note: this list does *not* include `long`, `unsigned long` and `long double`)
+#
+# You can customize the supported types by defining IMPLOT_CUSTOM_NUMERIC_TYPES at compile time to define your own type list.
+#    As an example, you could use the compile time define given by the line below in order to support only float and double.
+#        -DIMPLOT_CUSTOM_NUMERIC_TYPES="(float)(double)"
+#    Note that the demo (implot_demo.cpp) plots float and double data, so those two must stay in the list for it to link
+#    (e.g. "(double)" alone fails with an undefined PlotBars<float>). The define must also reach implot_demo.cpp, not only
+#    implot_items.cpp (or go in imconfig.h); otherwise the demo falls back to the default list and may fail to link.
+#    In order to support all known C++ types, use:
+#        -DIMPLOT_CUSTOM_NUMERIC_TYPES="(signed char)(uchar)(signed short)(unsigned short)(signed int)(unsigned int)(signed long)(unsigned long)(signed long long)(unsigned long long)(float)(double)(long double)"
+
+
 
 #-----------------------------------------------------------------------------
 # [SECTION] Forward Declarations
@@ -152,6 +174,14 @@ def im_asinh(x: float) -> float:
 # static inline int ImPosMod(int l, int r);    /* original C++ signature */
 def im_pos_mod(l: int, r: int) -> int:
     """ Returns always positive modulo (assumes r != 0)
+    (private API)
+    """
+    pass
+# static inline ImU64 ImDoubleBits(double val);    /* original C++ signature */
+def im_double_bits(val: float) -> ImU64:
+    """ Returns the IEEE-754 bit pattern of val. NaN and infinity are tested on these bits rather than with isnan() or
+     comparisons, so the tests need no <cmath>, don't depend on whether isnan is a macro or a function, and keep
+     working when -ffast-math (-ffinite-math-only) or /fp:fast lets the compiler assume floats are never NaN or infinite.
     (private API)
     """
     pass
@@ -815,75 +845,79 @@ class Axis:
         """(private API)"""
         pass
 
-    # inline bool HasLabel()          const;    /* original C++ signature */
+    # inline bool HasLabel()            const;    /* original C++ signature */
     def has_label(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasGridLines()      const;    /* original C++ signature */
+    # inline bool HasGridLines()        const;    /* original C++ signature */
     def has_grid_lines(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasTickLabels()     const;    /* original C++ signature */
+    # inline bool HasTickLabels()       const;    /* original C++ signature */
     def has_tick_labels(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasTickMarks()      const;    /* original C++ signature */
+    # inline bool HasTickLabelsInside() const;    /* original C++ signature */
+    def has_tick_labels_inside(self) -> bool:
+        """(private API)"""
+        pass
+    # inline bool HasTickMarks()        const;    /* original C++ signature */
     def has_tick_marks(self) -> bool:
         """(private API)"""
         pass
-    # inline bool WillRender()        const;    /* original C++ signature */
+    # inline bool WillRender()          const;    /* original C++ signature */
     def will_render(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsOpposite()        const;    /* original C++ signature */
+    # inline bool IsOpposite()          const;    /* original C++ signature */
     def is_opposite(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInverted()        const;    /* original C++ signature */
+    # inline bool IsInverted()          const;    /* original C++ signature */
     def is_inverted(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsForeground()      const;    /* original C++ signature */
+    # inline bool IsForeground()        const;    /* original C++ signature */
     def is_foreground(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsAutoFitting()     const;    /* original C++ signature */
+    # inline bool IsAutoFitting()       const;    /* original C++ signature */
     def is_auto_fitting(self) -> bool:
         """(private API)"""
         pass
-    # inline bool CanInitFit()        const;    /* original C++ signature */
+    # inline bool CanInitFit()          const;    /* original C++ signature */
     def can_init_fit(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsRangeLocked()     const;    /* original C++ signature */
+    # inline bool IsRangeLocked()       const;    /* original C++ signature */
     def is_range_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMin()       const;    /* original C++ signature */
+    # inline bool IsLockedMin()         const;    /* original C++ signature */
     def is_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLockedMax()       const;    /* original C++ signature */
+    # inline bool IsLockedMax()         const;    /* original C++ signature */
     def is_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsLocked()          const;    /* original C++ signature */
+    # inline bool IsLocked()            const;    /* original C++ signature */
     def is_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMin()  const;    /* original C++ signature */
+    # inline bool IsInputLockedMin()    const;    /* original C++ signature */
     def is_input_locked_min(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLockedMax()  const;    /* original C++ signature */
+    # inline bool IsInputLockedMax()    const;    /* original C++ signature */
     def is_input_locked_max(self) -> bool:
         """(private API)"""
         pass
-    # inline bool IsInputLocked()     const;    /* original C++ signature */
+    # inline bool IsInputLocked()       const;    /* original C++ signature */
     def is_input_locked(self) -> bool:
         """(private API)"""
         pass
-    # inline bool HasMenus()          const;    /* original C++ signature */
+    # inline bool HasMenus()            const;    /* original C++ signature */
     def has_menus(self) -> bool:
         """(private API)"""
         pass
@@ -1291,6 +1325,8 @@ class Context:
     # Temp data for general use
     # ImVector<int>      TempInt1;    /* original C++ signature */
     temp_int1: ImVector_int
+    # ImVector<ImRect>   TempRect1;    /* original C++ signature */
+    temp_rect1: ImVector_ImRect
 
     # Misc
     # int                DigitalPlotItemCnt;    /* original C++ signature */
@@ -1319,7 +1355,7 @@ class Context:
     # bool CanDragPlotInNodeEditor = false;    /* original C++ signature */
     # Specific to ImGui Bundle, when used inside imgui-node-editor
     can_drag_plot_in_node_editor: bool = False
-    def __init__(self, c_ticker: Optional[Ticker] = None, annotations: Optional[AnnotationCollection] = None, tags: Optional[TagCollection] = None, style: Optional[Style] = None, color_modifiers: Optional[ImVector_ColorMod] = None, style_modifiers: Optional[ImVector_StyleMod] = None, colormap_data: Optional[ColormapData] = None, temp_int1: Optional[ImVector_int] = None, digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: Optional[NextPlotData] = None, next_item_data: Optional[NextItemData] = None, input_map: Optional[InputMap] = None, open_context_this_frame: bool = bool(), mouse_pos_string_builder: Optional[TextBuffer] = None, can_drag_plot_in_node_editor: bool = False) -> None:
+    def __init__(self, c_ticker: Optional[Ticker] = None, annotations: Optional[AnnotationCollection] = None, tags: Optional[TagCollection] = None, style: Optional[Style] = None, color_modifiers: Optional[ImVector_ColorMod] = None, style_modifiers: Optional[ImVector_StyleMod] = None, colormap_data: Optional[ColormapData] = None, temp_int1: Optional[ImVector_int] = None, temp_rect1: Optional[ImVector_ImRect] = None, digital_plot_item_cnt: int = int(), digital_plot_offset: int = int(), next_plot_data: Optional[NextPlotData] = None, next_item_data: Optional[NextItemData] = None, input_map: Optional[InputMap] = None, open_context_this_frame: bool = bool(), mouse_pos_string_builder: Optional[TextBuffer] = None, can_drag_plot_in_node_editor: bool = False) -> None:
         """Auto-generated default constructor with named params
 
         Python bindings defaults:
@@ -1332,6 +1368,7 @@ class Context:
                 * StyleModifiers: ImVector_StyleMod()
                 * ColormapData: ColormapData()
                 * TempInt1: ImVector_int()
+                * TempRect1: ImVector_ImRect()
                 * NextPlotData: NextPlotData()
                 * NextItemData: NextItemData()
                 * InputMap: InputMap()

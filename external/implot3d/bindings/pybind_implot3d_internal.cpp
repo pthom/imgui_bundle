@@ -56,6 +56,11 @@ void py_init_module_implot3d_internal(nb::module_& m)
         nb::arg("l"), nb::arg("r"),
         " Returns always positive modulo (assumes r != 0)\n(private API)");
 
+    m.def("im_double_bits",
+        ImPlot3D::ImDoubleBits,
+        nb::arg("val"),
+        " Returns the IEEE-754 bit pattern of val. NaN and infinity are tested on these bits rather than with isnan() or\n comparisons, so the tests need no <cmath>, don't depend on whether isnan is a macro or a function, and keep\n working when -ffast-math (-ffinite-math-only) or /fp:fast lets the compiler assume floats are never NaN or infinite.\n(private API)");
+
     m.def("im_nan",
         ImPlot3D::ImNan,
         nb::arg("val"),
