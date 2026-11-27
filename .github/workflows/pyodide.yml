@@ -99,6 +99,10 @@ jobs:
     needs: build_pyodide_wheel
     runs-on: ubuntu-latest
     if: github.event_name == 'release' && github.event.action == 'published'
+    # Trusted publishing, as in wheels.yml: PyPI accepts this workflow's identity (project settings, "Publishing").
+    environment: pypi
+    permissions:
+      id-token: write
 
     steps:
       - name: Download Pyodide wheel artifact
@@ -108,6 +112,3 @@ jobs:
           path: dist
 
       - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086  # v1.14.3
-        with:
-          user: __token__
-          password: ${{ secrets.pypi_password }}
