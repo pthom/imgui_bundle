@@ -56,6 +56,7 @@ ImGuiTouchConfig = imgui_touch.Config
 
 DockSpaceName = str
 ImGuiTestEngine = test_engine.TestEngine
+CallbackId = int  # C++: ImGuiID
 
 VoidFunction = Callable[[], None]
 AnyEventCallback = Callable[[Any], None]
