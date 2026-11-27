@@ -1516,7 +1516,8 @@ struct RunnerCallbacks
     // `EnqueuePostInit`: Add a function that will be called once after OpenGL
     //  and ImGui are inited, but before the backend callback are initialized.
     //  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
-    //  An add-on uses AddCallback instead: a later assignment of `PostInit` drops what was enqueued.
+    //  Note: the function joins the app's own `PostInit`. If the app assigns `PostInit` afterwards, it is lost.
+    //  A library should use `AddCallback(CallbackSlot::PostInit, ...)` instead, which keeps it.
     void EnqueuePostInit(const VoidFunction& callback);
 
     // `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
@@ -1573,7 +1574,8 @@ struct RunnerCallbacks
     // `EnqueueBeforeExit`: Add a function that will be called once before exiting
     //  (when OpenGL and ImGui are still inited)
     // (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)
-    //  An add-on uses AddCallback instead: a later assignment of `BeforeExit` drops what was enqueued.
+    //  Note: the function joins the app's own `BeforeExit`. If the app assigns `BeforeExit` afterwards, it is lost.
+    //  A library should use `AddCallback(CallbackSlot::BeforeExit, ...)` instead, which keeps it.
     void EnqueueBeforeExit(const VoidFunction& callback);
 
     // `BeforeExit_PostCleanup`: You can here add a function that will be called once
@@ -1657,11 +1659,14 @@ struct RunnerCallbacks
 
 
     // --------------- Add-on callbacks -------------------
-    // A library or an add-on adds its callbacks beside the app's own (`PostInit`, `BeforeExit`...): a later plain
-    // assignment (`callbacks.PostInit = f`) replaces only the app's function, and keeps the added ones.
-    // The order: by default, the added callbacks run before the app's function in the setup slots and in PreNewFrame
-    // (the app may use what they set up), and after it elsewhere; in the exit slots, in reverse order of addition
-    // (the app releases what depends on them first). An app's own chaining: EnqueuePostInit, EnqueueBeforeExit.
+    // Each slot above (`PostInit`, `BeforeExit`...) holds one function: the app's.
+    // A library or an add-on adds its own functions to a slot with `AddCallback`.
+    // They are kept apart: assigning the slot (`callbacks.PostInit = f`) replaces only the app's function.
+    //
+    // When they run, relative to the app's function (CallbackOrder::Default):
+    //   - in the setup slots and PreNewFrame: before it (the app can use what they set up);
+    //   - in the exit slots: after it, in reverse order of addition (the app first releases what depends on them);
+    //   - in the other slots: after it.
 
     // `AddCallback`: adds a callback to a slot. `owner` names who added it (e.g. "immapp"), for RemoveCallbacks.
     CallbackId AddCallback(CallbackSlot slot, const VoidFunction& callback, const std::string& owner = "",

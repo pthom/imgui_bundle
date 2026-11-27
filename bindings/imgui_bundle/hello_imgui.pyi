@@ -1852,7 +1852,8 @@ class RunnerCallbacks:
         """`enqueue_post_init`: Add a function that will be called once after OpenGL
         and ImGui are inited, but before the backend callback are initialized.
         (this will modify the `post_init` callback by appending the new callback (using `sequence_functions`)
-        An add-on uses AddCallback instead: a later assignment of `post_init` drops what was enqueued.
+        Note: the function joins the app's own `post_init`. If the app assigns `post_init` afterwards, it is lost.
+        A library should use `add_callback(CallbackSlot.post_init, ...)` instead, which keeps it.
         """
         pass
     # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;    /* original C++ signature */
@@ -1920,7 +1921,8 @@ class RunnerCallbacks:
         """`enqueue_before_exit`: Add a function that will be called once before exiting
          (when OpenGL and ImGui are still inited)
         (this will modify the `before_exit` callback by appending the new callback (using `sequence_functions`)
-         An add-on uses AddCallback instead: a later assignment of `before_exit` drops what was enqueued.
+         Note: the function joins the app's own `before_exit`. If the app assigns `before_exit` afterwards, it is lost.
+         A library should use `add_callback(CallbackSlot.before_exit, ...)` instead, which keeps it.
         """
         pass
     # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
@@ -2001,11 +2003,14 @@ class RunnerCallbacks:
     # --------------- Mobile callbacks -------------------
 
     # --------------- Add-on callbacks -------------------
-    # A library or an add-on adds its callbacks beside the app's own (`post_init`, `before_exit`...): a later plain
-    # assignment (`callbacks.post_init = f`) replaces only the app's function, and keeps the added ones.
-    # The order: by default, the added callbacks run before the app's function in the setup slots and in PreNewFrame
-    # (the app may use what they set up), and after it elsewhere; in the exit slots, in reverse order of addition
-    # (the app releases what depends on them first). An app's own chaining: EnqueuePostInit, EnqueueBeforeExit.
+    # Each slot above (`post_init`, `before_exit`...) holds one function: the app's.
+    # A library or an add-on adds its own functions to a slot with `add_callback`.
+    # They are kept apart: assigning the slot (`callbacks.post_init = f`) replaces only the app's function.
+    #
+    # When they run, relative to the app's function (CallbackOrder::Default):
+    #   - in the setup slots and PreNewFrame: before it (the app can use what they set up);
+    #   - in the exit slots: after it, in reverse order of addition (the app first releases what depends on them);
+    #   - in the other slots: after it.
 
     # CallbackId AddCallback(CallbackSlot slot, const VoidFunction& callback, const std::string& owner = "",    /* original C++ signature */
     #                            CallbackOrder order = CallbackOrder::Default);
