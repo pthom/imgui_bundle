@@ -11,6 +11,7 @@
 ## Documentation
 
 - [Dear ImGui Bundle documentation](https://imgui-bundle.pages.dev/doc/), also as a [PDF](https://imgui-bundle.pages.dev/doc/assets/imgui_bundle_book.pdf)
+- [C++ installation](https://imgui-bundle.pages.dev/doc/cpp/cpp-install/): the app template, a build from source, an installed CMake package, or a [Conan 2 package](https://imgui-bundle.pages.dev/doc/cpp/cpp-install/#conan-package) for a private Conan remote
 - [API reference](https://imgui-bundle.pages.dev/doc/api/): every function, class and enum of each library, with its Python and C++ signatures; also [in plain text](https://imgui-bundle.pages.dev/llms/api/index.txt), for AI assistants
 - [For AI assistants](https://imgui-bundle.pages.dev/doc/intro/ai-guide/): a page written for them (also at https://imgui-bundle.pages.dev/llms.txt), and the book [in plain text](https://imgui-bundle.pages.dev/llms-full.txt)
 - [Hello ImGui documentation](https://pthom.github.io/hello_imgui), also as a [PDF](https://pthom.github.io/hello_imgui/hello_imgui_book.pdf). Hello ImGui provides a simple framework to quickly create applications using Dear ImGui. It is included in Dear ImGui Bundle.
@@ -42,6 +43,7 @@ The manuals and demos below are using Dear ImGui Bundle itself!
 - [Dear ImGui official repository](https://github.com/ocornut/imgui)
 - [Dear ImGui Bundle repository](https://github.com/pthom/imgui_bundle)
 - [Hello ImGui repository](https://github.com/pthom/hello_imgui)
+- [App template repository](https://github.com/pthom/imgui_bundle_template): a starting point for a C++ app
 - [Litgen (bindings generator) repository](https://github.com/pthom/litgen)
 - [Fiatlight repository](https://github.com/pthom/fiatlight)
 
