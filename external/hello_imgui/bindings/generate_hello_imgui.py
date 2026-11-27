@@ -74,7 +74,7 @@ def main() -> None:
     # setAssetsFolder & SetAssetsFolder offer the same function
     options.fn_exclude_by_name__regex = r"^setAssetsFolder$|^TranslateCommonGlyphRanges$|^SetLoadAssetFileDataFunction$|^LoadImageDataFromAsset$|^LoadImageDataFromEncodedData$|^ImageAndSizeFromEncodedData$|^CreateTextureGpuFromRgbaData$|^assetFileFullPath$"
     # TextureGpu is hand-bound below (abstract base + shared_ptr holder).
-    options.class_exclude_by_name__regex = r"^ImageData$|^TextureGpu$"
+    options.class_exclude_by_name__regex = r"^ImageData$|^TextureGpu$|^AddedCallback_$|^RunnerCallbacksInternal_$"
 
     # Manual binding for ImageAndSizeFromEncodedData (const void* + size_t -> Python bytes)
     options.custom_bindings.add_custom_bindings_to_main_module(

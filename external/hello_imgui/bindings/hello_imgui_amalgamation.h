@@ -1403,6 +1403,60 @@ enum class DefaultIconFont
 
 // --------------------------------------------------------------------------------------------------------------------
 
+// ::code CallbackSlot
+// The slots of RunnerCallbacks where add-ons may add their own callbacks (RunnerCallbacks::AddCallback), beside the
+// app's own function (which a plain assignment replaces).
+enum class CallbackSlot
+{
+    PostInit_AddPlatformBackendCallbacks,
+    PostInit,
+    SetupImGuiConfig,
+    SetupImGuiStyle,
+    RegisterTests,
+    PreNewFrame,
+    PostNewFrame,
+    BeforeImGuiRender,
+    BeforeSwap,
+    AfterSwap,
+    PostRenderDockableWindows,
+    ThemeChanged,
+    BeforeExit,
+    BeforeExit_PostCleanup,
+
+    // Synonyms
+    BeforeGui = PostNewFrame,      // the frame has started (ImGui::NewFrame), nothing is drawn yet
+    AfterGui = BeforeImGuiRender,  // after the whole GUI (menus, windows, status bar), before ImGui::Render
+};
+
+// Where an added callback runs, relative to the slot's own function (the app's).
+// Default: before it in the setup slots and PreNewFrame, after it elsewhere (in reverse order in the exit slots).
+enum class CallbackOrder
+{
+    Default,
+    Before,
+    After,
+};
+
+// The id of an added callback (0: none)
+using CallbackId = ImGuiID;
+// ::endcode
+
+
+// An added callback (internal)
+struct AddedCallback_
+{
+    CallbackId Id = 0;
+    CallbackSlot Slot = CallbackSlot::PostInit;
+    VoidFunction Callback;
+    std::string Owner;
+    CallbackOrder Order = CallbackOrder::Default;
+    bool Once = false;         // CallSoon, CallLater: removed once called
+    int DueFrame = -1;         // CallSoon: the runner's first frame where it may run
+    double DueTime = -1.;      // CallLater: the runner's clock time from which it may run
+};
+struct RunnerCallbacksInternal_;
+
+
 // ::code RunnerCallbacks
 // RunnerCallbacks is a struct that contains the callbacks
 // that are called by the application
@@ -1462,6 +1516,7 @@ struct RunnerCallbacks
     // `EnqueuePostInit`: Add a function that will be called once after OpenGL
     //  and ImGui are inited, but before the backend callback are initialized.
     //  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)
+    //  An add-on uses AddCallback instead: a later assignment of `PostInit` drops what was enqueued.
     void EnqueuePostInit(const VoidFunction& callback);
 
     // `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.
@@ -1518,6 +1573,7 @@ struct RunnerCallbacks
     // `EnqueueBeforeExit`: Add a function that will be called once before exiting
     //  (when OpenGL and ImGui are still inited)
     // (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)
+    //  An add-on uses AddCallback instead: a later assignment of `BeforeExit` drops what was enqueued.
     void EnqueueBeforeExit(const VoidFunction& callback);
 
     // `BeforeExit_PostCleanup`: You can here add a function that will be called once
@@ -1598,6 +1654,39 @@ struct RunnerCallbacks
     //  * These events are currently handled only with SDL backend.
     MobileCallbacks mobileCallbacks;
 #endif
+
+
+    // --------------- Add-on callbacks -------------------
+    // A library or an add-on adds its callbacks beside the app's own (`PostInit`, `BeforeExit`...): a later plain
+    // assignment (`callbacks.PostInit = f`) replaces only the app's function, and keeps the added ones.
+    // The order: by default, the added callbacks run before the app's function in the setup slots and in PreNewFrame
+    // (the app may use what they set up), and after it elsewhere; in the exit slots, in reverse order of addition
+    // (the app releases what depends on them first). An app's own chaining: EnqueuePostInit, EnqueueBeforeExit.
+
+    // `AddCallback`: adds a callback to a slot. `owner` names who added it (e.g. "immapp"), for RemoveCallbacks.
+    CallbackId AddCallback(CallbackSlot slot, const VoidFunction& callback, const std::string& owner = "",
+                           CallbackOrder order = CallbackOrder::Default);
+
+    // `CallSoon`: calls `callback` once, at the first call of `slot` in a frame at least `afterFrames` frames after
+    // this call (0: as soon as possible, this frame if the slot is still to come; 1: the next frame). The slots called
+    // once (PostInit, BeforeExit...) ignore the count. While it waits, the app does not idle.
+    // A font or DPI change goes to CallbackSlot::PreNewFrame (before the frame starts).
+    CallbackId CallSoon(const VoidFunction& callback, int afterFrames = 1,
+                        CallbackSlot slot = CallbackSlot::BeforeGui, const std::string& owner = "");
+
+    // `CallLater`: calls `callback` once, at the first call of `slot` once `seconds` have passed (an idling app wakes
+    // up for it).
+    CallbackId CallLater(const VoidFunction& callback, double seconds,
+                         CallbackSlot slot = CallbackSlot::BeforeGui, const std::string& owner = "");
+
+    // `RemoveCallback`: removes an added callback (a CallSoon or CallLater that has not run yet is canceled)
+    void RemoveCallback(CallbackId id);
+    // `RemoveCallbacks`: removes all the callbacks added by `owner`
+    void RemoveCallbacks(const std::string& owner);
+
+private:
+    std::vector<AddedCallback_> mAddedCallbacks;
+    friend struct RunnerCallbacksInternal_;
 };
 // ::endcode
 

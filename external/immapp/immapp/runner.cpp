@@ -70,6 +70,8 @@ namespace ImmApp
     // Only one instance of `Renderer` can exist at a time
     // ---------------------------------------------------
     static int gRendererInstanceCount = 0;
+    // The owner of ImmApp's callbacks, added beside the app's (RunnerCallbacks::AddCallback)
+    static const char* kOwner = "immapp";
     static AddOnsParams gAddOnsParamsAtSetup;
 
     static void Priv_TearDown();
@@ -160,10 +162,9 @@ namespace ImmApp
             ImPlot3D::CreateContext();
 #endif
 #if defined(IMGUI_BUNDLE_WITH_IMPLOT) || defined(IMGUI_BUNDLE_WITH_IMPLOT3D)
-        runnerParams.callbacks.SetupImGuiStyle = HelloImGui::SequenceFunctions(
-            runnerParams.callbacks.SetupImGuiStyle,
-            ScaleImPlotStylesForDpi
-        );
+        // After the app's style: it scales the ImPlot style that the app set
+        runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::SetupImGuiStyle, ScaleImPlotStylesForDpi, kOwner,
+                                           HelloImGui::CallbackOrder::After);
 #endif
 
 #ifdef IMGUI_BUNDLE_WITH_IMGUI_NODE_EDITOR
@@ -189,10 +190,7 @@ namespace ImmApp
             // Only sequence the ID reset function if it's been set (by node editor bindings)
             if (FnResetImGuiNodeEditorId)
             {
-                runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                    FnResetImGuiNodeEditorId,
-                    runnerParams.callbacks.BeforeExit
-                );
+                runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::BeforeExit, FnResetImGuiNodeEditorId, kOwner);
             }
         }
 
@@ -201,10 +199,8 @@ namespace ImmApp
         if (addOnsParams.updateNodeEditorColorsFromImguiColors)
         {
             ax::NodeEditor::SetBeginHook(UpdateNodeEditorColorsFromImguiColors);
-            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                [] { ax::NodeEditor::SetBeginHook(nullptr); },
-                runnerParams.callbacks.BeforeExit
-            );
+            runnerParams.callbacks.AddCallback(
+                HelloImGui::CallbackSlot::BeforeExit, [] { ax::NodeEditor::SetBeginHook(nullptr); }, kOwner);
         }
 #endif
 
@@ -230,10 +226,9 @@ namespace ImmApp
             gImmAppContext._MarkdownContext = RichMd::CreateContext(addOnsParams.withMarkdownOptions.value());
             RichMd::SetCurrentContext(gImmAppContext._MarkdownContext);
             // imgui_kit's help markers render their text as Markdown (a setting of the ImGui context: once it exists)
-            runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
-                runnerParams.callbacks.PostInit,
-                [] { ImGuiKit::SetHelpMarkerTextRenderer([](const char* text) { RichMd::Render(text); }); }
-            );
+            runnerParams.callbacks.AddCallback(
+                HelloImGui::CallbackSlot::PostInit,
+                [] { ImGuiKit::SetHelpMarkerTextRenderer([](const char* text) { RichMd::Render(text); }); }, kOwner);
 
             // Tear down markdown WHILE the GL context is still alive.
             // BeforeExit fires inside AbstractRunner::TearDown just before
@@ -244,16 +239,14 @@ namespace ImmApp
             // ran this from immapp::Priv_TearDown (after HelloImGui::Run
             // returns), the GL context would already be gone and the
             // glDeleteTextures call would crash on Linux.
-            runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                runnerParams.callbacks.BeforeExit,
+            runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::BeforeExit,
                 [](){
                     RichMd::DestroyContext(gImmAppContext._MarkdownContext);
                     gImmAppContext._MarkdownContext = nullptr;
                     RichMd::SetCurrentContext(gImmAppContext._MarkdownPreviousContext);
                     gImmAppContext._MarkdownPreviousContext = nullptr;
                     ImGuiKit::SetHelpMarkerTextRenderer(nullptr);
-                }
-            );
+                }, kOwner);
         }
 
 #ifdef IMGUI_BUNDLE_WITH_IMFILEDIALOG
@@ -278,10 +271,7 @@ namespace ImmApp
                         fprintf(stderr, "ImGuiTexInspect is only supported with OpenGL renderer!");
                     }
                 };
-                runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
-                    fn_ImGuiTextInspect_Init,
-                    runnerParams.callbacks.PostInit
-                );
+                runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::PostInit, fn_ImGuiTextInspect_Init, kOwner);
             }
 
             // Modify before-exit: DeInit ImGuiTexInspect
@@ -294,10 +284,7 @@ namespace ImmApp
                         ImGuiTexInspect::ImplOpenGl3_Shutdown();
                     }
                 };
-                runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-                    fn_ImGuiTextInspect_DeInit,
-                    runnerParams.callbacks.BeforeExit
-                );
+                runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::BeforeExit, fn_ImGuiTextInspect_DeInit, kOwner);
             }
         }
 #endif
@@ -306,37 +293,28 @@ namespace ImmApp
         // Clear ImAnim cache, before OpenGl is uninitialized
         if (addOnsParams.withImAnim)
         {
-            runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
-                runnerParams.callbacks.PostNewFrame,
+            runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::PostNewFrame,
                 []() {
                     iam_update_begin_frame();
                     iam_clip_update(ImGui::GetIO().DeltaTime);
-                });
+                }, kOwner);
         }
 #endif
 
 
 #ifdef IMGUI_BUNDLE_WITH_IMMVISION
         // Clear ImmVision cache, before OpenGl is uninitialized
-        runnerParams.callbacks.BeforeExit = HelloImGui::SequenceFunctions(
-            runnerParams.callbacks.BeforeExit,
-            ImmVision::ClearTextureCache);
+        runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::BeforeExit, ImmVision::ClearTextureCache, kOwner);
 #endif
 
 #if defined(__EMSCRIPTEN__) && (defined(HELLOIMGUI_USE_SDL2) || defined(HELLOIMGUI_USE_GLFW3))
         // SDL2's Emscripten backend doesn't implement clipboard: JS event listeners bridge the browser's clipboard
         // with ImGui. GLFW's writes it from a deferred action, which iOS refuses: the copy is written at once.
-        runnerParams.callbacks.PostInit = HelloImGui::SequenceFunctions(
-            runnerParams.callbacks.PostInit,
-            JsClipboard_Install
-        );
+        runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::PostInit, JsClipboard_Install, kOwner);
 #endif
 #if defined(__EMSCRIPTEN__) && defined(HELLOIMGUI_USE_SDL2)
         // Process paste events each frame (handles Cmd+V on Mac)
-        runnerParams.callbacks.PostNewFrame = HelloImGui::SequenceFunctions(
-            runnerParams.callbacks.PostNewFrame,
-            JsClipboard_ProcessPasteRequest
-        );
+        runnerParams.callbacks.AddCallback(HelloImGui::CallbackSlot::PostNewFrame, JsClipboard_ProcessPasteRequest, kOwner);
 #endif
     }
 
@@ -374,9 +352,8 @@ namespace ImmApp
 
     void Run(HelloImGui::RunnerParams& runnerParams, const AddOnsParams& addOnsParams)
     {
-        // Priv_Setup chains ImmApp's callbacks into the params: the user's come back after the run, so that the same
-        // params can run again (each run would chain ImmApp's once more)
-        HelloImGui::RunnerCallbacks userCallbacks = runnerParams.callbacks;
+        // Priv_Setup adds ImmApp's callbacks beside the app's: they leave after the run, so that the same params can run
+        // again (each run would add them once more)
         try
         {
             Priv_Setup(runnerParams, addOnsParams);
@@ -384,11 +361,11 @@ namespace ImmApp
         }
         catch (...)
         {
-            runnerParams.callbacks = userCallbacks;
+            runnerParams.callbacks.RemoveCallbacks(kOwner);
             throw;
         }
         Priv_TearDown();
-        runnerParams.callbacks = userCallbacks;
+        runnerParams.callbacks.RemoveCallbacks(kOwner);
     }
 
     void Run(const HelloImGui::SimpleRunnerParams& simpleParams, const AddOnsParams& addOnsParams)

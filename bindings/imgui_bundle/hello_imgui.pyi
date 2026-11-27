@@ -1717,6 +1717,65 @@ class DefaultIconFont(enum.IntEnum):
 
 # --------------------------------------------------------------------------------------------------------------------
 
+# enum class CallbackSlot    /* original C++ signature */
+class CallbackSlot(enum.IntEnum):
+    """The slots of RunnerCallbacks where add-ons may add their own callbacks (RunnerCallbacks::AddCallback), beside the
+    app's own function (which a plain assignment replaces).
+    """
+
+    # PostInit_AddPlatformBackendCallbacks,    /* original C++ signature */
+    post_init_add_platform_backend_callbacks = enum.auto()  # (= 0)
+    # PostInit,    /* original C++ signature */
+    post_init = enum.auto()  # (= 1)
+    # SetupImGuiConfig,    /* original C++ signature */
+    setup_imgui_config = enum.auto()  # (= 2)
+    # SetupImGuiStyle,    /* original C++ signature */
+    setup_imgui_style = enum.auto()  # (= 3)
+    # RegisterTests,    /* original C++ signature */
+    register_tests = enum.auto()  # (= 4)
+    # PreNewFrame,    /* original C++ signature */
+    pre_new_frame = enum.auto()  # (= 5)
+    # PostNewFrame,    /* original C++ signature */
+    post_new_frame = enum.auto()  # (= 6)
+    # BeforeImGuiRender,    /* original C++ signature */
+    before_imgui_render = enum.auto()  # (= 7)
+    # BeforeSwap,    /* original C++ signature */
+    before_swap = enum.auto()  # (= 8)
+    # AfterSwap,    /* original C++ signature */
+    after_swap = enum.auto()  # (= 9)
+    # PostRenderDockableWindows,    /* original C++ signature */
+    post_render_dockable_windows = enum.auto()  # (= 10)
+    # ThemeChanged,    /* original C++ signature */
+    theme_changed = enum.auto()  # (= 11)
+    # BeforeExit,    /* original C++ signature */
+    before_exit = enum.auto()  # (= 12)
+    # BeforeExit_PostCleanup,    /* original C++ signature */
+    before_exit_post_cleanup = enum.auto()  # (= 13)
+
+    # Synonyms
+    # BeforeGui = PostNewFrame,          /* original C++ signature */
+    before_gui = (
+        enum.auto()
+    )  # (= PostNewFrame)  # the frame has started (ImGui::NewFrame), nothing is drawn yet
+    # AfterGui = BeforeImGuiRender,      /* original C++ signature */
+    after_gui = (
+        enum.auto()
+    )  # (= BeforeImGuiRender)  # after the whole GUI (menus, windows, status bar), before ImGui::Render
+
+# enum class CallbackOrder    /* original C++ signature */
+class CallbackOrder(enum.IntEnum):
+    """Where an added callback runs, relative to the slot's own function (the app's).
+    Default: before it in the setup slots and PreNewFrame, after it elsewhere (in reverse order in the exit slots).
+    """
+
+    # Default,    /* original C++ signature */
+    default = enum.auto()  # (= 0)
+    # Before,    /* original C++ signature */
+    before = enum.auto()  # (= 1)
+    # After,    /* original C++ signature */
+    # }
+    after = enum.auto()  # (= 2)
+
 # struct RunnerCallbacks    /* original C++ signature */
 class RunnerCallbacks:
     """RunnerCallbacks is a struct that contains the callbacks
@@ -1793,6 +1852,7 @@ class RunnerCallbacks:
         """`enqueue_post_init`: Add a function that will be called once after OpenGL
         and ImGui are inited, but before the backend callback are initialized.
         (this will modify the `post_init` callback by appending the new callback (using `sequence_functions`)
+        An add-on uses AddCallback instead: a later assignment of `post_init` drops what was enqueued.
         """
         pass
     # VoidFunction LoadAdditionalFonts = ImGuiDefaultSettings::LoadDefaultFont_WithFontAwesomeIcons;    /* original C++ signature */
@@ -1860,6 +1920,7 @@ class RunnerCallbacks:
         """`enqueue_before_exit`: Add a function that will be called once before exiting
          (when OpenGL and ImGui are still inited)
         (this will modify the `before_exit` callback by appending the new callback (using `sequence_functions`)
+         An add-on uses AddCallback instead: a later assignment of `before_exit` drops what was enqueued.
         """
         pass
     # VoidFunction BeforeExit_PostCleanup = EmptyVoidFunction();    /* original C++ signature */
@@ -1938,6 +1999,62 @@ class RunnerCallbacks:
     any_backend_event_callback: AnyEventCallback = empty_event_callback()
 
     # --------------- Mobile callbacks -------------------
+
+    # --------------- Add-on callbacks -------------------
+    # A library or an add-on adds its callbacks beside the app's own (`post_init`, `before_exit`...): a later plain
+    # assignment (`callbacks.post_init = f`) replaces only the app's function, and keeps the added ones.
+    # The order: by default, the added callbacks run before the app's function in the setup slots and in PreNewFrame
+    # (the app may use what they set up), and after it elsewhere; in the exit slots, in reverse order of addition
+    # (the app releases what depends on them first). An app's own chaining: EnqueuePostInit, EnqueueBeforeExit.
+
+    # CallbackId AddCallback(CallbackSlot slot, const VoidFunction& callback, const std::string& owner = "",    /* original C++ signature */
+    #                            CallbackOrder order = CallbackOrder::Default);
+    def add_callback(
+        self,
+        slot: CallbackSlot,
+        callback: VoidFunction,
+        owner: str = "",
+        order: CallbackOrder = CallbackOrder.default,
+    ) -> CallbackId:
+        """`add_callback`: adds a callback to a slot. `owner` names who added it (e.g. "immapp"), for RemoveCallbacks."""
+        pass
+    # CallbackId CallSoon(const VoidFunction& callback, int afterFrames = 1,    /* original C++ signature */
+    #                         CallbackSlot slot = CallbackSlot::BeforeGui, const std::string& owner = "");
+    def call_soon(
+        self,
+        callback: VoidFunction,
+        after_frames: int = 1,
+        slot: CallbackSlot = CallbackSlot.before_gui,
+        owner: str = "",
+    ) -> CallbackId:
+        """`call_soon`: calls `callback` once, at the first call of `slot` in a frame at least `after_frames` frames after
+        this call (0: as soon as possible, this frame if the slot is still to come; 1: the next frame). The slots called
+        once (PostInit, BeforeExit...) ignore the count. While it waits, the app does not idle.
+        A font or DPI change goes to CallbackSlot::PreNewFrame (before the frame starts).
+        """
+        pass
+    # CallbackId CallLater(const VoidFunction& callback, double seconds,    /* original C++ signature */
+    #                          CallbackSlot slot = CallbackSlot::BeforeGui, const std::string& owner = "");
+    def call_later(
+        self,
+        callback: VoidFunction,
+        seconds: float,
+        slot: CallbackSlot = CallbackSlot.before_gui,
+        owner: str = "",
+    ) -> CallbackId:
+        """`call_later`: calls `callback` once, at the first call of `slot` once `seconds` have passed (an idling app wakes
+        up for it).
+        """
+        pass
+    # void RemoveCallback(CallbackId id);    /* original C++ signature */
+    def remove_callback(self, id: CallbackId) -> None:
+        """`remove_callback`: removes an added callback (a CallSoon or CallLater that has not run yet is canceled)"""
+        pass
+    # void RemoveCallbacks(const std::string& owner);    /* original C++ signature */
+    def remove_callbacks(self, owner: str) -> None:
+        """`remove_callbacks`: removes all the callbacks added by `owner`"""
+        pass
+
     def __init__(
         self,
         show_gui: Optional[VoidFunction] = None,

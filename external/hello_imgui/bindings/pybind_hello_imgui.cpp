@@ -1111,6 +1111,33 @@ void py_init_module_hello_imgui(nb::module_& m)
             .value("font_awesome6", HelloImGui::DefaultIconFont::FontAwesome6, "");
 
 
+    auto pyEnumCallbackSlot =
+        nb::enum_<HelloImGui::CallbackSlot>(m, "CallbackSlot", nb::is_arithmetic(), " The slots of RunnerCallbacks where add-ons may add their own callbacks (RunnerCallbacks::AddCallback), beside the\n app's own function (which a plain assignment replaces).")
+            .value("post_init_add_platform_backend_callbacks", HelloImGui::CallbackSlot::PostInit_AddPlatformBackendCallbacks, "")
+            .value("post_init", HelloImGui::CallbackSlot::PostInit, "")
+            .value("setup_imgui_config", HelloImGui::CallbackSlot::SetupImGuiConfig, "")
+            .value("setup_imgui_style", HelloImGui::CallbackSlot::SetupImGuiStyle, "")
+            .value("register_tests", HelloImGui::CallbackSlot::RegisterTests, "")
+            .value("pre_new_frame", HelloImGui::CallbackSlot::PreNewFrame, "")
+            .value("post_new_frame", HelloImGui::CallbackSlot::PostNewFrame, "")
+            .value("before_imgui_render", HelloImGui::CallbackSlot::BeforeImGuiRender, "")
+            .value("before_swap", HelloImGui::CallbackSlot::BeforeSwap, "")
+            .value("after_swap", HelloImGui::CallbackSlot::AfterSwap, "")
+            .value("post_render_dockable_windows", HelloImGui::CallbackSlot::PostRenderDockableWindows, "")
+            .value("theme_changed", HelloImGui::CallbackSlot::ThemeChanged, "")
+            .value("before_exit", HelloImGui::CallbackSlot::BeforeExit, "")
+            .value("before_exit_post_cleanup", HelloImGui::CallbackSlot::BeforeExit_PostCleanup, "")
+            .value("before_gui", HelloImGui::CallbackSlot::BeforeGui, "the frame has started (ImGui::NewFrame), nothing is drawn yet")
+            .value("after_gui", HelloImGui::CallbackSlot::AfterGui, "after the whole GUI (menus, windows, status bar), before ImGui::Render");
+
+
+    auto pyEnumCallbackOrder =
+        nb::enum_<HelloImGui::CallbackOrder>(m, "CallbackOrder", nb::is_arithmetic(), " Where an added callback runs, relative to the slot's own function (the app's).\n Default: before it in the setup slots and PreNewFrame, after it elsewhere (in reverse order in the exit slots).")
+            .value("default", HelloImGui::CallbackOrder::Default, "")
+            .value("before", HelloImGui::CallbackOrder::Before, "")
+            .value("after", HelloImGui::CallbackOrder::After, "");
+
+
     auto pyClassRunnerCallbacks =
         nb::class_<HelloImGui::RunnerCallbacks>
             (m, "RunnerCallbacks", " RunnerCallbacks is a struct that contains the callbacks\n that are called by the application")
@@ -1241,7 +1268,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("enqueue_post_init",
             &HelloImGui::RunnerCallbacks::EnqueuePostInit,
             nb::arg("callback"),
-            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)")
+            " `EnqueuePostInit`: Add a function that will be called once after OpenGL\n  and ImGui are inited, but before the backend callback are initialized.\n  (this will modify the `PostInit` callback by appending the new callback (using `SequenceFunctions`)\n  An add-on uses AddCallback instead: a later assignment of `PostInit` drops what was enqueued.")
         .def_rw("load_additional_fonts", &HelloImGui::RunnerCallbacks::LoadAdditionalFonts, " `LoadAdditionalFonts`: default=_LoadDefaultFont_WithFontAwesome*.\n  A function that is called in order to load fonts.\n `LoadAdditionalFonts` will be called once, then *set to None*.\n If you want to load additional fonts, during the app execution, you can\n set LoadAdditionalFonts to a function that will load the additional fonts.")
         .def_rw("default_icon_font", &HelloImGui::RunnerCallbacks::defaultIconFont, " If LoadAdditionalFonts==LoadDefaultFont_WithFontAwesomeIcons, this parameter control\n which icon font will be loaded by default.")
         .def_rw("setup_imgui_config", &HelloImGui::RunnerCallbacks::SetupImGuiConfig, " `SetupImGuiConfig`: default=_ImGuiDefaultSettings::SetupDefaultImGuiConfig*.\n  If needed, change ImGui config via SetupImGuiConfig\n  (enable docking, gamepad, etc)")
@@ -1253,7 +1280,7 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def("enqueue_before_exit",
             &HelloImGui::RunnerCallbacks::EnqueueBeforeExit,
             nb::arg("callback"),
-            " `EnqueueBeforeExit`: Add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)\n (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)")
+            " `EnqueueBeforeExit`: Add a function that will be called once before exiting\n  (when OpenGL and ImGui are still inited)\n (this will modify the `BeforeExit` callback by appending the new callback (using `SequenceFunctions`)\n  An add-on uses AddCallback instead: a later assignment of `BeforeExit` drops what was enqueued.")
         .def_rw("before_exit_post_cleanup", &HelloImGui::RunnerCallbacks::BeforeExit_PostCleanup, " `BeforeExit_PostCleanup`: You can here add a function that will be called once\n before exiting (after OpenGL and ImGui have been stopped)")
         .def_rw("pre_new_frame", &HelloImGui::RunnerCallbacks::PreNewFrame, " `PreNewFrame`: You can here add a function that will be called at each frame,\n  and before the call to ImGui::NewFrame().\n  It is a good place to add new dockable windows.")
         .def_rw("post_new_frame", &HelloImGui::RunnerCallbacks::PostNewFrame, " `PostNewFrame`: You can here add a function that will be called at each frame,\n  just after the call to ImGui::NewFrame(), and before any Gui code.")
@@ -1264,6 +1291,26 @@ void py_init_module_hello_imgui(nb::module_& m)
         .def_rw("post_render_dockable_windows", &HelloImGui::RunnerCallbacks::PostRenderDockableWindows, " `PostRenderDockableWindows`: Fill it with a function that will be called\n after the dockable windows are rendered.")
         .def_rw("theme_changed", &HelloImGui::RunnerCallbacks::ThemeChanged, " `ThemeChanged`: You can here add a function that will be called\n  immediately after `ImGuiTheme::ApplyTheme` has been executed. This is\n  typically triggered when the user clicks a theme menu item in the menubar,\n  allowing custom drawings or UI elements to update their colors right after\n  the theme change.")
         .def_rw("any_backend_event_callback", &HelloImGui::RunnerCallbacks::AnyBackendEventCallback, " `AnyBackendEventCallback`:\n  Callbacks for events from a specific backend. _Only implemented for SDL.\n  where the event will be of type 'SDL_Event *'_\n  This callback should return True if the event was handled\n  and shall not be processed further.\n  Note: in the case of GLFW, you should use register them in `PostInit`")
+        .def("add_callback",
+            &HelloImGui::RunnerCallbacks::AddCallback,
+            nb::arg("slot"), nb::arg("callback"), nb::arg("owner") = "", nb::arg("order") = HelloImGui::CallbackOrder::Default,
+            "`AddCallback`: adds a callback to a slot. `owner` names who added it (e.g. \"immapp\"), for RemoveCallbacks.")
+        .def("call_soon",
+            &HelloImGui::RunnerCallbacks::CallSoon,
+            nb::arg("callback"), nb::arg("after_frames") = 1, nb::arg("slot") = HelloImGui::CallbackSlot::BeforeGui, nb::arg("owner") = "",
+            " `CallSoon`: calls `callback` once, at the first call of `slot` in a frame at least `afterFrames` frames after\n this call (0: as soon as possible, this frame if the slot is still to come; 1: the next frame). The slots called\n once (PostInit, BeforeExit...) ignore the count. While it waits, the app does not idle.\n A font or DPI change goes to CallbackSlot::PreNewFrame (before the frame starts).")
+        .def("call_later",
+            &HelloImGui::RunnerCallbacks::CallLater,
+            nb::arg("callback"), nb::arg("seconds"), nb::arg("slot") = HelloImGui::CallbackSlot::BeforeGui, nb::arg("owner") = "",
+            " `CallLater`: calls `callback` once, at the first call of `slot` once `seconds` have passed (an idling app wakes\n up for it).")
+        .def("remove_callback",
+            &HelloImGui::RunnerCallbacks::RemoveCallback,
+            nb::arg("id"),
+            "`RemoveCallback`: removes an added callback (a CallSoon or CallLater that has not run yet is canceled)")
+        .def("remove_callbacks",
+            &HelloImGui::RunnerCallbacks::RemoveCallbacks,
+            nb::arg("owner"),
+            "`RemoveCallbacks`: removes all the callbacks added by `owner`")
         ;
 
 

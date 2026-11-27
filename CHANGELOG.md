@@ -25,6 +25,8 @@
   - `get_zoom()` and `set_zoom()`: the view's scale, in that unit (`get_current_zoom()` returns its inverse);
   - `is_navigating()`: true while the view animates, e.g. to snap the zoom to a level once a fit has ended.
 
+- **Callbacks that add instead of replace** (Hello ImGui): `callbacks.add_callback(slot, f, owner)` adds a callback beside the app's own, so that `callbacks.post_init = f` no longer drops an add-on's; `callbacks.call_soon(f)` calls a function once on the next frame, `callbacks.call_later(f, seconds)` after a delay. ImmApp's add-ons (markdown, ImPlot, the node editor, TexInspect, ImAnim, ImmVision) use them: an assignment of `before_exit` during a run no longer drops their teardown.
+
 ## Fixes
 
 - Hello ImGui, on Windows: a borderless full-screen window with `borderless_resizable` keeps its size when it is minimized and restored, or after an Alt-Tab. It came back at 640x480 ([hello_imgui#171](https://github.com/pthom/hello_imgui/issues/171)).
