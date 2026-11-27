@@ -56,7 +56,7 @@ def _strip_language_internals(code: str) -> str:
     # srcML (constructor wrapper signatures, etc.), not only on whole files.
     # We tell "full file pass" from "small snippet" by looking for a stable
     # landmark that's only in the full TextEditor.h: the main class line.
-    file_landmark = "class IMGUI_API TextEditor"
+    file_landmark = "class TEXTEDITOR_API TextEditor"
     is_full_file = file_landmark in code
 
     start = code.find(open_marker)
@@ -91,6 +91,8 @@ def _strip_language_internals(code: str) -> str:
 
 
 def preprocess(code: str) -> str:
+    # srcML cannot parse a brace-initialized default value in a function with a body (srcML#1833)
+    code = code.replace("labels={}", "labels=std::vector<std::string>()")
     code = _replace_color_count(code)
     code = _strip_language_internals(code)
     return code

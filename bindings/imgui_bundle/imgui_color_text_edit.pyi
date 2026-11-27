@@ -34,7 +34,7 @@ from __future__ import annotations
 from typing import List, Any, Dict, Set, overload, Optional
 import enum
 
-from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ChildFlags, WindowFlags, ImDrawList
+from imgui_bundle.imgui import ImVec2Like, ImU32, ImVec2, ChildFlags, WindowFlags, ImDrawList, ImWchar
 from typing import Callable
 
 ImGuiChildFlags = ChildFlags
@@ -74,6 +74,7 @@ Char = int
 #	TextEditor
 #
 
+
 # class TextEditor    /* original C++ signature */
 class TextEditor:
     # TextEditor();    /* original C++ signature */
@@ -83,7 +84,7 @@ class TextEditor:
 
     #
     # Below is the public API
-    # Public member functions start with an uppercase character to be consistent with Dear ImGui
+    # Public member functions start with an uppercase letter to be consistent with Dear ImGui
     #
 
     # struct DocPos    /* original C++ signature */
@@ -259,6 +260,12 @@ class TextEditor:
     # inline bool IsShowTabsEnabled() const;    /* original C++ signature */
     def is_show_tabs_enabled(self) -> bool:
         pass
+    # inline void SetShortTabsEnabled(bool value);    /* original C++ signature */
+    def set_short_tabs_enabled(self, value: bool) -> None:
+        pass
+    # inline bool IsShortTabsEnabled() const;    /* original C++ signature */
+    def is_short_tabs_enabled(self) -> bool:
+        pass
     # inline void SetShowLineNumbersEnabled(bool value);    /* original C++ signature */
     def set_show_line_numbers_enabled(self, value: bool) -> None:
         pass
@@ -289,6 +296,22 @@ class TextEditor:
     # inline bool IsShowPanScrollIndicatorEnabled() const;    /* original C++ signature */
     def is_show_pan_scroll_indicator_enabled(self) -> bool:
         pass
+    # inline void SetMiddleMousePanMode();    /* original C++ signature */
+    def set_middle_mouse_pan_mode(self) -> None:
+        pass
+    # inline void SetMiddleMouseScrollMode();    /* original C++ signature */
+    def set_middle_mouse_scroll_mode(self) -> None:
+        pass
+    # inline bool IsMiddleMousePanMode() const;    /* original C++ signature */
+    def is_middle_mouse_pan_mode(self) -> bool:
+        pass
+    # inline void SetSmoothScrollingEnabled(bool value);    /* original C++ signature */
+    def set_smooth_scrolling_enabled(self, value: bool) -> None:
+        """ ScrollToLine() glides there"""
+        pass
+    # inline bool IsSmoothScrollingEnabled() const;    /* original C++ signature */
+    def is_smooth_scrolling_enabled(self) -> bool:
+        pass
     # inline void SetShowCurrentLineHighlightEnabled(bool value);    /* original C++ signature */
     def set_show_current_line_highlight_enabled(self, value: bool) -> None:
         pass
@@ -313,34 +336,18 @@ class TextEditor:
     # inline bool IsLineFoldingEnabled() const;    /* original C++ signature */
     def is_line_folding_enabled(self) -> bool:
         pass
-    # inline void SetSmoothScrollingEnabled(bool value);    /* original C++ signature */
-    def set_smooth_scrolling_enabled(self, value: bool) -> None:
-        """ ScrollToLine() glides there"""
-        pass
-    # inline bool IsSmoothScrollingEnabled() const;    /* original C++ signature */
-    def is_smooth_scrolling_enabled(self) -> bool:
-        pass
     # inline void SetOverwriteEnabled(bool value);    /* original C++ signature */
     def set_overwrite_enabled(self, value: bool) -> None:
         pass
     # inline bool IsOverwriteEnabled() const;    /* original C++ signature */
     def is_overwrite_enabled(self) -> bool:
         pass
-    # inline void SetMiddleMousePanMode();    /* original C++ signature */
-    def set_middle_mouse_pan_mode(self) -> None:
-        pass
-    # inline void SetMiddleMouseScrollMode();    /* original C++ signature */
-    def set_middle_mouse_scroll_mode(self) -> None:
-        pass
-    # inline bool IsMiddleMousePanMode() const;    /* original C++ signature */
-    def is_middle_mouse_pan_mode(self) -> bool:
-        pass
-    # inline void SetLineNumberLeftMargin(size_t value);    /* original C++ signature */
-    def set_line_number_left_margin(self, value: int) -> None:
+    # inline void SetLeftMargin(size_t value);    /* original C++ signature */
+    def set_left_margin(self, value: int) -> None:
         """ margins are expressed in glyphs"""
         pass
-    # inline size_t GetLineNumberLeftMargin() const;    /* original C++ signature */
-    def get_line_number_left_margin(self) -> int:
+    # inline size_t GetLeftMargin() const;    /* original C++ signature */
+    def get_left_margin(self) -> int:
         pass
     # inline void SetDecorationLeftMargin(size_t value);    /* original C++ signature */
     def set_decoration_left_margin(self, value: int) -> None:
@@ -356,6 +363,9 @@ class TextEditor:
         pass
 
     # load new text into editor (see note below on cursor and scroll manipulation after setting new text)
+    # none of the SetText create transactions or call configured change callbacks
+    # in fact, the SetText functions do a full reset of the entire editors state
+    # if you want it to be transactional and/or have callbacks, use the ReplaceAllText or ReplaceSectionText API calls instead
     #
     # API calls to set/get text are available for all standard C++ UTF-8 and unicode string formats to support fast file en/de-coding
     # other API calls use UTF-8 encoded std::strings
@@ -400,8 +410,18 @@ class TextEditor:
     # inline std::string GetLineText(size_t line) const;    /* original C++ signature */
     def get_line_text(self, line: int) -> str:
         pass
+    # inline std::vector<ImWchar> GetLineCodePoints(size_t line) const;    /* original C++ signature */
+    def get_line_code_points(self, line: int) -> List[ImWchar]:
+        pass
+    # inline ImWchar GetCodePoint(DocPos pos) const;    /* original C++ signature */
+    def get_code_point(self, pos: TextEditor.DocPos) -> ImWchar:
+        pass
 
     # replace text in editor (new text must be UTF-8 encoded)
+    # replace functions do create undoable transactions and execute configured callbacks
+    # inline void ReplaceAllText(const std::string_view& text);    /* original C++ signature */
+    def replace_all_text(self, text: str) -> None:
+        pass
     # inline void ReplaceSectionText(DocPos start, DocPos end, const std::string_view& text);    /* original C++ signature */
     @overload
     def replace_section_text(
@@ -414,6 +434,9 @@ class TextEditor:
     # inline void ReplaceSectionText(const DocSelection& selection, const std::string_view& text);    /* original C++ signature */
     @overload
     def replace_section_text(self, selection: TextEditor.DocSelection, text: str) -> None:
+        pass
+    # inline void InsertSectionText(DocPos pos, const std::string_view& text);    /* original C++ signature */
+    def insert_section_text(self, pos: TextEditor.DocPos, text: str) -> None:
         pass
 
     # inline void ClearText();    /* original C++ signature */
@@ -565,6 +588,68 @@ class TextEditor:
     def get_word_at_mouse_pos(self, mouse_pos: ImVec2Like) -> str:
         pass
 
+    # get information about a codepoint at a specified location (as determined by the current language definition)
+    # inline bool IsWord(DocPos pos) const;    /* original C++ signature */
+    def is_word(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsKeyword(DocPos pos) const;    /* original C++ signature */
+    def is_keyword(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsDeclaration(DocPos pos) const;    /* original C++ signature */
+    def is_declaration(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsIdentifier(DocPos pos) const;    /* original C++ signature */
+    def is_identifier(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsNumber(DocPos pos) const;    /* original C++ signature */
+    def is_number(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsString(DocPos pos) const;    /* original C++ signature */
+    def is_string(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsWhiteSpace(DocPos pos) const;    /* original C++ signature */
+    def is_white_space(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsPunctuation(DocPos pos) const;    /* original C++ signature */
+    def is_punctuation(self, pos: TextEditor.DocPos) -> bool:
+        pass
+    # inline bool IsComment(DocPos pos) const;    /* original C++ signature */
+    def is_comment(self, pos: TextEditor.DocPos) -> bool:
+        pass
+
+    # get text at specified location based on category
+    # returns empty string if codepoint at location is of different category or if language is not specified
+    # inline std::string GetWord(DocPos pos) const;    /* original C++ signature */
+    def get_word(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetKeyword(DocPos pos) const;    /* original C++ signature */
+    def get_keyword(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetDeclaration(DocPos pos) const;    /* original C++ signature */
+    def get_declaration(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetIdentifier(DocPos pos) const;    /* original C++ signature */
+    def get_identifier(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetNumber(DocPos pos) const;    /* original C++ signature */
+    def get_number(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetString(DocPos pos) const;    /* original C++ signature */
+    def get_string(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetWhiteSpace(DocPos pos) const;    /* original C++ signature */
+    def get_white_space(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetPunctuation(DocPos pos) const;    /* original C++ signature */
+    def get_punctuation(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetComment(DocPos pos) const;    /* original C++ signature */
+    def get_comment(self, pos: TextEditor.DocPos) -> str:
+        pass
+    # inline std::string GetQualifiedIdentifier(DocPos pos) const;    /* original C++ signature */
+    def get_qualified_identifier(self, pos: TextEditor.DocPos) -> str:
+        pass
+
     # enum class Scroll    /* original C++ signature */
     class Scroll(enum.IntEnum):
         """ scrolling support"""
@@ -610,9 +695,9 @@ class TextEditor:
     # as a result, SetCursor or ScrollToLine just mark the request and let Render execute it
     #
     # the order of the calls is therefore important as they can interfere with each other
-    # so if you call SetText, SetCursor and/or ScrollToLine before Render, the order should be:
+    # so if you call any API that changes the text, SetCursor and/or ScrollToLine before Render, the order should be:
     #
-    # * call SetText first as it resets the entire editor state including cursors and scrolling
+    # * call text changing APIs first as they update the editor state including cursors and scrolling
     # * then call SetCursor as it sets the cursor and requests that we make the cursor visible (i.e. scroll to it)
     # * then call ScrollToLine to mark the exact scroll location (it cancels the possible SetCursor scroll request)
     # * call Render to properly update the entire state
@@ -620,6 +705,7 @@ class TextEditor:
     # this works while opening the editor for the first time as well as later
 
     # get glyph size in pixels
+    # (width is for single width glyphs, double width glyphs are twice as wide)
     # inline float GetLineHeight() const;    /* original C++ signature */
     def get_line_height(self) -> float:
         pass
@@ -653,19 +739,11 @@ class TextEditor:
         pass
 
     # find start or end of word from provided position
-    # inline DocPos FindWordStart(DocPos pos, bool wholeWord=false) const;    /* original C++ signature */
-    def find_word_start(
-        self,
-        pos: TextEditor.DocPos,
-        whole_word: bool = False
-        ) -> TextEditor.DocPos:
+    # inline DocPos FindWordStart(DocPos pos) const;    /* original C++ signature */
+    def find_word_start(self, pos: TextEditor.DocPos) -> TextEditor.DocPos:
         pass
-    # inline DocPos FindWordEnd(DocPos pos, bool wholeWord=false) const;    /* original C++ signature */
-    def find_word_end(
-        self,
-        pos: TextEditor.DocPos,
-        whole_word: bool = False
-        ) -> TextEditor.DocPos:
+    # inline DocPos FindWordEnd(DocPos pos) const;    /* original C++ signature */
+    def find_word_end(self, pos: TextEditor.DocPos) -> TextEditor.DocPos:
         pass
 
     # find/replace support (strings must be UTF-8 encoded)
@@ -701,7 +779,7 @@ class TextEditor:
         pass
 
     # the built-in find/replace window can be disabled (see SetFindReplaceEnabled) when the application provides its own search
-    # the editor then ignores Ctrl+F, Ctrl+Shift+F and Ctrl+G, so they reach the application's windows
+    # the editor then ignores Ctrl-F, Ctrl-Shift-F and Ctrl-G, so they reach the application's windows
     # inline void OpenFindReplaceWindow();    /* original C++ signature */
     def open_find_replace_window(self) -> None:
         pass
@@ -724,6 +802,15 @@ class TextEditor:
         pass
     # inline void SetFindAllButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_find_all_button_label(self, label: str) -> None:
+        pass
+    # inline void SetFindCapsButtonLabel(const std::string_view& label);    /* original C++ signature */
+    def set_find_caps_button_label(self, label: str) -> None:
+        pass
+    # inline void SetFindWholeWordButtonLabel(const std::string_view& label);    /* original C++ signature */
+    def set_find_whole_word_button_label(self, label: str) -> None:
+        pass
+    # inline void SetFindCloseButtonLabel(const std::string_view& label);    /* original C++ signature */
+    def set_find_close_button_label(self, label: str) -> None:
         pass
     # inline void SetReplaceButtonLabel(const std::string_view& label);    /* original C++ signature */
     def set_replace_button_label(self, label: str) -> None:
@@ -1045,7 +1132,7 @@ class TextEditor:
          the editor sets up a popup menu in the right location
          the callback has to populate it
          context callbacks activate on a right click
-         hover callbacks are just based on position (no mouse buttons required)
+         hover callbacks active when mouse is over a glyph (no mouse buttons required)
         """
         # DocPos pos;    /* original C++ signature */
         pos: TextEditor.DocPos
@@ -1183,8 +1270,8 @@ class TextEditor:
         preprocessor = enum.auto()                  # (= 6)
         # identifier,    /* original C++ signature */
         identifier = enum.auto()                    # (= 7)
-        # knownIdentifier,    /* original C++ signature */
-        known_identifier = enum.auto()              # (= 8)
+        # qualifiedSeparator,    /* original C++ signature */
+        qualified_separator = enum.auto()           # (= 8)
         # comment,    /* original C++ signature */
         comment = enum.auto()                       # (= 9)
         # background,    /* original C++ signature */
@@ -1215,6 +1302,24 @@ class TextEditor:
         current_line_highlight = enum.auto()        # (= 22)
         # currentLineHighlightBorder,    /* original C++ signature */
         current_line_highlight_border = enum.auto() # (= 23)
+        # customColor1,    /* original C++ signature */
+        custom_color1 = enum.auto()                 # (= 24)
+        # customColor2,    /* original C++ signature */
+        custom_color2 = enum.auto()                 # (= 25)
+        # customColor3,    /* original C++ signature */
+        custom_color3 = enum.auto()                 # (= 26)
+        # customColor4,    /* original C++ signature */
+        custom_color4 = enum.auto()                 # (= 27)
+        # customColor5,    /* original C++ signature */
+        custom_color5 = enum.auto()                 # (= 28)
+        # customColor6,    /* original C++ signature */
+        custom_color6 = enum.auto()                 # (= 29)
+        # customColor7,    /* original C++ signature */
+        custom_color7 = enum.auto()                 # (= 30)
+        # customColor8,    /* original C++ signature */
+        custom_color8 = enum.auto()                 # (= 31)
+        # customColor9,    /* original C++ signature */
+        custom_color9 = enum.auto()                 # (= 32)
 
     # struct Palette    /* original C++ signature */
     class Palette:
@@ -1249,54 +1354,62 @@ class TextEditor:
     def get_light_palette() -> TextEditor.Palette:
         pass
 
+    # inline std::vector<Color> GetLineColors(size_t line) const;    /* original C++ signature */
+    def get_line_colors(self, line: int) -> List[TextEditor.Color]:
+        pass
+    # inline Color GetColor(DocPos pos) const;    /* original C++ signature */
+    def get_color(self, pos: TextEditor.DocPos) -> TextEditor.Color:
+        pass
+
 
 
 
     # struct Language    /* original C++ signature */
     class Language:
         """ language support"""
-        # predefined language definitions
-        # static const Language* C();    /* original C++ signature */
+        # predefined language definitions (shortcuts for LookupLanguage, kept for compatibility)
+        # they return None if the language was removed from TextEditorLanguages.h
+        # static inline const Language* C();    /* original C++ signature */
         @staticmethod
         def c() -> TextEditor.Language:
             pass
-        # static const Language* Cpp();    /* original C++ signature */
+        # static inline const Language* Cpp();    /* original C++ signature */
         @staticmethod
         def cpp() -> TextEditor.Language:
             pass
-        # static const Language* Cs();    /* original C++ signature */
+        # static inline const Language* Cs();    /* original C++ signature */
         @staticmethod
         def cs() -> TextEditor.Language:
             pass
-        # static const Language* AngelScript();    /* original C++ signature */
+        # static inline const Language* AngelScript();    /* original C++ signature */
         @staticmethod
         def angel_script() -> TextEditor.Language:
             pass
-        # static const Language* Lua();    /* original C++ signature */
+        # static inline const Language* Lua();    /* original C++ signature */
         @staticmethod
         def lua() -> TextEditor.Language:
             pass
-        # static const Language* Python();    /* original C++ signature */
+        # static inline const Language* Python();    /* original C++ signature */
         @staticmethod
         def python() -> TextEditor.Language:
             pass
-        # static const Language* Glsl();    /* original C++ signature */
+        # static inline const Language* Glsl();    /* original C++ signature */
         @staticmethod
         def glsl() -> TextEditor.Language:
             pass
-        # static const Language* Hlsl();    /* original C++ signature */
+        # static inline const Language* Hlsl();    /* original C++ signature */
         @staticmethod
         def hlsl() -> TextEditor.Language:
             pass
-        # static const Language* Json();    /* original C++ signature */
+        # static inline const Language* Json();    /* original C++ signature */
         @staticmethod
         def json() -> TextEditor.Language:
             pass
-        # static const Language* Markdown();    /* original C++ signature */
+        # static inline const Language* Markdown();    /* original C++ signature */
         @staticmethod
         def markdown() -> TextEditor.Language:
             pass
-        # static const Language* Sql();    /* original C++ signature */
+        # static inline const Language* Sql();    /* original C++ signature */
         @staticmethod
         def sql() -> TextEditor.Language:
             pass
@@ -1316,8 +1429,38 @@ class TextEditor:
     # inline std::string GetLanguageName() const;    /* original C++ signature */
     def get_language_name(self) -> str:
         pass
-    # inline void SetLanguageChangeCallback(std::function<void()> callback);    /* original C++ signature */
-    def set_language_change_callback(self, callback: Callable[[], None]) -> None:
+    # inline void SetLanguageChangedCallback(std::function<void()> callback);    /* original C++ signature */
+    def set_language_changed_callback(self, callback: Callable[[], None]) -> None:
+        pass
+
+    # access language registry
+
+    # static void RegisterLanguage(const std::string name, std::function<const Language*()> creator, const std::vector<std::string> extensions);    /* original C++ signature */
+    @staticmethod
+    def register_language(
+        name: str,
+        creator: Callable[[], TextEditor.Language],
+        extensions: List[str]
+        ) -> None:
+        """ add a language definition to the registry"""
+        pass
+
+    # static const Language* LookupLanguage(const std::string& name);    /* original C++ signature */
+    @staticmethod
+    def lookup_language(name: str) -> TextEditor.Language:
+        """ return the named language definition or None if name is unknown"""
+        pass
+
+    # static const Language* LookupLanguageByExtension(const std::string& extension);    /* original C++ signature */
+    @staticmethod
+    def lookup_language_by_extension(extension: str) -> TextEditor.Language:
+        """ return the language definition based on a file extension or None if the extension is unknown"""
+        pass
+
+    # static const std::vector<std::string> GetRegisteredLanguages();    /* original C++ signature */
+    @staticmethod
+    def get_registered_languages() -> List[str]:
+        """ get sorted list of registered language names"""
         pass
 
     # inline void IterateIdentifiers(std::function<void(const std::string& identifier)> callback) const;    /* original C++ signature */
@@ -1560,6 +1703,12 @@ class TextDiff:
         pass
     # inline bool IsShowTabsEnabled() const;    /* original C++ signature */
     def is_show_tabs_enabled(self) -> bool:
+        pass
+    # inline void SetShortTabsEnabled(bool value);    /* original C++ signature */
+    def set_short_tabs_enabled(self, value: bool) -> None:
+        pass
+    # inline bool IsShortTabsEnabled() const;    /* original C++ signature */
+    def is_short_tabs_enabled(self) -> bool:
         pass
     # inline void SetShowScrollbarMiniMapEnabled(bool value);    /* original C++ signature */
     def set_show_scrollbar_mini_map_enabled(self, value: bool) -> None:

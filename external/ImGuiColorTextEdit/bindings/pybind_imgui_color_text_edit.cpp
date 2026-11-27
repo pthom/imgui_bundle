@@ -229,7 +229,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             ;
         auto pyClassTextEditor_ClassPopupData =
             nb::class_<TextEditor::PopupData>
-                (pyClassTextEditor, "PopupData", " setup right click or hover callbacks\n the editor sets up a popup menu in the right location\n the callback has to populate it\n context callbacks activate on a right click\n hover callbacks are just based on position (no mouse buttons required)")
+                (pyClassTextEditor, "PopupData", " setup right click or hover callbacks\n the editor sets up a popup menu in the right location\n the callback has to populate it\n context callbacks activate on a right click\n hover callbacks active when mouse is over a glyph (no mouse buttons required)")
             .def("__init__", [](TextEditor::PopupData * self, const std::optional<const TextEditor::DocPos> & pos = std::nullopt)
             {
                 new (self) TextEditor::PopupData();  // placement new
@@ -253,7 +253,7 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("punctuation", TextEditor::Color::punctuation, "")
                 .value("preprocessor", TextEditor::Color::preprocessor, "")
                 .value("identifier", TextEditor::Color::identifier, "")
-                .value("known_identifier", TextEditor::Color::knownIdentifier, "")
+                .value("qualified_separator", TextEditor::Color::qualifiedSeparator, "")
                 .value("comment", TextEditor::Color::comment, "")
                 .value("background", TextEditor::Color::background, "")
                 .value("cursor", TextEditor::Color::cursor, "")
@@ -268,7 +268,16 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
                 .value("line_number", TextEditor::Color::lineNumber, "")
                 .value("current_line_number", TextEditor::Color::currentLineNumber, "")
                 .value("current_line_highlight", TextEditor::Color::currentLineHighlight, "")
-                .value("current_line_highlight_border", TextEditor::Color::currentLineHighlightBorder, "");
+                .value("current_line_highlight_border", TextEditor::Color::currentLineHighlightBorder, "")
+                .value("custom_color1", TextEditor::Color::customColor1, "")
+                .value("custom_color2", TextEditor::Color::customColor2, "")
+                .value("custom_color3", TextEditor::Color::customColor3, "")
+                .value("custom_color4", TextEditor::Color::customColor4, "")
+                .value("custom_color5", TextEditor::Color::customColor5, "")
+                .value("custom_color6", TextEditor::Color::customColor6, "")
+                .value("custom_color7", TextEditor::Color::customColor7, "")
+                .value("custom_color8", TextEditor::Color::customColor8, "")
+                .value("custom_color9", TextEditor::Color::customColor9, "");
         auto pyClassTextEditor_ClassPalette =
             nb::class_<TextEditor::Palette>
                 (pyClassTextEditor, "Palette", "")
@@ -453,6 +462,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetShowTabsEnabled, nb::arg("value"))
         .def("is_show_tabs_enabled",
             &TextEditor::IsShowTabsEnabled)
+        .def("set_short_tabs_enabled",
+            &TextEditor::SetShortTabsEnabled, nb::arg("value"))
+        .def("is_short_tabs_enabled",
+            &TextEditor::IsShortTabsEnabled)
         .def("set_show_line_numbers_enabled",
             &TextEditor::SetShowLineNumbersEnabled, nb::arg("value"))
         .def("is_show_line_numbers_enabled",
@@ -473,6 +486,18 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetShowPanScrollIndicatorEnabled, nb::arg("value"))
         .def("is_show_pan_scroll_indicator_enabled",
             &TextEditor::IsShowPanScrollIndicatorEnabled)
+        .def("set_middle_mouse_pan_mode",
+            &TextEditor::SetMiddleMousePanMode)
+        .def("set_middle_mouse_scroll_mode",
+            &TextEditor::SetMiddleMouseScrollMode)
+        .def("is_middle_mouse_pan_mode",
+            &TextEditor::IsMiddleMousePanMode)
+        .def("set_smooth_scrolling_enabled",
+            &TextEditor::SetSmoothScrollingEnabled,
+            nb::arg("value"),
+            "ScrollToLine() glides there")
+        .def("is_smooth_scrolling_enabled",
+            &TextEditor::IsSmoothScrollingEnabled)
         .def("set_show_current_line_highlight_enabled",
             &TextEditor::SetShowCurrentLineHighlightEnabled, nb::arg("value"))
         .def("is_show_current_line_highlight_enabled",
@@ -489,28 +514,16 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetLineFoldingEnabled, nb::arg("value"))
         .def("is_line_folding_enabled",
             &TextEditor::IsLineFoldingEnabled)
-        .def("set_smooth_scrolling_enabled",
-            &TextEditor::SetSmoothScrollingEnabled,
-            nb::arg("value"),
-            "ScrollToLine() glides there")
-        .def("is_smooth_scrolling_enabled",
-            &TextEditor::IsSmoothScrollingEnabled)
         .def("set_overwrite_enabled",
             &TextEditor::SetOverwriteEnabled, nb::arg("value"))
         .def("is_overwrite_enabled",
             &TextEditor::IsOverwriteEnabled)
-        .def("set_middle_mouse_pan_mode",
-            &TextEditor::SetMiddleMousePanMode)
-        .def("set_middle_mouse_scroll_mode",
-            &TextEditor::SetMiddleMouseScrollMode)
-        .def("is_middle_mouse_pan_mode",
-            &TextEditor::IsMiddleMousePanMode)
-        .def("set_line_number_left_margin",
-            &TextEditor::SetLineNumberLeftMargin,
+        .def("set_left_margin",
+            &TextEditor::SetLeftMargin,
             nb::arg("value"),
             "margins are expressed in glyphs")
-        .def("get_line_number_left_margin",
-            &TextEditor::GetLineNumberLeftMargin)
+        .def("get_left_margin",
+            &TextEditor::GetLeftMargin)
         .def("set_decoration_left_margin",
             &TextEditor::SetDecorationLeftMargin, nb::arg("value"))
         .def("get_decoration_left_margin",
@@ -533,10 +546,18 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::GetCursorText, nb::arg("cursor"))
         .def("get_line_text",
             &TextEditor::GetLineText, nb::arg("line"))
+        .def("get_line_code_points",
+            &TextEditor::GetLineCodePoints, nb::arg("line"))
+        .def("get_code_point",
+            &TextEditor::GetCodePoint, nb::arg("pos"))
+        .def("replace_all_text",
+            &TextEditor::ReplaceAllText, nb::arg("text"))
         .def("replace_section_text",
             nb::overload_cast<TextEditor::DocPos, TextEditor::DocPos, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("start"), nb::arg("end"), nb::arg("text"))
         .def("replace_section_text",
             nb::overload_cast<const TextEditor::DocSelection &, const std::string_view &>(&TextEditor::ReplaceSectionText), nb::arg("selection"), nb::arg("text"))
+        .def("insert_section_text",
+            &TextEditor::InsertSectionText, nb::arg("pos"), nb::arg("text"))
         .def("clear_text",
             &TextEditor::ClearText, "clear the editor")
         .def("is_empty",
@@ -641,6 +662,44 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::GetDocPosAtMousePos, nb::arg("mouse_pos"))
         .def("get_word_at_mouse_pos",
             &TextEditor::GetWordAtMousePos, nb::arg("mouse_pos"))
+        .def("is_word",
+            &TextEditor::IsWord, nb::arg("pos"))
+        .def("is_keyword",
+            &TextEditor::IsKeyword, nb::arg("pos"))
+        .def("is_declaration",
+            &TextEditor::IsDeclaration, nb::arg("pos"))
+        .def("is_identifier",
+            &TextEditor::IsIdentifier, nb::arg("pos"))
+        .def("is_number",
+            &TextEditor::IsNumber, nb::arg("pos"))
+        .def("is_string",
+            &TextEditor::IsString, nb::arg("pos"))
+        .def("is_white_space",
+            &TextEditor::IsWhiteSpace, nb::arg("pos"))
+        .def("is_punctuation",
+            &TextEditor::IsPunctuation, nb::arg("pos"))
+        .def("is_comment",
+            &TextEditor::IsComment, nb::arg("pos"))
+        .def("get_word",
+            &TextEditor::GetWord, nb::arg("pos"))
+        .def("get_keyword",
+            &TextEditor::GetKeyword, nb::arg("pos"))
+        .def("get_declaration",
+            &TextEditor::GetDeclaration, nb::arg("pos"))
+        .def("get_identifier",
+            &TextEditor::GetIdentifier, nb::arg("pos"))
+        .def("get_number",
+            &TextEditor::GetNumber, nb::arg("pos"))
+        .def("get_string",
+            &TextEditor::GetString, nb::arg("pos"))
+        .def("get_white_space",
+            &TextEditor::GetWhiteSpace, nb::arg("pos"))
+        .def("get_punctuation",
+            &TextEditor::GetPunctuation, nb::arg("pos"))
+        .def("get_comment",
+            &TextEditor::GetComment, nb::arg("pos"))
+        .def("get_qualified_identifier",
+            &TextEditor::GetQualifiedIdentifier, nb::arg("pos"))
         .def("scroll_to_line",
             &TextEditor::ScrollToLine, nb::arg("line"), nb::arg("alignment") = TextEditor::Scroll::alignMiddle)
         .def("get_first_visible_row",
@@ -676,9 +735,9 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             nb::arg("pos"),
             "see if a visual position covers a glyph")
         .def("find_word_start",
-            &TextEditor::FindWordStart, nb::arg("pos"), nb::arg("whole_word") = false)
+            &TextEditor::FindWordStart, nb::arg("pos"))
         .def("find_word_end",
-            &TextEditor::FindWordEnd, nb::arg("pos"), nb::arg("whole_word") = false)
+            &TextEditor::FindWordEnd, nb::arg("pos"))
         .def("select_first_occurrence_of",
             &TextEditor::SelectFirstOccurrenceOf, nb::arg("text"), nb::arg("case_sensitive") = true, nb::arg("whole_word") = false)
         .def("select_next_occurrence_of",
@@ -703,6 +762,12 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::SetFindButtonLabel, nb::arg("label"))
         .def("set_find_all_button_label",
             &TextEditor::SetFindAllButtonLabel, nb::arg("label"))
+        .def("set_find_caps_button_label",
+            &TextEditor::SetFindCapsButtonLabel, nb::arg("label"))
+        .def("set_find_whole_word_button_label",
+            &TextEditor::SetFindWholeWordButtonLabel, nb::arg("label"))
+        .def("set_find_close_button_label",
+            &TextEditor::SetFindCloseButtonLabel, nb::arg("label"))
         .def("set_replace_button_label",
             &TextEditor::SetReplaceButtonLabel, nb::arg("label"))
         .def("set_replace_all_button_label",
@@ -827,6 +892,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::GetDarkPalette, nb::rv_policy::reference)
         .def_static("get_light_palette",
             &TextEditor::GetLightPalette, nb::rv_policy::reference)
+        .def("get_line_colors",
+            &TextEditor::GetLineColors, nb::arg("line"))
+        .def("get_color",
+            &TextEditor::GetColor, nb::arg("pos"))
         .def("set_language",
             &TextEditor::SetLanguage, nb::arg("language").none())
         .def("get_language",
@@ -835,8 +904,24 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextEditor::HasLanguage)
         .def("get_language_name",
             &TextEditor::GetLanguageName)
-        .def("set_language_change_callback",
-            &TextEditor::SetLanguageChangeCallback, nb::arg("callback"))
+        .def("set_language_changed_callback",
+            &TextEditor::SetLanguageChangedCallback, nb::arg("callback"))
+        .def_static("register_language",
+            &TextEditor::RegisterLanguage,
+            nb::arg("name"), nb::arg("creator"), nb::arg("extensions"),
+            "add a language definition to the registry")
+        .def_static("lookup_language",
+            &TextEditor::LookupLanguage,
+            nb::arg("name"),
+            "return the named language definition or None if name is unknown",
+            nb::rv_policy::reference)
+        .def_static("lookup_language_by_extension",
+            &TextEditor::LookupLanguageByExtension,
+            nb::arg("extension"),
+            "return the language definition based on a file extension or None if the extension is unknown",
+            nb::rv_policy::reference)
+        .def_static("get_registered_languages",
+            &TextEditor::GetRegisteredLanguages, "get sorted list of registered language names")
         .def("iterate_identifiers",
             &TextEditor::IterateIdentifiers,
             nb::arg("callback"),
@@ -883,6 +968,10 @@ void py_init_module_imgui_color_text_edit(nb::module_& m)
             &TextDiff::SetShowTabsEnabled, nb::arg("value"))
         .def("is_show_tabs_enabled",
             &TextDiff::IsShowTabsEnabled)
+        .def("set_short_tabs_enabled",
+            &TextDiff::SetShortTabsEnabled, nb::arg("value"))
+        .def("is_short_tabs_enabled",
+            &TextDiff::IsShortTabsEnabled)
         .def("set_show_scrollbar_mini_map_enabled",
             &TextDiff::SetShowScrollbarMiniMapEnabled, nb::arg("value"))
         .def("is_show_scrollbar_mini_map_enabled",
