@@ -22,6 +22,8 @@ Dear ImGui Bundle is a framework built on top of [Dear ImGui](https://github.com
 
 **Install:** `pip install imgui-bundle`, then `from imgui_bundle import imgui`.
 
+**C++:** start from the [app template](https://github.com/pthom/imgui_bundle_template), or install a CMake package. A [Conan 2 package](https://imgui-bundle.pages.dev/doc/cpp/cpp-install/#conan-package) is also available, for a private Conan remote.
+
 *Not to be confused with pyimgui* (`pip install imgui`, then `import imgui`): another Python binding of Dear ImGui, with another API.
 
 **See it in action:**

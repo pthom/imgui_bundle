@@ -1,5 +1,7 @@
 # C++ Installation
 
+Four ways to use Dear ImGui Bundle in a C++ project: [the app template](#integrate-dear-imgui-bundle-in-your-own-project-in-5-minutes), [a build from source](#build-from-source), [an installed CMake package](#install-as-a-cmake-package), or [a Conan 2 package](#conan-package), for a private Conan remote.
+
 ## Integrate Dear ImGui Bundle in your own project in 5 minutes
 
 The easiest way to use Dear ImGui Bundle in an external project is to use the template available at https://github.com/pthom/imgui_bundle_template.

@@ -22,7 +22,7 @@ pip install imgui-bundle
 - The minimal install has no dependency. ImPlot and ImmVision take numpy arrays: install `numpy` too.
 - `pip install "imgui-bundle[full]"` also installs the optional dependencies (numpy, OpenCV, Pillow, matplotlib...).
 
-**C++**: start from the template, https://github.com/pthom/imgui_bundle_template. In CMake, `imgui_bundle_add_app(my_app my_app.cpp)` creates an app, with its assets.
+**C++**: start from the template, https://github.com/pthom/imgui_bundle_template. In CMake, `imgui_bundle_add_app(my_app my_app.cpp)` creates an app, with its assets. The bundle is also a Conan 2 package, for a private Conan remote: https://imgui-bundle.pages.dev/doc/cpp/cpp-install/#conan-package
 
 **In the browser, with no install**: the Python playground, https://imgui-bundle.pages.dev/playground/, runs Dear ImGui Bundle in Python (Pyodide), with ready-to-run demos.
 
