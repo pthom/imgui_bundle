@@ -1,54 +1,174 @@
 *Version scheme: ImGui Bundle uses `major.minor.patch` where `patch = ImGui_patch × 100 + bundle_release`. For example, ImGui v1.92.6 → Bundle v1.92.600, and a bugfix becomes v1.92.601.*
 
-# Next release - WIP
+# v1.93.100
+
+Dear ImGui 1.93.1, touch screens in any Dear ImGui app, and ImGuiKit, a new library of small additions to Dear ImGui. 325 commits since v1.93.0.
+
+## Highlights
+
+1. **Dear ImGui 1.93.1**, ImPlot 1.1 and ImPlot3D 0.5. See [Libraries](#libraries).
+2. **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer becomes a library of its own, ImGuiTouch. See [ImGuiTouch and ImGuiKit](#imguitouch-and-imguikit).
+3. **ImGuiKit**: em units, layout helpers and a few widgets, with Python bindings. See [ImGuiTouch and ImGuiKit](#imguitouch-and-imguikit).
+4. **Two fingers zoom a plot, an image or a node graph**, instead of scaling the whole app. See [Touch screens](#touch-screens).
+5. **Sharp pixels in Python**: Dear ImGui's draw callbacks that switch the sampling of images. See [Python](#python).
+6. **Callbacks that add instead of replace**, in Hello ImGui: an add-on's callback no longer drops the app's, and the reverse. See [Hello ImGui](#hello-imgui).
 
 ## Breaking changes
 
+### Python and C++
+
+- The touch settings of `hello_imgui.RunnerParams` are one field, `touch_config`, an `imgui_touch.Config`:
+  - `touch_scroll_mode` becomes `touch_config.scroll_mode` (`imgui_touch.ScrollMode_`), and so on for `long_press_is_right_click` and `thin_scrollbars`;
+  - `pinch_mode` becomes `pinch_scales_font`, a bool: false leaves the font alone, and a plot or an image still zooms;
+  - `pinch_interrupts_widgets` is gone: a widget that holds a finger keeps it;
+  - the enums `hello_imgui.TouchScrollMode` and `TouchPinchMode` are gone;
+  - in C++: `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always`.
+- ImGuiColorTextEdit: three methods are renamed by its author:
+  - `set_language_change_callback()` becomes `set_language_changed_callback()`;
+  - `set/get_line_number_left_margin()` become `set/get_left_margin()`;
+  - `find_word_start()` and `find_word_end()` lose their `whole_word` argument.
+- C++: Dear ImGui 1.93.1 removes names obsoleted in 2024 (`ImGuiCol_TabActive`, `PushButtonRepeat()`, `io.GetClipboardTextFn`...). See its [release notes](https://github.com/ocornut/imgui/releases/tag/v1.93.1). The Python bindings never had them.
+
+### Python
+
 - Python 3.10 is no longer supported: `imgui-bundle` needs Python 3.11 or later, like its wheels (3.11 to 3.15). Python 3.10 reaches its end of life in October 2026.
-- ImGuiColorTextEdit follows its author's latest version (a language registry, G-code and Julia). Three methods are renamed: `set_language_change_callback()` becomes `set_language_changed_callback()`, `set/get_line_number_left_margin()` become `set/get_left_margin()`, and `find_word_start()` / `find_word_end()` lose their `whole_word` argument. `TextEditor.Language.python()` and the other shortcuts still work.
-- Python typing: `imgui.table_get_sort_specs()` returns `Optional[TableSortSpecs]`: it is None when the table is not sortable. mypy now asks for that check.
-- The touch settings of `hello_imgui.RunnerParams` are one field, `touch_config`, an `imgui_touch.Config`: `touch_scroll_mode` becomes `touch_config.scroll_mode` (`imgui_touch.ScrollMode_`), and so on for `long_press_is_right_click` and `thin_scrollbars`; `pinch_mode` becomes `pinch_scales_font` (a bool: false leaves the font, and a plot or an image still zooms), and `pinch_interrupts_widgets` is gone (a widget that holds a finger keeps it). The enums `hello_imgui.TouchScrollMode` and `TouchPinchMode` are gone. C++: `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always`.
+- Typing: the getters that may return None are typed `Optional`, so mypy asks for the check:
+  - `imgui.table_get_sort_specs()`: None when the table is not sortable;
+  - the current context getters (`imgui.get_current_context()`, and the same in implot, implot3d, rich_md and the node editor) ([#512](https://github.com/pthom/imgui_bundle/issues/512)).
 
-## New
+## Libraries
 
-- **Dear ImGui 1.93.1**, ImPlot 1.1 (tick labels inside the plot, drag tools with `NoMove` and `NoResize`), ImPlot3D 0.5, and the other libraries at their latest version. New in Python: `imgui.is_item_disabled()`, `style.symbol_arrow_size_factor` and `symbol_arrow_thickness_factor`.
-- **ImGuiKit** (`imgui_bundle.imgui_kit`): small, standalone additions to Dear ImGui, with Python bindings: em units, layout helpers (fill rows, aligned groups, label columns, flows), a few widgets. See the [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-kit/).
-- **Touch screens in any Dear ImGui app**: Hello ImGui's touch layer moved to a library of its own, [ImGuiTouch](https://imgui-bundle.pages.dev/doc/addons/imgui-touch/) (`imgui_bundle.imgui_touch`, `imgui_touch.setup()`), and its wheel session to ImGuiKit (`imgui_kit.setup_wheel_session()`), where an app with its own backend can set them up. Hello ImGui and ImmApp still set them up by themselves.
-- **A pinch zooms a plot or an image**: on a touch screen, a pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers; elsewhere it still scales the app. A widget of your own takes two fingers with `imgui_touch.item_pinch()` (the gesture: it zooms and pans at once), or, if it zooms with the wheel, `imgui_touch.set_item_pinch_as_wheel()`.
-- **Sliders and drags follow a finger at once**: on a touch screen, a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS (before, a slider needed a short hold). A widget of your own: `imgui_touch.set_item_takes_drags(imgui_touch.Axis_.x)`.
-- **Markdown highlights `==text==`**, as Obsidian and Typora do (`rich_md.MarkdownOptions.highlight`, on by default). Two options, off by default, give subscripts and superscripts a shorter form: `subscripts` (`H~2~O`; a strikethrough then needs `~~x~~`) and `superscripts` (`E = mc^2^`). By Mark Jansen ([imgui_md#3](https://github.com/pthom/imgui_md/pull/3)).
-- **Markdown: the size of the code font**: `rich_md.MarkdownFontOptions.code_size_factor` sizes inline code relative to the text (e.g. 0.85, to blend into it), and inline code sits on the baseline of the text around it. `code_block_size_factor` sizes the code blocks apart (negative by default: the same). `rich_md.get_font_options()` changes the sizes at run time: the next render follows. By Mark Jansen ([imgui_rich_md#3](https://github.com/pthom/imgui_rich_md/pull/3)).
-- **Sharp pixels in Python**: Dear ImGui's standard draw callbacks, which switch the sampling of the images that follow:
+### Dear ImGui 1.93.1
+
+A maintenance release. See Omar's [release notes](https://github.com/ocornut/imgui/releases/tag/v1.93.1). What shows in the bundle:
+- the arrows of tree nodes and collapsing headers are drawn as chevrons; `style.symbol_arrow_size_factor` and `symbol_arrow_thickness_factor` tune them;
+- `StyleColorsDark()` has darker window, popup and child backgrounds;
+- tables get a "Reset Sizes" entry in their context menu;
+- new in Python: `imgui.is_item_disabled()`, and a `flags` argument to `tree_node_get_open()`;
+- two fixes of the bundle went upstream: links open with `noopener` in the browser, and the SDL2 backend opens the on-screen keyboard on iOS.
+
+### ImPlot 1.1 and ImPlot3D 0.5
+
+- ImPlot: tick labels inside the plot (`implot.AxisFlags_.tick_labels_inside`).
+- ImPlot: drag tools that do not move or do not resize (`implot.DragToolFlags_.no_move`, `no_resize`).
+- ImPlot: `implot.is_item_hidden()` and `is_last_item_hidden()`.
+- ImPlot3D 0.5: fixes, among them the NaN detection and the line rendering with Dear ImGui 1.93.
+
+### ImGuiTouch and ImGuiKit
+
+- **ImGuiTouch** (`imgui_bundle.imgui_touch`, [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-touch/)): Hello ImGui's touch layer, as a library of its own. An app with its own backend sets it up with `imgui_touch.setup()`. Hello ImGui and ImmApp still set it up by themselves.
+- **ImGuiKit** (`imgui_bundle.imgui_kit`, [book page](https://imgui-bundle.pages.dev/doc/addons/imgui-kit/)): small, standalone additions to Dear ImGui:
+  - em units;
+  - layout helpers: fill rows, aligned groups, label columns, flows;
+  - a few widgets;
+  - the wheel session: `imgui_kit.setup_wheel_session()`, for an app with its own backend.
+- The ImGui Explorer has a page for each of them, with their demos in C++ and Python.
+
+### Touch screens
+
+- A pinch on an ImPlot or ImPlot3D plot, or on an ImmVision image, zooms it around the fingers. Elsewhere, it still scales the app.
+- In the node editor, a pinch zooms the graph, and two fingers moved together pan it. An image in a node keeps its own pinch.
+- Sliders and drags follow a finger at once: a drag along a slider's axis moves it, and a drag across scrolls the page, as on iOS. Before, a slider needed a short hold.
+- For a widget of your own:
+  - `imgui_touch.item_pinch()`: the two-finger gesture, which zooms and pans at once;
+  - `imgui_touch.set_item_pinch_as_wheel()`: for a widget that zooms with the wheel;
+  - `imgui_touch.set_item_takes_drags(imgui_touch.Axis_.x)`: for a widget dragged along one axis.
+- The node editor's demos fit a phone: their controls float in a corner panel, and the help opens in a popup.
+
+### Hello ImGui
+
+- **Callbacks that add instead of replace:**
+  - `callbacks.add_callback(slot, f, owner)` adds a callback beside the app's own, so that `callbacks.post_init = f` no longer drops an add-on's;
+  - `callbacks.call_soon(f)` calls a function once, on the next frame;
+  - `callbacks.call_later(f, seconds)` calls it after a delay;
+  - ImmApp's add-ons use them (markdown, ImPlot, the node editor, TexInspect, ImAnim, ImmVision): an assignment of `before_exit` during a run no longer drops their teardown.
+- **Themes:** in the 14 Hello ImGui themes, a hover or a press shows, and text reads on a hovered or pressed item. The slider grab at rest and the check mark stand out from their frame. Dear ImGui's own three styles are unchanged.
+- **A monitor with another scale (Windows, opt-in):** with `app_window_params.window_geometry.follow_monitor_scale = True`, the window keeps its size relative to its content when it moves to a monitor with another scale: Windows resizes it, and the fonts and the style follow. Off by default. Requested by Diederick Niehorster @dcnieho ([#516](https://github.com/pthom/imgui_bundle/issues/516)).
+- **Hidden windows for tests:** with `HELLOIMGUI_TEST_HIDDEN_WINDOWS=1`, the windows of the tests and the screenshots stay hidden, while the app still renders and the test engine drives it.
+- Hello ImGui's own changelog: [hello_imgui v1.93.100](https://github.com/pthom/hello_imgui/releases).
+
+### RichMd, the markdown renderer
+
+- `==text==` is highlighted, as in Obsidian and Typora (`rich_md.MarkdownOptions.highlight`, on by default). By Mark Jansen @learn-more ([imgui_md#3](https://github.com/pthom/imgui_md/pull/3)).
+- Shorter subscripts and superscripts, as options off by default:
+  - `subscripts`: `H~2~O` (a strikethrough then needs `~~x~~`);
+  - `superscripts`: `E = mc^2^`.
+- The size of the code font:
+  - `rich_md.MarkdownFontOptions.code_size_factor` sizes inline code relative to the text (e.g. 0.85, to blend into it);
+  - `code_block_size_factor` sizes the code blocks apart;
+  - `rich_md.get_font_options()` changes the sizes at run time.
+
+  By Mark Jansen @learn-more ([imgui_rich_md#3](https://github.com/pthom/imgui_rich_md/pull/3)).
+
+### The node editor
+
+- The zoom under the app's control, requested by @monster-toys ([#515](https://github.com/pthom/imgui_bundle/issues/515)):
+  - `imgui_node_editor.Config.custom_zoom_levels`: the scales the wheel steps through, e.g. `[1.0, 2.0, 3.0, 4.0]` for pixel art;
+  - `get_zoom()` and `set_zoom()`: the view's scale, in that unit (`get_current_zoom()` returns its inverse);
+  - `is_navigating()`: true while the view animates, e.g. to snap the zoom to a level once a fit has ended.
+- A wheel step ends exactly on its zoom level (1.25, not 1.2499999).
+
+### ImGuiColorTextEdit
+
+- On its author's latest version: a language registry (`TextEditor.lookup_language("Python")`), and the G-code and Julia languages.
+- `TextEditor.Language.python()` and the other shortcuts still work ([goossens/ImGuiColorTextEdit#111](https://github.com/goossens/ImGuiColorTextEdit/pull/111)).
+
+### Other libraries
+
+- Stack Layout: a row with a spring followed by an empty group shrinks back when its content does. It kept its tallest height ([thedmd/imgui#11](https://github.com/thedmd/imgui/pull/11)).
+- ImGuizmo and imspinner: their authors' latest versions.
+
+## Python
+
+- **Sharp pixels:** Dear ImGui's standard draw callbacks, which switch the sampling of the images that follow:
   - `draw_list.set_sampler_nearest()`, then `set_sampler_linear()` to come back to the default;
   - `set_sampler_from_tex()`: the filter of a texture you made in OpenGL (OpenGL only), then `reset_render_state()` to come back;
   - each raises an error when the renderer backend does not support it: `draw_list.can_set_sampler_nearest()` (and the like) tells it beforehand;
   - a demo: `demo_sampler_callbacks.py`.
-- **Node editor: the zoom under the app's control** (C++ and Python), requested by monster-toys ([#515](https://github.com/pthom/imgui_bundle/issues/515)):
-  - `imgui_node_editor.Config.custom_zoom_levels`: the scales the wheel steps through, e.g. `[1.0, 2.0, 3.0, 4.0]` for pixel art;
-  - `get_zoom()` and `set_zoom()`: the view's scale, in that unit (`get_current_zoom()` returns its inverse);
-  - `is_navigating()`: true while the view animates, e.g. to snap the zoom to a level once a fit has ended.
+- The setters whose C++ accepts a null pointer take None: the context setters (`imgui.set_current_context(None)`...), `push_font(None)`, `set_state_storage()`, `focus_window()` ([#512](https://github.com/pthom/imgui_bundle/issues/512)).
+- The pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
+- The extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
 
-- **Callbacks that add instead of replace** (Hello ImGui): `callbacks.add_callback(slot, f, owner)` adds a callback beside the app's own, so that `callbacks.post_init = f` no longer drops an add-on's; `callbacks.call_soon(f)` calls a function once on the next frame, `callbacks.call_later(f, seconds)` after a delay. ImmApp's add-ons (markdown, ImPlot, the node editor, TexInspect, ImAnim, ImmVision) use them: an assignment of `before_exit` during a run no longer drops their teardown.
+## C++
+
+- **A Conan 2 package**: see the [C++ install page](https://imgui-bundle.pages.dev/doc/cpp/cpp-install/#conan-package).
+- The installed package holds every library: a test builds an app against the install, with each library's main header and one function of each.
+- ImmApp stays available in a C++ build without the node editor.
+- On Windows: `main()` gets the command line in an app made with `imgui_bundle_add_app` or `hello_imgui_add_app`. Hello ImGui's `WinMain` called `main(0, NULL)`.
+
+## Docs and web
+
+- The book has a [FAQ page](https://imgui-bundle.pages.dev/doc/support/faq/), from the issues labeled FAQ that still apply.
+- The playground: a Run clicked while the page's own demo starts no longer breaks the runner ("TearDown() called twice!").
 
 ## Fixes
 
-- Hello ImGui, on Windows: a borderless full-screen window with `borderless_resizable` keeps its size when it is minimized and restored, or after an Alt-Tab. It came back at 640x480 ([hello_imgui#171](https://github.com/pthom/hello_imgui/issues/171)).
-- Hello ImGui, borderless windows: a full-screen window has no resize handle (a drag on it changed the monitor's video mode), and the resize handle follows a slow drag (it moved only when the mouse moved more than 6 px in one frame).
-- Hello ImGui, themes: in the 14 Hello ImGui themes, a hover or a press shows, text reads on a hovered or pressed item, the slider grab at rest and the check mark stand out from their frame, and a scrollbar grab no longer fades when hovered. Darcula's text on its blue hover was hard to read; the tabs and scroll bars of GrayVariations, MicrosoftStyle and WhiteIsWhite showed no hover; MaterialFlat's check mark vanished while held. Dear ImGui's own three styles are unchanged.
-- Hello ImGui, themes: the theme tweaks keep each color's components in [0, 1]. WhiteIsWhite's window background was 6.64, and a few colors of BlackIsBlack and GrayVariations_Darker were above 1: harmless on screen, but wrong in an exported or edited style. Every theme looks the same.
-- C++, on Windows: `main()` gets the command line in an app made with `imgui_bundle_add_app` or `hello_imgui_add_app`. Hello ImGui's `WinMain` called `main(0, NULL)`.
-- LaTeX (MicroTeX): a formula that loops or nests without end (`\newcommand{\a}{\a}\a`, thousands of nested braces) is an error, and markdown shows its source. It hung the app, or crashed it.
-- Markdown: the items of an unordered list written with `-` or `+` get the dot, as those written with `*` did. They showed their character. By Mark Jansen ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2)).
-- Markdown: URLs with a port, a query or parentheses are whole links (`http://localhost:8080/`), and code blocks keep their tabs. md4c, the parser, follows its master, after v0.6.0.
-- Markdown: the entities (`&amp;`, `&copy;`, `&#169;`, `&#x2192;`) show as their characters, in the text, the headings and the search; an invalid codepoint shows as U+FFFD, as in CommonMark. The spans inside a heading (`^sup^`, `~sub~`, `==highlight==`) are tested. By Mark Jansen ([imgui_rich_md#1](https://github.com/pthom/imgui_rich_md/pull/1), [imgui_rich_md#2](https://github.com/pthom/imgui_rich_md/pull/2)).
-- Markdown: the selection's highlight over inline code, `<sub>` and `<sup>` is as tall as the line, as over the text around them. With Mark Jansen ([imgui_rich_md#3](https://github.com/pthom/imgui_rich_md/pull/3)).
-- Python, the pure-Python backends (glfw, sdl2, sdl3, pygame, pyglet): without PyOpenGL, their import says so, with `pip install PyOpenGL`. It said "No module named 'OpenGL'".
-- Python: the extras `glfw`, `sdl2`, `sdl3` and `pyglet` install PyOpenGL, which their pure-Python backend needs (`pip install "imgui-bundle[pyglet]"`).
-- ImmVision: a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails. Fine detail showed moiré: the backend's sampler had no mipmaps. ImmVision now samples them (trilinear filtering) with Dear ImGui 1.93's `DrawCallback_SetSamplerFromTex`, on the OpenGL backends.
-- ImmVision: `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed: there was no OpenGL context yet.
-- ImPlot and ImPlot3D, on a screen at a high DPI scale (Windows at 250%): the axes' ticks are as far apart as at 100%, for the same window. They were 2.5 times denser, and their labels crowded or overlapped: they counted the spacing in pixels, while the labels grow with the scale. Reported by Diederick Niehorster ([#501](https://github.com/pthom/imgui_bundle/issues/501)).
-- Node editor: a wheel step ends exactly on its zoom level (1.25, not 1.2499999).
-- Stack Layout: a row with a spring followed by an empty group shrinks back when its content does. It kept its tallest height.
+- Zoomable widgets keep the wheel in a page that scrolls. In a window that scrolls, the window scrolled instead:
+  - imgui_tex_inspect and ImGuizmo's editors (ImCurveEdit, GraphEditor, ImVectorEditor) now own the wheel while hovered;
+  - ImPlot and ImPlot3D own the sideways wheel too: a trackpad's zoom gesture no longer scrolls a window sideways.
+- ImPlot and ImPlot3D, on a screen at a high DPI scale (Windows at 250%): the axes' ticks are as far apart as at 100%. They were 2.5 times denser, and their labels overlapped. Reported by Diederick Niehorster @dcnieho ([#501](https://github.com/pthom/imgui_bundle/issues/501)).
+- ImmVision:
+  - a zoomed-out image is smooth again, as before v1.92.801, and so are the inspector's thumbnails (trilinear filtering);
+  - `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed;
+  - an image whose pan is off zooms with the wheel again, and a double click adds a watched pixel. In a node editor, a drag on it moves its node.
+- Hello ImGui:
+  - on Windows, a borderless full-screen window with `borderless_resizable` keeps its size when it is minimized and restored, or after an Alt-Tab. It came back at 640x480 ([hello_imgui#171](https://github.com/pthom/hello_imgui/issues/171));
+  - a full-screen borderless window has no resize handle, and the resize handle follows a slow drag;
+  - the theme tweaks keep each color's components in [0, 1]: harmless on screen, but wrong in an exported style;
+  - on macOS, an app starts while the display sleeps. It crashed.
+- LaTeX (MicroTeX): a formula that loops or nests without end is an error, and markdown shows its source. It hung the app, or crashed it.
+- Markdown:
+  - the items of an unordered list written with `-` or `+` get the dot, as those written with `*`. By Mark Jansen @learn-more ([imgui_md#2](https://github.com/pthom/imgui_md/pull/2));
+  - URLs with a port, a query or parentheses are whole links, and code blocks keep their tabs (md4c follows its master);
+  - the entities (`&amp;`, `&copy;`, `&#x2192;`) show as their characters. By Mark Jansen @learn-more ([imgui_rich_md#1](https://github.com/pthom/imgui_rich_md/pull/1), [imgui_rich_md#2](https://github.com/pthom/imgui_rich_md/pull/2));
+  - the selection's highlight over inline code, `<sub>` and `<sup>` is as tall as the line.
+
+## Thanks
+
+- **Mark Jansen** @learn-more, for five pull requests to RichMd and imgui_md.
+- **Johan Goossens** @goossens, for ImGuiColorTextEdit's new version, and **Michał Cichoń** @thedmd, for the stack layout.
+- **Omar Cornut** @ocornut, for Dear ImGui 1.93.1, and **Evan Pezent** @epezent and **Breno Cunha Queiroz** @brenocq, for ImPlot 1.1 and ImPlot3D 0.5.
+- **Diederick Niehorster** @dcnieho and @monster-toys, for their reports.
 
 # v1.93.0
 
