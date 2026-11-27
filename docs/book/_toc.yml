@@ -210,6 +210,7 @@ parts:
   # </api pages>
   - caption: Support
     chapters:
+      - file: support/faq
       - file: support/support_project
       - file: support/closing_words
   - caption: Developer docs
