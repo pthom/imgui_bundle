@@ -108,7 +108,7 @@ Layouts, docking, backgrounds, fonts, testing: what a real application needs.
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_docking.cpp
   Run, Python: https://imgui-bundle.pages.dev/playground/?demo=demo_docking.py
   Run, C++: https://imgui-bundle.pages.dev/explorer/demo_docking.html
-- Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with hello_imgui.set_item_is_live(), and keeps the full speed while it is visible. The idling settings are global.
+- Power save when idle: When nothing happens, Hello ImGui lowers the frame rate to spare the CPU: after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with hello_imgui.set_item_is_live(), and keeps the full speed while it is visible. A function can also run later (call_later, call_soon): the app wakes up for it. The idling settings are global.
   Uses: ImPlot, toggles, spinners
   Python: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_python/demos_immapp/demo_powersave.py
   C++: https://github.com/pthom/imgui_bundle/blob/main/bindings/imgui_bundle/demos_cpp/demos_immapp/demo_powersave.cpp

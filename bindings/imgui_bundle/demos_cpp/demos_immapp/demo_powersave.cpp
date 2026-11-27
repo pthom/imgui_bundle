@@ -1,6 +1,7 @@
 // Part of ImGui Bundle - MIT License - Copyright (c) 2022-2026 Pascal Thomet - https://github.com/pthom/imgui_bundle
 // Power save: when nothing happens, Hello ImGui lowers the frame rate to spare the CPU. What changes on its own (a live
-// plot, a spinner) then moves by jumps, unless it says that it is live: HelloImGui::SetItemIsLive().
+// plot, a spinner) then moves by jumps, unless it says that it is live: HelloImGui::SetItemIsLive(). A function can
+// also run later (CallLater, CallSoon): the app wakes up for it.
 #ifdef IMGUI_BUNDLE_WITH_IMPLOT
 #define IMGUI_DEFINE_MATH_OPERATORS
 #include "immapp/immapp.h"
@@ -14,7 +15,9 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdio>
 #include <cstddef>
+#include <string>
 #include <vector>
 
 namespace
@@ -109,6 +112,54 @@ namespace
                                     color, color, color);
         HelloImGui::SetItemIsLive(gLive);
     }
+
+    std::string gLaterLog, gSoonLog;  // what CallLater and CallSoon did, shown under their buttons
+
+    // CallLater: a function runs once after a delay, and an idling app wakes up for it, on time.
+    // CallSoon: it runs once a few frames later, and the app keeps its full speed until then.
+    void ShowLater()
+    {
+        RichMd::Render(R"(
+            Call a function once, after a delay or a few frames later, with the callbacks of the runner params. While
+            the app idles, it wakes up for the call, on time.
+
+            ```cpp
+            auto* params = HelloImGui::GetRunnerParams();
+            params->callbacks.CallLater(ShowMessage, 3.0);
+            params->callbacks.CallSoon(NextStep);
+            ```
+
+            ```python
+            cb = hello_imgui.get_runner_params().callbacks
+            cb.call_later(show_message, 3.0)
+            cb.call_soon(next_step)  # the next frame
+            ```
+        )");
+        auto& callbacks = HelloImGui::GetRunnerParams()->callbacks;
+        if (ImGui::Button("In 3 seconds"))
+        {
+            double asked = ImmApp::ClockSeconds();
+            gLaterLog = "CallLater: waiting... (do not move the mouse: the app idles meanwhile)";
+            callbacks.CallLater([asked] {
+                char msg[64];
+                snprintf(msg, sizeof(msg), "CallLater: ran %.2f s after the click", ImmApp::ClockSeconds() - asked);
+                gLaterLog = msg;
+            }, 3.0);
+        }
+        ImGui::SameLine();
+        if (ImGui::Button("In 30 frames"))
+        {
+            int askedFrame = ImGui::GetFrameCount();
+            gSoonLog = "CallSoon: waiting... (the app keeps its full speed meanwhile)";
+            callbacks.CallSoon([askedFrame] {
+                int frames = ImGui::GetFrameCount() - askedFrame;
+                gSoonLog = "CallSoon: ran " + std::to_string(frames) + " frames after the click";
+            }, 30);
+        }
+        for (const std::string* log : {&gLaterLog, &gSoonLog})
+            if (!log->empty())
+                ImGui::TextUnformatted(log->c_str());
+    }
 }  // namespace
 
 void gui_demo_powersave()
@@ -177,6 +228,10 @@ void gui_demo_powersave()
         ImGui::SliderFloat("##fpsIdle", &fpsIdling.fpsIdle, 0.f, 60.f, "fpsIdle: %.0f");
         Switch("Enable idling", &fpsIdling.enableIdling);
     }
+
+    ImGui::Dummy(HelloImGui::EmToVec2(0.f, 0.5f));
+    if (ImGui::CollapsingHeader("Do something later", ImGuiTreeNodeFlags_DefaultOpen))
+        ShowLater();
 }
 
 #ifndef IMGUI_BUNDLE_BUILD_DEMO_AS_LIBRARY
@@ -185,7 +240,7 @@ int main(int, char **)
     HelloImGui::SimpleRunnerParams runnerParams;
     runnerParams.guiFunction = gui_demo_powersave;
     runnerParams.windowTitle = "Power save";
-    runnerParams.windowSize = {520, 720};
+    runnerParams.windowSize = {520, 900};
     runnerParams.fpsIdle = 3.f;
     ImmApp::AddOnsParams addOnsParams;
     addOnsParams.withImplot = true;

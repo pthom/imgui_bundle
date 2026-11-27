@@ -288,7 +288,8 @@ menus and a theme chooser. Your settings are saved, and restored at the next sta
 
 When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:
 after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with
-`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.
+`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. A function can also run later
+(`call_later`, `call_soon`): the app wakes up for it. The idling settings are global.
 
 *Python, C++*
 

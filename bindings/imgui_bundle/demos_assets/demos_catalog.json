@@ -305,7 +305,7 @@
           "filename": "demo_powersave.py",
           "stem": "demo_powersave",
           "where": "both",
-          "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nafter 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with\n`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.",
+          "text": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:\nafter 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with\n`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. A function can also run later\n(`call_later`, `call_soon`): the app wakes up for it. The idling settings are global.",
           "summary": "When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU: after 3 seconds, the live plot and the spinner become choppy.",
           "uses": [
             "ImPlot",
