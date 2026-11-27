@@ -903,8 +903,10 @@ class FontLoadingParams:
 def load_font(
     font_filename: str, font_size: float, params: Optional[FontLoadingParams] = None
 ) -> ImFont:
-    """Python bindings defaults:
-    If params is None, then its default value will be: initialized with default value
+    """Loads a font (from the assets by default), with the loading parameters above
+
+    Python bindings defaults:
+        If params is None, then its default value will be: initialized with default value
     """
     pass
 

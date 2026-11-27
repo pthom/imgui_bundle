@@ -689,7 +689,7 @@ void py_init_module_hello_imgui(nb::module_& m)
             return LoadFont_adapt_mutable_param_with_default_value(fontFilename, fontSize, params);
         },
         nb::arg("font_filename"), nb::arg("font_size"), nb::arg("params").none() = nb::none(),
-        "Python bindings defaults:\n    If params is None, then its default value will be: initialized with default value",
+        " Loads a font (from the assets by default), with the loading parameters above\n\nPython bindings defaults:\n    If params is None, then its default value will be: initialized with default value",
         nb::rv_policy::reference);
 
     m.def("load_font_ttf",
