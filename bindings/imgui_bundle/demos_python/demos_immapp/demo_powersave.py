@@ -3,7 +3,8 @@ Power save: the app slows down when you don't use it.
 
 When nothing happens, [Hello ImGui](https://pthom.github.io/hello_imgui/) lowers the frame rate to spare the CPU:
 after 3 seconds, the live plot and the spinner become choppy. Content that changes on its own says so with
-`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. The idling settings are global.
+`hello_imgui.set_item_is_live()`, and keeps the full speed while it is visible. A function can also run later
+(`call_later`, `call_soon`): the app wakes up for it. The idling settings are global.
 """
 
 import itertools
@@ -88,6 +89,52 @@ def show_live_content() -> None:
     hello_imgui.set_item_is_live(live)
 
 
+later_log: dict[str, str] = {}  # what call_later and call_soon did, shown under their buttons
+
+
+def show_later() -> None:
+    """call_later: a function runs once after a delay, and an idling app wakes up for it, on time.
+    call_soon: it runs once a few frames later, and the app keeps its full speed until then."""
+    rich_md.render("""
+        Call a function once, after a delay or a few frames later, with the callbacks of the runner params. While the
+        app idles, it wakes up for the call, on time.
+
+        ```cpp
+        auto* params = HelloImGui::GetRunnerParams();
+        params->callbacks.CallLater(ShowMessage, 3.0);
+        params->callbacks.CallSoon(NextStep);
+        ```
+
+        ```python
+        cb = hello_imgui.get_runner_params().callbacks
+        cb.call_later(show_message, 3.0)
+        cb.call_soon(next_step)  # the next frame
+        ```
+    """)
+    callbacks = hello_imgui.get_runner_params().callbacks
+    if imgui.button("In 3 seconds"):
+        asked = immapp.clock_seconds()
+
+        def show_message() -> None:
+            ran = immapp.clock_seconds()
+            later_log["later"] = f"call_later: ran {ran - asked:.2f} s after the click"
+
+        later_log["later"] = "call_later: waiting... (do not move the mouse: the app idles meanwhile)"
+        callbacks.call_later(show_message, 3.0)
+    imgui.same_line()
+    if imgui.button("In 30 frames"):
+        asked_frame = imgui.get_frame_count()
+
+        def note_frame() -> None:
+            later_log["soon"] = f"call_soon: ran {imgui.get_frame_count() - asked_frame} frames after the click"
+
+        later_log["soon"] = "call_soon: waiting... (the app keeps its full speed meanwhile)"
+        callbacks.call_soon(note_frame, after_frames=30)
+    for key in ("later", "soon"):
+        if key in later_log:
+            imgui.text(later_log[key])
+
+
 def gui() -> None:
     global live
     sample_signal()
@@ -151,9 +198,13 @@ def gui() -> None:
         _, fps_idling.fps_idle = imgui.slider_float("##fps_idle", fps_idling.fps_idle, 0.0, 60.0, "fps_idle: %.0f")
         fps_idling.enable_idling = switch("Enable idling", fps_idling.enable_idling)
 
+    imgui.dummy(hello_imgui.em_to_vec2(0, 0.5))
+    if imgui.collapsing_header("Do something later", imgui.TreeNodeFlags_.default_open):
+        show_later()
+
 
 def main() -> None:
-    immapp.run(gui, window_title="Power save", window_size=(520, 720), fps_idle=3, with_implot=True, with_markdown=True)
+    immapp.run(gui, window_title="Power save", window_size=(520, 900), fps_idle=3, with_implot=True, with_markdown=True)
 
 
 if __name__ == "__main__":
