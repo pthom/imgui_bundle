@@ -317,6 +317,34 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("a"), nb::arg("b"), nb::arg("t"),
         "(private API)");
 
+    m.def("im_mod",
+        [](float a, float b) -> float
+        {
+            auto ImMod_adapt_force_lambda = [](float a, float b) -> float
+            {
+                auto lambda_result = ImMod(a, b);
+                return lambda_result;
+            };
+
+            return ImMod_adapt_force_lambda(a, b);
+        },
+        nb::arg("a"), nb::arg("b"),
+        "(private API)");
+
+    m.def("im_mod",
+        [](double a, double b) -> double
+        {
+            auto ImMod_adapt_force_lambda = [](double a, double b) -> double
+            {
+                auto lambda_result = ImMod(a, b);
+                return lambda_result;
+            };
+
+            return ImMod_adapt_force_lambda(a, b);
+        },
+        nb::arg("a"), nb::arg("b"),
+        "(private API)\n\n FIXME");
+
     m.def("im_saturate",
         ImSaturate,
         nb::arg("f"),
@@ -340,11 +368,16 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("im_trunc",
         nb::overload_cast<float>(ImTrunc),
         nb::arg("f"),
-        "(private API)");
+        "(private API)\n\n == IM_TRUNC()");
 
     m.def("im_trunc",
         nb::overload_cast<const ImVec2 &>(ImTrunc),
         nb::arg("v"),
+        "(private API)");
+
+    m.def("im_trunc64",
+        ImTrunc64,
+        nb::arg("f"),
         "(private API)");
 
     m.def("im_floor",
@@ -357,15 +390,25 @@ void py_init_module_imgui_internal(nb::module_& m)
         nb::arg("v"),
         "(private API)");
 
-    m.def("im_trunc64",
-        ImTrunc64,
+    m.def("im_round_positive",
+        ImRoundPositive,
         nb::arg("f"),
-        "(private API)");
+        "(private API)\n\n == IM_ROUND(). Positive values only.");
 
     m.def("im_round_positive64",
         ImRoundPositive64,
         nb::arg("f"),
         "(private API)\n\n Positive values only.");
+
+    m.def("im_round_signed",
+        nb::overload_cast<float>(ImRoundSigned),
+        nb::arg("f"),
+        "(private API)");
+
+    m.def("im_round_signed",
+        nb::overload_cast<const ImVec2 &>(ImRoundSigned),
+        nb::arg("v"),
+        "(private API)");
 
     m.def("im_round_signed64",
         ImRoundSigned64,
@@ -616,6 +659,10 @@ void py_init_module_imgui_internal(nb::module_& m)
             &ImRect::ClipWithFull,
             nb::arg("r"),
             "(private API)\n\n Full version, ensure both points are fully clipped.")
+        .def("shrink_clamp",
+            &ImRect::ShrinkClamp,
+            nb::arg("inset_min"), nb::arg("inset_max"),
+            "(private API)")
         .def("is_inverted",
             &ImRect::IsInverted, "(private API)")
         .def("to_vec4",
@@ -2269,6 +2316,7 @@ void py_init_module_imgui_internal(nb::module_& m)
             .value("table_reset", ImGuiLocKey_TableReset, "")
             .value("table_reset_order", ImGuiLocKey_TableResetOrder, "")
             .value("table_reset_visibility", ImGuiLocKey_TableResetVisibility, "")
+            .value("table_reset_sizing", ImGuiLocKey_TableResetSizing, "")
             .value("windowing_main_menu_bar", ImGuiLocKey_WindowingMainMenuBar, "")
             .value("windowing_popup", ImGuiLocKey_WindowingPopup, "")
             .value("windowing_untitled", ImGuiLocKey_WindowingUntitled, "")
@@ -2674,6 +2722,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("current_tab_bar", &ImGuiContext::CurrentTabBar, "")
         .def_rw("current_tab_bar_stack", &ImGuiContext::CurrentTabBarStack, "")
         .def_rw("shrink_width_buffer", &ImGuiContext::ShrinkWidthBuffer, "")
+        .def_rw("config_docking_tab_bar_flags", &ImGuiContext::ConfigDockingTabBarFlags, "Basic TabBar flags for dock nodes. PLEASE LET ME KNOW IF YOU ARE USING THIS. (#9596, #8800, #3421)")
         .def_rw("box_select_state", &ImGuiContext::BoxSelectState, "")
         .def_rw("current_multi_select", &ImGuiContext::CurrentMultiSelect, "")
         .def_rw("multi_select_temp_data_stacked", &ImGuiContext::MultiSelectTempDataStacked, "Temporary multi-select data size (because we leave previous instances undestructed, we generally don't use MultiSelectTempData.Size)")
@@ -3120,7 +3169,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("id_", &ImGuiTabItem::ID, "")
         .def_rw("flags", &ImGuiTabItem::Flags, "")
         .def_rw("window", &ImGuiTabItem::Window, "When TabItem is part of a DockNode's TabBar, we hold on to a window.")
-        .def_rw("last_frame_visible", &ImGuiTabItem::LastFrameVisible, "")
+        .def_rw("last_frame_visible", &ImGuiTabItem::LastFrameVisible, "TabItem visibility (not contents visibility)")
         .def_rw("last_frame_selected", &ImGuiTabItem::LastFrameSelected, "This allows us to infer an ordered list of the last activated tabs with little maintenance")
         .def_rw("offset", &ImGuiTabItem::Offset, "Position relative to beginning of tab bar")
         .def_rw("width", &ImGuiTabItem::Width, "Width currently displayed")
@@ -3130,6 +3179,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("begin_order", &ImGuiTabItem::BeginOrder, "BeginTabItem() order, used to re-order tabs after toggling ImGuiTabBarFlags_Reorderable")
         .def_rw("index_during_layout", &ImGuiTabItem::IndexDuringLayout, "Index only used during TabBarLayout(). Tabs gets reordered so 'Tabs[n].IndexDuringLayout == n' but may mismatch during additions.")
         .def_rw("want_close", &ImGuiTabItem::WantClose, "Marked as closed by SetTabItemClosed()")
+        .def_rw("contents_is_visible", &ImGuiTabItem::ContentsIsVisible, "")
         .def(nb::init<>())
         ;
 
@@ -3144,7 +3194,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("selected_tab_id", &ImGuiTabBar::SelectedTabId, "Selected tab/window")
         .def_rw("next_selected_tab_id", &ImGuiTabBar::NextSelectedTabId, "Next selected tab/window. Will also trigger a scrolling animation")
         .def_rw("next_scroll_to_tab_id", &ImGuiTabBar::NextScrollToTabId, "")
-        .def_rw("visible_tab_id", &ImGuiTabBar::VisibleTabId, "Can occasionally be != SelectedTabId (e.g. when previewing contents for Ctrl+Tab preview)")
+        .def_rw("visible_tab_contents_id", &ImGuiTabBar::VisibleTabContentsId, "Can occasionally be != SelectedTabId (e.g. when previewing contents for Ctrl+Tab preview)")
         .def_rw("curr_frame_visible", &ImGuiTabBar::CurrFrameVisible, "")
         .def_rw("prev_frame_visible", &ImGuiTabBar::PrevFrameVisible, "")
         .def_rw("bar_rect", &ImGuiTabBar::BarRect, "")
@@ -3166,6 +3216,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("begin_count", &ImGuiTabBar::BeginCount, "")
         .def_rw("want_layout", &ImGuiTabBar::WantLayout, "")
         .def_rw("visible_tab_was_submitted", &ImGuiTabBar::VisibleTabWasSubmitted, "")
+        .def_rw("last_tab_item_contents_appearing", &ImGuiTabBar::LastTabItemContentsAppearing, "")
         .def_rw("tabs_added_new", &ImGuiTabBar::TabsAddedNew, "Set to True when a new tab item or button has been added to the tab bar during last frame")
         .def_rw("scroll_button_enabled", &ImGuiTabBar::ScrollButtonEnabled, "")
         .def_rw("tabs_active_count", &ImGuiTabBar::TabsActiveCount, "Number of tabs submitted this frame.")
@@ -3349,6 +3400,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("border_color_light", &ImGuiTable::BorderColorLight, "")
         .def_rw("border_x1", &ImGuiTable::BorderX1, "")
         .def_rw("border_x2", &ImGuiTable::BorderX2, "")
+        .def_rw("border_size", &ImGuiTable::BorderSize, "")
         .def_rw("host_indent_x", &ImGuiTable::HostIndentX, "")
         .def_rw("min_column_width", &ImGuiTable::MinColumnWidth, "")
         .def_rw("outer_padding_x", &ImGuiTable::OuterPaddingX, "")
@@ -3427,6 +3479,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("is_reset_all_request", &ImGuiTable::IsResetAllRequest, "Set to queue a call to TableResetSettings() in BeginTable()")
         .def_rw("is_reset_display_order_request", &ImGuiTable::IsResetDisplayOrderRequest, "")
         .def_rw("is_reset_visibility_request", &ImGuiTable::IsResetVisibilityRequest, "")
+        .def_rw("is_reset_sizes_request", &ImGuiTable::IsResetSizesRequest, "")
         .def_rw("is_unfrozen_rows", &ImGuiTable::IsUnfrozenRows, "Set when we got past the frozen row.")
         .def_rw("is_default_sizing_policy", &ImGuiTable::IsDefaultSizingPolicy, "Set if user didn't explicitly set a sizing policy in BeginTable()")
         .def_rw("is_active_id_alive_before_table", &ImGuiTable::IsActiveIdAliveBeforeTable, "")
@@ -3446,6 +3499,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("table_index", &ImGuiTableTempData::TableIndex, "Index in g.Tables.Buf[] pool")
         .def_rw("last_time_active", &ImGuiTableTempData::LastTimeActive, "Last timestamp this structure was used")
         .def_rw("angled_headers_extra_width", &ImGuiTableTempData::AngledHeadersExtraWidth, "Used in EndTable()")
+        .def_rw("border_outer_sizes", &ImGuiTableTempData::BorderOuterSizes, "")
         .def_rw("angled_headers_requests", &ImGuiTableTempData::AngledHeadersRequests, "Used in TableAngledHeadersRow() // FIXME: Single instance is enough?")
         .def_rw("old_columns_raw_data", &ImGuiTableTempData::OldColumnsRawData, "Used in BeginTable() -> TableUpdateLayout() when resizing.")
         .def_rw("user_outer_size", &ImGuiTableTempData::UserOuterSize, "outer_size.x passed to BeginTable()")
@@ -3961,6 +4015,11 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("update_mouse_moving_window_end_frame",
         ImGui::UpdateMouseMovingWindowEndFrame);
+
+    m.def("find_latest_input_event",
+        ImGui::FindLatestInputEvent,
+        nb::arg("ctx"), nb::arg("type"), nb::arg("arg") = -1,
+        nb::rv_policy::reference);
 
     m.def("translate_windows_in_viewport",
         ImGui::TranslateWindowsInViewport, nb::arg("viewport"), nb::arg("old_pos"), nb::arg("new_pos"), nb::arg("old_size"), nb::arg("new_size"));
@@ -4865,6 +4924,9 @@ void py_init_module_imgui_internal(nb::module_& m)
             return TabItemEx_adapt_modifiable_immutable_to_return(tab_bar, label, p_open, flags, docked_window);
         },     nb::arg("tab_bar"), nb::arg("label"), nb::arg("p_open"), nb::arg("flags"), nb::arg("docked_window"));
 
+    m.def("tab_item_is_contents_appearing",
+        ImGui::TabItemIsContentsAppearing);
+
     m.def("tab_item_spacing",
         ImGui::TabItemSpacing, nb::arg("str_id"), nb::arg("flags"), nb::arg("width"));
 
@@ -4998,14 +5060,14 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("render_arrow",
         ImGui::RenderArrow, nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("dir"), nb::arg("scale") = 1.0f);
 
+    m.def("render_arrow_ex",
+        ImGui::RenderArrowEx, nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("cos_a"), nb::arg("sin_a"), nb::arg("scale"), nb::arg("arrow_sizes"), nb::arg("arrow_th"));
+
     m.def("render_bullet",
         ImGui::RenderBullet, nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"));
 
     m.def("render_check_mark",
         ImGui::RenderCheckMark, nb::arg("draw_list"), nb::arg("pos"), nb::arg("col"), nb::arg("sz"));
-
-    m.def("render_arrow_pointing_at",
-        ImGui::RenderArrowPointingAt, nb::arg("draw_list"), nb::arg("pos"), nb::arg("half_sz"), nb::arg("direction"), nb::arg("col"));
 
     m.def("render_arrow_dock_menu",
         ImGui::RenderArrowDockMenu, nb::arg("draw_list"), nb::arg("p_min"), nb::arg("sz"), nb::arg("col"));
@@ -5459,6 +5521,7 @@ void py_init_module_imgui_internal(nb::module_& m)
         .def_rw("max_rect_bounds", &ImFontAtlasBuilder::MaxRectBounds, "Bottom-right most used pixels")
         .def_rw("lock_disable_resize", &ImFontAtlasBuilder::LockDisableResize, "Disable resizing texture")
         .def_rw("preloaded_all_glyphs_ranges", &ImFontAtlasBuilder::PreloadedAllGlyphsRanges, "Set when missing ImGuiBackendFlags_RendererHasTextures features forces atlas to preload everything.")
+        .def_rw("loaded_font_default_as_vector", &ImFontAtlasBuilder::LoadedFontDefaultAsVector, "-1, or record with 0/1 whereas AddFontDefault() picked bitmap or vector font.")
         .def_rw("baked_map", &ImFontAtlasBuilder::BakedMap, "BakedId --> ImFontBaked*")
         .def_rw("baked_discarded_count", &ImFontAtlasBuilder::BakedDiscardedCount, "")
         .def_rw("pack_id_mouse_cursors", &ImFontAtlasBuilder::PackIdMouseCursors, "White pixel + mouse cursors. Also happen to be fallback in case of packing failure.")
@@ -5546,6 +5609,9 @@ void py_init_module_imgui_internal(nb::module_& m)
     m.def("im_font_atlas_baked_set_font_glyph_bitmap",
         ImFontAtlasBakedSetFontGlyphBitmap, nb::arg("atlas"), nb::arg("baked"), nb::arg("src"), nb::arg("glyph"), nb::arg("r"), nb::arg("src_pixels"), nb::arg("src_fmt"), nb::arg("src_pitch"));
 
+    m.def("im_font_baked_build_load_glyph_advance_x",
+        ImFontBaked_BuildLoadGlyphAdvanceX, nb::arg("baked"), nb::arg("codepoint"));
+
     m.def("im_font_atlas_pack_init",
         ImFontAtlasPackInit, nb::arg("atlas"));
 
@@ -5579,6 +5645,9 @@ void py_init_module_imgui_internal(nb::module_& m)
 
     m.def("im_font_atlas_update_draw_lists_shared_data",
         nb::overload_cast<ImFontAtlas *>(ImFontAtlasUpdateDrawListsSharedData), nb::arg("atlas"));
+
+    m.def("im_font_atlas_heuristic_should_use_default_vector_font",
+        ImFontAtlasHeuristicShouldUseDefaultVectorFont, nb::arg("atlas"));
 
     m.def("im_font_atlas_texture_block_post_process",
         ImFontAtlasTextureBlockPostProcess, nb::arg("data"));

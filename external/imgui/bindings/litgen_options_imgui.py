@@ -403,7 +403,7 @@ def _options_adaptations(options: LitgenOptions) -> None:
         ]
     )
     options.fn_force_lambda__regex = join_string_by_pipe_char(
-        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^Contains$", "^DockBuilderSplitNode",
+        ["^ImMin$", "^ImMax$", "^ImClamp$", "^ImLerp$", "^ImMod$", "^Contains$", "^DockBuilderSplitNode",
          "^AddRect$", "^PathStroke$", "^SeparatorTextEx$"]
     )
 
@@ -415,7 +415,13 @@ def _options_adaptations(options: LitgenOptions) -> None:
         [r"^SetCurrentContext$", r"^SetStateStorage$", r"^PushFont$", r"^FocusWindow$", r"^SetNavWindow$"]
     )
     # Their C++ may return a null pointer: Optional in the stub
-    options.fn_return_pointer_optional__regex = join_string_by_pipe_char([r"^GetCurrentContext$", r"^FindWindowByName$"])
+    options.fn_return_pointer_optional__regex = join_string_by_pipe_char(
+        [
+            r"^GetCurrentContext$",
+            r"^FindWindowByName$",
+            r"^TableGetSortSpecs$",
+        ]
+    )
 
     options.fn_params_replace_buffer_by_array__regex = r"^Plot"
 

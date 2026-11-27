@@ -5,6 +5,7 @@
 ## Breaking changes
 
 - Python 3.10 is no longer supported: `imgui-bundle` needs Python 3.11 or later, like its wheels (3.11 to 3.15). Python 3.10 reaches its end of life in October 2026.
+- Python typing: `imgui.table_get_sort_specs()` returns `Optional[TableSortSpecs]`: it is None when the table is not sortable. mypy now asks for that check.
 - The touch settings of `hello_imgui.RunnerParams` are one field, `touch_config`, an `imgui_touch.Config`: `touch_scroll_mode` becomes `touch_config.scroll_mode` (`imgui_touch.ScrollMode_`), and so on for `long_press_is_right_click` and `thin_scrollbars`; `pinch_mode` becomes `pinch_scales_font` (a bool: false leaves the font, and a plot or an image still zooms), and `pinch_interrupts_widgets` is gone (a widget that holds a finger keeps it). The enums `hello_imgui.TouchScrollMode` and `TouchPinchMode` are gone. C++: `runnerParams.touchConfig.ScrollMode = ImGuiTouchScrollMode_Always`.
 
 ## New
@@ -45,6 +46,7 @@
 - ImmVision: `immvision.inspector_add_image()` may be called before the app runs, e.g. at the start of a script. It crashed: there was no OpenGL context yet.
 - ImPlot and ImPlot3D, on a screen at a high DPI scale (Windows at 250%): the axes' ticks are as far apart as at 100%, for the same window. They were 2.5 times denser, and their labels crowded or overlapped: they counted the spacing in pixels, while the labels grow with the scale. Reported by Diederick Niehorster ([#501](https://github.com/pthom/imgui_bundle/issues/501)).
 - Node editor: a wheel step ends exactly on its zoom level (1.25, not 1.2499999).
+- Stack Layout: a row with a spring followed by an empty group shrinks back when its content does. It kept its tallest height.
 
 # v1.93.0
 

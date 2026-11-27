@@ -1944,7 +1944,7 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("tree_node_get_open",
         ImGui::TreeNodeGetOpen,
-        nb::arg("storage_id"),
+        nb::arg("storage_id"), nb::arg("flags") = 0,
         "retrieve tree node open/close state.");
 
     m.def("selectable",
@@ -2690,6 +2690,9 @@ void py_init_module_imgui_main(nb::module_& m)
 
     m.def("is_item_focused",
         ImGui::IsItemFocused, "is the last item focused for keyboard/gamepad navigation?");
+
+    m.def("is_item_disabled",
+        ImGui::IsItemDisabled, "is the last item disabled? (e.g. typically in a BeginDisabled()/EndDisabled() block)");
 
     m.def("is_item_clicked",
         ImGui::IsItemClicked,
@@ -6053,6 +6056,8 @@ void py_init_module_imgui_main(nb::module_& m)
         .def_rw("docking_node_has_close_button", &ImGuiStyle::DockingNodeHasCloseButton, "Docking node has their own CloseButton() to close all docked windows.")
         .def_rw("docking_separator_size", &ImGuiStyle::DockingSeparatorSize, "Thickness of resizing border between docked windows")
         .def_rw("mouse_cursor_scale", &ImGuiStyle::MouseCursorScale, "Scale software rendered mouse cursor (when io.MouseDrawCursor is enabled). We apply per-monitor DPI scaling over this scale. May be removed later.")
+        .def_rw("symbol_arrow_size_factor", &ImGuiStyle::SymbolArrowSizeFactor, "Width/height factor of arrows (0.0..1.0).")
+        .def_rw("symbol_arrow_thickness_factor", &ImGuiStyle::SymbolArrowThicknessFactor, "Thickness factor of arrows (0.0..0.5). 0.0=Fill. >0.0=Stroke.")
         .def_rw("anti_aliased_lines", &ImGuiStyle::AntiAliasedLines, "Enable anti-aliased lines/borders. Used at the beginning of the frame to set ImDrawFlags_AALines in all draw-lists.")
         .def_rw("anti_aliased_line_ends", &ImGuiStyle::AntiAliasedLineEnds, "Enable anti-aliased lines/borders ends. Nicer for thick lines but more expensive. Used at the beginning of the frame to set ImDrawFlags_AALineEnds in all draw-lists.")
         .def_rw("anti_aliased_fill", &ImGuiStyle::AntiAliasedFill, "Enable anti-aliased edges around filled shapes (rounded rectangles, circles, etc.). Used at the beginning of the frame to set ImDrawFlags_AAFill in all draw-lists.")

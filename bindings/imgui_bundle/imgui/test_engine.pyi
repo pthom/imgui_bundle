@@ -41,6 +41,7 @@ from imgui_bundle.imgui import (
     MouseButton,
     Key,
     Dir,
+    Cond,
     SortDirection,
     DataType,
     ImVector_int,
@@ -1213,6 +1214,8 @@ class TestGenericVars:
     input_text_flags: InputTextFlags
     # ImGuiTestGenericItemStatus  Status;    /* original C++ signature */
     status: TestGenericItemStatus
+    # ImGuiCond               Cond;    /* original C++ signature */
+    cond: Cond
     # bool                    ShowWindow1,     /* original C++ signature */
     show_window1: bool
     # ShowWindow2;    /* original C++ signature */
@@ -2129,7 +2132,7 @@ class TestContext:
         """(private API)"""
         pass
     # const ImGuiTableSortSpecs*  TableGetSortSpecs(ImGuiTestRef ref);    /* original C++ signature */
-    def table_get_sort_specs(self, ref: Union[TestRef, str]) -> TableSortSpecs:
+    def table_get_sort_specs(self, ref: Union[TestRef, str]) -> Optional[TableSortSpecs]:
         """(private API)"""
         pass
     # Viewports
